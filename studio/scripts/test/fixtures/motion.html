@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Record fixture, known motion</title>
+<style>
+  /* Every value here is a known answer for shoot-record.test.mjs. */
+  body { margin: 0; height: 2600px; background: #fff; }
+  .b { position: absolute; width: 100px; height: 100px; }
+  /* CSS animation, left 0 to 1000px, linear over 1s from load. Animating left is a layout shift. */
+  #css { top: 100px; left: 0; background: #f00; animation: slide 1000ms linear both; }
+  @keyframes slide { from { left: 0; } to { left: 1000px; } }
+  /* Moved by requestAnimationFrame, 1px per ms from its first frame. */
+  #raf { top: 250px; left: 0; background: #00f; }
+  /* Grey until a 500ms timer turns it black. */
+  #timer { top: 400px; left: 0; background: #ccc; }
+  /* Fades in over 1s once it scrolls into view. */
+  #reveal { top: 2000px; left: 100px; background: #0a0; opacity: 0; transition: opacity 1000ms linear; }
+  #reveal.in { opacity: 1; }
+</style>
+</head>
+<body>
+<div class="b" id="css"></div>
+<div class="b" id="raf"></div>
+<div class="b" id="timer"></div>
+<div class="b" id="reveal"></div>
+<script>
+  let t0 = null;
+  const tick = (ts) => { if (t0 === null) t0 = ts; document.getElementById('raf').style.left = Math.min(1000, ts - t0) + 'px'; requestAnimationFrame(tick); };
+  requestAnimationFrame(tick);
+  setTimeout(() => { document.getElementById('timer').style.background = '#000'; }, 500);
+  new IntersectionObserver((es) => es.forEach((e) => { if (e.isIntersecting) e.target.classList.add('in'); })).observe(document.getElementById('reveal'));
+</script>
+</body>
+</html>

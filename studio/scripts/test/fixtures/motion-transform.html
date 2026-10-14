@@ -1,0 +1,22 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Record fixture, transform only</title>
+<style>
+  /* The negative control for layout shift. Motion by transform only moves no layout. */
+  body { margin: 0; height: 2600px; background: #fff; }
+  .b { position: absolute; top: 100px; left: 0; width: 100px; height: 100px; background: #f00; animation: glide 1000ms linear both; }
+  @keyframes glide { from { transform: translateX(0); } to { transform: translateX(1000px); } }
+</style>
+</head>
+<body>
+<p id="top">Above the box</p>
+<div class="b"></div>
+<script>
+  // One layout shift during load, after first paint and before any recording, through a callback the
+  // frozen clock leaves alone. It must be reported apart and never in the scroll total.
+  requestIdleCallback(() => { const d = document.createElement('div'); d.style.height = '200px'; document.getElementById('top').before(d); }, { timeout: 200 });
+</script>
+</body>
+</html>

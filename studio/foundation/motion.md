@@ -66,7 +66,8 @@ Judged as hard as the motion.
 - Review typography and colour first, then watch every motion moment at normal speed and at slow
   speed.
 - Motion is judged first from a 30 to 90 second recording that scrolls and clicks through the
-  site. Stills cannot show easing, order or jank.
+  site. Stills cannot show easing, order or jank. `node studio/scripts/shoot.mjs --record` makes
+  one, with a strip of stills to read in place of the video.
 
 ## Prompts
 

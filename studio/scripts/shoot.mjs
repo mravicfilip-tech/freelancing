@@ -5,7 +5,7 @@
 //   node shoot.mjs --url <base url or folder> --routes "name=/path,name2=/path2" --out <dir>
 //                  [--widths 1440] [--height 900] [--selector ".badge"] [--wait <ms>]
 //                  Desktop first. Pass a phone width in --widths only when the client brief names it.
-//                  [--compare <before dir>] [--interact]
+//                  [--compare <before dir>] [--interact] [--record [--fps 30] [--seconds 90]]
 //
 // Needs puppeteer-core and a Chrome or Edge. Run  npm i puppeteer-core  once in ~/.claude/studio, or set
 // PUPPETEER_CORE_PATH to an installed copy. Set CHROME_PATH when the browser is somewhere unusual.
@@ -44,12 +44,26 @@
 //              no accessible name. Own findings, sev 2 for more than one filled primary in a view or an
 //              unnamed control, sev 3 for no h1, a skipped level, or a form with no clear primary.
 //              Kept out of interact.findings so that block is unchanged.
+//
+// Off by default, --record adds a recording per route and width, for anything judged by how it
+// moves. It loads the route again in its own page, so a plain run's files never change. Details in
+// lib/record.mjs. Written to report.json under "record".
+//   <name>_<width>.mp4        the page from the top, held 1.5s, then scrolled by mouse wheel a step at
+//                             a time to the bottom. Time is virtual, so easing and order are exact and
+//                             jank never shows. --fps sets the frame rate, --seconds caps the length.
+//   <name>_<width>_strip.png  16 stills from it, evenly spaced, labelled with time and scroll position.
+//                             A reader who cannot watch video opens this one.
+//   layout shift              the total while it scrolled, the five largest with their time, and apart
+//                             from those the total from load, before the recording started
+// Needs ffmpeg for the mp4. Without it the frames land in <name>_<width>_frames/ with the command
+// that joins them. A 3D page renders each frame in software, so record it at --fps 15.
 
 import { createRequire } from 'node:module';
 import { existsSync, mkdirSync, readFileSync, writeFileSync, statSync } from 'node:fs';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import { compactReport } from './lib/compact-report.mjs';
+import { recordRoute } from './lib/record.mjs';
 
 const STUDIO = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 // puppeteer-core, from PUPPETEER_CORE_PATH, then the kit's own node_modules, then the folder the
@@ -828,7 +842,7 @@ async function contactSheet(browser, report, file) {
 
 async function main() {
   const a = args(process.argv.slice(2));
-  if (!a.url || !a.routes || !a.out) throw new Error('usage: shoot.mjs --url <base> --routes "name=/path,..." --out <dir> [--widths 1440] [--selector css] [--wait ms] [--compare dir] [--interact]');
+  if (!a.url || !a.routes || !a.out) throw new Error('usage: shoot.mjs --url <base> --routes "name=/path,..." --out <dir> [--widths 1440] [--selector css] [--wait ms] [--compare dir] [--interact] [--record [--fps 30] [--seconds 90]]');
   const puppeteer = loadPuppeteer();
   if (!puppeteer) throw new Error('puppeteer-core was not found. Run  npm i puppeteer-core  in ~/.claude/studio, or set PUPPETEER_CORE_PATH to an installed copy.');
   const CHROME = findBrowser();
@@ -842,7 +856,8 @@ async function main() {
   const routes = String(a.routes).split(',').map((r) => { const i = r.indexOf('='); const name = i < 0 ? r : r.slice(0, i); const path = i < 0 ? '' : r.slice(i + 1); return { name: name.trim(), path: (path || '/').trim() }; });
 
   const t0 = Date.now();
-  const browser = await puppeteer.launch({ executablePath: CHROME, headless: 'new', args: ['--hide-scrollbars', ...(process.getuid && process.getuid() === 0 ? ['--no-sandbox'] : [])] });
+  // Wheel steps land at once when recording, so the compositor's real time smooth scroll stays out of virtual time.
+  const browser = await puppeteer.launch({ executablePath: CHROME, headless: 'new', args: ['--hide-scrollbars', ...(a.record ? ['--disable-smooth-scrolling'] : []), ...(process.getuid && process.getuid() === 0 ? ['--no-sandbox'] : [])] });
   const report = { url: base, selector: a.selector || null, widths, routes: [], at: new Date().toISOString() };
   try {
     const page = await browser.newPage();
@@ -889,6 +904,7 @@ async function main() {
           row.hierarchy = await page.evaluate(inspectHierarchy).catch((e) => ({ error: String(e.message || e).slice(0, 160), findings: [] }));
           row.interact = await interactRoute(page);
         }
+        if (a.record) row.record = await recordRoute(browser, { url, width: w, height, fps: Number(a.fps) || 30, seconds: Number(a.seconds) || 90, wait: Number(a.wait) || 0, out, name: r.name });
         report.routes.push(row);
       }
     }
@@ -909,6 +925,7 @@ async function main() {
   }
 
   if (a.interact) report.interact = true;
+  if (a.record) report.record = true;
   report.seconds = Math.round((Date.now() - t0) / 100) / 10;
   writeFileSync(join(out, 'report.json'), JSON.stringify(report, null, 2));
   writeFileSync(join(out, 'report.compact.txt'), compactReport(report));
@@ -931,6 +948,10 @@ async function main() {
     if (row.hierarchy) {
       const hn = (sev) => row.hierarchy.findings.filter((f) => f.severity === sev).length;
       bits.push(`hierarchy ${hn(1)} sev 1, ${hn(2)} sev 2, ${hn(3)} sev 3`);
+    }
+    if (row.record) {
+      const rc = row.record;
+      bits.push(rc.error ? `record failed, ${rc.error}` : `record ${rc.seconds}s, ${rc.frames} frames, stopped at ${rc.stopped}, layout shift ${rc.layoutShift.total}, rendered in ${rc.renderSeconds}s`);
     }
     if (row.diff && !row.diff.missing) bits.push(`diff ${row.diff.changedPct}%${row.diff.sizeChanged ? ' size changed' : ''}${row.diff.box ? ` in [${row.diff.box.join(',')}]` : ''}`);
     console.log(`  ${row.route} @${row.width}  ${bits.length ? bits.join(' · ') : 'clean'}`);

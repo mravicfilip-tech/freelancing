@@ -94,12 +94,18 @@ function routeLines(row) {
   if (row.interact && (row.interact.errors || []).length) lines.push(`  interact step errors ${row.interact.errors.length} | ${clip(String(row.interact.errors[0]), 90)}`);
   if (row.interact && row.interact.budgetHit) lines.push('  interact time budget hit, not every element checked');
   if (h && h.error) lines.push(`  hierarchy error ${clip(h.error, 100)}`);
+  const rc = row.record;
+  if (rc && rc.error) lines.push(`  record failed ${clip(rc.error, 100)}`);
+  else if (rc) {
+    const worst = rc.layoutShift.events[0];
+    lines.push(`  record ${rc.seconds}s ${rc.frames} frames, stopped at ${clip(rc.stopped, 60)}, layout shift ${rc.layoutShift.total}${rc.layoutShift.atLoad ? `, at load ${rc.layoutShift.atLoad}` : ''}${worst ? `, worst ${worst.value} at ${worst.at} ${clip(worst.sources.join(' '), 40)}` : ''}`);
+  }
   lines.push(...findingLines(all));
   return lines;
 }
 
 export function compactReport(report) {
-  const out = [`shots ${report.url} | widths ${(report.widths || []).join(',')} | ${(report.routes || []).length} captures${report.interact ? ' | interact on' : ''}`];
+  const out = [`shots ${report.url} | widths ${(report.widths || []).join(',')} | ${(report.routes || []).length} captures${report.interact ? ' | interact on' : ''}${report.record ? ' | record on' : ''}`];
   for (const row of report.routes || []) out.push(...routeLines(row));
   return out.join('\n') + '\n';
 }

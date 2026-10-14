@@ -12,18 +12,26 @@
 // asked for only while something moves, idle frames are capped at 30 a second, and the loop stops
 // when the hero is out of view or the tab is hidden.
 
-export type Drive = { progress: Progress; onFrame: (p: number) => void; load?: LoadClock };
+//
+// Beat 4 redrawn, dig, lay, restore (hero6/acts.ts). With `drive.acts` the same frame sets the cut,
+// the ducts and the light from p (Dig.ts), and draws the ground's points and the fibre light over the
+// whole canvas after both halves, so the cloud is not cut by the seam. The seam holds at the middle
+// until restore and then sweeps left with the falling ground. The camera keeps the short dolly.
+
+export type Drive = { progress: Progress; onFrame: (p: number) => void; load?: LoadClock; acts?: boolean };
 
 import { Canvas, useFrame, useThree } from '@react-three/fiber';
-import { useEffect, useLayoutEffect, useMemo, useRef } from 'react';
+import { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import * as THREE from 'three';
 import { CAMS, OVERSCAN, VIEWS, clamp01, dollyCam, driftCam, seamAt, smooth, type View } from './geometry';
+import { seamEase } from './acts';
+import { applyRig, buildDig, makeRig, type DigRig } from './Dig';
 import type { Progress } from './progress';
 import { Specimen, type FibreRig } from './Render';
 import { buildSchematic } from './Schematic';
 import { ASSEMBLE, SETTLED, assembleAt, idlePulse, msToNextPulse, pulseLevel, type LoadClock } from './timeline';
 
-function Dual({ view, seam, drive, onReady, rig }: { view: View; seam: number; drive?: Drive; onReady: () => void; rig: React.MutableRefObject<FibreRig | null> }) {
+function Dual({ view, seam, drive, onReady, rig, dig }: { view: View; seam: number; drive?: Drive; onReady: () => void; rig: React.MutableRefObject<FibreRig | null>; dig: DigRig }) {
   const gl = useThree((s) => s.gl);
   const camera = useThree((s) => s.camera) as THREE.PerspectiveCamera;
   const size = useThree((s) => s.size);
@@ -31,6 +39,7 @@ function Dual({ view, seam, drive, onReady, rig }: { view: View; seam: number; d
   const cam = CAMS[view];
   const dpr = gl.getPixelRatio();
   const schem = useMemo(() => buildSchematic(dpr, view === 'wide' ? 1 : 0.85, false), [dpr, view]);
+  const points = useMemo(() => (drive?.acts ? buildDig(dpr) : null), [dpr, drive?.acts]);
   const done = useRef(false);
   const load = drive?.load;
   const last = useRef({ t: 0, draw: 0, p: -1, warm: false });
@@ -120,7 +129,7 @@ function Dual({ view, seam, drive, onReady, rig }: { view: View; seam: number; d
       camera.position.set(...c.pos);
       camera.lookAt(...c.target);
       camera.updateMatrixWorld();
-      s = seamAt(view, e);
+      s = seamAt(view, seamEase(p, !!drive.acts));
       // the canvas is the stage plus OVERSCAN above and below, the camera frames the stage inside it
       const fh = size.height / (1 + 2 * OVERSCAN);
       const asp = size.width / fh;
@@ -129,6 +138,10 @@ function Dual({ view, seam, drive, onReady, rig }: { view: View; seam: number; d
         camera.setViewOffset(size.width, fh, 0, -OVERSCAN * fh, size.width, size.height);
       }
     }
+    // the acts, from p, before anything is drawn
+    const ap = drive?.acts ? p : 0;
+    applyRig(dig, ap);
+    const pts = points ? points.update(ap) : false;
     const bw = Math.round(size.width * dpr);
     const bh = Math.round(size.height * dpr);
     const sx = Math.floor(bw * Math.min(1, Math.max(0, s)));
@@ -145,6 +158,13 @@ function Dual({ view, seam, drive, onReady, rig }: { view: View; seam: number; d
     gl.clear();
     if (st.wipe > 0) gl.render(scene, camera);
     gl.setScissorTest(false);
+    if (pts && points) {
+      // over both halves, depth tested against the render on the right, nothing cleared
+      const ac = gl.autoClear;
+      gl.autoClear = false;
+      gl.render(points.scene, camera);
+      gl.autoClear = ac;
+    }
     if (drive) drive.onFrame(p);
     if (moving) invalidate();
     if (!done.current) {
@@ -164,6 +184,7 @@ function Dual({ view, seam, drive, onReady, rig }: { view: View; seam: number; d
 export default function Scene({ view, still, seam = 0.5, drive, onReady }: { view: View; still?: boolean; seam?: number; drive?: Drive; onReady: () => void }) {
   const cam = CAMS[view];
   const rig = useRef<FibreRig | null>(null);
+  const [dig] = useState(makeRig);
   return (
     <Canvas
       frameloop="demand"
@@ -177,8 +198,8 @@ export default function Scene({ view, still, seam = 0.5, drive, onReady }: { vie
         gl.setClearColor(0x000000, 0);
       }}
     >
-      <Specimen view={view} rig={rig} />
-      <Dual view={view} seam={seam} drive={drive} onReady={onReady} rig={rig} />
+      <Specimen view={view} rig={rig} dig={dig} />
+      <Dual view={view} seam={seam} drive={drive} onReady={onReady} rig={rig} dig={dig} />
     </Canvas>
   );
 }

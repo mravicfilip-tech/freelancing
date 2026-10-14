@@ -103,6 +103,28 @@
 .p1.p1 .bk[data-btn='3'][data-slab='3']:is(:hover, .is-hover):not(:disabled) .bk__cell3 { width: 56px; background: var(--s-hot); color: var(--s-hot-fg); }
 .p1.p1 .bk[data-btn='3'][data-slab='3']:is(:hover, .is-hover):not(:disabled) .bk__arw { transform: translateX(14px); }
 
+/* the outline version, every button that is not the solid or the fill. Transparent, a 1px border
+ * drawn inside the box so the size is the solid slab's, the same 44px cell behind its hairline.
+ * Label and border take --out, grey-200 on dark, ink on light, white on the bull-red panel, which
+ * measures 13.5, 13.5 and 5.62 to 1. Hover and focus run the solid's motion: the cell widens to
+ * 56px into the hot colour and the arrow runs 14px, the label holds. Press is the solid's. */
+.p1.p1 .bk[data-btn='3'][data-slab='3'].bk--out {
+  background: transparent;
+  color: var(--out);
+  box-shadow: inset 0 0 0 1px var(--out);
+}
+.p1.p1 .bk[data-btn='3'][data-slab='3'].bk--out:is(:hover, .is-hover):not(:disabled) { background: transparent; color: var(--out); }
+.p1.p1 .bk[data-btn='3'][data-slab='3'].bk--out .bk__cell3 { background: transparent; color: var(--out); }
+/* the icon button and the label only button have no cell, so the whole box turns hot */
+.p1.p1 .bk[data-btn='3'][data-slab='3'].bk--out:is(.bk--square, .bk--bare):is(:hover, .is-hover):not(:disabled) {
+  background: var(--s-hot);
+  color: var(--s-hot-fg);
+  box-shadow: inset 0 0 0 1px var(--s-hot);
+}
+.p1.p1 .bk[data-btn='3'][data-slab='3'].bk--out:is(:focus-visible, .is-focus) { outline-color: var(--out); }
+/* label only, MENU and its close. Symmetric padding, the label centred */
+.p1.p1 .bk[data-btn='3'][data-slab='3'].bk--bare { justify-content: center; padding: 0 16px; }
+
 /* ---------- 4, cut line ----------
  * A 2px rule under the label draws across from the left on hover, like a cut being made, and the
  * arrow rides along toward its end. The slab colour holds. The rule takes the hot colour. */

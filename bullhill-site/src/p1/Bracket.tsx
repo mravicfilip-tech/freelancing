@@ -5,7 +5,7 @@ import './variants/buttons/slab.css';
 import { btnVariant, lab, slabVariant } from './variants/params';
 import type { SlabN, VariantN } from './variants/params';
 
-type Common = { variant?: 'line' | 'solid' | 'fill'; square?: boolean; className?: string; btn?: VariantN; slab?: SlabN; children: ReactNode };
+type Common = { variant?: 'line' | 'solid' | 'fill'; square?: boolean; arrow?: boolean; className?: string; btn?: VariantN; slab?: SlabN; children: ReactNode };
 type AProps = Common & { href: string } & Omit<AnchorHTMLAttributes<HTMLAnchorElement>, 'className' | 'children'>;
 type BProps = Common & { href?: undefined; ref?: Ref<HTMLButtonElement> } & Omit<ButtonHTMLAttributes<HTMLButtonElement>, 'className' | 'children'>;
 
@@ -54,7 +54,7 @@ function Flap({ children }: { children: ReactNode }) {
 }
 
 // The five versions of the slab and arrow, style 3. 1 is the reference as built.
-function slabInside(s: SlabN, square: boolean | undefined, children: ReactNode) {
+function slabInside(s: SlabN, square: boolean | undefined, children: ReactNode, bare?: boolean) {
   if (s === 2) {
     return (
       <span className="bk__s2">
@@ -67,7 +67,7 @@ function slabInside(s: SlabN, square: boolean | undefined, children: ReactNode) 
     return (
       <>
         <span className="bk__l">{children}</span>
-        {!square && (
+        {!square && !bare && (
           <span className="bk__cell3" aria-hidden="true">
             <ArrowSvg className="bk__arw" />
           </span>
@@ -110,8 +110,8 @@ function slabInside(s: SlabN, square: boolean | undefined, children: ReactNode) 
 }
 
 // The inside of the button for each of the five styles. Styles 1 and 2 keep the four corner marks.
-function inside(n: VariantN, s: SlabN, square: boolean | undefined, children: ReactNode) {
-  if (n === 3) return slabInside(s, square, children);
+function inside(n: VariantN, s: SlabN, square: boolean | undefined, children: ReactNode, bare?: boolean) {
+  if (n === 3) return slabInside(s, square, children, bare);
   if (n === 4) {
     // The label twice. The copy is hidden from assistive tech, so the roll reads once.
     return (
@@ -159,9 +159,11 @@ function inside(n: VariantN, s: SlabN, square: boolean | undefined, children: Re
 // ?v=1&btn=1..5 restyles every button on the page, and the lab passes `btn` to pin one style.
 // ?v=1&btn=3&slab=1..5 picks one of the five slab and arrow versions, and a `slab` prop pins one.
 // The filled variant is the form submit. The solid variant is the one primary action in a view, the
-// first hero button and the closing call, and line is every other button.
+// first hero button and the closing call, and line is every other button, the outline arrow cell.
+// `arrow={false}` drops the arrow cell of the slab and arrow, label only, for MENU and its close.
+// The labs show the styles side by side and keep every line button as the solid slab.
 export function Bracket(props: AProps | BProps) {
-  const { variant = 'line', square, className, btn, slab, children, ...rest } = props;
+  const { variant = 'line', square, arrow = true, className, btn, slab, children, ...rest } = props;
   // The labs show several styles and ignore ?btn and ?slab. A ?slab alone picks the slab style.
   const n: VariantN = btn ?? (slab ? 3 : lab() ? 1 : slabVariant() ? 3 : btnVariant());
   const sv: SlabN = n === 3 ? (slab ?? (lab() ? 1 : slabVariant() ?? 3)) : 1;
@@ -178,8 +180,10 @@ export function Bracket(props: AProps | BProps) {
   useLayoutEffect(() => {
     if (own.current) own.current.dataset.ground = groundOf(own.current);
   }, [n, sv]);
-  const cls = `bk${variant === 'fill' ? ' bk--fill' : variant === 'solid' ? ' bk--solid' : ''}${square ? ' bk--square' : ''}${className ? ` ${className}` : ''}`;
-  const body = inside(n, sv, square, children);
+  const bare = n === 3 && sv === 3 && !arrow && !square;
+  const out = variant === 'line' && !lab();
+  const cls = `bk${variant === 'fill' ? ' bk--fill' : variant === 'solid' ? ' bk--solid' : out ? ' bk--out' : ''}${square ? ' bk--square' : ''}${bare ? ' bk--bare' : ''}${className ? ` ${className}` : ''}`;
+  const body = inside(n, sv, square, children, bare);
   if ('href' in clean && clean.href !== undefined) {
     return (
       <a className={cls} data-btn={n} data-slab={n === 3 ? sv : undefined} ref={setRef} {...(clean as AnchorHTMLAttributes<HTMLAnchorElement>)}>

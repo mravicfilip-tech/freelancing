@@ -65,13 +65,17 @@ export function Projects({ c }: { c: Content }) {
     <section id="projects" className="proj" aria-labelledby="proj-title">
       <div className="proj__head g">
         <div className="proj__intro">
-          <p className="mono kicker">{c.projects.kicker}</p>
+          <Rise as="p" body className="mono kicker">
+            {c.projects.kicker}
+          </Rise>
           <Rise id="proj-title" className="proj__title display">
             {sh(c, c.projects.title)}
           </Rise>
         </div>
         <div className="proj__side">
-          <p className="proj__lede mono-body">{c.projects.lede}</p>
+          <Rise as="p" body className="proj__lede mono-body">
+            {c.projects.lede}
+          </Rise>
           <Bracket href="#contact">{c.ui.send}</Bracket>
         </div>
       </div>
@@ -121,9 +125,6 @@ export function Projects({ c }: { c: Content }) {
                 </div>
               )}
             </dl>
-            <Bracket className="pc__btn" href={`#${p.id}`} tabIndex={i === active ? 0 : -1}>
-              {c.ui.viewProject}
-            </Bracket>
           </ProjectCard>
         ))}
       </ul>

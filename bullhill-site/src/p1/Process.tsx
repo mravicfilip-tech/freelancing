@@ -127,11 +127,15 @@ export function Process({ c }: { c: Content }) {
       </div>
       <div className="g">
         <div className="proc__head gc">
-          <p className="mono kicker proc__kicker">{c.process.kicker}</p>
+          <Rise as="p" body className="mono kicker proc__kicker">
+            {c.process.kicker}
+          </Rise>
           <Rise id="proc-title" className="proc__title display">
             {sh(c, c.process.title)}
           </Rise>
-          <p className="proc__lede">{c.process.lede}</p>
+          <Rise as="p" body className="proc__lede">
+            {c.process.lede}
+          </Rise>
         </div>
 
         <figure className="pfig" aria-hidden="true" ref={figRef}>

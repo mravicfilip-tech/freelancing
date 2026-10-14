@@ -33,7 +33,9 @@ export function Closing({ c }: { c: Content }) {
         <div className="end__panel">
           <div className="end__a">
             <Rise className="end__title display">{sh(c, c.form.title)}</Rise>
-            <p className="end__line mono-body">{c.footer.line}</p>
+            <Rise as="p" body className="end__line mono-body">
+              {c.footer.line}
+            </Rise>
             <Bracket variant="solid" href={c.contact.phoneHref}>{c.ui.call}</Bracket>
           </div>
           <div className="end__b">

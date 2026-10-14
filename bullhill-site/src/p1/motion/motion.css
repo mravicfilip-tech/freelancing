@@ -8,8 +8,9 @@
   --m-ease: cubic-bezier(0.2, 0.7, 0.1, 1);
 }
 
-/* the headline rise, one mask per word, padded so umlauts, descenders and the tight tracking
- * never clip, with the padding taken back by margins so the layout does not move */
+/* the text reveal after landonorris.com, one block per line, see Rise.tsx. The words keep a box of
+ * their own, padded so umlauts, descenders and the tight tracking never clip, with the padding taken
+ * back by margins so the layout does not move. */
 .p1 .rise__w {
   display: inline-block;
   overflow: hidden;
@@ -18,9 +19,40 @@
   margin: -0.14em -0.06em -0.1em;
 }
 .p1 .rise__i { display: inline-block; }
-.p1[data-motion='on'] .rise__i {
-  transition: transform var(--m-rise) var(--m-ease) calc(var(--li, 0) * var(--m-step));
+/* running text, the words are plain inline spans so the text sets exactly as it did before */
+.p1 .rise--body .rise__w { display: inline; overflow: visible; padding: 0; margin: 0; }
+.p1 .rise--body .rise__i { display: inline; }
+
+/* Per line, 280ms in from the left, then 450ms off to the right, lines 120ms apart. --li is the line,
+ * --lo the wait for the Rise before this one, --rz and --rp hold the reveal at a time, the hero's ?t=. */
+.p1 {
+  --m-bcover: 280ms;
+  --m-boff: 450ms;
+  --m-bstep: 120ms;
+  --m-bease: cubic-bezier(0.65, 0, 0.35, 1);
 }
-.p1[data-motion='on'] .rise[data-in='no'] .rise__i { transform: translateY(115%); }
-.p1[data-motion='on'] .rise__shy { transition: opacity 200ms linear 360ms; }
+/* The block is a clip box over the line and a slab that slides inside it, so only transform moves. */
+.p1 .rise__bl { position: absolute; overflow: hidden; pointer-events: none; user-select: none; }
+.p1 .rise__bk { position: absolute; inset: 0; background: currentColor; transform: translateX(-101%); }
+/* the text waits under the block until the block covers the line */
+.p1[data-motion='on'] .rise[data-in='no'] .rise__i,
 .p1[data-motion='on'] .rise[data-in='no'] .rise__shy { opacity: 0; }
+.p1[data-motion='on'] .rise[data-in='yes'] .rise__i,
+.p1[data-motion='on'] .rise[data-in='yes'] .rise__shy {
+  animation: rise-hold var(--m-bcover) linear backwards;
+  animation-delay: calc(var(--li, 0) * var(--m-bstep) + var(--lo, 0ms) - var(--rz, 0ms));
+  animation-play-state: var(--rp, running);
+}
+.p1[data-motion='on'] .rise[data-in='yes'] .rise__bk {
+  animation: rise-block calc(var(--m-bcover) + var(--m-boff)) both;
+  animation-delay: calc(var(--li, 0) * var(--m-bstep) + var(--lo, 0ms) - var(--rz, 0ms));
+  animation-play-state: var(--rp, running);
+}
+@keyframes rise-hold {
+  from, to { opacity: 0; }
+}
+@keyframes rise-block {
+  0% { transform: translateX(-101%); animation-timing-function: var(--m-bease); }
+  38.36% { transform: translateX(0); animation-timing-function: var(--m-bease); }
+  100% { transform: translateX(101%); }
+}

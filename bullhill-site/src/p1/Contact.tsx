@@ -132,11 +132,15 @@ export function Contact({ c }: { c: Content }) {
     <div className="conw">
       <section id="contact" className="con gc" aria-labelledby="con-title">
         <div className="con__left">
-          <p className="mono kicker">{F.kicker}</p>
+          <Rise as="p" body className="mono kicker">
+            {F.kicker}
+          </Rise>
           <Rise id="con-title" className="con__title display">
             {sh(c, F.title)}
           </Rise>
-          <p className="con__lede mono-body">{F.lede}</p>
+          <Rise as="p" body className="con__lede mono-body">
+            {F.lede}
+          </Rise>
           <CallBlock c={c} x={x} className="call--ph" />
 
           {status === 'success' ? (

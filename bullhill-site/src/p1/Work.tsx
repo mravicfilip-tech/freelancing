@@ -76,7 +76,9 @@ export function Work({ c }: { c: Content }) {
           <Rise id="wk-title" className="wk__title display">
             {sh(c, c.work.title)}
           </Rise>
-          <p className="wk__lede mono-body">{c.work.lede}</p>
+          <Rise as="p" body className="wk__lede mono-body">
+            {c.work.lede}
+          </Rise>
         </div>
       </div>
 

@@ -7,6 +7,8 @@ import { t6 } from './copy-hero6';
 import { ANCHORS, VIEWS, clamp01, dollyCam, driftCam, project, seamAt, smooth, type LayerId, type View } from './hero6/geometry';
 import { useProgress, useProgressValue, type Progress } from './hero6/progress';
 import { StillSeam } from './hero6/StillSeam';
+import { DigCanvas } from './hero6/DigCanvas';
+import { restoreAt, seamEase } from './hero6/acts';
 import { LoadClock, SETTLED, assembleAt, riseEase, urlFreeze } from './hero6/timeline';
 import './hero.css';
 import './hero6.css';
@@ -19,11 +21,14 @@ import './hero6.css';
 // first frame. The labels are placed here by projecting 3D points with that camera, so a leader
 // ends on its part at every size.
 //
-// Beat 4. The stage is pinned with position sticky for 70svh of extra scroll, 30svh on phones, and
-// p runs 0 to 1 across it (hero6/progress.ts). The scene reads p every frame, sets the seam and the
-// dolly, draws, and then calls paint(p) here, so the seam line, its two tags and the labels move in
-// the same animation frame as the canvas. Phones and no WebGL show StillSeam, the still pair with
-// the seam sliding in CSS, and the labels follow the same seam. Reduced motion gets no pin and p 0.
+// Beat 4, dig, lay, restore (hero6/acts.ts). The stage is pinned with position sticky for 120svh of
+// extra scroll, 30svh on phones, and p runs 0 to 1 across it (hero6/progress.ts). The scene reads p
+// every frame, opens the trench, lifts and drops the ground's points, slides the ducts in, sets the
+// seam and the dolly, draws, and then calls paint(p) here, so the seam line, its two tags and the
+// labels move in the same animation frame as the canvas. Phones and no WebGL show StillSeam, the
+// still pair with the seam sliding in CSS, and DigCanvas plays the ground's points over it in 2D.
+// With motionOn() false there are no acts, the seam keeps its old mapping. Reduced motion gets no
+// pin and p 0.
 //
 // Beats 1 to 3 (hero6/timeline.ts). The h1 is the shared Rise, the lede and buttons rise after its
 // last line in CSS, and the assemble is built by a LoadClock that the scene, the overlay and the
@@ -94,11 +99,11 @@ type Meta = { id: LayerId; text: string; w: number };
 type Item = Meta & { px: number; py: number; ty: number; op: number };
 type Box = { w: number; h: number; x: number; y: number };
 
-// Where every moving piece of the overlay sits at ease e, in stage pixels. The part of a label is
+// Where every moving piece of the overlay sits, in stage pixels, the camera at ease e and the seam at se. The part of a label is
 // real once the seam has gone left of its anchor, and its leader fades out while the tag stays.
-function place(view: View, box: Box, ch: number, metas: Meta[], e: number, moveCam: boolean, yaw = 0, pitch = 0) {
+function place(view: View, box: Box, ch: number, metas: Meta[], e: number, se: number, moveCam: boolean, yaw = 0, pitch = 0) {
   const cam = driftCam(dollyCam(view, moveCam ? e : 0), moveCam ? yaw : 0, moveCam ? pitch : 0);
-  const sf = seamAt(view, e);
+  const sf = seamAt(view, se);
   const items: Item[] = metas
     .map((m) => {
       const [fx, fy] = project(cam, box.w / box.h, ANCHORS[m.id]);
@@ -122,9 +127,11 @@ type Els = { lead: SVGGElement | null; line: SVGLineElement | null; dot: SVGCirc
 
 // Phones and no WebGL, beat 4 on the still pair. Its own component, so a scroll re-renders the two
 // stills and not the whole hero.
-function SeamStill({ view, progress, enabled, animate }: { view: View; progress: Progress; enabled: boolean; animate: boolean }) {
+// With the acts on, the seam waits for restore, the same as the live scene, and the ground's points
+// play over the pair on a 2D canvas.
+function SeamStill({ view, progress, enabled, animate, acts }: { view: View; progress: Progress; enabled: boolean; animate: boolean; acts: boolean }) {
   const p = useProgressValue(progress, enabled);
-  return <StillSeam view={view} p={p} alt="" animate={animate} />;
+  return <StillSeam view={view} p={acts ? restoreAt(p) : p} alt="" animate={animate} />;
 }
 
 // Beat 1 with the clock frozen by ?t=. The words of the headline are set to where the rise has got
@@ -231,8 +238,9 @@ function Specimen({ c }: { c: Content }) {
     if (!k.box) return;
     // the still pair follows p with a fixed camera, the one poster is a still at p 0 and the overlay holds there
     const e = k.live || k.stills ? smooth(p) : 0;
+    const se = k.live || k.stills ? seamEase(p, !!clock) : 0;
     const ck = clock;
-    const { seamX, items } = place(k.view, k.box, k.ch, k.metas, e, k.live, ck?.view.yaw, ck?.view.pitch);
+    const { seamX, items } = place(k.view, k.box, k.ch, k.metas, e, se, k.live, ck?.view.yaw, ck?.view.pitch);
     const top = k.box.y + k.box.h - TAG_H;
     // beat 2 on the overlay, the seam drops, the two tags and the leaders come in
     const st = ck ? assembleAt(ck.a()) : SETTLED;
@@ -269,7 +277,7 @@ function Specimen({ c }: { c: Content }) {
     return progress.subscribe((p) => (live ? text(p) : paintRef.current(p)));
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [progress, pinned, live]);
-  const drive = useMemo(() => ({ progress, load: clock ?? undefined, onFrame: (p: number) => paintRef.current(p) }), [progress, clock]);
+  const drive = useMemo(() => ({ progress, load: clock ?? undefined, acts: !!clock, onFrame: (p: number) => paintRef.current(p) }), [progress, clock]);
 
   // ---- beats 1 to 3
   // The hero's own CSS reads data-load (off, run, done), data-idle (wait, run, pause, frozen) and
@@ -395,7 +403,7 @@ function Specimen({ c }: { c: Content }) {
   }, [clock, frozen, progress]);
 
   const p0 = progress.sample();
-  const first = box ? place(view, box, ch, metas, live || stills ? smooth(p0) : 0, live) : null;
+  const first = box ? place(view, box, ch, metas, live || stills ? smooth(p0) : 0, live || stills ? seamEase(p0, !!clock) : 0, live) : null;
   const seamX = first ? first.seamX : 0;
   const slot = (id: LayerId) => (els.current[id] ??= { lead: null, line: null, dot: null, tag: null });
 
@@ -413,10 +421,11 @@ function Specimen({ c }: { c: Content }) {
             {box ? (
               <div className="hv6__box" style={{ left: box.x, top: box.y, width: box.w, height: box.h }}>
                 {stills ? (
-                  <SeamStill view={view} progress={progress} enabled={pinned} animate={!!clock} />
+                  <SeamStill view={view} progress={progress} enabled={pinned} animate={!!clock} acts={!!clock} />
                 ) : (
                   <img className="hv6__poster" data-ready={(ready || !!clock) && live ? 'yes' : 'no'} data-anim={clock && !live ? 'yes' : undefined} src={`/render/hero6-${view}.webp`} width={box.w} height={box.h} alt="" draggable={false} />
                 )}
+                {!live && clock && pinned ? <DigCanvas view={view} progress={progress} /> : null}
                 {live && mounted ? (
                   <div className="hv6__canvas">
                     <Suspense fallback={null}>

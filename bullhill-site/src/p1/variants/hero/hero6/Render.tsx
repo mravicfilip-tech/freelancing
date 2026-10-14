@@ -8,6 +8,8 @@ import { useThree } from '@react-three/fiber';
 import * as THREE from 'three';
 import { DUCTS, FIBRE_OUT, H, L, R, WALL, W, Y, camDir, rng, type DuctSpec, type View, type V3 } from './geometry';
 import { TILE_H, TILE_W, ductRough, falloff, makeGround, type Kind } from './textures';
+import { FLOOR, TZ } from './acts';
+import { patchCut, patchGlow, type DigRig } from './Dig';
 
 const GREEN = '#37864f';
 const ORANGE = '#c9531f';
@@ -72,22 +74,22 @@ const LAYERS: LayerDef[] = [
   { id: 'asphalt', y0: Y.base, y1: Y.surface, rough: 0.82, bump: 1.6 },
 ];
 
-function Layers({ ground }: { ground: Record<Kind, Ground> }) {
+function Layers({ ground, dig }: { ground: Record<Kind, Ground>; dig: DigRig }) {
   const mats = useMemo(() => {
     return LAYERS.map((l) => {
       const hgt = l.y1 - l.y0;
       return {
         l,
         front: groundMat(ground[l.id], L, hgt, l.rough, l.bump),
-        end: groundMat(ground[l.id], W, hgt, l.rough, l.bump),
+        end: patchCut(groundMat(ground[l.id], W, hgt, l.rough, l.bump), dig),
       };
     });
-  }, [ground]);
-  const top = useMemo(() => groundMat(ground.asphalt, L, W, 0.62, 1.8), [ground]);
+  }, [ground, dig]);
+  const top = useMemo(() => patchCut(groundMat(ground.asphalt, L, W, 0.62, 1.8), dig), [ground, dig]);
   // bull-red, taste.md 2026-10-14 13:36, only the ducts keep their real colours
-  const tape = useMemo(() => new THREE.MeshStandardMaterial({ color: '#d00b11', roughness: 0.55, metalness: 0 }), []);
+  const tape = useMemo(() => patchCut(new THREE.MeshStandardMaterial({ color: '#d00b11', roughness: 0.55, metalness: 0 }), dig), [dig]);
   const shade = useMemo(() => falloff('edge'), []);
-  const shadeMat = useMemo(() => new THREE.MeshBasicMaterial({ map: shade, transparent: true, depthWrite: false, polygonOffset: true, polygonOffsetFactor: -1, polygonOffsetUnits: -1 }), [shade]);
+  const shadeMat = useMemo(() => patchCut(new THREE.MeshBasicMaterial({ map: shade, transparent: true, depthWrite: false, polygonOffset: true, polygonOffsetFactor: -1, polygonOffsetUnits: -1 }), dig), [shade, dig]);
   return (
     <group>
       {mats.map(({ l, front, end }) => {
@@ -161,10 +163,10 @@ function rockGeometry() {
 
 type ScatterSpec = { y0: number; y1: number; front: number; end: number; rMin: number; rMax: number; colors: string[]; rough: number; seed: number; sink: number };
 
-function Scatter({ spec }: { spec: ScatterSpec }) {
+function Scatter({ spec, dig }: { spec: ScatterSpec; dig: DigRig }) {
   const geo = useMemo(() => rockGeometry(), []);
   const meshes = useMemo(() => {
-    const mat = new THREE.MeshStandardMaterial({ color: '#ffffff', roughness: spec.rough, metalness: 0 });
+    const mat = patchCut(new THREE.MeshStandardMaterial({ color: '#ffffff', roughness: spec.rough, metalness: 0 }), dig);
     const r = rng(spec.seed);
     const d = new THREE.Object3D();
     const col = new THREE.Color();
@@ -192,7 +194,7 @@ function Scatter({ spec }: { spec: ScatterSpec }) {
       return m;
     };
     return { front: make(spec.front, L / 2), end: make(spec.end, W / 2) };
-  }, [geo, spec]);
+  }, [geo, spec, dig]);
   return (
     <group>
       <group position={[0, 0, W / 2]}>
@@ -213,13 +215,13 @@ const SCATTER: ScatterSpec[] = [
 ];
 
 // ---- ducts
-function Duct({ spec, mats }: { spec: DuctSpec; mats: { outer: THREE.Material; inner: THREE.Material; rim: THREE.Material } }) {
+function Duct({ spec, mats, gref }: { spec: DuctSpec; mats: { outer: THREE.Material; inner: THREE.Material; rim: THREE.Material }; gref: (g: THREE.Group | null) => void }) {
   const x0 = -L / 2 - spec.far;
   const x1 = L / 2 + spec.near;
   const len = x1 - x0;
   const cx = (x0 + x1) / 2;
   return (
-    <group position={[cx, spec.y, spec.z]}>
+    <group ref={gref} position={[cx, spec.y, spec.z]}>
       <group rotation-z={Math.PI / 2}>
         <mesh material={mats.outer} castShadow receiveShadow>
           <cylinderGeometry args={[R, R, len, 96, 1, true]} />
@@ -237,7 +239,7 @@ function Duct({ spec, mats }: { spec: DuctSpec; mats: { outer: THREE.Material; i
   );
 }
 
-function Ducts({ env }: { env: THREE.Texture }) {
+function Ducts({ env, dig }: { env: THREE.Texture; dig: DigRig }) {
   const rough = useMemo(() => ductRough(), []);
   const mats = useMemo(() => {
     const mk = (color: string) => {
@@ -245,21 +247,21 @@ function Ducts({ env }: { env: THREE.Texture }) {
       map.repeat.set(1, 6);
       map.needsUpdate = true;
       return {
-        outer: new THREE.MeshPhysicalMaterial({ color, roughness: 0.5, roughnessMap: map, metalness: 0, clearcoat: 1, clearcoatRoughness: 0.035, ior: 1.46, envMap: env, envMapIntensity: 1.25, side: THREE.FrontSide }),
+        outer: patchGlow(new THREE.MeshPhysicalMaterial({ color, roughness: 0.5, roughnessMap: map, metalness: 0, clearcoat: 1, clearcoatRoughness: 0.035, ior: 1.46, envMap: env, envMapIntensity: 1.25, side: THREE.FrontSide }), dig),
         inner: new THREE.MeshStandardMaterial({ color: new THREE.Color(color).multiplyScalar(0.38), roughness: 0.55, metalness: 0, side: THREE.BackSide }),
         rim: new THREE.MeshPhysicalMaterial({ color, roughness: 0.5, metalness: 0, clearcoat: 0.6, clearcoatRoughness: 0.2, side: THREE.DoubleSide }),
       };
     };
     return { green: mk(GREEN), orange: mk(ORANGE) };
-  }, [rough, env]);
+  }, [rough, env, dig]);
   const ring = useMemo(() => falloff('ring'), []);
-  const ringMat = useMemo(() => new THREE.MeshBasicMaterial({ map: ring, transparent: true, opacity: 0.8, depthWrite: false, polygonOffset: true, polygonOffsetFactor: -1, polygonOffsetUnits: -1 }), [ring]);
-  const bore = useMemo(() => new THREE.MeshBasicMaterial({ color: '#030303' }), []);
+  const ringMat = useMemo(() => patchCut(new THREE.MeshBasicMaterial({ map: ring, transparent: true, opacity: 0.8, depthWrite: false, polygonOffset: true, polygonOffsetFactor: -1, polygonOffsetUnits: -1 }), dig, true), [ring, dig]);
+  const bore = useMemo(() => patchCut(new THREE.MeshBasicMaterial({ color: '#030303' }), dig, true), [dig]);
   return (
     <group>
-      {DUCTS.map((d) => (
+      {DUCTS.map((d, i) => (
         <group key={d.id}>
-          <Duct spec={d} mats={mats[d.color]} />
+          <Duct spec={d} mats={mats[d.color]} gref={(g) => void (dig.ducts[i] = g)} />
           {/* the dark bore where the duct runs on into the ground, and a soft shade round it on the face */}
           <mesh position={[L / 2 + 0.004, d.y, d.z]} rotation-y={Math.PI / 2} material={bore}>
             <circleGeometry args={[R - WALL, 64]} />
@@ -278,7 +280,7 @@ function Ducts({ env }: { env: THREE.Texture }) {
 // place along the row, 0 to 1, so a pulse can travel through them.
 export type FibreRig = { u: number[]; set(i: number, level: number): void };
 
-function Fibres({ rig }: { rig: MutableRefObject<FibreRig | null> }) {
+function Fibres({ rig, dig }: { rig: MutableRefObject<FibreRig | null>; dig: DigRig }) {
   const parts = useMemo(() => {
     const d = DUCTS.find((x) => x.fibre)!;
     const r = rng(41);
@@ -347,7 +349,7 @@ function Fibres({ rig }: { rig: MutableRefObject<FibreRig | null> }) {
     };
   }, [parts, own, sprites, rig]);
   return (
-    <group>
+    <group ref={(g) => void (dig.fibre = g)}>
       {parts.out.map((f, i) => (
         <group key={i}>
           <mesh geometry={f.tube} material={own[i].mat} castShadow />
@@ -355,6 +357,35 @@ function Fibres({ rig }: { rig: MutableRefObject<FibreRig | null> }) {
           <sprite ref={(n) => void (sprites[i] = n)} material={own[i].glow} position={f.tip} scale={[0.05, 0.05, 0.05]} />
         </group>
       ))}
+    </group>
+  );
+}
+
+// ---- the inside of the trench, its far wall and its floor. Hidden by the block's own faces until the
+// cut opens them, and switched off entirely while nothing is cut.
+function Trench({ ground, dig }: { ground: Record<Kind, Ground>; dig: DigRig }) {
+  const parts = useMemo(() => {
+    const ls = LAYERS.map((l) => {
+      const y0 = l.id === 'sand' ? FLOOR : l.y0;
+      return { id: l.id, y0, y1: l.y1, mat: groundMat(ground[l.id], L, l.y1 - y0, l.rough, l.bump, '#9a9a9a') };
+    });
+    const floor = groundMat(ground.sand, L, TZ * 2, 1, 1.4, '#8a8a8a');
+    const tape = new THREE.MeshStandardMaterial({ color: '#d00b11', roughness: 0.55, metalness: 0 });
+    return { ls, floor, tape };
+  }, [ground]);
+  return (
+    <group ref={(g) => void (dig.trench = g)} visible={false}>
+      {parts.ls.map((l) => (
+        <mesh key={l.id} position={[0, (l.y0 + l.y1) / 2, -TZ]} material={l.mat}>
+          <planeGeometry args={[L, l.y1 - l.y0]} />
+        </mesh>
+      ))}
+      <mesh position={[0, Y.tape, -TZ + 0.003]} material={parts.tape}>
+        <planeGeometry args={[L, Y.tapeT]} />
+      </mesh>
+      <mesh position={[0, FLOOR, 0]} rotation-x={-Math.PI / 2} material={parts.floor}>
+        <planeGeometry args={[L, TZ * 2]} />
+      </mesh>
     </group>
   );
 }
@@ -384,7 +415,7 @@ function Floor() {
   );
 }
 
-export function Specimen({ view, rig }: { view: View; rig: MutableRefObject<FibreRig | null> }) {
+export function Specimen({ view, rig, dig }: { view: View; rig: MutableRefObject<FibreRig | null>; dig: DigRig }) {
   const gl = useThree((s) => s.gl);
   const scene = useThree((s) => s.scene);
   const ground = Grounds();
@@ -400,12 +431,13 @@ export function Specimen({ view, rig }: { view: View; rig: MutableRefObject<Fibr
     <>
       <Lights view={view} />
       <Floor />
-      <Layers ground={ground} />
+      <Layers ground={ground} dig={dig} />
       {SCATTER.map((s) => (
-        <Scatter key={s.seed} spec={s} />
+        <Scatter key={s.seed} spec={s} dig={dig} />
       ))}
-      <Ducts env={env} />
-      <Fibres rig={rig} />
+      <Trench ground={ground} dig={dig} />
+      <Ducts env={env} dig={dig} />
+      <Fibres rig={rig} dig={dig} />
     </>
   );
 }

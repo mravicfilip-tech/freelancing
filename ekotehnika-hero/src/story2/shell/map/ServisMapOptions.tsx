@@ -1,7 +1,8 @@
 // The servis map section, three design options for Filip's pick before anything animates (round 5, 14 October). Each is a
 // still frame of the section in the real shell, the top row, the page grid and the Servis pure black ground, at 1440 by 900.
 // The copy and the layout are the same in all three, only the map differs, so the pick is about the map.
-//   ?servismap=1  Mreža, the outline, the rivers and a spoke from the nearer centre to every district town
+//   ?servismap=1  Mreža, the outline, the rivers and a road from the nearer centre to every district town, Filip's pick, its
+//                 road treatments on a board of five with &road=1 to 5 (roads.tsx), the map 30 percent over its first size
 //   ?servismap=2  Pokrivenost, Serbia as a field of squares on the page grid's rhythm, each lit by the centre that covers it
 //   ?servismap=3  Reljef, Serbia as a lit slab in the scene's 3D world, arcs from the two centres to every district town
 import { useEffect, useMemo, useRef, useState, type CSSProperties } from 'react';
@@ -12,6 +13,7 @@ import { Grid } from '../Grid';
 import { Btn, Fill, Marker, TitleLines, between } from '../ui';
 import { markers, servisMap } from '../../copy';
 import { BASES, MAP, TOWNS, fit, inSerbia, nearest, pathOf, type LonLat, type Pt } from './geo';
+import { Roads } from './roads';
 import '../shell.css';
 import './map.css';
 
@@ -21,7 +23,8 @@ const OPT = (() => {
 })();
 
 // the map's box on a 1440 by 900 stage, from the centre grid line to the right one, between the top and bottom rules
-const BOX = { w: 659, h: 700 };
+// the map runs from the top rule to the foot of the frame, so Serbia stands 30 percent taller than in the first options
+const BOX = { w: 659, h: 764 };
 
 export function ServisMapOptions() {
   const stage = useRef<HTMLElement>(null);
@@ -121,7 +124,7 @@ function Rivers({ P, alpha }: { P: (ll: LonLat) => Pt; alpha: number }) {
 
 // 1, Mreža
 function Network() {
-  const P = useMemo(() => fit(BOX.w, BOX.h, 56), []);
+  const P = useMemo(() => fit(BOX.w, BOX.h, 0), []);
   return (
     <div className="sm-map">
       <svg width={BOX.w} height={BOX.h} viewBox={`0 0 ${BOX.w} ${BOX.h}`}>
@@ -135,13 +138,7 @@ function Network() {
         </g>
         <Outline P={P} fill="#000" line="rgb(255 255 255 / 0.92)" width={1} />
         <Rivers P={P} alpha={0.22} />
-        <g stroke="rgb(255 255 255 / 0.42)" strokeWidth={1}>
-          {TOWNS.map((t) => {
-            const a = P(nearest(t.ll).ll);
-            const b = P(t.ll);
-            return <line key={t.name} x1={a[0]} y1={a[1]} x2={b[0]} y2={b[1]} />;
-          })}
-        </g>
+        <Roads P={P} />
         <g stroke="#fff" strokeWidth={1}>
           {TOWNS.map((t) => {
             const [x, y] = P(t.ll).map((v) => Math.round(v) + 0.5);

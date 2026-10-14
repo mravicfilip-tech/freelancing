@@ -4,19 +4,21 @@
   background: #000;
 }
 
+/* from the top rule to the foot of the frame, Filip's "make the map 30% bigger", Serbia's outline covers the bottom rule
+   where it crosses it */
 .sm-fig {
   position: absolute;
   top: 136px;
-  bottom: 64px;
+  bottom: 0;
   margin: 0;
   display: grid;
-  place-items: center;
+  place-items: start center;
 }
 
 .sm-map {
   position: relative;
   width: 659px;
-  height: 700px;
+  height: 764px;
   overflow: hidden;
 }
 
@@ -118,4 +120,36 @@
 .sm-opt-3 .sm-name {
   color: var(--black);
   background: var(--white);
+}
+
+/* movement along the roads, the dashes flow out from the centre by one period of their pattern, set per road as --p */
+.sm-flow {
+  animation: sm-flow 1.4s linear infinite;
+}
+
+@keyframes sm-flow {
+  to {
+    stroke-dashoffset: calc(var(--p, 12) * -1px);
+  }
+}
+
+/* road 3, one van per road, a short bar that drives from the centre to the town and starts again */
+.sm-van {
+  animation: sm-van 4s linear infinite;
+}
+
+@keyframes sm-van {
+  from {
+    stroke-dashoffset: 10px;
+  }
+  to {
+    stroke-dashoffset: calc(var(--len, 300) * -1px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sm-flow,
+  .sm-van {
+    animation: none;
+  }
 }

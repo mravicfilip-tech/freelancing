@@ -13,6 +13,14 @@ Then one note, below. Foundry at `/?v=1`, files in `bullhill-site/src/p1/`.
    - The rest is a structure change on phones, so it goes to Filip as one argued structure in words
      first, below. At 390 the page measured 19,946px, 23.6 screens of 844.
 
+2. Header buttons on phones, queued while the button, hero and process builders run. "should be white
+   stroke with like 6% white opacity and 6% border and 100% white text with 2 line burger menu icon
+   thats modern", on the phone header's phone icon and MENU buttons. Read as a fill of white at 6
+   percent, a 1px border of white at 6 percent, the label in white at full strength, and MENU gets a
+   two line burger icon in place of the arrow cell. Narrow reading, those two phone header buttons.
+   The wider reading, the desktop header Call us and the menu sheet buttons, waits on Filip. It lands
+   on the button slice's files (`Header.tsx`, `slab.css`), so it is planned after that slice reports.
+
 ## Phone structure, proposed
 
 | Section | Now at 390 | Proposed on phones | Screens after |

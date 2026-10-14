@@ -42,13 +42,15 @@ Task format
   - [x] Plan round 3 in one pass, briefs/website/round3.md, Filip said execute
   - [x] Build round 3, five slices, buttons, hero, work, process, crew and FAQ
   - [x] Button lab and hero board to Filip for a pick by number
-  - [ ] Filip picks a hero, 1 to 6, and a button style, 1 to 5
+  - [x] Filip picks a button style, 3 the slab and arrow
+  - [ ] Filip picks a hero, 1 to 6
   - [x] Filip says yes to hero 6 with every default
   - [x] Build hero 6, cable through ground, briefs/website/hero6.md
   - [x] Collect Filip's round 4 notes, five in briefs/website/round4-notes.md
   - [x] Round 4 sweep, sharp corners, closing photo, tracking, logo
   - [x] Round 4 slab button versions, briefs/website/round4.md
-  - [ ] Filip picks a slab version, 1 to 5
+  - [x] Filip picks a slab version, 3 the arrow cell
+  - [x] Arrow cell as the default on every Foundry button
   - [x] Hero 6 motion story, decode and beats, Filip said yes
   - [ ] Build hero 6 beat 4, scroll out, briefs/website/hero6-story.md
   - [ ] Motion round on the pick

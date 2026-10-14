@@ -155,6 +155,7 @@ function inside(n: VariantN, s: SlabN, square: boolean | undefined, children: Re
 }
 
 // The site button. Style 1 is the bracket button of the reference, no fill, four L shaped corners.
+// The default is Filip's pick, style 3 the slab and arrow in version 3 the arrow cell.
 // ?v=1&btn=1..5 restyles every button on the page, and the lab passes `btn` to pin one style.
 // ?v=1&btn=3&slab=1..5 picks one of the five slab and arrow versions, and a `slab` prop pins one.
 // The filled variant is the primary use, the form submit.
@@ -162,7 +163,7 @@ export function Bracket(props: AProps | BProps) {
   const { variant = 'line', square, className, btn, slab, children, ...rest } = props;
   // The labs show several styles and ignore ?btn and ?slab. A ?slab alone picks the slab style.
   const n: VariantN = btn ?? (slab ? 3 : lab() ? 1 : slabVariant() ? 3 : btnVariant());
-  const sv: SlabN = n === 3 ? (slab ?? (lab() ? 1 : slabVariant() ?? 1)) : 1;
+  const sv: SlabN = n === 3 ? (slab ?? (lab() ? 1 : slabVariant() ?? 3)) : 1;
   const own = useRef<HTMLElement | null>(null);
   const { ref: outer, ...clean } = rest as unknown as Omit<typeof rest, 'ref'> & { ref?: Ref<HTMLElement> };
   const setRef = useCallback(

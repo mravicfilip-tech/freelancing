@@ -1,0 +1,33 @@
+{
+  "name": "button-slab-arrow-cell",
+  "client": "bullhill",
+  "url": "http://localhost:5173/?v=1",
+  "selector": "section.hero .bk[data-slab='3']",
+  "date": "2026-10-14",
+  "width": 1440,
+  "source": {
+    "repo": "bullhill-site",
+    "file": "src/p1/Bracket.tsx"
+  },
+  "note": "Style 3 version 3. Solid slab, mono uppercase label, arrow in its own cell behind a 1px hairline. Hover widens the cell 44 to 56px in the hot colour, arrow runs 14px right, label holds. CSS in src/p1/variants/buttons/slab.css under data-slab='3'. Picked 2026-10-14.",
+  "role": "link",
+  "tag": "a",
+  "text": "CALL US",
+  "fingerprint": {
+    "fontFamily": "azeret mono variable",
+    "fontSize": "12px",
+    "fontWeight": "400",
+    "lineHeight": "16px",
+    "letterSpacing": "0.48px",
+    "textTransform": "uppercase",
+    "color": "#111111",
+    "background": "#dadada",
+    "border": "none",
+    "radius": "0px",
+    "padding": "0px 64px 0px 16px",
+    "height": "44px",
+    "shadow": "none",
+    "width": "137.97px"
+  },
+  "hover": null
+}

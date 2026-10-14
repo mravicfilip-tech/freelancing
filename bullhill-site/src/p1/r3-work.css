@@ -61,11 +61,12 @@
   color: var(--bh-grey-300);
   text-wrap: pretty;
 }
+/* the number takes its caption's size, one size on one line */
 .p1 .wk__n {
   margin: 0;
   font-family: var(--f-mono);
-  font-size: 24px;
-  line-height: 24px;
+  font-size: inherit;
+  line-height: inherit;
   font-weight: 400;
   letter-spacing: 0.02em;
   color: inherit;

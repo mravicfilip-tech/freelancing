@@ -88,7 +88,7 @@ Refused, and why.
    the work row's caption line. The number `.wk__n` in `r3-work.css` is mono 24px over a caption of
    16px on phones and 18px from 768. The number takes the caption's size and line height, so both read
    16px and 18px. The 48 and 56px number column stays, so the caption text does not move. No running
-   builder owns `r3-work.css`, so it can go in at once on a "do this now".
+   builder owns `r3-work.css`, so it can go in at once on a "do this now". Done on his "do this now".
 
 8. Who we are, headline on the paragraph's top line. "somehow doesn't look right here - shouldn't
    headline be in top alignment with paragraph?", on the services intro at desktop width. From 1200,
@@ -97,7 +97,8 @@ Refused, and why.
    button. Worldquantfoundry's ethos panel, the reference, puts the kicker level with the hairline and
    the headline's top on the paragraph's first line. Fix, `align-items: start`, the kicker on the
    hairline, the headline's cap top on the paragraph's first line, the min height kept so nothing below
-   moves. `foundry.css` is the phone builder's now, so it goes in after that slice reports.
+   moves. `foundry.css` is the phone builder's now, so it goes in after that slice reports. Done on
+   his "do this now", the kicker gap 12px at 1200 and up puts the cap tops within 1px.
 
 ## Phone hero, proposed after the reference
 

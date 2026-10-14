@@ -5,7 +5,8 @@ mean". The `/story` skill runs first. Captures from 14 October 2026 are in the s
 `motion/`, frames at 0.6, 1.5, 3, 6 and 10 seconds, the pointer left and right, and three scroll
 positions.
 
-Status. Decode and beats drafted, waiting on Filip's yes or corrections. Nothing built.
+Status. Filip said yes to the beats on 14 October 2026, "yes to beats, build beat 4 first, no
+deadline". Beat 4 is being built, the others wait for his yes on it.
 
 ## Decode, worldquantfoundry.com hero
 
@@ -47,3 +48,21 @@ Hardest beat, 4, because the scroll drives the seam, the camera and the label po
 in two scissored renders, and it has to hold 60 frames a second on an ordinary laptop.
 
 Phones keep the still image. Beat 1 and a seam wipe on the still run there in CSS, no WebGL.
+
+## Beat 4 build
+
+- The hero pins. The section is 100svh plus 70svh of scroll, the stage is sticky for that stretch,
+  progress p runs 0 to 1 across it, then the work section scrolls in as now.
+- Seam. Its x goes from the middle of the specimen to about 15 percent from its left end as p goes
+  0 to 1, eased, so the real render takes over the schematic. The seam line and its two tags ride
+  with it. Labels whose part has turned real fade their leader and keep their tag.
+- Camera. A short dolly toward the duct ends, about 12 percent closer and a few degrees round, the
+  same long lens, eased with the seam. No other camera move.
+- Headline, lede and buttons move up and fade out in the last third of p, the specimen card stays.
+- `frameloop="demand"`, invalidate on scroll inside requestAnimationFrame, one render per frame at
+  most. Label positions re-projected each frame from the same 3D anchors.
+- `prefers-reduced-motion`, no pin, no seam move, the still poster as now.
+- Phones. Two stills from the same camera, all schematic and all render, stacked, and the render
+  still's clip-path inset follows p, so the seam slides in CSS. The pin is 50svh there.
+- Shots. One frame per scroll position, p 0, 0.25, 0.5, 0.75 and 1, at 1440 and 390, on one contact
+  sheet, English. Software WebGL needs about 12 seconds a frame.

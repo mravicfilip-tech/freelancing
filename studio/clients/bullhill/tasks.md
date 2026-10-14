@@ -46,8 +46,10 @@ Task format
   - [x] Filip says yes to hero 6 with every default
   - [x] Build hero 6, cable through ground, briefs/website/hero6.md
   - [x] Collect Filip's round 4 notes, five in briefs/website/round4-notes.md
-  - [ ] Build round 4, slab button versions, sharp corners, closing photo, tracking, logo, briefs/website/round4.md
-  - [ ] Hero 6 motion, the story beats first for Filip's yes
+  - [x] Round 4 sweep, sharp corners, closing photo, tracking, logo
+  - [ ] Round 4 slab button versions, briefs/website/round4.md
+  - [x] Hero 6 motion story, decode and beats, Filip said yes
+  - [ ] Build hero 6 beat 4, scroll out, briefs/website/hero6-story.md
   - [ ] Motion round on the pick
   - [ ] /uireview, then Filip's ship line
 

@@ -40,8 +40,10 @@ Task format
   - [x] Filip picks a pathway, Foundry, the other two frozen at b0bf997
   - [x] Collect Filip's round 3 notes, six in briefs/website/round3-notes.md
   - [x] Plan round 3 in one pass, briefs/website/round3.md, Filip said execute
-  - [ ] Build round 3, five slices, buttons, hero, work, process, crew and FAQ
-  - [ ] Button lab and hero board to Filip for a pick by number
+  - [x] Build round 3, five slices, buttons, hero, work, process, crew and FAQ
+  - [x] Button lab and hero board to Filip for a pick by number
+  - [ ] Filip picks a hero and a button style
+  - [ ] Hero 6, cable through ground after Other Matter, waits on Filip's yes to the concept
   - [ ] Motion round on the pick
   - [ ] /uireview, then Filip's ship line
 

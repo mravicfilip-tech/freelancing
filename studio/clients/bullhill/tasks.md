@@ -53,7 +53,8 @@ Task format
   - [x] Arrow cell as the default on every Foundry button
   - [x] Contact box on the FAQ box's grid
   - [x] Hero 6 motion story, decode and beats, Filip said yes
-  - [ ] Build hero 6 beat 4, scroll out, briefs/website/hero6-story.md
+  - [x] Build hero 6 beat 4, scroll out, briefs/website/hero6-story.md
+  - [ ] Filip's yes on beat 4
   - [ ] Whole site motion story, every section in words, Filip's yes
   - [ ] Build hero 6 beats 1 to 3
   - [ ] Build the whole site motion

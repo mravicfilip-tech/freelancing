@@ -6,7 +6,14 @@ mean". The `/story` skill runs first. Captures from 14 October 2026 are in the s
 positions.
 
 Status. Filip said yes to the beats on 14 October 2026, "yes to beats, build beat 4 first, no
-deadline". Beat 4 is being built, the others wait for his yes on it.
+deadline". Beat 4 is built, desktop and phone, and waits for his yes. Then "continue with animating the
+whole website", so beats 1 to 3 follow once beat 4 is accepted, with the rest of the site in
+`site-motion-story.md`.
+
+Built beyond the brief. The camera also trucks and rises a little during the dolly, so the duct ends
+and the foot of the block stay where they were, and the canvas draws 10 percent past the stage
+above and below so the dolly never cuts the block flat. On phones the render has taken the whole
+block by about p 0.5, because the tall view puts the block in the right 63 percent of the box.
 
 ## Decode, worldquantfoundry.com hero
 

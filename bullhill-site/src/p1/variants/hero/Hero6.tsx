@@ -3,7 +3,8 @@ import type { Content } from '../../../shared/content';
 import { Bracket } from '../../Bracket';
 import { t6 } from './copy-hero6';
 import { ANCHORS, VIEWS, clamp01, dollyCam, project, seamAt, smooth, type LayerId, type View } from './hero6/geometry';
-import { useProgress } from './hero6/progress';
+import { useProgress, useProgressValue, type Progress } from './hero6/progress';
+import { StillSeam } from './hero6/StillSeam';
 import './hero.css';
 import './hero6.css';
 
@@ -18,7 +19,8 @@ import './hero6.css';
 // Beat 4. The stage is pinned with position sticky for 70svh of extra scroll, 50svh on phones, and
 // p runs 0 to 1 across it (hero6/progress.ts). The scene reads p every frame, sets the seam and the
 // dolly, draws, and then calls paint(p) here, so the seam line, its two tags and the labels move in
-// the same animation frame as the canvas. Phones and no WebGL keep the poster, and StillSeam goes in its place at merge. Reduced motion gets no pin and the poster.
+// the same animation frame as the canvas. Phones and no WebGL show StillSeam, the still pair with
+// the seam sliding in CSS, and the labels follow the same seam. Reduced motion gets no pin and p 0.
 
 const Scene = lazy(() => import('./hero6/Scene'));
 
@@ -105,6 +107,13 @@ function place(view: View, box: Box, ch: number, metas: Meta[], e: number, moveC
 
 type Els = { lead: SVGGElement | null; line: SVGLineElement | null; dot: SVGCircleElement | null; tag: SVGGElement | null };
 
+// Phones and no WebGL, beat 4 on the still pair. Its own component, so a scroll re-renders the two
+// stills and not the whole hero.
+function SeamStill({ view, progress, enabled }: { view: View; progress: Progress; enabled: boolean }) {
+  const p = useProgressValue(progress, enabled);
+  return <StillSeam view={view} p={p} alt="" />;
+}
+
 export function Hero6({ c }: { c: Content }) {
   const q = new URLSearchParams(window.location.search);
   const still = q.get('still');
@@ -134,6 +143,8 @@ function Specimen({ c }: { c: Content }) {
   const view: View = wide ? 'wide' : desk ? 'mid' : 'tall';
   const live = desk && gl && !reduced;
   const pinned = !reduced;
+  // the still pair exists for tall and mid, wide without WebGL keeps its one poster
+  const stills = !live && view !== 'wide';
   const spec = VIEWS[view];
   const progress = useProgress(section, pin, pinned);
 
@@ -165,8 +176,8 @@ function Specimen({ c }: { c: Content }) {
   const tagLEl = useRef<SVGGElement>(null);
   const tagREl = useRef<SVGGElement>(null);
   const els = useRef<Partial<Record<LayerId, Els>>>({});
-  const ctx = useRef({ view, box, ch, metas, live, wL });
-  ctx.current = { view, box, ch, metas, live, wL };
+  const ctx = useRef({ view, box, ch, metas, live, stills, wL });
+  ctx.current = { view, box, ch, metas, live, stills, wL };
 
   const text = (p: number) => {
     const t = smooth(clamp01((p - 2 / 3) * 3));
@@ -179,8 +190,8 @@ function Specimen({ c }: { c: Content }) {
     text(p);
     const k = ctx.current;
     if (!k.box) return;
-    // without the live scene the poster is a still at p 0, so the overlay holds there
-    const e = k.live ? smooth(p) : 0;
+    // the still pair follows p with a fixed camera, the one poster is a still at p 0 and the overlay holds there
+    const e = k.live || k.stills ? smooth(p) : 0;
     const { seamX, items } = place(k.view, k.box, k.ch, k.metas, e, k.live);
     const top = k.box.y + k.box.h - TAG_H;
     seamEl.current?.setAttribute('x1', String(seamX));
@@ -202,16 +213,17 @@ function Specimen({ c }: { c: Content }) {
   const paintRef = useRef(paint);
   paintRef.current = paint;
   useLayoutEffect(() => paint(progress.sample()));
-  // headline, lede and buttons follow the scroll on their own, the overlay follows the scene's frame
+  // headline, lede and buttons follow the scroll on their own, the overlay follows the scene's frame,
+  // and without the scene the overlay follows the scroll too
   useEffect(() => {
     if (!pinned) return;
-    return progress.subscribe((p) => text(p));
+    return progress.subscribe((p) => (live ? text(p) : paintRef.current(p)));
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [progress, pinned, live]);
   const drive = useMemo(() => ({ progress, onFrame: (p: number) => paintRef.current(p) }), [progress]);
 
   const p0 = progress.sample();
-  const first = box ? place(view, box, ch, metas, smooth(p0), live) : null;
+  const first = box ? place(view, box, ch, metas, live || stills ? smooth(p0) : 0, live) : null;
   const seamX = first ? first.seamX : 0;
   const slot = (id: LayerId) => (els.current[id] ??= { lead: null, line: null, dot: null, tag: null });
 
@@ -228,8 +240,11 @@ function Specimen({ c }: { c: Content }) {
           <div ref={stage} className="hv6__stage" role="img" aria-label={x.figure}>
             {box ? (
               <div className="hv6__box" style={{ left: box.x, top: box.y, width: box.w, height: box.h }}>
-                {/* the phone and no WebGL path mounts StillSeam in place of this poster */}
-                <img className="hv6__poster" data-ready={ready && live ? 'yes' : 'no'} src={`/render/hero6-${view}.webp`} width={box.w} height={box.h} alt="" draggable={false} />
+                {stills ? (
+                  <SeamStill view={view} progress={progress} enabled={pinned} />
+                ) : (
+                  <img className="hv6__poster" data-ready={ready && live ? 'yes' : 'no'} src={`/render/hero6-${view}.webp`} width={box.w} height={box.h} alt="" draggable={false} />
+                )}
                 {live && mounted ? (
                   <div className="hv6__canvas">
                     <Suspense fallback={null}>
@@ -241,14 +256,14 @@ function Specimen({ c }: { c: Content }) {
             ) : null}
             {box && first ? (
               <svg className="hv6__over" width={cw} height={ch} viewBox={`0 0 ${cw} ${ch}`} aria-hidden="true" focusable="false">
-                <line ref={seamEl} className="hv6__seam" x1={seamX} y1={box.y} x2={seamX} y2={box.y + box.h} />
-                <g ref={tagLEl} transform={`translate(${seamX - wL} ${box.y + box.h - TAG_H})`}>
+                {stills ? null : <line ref={seamEl} className="hv6__seam" x1={seamX} y1={box.y} x2={seamX} y2={box.y + box.h} />}
+                <g ref={tagLEl} transform={`translate(${seamX - wL} ${box.y + box.h - TAG_H})`} display={stills ? 'none' : undefined}>
                   <rect className="hv6__tag" x="0.5" y="0.5" width={wL - 1} height={TAG_H - 1} />
                   <text className="hv6__t" x="8" y="15" textLength={wL - 16} lengthAdjust="spacing">
                     {tagL}
                   </text>
                 </g>
-                <g ref={tagREl} transform={`translate(${seamX} ${box.y + box.h - TAG_H})`}>
+                <g ref={tagREl} transform={`translate(${seamX} ${box.y + box.h - TAG_H})`} display={stills ? 'none' : undefined}>
                   <rect className="hv6__tag" x="0.5" y="0.5" width={wR - 1} height={TAG_H - 1} />
                   <text className="hv6__t" x="8" y="15" textLength={wR - 16} lengthAdjust="spacing">
                     {tagR}

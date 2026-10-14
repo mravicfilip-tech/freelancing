@@ -191,6 +191,7 @@ freelancing repo, so the nearest registered folder above the work wins.
 |---|---|
 | Models per role | `foundation/models.md` |
 | What good looks like | `foundation/principles.md` |
+| Motion bar, prompt patterns, motion references | `foundation/motion.md` |
 | Base layout values | `foundation/base-layout.css`, `clients/<client>/base-override.json` |
 | Environment traps and deploys | `foundation/env.md` |
 | A client's rules and taste log | `clients/<client>/README.md`, `taste.md` |

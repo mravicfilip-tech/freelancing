@@ -7,7 +7,7 @@
 //   5 Linije    the same network drawn as a transit diagram, 45 and 90 degree runs with round corners, pulses on them
 // The dashes move with a CSS animation only, so with reduced motion they stand still.
 import type { CSSProperties } from 'react';
-import { BASES, TOWNS, km, nearest, type LonLat, type Pt } from './geo';
+import { BASES, TOWNS, inSerbia, km, nearest, type LonLat, type Pt } from './geo';
 
 export const ROAD = (() => {
   const n = Number(new URLSearchParams(window.location.search).get('road'));
@@ -23,6 +23,56 @@ const hash = (s: string) => {
   for (let i = 0; i < s.length; i++) h = Math.imul(h ^ s.charCodeAt(i), 16777619);
   return ((h >>> 0) % 1000) / 1000;
 };
+
+// Fewer roads that run out to the ends of Serbia and stop just inside its border (Filip, "reduce the density of amount of
+// roads and make them read ends of Serbia but not crossing borders"). Each centre sends a road out on a few bearings, 0 is
+// north and clockwise, Čurug over Bačka, Banat and Srem, Vrčin over the rest. A road ends 16px before the first point where
+// its bearing leaves the country, and its S bend flattens until no part of it crosses the border.
+const REACH: Record<string, number[]> = {
+  curug: [352, 308, 38, 236],
+  vrcin: [56, 94, 128, 158, 184, 214, 248, 278],
+};
+const MARGIN = 16;
+
+type Reach = { key: string; d: string; end: Pt };
+
+const cubicAt = (p: Pt[], t: number): Pt => {
+  const u = 1 - t;
+  const w = [u * u * u, 3 * u * u * t, 3 * u * t * t, t * t * t];
+  return [w[0] * p[0][0] + w[1] * p[1][0] + w[2] * p[2][0] + w[3] * p[3][0], w[0] * p[0][1] + w[1] * p[1][1] + w[2] * p[2][1] + w[3] * p[3][1]];
+};
+
+export function reach(P: (ll: LonLat) => Pt, inv: (p: Pt) => LonLat): Reach[] {
+  const inside = (p: Pt) => inSerbia(inv(p));
+  const out: Reach[] = [];
+  for (const base of BASES) {
+    const a = P(base.ll);
+    for (const deg of REACH[base.id]) {
+      const t = (deg * Math.PI) / 180;
+      const dir: Pt = [Math.sin(t), -Math.cos(t)];
+      let dist = 0;
+      while (dist < 2000 && inside([a[0] + dir[0] * (dist + 2), a[1] + dir[1] * (dist + 2)])) dist += 2;
+      const len = dist - MARGIN;
+      if (len < 40) continue;
+      const end: Pt = [a[0] + dir[0] * len, a[1] + dir[1] * len];
+      const key = `${base.id}${deg}`;
+      const n: Pt = [-dir[1], dir[0]];
+      let d = `M${f(a[0])} ${f(a[1])}L${f(end[0])} ${f(end[1])}`;
+      for (const k of [0.09, 0.06, 0.03]) {
+        const off = k * len * (hash(key) < 0.5 ? 1 : -1);
+        const c: Pt[] = [a, [a[0] + dir[0] * len / 3 + n[0] * off, a[1] + dir[1] * len / 3 + n[1] * off], [a[0] + dir[0] * len * 2 / 3 - n[0] * off, a[1] + dir[1] * len * 2 / 3 - n[1] * off], end];
+        let ok = true;
+        for (let i = 1; i < 48 && ok; i++) ok = inside(cubicAt(c, i / 48));
+        if (ok) {
+          d = `M${f(c[0][0])} ${f(c[0][1])}C${f(c[1][0])} ${f(c[1][1])} ${f(c[2][0])} ${f(c[2][1])} ${f(c[3][0])} ${f(c[3][1])}`;
+          break;
+        }
+      }
+      out.push({ key, d, end });
+    }
+  }
+  return out;
+}
 
 // Every town on its own road from the centre that covers it.
 export function spokes(): Edge[] {
@@ -124,9 +174,18 @@ function lengthOf(d: string) {
   return p.getTotalLength();
 }
 
-export function Roads({ P }: { P: (ll: LonLat) => Pt }) {
+export function Roads({ P, inv }: { P: (ll: LonLat) => Pt; inv: (p: Pt) => LonLat }) {
   if (ROAD === 1 || ROAD === 2 || ROAD === 3) {
-    const paths = spokes().map((e) => ({ key: e.b.name, d: sPath(P(e.a.ll), P(e.b.ll), e.b.name) }));
+    const paths = reach(P, inv);
+    // a town mark where each road ends, just inside the border
+    const ends = (
+      <g stroke="#fff" strokeWidth={1}>
+        {paths.map((p) => {
+          const [x, y] = p.end.map((v) => Math.round(v) + 0.5);
+          return <path key={`e${p.key}`} d={`M${x - 4} ${y}H${x + 5}M${x} ${y - 4}V${y + 5}`} />;
+        })}
+      </g>
+    );
     if (ROAD === 1)
       return (
         <g fill="none" strokeLinecap="round">
@@ -136,6 +195,7 @@ export function Roads({ P }: { P: (ll: LonLat) => Pt }) {
           {paths.map((p) => (
             <path key={`c${p.key}`} className="sm-flow" d={p.d} stroke="rgb(255 255 255 / 0.9)" strokeWidth={1} strokeDasharray="5 7" strokeLinecap="butt" style={{ '--p': 12 } as CSSProperties} />
           ))}
+          {ends}
         </g>
       );
     if (ROAD === 2)
@@ -144,6 +204,7 @@ export function Roads({ P }: { P: (ll: LonLat) => Pt }) {
           {paths.map((p) => (
             <path key={p.key} className="sm-flow" d={p.d} stroke="rgb(255 255 255 / 0.85)" strokeWidth={2} strokeDasharray="2 6" style={{ '--p': 8 } as CSSProperties} />
           ))}
+          {ends}
         </g>
       );
     return (
@@ -169,6 +230,7 @@ export function Roads({ P }: { P: (ll: LonLat) => Pt }) {
             />
           );
         })}
+        {ends}
       </g>
     );
   }

@@ -30,7 +30,8 @@ Task format
   - [x] Three design options as still frames in the real shell, Mreža, Pokrivenost, Reljef
   - [x] Filip picks option 1, Mreža, and asks for the map 30 percent bigger and roads with movement
   - [x] Five road treatments on option 1 at ?servismap=1&road=1 to 5, board refs/round5/r5-board-servis-roads.jpg
-  - [ ] Filip picks a road treatment and answers the placement and Kosovo questions
+  - [x] Filip picks road 1 and asks for fewer roads that reach the ends of Serbia without crossing borders, 12 roads built
+  - [ ] Filip answers the placement and Kosovo questions
   - [ ] Animate the picked option and wire it into the story after Servis
 
 - ekotehnika-9 Showcase reel of the website, 9:16 and 16:9, cut to T-Pain "Church". Brief in briefs/reel/brief.md, branch claude/awesome-faraday-lkhnn2-reel, chat session_01KEyRKaeQw5pSTYN96BmUKn

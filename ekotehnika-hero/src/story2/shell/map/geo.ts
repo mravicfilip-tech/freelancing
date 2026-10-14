@@ -83,6 +83,14 @@ export function fit(w: number, h: number, pad = 0) {
   };
 }
 
+// The same fit the other way, a px point in the box back to lon and lat.
+export function unfit(w: number, h: number, pad = 0) {
+  const s = Math.min((w - 2 * pad) / (EXT.x1 - EXT.x0), (h - 2 * pad) / (EXT.y1 - EXT.y0));
+  const ox = (w - s * (EXT.x1 - EXT.x0)) / 2;
+  const oy = (h - s * (EXT.y1 - EXT.y0)) / 2;
+  return ([px, py]: Pt): LonLat => [((px - ox) / s + EXT.x0) / K, -((py - oy) / s + EXT.y0)];
+}
+
 export const pathOf = (rings: LonLat[][], P: (ll: LonLat) => Pt, close = true) =>
   rings.map((r) => r.map((ll, i) => `${i ? 'L' : 'M'}${P(ll)[0].toFixed(1)} ${P(ll)[1].toFixed(1)}`).join('') + (close ? 'Z' : '')).join('');
 

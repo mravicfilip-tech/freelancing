@@ -12,8 +12,8 @@ import { HeroFrame } from '../../../ui/HeroFrame';
 import { Grid } from '../Grid';
 import { Btn, Fill, Marker, TitleLines, between } from '../ui';
 import { markers, servisMap } from '../../copy';
-import { BASES, MAP, TOWNS, fit, inSerbia, nearest, pathOf, type LonLat, type Pt } from './geo';
-import { Roads } from './roads';
+import { BASES, MAP, TOWNS, fit, inSerbia, nearest, pathOf, unfit, type LonLat, type Pt } from './geo';
+import { ROAD, Roads } from './roads';
 import '../shell.css';
 import './map.css';
 
@@ -84,9 +84,10 @@ function Bases({ at }: { at: (ll: LonLat) => Pt | null }) {
       {BASES.map((b) => {
         const p = at(b.ll);
         if (!p) return null;
-        const right = b.id === 'curug';
+        // Vrčin sends no road north, so its name sits above the point, clear of the eastern road
+        const up = b.id === 'vrcin';
         return (
-          <div key={b.id} className={`sm-base${right ? ' is-right' : ''}`} style={{ left: p[0], top: p[1] } as CSSProperties}>
+          <div key={b.id} className={`sm-base${up ? ' is-up' : ''}`} style={{ left: p[0], top: p[1] } as CSSProperties}>
             <i className="p-dot sm-dot" />
             <span className="sm-name">{b.name}</span>
           </div>
@@ -125,6 +126,7 @@ function Rivers({ P, alpha }: { P: (ll: LonLat) => Pt; alpha: number }) {
 // 1, Mreža
 function Network() {
   const P = useMemo(() => fit(BOX.w, BOX.h, 0), []);
+  const inv = useMemo(() => unfit(BOX.w, BOX.h, 0), []);
   return (
     <div className="sm-map">
       <svg width={BOX.w} height={BOX.h} viewBox={`0 0 ${BOX.w} ${BOX.h}`}>
@@ -138,8 +140,9 @@ function Network() {
         </g>
         <Outline P={P} fill="#000" line="rgb(255 255 255 / 0.92)" width={1} />
         <Rivers P={P} alpha={0.22} />
-        <Roads P={P} />
-        <g stroke="#fff" strokeWidth={1}>
+        <Roads P={P} inv={inv} />
+        {/* roads 1 to 3 mark their own ends, the network roads 4 and 5 run to every district town */}
+        <g stroke="#fff" strokeWidth={1} display={ROAD <= 3 ? 'none' : undefined}>
           {TOWNS.map((t) => {
             const [x, y] = P(t.ll).map((v) => Math.round(v) + 0.5);
             return <path key={t.name} d={`M${x - 4} ${y}H${x + 5}M${x} ${y - 4}V${y + 5}`} />;

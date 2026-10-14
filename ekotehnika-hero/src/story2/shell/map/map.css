@@ -153,3 +153,10 @@
     animation: none;
   }
 }
+
+/* a name above its point, centred on it */
+.sm-base.is-up .sm-name {
+  left: 0;
+  top: -44px;
+  transform: translateX(-50%);
+}

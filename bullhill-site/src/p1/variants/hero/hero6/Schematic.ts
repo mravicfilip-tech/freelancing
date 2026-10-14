@@ -19,10 +19,31 @@ function circle(a: Segs, x: number, y: number, z: number, r: number, n = 64) {
   }
 }
 
-function dots(pts: number[], size: number, opacity: number, tex: THREE.Texture) {
+// Beat 2. Each dot starts off its place, with its own delay, and settles. uFly runs 0 to 1, and 1
+// puts every dot exactly where it was drawn before, so the settled scene is unchanged.
+function dots(pts: number[], size: number, opacity: number, tex: THREE.Texture, fly: { value: number }, seed: number) {
   const g = new THREE.BufferGeometry();
   g.setAttribute('position', new THREE.Float32BufferAttribute(pts, 3));
+  const fr = rng(seed);
+  const off = new Float32Array((pts.length / 3) * 4);
+  for (let i = 0; i < pts.length / 3; i++) {
+    off[i * 4] = (fr() - 0.75) * 2.4;
+    off[i * 4 + 1] = (fr() - 0.2) * 2.2 + 0.5;
+    off[i * 4 + 2] = (fr() - 0.3) * 1.8;
+    off[i * 4 + 3] = fr() * 0.45;
+  }
+  g.setAttribute('aFly', new THREE.BufferAttribute(off, 4));
   const m = new THREE.PointsMaterial({ color: '#ffffff', size, sizeAttenuation: false, map: tex, alphaTest: 0.05, transparent: true, opacity, depthTest: false, depthWrite: false });
+  m.onBeforeCompile = (sh) => {
+    sh.uniforms.uFly = fly;
+    sh.vertexShader = sh.vertexShader
+      .replace('#include <common>', '#include <common>\nattribute vec4 aFly;\nuniform float uFly;\nvarying float vFlyK;')
+      .replace(
+        '#include <begin_vertex>',
+        '#include <begin_vertex>\nfloat fk = clamp((uFly - aFly.w) / 0.55, 0.0, 1.0);\ntransformed += aFly.xyz * pow(1.0 - fk, 3.0);\nvFlyK = smoothstep(0.0, 0.35, fk);',
+      );
+    sh.fragmentShader = sh.fragmentShader.replace('#include <common>', '#include <common>\nvarying float vFlyK;').replace('#include <color_fragment>', '#include <color_fragment>\ndiffuseColor.a *= vFlyK;');
+  };
   const p = new THREE.Points(g, m);
   p.frustumCulled = false;
   return p;
@@ -151,14 +172,17 @@ export function buildSchematic(dpr: number, k = 1, thin = false) {
   fill(back2, Y.tape + 0.03, Y.backfill - 0.03, 0.078, 0.06, false);
   fill(asph, Y.base + 0.025, Y.surface - 0.02, 0.034, 0.02, false);
   for (let v = z0 + 0.03; v < z1 - 0.02; v += 0.05) for (let u = x0 + 0.03; u < x1 - 0.02; u += 0.05) topd.push(u + (r() - 0.5) * 0.03, H, v + (r() - 0.5) * 0.03);
-  scene.add(dots(sand, 1.6 * k, 0.62, tex), dots(back, 2.1 * k, 0.8, tex), dots(back2, 3 * k, 0.7, tex), dots(asph, 1.6 * k, 0.55, tex), dots(topd, 1.6 * k, 0.5, tex));
+  const fly = { value: 1 };
+  scene.add(dots(sand, 1.6 * k, 0.62, tex, fly, 101), dots(back, 2.1 * k, 0.8, tex, fly, 102), dots(back2, 3 * k, 0.7, tex, fly, 103), dots(asph, 1.6 * k, 0.55, tex, fly, 104), dots(topd, 1.6 * k, 0.5, tex, fly, 105));
 
   const mats: LineMaterial[] = [];
+  const lines: { g: LineSegmentsGeometry; n: number }[] = [];
   const mkLines = (a: Segs, opacity: number) => {
     const g = new LineSegmentsGeometry();
     g.setPositions(a);
     const m = new LineMaterial({ color: 0xffffff, linewidth: Math.max(1, dpr), transparent: true, opacity, depthTest: false, depthWrite: false });
     mats.push(m);
+    lines.push({ g, n: a.length / 6 });
     const l = new LineSegments2(g, m);
     l.frustumCulled = false;
     scene.add(l);
@@ -168,6 +192,11 @@ export function buildSchematic(dpr: number, k = 1, thin = false) {
 
   return {
     scene,
+    // beat 2, the share of lines drawn and the dots' flight, both 1 when settled
+    setAssemble(edges: number, flight: number) {
+      for (const l of lines) l.g.instanceCount = Math.ceil(l.n * edges);
+      fly.value = flight;
+    },
     setResolution(w: number, h: number) {
       for (const m of mats) m.resolution.set(w, h);
     },

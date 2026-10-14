@@ -4,26 +4,37 @@
 // 0 is all render, 1 is all schematic. Beat 4 drives it from the scroll. With `drive`, every frame
 // reads p, sets the seam and the dollied camera from it, draws, and then calls onFrame(p), so the
 // HTML seam line and the labels move in the same animation frame as the canvas.
+//
+// Beats 1 to 3 ride on the same frame. With `drive.load` the scene is built up by the load clock
+// (hero6/timeline.ts). The seam drops, the schematic's lines trace in and its dots settle, and the
+// render wipes out from the seam. Once assembled, an idle loop turns the camera a degree or two, tilts
+// it towards the pointer and runs light across the fibre ends. frameloop stays "demand", a frame is
+// asked for only while something moves, idle frames are capped at 30 a second, and the loop stops
+// when the hero is out of view or the tab is hidden.
 
-export type Drive = { progress: Progress; onFrame: (p: number) => void };
+export type Drive = { progress: Progress; onFrame: (p: number) => void; load?: LoadClock };
 
 import { Canvas, useFrame, useThree } from '@react-three/fiber';
 import { useEffect, useLayoutEffect, useMemo, useRef } from 'react';
 import * as THREE from 'three';
-import { CAMS, OVERSCAN, VIEWS, dollyCam, seamAt, smooth, type View } from './geometry';
+import { CAMS, OVERSCAN, VIEWS, clamp01, dollyCam, driftCam, seamAt, smooth, type View } from './geometry';
 import type { Progress } from './progress';
-import { Specimen } from './Render';
+import { Specimen, type FibreRig } from './Render';
 import { buildSchematic } from './Schematic';
+import { ASSEMBLE, SETTLED, assembleAt, idlePulse, msToNextPulse, pulseLevel, type LoadClock } from './timeline';
 
-function Dual({ view, seam, drive, onReady }: { view: View; seam: number; drive?: Drive; onReady: () => void }) {
+function Dual({ view, seam, drive, onReady, rig }: { view: View; seam: number; drive?: Drive; onReady: () => void; rig: React.MutableRefObject<FibreRig | null> }) {
   const gl = useThree((s) => s.gl);
   const camera = useThree((s) => s.camera) as THREE.PerspectiveCamera;
   const size = useThree((s) => s.size);
   const invalidate = useThree((s) => s.invalidate);
   const cam = CAMS[view];
   const dpr = gl.getPixelRatio();
-  const schem = useMemo(() => buildSchematic(dpr, view === 'tall' ? 0.65 : view === 'mid' ? 0.85 : 1, view === 'tall'), [dpr, view]);
+  const schem = useMemo(() => buildSchematic(dpr, view === 'wide' ? 1 : 0.85, false), [dpr, view]);
   const done = useRef(false);
+  const load = drive?.load;
+  const last = useRef({ t: 0, draw: 0, p: -1, warm: false });
+  const wake = useRef(0);
 
   useLayoutEffect(() => {
     camera.position.set(...cam.pos);
@@ -40,13 +51,72 @@ function Dual({ view, seam, drive, onReady }: { view: View; seam: number; drive?
     return drive.progress.subscribe(() => invalidate());
   }, [drive, invalidate]);
 
+  // the clock changing state (assembled, hidden, shown) asks for a frame
+  useEffect(() => {
+    if (!load) return;
+    const off = load.on(() => invalidate());
+    return () => {
+      off();
+      window.clearTimeout(wake.current);
+    };
+  }, [load, invalidate]);
+
   useFrame(({ scene }) => {
     let s = seam;
     let p = 0;
+    let st = SETTLED;
+    let moving = false;
+    let idleOnly = false;
+    const now = performance.now();
+    const dt = Math.min(100, now - (last.current.t || now));
+    last.current.t = now;
+    if (drive) p = drive.progress.sample();
+    if (load) {
+      if (load.frozen === null) {
+        // scrolling during the load completes the assemble at once, beat 4 takes over from there
+        if (p > 0) load.skip();
+        if (!load.begun && !load.assembled()) {
+          if (!last.current.warm) {
+            // a first frame with nothing drawn compiles the shaders, then the clock starts
+            last.current.warm = true;
+            st = assembleAt(-1);
+            moving = true;
+          } else {
+            load.begin();
+          }
+        }
+        // hidden tab or out of view, once assembled, the loop stops and asks for nothing
+        if (load.assembled() && !load.isVisible()) return;
+      }
+      if (load.begun || load.frozen !== null) st = assembleAt(load.a());
+      const a = load.a();
+      const idle = load.idle();
+      const amp = 1 - smooth(clamp01(p * 4));
+      const run = load.frozen !== null ? a >= ASSEMBLE : load.idleRun();
+      const m = load.stepView(dt, amp, idle, run);
+      const sp = run ? idlePulse(idle) : -1;
+      const g = rig.current;
+      if (g) for (let i = 0; i < g.u.length; i++) g.set(i, pulseLevel(sp, g.u[i]));
+      if (load.frozen === null) {
+        const assembling = !load.assembled();
+        moving = moving || assembling || m || sp >= 0;
+        idleOnly = !assembling && !load.tilting && p === last.current.p && !!last.current.draw;
+        // nothing moves, wake for the next pulse
+        if (!moving && run) {
+          window.clearTimeout(wake.current);
+          wake.current = window.setTimeout(() => invalidate(), msToNextPulse(idle));
+        }
+      }
+    }
+    if (idleOnly && now - last.current.draw < 30) {
+      invalidate();
+      return;
+    }
+    last.current.draw = now;
+    last.current.p = p;
     if (drive) {
-      p = drive.progress.sample();
       const e = smooth(p);
-      const c = dollyCam(view, e);
+      const c = driftCam(dollyCam(view, e), load?.view.yaw ?? 0, load?.view.pitch ?? 0);
       camera.position.set(...c.pos);
       camera.lookAt(...c.target);
       camera.updateMatrixWorld();
@@ -64,17 +134,19 @@ function Dual({ view, seam, drive, onReady }: { view: View; seam: number; drive?
     const sx = Math.floor(bw * Math.min(1, Math.max(0, s)));
     const eps = 0.001;
     schem.setResolution(bw, bh);
+    schem.setAssemble(st.edges, st.dots);
     gl.setClearColor(0x000000, 0);
     gl.setScissorTest(true);
     gl.setViewport(0, 0, size.width, size.height);
     gl.setScissor(0, 0, (sx + eps) / dpr, size.height);
     gl.clear();
     gl.render(schem.scene, camera);
-    gl.setScissor((sx + eps) / dpr, 0, (bw - sx) / dpr, size.height);
+    gl.setScissor((sx + eps) / dpr, 0, ((bw - sx) / dpr) * st.wipe, size.height);
     gl.clear();
-    gl.render(scene, camera);
+    if (st.wipe > 0) gl.render(scene, camera);
     gl.setScissorTest(false);
     if (drive) drive.onFrame(p);
+    if (moving) invalidate();
     if (!done.current) {
       done.current = true;
       // read one pixel back, so the flag means the frame is really drawn
@@ -91,6 +163,7 @@ function Dual({ view, seam, drive, onReady }: { view: View; seam: number; drive?
 
 export default function Scene({ view, still, seam = 0.5, drive, onReady }: { view: View; still?: boolean; seam?: number; drive?: Drive; onReady: () => void }) {
   const cam = CAMS[view];
+  const rig = useRef<FibreRig | null>(null);
   return (
     <Canvas
       frameloop="demand"
@@ -104,8 +177,8 @@ export default function Scene({ view, still, seam = 0.5, drive, onReady }: { vie
         gl.setClearColor(0x000000, 0);
       }}
     >
-      <Specimen view={view} />
-      <Dual view={view} seam={seam} drive={drive} onReady={onReady} />
+      <Specimen view={view} rig={rig} />
+      <Dual view={view} seam={seam} drive={drive} onReady={onReady} rig={rig} />
     </Canvas>
   );
 }

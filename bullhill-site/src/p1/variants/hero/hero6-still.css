@@ -29,3 +29,20 @@
 .p1 .h6s__tag--r { position: absolute; bottom: 0; left: max(var(--x), var(--wl)); }
 /* the left tag ends on the seam, and stops at the box's left edge when the seam runs closer than its own width, and the right tag steps off with it */
 .p1 .h6s__tagbox { position: absolute; bottom: 0; left: 0; display: flex; justify-content: flex-end; width: max(var(--x), var(--wl)); }
+
+/* ---- beat 2 on the stills, in CSS. Only with .h6s--in, under data-load run on the hero. Times are
+ * from the load, the same as the scene's, 0.6s to 2.8s. --h6-fz holds them at the ?t= time. Once the
+ * hero is done, or the page scrolled, every animation drops and the pair is its settled state. */
+@keyframes h6s-seam { from { transform: translateX(-0.5px) scaleY(0); } to { transform: translateX(-0.5px) scaleY(1); } }
+@keyframes h6s-schem { from { clip-path: inset(0 calc(100% - var(--x)) 100% 0); } to { clip-path: inset(0 calc(100% - var(--x)) 0 0); } }
+@keyframes h6s-render { from { clip-path: inset(0 calc(100% - var(--x)) 0 var(--x)); } to { clip-path: inset(0 0 0 var(--x)); } }
+@keyframes h6s-tag { from { opacity: 0; } to { opacity: 1; } }
+.p1 .hv6[data-load='run'] .h6s--in .h6s__line,
+.p1 .hv6[data-load='run'] .h6s--in .h6s__img,
+.p1 .hv6[data-load='run'] .h6s--in .h6s__tag,
+.p1 .hv6[data-load='run'] .h6s--in .h6s__tagbox { animation-fill-mode: backwards; animation-timing-function: var(--m-ease); animation-play-state: var(--h6-ps, running); }
+.p1 .hv6[data-load='run'] .h6s--in .h6s__line { transform-origin: top; animation-name: h6s-seam; animation-duration: 800ms; animation-delay: calc(600ms - var(--h6-fz, 0ms)); }
+.p1 .hv6[data-load='run'] .h6s--in .h6s__img--schem { animation-name: h6s-schem; animation-duration: 1500ms; animation-delay: calc(700ms - var(--h6-fz, 0ms)); }
+.p1 .hv6[data-load='run'] .h6s--in .h6s__img--render { animation-name: h6s-render; animation-duration: 1500ms; animation-delay: calc(1300ms - var(--h6-fz, 0ms)); }
+.p1 .hv6[data-load='run'] .h6s--in .h6s__tag { animation-name: h6s-tag; animation-duration: 500ms; animation-delay: calc(1700ms - var(--h6-fz, 0ms)); }
+.p1 .hv6[data-load='run'] .h6s--in .h6s__tagbox { animation: none; }

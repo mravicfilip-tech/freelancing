@@ -3,6 +3,7 @@
 // room made of soft boxes, so nothing is fetched at runtime.
 
 import { useLayoutEffect, useMemo } from 'react';
+import type { MutableRefObject } from 'react';
 import { useThree } from '@react-three/fiber';
 import * as THREE from 'three';
 import { DUCTS, FIBRE_OUT, H, L, R, WALL, W, Y, camDir, rng, type DuctSpec, type View, type V3 } from './geometry';
@@ -273,7 +274,11 @@ function Ducts({ env }: { env: THREE.Texture }) {
 }
 
 // ---- fibres, thin strands out of the orange duct with a lit tip each
-function Fibres() {
+// Beat 3 runs light across the fibre ends. The rig sets how lit each one is, 0 at rest, and u is its
+// place along the row, 0 to 1, so a pulse can travel through them.
+export type FibreRig = { u: number[]; set(i: number, level: number): void };
+
+function Fibres({ rig }: { rig: MutableRefObject<FibreRig | null> }) {
   const parts = useMemo(() => {
     const d = DUCTS.find((x) => x.fibre)!;
     const r = rng(41);
@@ -316,13 +321,38 @@ function Fibres() {
     }
     return { out, mat, tipMat, glow, tipGeo: new THREE.SphereGeometry(0.0072, 12, 8) };
   }, []);
+  // one material and one glow each, so one fibre can light while its neighbours stay dark
+  const own = useMemo(
+    () => parts.out.map(() => ({ mat: parts.mat.clone(), glow: parts.glow.clone() })),
+    [parts],
+  );
+  const sprites = useMemo<(THREE.Sprite | null)[]>(() => parts.out.map(() => null), [parts]);
+  useLayoutEffect(() => {
+    const zs = parts.out.map((f) => f.tip[2]);
+    const lo = Math.min(...zs);
+    const hi = Math.max(...zs);
+    rig.current = {
+      u: zs.map((z) => (z - lo) / (hi - lo || 1)),
+      set(i, level) {
+        const o = own[i];
+        o.mat.emissiveIntensity = 0.1 + 1.1 * level;
+        o.glow.opacity = 0.55 + 0.45 * level;
+        const sp = sprites[i];
+        const sc = 0.05 + 0.1 * level;
+        sp?.scale.set(sc, sc, sc);
+      },
+    };
+    return () => {
+      rig.current = null;
+    };
+  }, [parts, own, sprites, rig]);
   return (
     <group>
       {parts.out.map((f, i) => (
         <group key={i}>
-          <mesh geometry={f.tube} material={parts.mat} castShadow />
+          <mesh geometry={f.tube} material={own[i].mat} castShadow />
           <mesh geometry={parts.tipGeo} material={parts.tipMat} position={f.tip} />
-          <sprite material={parts.glow} position={f.tip} scale={[0.05, 0.05, 0.05]} />
+          <sprite ref={(n) => void (sprites[i] = n)} material={own[i].glow} position={f.tip} scale={[0.05, 0.05, 0.05]} />
         </group>
       ))}
     </group>
@@ -354,7 +384,7 @@ function Floor() {
   );
 }
 
-export function Specimen({ view }: { view: View }) {
+export function Specimen({ view, rig }: { view: View; rig: MutableRefObject<FibreRig | null> }) {
   const gl = useThree((s) => s.gl);
   const scene = useThree((s) => s.scene);
   const ground = Grounds();
@@ -375,7 +405,7 @@ export function Specimen({ view }: { view: View }) {
         <Scatter key={s.seed} spec={s} />
       ))}
       <Ducts env={env} />
-      <Fibres />
+      <Fibres rig={rig} />
     </>
   );
 }

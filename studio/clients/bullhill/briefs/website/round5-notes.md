@@ -141,6 +141,17 @@ scroll, the schematic half holds still as the plan.
 5. Cover, p 0.7 to 1. Backfill falls back in layers, the red warning tape is laid above the ducts,
    base and surface close flat and restored. "05 Surface back".
 
+11. Services cards, micro animations and no entry from the left, queued while the hero and particle
+   builders run. "should have micro animations going in and i dont like the aanimation on load to be
+   coming in from the left", on the four service cards. Today at 1200 and up the cards start stacked on
+   the first and slide out to the right, so they read as coming in from the left (`sections-a.css`,
+   built from the motion story), and the dot art in each card (`ServiceArt` in `art.tsx`) is still.
+   Micro detail, so three to five numbered variants on one board. Each keeps the cards in place and
+   gives the dot art its own small move as the card comes into view.
+
+12. Audience particles move, "these particles should be moving https://www.worldquantfoundry.com/ like
+   this". In build, a 3D point cloud on a 2D canvas the view moves through with the scroll.
+
 ## Phone hero, proposed after the reference
 
 What the reference does. The wordmark top left and one square menu button top right. The headline in

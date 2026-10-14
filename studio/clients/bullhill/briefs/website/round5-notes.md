@@ -114,6 +114,9 @@ Refused, and why.
    phone button stays in view the whole time. The 30svh pin moves to the block only. The hero files
    belong to the dig, lay, restore session now, so it is built after that branch merges.
    Filip said "yes go with 1.25 screens" at 17:17.
+   Then at 17:18, "no not everything should go 1.25 screens it should be in one block - shrink down the
+   rest of the elements to make this fit". So one 844px screen. Headline halves 48 to 40px, the block
+   to about 85 percent clear of both halves, gaps of 24 to 40px, lede and button unchanged in size.
 
 ## Phone hero, proposed after the reference
 

@@ -25,6 +25,12 @@ Task format
 
 ## In progress
 
+- bullhill-2 Hero scroll smooth, frame rate on phones and desktop
+  - [ ] Measure frame cost on a scripted scroll, phone and desktop
+  - [ ] Fix the worst costs, measure again
+- bullhill-3 Excavator hero, a storyboard of the work, hero 7. Plan in briefs/website/hero7-excavator.md
+  - [x] Plan, storyboard and the grilled answers
+  - [ ] Dig beat built at 1440, sheet to Filip
 - bullhill-1 BullHill company website, one page, Foundry direction at /?v=1. Plan in briefs/website/plan.md, branch claude/hopeful-maxwell-bwuy3c. Link https://bullhill-site.vercel.app
   - [x] Put the logo files and brand colours on file
   - [x] Propose the page sections

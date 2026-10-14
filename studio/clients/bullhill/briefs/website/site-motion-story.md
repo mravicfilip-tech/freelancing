@@ -9,8 +9,10 @@ Captures from 14 October 2026 are in the scratchpad `secmo/`. Each reference was
 steps at 1440 by 900 and shot 150, 500 and 1400ms after each step, so a timed reveal shows
 half way and settled, and a scroll linked move shows the same in all three.
 
-Status. Accepted, Filip said "go" at 16:13 on 14 October 2026. Process is in build with the headline
-rise, then Filip's yes on it, then the rest.
+Status. Accepted, Filip said "go" at 16:13 on 14 October 2026. Process went into build first. At 16:5x
+Filip asked "where my animations", so the rest started at once in two slices, without waiting on his
+yes for Process. The timing lives in the `--m-*` tokens of `src/p1/motion/motion.css`, so a timing
+correction after he sees Process is one edit there.
 
 ## Decode, worldquantfoundry.com below the hero
 

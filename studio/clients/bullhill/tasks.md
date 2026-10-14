@@ -67,7 +67,8 @@ Task format
   - [ ] Build the hero scroll redraw, after beats 1 to 3 merge
   - [x] Process steps as three ticks, Filip's yes
   - [ ] Build the headline rise and the Process beat, Filip's yes
-  - [ ] Build the whole site motion
+  - [x] Who we are gap back to 96px
+  - [ ] Build the whole site motion, two slices, above and below Process
   - [ ] /uireview, then Filip's ship line
 
 ## Review

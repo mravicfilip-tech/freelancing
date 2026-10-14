@@ -3,7 +3,10 @@
 // ground, split in its own shader by a world x the machine carries, so nothing is drawn twice.
 // frameloop stays "demand", a frame is asked for only when p changes or the canvas is resized, and the
 // frame sets the machine, the ground, the spoil and the camera from p alone and then calls onFrame(p), so the step
-// label moves in the same animation frame as the canvas. Pixel ratio is held to 1.5.
+// label moves in the same animation frame as the canvas. p is the damped one, progress.current(), which
+// glides towards the scroll, so a frame is asked for again while it is still moving and the dolly, the
+// arm and the trench all ease to a stop together. The shadow map is drawn only on a frame where
+// something that casts a shadow moved. Pixel ratio is held to 1.5.
 
 import { Canvas, useFrame, useThree } from '@react-three/fiber';
 import { useEffect, useLayoutEffect, useMemo, useRef } from 'react';
@@ -21,7 +24,7 @@ function Rig({ drive, onReady }: { drive: Drive; onReady: () => void }) {
   const invalidate = useThree((s) => s.invalidate);
   const stage = useRef<Stage | null>(null);
   const cam = useMemo(makeCam, []);
-  const state = useRef({ drawn: 0, done: false });
+  const state = useRef({ drawn: 0, done: false, p: NaN });
 
   useLayoutEffect(() => {
     const st = buildStage(gl, gl.getPixelRatio());
@@ -30,8 +33,8 @@ function Rig({ drive, onReady }: { drive: Drive; onReady: () => void }) {
     if (import.meta.env.DEV) (window as unknown as { __h7gl?: THREE.WebGLRenderer }).__h7gl = gl;
     scene.add(st.group);
     scene.environment = st.env;
-    scene.environmentIntensity = 0.75;
-    state.current = { drawn: 0, done: false };
+    scene.environmentIntensity = 0.95;
+    state.current = { drawn: 0, done: false, p: NaN };
     invalidate();
     return () => {
       scene.remove(st.group);
@@ -47,14 +50,18 @@ function Rig({ drive, onReady }: { drive: Drive; onReady: () => void }) {
   useFrame(() => {
     const st = stage.current;
     if (!st) return;
-    const p = drive.progress.sample();
-    st.update(p);
+    const p = drive.progress.current();
+    // the shadow map is drawn again only when the machine or the trench moved
+    if (st.update(p)) gl.shadowMap.needsUpdate = true;
     camAt(p, cam);
     camera.position.set(cam.px, cam.py, cam.pz);
     camera.lookAt(cam.tx, cam.ty, cam.tz);
     drive.onFrame(p);
     const s = state.current;
     s.drawn++;
+    // the damped p is still gliding, so ask for the next frame
+    if (s.p !== p && s.drawn > 1) invalidate();
+    s.p = p;
     if (s.drawn === 1) {
       // the first frame compiles the shaders, the next one is the first that is really on screen
       invalidate();
@@ -77,12 +84,17 @@ export default function Scene({ drive, onReady }: { drive: Drive; onReady: () =>
     <Canvas
       frameloop="demand"
       dpr={[1, 1.5]}
-      camera={{ position: [-10, 4, 8], fov: CAM.fov, near: 0.5, far: 140 }}
+      camera={{ position: [-10, 4, 8], fov: CAM.fov, near: 0.5, far: 320 }}
       gl={{ antialias: true, alpha: true, powerPreference: 'high-performance' }}
       onCreated={({ gl }) => {
         gl.toneMapping = THREE.ACESFilmicToneMapping;
         gl.toneMappingExposure = 1;
         gl.setClearColor(0x000000, 0);
+        gl.shadowMap.enabled = true;
+        gl.shadowMap.type = THREE.PCFShadowMap;
+        // drawn by hand, only when something that casts a shadow moved
+        gl.shadowMap.autoUpdate = false;
+        gl.shadowMap.needsUpdate = true;
       }}
     >
       <Rig drive={drive} onReady={onReady} />

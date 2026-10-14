@@ -10,17 +10,21 @@ import { labelAt, stepAt, textGone } from './hero7/acts';
 import './hero.css';
 import './hero7.css';
 
-// Hero 7, the excavator. One route along a village verge, seen at a three quarter angle, running away
-// from the camera. The machine turns the plan into ground. Ahead of it the route is the schematic of
-// hero 6, white hairlines and a stipple of dots on the black, and behind it the same ground is the
-// render. The seam between them is a world x the machine carries, set in the ground's own material, so
-// the scene is drawn once. The scene is a lazy chunk, so the other heroes never load three.js.
+// Hero 7, the excavator. One route along a village verge, seen from a low three quarter angle that
+// tracks along with the machine. Ahead of the machine's seam the route is the schematic of hero 6, white
+// hairlines, station ticks and a stipple of dots on the black, and behind it the same ground is the
+// render. The machine stands on the route line facing back down it and reverses along it while it digs,
+// the way a real excavator trenches, so the trench opens in front of it and grows away from the camera,
+// the spoil heaps along the far side, and the seam rides with the machine. The seam is a world x set in
+// the ground's own material, so the scene is drawn once. The scene is a lazy chunk, so the other heroes
+// never load three.js.
 //
 // Same page structure as hero 6, the headline in two halves, the lede and Send the job, a pinned
 // stage over 200svh of scroll and a step label slot. p runs 0 to 1 across the pin (hero6/progress.ts,
-// `?p=` pins a frame). The scene reads p every frame, sets the machine, the trench, the seam, the spoil
-// and the camera from it, draws, and calls paint(p) here, and the step label is written straight on its
-// elements. Step 2, Dig, is built (hero7/world.ts, p 0.15 to 0.45), the other four steps hold its end
+// `?p=` pins a frame). The scene reads the damped p every frame, sets the machine, the trench, the seam,
+// the spoil and the camera from it, draws, and calls paint(p) here, and the step label is written straight
+// on its elements. The canvas reaches up behind the headline, so the ground and the plan fill the height
+// of the stage. Step 2, Dig, is built (hero7/world.ts, p 0.15 to 0.45), the other four steps hold its end
 // state until they are. Phones under 768, reduced motion and browsers without WebGL get hero 6 as it
 // is, its phone path and its poster, and hero 7's own phone stills come with the other steps.
 
@@ -102,8 +106,8 @@ function Dig({ c }: { c: Content }) {
     }
   }, []);
   const drive = useMemo(() => ({ progress, onFrame: text }), [progress, text]);
-  useLayoutEffect(() => text(progress.sample()));
-  useEffect(() => progress.subscribe(text), [progress, text]);
+  // the scene's frame writes the label from the damped p, so the label and the canvas move together
+  useLayoutEffect(() => text(progress.current()));
 
   // ---- the load. The hero's own CSS reads data-load (run, done), data-idle (wait, run, pause, frozen)
   // and the variables --h6-last, --h6-fz, --h6-ps and --h6-bd, written here and never by React. The

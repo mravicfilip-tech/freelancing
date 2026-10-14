@@ -31,16 +31,20 @@
 .p1 .hv7__title .rise__part { display: block; }
 
 .p1 .hv7__stage { position: relative; flex: 1; width: 100%; min-height: 280px; margin-top: 16px; margin-bottom: 96px; }
-/* the canvas is the stage, the machine and its arm stay inside it */
+/* the canvas is the stage and a little more. It reaches up behind the headline, so the horizon and the plan
+ * lines have the whole height to fill instead of a strip, and down under the lede and the card. The ground
+ * fades into the page at the top, under the headline, at the foot and at both sides. */
 .p1 .hv7__canvas {
   position: absolute;
-  inset: 0 0 -64px 0;
-  /* the ground fades out under the lede and the card, and into the page at both sides */
-  -webkit-mask-image: linear-gradient(to bottom, #000 72%, transparent 96%), linear-gradient(to right, transparent, #000 5%, #000 95%, transparent);
+  inset: -132px 0 -64px 0;
+  pointer-events: none;
+  -webkit-mask-image: linear-gradient(to bottom, transparent 6%, #000 24%, #000 72%, transparent 96%), linear-gradient(to right, transparent, #000 5%, #000 95%, transparent);
   -webkit-mask-composite: source-in;
-  mask-image: linear-gradient(to bottom, #000 72%, transparent 96%), linear-gradient(to right, transparent, #000 5%, #000 95%, transparent);
+  mask-image: linear-gradient(to bottom, transparent 6%, #000 24%, #000 72%, transparent 96%), linear-gradient(to right, transparent, #000 5%, #000 95%, transparent);
   mask-composite: intersect;
 }
+/* the headline stays above the canvas it now overlaps */
+.p1 .hv7__top { position: relative; z-index: 10; }
 /* the step name, Foundry's mono label, 12px. One fixed place, the top right of the stage, under the
  * headline and clear of the card, the lede and the buttons, which sit at the foot. The five names are
  * stacked in one cell and crossfade by opacity, written from p. */

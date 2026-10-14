@@ -64,6 +64,12 @@ Each trigger fires on its own event and no other. None fires every turn or every
 - Interaction pass. When a build has a pinned bar, a menu, a popup or hover states, shoot it with
   `--interact`, so sticky layers, stacking, hover shifts and z-index values are checked by driving
   the page and not by reading the code.
+- Motion pass. When a build is judged by how it moves, a scroll story, a hero sequence or
+  scroll-driven reveals, record its changed routes once at round end with
+  `node studio/scripts/shoot.mjs --record`, beside the full shot set. Read each `_strip.png` against
+  the beats for order and timing, and report the layout shift total. A 3D page records at
+  `--fps 15`. The recording runs on virtual time, so it shows easing and order and never jank.
+  Jank is judged on Filip's machine, never from a recording.
 - Standing yes. "Go" approves the last plan's recommendations and nothing else. Never a deploy, a
   send or a ship line.
 - Progress line. When work runs in background helpers, say once what is running, then post one

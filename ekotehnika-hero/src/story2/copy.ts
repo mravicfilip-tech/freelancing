@@ -137,7 +137,7 @@ export const servisMap = {
   // numbers for contact". Both call the one service line until Čurug has its own.
   bases: [
     { id: 'vrcin', label: 'Vrčin', line: 'Servisni centar i sedište firme', address: 'Moše Pijade 17b, 11224 Vrčin', phone: hero.service }, // analysis, the contact page
-    { id: 'curug', label: 'Čurug', line: 'Servisni centar', address: 'Ulica i broj, Čurug', phone: hero.service }, // dummy, Filip's second location, its address and number to come from Filip
+    { id: 'curug', label: 'Čurug', line: 'Servisni centar', address: 'Moše Pijade 17b, 11224 Vrčin', phone: hero.service }, // dummy, Filip's second location, the Vrčin address for now (Filip 14 October), its own address and number to come from Filip
   ],
   cover: 'Servisna vozila širom Srbije', // trust strip
   cta: servis.cta,

@@ -36,6 +36,36 @@ phone structure, and the client sees only hero 6. In build. Foundry at `/?v=1`, 
    `round5-refs/wqf-phone-hero.png`. Read as the phone hero only, the rest of the phone structure
    below still waits on his yes. It meets notes 2 and 3, so all three are planned together.
 
+5. Hero scroll out is dull. "the hero animation scroll should be more exciting with some particles dots
+   going on and etc on scroll and something happening right now its just model moving its dull".
+   Logged REJECTED in taste.md 16:39. Builders are running, so no code. The redraw is proposed in
+   words below, with one reference, and built after Filip's yes and after the hero builder reports.
+
+## Hero scroll out, redraw proposed
+
+Why it is dull. The scroll moves the camera 12 percent and slides a line. Nothing happens to the
+ground, so there is no event to watch.
+
+The pick, dig, lay, restore. The scroll tells BullHill's job on the block itself, in three acts across
+a longer pin, 120svh on desktop. Reference, worldquantfoundry's hero, where scattered dots fly in and
+assemble into the form. Here the dots are the ground's own material.
+- Dig, p 0 to 0.35. A trench opens along the duct line. The surface, base and backfill above the ducts
+  break into particles in their own colours, asphalt dark, gravel grey, soil brown, and lift into a
+  slow cloud above the block, so the cut shows in section.
+- Lay, p 0.35 to 0.65. The ducts slide in along the trench from the far end, green and orange. Light
+  runs through them and out of the open ends as a stream of bright points, the fibre that comes later.
+- Restore, p 0.65 to 1. The cloud falls back in layer order, sand, backfill, tape, base, surface, and
+  settles flat. The seam sweeps left with the falling ground, so what settles is the real render, plan
+  into finished route. The headline moves up and the work photos rise, as now.
+- Phones keep the stills, no WebGL. A light 2D canvas of the same particles plays over the still pair,
+  the dig cloud lifting and falling, at about 600 points.
+- Reduced motion and automated shots get the settled block, as now.
+
+Refused, and why.
+- A starfield or dust floating over the hero with no job. It reads generated, the closing dots were
+  called AI slop for the same reason.
+- A faster or wider camera move. More camera is still only a camera.
+
 ## Phone hero, proposed after the reference
 
 What the reference does. The wordmark top left and one square menu button top right. The headline in

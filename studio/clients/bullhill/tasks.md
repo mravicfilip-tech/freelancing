@@ -62,6 +62,7 @@ Task format
   - [x] Phone structure, too dense, briefs/website/round5-notes.md, Filip's yes
   - [ ] Build the phone structure and the phone header
   - [ ] Build hero 6 beats 1 to 3
+  - [ ] Hero scroll out redraw, dig, lay, restore, Filip's yes
   - [ ] Build the headline rise and the Process beat, Filip's yes
   - [ ] Build the whole site motion
   - [ ] /uireview, then Filip's ship line

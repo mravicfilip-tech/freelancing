@@ -42,6 +42,12 @@ frozen at commit b0bf997 and change only where Filip names them.
    mono line under the grid. Source the matrix in `SectionsB.tsx` and `.p3-matrix` in
    `underground.css`. In Foundry it takes over the stats and the fleet rows that sit in the crew
    section today.
+5. FAQ. Bring Underground's FAQ into Foundry, "this too". The light panel inset from the screen
+   edge with the crosshair frame inside it, the title and black button with the red dot on the
+   left, the Radix accordion on the right with the red down right arrow before each question,
+   hairlines between, the small square chevron toggle that turns red when open, and the soft red
+   glow along the bottom. Source the FAQ in `SectionsC.tsx` and `.p3-faq` in `underground.css`.
+   Foundry has no FAQ today.
 
 ## Open questions
 
@@ -53,3 +59,5 @@ frozen at commit b0bf997 and change only where Filip names them.
 - The matrix colours. Underground's grey ground is `--bh-grey-300`. Foundry's light panels are
   `--bh-grey-200`. Proposed default, the matrix takes Foundry's light panel grey so it sits in the
   same family. Waits on Filip.
+- Where the FAQ sits in Foundry. Proposed default, after the audience cards and before the
+  contact form, as on Underground. Waits on Filip.

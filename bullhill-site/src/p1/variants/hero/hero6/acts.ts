@@ -57,13 +57,13 @@ export function stepAt(p: number) {
   return i;
 }
 
-// The label of each step, opacity at p. A step's label fades in just before its boundary and out
-// just after the next one, so the two cross at the boundary. The first one waits for the first bit
-// of scroll, so the idle state at p 0 carries no label.
+// The label of each step, opacity at p. A step's label fades out just before the next boundary and
+// the next label fades in just after it, so the two never show at once in the same place. The first
+// one waits for the first bit of scroll, so the idle state at p 0 carries no label.
 const FADE = 0.014;
 export function labelAt(p: number, i: number) {
-  const a = i === 0 ? clamp01(p / 0.02) : clamp01((p - STEPS[i] + FADE) / (2 * FADE));
-  const b = i === 4 ? 1 : 1 - clamp01((p - STEPS[i + 1] + FADE) / (2 * FADE));
+  const a = i === 0 ? clamp01(p / 0.02) : clamp01((p - STEPS[i]) / FADE);
+  const b = i === 4 ? 1 : 1 - clamp01((p - STEPS[i + 1] + FADE) / FADE);
   return Math.min(a, b);
 }
 

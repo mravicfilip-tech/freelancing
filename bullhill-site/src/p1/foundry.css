@@ -808,13 +808,14 @@
   background: var(--bh-red);
   color: var(--ink);
 }
-.p1 .end__title { font-size: 32px; line-height: 32px; }
+.p1 .end__title { font-size: 32px; line-height: 32px; color: #fff; }
 .p1 .end__line { margin: 16px 0 32px; color: #fff; }
 .p1 .end__a .bk, .p1 .end__info { color: #fff; }
 .p1 .end__ducts { width: 160px; height: auto; }
 .p1 .end__nav { display: flex; flex-direction: column; }
-.p1 .end__link { display: block; padding: 8px 0; font-size: 28px; line-height: 28px; color: var(--ink); transition: color 150ms ease, padding-left 150ms ease; }
-.p1 .end__link:hover { color: #fff; padding-left: 8px; }
+/* full white on the red panel, Filip 14 October, 5.6 to 1, the hover turns ink */
+.p1 .end__link { display: block; padding: 8px 0; font-size: 28px; line-height: 28px; color: #fff; transition: color 150ms ease, padding-left 150ms ease; }
+.p1 .end__link:hover { color: var(--ink); padding-left: 8px; }
 .p1 .end__info { display: flex; flex-direction: column; gap: 12px; }
 .p1 .end__k { opacity: 1; }
 .p1 .end__addr { display: flex; flex-direction: column; gap: 4px; }

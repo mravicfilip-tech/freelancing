@@ -152,6 +152,21 @@ scroll, the schematic half holds still as the plan.
 12. Audience particles move, "these particles should be moving https://www.worldquantfoundry.com/ like
    this". In build, a 3D point cloud on a 2D canvas the view moves through with the scroll.
 
+13. Audience particles 1:1 with worldquantfoundry. "The dots need to act like particles like my example
+   please go 1:1 to see their movement how a small particle expands to a big dot". Captured the
+   reference every 100px of scroll from y 6800 to 9300 at 1440, `scratchpad/wqfp/`. Their points sit in
+   formations, a vortex of fine dots and then a tunnel of rings, the view flies into them with the
+   scroll, and points near the view swell from about 1px into soft translucent discs of 30 to 40px
+   before they pass. In build.
+
+14. The dotted wave above the FAQ animated too, "should be animated too", on `WaveArt` (`auds__wave`).
+   In build with note 13.
+
+15. Closing panel full white, "full white here", on the closing headline, the nav links and the logo.
+   Done at once, the headline and links white at 5.6 to 1, the link hover turns ink. The logo stays on
+   its red lockup with the black Bull, because the README allows only the four lockups and none is
+   all white. An all white lockup needs Filip's friend's yes and the file in `brand/`.
+
 ## Phone hero, proposed after the reference
 
 What the reference does. The wordmark top left and one square menu button top right. The headline in

@@ -164,7 +164,7 @@
 .p1 .hd__logo { display: inline-flex; align-items: center; }
 .p1 .hd__logo img { height: 32px; width: auto; }
 .p1 .hd .hd__nav, .p1 .hd .hd__lang, .p1 .hd .hd__call { display: none; }
-.p1 .hd__phone { display: flex; align-items: center; gap: 8px; }
+.p1 .hd__phone { display: flex; align-items: center; gap: 16px; }
 .p1 .hd__link {
   display: inline-flex;
   align-items: center;

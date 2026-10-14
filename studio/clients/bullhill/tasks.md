@@ -34,7 +34,7 @@ Task format
   - [x] Plan, storyboard and the grilled answers
   - [x] Dig beat built at 1440, sheet to Filip, 5a2f3e1 merged behind ?hero=7
   - [x] Filip's answer on the Dig beat, 2, fix the weak spots first
-  - [ ] Dig beat fixed, a detailed machine, a trench along the stretch, a travelling camera
+  - [x] Dig beat fixed, a detailed machine, a trench along the stretch, a travelling camera, 052030f
   - [ ] Steps 1, 3, 4 and 5, labels in English and German
   - [ ] Phone stills and the reduced motion still
   - [ ] Frame cost check and /uireview

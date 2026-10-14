@@ -41,10 +41,16 @@ const Scene = lazy(() => import('./hero6/Scene'));
 const CHAR = 7.68; // Azeret Mono 12px, advance 0.6em plus 0.04em tracking
 const TAG_H = 22;
 const TAG_GAP = 32;
-// phone framing, the box is 1.6 times the stage wide, ends 0.2 of it past the right edge and sits a little low
-const TALL_SCALE = 1.6;
-const TALL_OVER = 0.2;
-const TALL_DROP = 0;
+// phone framing. The block sits between the two headline halves, TALL_GAP clear of each, and runs
+// TALL_OVER of the stage past its right edge, just enough to bleed while the duct ends stay in frame. TALL_HALF is one half, two lines of the 40px phone
+// headline, and TALL_FOOT the space under the second half, both set in hero6.css. The still's visible
+// part runs from TALL_VIS_TOP of the box height for TALL_VIS_H of it, from public/render/hero6-tall-*.
+const TALL_OVER = 0.06;
+const TALL_HALF = 80;
+const TALL_GAP = 24;
+const TALL_FOOT = 40;
+const TALL_VIS_TOP = 0.1825;
+const TALL_VIS_H = 0.7025;
 const ORDER: LayerId[] = ['surface', 'base', 'tape', 'backfill', 'ducts', 'sand'];
 
 function useBox(ref: React.RefObject<HTMLElement | null>) {
@@ -194,12 +200,16 @@ function Specimen({ c }: { c: Content }) {
   // the box the specimen fills, centred in the stage, always the view's own aspect
   const box = useMemo<Box | null>(() => {
     if (!cw || !ch) return null;
-    // phones, the block is large and runs off the right screen edge, the stage already sits one
-    // side padding in, so the box ends TALL_OVER past the stage's right edge
-    const w = view === 'tall' ? Math.round(cw * TALL_SCALE) : Math.min(cw, ch * spec.aspect);
+    // phones, the block fills the room between the headline halves and runs off the right screen
+    // edge, the stage already sits one side padding in, so the box ends TALL_OVER past its right edge
+    if (view === 'tall') {
+      const room = Math.max(120, ch - 2 * TALL_HALF - 2 * TALL_GAP - TALL_FOOT);
+      const h = Math.round(room / TALL_VIS_H);
+      return { w: h, h, x: Math.round(cw + cw * TALL_OVER - h), y: Math.round(TALL_HALF + TALL_GAP - h * TALL_VIS_TOP) };
+    }
+    const w = Math.min(cw, ch * spec.aspect);
     const h = Math.round(w / spec.aspect);
-    const x = view === 'tall' ? Math.round(cw + cw * TALL_OVER - w) : Math.round((cw - w) / 2);
-    return { w: Math.round(w), h, x, y: Math.round((ch - h) / 2) + (view === 'tall' ? Math.round(ch * TALL_DROP) : 0) };
+    return { w: Math.round(w), h, x: Math.round((cw - w) / 2), y: Math.round((ch - h) / 2) };
   }, [cw, ch, view, spec.aspect]);
 
   const metas = useMemo<Meta[]>(

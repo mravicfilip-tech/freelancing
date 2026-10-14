@@ -77,13 +77,15 @@
  * high on the left and the second low and right aligned, the specimen large behind and between them
  * with its right end running off the screen, then a hairline, the mono lede and one button. No seam
  * line, no tags, no BH 001 card. The h1 and the stage share one grid cell, the h1 above. */
+/* One 844px screen with air, Filip 14 October. The headline halves are 40px, two lines each, 80px,
+ * and the space under the second half is 40px, the TALL_HALF and TALL_FOOT of Hero6.tsx. */
 @media (max-width: 767px) {
-  .p1 .hv6__in { display: grid; grid-template-columns: minmax(0, 1fr); grid-template-rows: minmax(0, 1fr) auto; }
-  .p1 .hv6__top { display: flex; grid-area: 1 / 1; position: relative; z-index: 10; padding-bottom: 24px; }
-  .p1 .hv6__title { display: flex; flex-direction: column; justify-content: space-between; width: 100%; font-size: 48px; line-height: 48px; pointer-events: none; }
+  .p1 .hv6__in { display: grid; grid-template-columns: minmax(0, 1fr); grid-template-rows: minmax(0, 1fr) auto; padding-top: calc(var(--hd-h) + 32px); padding-bottom: 32px; }
+  .p1 .hv6__top { display: flex; grid-area: 1 / 1; position: relative; z-index: 10; padding-bottom: 40px; }
+  .p1 .hv6__title { display: flex; flex-direction: column; justify-content: space-between; width: 100%; font-size: 40px; line-height: 40px; pointer-events: none; }
   .p1 .hv6__title .rise__part:last-child { align-self: flex-end; text-align: right; }
   .p1 .hv6__stage { grid-area: 1 / 1; margin-top: 0; aspect-ratio: auto; }
-  .p1 .hv6__bot { grid-area: 2 / 1; margin-top: 0; padding-top: 16px; border-top: 1px solid var(--hair-paper); }
+  .p1 .hv6__bot { grid-area: 2 / 1; margin-top: 0; padding-top: 20px; border-top: 1px solid var(--hair-paper); }
   .p1 .hv6__card { display: none; }
 }
 

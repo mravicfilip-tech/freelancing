@@ -70,7 +70,7 @@ Task format
   - [x] Who we are gap back to 96px
   - [x] Build the whole site motion, two slices, above and below Process
   - [ ] Motion clips to Filip at 1440 and 390
-  - [ ] Phone hero in one screen with air, smaller parts, after the dig, lay, restore merge
+  - [x] Phone hero in one screen with air, smaller parts
   - [ ] /uireview, then Filip's ship line
 
 ## Review

@@ -1,6 +1,7 @@
 # BullHill website, section plan
 
-Status. Proposed 14 October 2026, waiting on Filip's answers and his references. Nothing is built.
+Status. Sections proposed 14 October 2026. Filip answered and sent three references the same day, and
+asked for three high fidelity pathways, one per reference. Being built, see Pathways.
 
 ## The ask
 
@@ -61,7 +62,33 @@ One page with anchor links. The phone number sits in a pinned header on every sc
    first default. Needs Filip's yes.
 5. For the direction step. The typeface of the wordmark, so the site type matches it.
 
+## Answers, 14 October 2026
+
+1. Market. Austria and Germany. English first, German as the second language.
+2. Services. Not confirmed. The pathways use trenching, ducts and chambers, house connections and
+   surface restoration as stand-ins.
+3. Photos. Placeholders for now, worked in later. Each placeholder carries its shot brief.
+4. Phone. Phone is the main focus, with a desktop of the same quality. Widths are 390 and 1440.
+5. Typeface. Not answered yet. Each pathway uses a free stand-in for its reference's face.
+
+## Pathways
+
+Filip asked for three design pathways, high fidelity, each about 90 percent close to one
+reference in style, section structure and content rhythm, static, with motion in a later round. He
+asked for three, so the one argued direction rule gives way for this round, and each pathway is a
+genuinely different reference rather than three takes on one.
+
+| # | Name | Reference | Stand-in type |
+|---|---|---|---|
+| 1 | Foundry | worldquantfoundry.com | Archivo wide for Roc Grotesk, Azeret Mono |
+| 2 | Daylight | trymeridian.com | Geist for Formular, Geist Mono |
+| 3 | Underground | vaulk.com | Instrument Sans for Telegraf, Chivo Mono |
+
+Builder briefs are `build-rules.md` and `pathway-1-foundry.md`, `pathway-2-daylight.md`,
+`pathway-3-underground.md` in this folder. All three read the same content from
+`bullhill-site/src/shared/content.ts`.
+
 ## Next
 
-When Filip answers and sends references, `/newui` steps 1 and 2 run against them, references and
-one argued direction, then stop for his pick.
+Filip picks one pathway, or names what to carry from the others. Then the pick is logged with
+`/taste`, the other two freeze, and motion is planned against the picked reference with `/story`.

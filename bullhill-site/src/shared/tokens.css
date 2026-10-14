@@ -1,0 +1,27 @@
+/* BullHill brand tokens, from studio/clients/bullhill/README.md. Three brand colours only.
+ * The greys are neutral tints of black for grounds, lines and secondary text, no new hue.
+ * bull-red-dark is the pressed and hover shade of bull-red, nothing else. */
+:root {
+  --bh-red: #d00b11;
+  --bh-red-dark: #a8090e;
+  --bh-black: #000000;
+  --bh-white: #ffffff;
+
+  --bh-grey-975: #0e0f0f;
+  --bh-grey-950: #111111;
+  --bh-grey-900: #1a1a1a;
+  --bh-grey-850: #222222;
+  --bh-grey-800: #2b2b2b;
+  --bh-grey-700: #3d3d3d;
+  --bh-grey-600: #5c5c5c;
+  --bh-grey-500: #7a7a7a;
+  --bh-grey-400: #9a9a9a;
+  --bh-grey-300: #c4c4c4;
+  --bh-grey-200: #dadada;
+  --bh-grey-150: #e4e4e2;
+  --bh-grey-100: #ecece9;
+  --bh-grey-50: #f4f4f2;
+
+  /* Focus ring, 3 to 1 or better on every ground the pathways use. */
+  --bl-focus-color: var(--bh-red);
+}

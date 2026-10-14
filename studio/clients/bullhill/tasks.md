@@ -28,9 +28,12 @@ Task format
 - bullhill-1 BullHill company website, one page. Plan in briefs/website/plan.md, branch claude/hopeful-maxwell-bwuy3c
   - [x] Put the logo files and brand colours on file
   - [x] Propose the page sections
-  - [ ] Filip answers the plan questions and sends references
-  - [ ] References and one direction
-  - [ ] Build the site in bullhill-site
+  - [x] Filip answers the plan questions and sends references
+  - [x] Capture the three references at desktop and phone width
+  - [x] Set up the app with shared content in English and German
+  - [ ] Build the three pathways, Foundry, Daylight and Underground
+  - [ ] Filip picks a pathway
+  - [ ] Motion round on the pick
   - [ ] /uireview, then Filip's ship line
 
 ## Review

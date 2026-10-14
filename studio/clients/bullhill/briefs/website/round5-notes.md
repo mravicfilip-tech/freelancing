@@ -173,6 +173,18 @@ scroll, the schematic half holds still as the plan.
 17. Service cards, "I like this one best i think v3 but need animation thats looping after load in".
    Done, version 3 assembles and then runs version 2's loop while on screen, the default.
 
+18. Animation pass on the whole site, "Lets do an animation pass on the whole website with my comments
+   above and execute everything". Two parts, both in build.
+   - Section backgrounds. "I want section backgrounds to animate beter like these transitions", on the
+     hard cut from the light projects section to the black crew section. Read as the page's ground
+     colour moving from one section's ground to the next as a section takes the screen, in place of
+     hard edges between full width section backgrounds. Panels inside sections keep their own colour.
+   - Text. "I want text to animate like here https://landonorris.com/ with blocks reveal", with a
+     frame of a headline and two lines of body, each line under a solid block mid wipe. Read as every
+     line of headline and body text revealed by a block in the text's own colour that wipes across the
+     line and off again, the text showing as the block leaves, lines staggered. It replaces the line
+     rise of the 16:13 motion story for text.
+
 ## Phone hero, proposed after the reference
 
 What the reference does. The wordmark top left and one square menu button top right. The headline in

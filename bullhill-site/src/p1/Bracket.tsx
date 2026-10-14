@@ -5,7 +5,7 @@ import './variants/buttons/slab.css';
 import { btnVariant, lab, slabVariant } from './variants/params';
 import type { SlabN, VariantN } from './variants/params';
 
-type Common = { variant?: 'line' | 'fill'; square?: boolean; className?: string; btn?: VariantN; slab?: SlabN; children: ReactNode };
+type Common = { variant?: 'line' | 'solid' | 'fill'; square?: boolean; className?: string; btn?: VariantN; slab?: SlabN; children: ReactNode };
 type AProps = Common & { href: string } & Omit<AnchorHTMLAttributes<HTMLAnchorElement>, 'className' | 'children'>;
 type BProps = Common & { href?: undefined; ref?: Ref<HTMLButtonElement> } & Omit<ButtonHTMLAttributes<HTMLButtonElement>, 'className' | 'children'>;
 
@@ -158,7 +158,8 @@ function inside(n: VariantN, s: SlabN, square: boolean | undefined, children: Re
 // The default is Filip's pick, style 3 the slab and arrow in version 3 the arrow cell.
 // ?v=1&btn=1..5 restyles every button on the page, and the lab passes `btn` to pin one style.
 // ?v=1&btn=3&slab=1..5 picks one of the five slab and arrow versions, and a `slab` prop pins one.
-// The filled variant is the primary use, the form submit.
+// The filled variant is the form submit. The solid variant is the one primary action in a view, the
+// first hero button and the closing call, and line is every other button.
 export function Bracket(props: AProps | BProps) {
   const { variant = 'line', square, className, btn, slab, children, ...rest } = props;
   // The labs show several styles and ignore ?btn and ?slab. A ?slab alone picks the slab style.
@@ -177,7 +178,7 @@ export function Bracket(props: AProps | BProps) {
   useLayoutEffect(() => {
     if (own.current) own.current.dataset.ground = groundOf(own.current);
   }, [n, sv]);
-  const cls = `bk${variant === 'fill' ? ' bk--fill' : ''}${square ? ' bk--square' : ''}${className ? ` ${className}` : ''}`;
+  const cls = `bk${variant === 'fill' ? ' bk--fill' : variant === 'solid' ? ' bk--solid' : ''}${square ? ' bk--square' : ''}${className ? ` ${className}` : ''}`;
   const body = inside(n, sv, square, children);
   if ('href' in clean && clean.href !== undefined) {
     return (

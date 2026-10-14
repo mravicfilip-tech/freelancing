@@ -34,7 +34,7 @@ export function Hero4({ c }: { c: Content }) {
           <div className="hv4__copy">
             <p className="hv4__lede mono-body">{c.hero.lede}</p>
             <div className="hv__cta">
-              <Bracket href={c.contact.phoneHref}>{c.ui.call}</Bracket>
+              <Bracket variant="solid" href={c.contact.phoneHref}>{c.ui.call}</Bracket>
               <Bracket href="#contact">{c.ui.send}</Bracket>
             </div>
           </div>

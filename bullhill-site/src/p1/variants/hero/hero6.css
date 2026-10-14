@@ -14,7 +14,7 @@
 }
 /* beat 4, the stage is pinned for the run below it, 50svh on phones and 70svh from 768 */
 .p1 .hv6[data-pin='yes'] .hv6__pin { position: sticky; top: 0; z-index: 0; }
-.p1 .hv6__run { height: 50svh; }
+.p1 .hv6__run { height: 30svh; }
 /* headline, lede and buttons move up and fade out in the last third of p, --h6-t runs 0 to 1 */
 .p1 .hv6[data-pin='yes'] .hv6__top,
 .p1 .hv6[data-pin='yes'] .hv6__side { opacity: calc(1 - var(--h6-t, 0)); transform: translateY(calc(var(--h6-t, 0) * -32px)); will-change: opacity, transform; }

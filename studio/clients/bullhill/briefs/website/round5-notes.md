@@ -1,0 +1,31 @@
+# BullHill website, round 5 notes, motion and phones
+
+Status. Filip said "go" at 16:13 on 14 October 2026 to the whole site motion story, hero 6 as the
+default hero, the outline version of the arrow cell for secondary buttons and the 30svh phone pin.
+Then one note, below. Foundry at `/?v=1`, files in `bullhill-site/src/p1/`.
+
+## Notes
+
+1. Phones too dense, "We need to clean up mobile a lot - its too dense information wise and remove
+   those pointing boxes, make it a clean design", on the phone frames of hero 6 beat 4.
+   - Done at once, since he named them. The six layer tags and their leader lines are off the phone
+     hero, Hero6.tsx, `tags` false on the tall view.
+   - The rest is a structure change on phones, so it goes to Filip as one argued structure in words
+     first, below. At 390 the page measured 19,946px, 23.6 screens of 844.
+
+## Phone structure, proposed
+
+| Section | Now at 390 | Proposed on phones | Screens after |
+|---|---|---|---|
+| Hero | 1.6 screens, seam tags, BH 001 card | Seam line and its two tags go, the BH 001 card goes | 1.3 |
+| Work | 1.2 | As now | 1.2 |
+| Services | 3.1, four cards each with dot art and a paragraph | Cards lose their dot art and become rows, number, title and one line | 1.4 |
+| Process | 4.7, drawing with numbered badges, a six row legend, four steps | The badges go, the legend stays as the key under the drawing in one column, step photos at 4 by 3 | 3.2 |
+| Projects | 1.4 | As now | 1.4 |
+| Crew | 2.8, a photo strip and the machine grid with notes | The machine grid becomes two columns of name and count, no notes | 1.8 |
+| Audiences | 3.7, three blocks of text and cards and the wave | One block, three rows of title and one line, the wave goes | 1.3 |
+| FAQ | 1.0 | As now | 1.0 |
+| Contact | 2.3 | The call block moves above the form, the fields stay | 2.3 |
+| Closing | 2.0, nav links, photo and legal | The nav links go, the menu has them | 1.3 |
+
+About 16 screens, a third shorter. Desktop does not change.

@@ -26,7 +26,7 @@ export function Closing({ c }: { c: Content }) {
           <div className="end__a">
             <h2 className="end__title display">{sh(c, c.form.title)}</h2>
             <p className="end__line mono-body">{c.footer.line}</p>
-            <Bracket href={c.contact.phoneHref}>{c.ui.call}</Bracket>
+            <Bracket variant="solid" href={c.contact.phoneHref}>{c.ui.call}</Bracket>
           </div>
           <div className="end__b">
             <DuctEnds className="end__ducts" />

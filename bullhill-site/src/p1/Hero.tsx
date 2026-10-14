@@ -14,7 +14,7 @@ export function Hero({ c }: { c: Content }) {
           <div className="hero__copy">
             <p className="hero__lede mono-body">{c.hero.lede}</p>
             <div className="hero__cta">
-              <Bracket href={c.contact.phoneHref}>{c.ui.call}</Bracket>
+              <Bracket variant="solid" href={c.contact.phoneHref}>{c.ui.call}</Bracket>
               <Bracket href="#contact">{c.ui.send}</Bracket>
             </div>
           </div>

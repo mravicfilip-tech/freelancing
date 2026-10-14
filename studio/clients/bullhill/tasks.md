@@ -43,7 +43,7 @@ Task format
   - [x] Build round 3, five slices, buttons, hero, work, process, crew and FAQ
   - [x] Button lab and hero board to Filip for a pick by number
   - [x] Filip picks a button style, 3 the slab and arrow
-  - [ ] Filip picks a hero, 1 to 6
+  - [x] Filip picks a hero, 6 the cable specimen
   - [x] Filip says yes to hero 6 with every default
   - [x] Build hero 6, cable through ground, briefs/website/hero6.md
   - [x] Collect Filip's round 4 notes, five in briefs/website/round4-notes.md
@@ -54,9 +54,13 @@ Task format
   - [x] Contact box on the FAQ box's grid
   - [x] Hero 6 motion story, decode and beats, Filip said yes
   - [x] Build hero 6 beat 4, scroll out, briefs/website/hero6-story.md
-  - [ ] Filip's yes on beat 4
-  - [ ] Whole site motion story, every section in words, Filip's yes
+  - [x] Filip's yes on beat 4
+  - [x] Whole site motion story, every section in words, Filip's yes
+  - [x] Hero 6 as the default, phone pin 30svh, phone hero tags off
+  - [ ] Outline arrow cell for secondary buttons, MENU without the arrow
+  - [ ] Phone structure, too dense, briefs/website/round5-notes.md, Filip's yes
   - [ ] Build hero 6 beats 1 to 3
+  - [ ] Build the headline rise and the Process beat, Filip's yes
   - [ ] Build the whole site motion
   - [ ] /uireview, then Filip's ship line
 

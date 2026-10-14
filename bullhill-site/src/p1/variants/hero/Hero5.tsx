@@ -195,7 +195,7 @@ export function Hero5({ c }: { c: Content }) {
           <div className="hv5__side">
             <p className="hv5__lede mono-body">{c.hero.lede}</p>
             <div className="hv__cta">
-              <Bracket href={c.contact.phoneHref}>{c.ui.call}</Bracket>
+              <Bracket variant="solid" href={c.contact.phoneHref}>{c.ui.call}</Bracket>
               <Bracket href="#contact">{c.ui.send}</Bracket>
             </div>
           </div>

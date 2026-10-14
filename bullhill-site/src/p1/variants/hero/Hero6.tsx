@@ -16,7 +16,7 @@ import './hero6.css';
 // first frame. The labels are placed here by projecting 3D points with that camera, so a leader
 // ends on its part at every size.
 //
-// Beat 4. The stage is pinned with position sticky for 70svh of extra scroll, 50svh on phones, and
+// Beat 4. The stage is pinned with position sticky for 70svh of extra scroll, 30svh on phones, and
 // p runs 0 to 1 across it (hero6/progress.ts). The scene reads p every frame, sets the seam and the
 // dolly, draws, and then calls paint(p) here, so the seam line, its two tags and the labels move in
 // the same animation frame as the canvas. Phones and no WebGL show StillSeam, the still pair with
@@ -145,6 +145,8 @@ function Specimen({ c }: { c: Content }) {
   const pinned = !reduced;
   // the still pair exists for tall and mid, wide without WebGL keeps its one poster
   const stills = !live && view !== 'wide';
+  // phones show the specimen clean, no layer tags or leader lines, the seam and its two tags stay
+  const tags = view !== 'tall';
   const spec = VIEWS[view];
   const progress = useProgress(section, pin, pinned);
 
@@ -269,7 +271,7 @@ function Specimen({ c }: { c: Content }) {
                     {tagR}
                   </text>
                 </g>
-                {first.items.map((l) => (
+                {(tags ? first.items : []).map((l) => (
                   <g key={l.id}>
                     <g ref={(n) => void (slot(l.id).lead = n)} opacity={l.op}>
                       <line ref={(n) => void (slot(l.id).line = n)} className="hv6__line" x1={l.w} y1={l.ty} x2={l.px} y2={l.py} />
@@ -291,7 +293,7 @@ function Specimen({ c }: { c: Content }) {
             <div className="hv6__side">
               <p className="hv6__lede mono-body">{c.hero.lede}</p>
               <div className="hv__cta">
-                <Bracket href={c.contact.phoneHref}>{c.ui.call}</Bracket>
+                <Bracket variant="solid" href={c.contact.phoneHref}>{c.ui.call}</Bracket>
                 <Bracket href="#contact">{c.ui.send}</Bracket>
               </div>
             </div>

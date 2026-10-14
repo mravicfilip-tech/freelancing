@@ -1,9 +1,9 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import type { Content } from '../shared/content';
-import { Placeholder } from '../shared/Placeholder';
+import { Media } from '../shared/Media';
 import { Arrow } from './art';
 import { Bracket } from './Bracket';
-import { sh, t } from './copy';
+import { PROJECT_FOCAL, sh, t } from './copy';
 
 export function Projects({ c }: { c: Content }) {
   const x = t(c);
@@ -60,7 +60,16 @@ export function Projects({ c }: { c: Content }) {
             <span className="bk__c bk__c--tr" aria-hidden="true" />
             <span className="bk__c bk__c--bl" aria-hidden="true" />
             <span className="bk__c bk__c--br" aria-hidden="true" />
-            <Placeholder shot={p.shot} label={c.ui.photo} index={i + 1} ratio="4 / 3" className="pc__photo" />
+            <Media
+              shot={p.shot}
+              lang={c.lang}
+              label={c.ui.photo}
+              index={i + 1}
+              ratio="4 / 3"
+              className="pc__photo"
+              sizes="(min-width: 1200px) 372px, (min-width: 768px) 352px, 252px"
+              focal={p.shot.photo ? PROJECT_FOCAL[p.shot.photo] : undefined}
+            />
             <h3 className="pc__title display">{sh(c, p.title)}</h3>
             <p className="pc__place mono">
               {p.place}, {p.region}

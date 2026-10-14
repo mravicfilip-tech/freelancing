@@ -9,6 +9,7 @@ export function Closing({ c }: { c: Content }) {
   return (
     <footer className="end">
       <div className="end__art" aria-hidden="true">
+        <div className="end__hill" />
         <HillArt variant="close" className="art art--close" />
       </div>
       <div className="end__panel">

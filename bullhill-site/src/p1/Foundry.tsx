@@ -12,6 +12,7 @@ import { Hero } from './Hero';
 import { Process } from './Process';
 import { Projects } from './Projects';
 import { Services } from './Services';
+import { Work } from './Work';
 
 export default function Foundry() {
   const [c, setLang] = useContent();
@@ -21,6 +22,7 @@ export default function Foundry() {
       <Header c={c} setLang={setLang} root={root} />
       <main>
         <Hero c={c} />
+        <Work c={c} />
         <Services c={c} />
         <Process c={c} />
         <Projects c={c} />

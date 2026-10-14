@@ -9,7 +9,7 @@
 // Everything is set from p alone, so a frame at ?p= is the same frame every time.
 
 import * as THREE from 'three';
-import { DUCTS, H, L, Y } from './geometry';
+import { DUCTS, H, L, R, Y } from './geometry';
 import { BED, COURSES, FLOOR, SLIDE, TZ, courseAt, cutAt, ductOut, fibreAlpha, lightAt, sampleGround } from './acts';
 
 // Counts, set by the frame budget. One draw call each, a few lines of vertex work per point.
@@ -20,7 +20,7 @@ export type DigRig = {
     uDigCut: { value: THREE.Vector4 }; // sand haunch, backfill, base, surface
     uDigTape: { value: number };
     uDigBed: { value: number };
-    uLightHead: { value: number }; // world x of the light band
+    uLightHead: { value: number }; // world x of the fibre tip
     uLightGlow: { value: number };
   };
   ducts: (THREE.Object3D | null)[];
@@ -46,6 +46,11 @@ export function makeRig(): DigRig {
 }
 
 const f = (n: number) => n.toFixed(4);
+// the fibre duct, and where its light line sits round the wall, 30 degrees above the side facing the
+// camera, and how thick it is
+const FD = DUCTS.find((d) => d.fibre)!;
+const LINE_AT = (30 * Math.PI) / 180;
+const LINE_W = 0.009;
 const DUCT_X = DUCTS.map((d) => (-L / 2 - d.far + L / 2 + d.near) / 2);
 
 // Sets the specimen for p. Returns true while any act is under way, so the scene draws the points.
@@ -130,8 +135,8 @@ export function patchCut(m: THREE.Material, rig: DigRig, early = false) {
   return m;
 }
 
-// ---- the light in the orange duct, a bright band on the outer wall that rides with the fibre tip from
-// the far end to the near one. At rest uLightGlow is 0 and the duct draws as before.
+// ---- the light in the orange duct, a thin line on the outer wall that follows the fibre tip from the
+// far end to the near one. At rest uLightGlow is 0 and the duct draws as before.
 export function patchGlow(m: THREE.Material, rig: DigRig) {
   m.onBeforeCompile = (sh) => {
     sh.uniforms.uLightHead = rig.u.uLightHead;
@@ -143,9 +148,13 @@ export function patchGlow(m: THREE.Material, rig: DigRig) {
         '#include <emissivemap_fragment>',
         `#include <emissivemap_fragment>
         {
-          float d = (vDigW.x - uLightHead) / 0.24;
-          float band = exp(-d * d) + 0.06 * smoothstep(-6.0, 0.0, d) * step(d, 0.0);
-          totalEmissiveRadiance += vec3(1.0, 0.97, 0.9) * band * uLightGlow * 1.3;
+          // a thin line along the wall behind the tip, on the side that faces the camera, and a small
+          // bright point at the tip. a is the distance round the wall from that line, in world units.
+          float a = abs(atan(vDigW.y - ${f(FD.y)}, vDigW.z - ${f(FD.z)}) - ${f(LINE_AT)}) * ${f(R)};
+          float dx = vDigW.x - uLightHead;
+          float line = (1.0 - smoothstep(${f(LINE_W * 0.5)}, ${f(LINE_W)}, a)) * (1.0 - smoothstep(-0.02, 0.02, dx)) * 1.0;
+          float tipPt = exp(-(dx * dx + a * a) / 0.0016) * 1.6;
+          totalEmissiveRadiance += vec3(1.0, 0.97, 0.9) * (line + tipPt) * uLightGlow * 1.3;
         }`,
       );
   };

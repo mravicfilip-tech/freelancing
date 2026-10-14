@@ -110,25 +110,27 @@ export function strandRun(p: number, delay: number) {
   if (p < P_SAND) return 1;
   return clamp01((seg(p, FIBRE.p0, FIBRE.p1) - delay) / (1 - delay));
 }
-// The first RUN_IN of the run is the length of the duct, the rest is the strand coming out of the near
-// end and settling at its length. The duct is mostly hidden in the ground, so the tip is quick at the
-// far end and slows towards the near one, to the speed it comes out at.
-const RUN_IN = 0.55;
+// The run has three parts. The far part of the duct is buried in the ground, nothing of it can be seen,
+// so the tip crosses it in the first RUN_HID. It then spends most of the step crossing the length of the
+// duct that is in view, up to RUN_IN, and the rest is the strand coming out of the near end and settling
+// at its length. FIBRE_XV is where the duct comes into view.
+export const FIBRE_XV = 2.0;
+const RUN_HID = 0.04;
+const RUN_IN = 0.6;
 export function strandX(run: number, tipX: number) {
-  if (run < RUN_IN) {
-    const u = run / RUN_IN;
-    return FIBRE_X0 + (0.74 * (1 - (1 - u) * (1 - u)) + 0.26 * u) * (FIBRE_X1 - FIBRE_X0);
-  }
+  if (run < RUN_HID) return FIBRE_X0 + (run / RUN_HID) * (FIBRE_XV - FIBRE_X0);
+  if (run < RUN_IN) return FIBRE_XV + ((run - RUN_HID) / (RUN_IN - RUN_HID)) * (FIBRE_X1 - FIBRE_XV);
   const s = (run - RUN_IN) / (1 - RUN_IN);
   return FIBRE_X1 + (1 - (1 - s) * (1 - s)) * (tipX - FIBRE_X1);
 }
 
-// The light head, a band on the orange duct's wall that follows the leading tip through the duct, in
-// world x. It dims as the tip comes out of the near end, since the strand carries the light from there.
+// The light head, a thin lit line on the orange duct's wall behind the leading tip, with a small bright
+// point at the tip, in world x. It dims as the tip comes out of the near end, since the strand carries
+// the light from there.
 export function lightAt(p: number) {
   const run = strandRun(p, 0);
   const x = Math.min(FIBRE_X1, strandX(run, FIBRE_X1));
-  const on = clamp01((p - FIBRE.p0) / 0.02) * (1 - smooth(seg(run, RUN_IN - 0.08, RUN_IN)));
+  const on = clamp01((p - FIBRE.p0) / 0.004) * (1 - smooth(seg(run, RUN_IN - 0.02, RUN_IN + 0.1)));
   return { x, glow: p < P_SAND ? 0 : on };
 }
 

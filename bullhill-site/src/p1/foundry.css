@@ -877,3 +877,71 @@
   .p1 .proj__nav { margin-top: 24px; }
   .p1 .con { padding-top: 48px; padding-bottom: 48px; }
 }
+
+/* ---------- the page ground, motion on only ----------
+ * motion/ground.ts writes --page on .p1 and data-page="dark|light" as a section arrives. Each full
+ * width section loses its own background here, so the page ground is the only thing painted between
+ * sections and there are no hard edges. Panels, cards, the process drawing, the crew matrix, the FAQ
+ * panel, the contact box and the red closing panel keep their own colours. The hero keeps its red
+ * glow, which is its own gradient. The list is in step with SECTIONS in motion/ground.ts. With motion
+ * off none of this applies and every section keeps its background. */
+.p1[data-motion='on'] {
+  --m-ground: 600ms;
+  --m-ground-ease: cubic-bezier(0.22, 0.61, 0.36, 1);
+  --page: var(--ground);
+  background-color: var(--page);
+}
+.p1[data-motion='on'][data-gt='on'] {
+  transition: background-color var(--m-ground) var(--m-ground-ease);
+}
+.p1[data-motion='on'] :is(.hero, .hv6, .hv6__pin, .wk, .eth, .proc, .proj, .crew, .auds, .faq, .conw, .end) {
+  background-color: transparent;
+}
+/* the dark strip that closed the gap above the rising services panel is the page ground now */
+.p1[data-motion='on'] section.eth::before { background: transparent; }
+
+/* the header's 0.92 background follows the page ground, and its text and logo follow with it */
+.p1[data-motion='on'] .hd {
+  background: color-mix(in srgb, var(--page) 92%, transparent);
+  color: var(--bh-grey-200);
+}
+.p1[data-motion='on'][data-gt='on'] .hd { transition: background-color var(--m-ground) var(--m-ground-ease), color var(--m-ground) var(--m-ground-ease); }
+.p1[data-motion='on'][data-page='light'] .hd { color: var(--ink); }
+.p1[data-motion='on'][data-page='light'] .hd .hd__link { color: var(--bh-grey-700); }
+.p1[data-motion='on'][data-page='light'] .hd .hd__link:hover { color: var(--ink); }
+/* the logo files are fixed, white on dark and black on light, so the light one fades in over it */
+.p1[data-motion='on'] .hd > .hd__in > .hd__logo { position: relative; }
+.p1[data-motion='on'] .hd > .hd__in > .hd__logo::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: url('/brand/logo-on-light.svg') left center / contain no-repeat;
+  opacity: 0;
+  pointer-events: none;
+}
+.p1[data-motion='on'] .hd > .hd__in > .hd__logo img { opacity: 1; }
+.p1[data-motion='on'][data-gt='on'] .hd > .hd__in > .hd__logo::after,
+.p1[data-motion='on'][data-gt='on'] .hd > .hd__in > .hd__logo img { transition: opacity var(--m-ground) var(--m-ground-ease); }
+.p1[data-motion='on'][data-page='light'] .hd > .hd__in > .hd__logo::after { opacity: 1; }
+.p1[data-motion='on'][data-page='light'] .hd > .hd__in > .hd__logo img { opacity: 0; }
+/* the header's buttons take the light ground's colours, the same as a button on paper */
+.p1[data-motion='on'][data-page='light'] .hd .bk[data-btn][data-ground] {
+  --out: var(--ink);
+  --slab: var(--ink);
+  --slab-fg: #fff;
+  --fill-hot: var(--ink);
+  --fill-hot-fg: #fff;
+}
+@media (max-width: 767px) {
+  .p1.p1.p1[data-motion='on'][data-page='light'] .hd__phone .bk[data-btn='3'][data-slab='3'].bk--out {
+    background: rgba(17, 17, 17, 0.06);
+    color: var(--ink);
+    box-shadow: inset 0 0 0 1px rgba(17, 17, 17, 0.06);
+  }
+  .p1.p1.p1[data-motion='on'][data-page='light'] .hd__phone .bk[data-btn='3'][data-slab='3'].bk--out:is(.bk--square, .bk--bare):is(:hover, .is-hover):not(:disabled) {
+    background: rgba(17, 17, 17, 0.12);
+    color: var(--ink);
+    box-shadow: inset 0 0 0 1px rgba(17, 17, 17, 0.06);
+  }
+  .p1.p1.p1[data-motion='on'][data-page='light'] .hd__phone .bk[data-btn='3'][data-slab='3'].bk--out:is(:focus-visible, .is-focus) { outline-color: var(--ink); }
+}

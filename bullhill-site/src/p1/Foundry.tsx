@@ -17,6 +17,7 @@ import { Services } from './Services';
 import { Work } from './Work';
 import { ButtonLab } from './variants/buttons/Lab';
 import { HERO_VARIANTS } from './variants/hero';
+import { useGround } from './motion/ground';
 import { motionOn } from './motion/motion';
 import { heroVariant, lab } from './variants/params';
 
@@ -26,6 +27,7 @@ export default function Foundry() {
   const hv = heroVariant();
   const [motion] = useState(motionOn);
   const HeroN = hv === 1 ? Hero : HERO_VARIANTS[hv];
+  useGround(root);
   if (lab() === 'buttons') {
     return (
       <div className="p1" id="top" ref={setRoot} lang={c.lang}>

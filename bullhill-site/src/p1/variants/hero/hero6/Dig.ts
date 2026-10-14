@@ -2,25 +2,25 @@
 //   the cut     the faces of the ground inside the trench dissolve in small cells as their points
 //               leave, and come back as the points land. A shader patch on the specimen's own
 //               materials, so at rest every material draws exactly what it drew before.
-//   the ducts   the duct groups slide along x, and a band of light runs through them
-//   the points  the ground in the trench as points in its own colours, and the fibre light coming
-//               out of the open ends. Their own scene, drawn over the whole canvas after both halves.
+//   the ducts   the duct groups slide along x, and a band of light follows the fibre tip through the
+//               orange duct, the strands themselves are set in Render.tsx
+//   the points  the ground in the trench as points in its own colours. Their own scene, drawn over the
+//               whole canvas after both halves.
 // Everything is set from p alone, so a frame at ?p= is the same frame every time.
 
 import * as THREE from 'three';
-import { DUCTS, H, L, R, Y } from './geometry';
-import { BED, COURSES, FLOOR, NEAR_END, SLIDE, TZ, courseAt, cutAt, ductOut, fibreAlpha, lightAt, sampleGround } from './acts';
+import { DUCTS, H, L, Y } from './geometry';
+import { BED, COURSES, FLOOR, SLIDE, TZ, courseAt, cutAt, ductOut, fibreAlpha, lightAt, sampleGround } from './acts';
 
 // Counts, set by the frame budget. One draw call each, a few lines of vertex work per point.
 export const GROUND_POINTS = 9000;
-export const LIGHT_POINTS = 140; // per duct
 
 export type DigRig = {
   u: {
     uDigCut: { value: THREE.Vector4 }; // sand haunch, backfill, base, surface
     uDigTape: { value: number };
     uDigBed: { value: number };
-    uLightHead: { value: number };
+    uLightHead: { value: number }; // world x of the light band
     uLightGlow: { value: number };
   };
   ducts: (THREE.Object3D | null)[];
@@ -29,6 +29,7 @@ export type DigRig = {
   floor: THREE.Object3D | null; // the trench floor, it rises with the bed
   wallTape: THREE.Object3D | null; // the tape line on the trench's far wall, back only with the tape
   fade: ((a: number) => void) | null; // the fibre strands, set by the render
+  run: ((p: number) => void) | null; // how far each strand has been blown, set by the render
 };
 
 export function makeRig(): DigRig {
@@ -40,13 +41,12 @@ export function makeRig(): DigRig {
     floor: null,
     wallTape: null,
     fade: null,
+    run: null,
   };
 }
 
 const f = (n: number) => n.toFixed(4);
 const DUCT_X = DUCTS.map((d) => (-L / 2 - d.far + L / 2 + d.near) / 2);
-const HEAD0 = -L / 2 - 0.8;
-const HEAD1 = L / 2 + 1.9;
 
 // Sets the specimen for p. Returns true while any act is under way, so the scene draws the points.
 export function applyRig(rig: DigRig, p: number) {
@@ -64,8 +64,9 @@ export function applyRig(rig: DigRig, p: number) {
   const fa = fibreAlpha(p);
   if (rig.fibre) rig.fibre.visible = fa > 0.003;
   rig.fade?.(fa);
+  rig.run?.(p);
   const lt = lightAt(p);
-  rig.u.uLightHead.value = lt.head;
+  rig.u.uLightHead.value = lt.x;
   rig.u.uLightGlow.value = lt.glow;
   if (rig.trench) rig.trench.visible = c.x + c.y + c.z + c.w + rig.u.uDigTape.value + rig.u.uDigBed.value > 0;
   return p > 0 && p < 1;
@@ -129,8 +130,8 @@ export function patchCut(m: THREE.Material, rig: DigRig, early = false) {
   return m;
 }
 
-// ---- the light in the ducts, a bright band on the outer wall running from the far end to the near
-// one. At rest uLightGlow is 0 and the duct draws as before.
+// ---- the light in the orange duct, a bright band on the outer wall that rides with the fibre tip from
+// the far end to the near one. At rest uLightGlow is 0 and the duct draws as before.
 export function patchGlow(m: THREE.Material, rig: DigRig) {
   m.onBeforeCompile = (sh) => {
     sh.uniforms.uLightHead = rig.u.uLightHead;
@@ -142,8 +143,7 @@ export function patchGlow(m: THREE.Material, rig: DigRig) {
         '#include <emissivemap_fragment>',
         `#include <emissivemap_fragment>
         {
-          float hx = mix(${f(HEAD0)}, ${f(HEAD1)}, uLightHead) - (vDigW.z + 0.6) * 0.3;
-          float d = (vDigW.x - hx) / 0.24;
+          float d = (vDigW.x - uLightHead) / 0.24;
           float band = exp(-d * d) + 0.06 * smoothstep(-6.0, 0.0, d) * step(d, 0.0);
           totalEmissiveRadiance += vec3(1.0, 0.97, 0.9) * band * uLightGlow * 1.3;
         }`,
@@ -198,34 +198,6 @@ void main() {
   gl_FragColor = vec4(vCol, vA * smoothstep(0.5, 0.32, r));
 }
 `;
-const LIGHT_VERT = /* glsl */ `
-attribute vec3 aEnd;
-attribute vec3 aRnd;
-uniform float uStream;
-uniform float uPx;
-varying float vA;
-void main() {
-  float t = (uStream - aRnd.x * 0.6) / 0.4;
-  float on = step(0.0, t) * step(t, 1.0);
-  t = clamp(t, 0.0, 1.0);
-  float a = aRnd.y * 6.2832;
-  float reach = 0.25 + aRnd.z * 0.75;
-  float rad = ${f(R * 0.55)} * sqrt(fract(aRnd.y * 7.31)) + t * (0.03 + aRnd.z * 0.08);
-  vec3 p = vec3(aEnd.x + t * reach, aEnd.y + sin(a) * rad - t * t * 0.03, aEnd.z + cos(a) * rad);
-  vA = on * sin(3.14159 * t);
-  gl_Position = projectionMatrix * modelViewMatrix * vec4(p, 1.0);
-  gl_PointSize = on > 0.5 ? uPx * (1.1 + aRnd.z * 1.2) : 0.0;
-}
-`;
-const LIGHT_FRAG = /* glsl */ `
-varying float vA;
-void main() {
-  vec2 q = gl_PointCoord - 0.5;
-  float r = length(q);
-  if (r > 0.5) discard;
-  gl_FragColor = vec4(1.0, 0.98, 0.94, vA * smoothstep(0.5, 0.1, r));
-}
-`;
 
 export function buildDig(dpr: number) {
   const scene = new THREE.Scene();
@@ -260,32 +232,8 @@ export function buildDig(dpr: number) {
   ground.frustumCulled = false;
   scene.add(ground);
 
-  const m = DUCTS.length * LIGHT_POINTS;
-  const end = new Float32Array(m * 3);
-  const rnd = new Float32Array(m * 3);
-  let s = 11;
-  const r = () => {
-    s = (s * 16807) % 2147483647;
-    return s / 2147483647;
-  };
-  DUCTS.forEach((d, i) => {
-    for (let k = 0; k < LIGHT_POINTS; k++) {
-      const j = i * LIGHT_POINTS + k;
-      end.set([NEAR_END[i], d.y, d.z], j * 3);
-      rnd.set([r(), r(), r()], j * 3);
-    }
-  });
-  const lg = new THREE.BufferGeometry();
-  lg.setAttribute('position', new THREE.BufferAttribute(new Float32Array(m * 3), 3));
-  lg.setAttribute('aEnd', new THREE.BufferAttribute(end, 3));
-  lg.setAttribute('aRnd', new THREE.BufferAttribute(rnd, 3));
-  const lu = { uStream: { value: 0 }, uPx: { value: 2.2 * dpr } };
-  const light = new THREE.Points(lg, new THREE.ShaderMaterial({ vertexShader: LIGHT_VERT, fragmentShader: LIGHT_FRAG, uniforms: lu, transparent: true, depthWrite: false }));
-  light.frustumCulled = false;
-  scene.add(light);
-
   // set the points for p, and say whether there is anything to draw. Without dust the ground's points
-  // stay hidden and only the light is drawn, for the stills, where the 2D layer plays the ground.
+  // stay hidden, for the stills, where the 2D layer plays the ground.
   const update = (p: number, dust = true) => {
     const ks = COURSES.map((c) => courseAt(p, c));
     // COURSES is bed, sand, backfill, tape, base, surface
@@ -294,12 +242,9 @@ export function buildDig(dpr: number) {
     gu.uFall.value.set(ks[1].fall, ks[2].fall, ks[4].fall, ks[5].fall);
     gu.uTape.value.set(ks[3].lift, ks[3].fall);
     gu.uP.value = p;
-    const st = lightAt(p).stream;
-    lu.uStream.value = st;
     ground.visible = dust && ks.some((k) => k.lift > 0 && k.fall < 1);
-    light.visible = st > 0 && st < 1;
-    return ground.visible || light.visible;
+    return ground.visible;
   };
-  return { scene, update, counts: { ground: n, light: m } };
+  return { scene, update, counts: { ground: n } };
 }
 

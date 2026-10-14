@@ -17,9 +17,8 @@
 // scroll (hero6/acts.ts), from the same scene with ?p= on the still route. Each is the half and half
 // frame, schematic left and render right at the phone's seam 0.6, with the ground's points left out
 // (dust=0), the phone page plays those in 2D. Each is held to 90KB, the script steps the WebP quality
-// down until it fits, encoding with Pillow (python3) so the alpha channel has its own quality. STEP_P is the p of each still, the end of its step, 0.2, 0.35, 0.55 and 1. Step 4
-// is shot at 0.64, with the pulse of light in the ducts and out of their ends, since at its end 0.7 the
-// light has gone and the frame would repeat step 3.
+// down until it fits, encoding with Pillow (python3) so the alpha channel has its own quality. STEP_P is the p of each still, the end of its step, 0.2, 0.35, 0.55, 0.7 and 1. Step 4
+// is shot at its end, where the fibre strands are blown through and out of the near end of the orange duct.
 //
 // The scene is reached through ?v=1&hero=6&still=wide|mid|tall, which draws only the scene at the
 // view's nominal size (VIEWS in src/p1/variants/hero/hero6/geometry.ts). Software WebGL needs 9 to
@@ -44,7 +43,7 @@ const views = steps ? ['tall'] : arg('views', seams ? 'tall,mid' : 'wide,mid,tal
 // webp quality per view for the pair, the phone pair is held to about 100 to 150KB together
 const Q = { tall: Number(arg('quality', '80')), mid: Number(arg('quality', '78')), wide: Number(arg('quality', '78')) };
 const wait = Number(arg('wait', '12000'));
-const STEP_P = [0.2, 0.35, 0.55, 0.64, 1];
+const STEP_P = [0.2, 0.35, 0.55, 0.7, 1];
 const STEP_SEAM = 0.6; // the phone's seam, the middle of the block in the right of its box, SEAM0_TALL
 const STEP_MAX = 90000;
 const QUALITY = [[84, 90], [82, 80], [80, 70], [78, 60], [74, 50], [70, 40], [64, 30]];

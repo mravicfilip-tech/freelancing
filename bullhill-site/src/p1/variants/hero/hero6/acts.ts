@@ -7,7 +7,7 @@ import { DUCTS, H, L, Y, clamp01, rng, smooth, type V3 } from './geometry';
 //   1 Dig                 p 0 to 0.2     the trench opens, the ground in it lifts out as points
 //   2 Sand bed            p 0.2 to 0.35  sand pours onto the trench floor and settles flat
 //   3 Ducts               p 0.35 to 0.55 the empty ducts slide in along the sand bed
-//   4 Ready for fibre     p 0.55 to 0.7  a pulse of light runs through the ducts and out of their ends
+//   4 Fibre blown in      p 0.55 to 0.7  the strands run the length of the orange duct, tips lit, and come out of its near end
 //   5 Backfill, restore   p 0.7 to 1     the same points fall back in layers, tape, base, surface
 //
 // The seam does not move. The schematic half stays the finished plan, the work is on the render half.
@@ -89,19 +89,47 @@ export function ductOut(p: number, i: number) {
   return Math.pow(1 - back, 3);
 }
 
-// The ducts are empty from the dig to the end of step 5. The strands the finished specimen carries
-// out of the orange duct leave with it in the dig and come back as the ground closes.
+// The strands of the finished specimen leave with the orange duct in the dig, and are gone for steps
+// 2 and 3. In step 4 they are blown in, see strandRun, and from the end of it they stay to p 1.
 export function fibreAlpha(p: number) {
   if (p < P_SAND) return 1 - smooth(seg(digAt(p), 0.2, 0.5));
-  return smooth(seg(p, 0.9, 0.99));
+  return p >= FIBRE.p0 ? 1 : 0;
 }
 
-// light in the ducts in step 4, from the far end to the near one, then out of the open ends as points
-export const LIGHT = { head0: P_DUCTS + 0.005, head1: 0.64, stream0: 0.6, stream1: P_LIGHT };
+// The strands enter the orange duct at its far end and come out of the near one, to the length the
+// finished specimen shows. They run from p0 to p1, each a little behind the leader by up to stagger of
+// the run, so the tips do not arrive in a row. The leader is strand 0.
+const FD = DUCTS.find((d) => d.fibre)!;
+export const FIBRE_X0 = -L / 2 - FD.far;
+export const FIBRE_X1 = L / 2 + FD.near;
+export const FIBRE = { p0: 0.56, p1: 0.68, stagger: 0.16 };
+export const strandDelay = (i: number) => ((i * 0.618034) % 1) * FIBRE.stagger;
+// how far a strand has got, 0 at the far end of its duct, 1 at its tip out of the near end. Before the
+// dig has taken them, and from the end of the run, it is 1, the finished strand.
+export function strandRun(p: number, delay: number) {
+  if (p < P_SAND) return 1;
+  return clamp01((seg(p, FIBRE.p0, FIBRE.p1) - delay) / (1 - delay));
+}
+// The first RUN_IN of the run is the length of the duct, the rest is the strand coming out of the near
+// end and settling at its length. The duct is mostly hidden in the ground, so the tip is quick at the
+// far end and slows towards the near one, to the speed it comes out at.
+const RUN_IN = 0.55;
+export function strandX(run: number, tipX: number) {
+  if (run < RUN_IN) {
+    const u = run / RUN_IN;
+    return FIBRE_X0 + (0.74 * (1 - (1 - u) * (1 - u)) + 0.26 * u) * (FIBRE_X1 - FIBRE_X0);
+  }
+  const s = (run - RUN_IN) / (1 - RUN_IN);
+  return FIBRE_X1 + (1 - (1 - s) * (1 - s)) * (tipX - FIBRE_X1);
+}
+
+// The light head, a band on the orange duct's wall that follows the leading tip through the duct, in
+// world x. It dims as the tip comes out of the near end, since the strand carries the light from there.
 export function lightAt(p: number) {
-  const h = clamp01((p - LIGHT.head0) / (LIGHT.head1 - LIGHT.head0));
-  const glow = clamp01((p - LIGHT.head0) / 0.02) * (1 - clamp01((p - LIGHT.head1 + 0.02) / 0.05));
-  return { head: h, glow, stream: clamp01((p - LIGHT.stream0) / (LIGHT.stream1 - LIGHT.stream0)) };
+  const run = strandRun(p, 0);
+  const x = Math.min(FIBRE_X1, strandX(run, FIBRE_X1));
+  const on = clamp01((p - FIBRE.p0) / 0.02) * (1 - smooth(seg(run, RUN_IN - 0.08, RUN_IN)));
+  return { x, glow: p < P_SAND ? 0 : on };
 }
 
 // the headline, lede and buttons leave in the last part of step 5, 0 to 1
@@ -170,6 +198,3 @@ export function grainAt(g: Grain, p: number): { pos: V3; a: number; f: number } 
   ];
   return { pos, a: smooth(clamp01(f / 0.12)), f };
 }
-
-// the near end of each duct, where the light comes out
-export const NEAR_END = DUCTS.map((d) => L / 2 + d.near);

@@ -6,15 +6,19 @@ import { useLayoutEffect, useMemo } from 'react';
 import type { MutableRefObject } from 'react';
 import { useThree } from '@react-three/fiber';
 import * as THREE from 'three';
-import { DUCTS, FIBRE_OUT, H, L, R, WALL, W, Y, camDir, rng, type DuctSpec, type View, type V3 } from './geometry';
+import { DUCTS, FIBRE_OUT, H, L, R, WALL, W, Y, camDir, clamp01, rng, type DuctSpec, type View, type V3 } from './geometry';
 import { TILE_H, TILE_W, ductRough, falloff, makeGround, type Kind } from './textures';
-import { FLOOR, TZ } from './acts';
+import { FIBRE_X1, FLOOR, TZ, strandDelay, strandRun, strandX } from './acts';
 import { patchCut, patchGlow, type DigRig } from './Dig';
 
 const GREEN = '#37864f';
 const ORANGE = '#c9531f';
 
 type Ground = ReturnType<typeof makeGround>;
+
+// where a strand's clipping plane sits when the strand is whole, and how lit a tip is while it runs
+const CLIP_OFF = 1e4;
+const FLIGHT_LEVEL = 0.35;
 
 // ---- the room, soft boxes in a dark box, baked once into a prefiltered cube
 function buildEnv(gl: THREE.WebGLRenderer, view: View) {
@@ -242,17 +246,19 @@ function Duct({ spec, mats, gref }: { spec: DuctSpec; mats: { outer: THREE.Mater
 function Ducts({ env, dig }: { env: THREE.Texture; dig: DigRig }) {
   const rough = useMemo(() => ductRough(), []);
   const mats = useMemo(() => {
-    const mk = (color: string) => {
+    // only the orange duct carries strands, so only it gets the light that follows the tip
+    const mk = (color: string, glow = false) => {
       const map = rough.clone();
       map.repeat.set(1, 6);
       map.needsUpdate = true;
+      const outer = new THREE.MeshPhysicalMaterial({ color, roughness: 0.5, roughnessMap: map, metalness: 0, clearcoat: 1, clearcoatRoughness: 0.035, ior: 1.46, envMap: env, envMapIntensity: 1.25, side: THREE.FrontSide });
       return {
-        outer: patchGlow(new THREE.MeshPhysicalMaterial({ color, roughness: 0.5, roughnessMap: map, metalness: 0, clearcoat: 1, clearcoatRoughness: 0.035, ior: 1.46, envMap: env, envMapIntensity: 1.25, side: THREE.FrontSide }), dig),
+        outer: glow ? patchGlow(outer, dig) : outer,
         inner: new THREE.MeshStandardMaterial({ color: new THREE.Color(color).multiplyScalar(0.38), roughness: 0.55, metalness: 0, side: THREE.BackSide }),
         rim: new THREE.MeshPhysicalMaterial({ color, roughness: 0.5, metalness: 0, clearcoat: 0.6, clearcoatRoughness: 0.2, side: THREE.DoubleSide }),
       };
     };
-    return { green: mk(GREEN), orange: mk(ORANGE) };
+    return { green: mk(GREEN), orange: mk(ORANGE, true) };
   }, [rough, env, dig]);
   const ring = useMemo(() => falloff('ring'), []);
   const ringMat = useMemo(() => patchCut(new THREE.MeshBasicMaterial({ map: ring, transparent: true, opacity: 0.8, depthWrite: false, polygonOffset: true, polygonOffsetFactor: -1, polygonOffsetUnits: -1 }), dig, true), [ring, dig]);
@@ -278,10 +284,13 @@ function Ducts({ env, dig }: { env: THREE.Texture; dig: DigRig }) {
 // ---- fibres, thin strands out of the orange duct with a lit tip each
 // Beat 3 runs light across the fibre ends. The rig sets how lit each one is, 0 at rest, and u is its
 // place along the row, 0 to 1, so a pulse can travel through them.
-// fade(a) is how much of the strands show, 0 to 1, for the steps where the ducts are empty.
+// fade(a) is how much of the strands show, 0 to 1, for the steps where the ducts are empty. run(p) is
+// step 4, each strand drawn only up to its tip by a clipping plane, so the strand grows out of the
+// duct. The strand tubes are the finished ones, the part inside the duct is hidden by its wall.
 export type FibreRig = { u: number[]; set(i: number, level: number): void };
 
 function Fibres({ rig, dig }: { rig: MutableRefObject<FibreRig | null>; dig: DigRig }) {
+  const gl = useThree((s) => s.gl);
   const parts = useMemo(() => {
     const d = DUCTS.find((x) => x.fibre)!;
     const r = rng(41);
@@ -302,7 +311,7 @@ function Fibres({ rig, dig }: { rig: MutableRefObject<FibreRig | null>; dig: Dig
     const glow = new THREE.SpriteMaterial({ map: glowTex, transparent: true, depthWrite: false, blending: THREE.AdditiveBlending, opacity: 0.55 });
     const end = L / 2 + d.near;
     const n = 15;
-    const out: { tube: THREE.TubeGeometry; tip: V3 }[] = [];
+    const out: { tube: THREE.TubeGeometry; tip: V3; path: V3[] }[] = [];
     for (let i = 0; i < n; i++) {
       const a = r() * Math.PI * 2;
       const rad = Math.sqrt(r()) * (R - WALL - 0.02);
@@ -320,25 +329,37 @@ function Fibres({ rig, dig }: { rig: MutableRefObject<FibreRig | null>; dig: Dig
         new THREE.Vector3(end + reach, d.y + oy * 0.5 + fan + droop, d.z + oz * 0.5 + side),
       ];
       const curve = new THREE.CatmullRomCurve3(pts, false, 'catmullrom', 0.5);
-      out.push({ tube: new THREE.TubeGeometry(curve, 36, 0.0042, 6, false), tip: [pts[4].x, pts[4].y, pts[4].z] });
+      const path = curve.getSpacedPoints(64).map((v): V3 => [v.x, v.y, v.z]);
+      out.push({ tube: new THREE.TubeGeometry(curve, 36, 0.0042, 6, false), tip: [pts[4].x, pts[4].y, pts[4].z], path });
     }
     return { out, mat, tipMat, glow, tipGeo: new THREE.SphereGeometry(0.0072, 12, 8) };
   }, []);
   // one material and one glow each, so one fibre can light while its neighbours stay dark
+  // and one clipping plane, kept far past the strand when it is whole
   const own = useMemo(
-    () => parts.out.map(() => ({ mat: parts.mat.clone(), glow: parts.glow.clone() })),
+    () =>
+      parts.out.map(() => {
+        const mat = parts.mat.clone();
+        const plane = new THREE.Plane(new THREE.Vector3(-1, 0, 0), CLIP_OFF);
+        mat.clippingPlanes = [plane];
+        mat.clipShadows = true;
+        return { mat, glow: parts.glow.clone(), plane };
+      }),
     [parts],
   );
   const sprites = useMemo<(THREE.Sprite | null)[]>(() => parts.out.map(() => null), [parts]);
+  const tips = useMemo<(THREE.Mesh | null)[]>(() => parts.out.map(() => null), [parts]);
   useLayoutEffect(() => {
+    gl.localClippingEnabled = true;
     const zs = parts.out.map((f) => f.tip[2]);
     const lo = Math.min(...zs);
     const hi = Math.max(...zs);
     let alpha = 1;
     const levels = zs.map(() => 0);
+    const flight = zs.map(() => 0); // the tip is lit while it is on its way
     const paint = (i: number) => {
       const o = own[i];
-      const level = levels[i];
+      const level = Math.max(levels[i], flight[i]);
       o.mat.emissiveIntensity = 0.1 + 1.1 * level;
       o.glow.opacity = (0.55 + 0.45 * level) * alpha;
       const sp = sprites[i];
@@ -371,17 +392,58 @@ function Fibres({ rig, dig }: { rig: MutableRefObject<FibreRig | null>; dig: Dig
         paint(i);
       });
     };
+    dig.run = (p) => {
+      const off = dig.fibre?.position.x ?? 0;
+      parts.out.forEach((f, i) => {
+        const run = strandRun(p, strandDelay(i));
+        const tip = f.tip;
+        let at: V3 = tip;
+        let cut = CLIP_OFF;
+        if (run < 1) {
+          // the tip is where the strand's own path reaches x, in a straight line before the path starts
+          const x = strandX(run, tip[0]);
+          const q = f.path;
+          cut = x + off;
+          if (x <= q[0][0]) at = [x, q[0][1], q[0][2]];
+          else {
+            let k = 1;
+            while (k < q.length - 1 && q[k][0] < x) k++;
+            const t = clamp01((x - q[k - 1][0]) / (q[k][0] - q[k - 1][0] || 1));
+            at = [x, q[k - 1][1] + (q[k][1] - q[k - 1][1]) * t, q[k - 1][2] + (q[k][2] - q[k - 1][2]) * t];
+          }
+        }
+        own[i].plane.constant = cut;
+        const next = run > 0 && run < 1 ? FLIGHT_LEVEL : 0;
+        if (next !== flight[i]) {
+          flight[i] = next;
+          paint(i);
+        }
+        // inside the duct nothing of the tip can be seen, so it waits until it nears the open end
+        const seen = at[0] > FIBRE_X1 - 0.3;
+        const sp = sprites[i];
+        const tm = tips[i];
+        if (sp) {
+          sp.position.set(...at);
+          sp.visible = seen;
+        }
+        if (tm) {
+          tm.position.set(...at);
+          tm.visible = seen;
+        }
+      });
+    };
     return () => {
       rig.current = null;
       dig.fade = null;
+      dig.run = null;
     };
-  }, [parts, own, sprites, rig, dig]);
+  }, [gl, parts, own, sprites, tips, rig, dig]);
   return (
     <group ref={(g) => void (dig.fibre = g)}>
       {parts.out.map((f, i) => (
         <group key={i}>
           <mesh geometry={f.tube} material={own[i].mat} castShadow />
-          <mesh geometry={parts.tipGeo} material={parts.tipMat} position={f.tip} />
+          <mesh ref={(n) => void (tips[i] = n)} geometry={parts.tipGeo} material={parts.tipMat} position={f.tip} />
           <sprite ref={(n) => void (sprites[i] = n)} material={own[i].glow} position={f.tip} scale={[0.05, 0.05, 0.05]} />
         </group>
       ))}

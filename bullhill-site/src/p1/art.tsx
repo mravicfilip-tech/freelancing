@@ -212,7 +212,7 @@ export function ScatterField({ className, seed }: { className?: string; seed: nu
 // ---------------------------------------------------------------------------------------------
 // The four service cards. Each is drawn in a 240 by 300 box.
 
-function trenchDots(): Dot[] {
+export function trenchDots(): Dot[] {
   const out: Dot[] = [];
   const cols = 16;
   const rows = 22;
@@ -234,7 +234,7 @@ function trenchDots(): Dot[] {
   return out;
 }
 
-function ductDots(): Dot[] {
+export function ductDots(): Dot[] {
   const out: Dot[] = [];
   const ring = (cx: number, cy: number, rad: number, n: number, r: number, t: Tone, o = 1) => {
     for (let k = 0; k < n; k++) {
@@ -252,7 +252,7 @@ function ductDots(): Dot[] {
   return out;
 }
 
-function houseDots(): Dot[] {
+export function houseDots(): Dot[] {
   const out: Dot[] = [];
   const line = (x1: number, y1: number, x2: number, y2: number, step: number, r: number, t: Tone, o = 1) => {
     const len = Math.hypot(x2 - x1, y2 - y1);
@@ -280,7 +280,7 @@ function houseDots(): Dot[] {
   return out;
 }
 
-function layerDots(): Dot[] {
+export function layerDots(): Dot[] {
   const out: Dot[] = [];
   const gaps = [0.66, 0.54, 0.42, 0.3, 0.18, 0, 0, 0];
   gaps.forEach((g, k) => {

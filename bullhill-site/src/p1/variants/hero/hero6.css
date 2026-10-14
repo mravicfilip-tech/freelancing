@@ -1,10 +1,10 @@
 /* Hero 6, the cable through ground specimen. Phone first, then 768 and 1200. Every selector under
  * .p1. The grid is .g and .gc from foundry.css. The canvas is transparent, so the red glow is the
- * hero's own CSS background, Foundry's #111 ground with bull-red radial gradients. */
+ * hero's own CSS background, Foundry's full black ground with bull-red radial gradients. */
 
 /* clip, never hidden, so the sticky stage still pins */
-.p1 .hv6 { background: var(--ink); overflow: clip; }
-.p1 .hv6__pin { position: relative; background: var(--ink); }
+.p1 .hv6 { background: var(--ground); overflow: clip; }
+.p1 .hv6__pin { position: relative; background: var(--ground); }
 /* the red glow is its own layer, so beat 3 can breathe it with opacity alone */
 .p1 .hv6__pin::before {
   content: '';
@@ -89,6 +89,12 @@
 /* One 844px screen with air, Filip 14 October. The headline halves are 40px, two lines each, 80px,
  * and the space under the second half is 48px, the TALL_HALF and TALL_FOOT of Hero6.tsx. */
 @media (max-width: 767px) {
+  /* phones keep the headline, lede and button through the whole pin, Filip "content from mobile
+   * shouldnt disappear on scroll" */
+  .p1 .hv6[data-pin='yes'] .hv6__top,
+  .p1 .hv6[data-pin='yes'] .hv6__side { opacity: 1; transform: none; }
+  .p1 .hv6__pin[data-gone='yes'] .hv6__top,
+  .p1 .hv6__pin[data-gone='yes'] .hv6__side { visibility: visible; }
   .p1 .hv6__in { display: grid; grid-template-columns: minmax(0, 1fr); grid-template-rows: minmax(0, 1fr) auto; padding-top: calc(var(--hd-h) + 32px); padding-bottom: 32px; }
   .p1 .hv6__top { display: flex; grid-area: 1 / 1; position: relative; z-index: 10; padding-bottom: 48px; }
   .p1 .hv6__title { display: flex; flex-direction: column; justify-content: space-between; width: 100%; font-size: 40px; line-height: 40px; pointer-events: none; }

@@ -70,7 +70,7 @@
 }
 
 /* ---------- FAQ, a light panel with the crosshair frame, Radix accordion on the right ---------- */
-.p1 .faq { padding: 0 0 64px; background: var(--ink); }
+.p1 .faq { padding: 0 0 64px; background: var(--ground); }
 .p1 .faq__panel { position: relative; padding: 12px; border-radius: 0; background: var(--paper); color: var(--ink); overflow: hidden; }
 /* Soft bull-red glow along the bottom edge, fading to transparent. */
 .p1 .faq__glow {
@@ -145,4 +145,4 @@
 }
 
 /* ---------- contact, dark ground behind the panel so the grid wide card reads above 1664 ---------- */
-.p1 .conw { position: relative; margin: -24px 0; background: var(--ink); }
+.p1 .conw { position: relative; margin: -24px 0; background: var(--ground); }

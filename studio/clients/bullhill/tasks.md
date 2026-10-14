@@ -70,11 +70,13 @@ Task format
   - [x] Who we are gap back to 96px
   - [x] Build the whole site motion, two slices, above and below Process
   - [x] Motion clips to Filip at 1440 and 390
-  - [ ] Hero scroll as five named steps
   - [x] Audience dots moving, first build
   - [x] Audience particles 1:1 with worldquantfoundry, the FAQ wave and the process header dots moving
   - [x] Closing headline and links full white
   - [x] Service card micro animations, board of four, Filip picks a number, 3 with a loop
+  - [x] Hero scroll as five named steps, merged
+  - [x] Phone fixes, hero words stay, service drawings back, projects and contact gaps, menu
+  - [x] Full black ground across the site
   - [ ] Hero clip to Filip
   - [x] Phone hero in one screen with air, smaller parts
   - [ ] /uireview, then Filip's ship line

@@ -17,7 +17,7 @@
   height: 22px;
   padding: 0 8px;
   border: 1px solid var(--bh-grey-200);
-  background: var(--ink);
+  background: var(--ground);
   color: var(--bh-grey-100);
   font-family: var(--f-mono);
   font-size: 12px;

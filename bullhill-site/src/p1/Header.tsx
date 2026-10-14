@@ -1,9 +1,10 @@
 import { Dialog } from 'radix-ui';
 import { useState } from 'react';
+import type { CSSProperties } from 'react';
 import type { Content, Lang } from '../shared/content';
 import { LangSwitch } from '../shared/LangSwitch';
 import { Logo } from '../shared/Logo';
-import { PhoneIcon } from './art';
+import { Arrow, PhoneIcon } from './art';
 import { Bracket } from './Bracket';
 import { t } from './copy';
 
@@ -62,9 +63,11 @@ export function Header({ c, setLang, root }: { c: Content; setLang: (l: Lang) =>
                 </div>
                 <nav className="menu__nav" aria-label={x.mainNav}>
                   {c.nav.map((n, i) => (
-                    <a key={n.id} href={`#${n.id}`} className="menu__link" onClick={() => setOpen(false)}>
-                      <span className="menu__n">{String(i + 1).padStart(2, '0')}</span>
+                    <a key={n.id} href={`#${n.id}`} className="menu__link" style={{ '--mi': i } as CSSProperties} onClick={() => setOpen(false)}>
                       {n.label}
+                      <span className="menu__go" aria-hidden="true">
+                        <Arrow dir="right" />
+                      </span>
                     </a>
                   ))}
                 </nav>

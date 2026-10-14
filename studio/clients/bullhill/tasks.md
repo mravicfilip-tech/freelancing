@@ -25,9 +25,7 @@ Task format
 
 ## In progress
 
-## Review
-
-- bullhill-1 BullHill company website, one page, three pathways Foundry, Daylight and Underground at /?v=1, 2 and 3. Plan in briefs/website/plan.md, branch claude/hopeful-maxwell-bwuy3c
+- bullhill-1 BullHill company website, one page, Foundry direction at /?v=1. Plan in briefs/website/plan.md, branch claude/hopeful-maxwell-bwuy3c
   - [x] Put the logo files and brand colours on file
   - [x] Propose the page sections
   - [x] Filip answers the plan questions and sends references
@@ -39,8 +37,11 @@ Task format
   - [x] Clean, upscale and cut the seven work photos
   - [x] Round 2, real photos and a work section after the hero in all three, briefs/website/round2.md
   - [x] Full logo in the Underground header
-  - [ ] Filip picks a pathway
+  - [x] Filip picks a pathway, Foundry, the other two frozen at b0bf997
+  - [ ] Round 3, Foundry patches from Filip's notes, briefs/website/round3-notes.md
   - [ ] Motion round on the pick
   - [ ] /uireview, then Filip's ship line
+
+## Review
 
 ## Done

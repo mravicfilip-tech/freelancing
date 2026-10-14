@@ -1,7 +1,7 @@
 # BullHill website, section plan
 
-Status. Sections proposed 14 October 2026. Filip answered and sent three references the same day, and
-asked for three high fidelity pathways, one per reference. Being built, see Pathways.
+Status. Sections proposed 14 October 2026. Three pathways built the same day, one per reference.
+Filip picked pathway 1 Foundry, see Pick.
 
 ## The ask
 
@@ -88,7 +88,13 @@ Builder briefs are `build-rules.md` and `pathway-1-foundry.md`, `pathway-2-dayli
 `pathway-3-underground.md` in this folder. All three read the same content from
 `bullhill-site/src/shared/content.ts`.
 
+## Pick, 14 October 2026
+
+Filip picked pathway 1 Foundry, "I like v1 best", and "we'll focus on v1 then only". Daylight and
+Underground are frozen at commit b0bf997. He wants some elements of Underground in Foundry, the
+work section cards first. Round 3 collects his patch notes in `round3-notes.md`.
+
 ## Next
 
-Filip picks one pathway, or names what to carry from the others. Then the pick is logged with
-`/taste`, the other two freeze, and motion is planned against the picked reference with `/story`.
+Plan round 3 from the notes in one pass when Filip says go. Motion after that, planned against
+worldquantfoundry.com with `/story`.

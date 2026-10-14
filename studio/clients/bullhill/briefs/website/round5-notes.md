@@ -66,6 +66,24 @@ Refused, and why.
   called AI slop for the same reason.
 - A faster or wider camera move. More camera is still only a camera.
 
+6. Process steps, three ticks in place of the CTA, queued while builders run. "we dont have these pages
+   yet, they should be 3 ticks not CTAs - apply this on this whole sections blocks here", on step 01
+   in German with its "Mehr erfahren" button circled. All four step rows lose the Know more button
+   (`step__btn` in `Process.tsx`, `knowMore` in `copy-process.ts`) and get three ticks. No copy for
+   ticks exists, so the draft takes the three facts each step's own sentence already states, no new
+   claims. Lands in the process builder's files, planned after it reports. The wider reading, the
+   project cards' View project buttons, which point at no page either, waits on Filip.
+
+   | Step | English ticks | German ticks |
+   |---|---|---|
+   | 01 | Route walked. Existing lines marked. Road permits sorted | Trasse abgegangen. Bestehende Leitungen markiert. Genehmigungen geklärt |
+   | 02 | Trench to plan depth. Section by section. Street kept passable | Graben auf Plantiefe. Abschnitt für Abschnitt. Straße bleibt befahrbar |
+   | 03 | Ducts on a sand bed. Chambers set. Warning tape above | Rohre im Sandbett. Schächte gesetzt. Warnband darüber |
+   | 04 | Trench compacted. Surface put back. Ready for cable | Graben verdichtet. Oberfläche wiederhergestellt. Bereit für das Kabel |
+
+   Since the ticks repeat the sentence above them, the default drops the sentence and each step reads
+   number, title, three ticks. That changes the step layout, so it is its own line for Filip.
+
 ## Phone hero, proposed after the reference
 
 What the reference does. The wordmark top left and one square menu button top right. The headline in

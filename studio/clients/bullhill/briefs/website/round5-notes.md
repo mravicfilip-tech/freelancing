@@ -84,6 +84,12 @@ Refused, and why.
    Since the ticks repeat the sentence above them, the default drops the sentence and each step reads
    number, title, three ticks. That changes the step layout, so it is its own line for Filip.
 
+7. Work card captions, one size. "text should be indentical size (smaller) not 1 big, 1 small here", on
+   the work row's caption line. The number `.wk__n` in `r3-work.css` is mono 24px over a caption of
+   16px on phones and 18px from 768. The number takes the caption's size and line height, so both read
+   16px and 18px. The 48 and 56px number column stays, so the caption text does not move. No running
+   builder owns `r3-work.css`, so it can go in at once on a "do this now".
+
 ## Phone hero, proposed after the reference
 
 What the reference does. The wordmark top left and one square menu button top right. The headline in

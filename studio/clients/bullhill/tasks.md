@@ -47,7 +47,8 @@ Task format
   - [x] Build hero 6, cable through ground, briefs/website/hero6.md
   - [x] Collect Filip's round 4 notes, five in briefs/website/round4-notes.md
   - [x] Round 4 sweep, sharp corners, closing photo, tracking, logo
-  - [ ] Round 4 slab button versions, briefs/website/round4.md
+  - [x] Round 4 slab button versions, briefs/website/round4.md
+  - [ ] Filip picks a slab version, 1 to 5
   - [x] Hero 6 motion story, decode and beats, Filip said yes
   - [ ] Build hero 6 beat 4, scroll out, briefs/website/hero6-story.md
   - [ ] Motion round on the pick

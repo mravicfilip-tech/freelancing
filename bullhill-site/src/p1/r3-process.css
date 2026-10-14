@@ -1,0 +1,192 @@
+/* Round 3, the process section on the one content grid. Notes 2, 3 and 6.
+ * Head, trench drawing, layer legend and step rows all sit on .g and .gc from foundry.css.
+ * Phone first, then 768 and 1200. Every selector sits under .p1. */
+
+/* ---------- head ---------- */
+.p1 .proc__head { position: relative; margin-top: 96px; text-align: center; }
+.p1 .proc__head > * { grid-column: 1 / -1; }
+.p1 .proc__title { font-size: 40px; line-height: 40px; }
+.p1 .proc__lede { margin: 24px 0 0; }
+
+/* ---------- the trench drawing, in a dark panel with the red hill behind it ---------- */
+.p1 .pfig {
+  position: relative;
+  isolation: isolate;
+  margin: 64px 0 0;
+  padding: 24px 0;
+  overflow: hidden;
+  border-radius: 24px;
+  background: var(--bh-grey-975);
+  color: #fff;
+}
+/* Daylight's glowing hill, a bull-red dome that rises behind the drawing and fades out below it. */
+.p1 .pfig__hill {
+  --d: 420px;
+  position: absolute;
+  z-index: 0;
+  left: 50%;
+  top: 0;
+  width: calc(var(--d) + 320px);
+  height: 100%;
+  transform: translateX(-50%);
+  pointer-events: none;
+  -webkit-mask-image: linear-gradient(180deg, #000 55%, transparent 100%);
+  mask-image: linear-gradient(180deg, #000 55%, transparent 100%);
+}
+.p1 .pfig__hill::before {
+  content: '';
+  position: absolute;
+  left: 50%;
+  top: 8px;
+  width: var(--d);
+  height: var(--d);
+  transform: translateX(-50%);
+  border-radius: 50%;
+  opacity: 0.55;
+  background: radial-gradient(circle at 50% 8%, var(--bh-red) 0, var(--bh-red) 10%, var(--bh-red-dark) 22%, rgba(0, 0, 0, 0.9) 38%, var(--bh-black) 50%);
+  box-shadow: inset 0 10px 30px -8px rgba(255, 255, 255, 0.4), 0 0 120px 20px rgba(208, 11, 17, 0.34), 0 -6px 40px rgba(208, 11, 17, 0.5);
+}
+.p1 .pfig__clip { position: relative; z-index: 10; overflow: hidden; }
+/* Phone and tablet crop the margins that hold the labels, and the numbered badges take their place. */
+.p1 .pfig__box { position: relative; width: 127.06%; margin-left: -12.94%; aspect-ratio: 1080 / 390; }
+.p1 .pfig__svg { position: absolute; inset: 0; width: 100%; height: 100%; max-width: none; display: block; overflow: visible; }
+.p1 .cut__lead circle { r: 8px; }
+
+/* labels, the tag of Underground in Foundry mono. The facing edge sits on the leader start. */
+.p1 .cl {
+  display: none;
+  position: absolute;
+  align-items: center;
+  gap: 8px;
+  min-height: 32px;
+  padding: 4px 12px 4px 8px;
+  border: 1px solid var(--bh-grey-500);
+  background: var(--bh-grey-975);
+  color: #fff;
+  font-family: var(--f-mono);
+  font-size: 12px;
+  line-height: 16px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+.p1 .cl--l { transform: translate(-100%, -50%); }
+.p1 .cl--r { transform: translate(0, -50%); }
+.p1 .cl__icon { flex: none; color: var(--bh-red); }
+.p1 .cn {
+  position: absolute;
+  display: grid;
+  place-items: center;
+  width: 20px;
+  height: 20px;
+  border: 1px solid var(--bh-grey-400);
+  background: var(--bh-grey-975);
+  color: #fff;
+  letter-spacing: 0;
+}
+.p1 .cn--l { transform: translate(-100%, -50%); }
+.p1 .cn--r { transform: translate(0, -50%); }
+
+/* ---------- the layer legend ---------- */
+.p1 .layers { position: relative; margin: 48px 0 0; padding: 0; list-style: none; }
+.p1 .layer { padding: 16px 0; row-gap: 8px; align-items: baseline; border-top: 1px solid var(--hair-ink); color: var(--bh-grey-500); }
+.p1 .layer:last-child { border-bottom: 1px solid var(--hair-ink); }
+.p1 .layer__k { grid-column: 1; color: var(--bh-grey-700); }
+.p1 .layer__l { grid-column: 2 / -1; font-size: 28px; line-height: 28px; }
+.p1 .layer__note { grid-column: 2 / -1; color: var(--bh-grey-600); }
+.p1 .layer--surface { color: var(--bh-grey-500); }
+.p1 .layer--base { color: var(--bh-grey-600); }
+.p1 .layer--tape { color: var(--bh-grey-600); }
+.p1 .layer--backfill { color: var(--bh-grey-700); }
+.p1 .layer--ducts { color: var(--bh-grey-950); }
+.p1 .layer--sand { color: var(--bh-grey-800); }
+.p1 .layer--focus .layer__note { display: inline-flex; align-items: center; gap: 8px; justify-self: start; color: var(--ink); }
+.p1 .layer--focus .layer__note::before { content: ''; width: 8px; height: 8px; background: var(--bh-red); }
+.p1 .layers__depth { position: relative; margin: 24px 0 0; color: var(--bh-grey-600); }
+
+/* ---------- the step rows ---------- */
+.p1 .steps { position: relative; margin: 48px 0 0; padding: 0; list-style: none; }
+.p1 .step { row-gap: 24px; padding: 32px 0 48px; border-top: 1px solid var(--hair-ink); }
+.p1 .step__media, .p1 .step__text { grid-column: 1 / -1; }
+.p1 .step__text { display: flex; flex-direction: column; justify-content: space-between; gap: 16px; }
+.p1 .step__n { margin: 0 0 24px; color: var(--ink); }
+.p1 .step__title { margin: 0; font-size: 28px; line-height: 28px; }
+.p1 .step__bot { display: flex; flex-direction: column; align-items: flex-start; gap: 24px; }
+.p1 .step__body { margin: 0; max-width: 34ch; }
+
+/* the notched photo frame of note 1, in Foundry's colours */
+.p1 .pframe { --notch-h: 32px; --notch-w: 96px; --notch-c: 32px; position: relative; isolation: isolate; padding: 8px; border: 1px solid var(--hair-ink); }
+.p1 .pframe__clip {
+  position: relative;
+  aspect-ratio: 5 / 4;
+  clip-path: polygon(0 0, 100% 0, 100% calc(100% - var(--notch-h)), calc(100% - var(--notch-w)) calc(100% - var(--notch-h)), calc(100% - var(--notch-w) - var(--notch-c)) 100%, 0 100%);
+}
+.p1 .pframe__ph {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  --ph-bg: var(--bh-black);
+  --ph-fg: #fff;
+  --ph-radius: 8px;
+  --ph-pad: 16px;
+  --ph-mono: var(--f-mono);
+  --ph-mark-opacity: 0.1;
+}
+.p1 .pframe__ph.photo { border-radius: 8px; }
+.p1 .pframe .ph__brief { right: calc(var(--notch-w) + var(--notch-c) + 24px); }
+.p1 .pframe__bar { position: absolute; right: 24px; bottom: calc(8px + var(--notch-h) / 2 - 3px); width: calc(var(--notch-w) - 24px); height: 6px; background: var(--bh-grey-300); transform: skewX(-30deg); }
+.p1 .pframe__xh {
+  position: absolute;
+  z-index: 10;
+  width: 9px;
+  height: 9px;
+  transform: translate(-50%, -50%);
+  background: linear-gradient(var(--ink), var(--ink)) center / 1px 100% no-repeat, linear-gradient(var(--ink), var(--ink)) center / 100% 1px no-repeat;
+  pointer-events: none;
+}
+.p1 .pframe__xh--tl { left: 0; top: 0; }
+.p1 .pframe__xh--tr { left: 100%; top: 0; }
+.p1 .pframe__xh--bl { left: 0; top: 100%; }
+.p1 .pframe__xh--br { left: 100%; top: 100%; }
+
+@media (min-width: 768px) {
+  .p1 .proc__lede { grid-column: 2 / span 6; }
+  .p1 .pfig { margin-top: 96px; padding: 32px 0; }
+  .p1 .pfig__hill { --d: 520px; }
+  .p1 .layer__l { font-size: 32px; line-height: 32px; }
+  .p1 .step { padding: 48px 0 64px; }
+  .p1 .cn { width: 24px; height: 24px; }
+  .p1 .cut__lead circle { r: 4.5px; }
+  .p1 .step__media { grid-column: 1 / span 4; grid-row: 1; }
+  .p1 .step__text { grid-column: 5 / -1; grid-row: 1; padding-inline-start: 24px; }
+  .p1 .step[data-flip='true'] .step__media { grid-column: 5 / -1; }
+  .p1 .step[data-flip='true'] .step__text { grid-column: 1 / span 4; padding-inline-start: 0; padding-inline-end: 24px; }
+  .p1 .pframe__clip { aspect-ratio: 1 / 1; }
+  .p1 .step__title { font-size: 32px; line-height: 32px; }
+  .p1 .step__body { font-size: 18px; line-height: 28px; }
+}
+
+@media (min-width: 1200px) {
+  .p1 .proc__head { margin-top: 160px; }
+  .p1 .proc__title { font-size: 56px; line-height: 56px; }
+  .p1 .proc__lede { grid-column: 4 / span 6; }
+  .p1 .pfig { padding: 48px 24px; }
+  .p1 .pfig__hill { --d: 640px; }
+  /* Full view, the labels sit in the margins and the leader lines show. */
+  .p1 .pfig__box { width: min(100%, 1120px); margin: 0 auto; }
+  .p1 .cl { display: inline-flex; }
+  .p1 .cn { display: none; }
+  .p1 .cut__lead circle { r: 3.5px; }
+  .p1 .layer { padding: 8px 0; align-items: center; }
+  .p1 .layer__k { display: none; }
+  .p1 .layer__l { grid-column: 1 / span 8; font-size: 64px; line-height: 64px; }
+  .p1 .layer__note { grid-column: 9 / -1; }
+  .p1 .steps { margin-top: 64px; }
+  .p1 .step__media { grid-column: 1 / span 7; }
+  .p1 .step__text { grid-column: 8 / -1; }
+  .p1 .step[data-flip='true'] .step__media { grid-column: 6 / -1; }
+  .p1 .step[data-flip='true'] .step__text { grid-column: 1 / span 5; }
+  .p1 .pframe__clip { aspect-ratio: 16 / 10; }
+  .p1 .step__title { font-size: 40px; line-height: 40px; }
+}

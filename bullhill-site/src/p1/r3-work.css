@@ -1,0 +1,80 @@
+/* Round 3 note 1, Foundry work cards. Underground's notched photo frame in Foundry type. A 1px
+ * hairline, 8px inset, notched bottom right corner with the skewed bar, crosshair marks at the frame
+ * corners, then the number and caption under it in one colour. No bull-red in the card text. */
+
+.p1 .wk {
+  --notch-h: 32px;
+  --notch-w: 96px;
+  --notch-c: 32px;
+  --wk-clip: 400px;
+  --wk-xh: rgba(255, 255, 255, 0.7);
+}
+
+.p1 .wk__frame { position: relative; padding: 8px; border: 1px solid var(--hair-paper); }
+.p1 .wk__clip {
+  position: relative;
+  height: var(--wk-clip);
+  clip-path: polygon(
+    0 0,
+    100% 0,
+    100% calc(100% - var(--notch-h)),
+    calc(100% - var(--notch-w)) calc(100% - var(--notch-h)),
+    calc(100% - var(--notch-w) - var(--notch-c)) 100%,
+    0 100%
+  );
+}
+.p1 .wk__ph { position: absolute; inset: 0; width: 100%; height: 100%; border-radius: 8px; background: var(--bh-grey-850); }
+.p1 .wk__skew {
+  position: absolute;
+  right: 24px;
+  bottom: calc(8px + var(--notch-h) / 2 - 3px);
+  width: calc(var(--notch-w) - 24px);
+  height: 6px;
+  background: var(--bh-grey-200);
+  transform: skewX(-30deg);
+}
+
+.p1 .wk__xh {
+  position: absolute;
+  z-index: var(--bl-z-0, 0);
+  width: 9px;
+  height: 9px;
+  transform: translate(-50%, -50%);
+  background:
+    linear-gradient(var(--wk-xh), var(--wk-xh)) center / 1px 100% no-repeat,
+    linear-gradient(var(--wk-xh), var(--wk-xh)) center / 100% 1px no-repeat;
+  pointer-events: none;
+}
+.p1 .wk__xh--tl { left: 0; top: 0; }
+.p1 .wk__xh--tr { left: 100%; top: 0; }
+.p1 .wk__xh--bl { left: 0; top: 100%; }
+.p1 .wk__xh--br { left: 100%; top: 100%; }
+
+.p1 .wk__cap {
+  display: grid;
+  grid-template-columns: 48px minmax(0, 1fr);
+  align-items: baseline;
+  margin: 16px 0 0;
+  max-width: none;
+  font-size: 16px;
+  line-height: 24px;
+  color: var(--bh-grey-300);
+  text-wrap: pretty;
+}
+.p1 .wk__n {
+  margin: 0;
+  font-family: var(--f-mono);
+  font-size: 24px;
+  line-height: 24px;
+  font-weight: 400;
+  letter-spacing: 0.02em;
+  color: inherit;
+}
+
+@media (min-width: 768px) {
+  .p1 .wk { --notch-h: 40px; --notch-w: 128px; --notch-c: 40px; --wk-clip: 480px; }
+  .p1 .wk__cap { grid-template-columns: 56px minmax(0, 1fr); font-size: 18px; line-height: 28px; }
+}
+@media (min-width: 1200px) {
+  .p1 .wk { --notch-w: 144px; --wk-clip: 520px; }
+}

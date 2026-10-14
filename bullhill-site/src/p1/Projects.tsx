@@ -12,20 +12,23 @@ export function Projects({ c }: { c: Content }) {
   const items = c.projects.items;
   const L = c.projects.labels;
 
+  const startPad = (row: HTMLElement) => parseFloat(getComputedStyle(row).paddingLeft);
+
+  // The row starts on the grid, so the active card is the one nearest the grid's left edge.
   const measure = useCallback(() => {
     const row = rowRef.current;
     if (!row) return;
-    const mid = row.scrollLeft + row.clientWidth / 2;
+    const pad = startPad(row);
     let best = 0;
     let bestD = Infinity;
     Array.from(row.children).forEach((el, i) => {
-      const e = el as HTMLElement;
-      const d = Math.abs(e.offsetLeft + e.offsetWidth / 2 - mid);
+      const d = Math.abs((el as HTMLElement).offsetLeft - pad - row.scrollLeft);
       if (d < bestD) {
         bestD = d;
         best = i;
       }
     });
+    if (row.scrollLeft + row.clientWidth >= row.scrollWidth - 2) best = row.children.length - 1;
     setActive(best);
   }, []);
 
@@ -39,18 +42,22 @@ export function Projects({ c }: { c: Content }) {
     const row = rowRef.current;
     const el = row?.children[Math.max(0, Math.min(items.length - 1, i))] as HTMLElement | undefined;
     if (!row || !el) return;
-    row.scrollTo({ left: el.offsetLeft - (row.clientWidth - el.offsetWidth) / 2, behavior: 'smooth' });
+    row.scrollTo({ left: el.offsetLeft - startPad(row), behavior: 'smooth' });
   };
 
   return (
     <section id="projects" className="proj" aria-labelledby="proj-title">
-      <div className="proj__head">
-        <p className="mono kicker">{c.projects.kicker}</p>
-        <h2 id="proj-title" className="proj__title display">
-          {sh(c, c.projects.title)}
-        </h2>
-        <p className="proj__lede mono-body">{c.projects.lede}</p>
-        <Bracket href="#contact">{c.ui.send}</Bracket>
+      <div className="proj__head g">
+        <div className="proj__intro">
+          <p className="mono kicker">{c.projects.kicker}</p>
+          <h2 id="proj-title" className="proj__title display">
+            {sh(c, c.projects.title)}
+          </h2>
+        </div>
+        <div className="proj__side">
+          <p className="proj__lede mono-body">{c.projects.lede}</p>
+          <Bracket href="#contact">{c.ui.send}</Bracket>
+        </div>
       </div>
 
       <ul className="proj__row" ref={rowRef} onScroll={measure} tabIndex={0} aria-label={x.scrollRow}>

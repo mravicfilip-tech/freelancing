@@ -4,9 +4,9 @@
 // --d1, --d2, --d3 and --dr, so the same art works on dark, light and red grounds.
 
 type Tone = 1 | 2 | 3 | 'r';
-type Dot = { x: number; y: number; r: number; o: number; t: Tone };
+export type Dot = { x: number; y: number; r: number; o: number; t: Tone };
 
-function rng(seed: number) {
+export function rng(seed: number) {
   let a = seed >>> 0;
   return () => {
     a = (a + 0x6d2b79f5) >>> 0;
@@ -179,8 +179,10 @@ export function RadialField({ className, w, h, inner }: { className?: string; w:
 
 // ---------------------------------------------------------------------------------------------
 // A scattered cloud for the audience sections, dense in the middle, a few big dots on the edge.
+// The still frame in 720 by 960 units. motion/ScatterCloud.tsx draws it, and moves a 3D cloud of the
+// same look when motion is on.
 
-function scatterDots(w: number, h: number, seed: number): Dot[] {
+export function scatterDots(w: number, h: number, seed: number): Dot[] {
   const rand = rng(seed);
   const out: Dot[] = [];
   const n = 340;
@@ -193,20 +195,6 @@ function scatterDots(w: number, h: number, seed: number): Dot[] {
     out.push({ x, y, r: 1 + big * 3 + rr * 0.6, o: 0.25 + rand() * 0.5, t: big > 0.4 ? 1 : rand() > 0.5 ? 2 : 3 });
   }
   return out;
-}
-
-const scatterCache = new Map<number, Dot[]>();
-export function ScatterField({ className, seed }: { className?: string; seed: number }) {
-  let dots = scatterCache.get(seed);
-  if (!dots) {
-    dots = scatterDots(720, 960, seed);
-    scatterCache.set(seed, dots);
-  }
-  return (
-    <svg className={className} viewBox="0 0 720 960" preserveAspectRatio="xMidYMid slice" aria-hidden="true" focusable="false">
-      <Dots dots={dots} />
-    </svg>
-  );
 }
 
 // ---------------------------------------------------------------------------------------------

@@ -1,5 +1,5 @@
 import type { Content } from '../shared/content';
-import { Placeholder } from '../shared/Placeholder';
+import { Media } from '../shared/Media';
 import { Icon, Guides } from './icons';
 import { pick } from './copy';
 
@@ -25,7 +25,7 @@ export function Process({ c }: { c: Content }) {
         </ol>
 
         <div className="p2-pcards">
-          <Placeholder shot={c.hero.shot} label={c.ui.photo} brief={false} className="p2-ph p2-pcards__photo" />
+          <Media shot={c.services.items[2].shot} lang={c.lang} label={c.ui.photo} brief={false} focal="50% 62%" sizes="(min-width: 1200px) 25vw, (min-width: 768px) 50vw, 100vw" className="p2-ph p2-pcards__photo" />
 
           <article className="p2-card p2-card--sm">
             <h3 className="p2-card__upper">{k.cards.bars.title}</h3>

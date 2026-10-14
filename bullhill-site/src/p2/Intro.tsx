@@ -1,5 +1,4 @@
 import type { Content } from '../shared/content';
-import { Placeholder } from '../shared/Placeholder';
 import { Guides } from './icons';
 import { pick } from './copy';
 
@@ -26,23 +25,3 @@ export function LogoStrip({ c }: { c: Content }) {
     </section>
   );
 }
-
-export function Ethos({ c }: { c: Content }) {
-  const shots = [c.services.items[0].shot, c.hero.shot, c.services.items[1].shot, c.services.items[2].shot];
-  return (
-    <section className="p2-ethos">
-      <Guides />
-      <div className="p2-wrap">
-        <h2 className="p2-display p2-h2 p2-ethos__title">{c.ethos.title}</h2>
-      </div>
-      <div className="p2-wrap p2-ethos__rowwrap">
-        <div className="p2-ethos__row">
-          {shots.map((s, i) => (
-            <Placeholder key={s.id} shot={s} label={c.ui.photo} index={i + 1} brief={i === 1} className={`p2-ph p2-ethos__ph p2-ethos__ph--${i + 1}`} />
-          ))}
-        </div>
-      </div>
-    </section>
-  );
-}
-

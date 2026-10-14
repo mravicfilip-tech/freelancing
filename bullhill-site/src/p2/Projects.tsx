@@ -1,9 +1,20 @@
 import { useState } from 'react';
 import { Tabs } from 'radix-ui';
 import type { Content } from '../shared/content';
-import { Placeholder } from '../shared/Placeholder';
+import { Media } from '../shared/Media';
+import type { PhotoId } from '../shared/photos';
 import { Icon, Guides } from './icons';
 import { pick } from './copy';
+
+// Where each photo is cropped in the wide slider frame, so the ducts, the machine and the
+// mountains stay in view.
+const MAIN: Partial<Record<PhotoId, string>> = {
+  'route-trench-village': '50% 56%',
+  'excavator-street': '50% 40%',
+  'ducts-fence': '50% 66%',
+  'restored-lane': '50% 46%',
+  'restored-wall': '30% 56%',
+};
 
 export function Projects({ c }: { c: Content }) {
   const k = pick(c.lang).projects;
@@ -20,9 +31,9 @@ export function Projects({ c }: { c: Content }) {
       <Tabs.Root value={cur.id} onValueChange={(v) => setI(items.findIndex((p) => p.id === v))} className="p2-slider">
         <div className="p2-wrap p2-slider__stripwrap">
           <div className="p2-slider__strip" aria-hidden="true">
-            <Placeholder shot={at(i - 1).shot} label={c.ui.photo} brief={false} mark={false} className="p2-ph p2-slider__side p2-slider__side--l" />
-            <Placeholder shot={cur.shot} label={c.ui.photo} brief className="p2-ph p2-slider__main" />
-            <Placeholder shot={at(i + 1).shot} label={c.ui.photo} brief={false} mark={false} className="p2-ph p2-slider__side p2-slider__side--r" />
+            <Media shot={at(i - 1).shot} lang={c.lang} label={c.ui.photo} brief={false} mark={false} sizes="(min-width: 1200px) 25vw, 72px" className="p2-ph p2-slider__side p2-slider__side--l" />
+            <Media shot={cur.shot} lang={c.lang} label={c.ui.photo} brief focal={cur.shot.photo ? MAIN[cur.shot.photo] : undefined} sizes="(min-width: 1200px) 50vw, 100vw" className="p2-ph p2-slider__main" />
+            <Media shot={at(i + 1).shot} lang={c.lang} label={c.ui.photo} brief={false} mark={false} sizes="(min-width: 1200px) 25vw, 72px" className="p2-ph p2-slider__side p2-slider__side--r" />
           </div>
         </div>
 

@@ -4,7 +4,8 @@ import '@fontsource-variable/geist-mono';
 import { useContent } from '../shared/lang';
 import { Notice, Header } from './Header';
 import { Hero } from './Hero';
-import { LogoStrip, Ethos } from './Intro';
+import { Work } from './Work';
+import { LogoStrip } from './Intro';
 import { Projects } from './Projects';
 import { Cluster } from './Cluster';
 import { Services } from './Services';
@@ -28,8 +29,8 @@ export default function Daylight() {
       <Header c={c} setLang={setLang} container={root} />
       <main>
         <Hero c={c} />
+        <Work c={c} />
         <LogoStrip c={c} />
-        <Ethos c={c} />
         <Projects c={c} />
         <Cluster c={c} />
         <Services c={c} />

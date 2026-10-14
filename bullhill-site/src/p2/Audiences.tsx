@@ -1,5 +1,5 @@
 import type { Audience, Content } from '../shared/content';
-import { Placeholder } from '../shared/Placeholder';
+import { Media } from '../shared/Media';
 import { Icon, Guides } from './icons';
 import { pick } from './copy';
 
@@ -8,7 +8,7 @@ function AudienceCard({ c, a, shots, id }: { c: Content; a: Audience; shots: Con
     <article className="p2-aud" aria-labelledby={id}>
       <div className="p2-aud__photos">
         {shots.map((s, i) => (
-          <Placeholder key={s.id} shot={s} label={c.ui.photo} index={i + 1} brief={false} mark={false} className="p2-ph p2-ph--dark p2-aud__ph" />
+          <Media key={s.id} shot={s} lang={c.lang} label={c.ui.photo} index={i + 1} brief={false} mark={false} sizes="(min-width: 1200px) 15vw, 30vw" className="p2-ph p2-ph--dark p2-aud__ph" />
         ))}
       </div>
       <div className="p2-aud__body">
@@ -63,8 +63,8 @@ export function Audiences({ c }: { c: Content }) {
         </ul>
 
         <div className="p2-auds">
-          <AudienceCard c={c} a={c.audiences.operators} shots={[s[0].shot, p[0].shot, s[1].shot]} id="p2-aud-op" />
-          <AudienceCard c={c} a={c.audiences.contractors} shots={[p[1].shot, s[2].shot, p[3].shot]} id="p2-aud-co" />
+          <AudienceCard c={c} a={c.audiences.operators} shots={[s[0].shot, p[1].shot, s[1].shot]} id="p2-aud-op" />
+          <AudienceCard c={c} a={c.audiences.contractors} shots={[p[2].shot, s[3].shot, p[3].shot]} id="p2-aud-co" />
         </div>
       </div>
     </section>

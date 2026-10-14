@@ -2,7 +2,7 @@
 .p2 section { position: relative; }
 
 /* Logo strip */
-.p2 .p2-logos { padding: 48px 0 0; }
+.p2 .p2-logos { padding: 0 0 64px; }
 .p2 .p2-logos__line { max-width: 560px; margin: 0 auto; text-align: center; font-size: 16px; line-height: 24px; }
 .p2 .p2-logos__scroller { margin-top: 32px; }
 .p2 .p2-logos__row { display: flex; gap: 32px; margin-inline: calc(-1 * var(--p2-pad)); padding-inline: var(--p2-pad); overflow-x: auto; scroll-snap-type: x proximity; scrollbar-width: none; }
@@ -12,36 +12,40 @@
 .p2 .p2-logos__glyph--1 { border-radius: 4px; }
 .p2 .p2-logos__glyph--2 { border-radius: 4px; transform: rotate(45deg) scale(0.8); }
 @media (min-width: 1200px) {
-  .p2 .p2-logos { padding-top: 64px; }
+  .p2 .p2-logos { padding-bottom: 96px; }
   .p2 .p2-logos__row { justify-content: space-between; margin-inline: 0; padding-inline: 0; }
   .p2 .p2-logos__slot { min-width: 0; }
 }
 
-/* Ethos */
-.p2 .p2-ethos { overflow: hidden; padding: 64px 0 64px; }
-.p2 .p2-ethos__title { max-width: 14ch; }
-.p2 .p2-ethos__rowwrap { margin-top: 32px; }
-.p2 .p2-ethos__row { display: flex; gap: 12px; height: 240px; }
-.p2 .p2-ethos__ph { flex: none; height: 100%; }
-.p2 .p2-ethos__ph--1 { width: 96px; }
-.p2 .p2-ethos__ph--2 { width: 220px; }
-.p2 .p2-ethos__ph--3 { width: 140px; }
-.p2 .p2-ethos__ph--4 { width: 140px; }
+/* Work, the photo row straight after the hero */
+.p2 .p2-work { overflow: hidden; padding: 64px 0; }
+.p2 .p2-work__head { display: flex; flex-direction: column; gap: 16px; }
+.p2 .p2-work__title { max-width: 14ch; }
+.p2 .p2-work__lede { max-width: 28em; font-size: 16px; line-height: 24px; color: var(--bh-grey-700); }
+.p2 .p2-work__nav { display: none; }
+.p2 .p2-work__btn { display: grid; place-items: center; width: 44px; height: 44px; border: 0; border-radius: 8px; background: var(--bh-grey-50); color: var(--bh-black); transition: background-color 180ms, color 180ms; }
+.p2 .p2-work__btn:hover:not(:disabled) { background: var(--bh-black); color: var(--bh-white); }
+.p2 .p2-work__btn:disabled { color: var(--bh-grey-400); cursor: default; }
+.p2 .p2-work__scroller { --h: 340px; --edge: max(var(--p2-pad), calc((100vw - 1600px) / 2 + var(--p2-pad))); position: relative; margin-top: 32px; overflow-x: auto; scroll-snap-type: x proximity; scroll-padding-inline-start: var(--edge); scrollbar-width: none; }
+.p2 .p2-work__scroller::-webkit-scrollbar { display: none; }
+.p2 .p2-work__row { display: flex; gap: 12px; width: max-content; padding-inline: var(--edge); }
+.p2 .p2-work__card { flex: none; width: calc(var(--h) * var(--r)); scroll-snap-align: start; }
+.p2 .p2-work__photo { width: 100%; height: var(--h); border-radius: 12px; background: var(--bh-grey-150); }
+.p2 .p2-work__cap { display: flex; flex-direction: column; gap: 4px; margin-top: 12px; font-size: 14px; line-height: 20px; color: var(--bh-grey-700); }
+.p2 .p2-work__cap span { font-size: 12px; line-height: 16px; letter-spacing: 0.04em; color: var(--bh-grey-600); }
 @media (min-width: 768px) {
-  .p2 .p2-ethos { padding: 96px 0; }
-  .p2 .p2-ethos__title { max-width: 720px; }
-  .p2 .p2-ethos__row { height: 340px; gap: 24px; }
-  .p2 .p2-ethos__rowwrap { margin-top: 48px; }
-  .p2 .p2-ethos__ph--1 { width: 22%; }
-  .p2 .p2-ethos__ph--2 { width: 46%; }
-  .p2 .p2-ethos__ph--3, .p2 .p2-ethos__ph--4 { width: 22%; }
+  .p2 .p2-work { padding: 96px 0; }
+  .p2 .p2-work__scroller { --h: 400px; margin-top: 48px; }
+  .p2 .p2-work__row { gap: 16px; }
 }
 @media (min-width: 1200px) {
-  .p2 .p2-ethos { padding: 128px 0; }
-  .p2 .p2-ethos__row { height: 400px; --col: calc((100% - 72px) / 4); }
-  .p2 .p2-ethos__ph--1 { width: var(--col); }
-  .p2 .p2-ethos__ph--2 { width: calc(2 * var(--col) + 24px); }
-  .p2 .p2-ethos__ph--3, .p2 .p2-ethos__ph--4 { width: var(--col); }
+  .p2 .p2-work { padding: 128px 0 96px; }
+  .p2 .p2-work__head { display: grid; grid-template-columns: 50% 1fr auto; align-items: end; column-gap: 24px; }
+  .p2 .p2-work__title { max-width: 16ch; }
+  .p2 .p2-work__lede { padding-bottom: 8px; }
+  .p2 .p2-work__nav { display: flex; gap: 8px; }
+  .p2 .p2-work__scroller { --h: 440px; }
+  .p2 .p2-work__row { gap: 24px; }
 }
 
 /* Project slider */

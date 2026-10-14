@@ -50,3 +50,16 @@ export function forkPassesPx(px: number, w: number, h: number) {
 
 export const forkBackFrom = L.start + BACK_FROM * (L.end - L.start);
 export const forkBackTo = L.start + BACK_TO * (L.end - L.start);
+
+// The top edge of the light section the tine lifts, in px from the top of an h high frame, at story pixel pos. It follows the
+// blade up from under the frame to the top rule by L k 0.5, the same curve the overlay draws, so the servis map above it is
+// cut at this edge and never shows through the light page (round 5).
+export function forkLiftTopPx(pos: number, h: number) {
+  const k = (pos - L.start) / (L.end - L.start);
+  const rule = 1 - 272 / h;
+  if (k >= 0.5) return 136;
+  const dock = rule - 0.012 / NEAR;
+  const y = -1.8 + (dock + 1.8) * ease(clamp01(k / 0.5)) + rule - dock;
+  return (h / 2) * (1 - y);
+}
+export const forkLiftFrom = L.start;

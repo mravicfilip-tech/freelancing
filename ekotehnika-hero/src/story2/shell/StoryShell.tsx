@@ -8,14 +8,15 @@
 // With reduced motion there is no pin and no loop, each hold beat is a still screen with every part at its end state.
 import { Suspense, useEffect, useMemo, useRef, type ComponentType, type CSSProperties, type ReactNode } from 'react';
 import { stillClock, useStoryClock, type SceneProps } from '../clock';
-import { TIMELINE, type BeatSpan } from '../timeline';
+import { SERVIS_MAP, TIMELINE, type BeatSpan } from '../timeline';
 import { HeroFrame } from '../../ui/HeroFrame';
 import { Grid, paintMarks, ruleMarks } from './Grid';
 import { ATPane, C1Pane, NPane, PPane, RPane, SPane, setTab } from './panes';
 import { AfterStory } from './sections';
 import { COUNT_DONE, FILL_FROM, FILL_TO, HERO_SECONDS, WIPE_DONE, WIPE_SHARE, clamp01, formatCount, outCubic, range } from './motion';
 import { prepRise, setRise, type Rise } from './reveal';
-import { forkBackFrom, forkBackTo, forkPassesPx, forkTipPx } from '../scenes/sistem/forkTip';
+import { forkBackFrom, forkBackTo, forkLiftFrom, forkLiftTopPx, forkPassesPx, forkTipPx } from '../scenes/sistem/forkTip';
+import { SMPane } from './map/ServisMap';
 import { INTRO_SKIP, introStart } from '../scenes/sistem/intro';
 import './shell.css';
 
@@ -29,13 +30,16 @@ const LAYERS: LayerDef[] = [
   { id: 'C1', Pane: C1Pane, dark: false, still: 0.5 },
   { id: 'R', Pane: RPane, dark: false, still: 0.5 },
   { id: 'P', Pane: PPane, dark: false, still: 0.3 },
-  { id: 'S', Pane: SPane, dark: true, still: 0.5 },
+  { id: 'S', Pane: SPane, dark: true, still: 0.3 },
+  // the servis map, the second half of S, on a span of its own (SERVIS_MAP in timeline.ts)
+  { id: 'SM', Pane: SMPane, dark: true, still: 0.75 },
   { id: 'N', Pane: NPane, dark: false, still: 0.95 },
   { id: 'AT', Pane: ATPane, dark: true, still: 0.5 },
 ];
 
 // Where the text leaves, as a share of its beat. P holds its four models to the end of the hold.
-const LEAVE: Record<string, [number, number]> = { AT: [1.01, 1.02] };
+// S hands the black stage to the servis map in one cut half way through its 2000px, the map holds to the fork's dock.
+const LEAVE: Record<string, [number, number]> = { AT: [1.01, 1.02], S: [0.49, 0.51], SM: [1.01, 1.02] };
 
 // Prodaja steps one model per 0.22 of the hold, at k 0.06, 0.28, 0.50 and 0.72, the last one held to the end.
 const P_FIRST = 0.06;
@@ -59,7 +63,8 @@ const HOLDS = TIMELINE.filter((b) => b.hold);
 // Beats whose text reveals over more of the hold than WIPE_DONE, by the factor given. C1's wipes and counts took about 144px of
 // scroll, one or two wheel ticks (Filip 2026-10-12, video round 4, "this animation is happening too fast"), so they run over
 // 0.36 of the hold, twice the old pace, which is 1.45 times the slower pace every beat has now.
-const SLOW: Record<string, number> = { C1: 1.45 };
+// S and its map take the same 250 to 300px for their text as the other holds, though S is 2000px long now.
+const SLOW: Record<string, number> = { C1: 1.45, S: 0.5, SM: 0.9 };
 
 // The story's sections that have a link in the top nav, by the data-ch of that link, see HeroFrame.
 const CHAPTER: Record<string, string> = { prodaja: 'prodaja', servis: 'servis', najam: 'najam' };
@@ -138,7 +143,8 @@ export function StoryShell({ Scene, tone, reduced, darkLayers, darkTop = DARK_TO
   const isDark = (l: LayerDef) => (darkLayers ? darkLayers.includes(l.id) : l.dark);
   const heroRef = useRef<HTMLDivElement>(null);
   const gridRef = useRef<HTMLDivElement>(null);
-  const stills = useMemo(() => LAYERS.map((l) => stillClock(TIMELINE.findIndex((b) => b.id === l.id), l.still)), []);
+  // the servis map is part of S, so its still is a frame of S
+  const stills = useMemo(() => LAYERS.map((l) => stillClock(TIMELINE.findIndex((b) => b.id === (l.id === 'SM' ? 'S' : l.id)), l.still)), []);
   const heroStill = useMemo(() => stillClock(0, 0.5), []);
   const frameTone = tone === 'dark' ? 'white' : 'ink';
 
@@ -159,7 +165,7 @@ export function StoryShell({ Scene, tone, reduced, darkLayers, darkTop = DARK_TO
     const heroBottom = hf.querySelector<HTMLElement>('.hf-bottom');
     if (heroBottom) groups.push(collect('H', heroBottom, H, { leave: [500, 780], leaveInPx: true }));
     stage.querySelectorAll<HTMLElement>('[data-layer]').forEach((el) => {
-      const span = TIMELINE.find((b) => b.id === el.dataset.layer)!;
+      const span = el.dataset.layer === 'SM' ? SERVIS_MAP : TIMELINE.find((b) => b.id === el.dataset.layer)!;
       groups.push(collect(span.id, el, span, { leave: LEAVE[span.id] ?? LEAVE_DEFAULT }));
     });
     // each group draws the plus marks at its own block rules into a wrapper of its own, shown with the group
@@ -262,6 +268,16 @@ export function StoryShell({ Scene, tone, reduced, darkLayers, darkTop = DARK_TO
           if (!on && G.id === 'P' && G.tabs && !G.tabs.hasAttribute('data-pick')) setTab(G.tabs, -1);
         }
         if (!on) continue;
+        // the servis map draws on from its own k, and the light section the fork lifts in L cuts it from below
+        if (G.id === 'SM') {
+          const kk = clamp01(k).toFixed(4);
+          if (G.el.style.getPropertyValue('--k') !== kk) G.el.style.setProperty('--k', kk);
+          const lift = pos >= forkLiftFrom ? `inset(0 0 ${Math.max(0, stage.clientHeight - forkLiftTopPx(pos, stage.clientHeight)).toFixed(1)}px 0)` : '';
+          if (lift !== G.el.style.clipPath) {
+            G.el.style.clipPath = lift;
+            if (G.wrap) G.wrap.style.clipPath = lift;
+          }
+        }
         // the text of a beat is shown whole or not at all, so there is no opacity to drive here
 
         // the rise and the count up

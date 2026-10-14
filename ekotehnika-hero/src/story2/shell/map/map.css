@@ -160,3 +160,42 @@
   top: -44px;
   transform: translateX(-50%);
 }
+
+/* ---- the live map in S, round 5 ---- */
+/* the figure is a size container so the map takes the largest box of its own shape that fits, centred */
+.sm-fig-live {
+  container-type: size;
+  place-items: center;
+}
+
+.sm-live {
+  position: relative;
+  width: min(100cqw, calc(100cqh * 659 / 764));
+  height: min(100cqh, calc(100cqw * 764 / 659));
+}
+
+.sm-live svg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+
+/* a line draws on over its window of k, from --a to --b, along its own length */
+.smd {
+  stroke-dasharray: calc(var(--len) * 1px) calc(var(--len) * 1px + 20px);
+  stroke-dashoffset: calc(var(--len) * 1px * (1 - clamp(0, (var(--k, 1) - var(--a)) / (var(--b) - var(--a)), 1)));
+}
+
+/* a road's end mark lands as its road arrives */
+.sme {
+  transform-box: fill-box;
+  transform-origin: center;
+  transform: scale(clamp(0, (var(--k, 1) - var(--b)) / 0.02, 1));
+}
+
+/* the two centres come in before their roads leave */
+.smb {
+  transform: scale(clamp(0, (var(--k, 1) - var(--a)) / (var(--b) - var(--a)), 1));
+}

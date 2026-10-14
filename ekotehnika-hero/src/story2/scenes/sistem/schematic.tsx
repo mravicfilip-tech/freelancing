@@ -332,9 +332,9 @@ function Stage({ clock }: SceneProps) {
   useFrame(() => {
     const u = uOf(clock);
     const pos = clock.pos.current;
-    // gone by 11.52, where the light curtain of L has covered the stage since 11.5 and the camera moves to the rental floor
-    // behind it (round 5, Najam comes in behind the fork's tip), so no label can reach that floor
-    const show = u >= 9.95 && u < 11.52;
+    // gone at 10.5, half way through S, where the servis map takes the black stage (round 5), so the truck, its floor and its
+    // labels never stand behind the map
+    const show = u >= 9.95 && u < 10.5;
     // Once the story is in B, the truck takes the studio environment and every shader of the stage is compiled while it
     // is still hidden, so the first frame of S does not stall on them.
     const env = scene.environment;
@@ -351,8 +351,9 @@ function Stage({ clock }: SceneProps) {
     }
     if (root.current) root.current.visible = show;
     if (!show) return;
-    // the truck is there in full under the black shutter of B, the dimensions draw on once it has rolled away
-    const p = ease(range(u, 10.2, 10.5));
+    // the truck is there in full under the black shutter of B, the dimensions draw on once it has gone at 10.125 and are drawn
+    // by 10.25, so they hold in full until the map takes the stage at 10.5
+    const p = ease(range(u, 10.13, 10.25));
     const q = Math.max(p, 0.001);
     if (Math.abs(q - drawn.current) > 1e-4) {
       drawn.current = q;

@@ -86,6 +86,7 @@ Task format
   - [x] /uireview round and re-check, no open sev 1, card with Filip
   - [ ] Filip's line on the card, ship, fix or drop
   - [x] Phone hero block bigger and centred, stills rendered again
+  - [x] Production at bullhill-site.vercel.app moved to ced40a6 on Filip's "Sent to production"
 
 ## Review
 

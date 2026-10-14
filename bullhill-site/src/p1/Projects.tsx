@@ -1,9 +1,25 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
+import type { CSSProperties, ReactNode } from 'react';
 import type { Content } from '../shared/content';
 import { Media } from '../shared/Media';
 import { Arrow } from './art';
 import { Bracket } from './Bracket';
 import { PROJECT_FOCAL, sh, t } from './copy';
+import { useInView } from './motion/motion';
+import { Rise } from './motion/Rise';
+import './motion/sections-a.css';
+
+// One card. Marked in once as it enters, it slides in from the right, then its photo unmasks. Only
+// the first four cards are in view together, so only they stagger.
+function ProjectCard({ i, on, children }: { i: number; on: boolean; children: ReactNode }) {
+  const ref = useRef<HTMLLIElement>(null);
+  useInView(ref);
+  return (
+    <li ref={ref} className={`pc${on ? ' pc--on' : ''}`} style={{ '--ci': i < 4 ? i : 0 } as CSSProperties}>
+      {children}
+    </li>
+  );
+}
 
 export function Projects({ c }: { c: Content }) {
   const x = t(c);
@@ -50,9 +66,9 @@ export function Projects({ c }: { c: Content }) {
       <div className="proj__head g">
         <div className="proj__intro">
           <p className="mono kicker">{c.projects.kicker}</p>
-          <h2 id="proj-title" className="proj__title display">
+          <Rise id="proj-title" className="proj__title display">
             {sh(c, c.projects.title)}
-          </h2>
+          </Rise>
         </div>
         <div className="proj__side">
           <p className="proj__lede mono-body">{c.projects.lede}</p>
@@ -62,7 +78,7 @@ export function Projects({ c }: { c: Content }) {
 
       <ul className="proj__row" ref={rowRef} onScroll={measure} tabIndex={0} aria-label={x.scrollRow}>
         {items.map((p, i) => (
-          <li key={p.id} className={`pc${i === active ? ' pc--on' : ''}`}>
+          <ProjectCard key={p.id} i={i} on={i === active}>
             <span className="bk__c bk__c--tl" aria-hidden="true" />
             <span className="bk__c bk__c--tr" aria-hidden="true" />
             <span className="bk__c bk__c--bl" aria-hidden="true" />
@@ -108,7 +124,7 @@ export function Projects({ c }: { c: Content }) {
             <Bracket className="pc__btn" href={`#${p.id}`} tabIndex={i === active ? 0 : -1}>
               {c.ui.viewProject}
             </Bracket>
-          </li>
+          </ProjectCard>
         ))}
       </ul>
 

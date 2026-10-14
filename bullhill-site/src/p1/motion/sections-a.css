@@ -1,0 +1,100 @@
+/* Motion for Work, Services and Projects, briefs/website/site-motion-story.md. Every hidden starting
+ * state sits under .p1[data-motion='on'], so reduced motion, ?motion=off and automated shots see the
+ * settled page. Scroll variables are read with their settled value as the fallback. Transform,
+ * opacity and clip-path only. Timing comes from the --m-* tokens of motion.css. */
+
+/* ---------- work, once per card ----------
+ * 1 the frame's hairline draws left to right and the four crosshairs grow, 2 the photo unmasks
+ * upward, 3 the caption rises. --ci is the card's place among the first three, 80ms apart. */
+.p1[data-motion='on'] .wk__card {
+  --wk-d: calc(var(--ci, 0) * var(--m-step));
+}
+/* the border moves onto a pseudo element so it can be clipped, same box, same colour */
+.p1[data-motion='on'] .wk__frame { border-color: transparent; }
+.p1[data-motion='on'] .wk__frame::before {
+  content: '';
+  position: absolute;
+  inset: -1px;
+  border: 1px solid var(--hair-paper);
+  pointer-events: none;
+  clip-path: inset(0);
+  transition: clip-path 500ms var(--m-ease) var(--wk-d);
+}
+.p1[data-motion='on'] .wk__xh {
+  transform: translate(-50%, -50%) scale(1);
+  transition: transform 300ms var(--m-ease) calc(var(--wk-d) + 200ms);
+}
+.p1[data-motion='on'] .wk__ph {
+  clip-path: inset(0);
+  transition: clip-path var(--m-reveal) var(--m-ease) calc(var(--wk-d) + 400ms);
+}
+.p1[data-motion='on'] .wk__skew {
+  transition: opacity 300ms linear calc(var(--wk-d) + 800ms);
+}
+.p1[data-motion='on'] .wk__cap {
+  transition:
+    transform 500ms var(--m-ease) calc(var(--wk-d) + 900ms),
+    opacity 400ms linear calc(var(--wk-d) + 900ms);
+}
+.p1[data-motion='on'] .wk__card[data-in='no'] .wk__frame::before { clip-path: inset(0 100% 0 0); }
+.p1[data-motion='on'] .wk__card[data-in='no'] .wk__xh { transform: translate(-50%, -50%) scale(0); }
+.p1[data-motion='on'] .wk__card[data-in='no'] .wk__ph { clip-path: inset(100% 0 0 0); }
+.p1[data-motion='on'] .wk__card[data-in='no'] .wk__skew { opacity: 0; }
+.p1[data-motion='on'] .wk__card[data-in='no'] .wk__cap { opacity: 0; transform: translateY(16px); }
+
+/* ---------- services, with the scroll ----------
+ * --sv on the section, 0 to 1 while its top edge goes from the bottom of the screen to 40 percent.
+ * The panel rides up 96px, and the black of the work section shows above it until it lands. The
+ * pseudo element is that black, clipped away as --sv reaches 1, so the glow at the foot of the work
+ * section is never covered once the panel has landed. */
+.p1[data-motion='on'] .eth {
+  transform: translateY(calc((1 - var(--sv, 1)) * 96px));
+}
+.p1[data-motion='on'] .eth::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: -72px;
+  height: 72px;
+  background: var(--ink);
+  pointer-events: none;
+  clip-path: inset(calc(var(--sv, 1) * 100%) 0 0 0);
+}
+
+/* from 1200 the cards sit stacked on the first and slide out to the row as it scrolls from the
+ * bottom to the middle of the screen. --sp is that, 0 to 1. A card's own width less the 24px
+ * overlap is one step of the row. */
+@media (min-width: 1200px) {
+  .p1[data-motion='on'] .card {
+    transform: translateX(calc(var(--i, 0) * (24px - 100%) * (1 - var(--sp, 1))));
+  }
+}
+
+/* under 1200 each card rises 24px and fades in once, 80ms apart */
+@media (max-width: 1199px) {
+  .p1[data-motion='on'] .card {
+    transition:
+      transform var(--m-rise) var(--m-ease) calc(var(--i, 0) * var(--m-step)),
+      opacity var(--m-rise) linear calc(var(--i, 0) * var(--m-step));
+  }
+  .p1[data-motion='on'] .svc[data-in='no'] .card { opacity: 0; transform: translateY(24px); }
+}
+
+/* ---------- projects, once ----------
+ * Each card slides in 48px from the right, 60ms apart, and its photo unmasks upward once the card
+ * has landed. --ci is the card's place among the first four. */
+.p1[data-motion='on'] .pc {
+  --pc-d: calc(var(--ci, 0) * 60ms);
+  transition:
+    background-color 200ms ease,
+    color 200ms ease,
+    transform var(--m-rise) var(--m-ease) var(--pc-d),
+    opacity 400ms linear var(--pc-d);
+}
+.p1[data-motion='on'] .pc__photo {
+  clip-path: inset(0);
+  transition: clip-path var(--m-reveal) var(--m-ease) calc(var(--pc-d) + 450ms);
+}
+.p1[data-motion='on'] .pc[data-in='no'] { opacity: 0; transform: translateX(48px); }
+.p1[data-motion='on'] .pc[data-in='no'] .pc__photo { clip-path: inset(100% 0 0 0); }

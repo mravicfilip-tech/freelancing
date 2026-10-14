@@ -14,7 +14,7 @@ import '../hero6-still.css';
 // The pairs exist for tall and mid. wide has no pair and shows its one still, seam at the middle.
 
 const SEAM_START = 0.5; // the middle of the specimen at p 0
-const SEAM_START_TALL = 0.6; // phones, the middle of the block, which sits in the right of its box
+const SEAM_START_TALL = 0.385; // phones, SEAM0_TALL in geometry.ts, the block is centred in its box
 const SEAM_END = 0.15; // 15 percent from its left end at p 1
 const CHAR = 7.68; // Azeret Mono 12px, advance 0.6em plus 0.04em tracking
 const TAG_PAD = 16;

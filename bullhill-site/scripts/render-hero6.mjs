@@ -15,7 +15,7 @@
 //
 // --steps renders the five phone stills of the tall view, hero6-tall-s1.webp to s5, one per step of the
 // scroll (hero6/acts.ts), from the same scene with ?p= on the still route. Each is the half and half
-// frame, schematic left and render right at the phone's seam 0.6, with the ground's points left out
+// frame, schematic left and render right at the phone's seam 0.385, with the ground's points left out
 // (dust=0), the phone page plays those in 2D. Each is held to 90KB, the script steps the WebP quality
 // down until it fits, encoding with Pillow (python3) so the alpha channel has its own quality. STEP_P is the p of each still, the end of its step, 0.2, 0.35, 0.55, 0.7 and 1. Step 4
 // is shot at its end, where the fibre strands are blown through and out of the near end of the orange duct.
@@ -23,6 +23,9 @@
 // The scene is reached through ?v=1&hero=6&still=wide|mid|tall, which draws only the scene at the
 // view's nominal size (VIEWS in src/p1/variants/hero/hero6/geometry.ts). Software WebGL needs 9 to
 // 13 seconds per frame, so the script waits for the scene's ready flag and then --wait more.
+//
+// The plain tall still is the phone poster. After a render, bring it to 716px and about 75KB by hand,
+// Pillow, LANCZOS, WebP quality 76, alpha quality 50.
 //
 // Paths for the two tools can be set with PUPPETEER_CORE and CHROME_PATH.
 
@@ -44,7 +47,7 @@ const views = steps ? ['tall'] : arg('views', seams ? 'tall,mid' : 'wide,mid,tal
 const Q = { tall: Number(arg('quality', '80')), mid: Number(arg('quality', '78')), wide: Number(arg('quality', '78')) };
 const wait = Number(arg('wait', '12000'));
 const STEP_P = [0.2, 0.35, 0.55, 0.7, 1];
-const STEP_SEAM = 0.6; // the phone's seam, the middle of the block in the right of its box, SEAM0_TALL
+const STEP_SEAM = 0.385; // the phone's seam, SEAM0_TALL in geometry.ts, the block centred in its box
 const STEP_MAX = 90000;
 const QUALITY = [[84, 90], [82, 80], [80, 70], [78, 60], [74, 50], [70, 40], [64, 30]];
 const PY = 'import sys, io\nfrom PIL import Image\nim = Image.open(io.BytesIO(sys.stdin.buffer.read())).convert(\"RGBA\")\nb = io.BytesIO()\nim.save(b, \"WEBP\", quality=int(sys.argv[1]), alpha_quality=int(sys.argv[2]), method=6)\nsys.stdout.buffer.write(b.getvalue())';

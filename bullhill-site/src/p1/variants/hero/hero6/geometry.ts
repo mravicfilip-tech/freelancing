@@ -30,10 +30,12 @@ export const FIBRE_OUT = 0.7; // how far the strands reach past the end of their
 export type ViewSpec = { aspect: number; az: number; el: number; fov: number; fit: { x0: number; x1: number; y0: number; y1: number }; nominal: [number, number] };
 // wide is the desktop stage, mid the tablet one, tall the phone still. fit is the rectangle, as fractions of
 // the stage, that the specimen's extreme points are fitted to. The left margin leaves room for tags.
+// Phones carry no tags, so the tall still holds the specimen centred, and the camera sits nearer the
+// tablet's, so the block reads 1.5 times wider than tall and fills the phone's width, Filip, 14 October 2026.
 export const VIEWS: Record<View, ViewSpec> = {
   wide: { aspect: 2.2, az: 44, el: 15, fov: 11, fit: { x0: 0.1, x1: 0.985, y0: 0.06, y1: 0.94 }, nominal: [1376, 625] },
   mid: { aspect: 1.5, az: 56, el: 20, fov: 11, fit: { x0: 0.2, x1: 0.985, y0: 0.06, y1: 0.94 }, nominal: [720, 480] },
-  tall: { aspect: 1, az: 68, el: 22, fov: 12, fit: { x0: 0.37, x1: 0.985, y0: 0.06, y1: 0.94 }, nominal: [600, 600] },
+  tall: { aspect: 1, az: 55, el: 16, fov: 12, fit: { x0: 0.04, x1: 0.96, y0: 0.06, y1: 0.94 }, nominal: [600, 600] },
 };
 
 export type Cam = { pos: V3; target: V3; fov: number };
@@ -207,9 +209,9 @@ export function dollyCam(view: View, e: number): Cam {
 }
 
 // The seam as a fraction of the canvas width, 0 all render, 1 all schematic.
-// On phones the block sits in the right of its box and runs off the screen, so the seam starts at
-// the middle of the block, 0.6 of the box, and not at 0.5.
-export const SEAM0_TALL = 0.6;
+// On phones the block is centred in its box, and the seam sits at the same place on the block as it
+// did when the block filled the right of the box, 0.375 of the specimen's width from its left, 0.385.
+export const SEAM0_TALL = 0.385;
 export function seamAt(view: View, e: number): number {
   const s0 = view === 'tall' ? SEAM0_TALL : DOLLY.seam0;
   return s0 + (DOLLY.seam1 - s0) * e;

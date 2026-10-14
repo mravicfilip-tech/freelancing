@@ -41,16 +41,19 @@ const Scene = lazy(() => import('./hero6/Scene'));
 const CHAR = 7.68; // Azeret Mono 12px, advance 0.6em plus 0.04em tracking
 const TAG_H = 22;
 const TAG_GAP = 32;
-// phone framing. The block sits between the two headline halves, TALL_GAP clear of each, and runs
-// TALL_OVER of the stage past its right edge, just enough to bleed while the duct ends stay in frame. TALL_HALF is one half, two lines of the 40px phone
-// headline, and TALL_FOOT the space under the second half, both set in hero6.css. The still's visible
-// part runs from TALL_VIS_TOP of the box height for TALL_VIS_H of it, from public/render/hero6-tall-*.
-const TALL_OVER = 0.06;
+// phone framing. The block sits centred between the two headline halves, TALL_GAP clear of each, as
+// big as the room between them or the stage's width allows, Filip, 14 October 2026, "bigger and
+// central". TALL_HALF is one half, two lines of the 40px phone headline, and TALL_FOOT the space
+// under the second half, both set in hero6.css. The specimen fills the part of the still from
+// TALL_VIS_LEFT for TALL_VIS_W of the box width and from TALL_VIS_TOP for TALL_VIS_H of its height,
+// measured from public/render/hero6-tall-*, its soft shadow left out.
 const TALL_HALF = 80;
-const TALL_GAP = 24;
+const TALL_GAP = 16;
 const TALL_FOOT = 48;
-const TALL_VIS_TOP = 0.1825;
-const TALL_VIS_H = 0.7025;
+const TALL_VIS_LEFT = 0.038;
+const TALL_VIS_W = 0.907;
+const TALL_VIS_TOP = 0.2;
+const TALL_VIS_H = 0.601;
 const ORDER: LayerId[] = ['surface', 'base', 'tape', 'backfill', 'ducts', 'sand'];
 
 function useBox(ref: React.RefObject<HTMLElement | null>) {
@@ -244,12 +247,17 @@ function Specimen({ c }: { c: Content }) {
   // the box the specimen fills, centred in the stage, always the view's own aspect
   const box = useMemo<Box | null>(() => {
     if (!cw || !ch) return null;
-    // phones, the block fills the room between the headline halves and runs off the right screen
-    // edge, the stage already sits one side padding in, so the box ends TALL_OVER past its right edge
+    // phones, the block is centred in the room between the headline halves and as wide as the stage
+    // when the room is tall enough, the box is square and larger than the block it holds
     if (view === 'tall') {
       const room = Math.max(120, ch - 2 * TALL_HALF - 2 * TALL_GAP - TALL_FOOT);
-      const h = Math.round(room / TALL_VIS_H);
-      return { w: h, h, x: Math.round(cw + cw * TALL_OVER - h), y: Math.round(TALL_HALF + TALL_GAP - h * TALL_VIS_TOP) };
+      const s = Math.round(Math.min(room / TALL_VIS_H, cw / TALL_VIS_W));
+      return {
+        w: s,
+        h: s,
+        x: Math.round((cw - s * TALL_VIS_W) / 2 - s * TALL_VIS_LEFT),
+        y: Math.round(TALL_HALF + TALL_GAP + (room - s * TALL_VIS_H) / 2 - s * TALL_VIS_TOP),
+      };
     }
     const w = Math.min(cw, ch * spec.aspect);
     const h = Math.round(w / spec.aspect);

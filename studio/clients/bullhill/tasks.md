@@ -85,6 +85,7 @@ Task format
   - [x] Phone hero in one screen with air, smaller parts
   - [x] /uireview round and re-check, no open sev 1, card with Filip
   - [ ] Filip's line on the card, ship, fix or drop
+  - [x] Phone hero block bigger and centred, stills rendered again
 
 ## Review
 

@@ -7,6 +7,15 @@ import { PhoneIcon } from './art';
 import { Bracket } from './Bracket';
 import { t } from './copy';
 
+// The two line burger of the phone MENU button, 16px, the stroke of the phone icon. foundry.css shows it under 768 only.
+function BurgerIcon() {
+  return (
+    <svg className="hd__burger" width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="square" aria-hidden="true" focusable="false">
+      <path d="M2 5h12M2 11h12" />
+    </svg>
+  );
+}
+
 export function Header({ c, setLang, root }: { c: Content; setLang: (l: Lang) => void; root: HTMLElement | null }) {
   const [open, setOpen] = useState(false);
   const x = t(c);
@@ -35,7 +44,10 @@ export function Header({ c, setLang, root }: { c: Content; setLang: (l: Lang) =>
           </Bracket>
           <Dialog.Root open={open} onOpenChange={setOpen}>
             <Dialog.Trigger asChild>
-              <Bracket arrow={false}>{c.ui.menu}</Bracket>
+              <Bracket arrow={false}>
+                <BurgerIcon />
+                {c.ui.menu}
+              </Bracket>
             </Dialog.Trigger>
             <Dialog.Portal container={root}>
               <Dialog.Content className="menu" aria-describedby={undefined}>

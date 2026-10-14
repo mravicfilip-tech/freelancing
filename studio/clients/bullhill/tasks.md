@@ -25,8 +25,6 @@ Task format
 
 ## In progress
 
-## Review
-
 - bullhill-1 BullHill company website, one page, three pathways Foundry, Daylight and Underground at /?v=1, 2 and 3. Plan in briefs/website/plan.md, branch claude/hopeful-maxwell-bwuy3c
   - [x] Put the logo files and brand colours on file
   - [x] Propose the page sections
@@ -35,8 +33,13 @@ Task format
   - [x] Set up the app with shared content in English and German
   - [x] Build the three pathways, Foundry, Daylight and Underground
   - [x] Self check, shots at 390 and 1440 with the interaction pass, baselint
+  - [x] Filip narrows to Foundry and Underground, Daylight's glow carried into both
+  - [x] Clean, upscale and cut the seven work photos
+  - [ ] Round 2, real photos and a work section after the hero in all three, briefs/website/round2.md
   - [ ] Filip picks a pathway
   - [ ] Motion round on the pick
   - [ ] /uireview, then Filip's ship line
+
+## Review
 
 ## Done

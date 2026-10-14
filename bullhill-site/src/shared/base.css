@@ -25,3 +25,7 @@ a { color: inherit; text-decoration: none; }
 .ph__label { position: absolute; left: var(--ph-pad, 16px); top: var(--ph-pad, 16px); font-family: var(--ph-mono, ui-monospace, monospace); font-size: 12px; line-height: 16px; letter-spacing: 0.04em; text-transform: uppercase; opacity: 0.8; display: flex; gap: 8px; align-items: center; }
 .ph__label::before { content: ''; width: 8px; height: 8px; border: 1px solid currentColor; border-radius: 1px; }
 .ph__brief { position: absolute; left: var(--ph-pad, 16px); right: var(--ph-pad, 16px); bottom: var(--ph-pad, 16px); font-family: var(--ph-mono, ui-monospace, monospace); font-size: 12px; line-height: 16px; max-width: 46ch; opacity: 0.72; }
+
+/* Real photo. The caller sizes the picture element, the image covers it. */
+.photo { display: block; position: relative; overflow: hidden; background: var(--bh-grey-800); }
+.photo img { display: block; width: 100%; height: 100%; object-fit: cover; }

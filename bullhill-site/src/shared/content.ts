@@ -5,12 +5,16 @@
 // phone number, the email and the company register numbers are placeholders until BullHill sends
 // the real ones. Photos are placeholders too, each one carries the brief for the shot to take.
 
+import type { PhotoId } from './photos';
+
 export type Lang = 'en' | 'de';
 
-export type Shot = { id: string; brief: string };
+// A photo slot. photo names one of BullHill's own photos, brief is the shot still to take when
+// there is none.
+export type Shot = { id: string; brief: string; photo?: PhotoId };
 
 export type Service = { id: string; n: string; title: string; short: string; body: string; shot: Shot };
-export type Step = { n: string; title: string; body: string };
+export type Step = { n: string; title: string; body: string; photo?: PhotoId };
 export type Stat = { value: string; unit?: string; label: string };
 export type Project = {
   id: string;
@@ -28,6 +32,7 @@ export type Audience = { kicker: string; title: string; body: string; points: { 
 export type Person = { name: string; role: string; shot: Shot };
 export type Machine = { type: string; size: string; count: string };
 export type Faq = { q: string; a: string };
+export type WorkItem = { photo: PhotoId; caption: string };
 
 export type Content = {
   lang: Lang;
@@ -58,6 +63,7 @@ export type Content = {
     area: string;
   };
   hero: { kicker: string; title: string; split: [string, string]; lede: string; shot: Shot };
+  work: { kicker: string; title: string; lede: string; items: WorkItem[]; count: string };
   ethos: { kicker: string; title: string; body: string; cta: string };
   services: { kicker: string; title: string; lede: string; items: Service[] };
   process: {
@@ -153,7 +159,22 @@ const en: Content = {
     title: 'We dig the routes fibre runs through.',
     split: ['We dig the routes', 'fibre runs through'],
     lede: 'Trenching, ducts and house connections for fibre networks across Austria and southern Germany. Our own crew, our own machines.',
-    shot: { id: 'hero', brief: shots.hero.en },
+    shot: { id: 'hero', brief: shots.hero.en, photo: 'route-trench-village' },
+  },
+  work: {
+    kicker: 'Our work',
+    title: 'From open trench to finished pavement.',
+    lede: 'Photos from our own routes. Ducts in the ground, surfaces put back.',
+    count: 'photos',
+    items: [
+      { photo: 'route-trench-village', caption: 'Ducts in the trench along a village road' },
+      { photo: 'ducts-fence', caption: 'Duct bundle laid along a garden fence' },
+      { photo: 'ducts-soil', caption: 'Green and orange ducts on the trench bed' },
+      { photo: 'excavator-street', caption: 'Mini excavator on a street section' },
+      { photo: 'restored-lane', caption: 'Crossing closed and resurfaced' },
+      { photo: 'restored-manhole', caption: 'Pavement restored around a manhole' },
+      { photo: 'restored-wall', caption: 'Restored strip along the kerb' },
+    ],
   },
   ethos: {
     kicker: 'Who we are',
@@ -172,7 +193,7 @@ const en: Content = {
         title: 'Fibre trenching',
         short: 'Open trenches to plan depth, in fields, verges and town streets.',
         body: 'We open the trench to the depth and width the plan sets, usually 60 to 80 cm, and keep it safe and tidy while it is open.',
-        shot: { id: 'trench', brief: shots.trench.en },
+        shot: { id: 'trench', brief: shots.trench.en, photo: 'ducts-fence' },
       },
       {
         id: 'ducts',
@@ -180,7 +201,7 @@ const en: Content = {
         title: 'Ducts and chambers',
         short: 'Duct bundles on a sand bed, chambers set, warning tape above.',
         body: 'Duct bundles go onto a clean sand bed, chambers and hand holes are set at the marked points, and warning tape goes in above the ducts.',
-        shot: { id: 'ducts', brief: shots.ducts.en },
+        shot: { id: 'ducts', brief: shots.ducts.en, photo: 'ducts-soil' },
       },
       {
         id: 'connections',
@@ -188,7 +209,7 @@ const en: Content = {
         title: 'House connections',
         short: 'From the street duct to the wall of the building, one by one.',
         body: 'We take the duct from the street to the building wall, through gardens and driveways, and seal the entry point.',
-        shot: { id: 'house', brief: shots.house.en },
+        shot: { id: 'house', brief: shots.house.en, photo: 'restored-lane' },
       },
       {
         id: 'restoration',
@@ -196,7 +217,7 @@ const en: Content = {
         title: 'Surface restoration',
         short: 'Asphalt, paving or grass, put back the way we found it.',
         body: 'Every trench is backfilled and compacted, then the surface goes back. Asphalt, paving stones, gravel or turf.',
-        shot: { id: 'restore', brief: shots.restore.en },
+        shot: { id: 'restore', brief: shots.restore.en, photo: 'restored-manhole' },
       },
     ],
   },
@@ -206,9 +227,9 @@ const en: Content = {
     lede: 'A fibre route is a set of empty ducts in the ground. Once we close the trench, the operator blows the cable through them, often months later.',
     steps: [
       { n: '01', title: 'Survey and permits', body: 'We walk the route, mark existing lines and sort the road permits before a machine moves.' },
-      { n: '02', title: 'Dig', body: 'Excavators open the trench to plan depth, section by section, with the street kept passable.' },
-      { n: '03', title: 'Lay ducts', body: 'Ducts go onto a sand bed, chambers are set, warning tape goes in above.' },
-      { n: '04', title: 'Backfill and restore', body: 'We compact the trench and put the surface back. The route is ready for cable.' },
+      { n: '02', title: 'Dig', photo: 'excavator-street', body: 'Excavators open the trench to plan depth, section by section, with the street kept passable.' },
+      { n: '03', title: 'Lay ducts', photo: 'ducts-soil', body: 'Ducts go onto a sand bed, chambers are set, warning tape goes in above.' },
+      { n: '04', title: 'Backfill and restore', photo: 'restored-manhole', body: 'We compact the trench and put the surface back. The route is ready for cable.' },
     ],
     layers: [
       { id: 'surface', label: 'Surface', note: 'Asphalt, paving or turf, restored' },
@@ -236,11 +257,11 @@ const en: Content = {
     labels: { length: 'Route', year: 'Year', client: 'For', scope: 'Scope', connections: 'Connections' },
     items: [
       // STAND-IN projects, names and figures to be replaced with BullHill's own
-      { id: 'marchtrenk', title: 'Backbone route', place: 'Marchtrenk', region: 'Upper Austria', length: '6.4 km', year: '2025', client: 'Regional network operator', scope: 'Trench, 4 ducts, 6 chambers', shot: { id: 'p1', brief: 'Long straight trench along a country road, machine in the distance' } },
-      { id: 'amstetten', title: 'Town centre rollout', place: 'Amstetten', region: 'Lower Austria', length: '3.1 km', year: '2025', client: 'Main contractor', scope: 'Trench, ducts, house connections', connections: '412', shot: { id: 'p2', brief: 'Narrow town street with paving lifted, crew at work' } },
-      { id: 'leibnitz', title: 'Village connection', place: 'Leibnitz', region: 'Styria', length: '9.8 km', year: '2024', client: 'Municipality', scope: 'Trench, ducts, restoration', connections: '186', shot: { id: 'p3', brief: 'Trench through vineyard country, drone view' } },
-      { id: 'seekirchen', title: 'Business park access', place: 'Seekirchen', region: 'Salzburg', length: '2.2 km', year: '2024', client: 'Regional network operator', scope: 'Trench, road crossing, chambers', shot: { id: 'p4', brief: 'Road crossing at night with lights and barriers' } },
-      { id: 'passau', title: 'Cross border link', place: 'Passau', region: 'Bavaria', length: '5.5 km', year: '2023', client: 'Main contractor', scope: 'Trench, 2 ducts, restoration', shot: { id: 'p5', brief: 'Finished route, restored verge, marker posts in a row' } },
+      { id: 'marchtrenk', title: 'Backbone route', place: 'Marchtrenk', region: 'Upper Austria', length: '6.4 km', year: '2025', client: 'Regional network operator', scope: 'Trench, 4 ducts, 6 chambers', shot: { id: 'p1', photo: 'ducts-fence', brief: 'Long straight trench along a country road, machine in the distance' } },
+      { id: 'amstetten', title: 'Town centre rollout', place: 'Amstetten', region: 'Lower Austria', length: '3.1 km', year: '2025', client: 'Main contractor', scope: 'Trench, ducts, house connections', connections: '412', shot: { id: 'p2', photo: 'excavator-street', brief: 'Narrow town street with paving lifted, crew at work' } },
+      { id: 'leibnitz', title: 'Village connection', place: 'Leibnitz', region: 'Styria', length: '9.8 km', year: '2024', client: 'Municipality', scope: 'Trench, ducts, restoration', connections: '186', shot: { id: 'p3', photo: 'route-trench-village', brief: 'Trench through vineyard country, drone view' } },
+      { id: 'seekirchen', title: 'Business park access', place: 'Seekirchen', region: 'Salzburg', length: '2.2 km', year: '2024', client: 'Regional network operator', scope: 'Trench, road crossing, chambers', shot: { id: 'p4', photo: 'restored-wall', brief: 'Road crossing at night with lights and barriers' } },
+      { id: 'passau', title: 'Cross border link', place: 'Passau', region: 'Bavaria', length: '5.5 km', year: '2023', client: 'Main contractor', scope: 'Trench, 2 ducts, restoration', shot: { id: 'p5', photo: 'restored-lane', brief: 'Finished route, restored verge, marker posts in a row' } },
     ],
   },
   audiences: {
@@ -287,7 +308,7 @@ const en: Content = {
     ],
     areaTitle: 'Where we work',
     regions: ['Upper Austria', 'Lower Austria', 'Vienna', 'Salzburg', 'Styria', 'Bavaria'],
-    shot: { id: 'crew', brief: shots.crew.en },
+    shot: { id: 'crew', brief: shots.crew.en, photo: 'excavator-street' },
   },
   faq: {
     kicker: 'Questions',
@@ -369,7 +390,22 @@ const de: Content = {
     title: 'Wir graben die Trassen, durch die Glasfaser läuft.',
     split: ['Wir graben die Trassen', 'für die Glasfaser'],
     lede: 'Grabenbau, Leerrohre und Hausanschlüsse für Glasfasernetze in Österreich und Süddeutschland. Eigene Mannschaft, eigene Maschinen.',
-    shot: { id: 'hero', brief: shots.hero.de },
+    shot: { id: 'hero', brief: shots.hero.de, photo: 'route-trench-village' },
+  },
+  work: {
+    kicker: 'Unsere Arbeit',
+    title: 'Vom offenen Graben bis zum fertigen Gehweg.',
+    lede: 'Fotos von unseren eigenen Trassen. Rohre im Boden, Oberflächen wiederhergestellt.',
+    count: 'Fotos',
+    items: [
+      { photo: 'route-trench-village', caption: 'Rohre im Graben entlang einer Ortsstraße' },
+      { photo: 'ducts-fence', caption: 'Rohrverband entlang eines Gartenzauns' },
+      { photo: 'ducts-soil', caption: 'Grüne und orange Rohre auf der Grabensohle' },
+      { photo: 'excavator-street', caption: 'Minibagger auf einem Straßenabschnitt' },
+      { photo: 'restored-lane', caption: 'Querung geschlossen und neu befestigt' },
+      { photo: 'restored-manhole', caption: 'Gehweg rund um einen Schacht wiederhergestellt' },
+      { photo: 'restored-wall', caption: 'Wiederhergestellter Streifen entlang der Bordsteinkante' },
+    ],
   },
   ethos: {
     kicker: 'Wer wir sind',
@@ -382,10 +418,10 @@ const de: Content = {
     title: 'Vier Aufgaben, eine Mannschaft.',
     lede: 'Alles zwischen der geplanten Trasse und dem Rohr, das bereit für das Kabel ist.',
     items: [
-      { id: 'trenching', n: '01', title: 'Grabenbau', short: 'Offene Gräben auf Plantiefe, in Feldern, Banketten und Ortsstraßen.', body: 'Wir öffnen den Graben in der geplanten Tiefe und Breite, meist 60 bis 80 cm, und halten ihn sicher und sauber, solange er offen ist.', shot: { id: 'trench', brief: shots.trench.de } },
-      { id: 'ducts', n: '02', title: 'Leerrohre und Schächte', short: 'Rohrverbände im Sandbett, Schächte gesetzt, Warnband darüber.', body: 'Die Rohrverbände kommen auf ein sauberes Sandbett, Schächte und Handlöcher werden an den markierten Punkten gesetzt, darüber das Warnband.', shot: { id: 'ducts', brief: shots.ducts.de } },
-      { id: 'connections', n: '03', title: 'Hausanschlüsse', short: 'Vom Rohr in der Straße bis zur Hauswand, Haus für Haus.', body: 'Wir führen das Rohr von der Straße bis zur Gebäudewand, durch Gärten und Einfahrten, und dichten die Einführung ab.', shot: { id: 'house', brief: shots.house.de } },
-      { id: 'restoration', n: '04', title: 'Oberflächen', short: 'Asphalt, Pflaster oder Rasen, so wie wir sie vorgefunden haben.', body: 'Jeder Graben wird verfüllt und verdichtet, dann kommt die Oberfläche zurück. Asphalt, Pflaster, Schotter oder Rasen.', shot: { id: 'restore', brief: shots.restore.de } },
+      { id: 'trenching', n: '01', title: 'Grabenbau', short: 'Offene Gräben auf Plantiefe, in Feldern, Banketten und Ortsstraßen.', body: 'Wir öffnen den Graben in der geplanten Tiefe und Breite, meist 60 bis 80 cm, und halten ihn sicher und sauber, solange er offen ist.', shot: { id: 'trench', brief: shots.trench.de, photo: 'ducts-fence' } },
+      { id: 'ducts', n: '02', title: 'Leerrohre und Schächte', short: 'Rohrverbände im Sandbett, Schächte gesetzt, Warnband darüber.', body: 'Die Rohrverbände kommen auf ein sauberes Sandbett, Schächte und Handlöcher werden an den markierten Punkten gesetzt, darüber das Warnband.', shot: { id: 'ducts', brief: shots.ducts.de, photo: 'ducts-soil' } },
+      { id: 'connections', n: '03', title: 'Hausanschlüsse', short: 'Vom Rohr in der Straße bis zur Hauswand, Haus für Haus.', body: 'Wir führen das Rohr von der Straße bis zur Gebäudewand, durch Gärten und Einfahrten, und dichten die Einführung ab.', shot: { id: 'house', brief: shots.house.de, photo: 'restored-lane' } },
+      { id: 'restoration', n: '04', title: 'Oberflächen', short: 'Asphalt, Pflaster oder Rasen, so wie wir sie vorgefunden haben.', body: 'Jeder Graben wird verfüllt und verdichtet, dann kommt die Oberfläche zurück. Asphalt, Pflaster, Schotter oder Rasen.', shot: { id: 'restore', brief: shots.restore.de, photo: 'restored-manhole' } },
     ],
   },
   process: {
@@ -394,9 +430,9 @@ const de: Content = {
     lede: 'Eine Glasfasertrasse ist ein Bündel leerer Rohre im Boden. Sobald der Graben zu ist, bläst der Netzbetreiber das Kabel ein, oft Monate später.',
     steps: [
       { n: '01', title: 'Planung und Genehmigung', body: 'Wir gehen die Trasse ab, markieren bestehende Leitungen und klären die Genehmigungen, bevor eine Maschine anrollt.' },
-      { n: '02', title: 'Graben', body: 'Bagger öffnen den Graben auf Plantiefe, Abschnitt für Abschnitt, die Straße bleibt befahrbar.' },
-      { n: '03', title: 'Rohre verlegen', body: 'Die Rohre kommen auf ein Sandbett, Schächte werden gesetzt, darüber das Warnband.' },
-      { n: '04', title: 'Verfüllen und wiederherstellen', body: 'Wir verdichten den Graben und stellen die Oberfläche wieder her. Die Trasse ist bereit für das Kabel.' },
+      { n: '02', title: 'Graben', photo: 'excavator-street', body: 'Bagger öffnen den Graben auf Plantiefe, Abschnitt für Abschnitt, die Straße bleibt befahrbar.' },
+      { n: '03', title: 'Rohre verlegen', photo: 'ducts-soil', body: 'Die Rohre kommen auf ein Sandbett, Schächte werden gesetzt, darüber das Warnband.' },
+      { n: '04', title: 'Verfüllen und wiederherstellen', photo: 'restored-manhole', body: 'Wir verdichten den Graben und stellen die Oberfläche wieder her. Die Trasse ist bereit für das Kabel.' },
     ],
     layers: [
       { id: 'surface', label: 'Oberfläche', note: 'Asphalt, Pflaster oder Rasen, wiederhergestellt' },
@@ -423,11 +459,11 @@ const de: Content = {
     lede: 'Einige Trassen aus den letzten drei Jahren, vom Dorf-Backbone bis zum Ausbau im Ortszentrum.',
     labels: { length: 'Trasse', year: 'Jahr', client: 'Für', scope: 'Umfang', connections: 'Anschlüsse' },
     items: [
-      { id: 'marchtrenk', title: 'Backbone-Trasse', place: 'Marchtrenk', region: 'Oberösterreich', length: '6,4 km', year: '2025', client: 'Regionaler Netzbetreiber', scope: 'Graben, 4 Rohre, 6 Schächte', shot: { id: 'p1', brief: 'Langer gerader Graben entlang einer Landstraße, Maschine im Hintergrund' } },
-      { id: 'amstetten', title: 'Ausbau Ortszentrum', place: 'Amstetten', region: 'Niederösterreich', length: '3,1 km', year: '2025', client: 'Generalunternehmer', scope: 'Graben, Rohre, Hausanschlüsse', connections: '412', shot: { id: 'p2', brief: 'Enge Ortsstraße mit aufgenommenem Pflaster, Mannschaft bei der Arbeit' } },
-      { id: 'leibnitz', title: 'Anbindung Ortschaft', place: 'Leibnitz', region: 'Steiermark', length: '9,8 km', year: '2024', client: 'Gemeinde', scope: 'Graben, Rohre, Wiederherstellung', connections: '186', shot: { id: 'p3', brief: 'Graben durch Weinbaugebiet, Drohnenansicht' } },
-      { id: 'seekirchen', title: 'Anbindung Gewerbepark', place: 'Seekirchen', region: 'Salzburg', length: '2,2 km', year: '2024', client: 'Regionaler Netzbetreiber', scope: 'Graben, Straßenquerung, Schächte', shot: { id: 'p4', brief: 'Straßenquerung bei Nacht mit Licht und Absperrung' } },
-      { id: 'passau', title: 'Grenzüberschreitende Verbindung', place: 'Passau', region: 'Bayern', length: '5,5 km', year: '2023', client: 'Generalunternehmer', scope: 'Graben, 2 Rohre, Wiederherstellung', shot: { id: 'p5', brief: 'Fertige Trasse, wiederhergestelltes Bankett, Markierungspfosten in einer Reihe' } },
+      { id: 'marchtrenk', title: 'Backbone-Trasse', place: 'Marchtrenk', region: 'Oberösterreich', length: '6,4 km', year: '2025', client: 'Regionaler Netzbetreiber', scope: 'Graben, 4 Rohre, 6 Schächte', shot: { id: 'p1', photo: 'ducts-fence', brief: 'Langer gerader Graben entlang einer Landstraße, Maschine im Hintergrund' } },
+      { id: 'amstetten', title: 'Ausbau Ortszentrum', place: 'Amstetten', region: 'Niederösterreich', length: '3,1 km', year: '2025', client: 'Generalunternehmer', scope: 'Graben, Rohre, Hausanschlüsse', connections: '412', shot: { id: 'p2', photo: 'excavator-street', brief: 'Enge Ortsstraße mit aufgenommenem Pflaster, Mannschaft bei der Arbeit' } },
+      { id: 'leibnitz', title: 'Anbindung Ortschaft', place: 'Leibnitz', region: 'Steiermark', length: '9,8 km', year: '2024', client: 'Gemeinde', scope: 'Graben, Rohre, Wiederherstellung', connections: '186', shot: { id: 'p3', photo: 'route-trench-village', brief: 'Graben durch Weinbaugebiet, Drohnenansicht' } },
+      { id: 'seekirchen', title: 'Anbindung Gewerbepark', place: 'Seekirchen', region: 'Salzburg', length: '2,2 km', year: '2024', client: 'Regionaler Netzbetreiber', scope: 'Graben, Straßenquerung, Schächte', shot: { id: 'p4', photo: 'restored-wall', brief: 'Straßenquerung bei Nacht mit Licht und Absperrung' } },
+      { id: 'passau', title: 'Grenzüberschreitende Verbindung', place: 'Passau', region: 'Bayern', length: '5,5 km', year: '2023', client: 'Generalunternehmer', scope: 'Graben, 2 Rohre, Wiederherstellung', shot: { id: 'p5', photo: 'restored-lane', brief: 'Fertige Trasse, wiederhergestelltes Bankett, Markierungspfosten in einer Reihe' } },
     ],
   },
   audiences: {
@@ -472,7 +508,7 @@ const de: Content = {
     ],
     areaTitle: 'Wo wir arbeiten',
     regions: ['Oberösterreich', 'Niederösterreich', 'Wien', 'Salzburg', 'Steiermark', 'Bayern'],
-    shot: { id: 'crew', brief: shots.crew.de },
+    shot: { id: 'crew', brief: shots.crew.de, photo: 'excavator-street' },
   },
   faq: {
     kicker: 'Fragen',

@@ -38,3 +38,11 @@ All 13 sections of the brief, in order. Notice bar, sticky header, hero with the
 ## Needs from shared files
 
 Nothing. No shared change and no new dependency.
+
+## Round 2, real photos
+
+- The photo row is now the work section, `id="work"`, directly after the hero and before the logo strip. `c.work.title` at 48px left, `c.work.lede` beside it, then the seven photos in order with 12px radius, bleeding off the right edge, captions in mono under each as `01 / 07` and the caption. Swipes sideways on phone, desktop has two square buttons and the row scrolls by touch pad or keys. At 390 the first photo shows whole and the second one's edge shows.
+- The old ethos title is gone with the old row, `c.ethos.body` still runs in the cluster. The logo strip took the padding below the work row.
+- Real photos in the project slider, the eight cluster slots (seven plus the route photo again), the first process card (the restored lane) and both audience strips (six different photos, no repeat in a strip). Crew portraits keep their placeholders. Each slot has its own `sizes` and focal point so the ducts, the machine and the mountains stay in the crop.
+- Nothing else in Daylight moved. New file `Work.tsx`, edits in Projects, Cluster, Process, Audiences, Intro, Daylight and `daylight-sections.css`.
+- Checks. typecheck and build pass, baselint finds nothing off the scale, two shoot passes at 390 and 1440 in English and German with scrolled shots for the lazy photos, no horizontal scroll at 390. The only console errors are the dev server refusing the two Geist font files through the linked node_modules, the production build is not affected.

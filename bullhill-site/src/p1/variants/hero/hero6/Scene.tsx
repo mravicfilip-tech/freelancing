@@ -1,6 +1,7 @@
 // The lazy chunk for hero 6. Imports three.js, react three fiber and the scene, so heroes 1 to 5
 // never load it. One camera, two scenes, drawn with the scissor test. The left half is the
-// schematic, the right half the render, split at the middle of the canvas.
+// schematic, the right the render, split at `seam`, a fraction of the canvas width, 0.5 by default.
+// 0 is all render, 1 is all schematic. Beat 4 drives it from the scroll.
 
 import { Canvas, useFrame, useThree } from '@react-three/fiber';
 import { useLayoutEffect, useMemo, useRef } from 'react';
@@ -9,7 +10,7 @@ import { CAMS, VIEWS, type View } from './geometry';
 import { Specimen } from './Render';
 import { buildSchematic } from './Schematic';
 
-function Dual({ view, onReady }: { view: View; onReady: () => void }) {
+function Dual({ view, seam, onReady }: { view: View; seam: number; onReady: () => void }) {
   const gl = useThree((s) => s.gl);
   const camera = useThree((s) => s.camera) as THREE.PerspectiveCamera;
   const size = useThree((s) => s.size);
@@ -31,7 +32,7 @@ function Dual({ view, onReady }: { view: View; onReady: () => void }) {
   useFrame(({ scene }) => {
     const bw = Math.round(size.width * dpr);
     const bh = Math.round(size.height * dpr);
-    const sx = Math.floor(bw / 2);
+    const sx = Math.floor(bw * Math.min(1, Math.max(0, seam)));
     const eps = 0.001;
     schem.setResolution(bw, bh);
     gl.setClearColor(0x000000, 0);
@@ -58,7 +59,7 @@ function Dual({ view, onReady }: { view: View; onReady: () => void }) {
   return null;
 }
 
-export default function Scene({ view, still, onReady }: { view: View; still?: boolean; onReady: () => void }) {
+export default function Scene({ view, still, seam = 0.5, onReady }: { view: View; still?: boolean; seam?: number; onReady: () => void }) {
   const cam = CAMS[view];
   return (
     <Canvas
@@ -74,7 +75,7 @@ export default function Scene({ view, still, onReady }: { view: View; still?: bo
       }}
     >
       <Specimen view={view} />
-      <Dual view={view} onReady={onReady} />
+      <Dual view={view} seam={seam} onReady={onReady} />
     </Canvas>
   );
 }

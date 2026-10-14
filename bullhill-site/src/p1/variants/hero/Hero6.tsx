@@ -56,21 +56,24 @@ function hasWebgl() {
   }
 }
 
-// Still render mode, for scripts/render-hero6.mjs. Only the scene, on a transparent page.
-function StillStage({ view }: { view: View }) {
+// Still render mode, for scripts/render-hero6.mjs. Only the scene, on a transparent page. `&seam=`
+// sets the split, 0 all render and 1 all schematic, for the phone stills of beat 4.
+function StillStage({ view, seam }: { view: View; seam: number }) {
   const [w, h] = VIEWS[view].nominal;
   return (
     <div className="h6-still" style={{ width: w, height: h }}>
       <Suspense fallback={null}>
-        <Scene view={view} still onReady={() => undefined} />
+        <Scene view={view} still seam={seam} onReady={() => undefined} />
       </Suspense>
     </div>
   );
 }
 
 export function Hero6({ c }: { c: Content }) {
-  const still = new URLSearchParams(window.location.search).get('still');
-  if (still === 'wide' || still === 'mid' || still === 'tall') return <StillStage view={still} />;
+  const q = new URLSearchParams(window.location.search);
+  const still = q.get('still');
+  const seam = q.has('seam') ? Number(q.get('seam')) : 0.5;
+  if (still === 'wide' || still === 'mid' || still === 'tall') return <StillStage view={still} seam={Number.isFinite(seam) ? seam : 0.5} />;
   return <Specimen c={c} />;
 }
 

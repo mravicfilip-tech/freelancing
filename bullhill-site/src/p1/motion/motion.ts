@@ -50,20 +50,29 @@ export function useInView(ref: RefObject<HTMLElement | null>) {
   }, [ref]);
 }
 
-type Job = (vh: number) => void;
+// A job reads the page and may return a write. Every job reads first and every write runs after,
+// so a frame lays the page out once however many jobs run.
+type Write = () => void;
+type Job = (vh: number) => Write | void;
 const jobs = new Set<Job>();
 let raf = 0;
 let bound = false;
 function run() {
   raf = 0;
   const vh = window.innerHeight;
-  jobs.forEach((j) => j(vh));
+  const writes: Write[] = [];
+  jobs.forEach((j) => {
+    const w = j(vh);
+    if (w) writes.push(w);
+  });
+  for (const w of writes) w();
 }
 function ask() {
   if (!raf) raf = requestAnimationFrame(run);
 }
 
-// Scroll beat, the low level form. fn runs once a frame while the page scrolls or resizes.
+// Scroll beat, the low level form. fn runs once a frame while the page scrolls or resizes. It reads,
+// and returns what it writes, so its writes wait for every other job's reads.
 export function onScroll(fn: Job) {
   if (!bound) {
     window.addEventListener('scroll', ask, { passive: true });
@@ -91,7 +100,7 @@ export function useScrollVar(ref: RefObject<HTMLElement | null>, name: string, s
       const p = clamp01((start * vh - top) / ((start - end) * vh));
       if (Math.abs(p - last) < 1e-3) return;
       last = p;
-      el.style.setProperty(name, p.toFixed(4));
+      return () => el.style.setProperty(name, p.toFixed(4));
     });
   }, [ref, name, start, end]);
 }

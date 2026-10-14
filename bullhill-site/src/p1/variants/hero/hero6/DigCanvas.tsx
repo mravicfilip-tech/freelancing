@@ -74,7 +74,7 @@ export function DigCanvas({ view, progress }: { view: View; progress: Progress }
       draw(progress.sample());
     });
     ro.observe(cv);
-    draw(progress.sample());
+    draw(progress.current());
     const off = progress.subscribe(draw);
     return () => {
       off();

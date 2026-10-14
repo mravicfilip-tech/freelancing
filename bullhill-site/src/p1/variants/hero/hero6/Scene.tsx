@@ -42,7 +42,7 @@ function Dual({ view, seam, drive, onReady, rig, dig, stillP, dust }: { view: Vi
   const points = useMemo(() => (drive?.acts || stillP > 0 ? buildDig(dpr) : null), [dpr, drive?.acts, stillP]);
   const done = useRef(false);
   const load = drive?.load;
-  const last = useRef({ t: 0, draw: 0, p: -1, warm: false });
+  const last = useRef({ t: 0, draw: 0, p: -1, warm: false, sp: -1, n: 0 });
   const wake = useRef(0);
 
   useLayoutEffect(() => {
@@ -79,7 +79,8 @@ function Dual({ view, seam, drive, onReady, rig, dig, stillP, dust }: { view: Vi
     const now = performance.now();
     const dt = Math.min(100, now - (last.current.t || now));
     last.current.t = now;
-    if (drive) p = drive.progress.sample();
+    // the p the scroll loop read this frame, reading the scroll here would lay the page out again
+    if (drive) p = drive.progress.current();
     if (load) {
       if (load.frozen === null) {
         // scrolling during the load completes the assemble at once, beat 4 takes over from there
@@ -117,7 +118,9 @@ function Dual({ view, seam, drive, onReady, rig, dig, stillP, dust }: { view: Vi
         }
       }
     }
-    if (idleOnly && now - last.current.draw < 30) {
+    // the idle drift is under a degree a second, so 20 frames a second draw it smoothly and leave the
+    // GPU free for the page's own scrolling
+    if (idleOnly && now - last.current.draw < 50) {
       invalidate();
       return;
     }
@@ -140,6 +143,15 @@ function Dual({ view, seam, drive, onReady, rig, dig, stillP, dust }: { view: Vi
     // the acts, from p, before anything is drawn
     const ap = drive?.acts ? p : stillP;
     applyRig(dig, ap);
+    // The key light and the specimen only move with p, so the shadow map is drawn again only when p
+    // changed and in the first frames while the specimen builds. The idle drift moves the camera
+    // alone and reuses it, which spares a full pass of the scene on every idle frame.
+    gl.shadowMap.autoUpdate = false;
+    last.current.n++;
+    if (ap !== last.current.sp || last.current.n < 90) {
+      gl.shadowMap.needsUpdate = true;
+      last.current.sp = ap;
+    }
     const pts = points ? points.update(ap, dust) : false;
     const bw = Math.round(size.width * dpr);
     const bh = Math.round(size.height * dpr);

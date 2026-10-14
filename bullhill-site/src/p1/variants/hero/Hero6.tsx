@@ -158,13 +158,30 @@ function PhoneStills({ view, progress, animate, load }: { view: View; progress: 
   useEffect(() => {
     const el = box.current;
     if (!el) return;
+    const ims = Array.from(el.querySelectorAll<HTMLImageElement>('.h6st__img'));
+    // decoded ahead, so a still is ready before the scroll reaches it
+    ims.forEach((im) => void im.decode?.().catch(() => undefined));
+    const last = ims.map(() => '');
+    const shown = ims.map(() => true);
     const apply = (p: number) => {
       const o = stepFades(p);
-      el.querySelectorAll<HTMLElement>('.h6st__img').forEach((im, i) => {
-        im.style.opacity = o[i].toFixed(3);
+      const on = o.findIndex((v, i) => v > 0 && (i + 1 >= o.length || o[i + 1] < 0.999));
+      ims.forEach((im, i) => {
+        // a still more than one step from the one coming in has no layer at all, so a phone holds
+        // at most three full size stills on the GPU and not five
+        const keep = o[i] > 0 || Math.abs(i - Math.max(0, on)) <= 1;
+        if (keep !== shown[i]) {
+          shown[i] = keep;
+          im.style.display = keep ? '' : 'none';
+        }
+        const v = o[i].toFixed(3);
+        if (v !== last[i]) {
+          last[i] = v;
+          im.style.opacity = v;
+        }
       });
     };
-    apply(progress.sample());
+    apply(progress.current());
     return progress.subscribe(apply);
   }, [progress, load]);
   return (
@@ -288,19 +305,36 @@ function Specimen({ c }: { c: Content }) {
   ctx.current = { view, box, ch, metas, live, stills, wL, tags, steps };
   const stepEl = useRef<HTMLDivElement>(null);
 
-  // the headline, lede and buttons leave in the last part of step 5, and the step label follows p
+  // the headline, lede and buttons leave in the last part of step 5, and the step label follows p.
+  // Each value is written only when it changed, a scroll frame mostly writes nothing.
+  const wrote = useRef<{ t: string; gone: string; step: string; lab: string[] }>({ t: '', gone: '', step: '', lab: [] });
   const text = (p: number) => {
-    const t = ctx.current.steps ? textGone(p) : 0;
+    const t = (ctx.current.steps ? textGone(p) : 0).toFixed(4);
     const el = pin.current;
     if (!el) return;
-    el.style.setProperty('--h6-t', t.toFixed(4));
-    el.dataset.gone = t > 0.98 ? 'yes' : 'no';
+    const w = wrote.current;
+    if (t !== w.t) {
+      w.t = t;
+      el.style.setProperty('--h6-t', t);
+    }
+    const gone = Number(t) > 0.98 ? 'yes' : 'no';
+    if (gone !== w.gone) {
+      w.gone = gone;
+      el.dataset.gone = gone;
+    }
     const lab = stepEl.current;
     if (lab && ctx.current.steps) {
-      const on = stepAt(p);
-      lab.dataset.step = String(on + 1);
+      const step = String(stepAt(p) + 1);
+      if (step !== w.step) {
+        w.step = step;
+        lab.dataset.step = step;
+      }
       lab.querySelectorAll<HTMLElement>('.hv6__stepi').forEach((n, i) => {
-        n.style.opacity = labelAt(p, i).toFixed(3);
+        const v = labelAt(p, i).toFixed(3);
+        if (v !== w.lab[i]) {
+          w.lab[i] = v;
+          n.style.opacity = v;
+        }
       });
     }
   };
@@ -338,14 +372,18 @@ function Specimen({ c }: { c: Content }) {
   };
   const paintRef = useRef(paint);
   paintRef.current = paint;
-  useLayoutEffect(() => paint(progress.sample()));
+  // a render paints from the last p the frame loop read, reading the scroll here would lay the page
+  // out in the middle of the commit
+  useLayoutEffect(() => paint(progress.current()));
   // headline, lede and buttons follow the scroll on their own, the overlay follows the scene's frame,
   // and without the scene the overlay follows the scroll too
+  // On phones the overlay is hidden, no seam and no tags, so a scroll there only moves the text.
   useEffect(() => {
     if (!pinned) return;
-    return progress.subscribe((p) => (live ? text(p) : paintRef.current(p)));
+    const bare = stills && !tags;
+    return progress.subscribe((p) => (live || bare ? text(p) : paintRef.current(p)));
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [progress, pinned, live]);
+  }, [progress, pinned, live, stills, tags]);
   const drive = useMemo(() => ({ progress, load: clock ?? undefined, acts: !!clock, onFrame: (p: number) => paintRef.current(p) }), [progress, clock]);
 
   // ---- beats 1 to 3

@@ -73,10 +73,15 @@ function textEdges(sec: HTMLElement): { first: number; last: number } | null {
   const base = pageTop(sec);
   let first = Infinity;
   let last = -Infinity;
+  // a Rise splits its text into a span per word, so its words are measured as the one Rise box
+  const seen = new Set<HTMLElement>();
   for (let n = walker.nextNode(); n; n = walker.nextNode()) {
     if (!n.nodeValue || !n.nodeValue.trim()) continue;
-    const p = n.parentElement;
-    if (!p || p.closest('svg, [aria-hidden="true"], .sr-only, script, style')) continue;
+    const t = n.parentElement;
+    const p = (t?.closest<HTMLElement>('.rise') ?? t) as HTMLElement | null;
+    if (!p || seen.has(p)) continue;
+    seen.add(p);
+    if (p.closest('svg, [aria-hidden="true"], .sr-only, script, style')) continue;
     if (!p.getClientRects().length) continue;
     const top = pageTop(p) - base;
     first = Math.min(first, top);
@@ -85,9 +90,10 @@ function textEdges(sec: HTMLElement): { first: number; last: number } | null {
   return first === Infinity ? null : { first, last };
 }
 
-export function useGround(root: HTMLElement | null) {
+// `ready` is false while the sections after the hero are still mounting.
+export function useGround(root: HTMLElement | null, ready = true) {
   useLayoutEffect(() => {
-    if (!root || !motionOn()) return;
+    if (!root || !ready || !motionOn()) return;
     const secs: Sec[] = [];
     for (const [sel, ground] of SECTIONS) {
       const el = root.querySelector<HTMLElement>(sel);
@@ -177,7 +183,8 @@ export function useGround(root: HTMLElement | null) {
         if (hit) idx = k + 1;
         else break;
       }
-      apply(secs[idx].ground);
+      const g = secs[idx].ground;
+      return () => apply(g);
     });
 
     // layout moves as images and fonts land, so measure again then, and on a resize
@@ -205,5 +212,5 @@ export function useGround(root: HTMLElement | null) {
       delete root.dataset.page;
       delete root.dataset.gt;
     };
-  }, [root]);
+  }, [root, ready]);
 }

@@ -69,14 +69,15 @@ function useLayerReader(listRef: RefObject<HTMLOListElement | null>) {
     const last = rows.map(() => -1);
     return onScroll((vh) => {
       const rects = rows.map((r) => r.getBoundingClientRect());
-      rects.forEach((r, i) => {
-        const d = Math.abs(r.top + r.height / 2 - vh / 2);
-        const t = clamp01(1 - d / Math.max(r.height, 1));
-        const w = t * t * (3 - 2 * t);
-        if (Math.abs(w - last[i]) < 1e-3) return;
-        last[i] = w;
-        rows[i].style.setProperty('--lw', w.toFixed(3));
-      });
+      return () =>
+        rects.forEach((r, i) => {
+          const d = Math.abs(r.top + r.height / 2 - vh / 2);
+          const t = clamp01(1 - d / Math.max(r.height, 1));
+          const w = t * t * (3 - 2 * t);
+          if (Math.abs(w - last[i]) < 1e-3) return;
+          last[i] = w;
+          rows[i].style.setProperty('--lw', w.toFixed(3));
+        });
     });
   }, [listRef]);
 }

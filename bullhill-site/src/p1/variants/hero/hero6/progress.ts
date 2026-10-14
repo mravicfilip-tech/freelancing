@@ -7,6 +7,8 @@ import { clamp01 } from './geometry';
 
 export type Progress = {
   sample(): number;
+  // the last p the frame loop read, 0 before its first frame. No layout, so a render can use it.
+  current(): number;
   subscribe(fn: (p: number) => void): () => void;
 };
 
@@ -41,6 +43,11 @@ function createStore(): Store {
       const range = section.offsetHeight - pin.offsetHeight;
       if (range <= 1) return 0;
       return clamp01(-section.getBoundingClientRect().top / range);
+    },
+    current() {
+      if (!store.enabled) return 0;
+      if (override !== null) return override;
+      return last < 0 ? 0 : last;
     },
     subscribe(fn) {
       subs.add(fn);

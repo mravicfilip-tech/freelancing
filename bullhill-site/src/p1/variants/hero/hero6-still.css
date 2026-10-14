@@ -4,8 +4,12 @@
 
 .p1 .h6s { position: relative; width: 100%; }
 .p1 .h6s__img { position: absolute; inset: 0; display: block; width: 100%; height: 100%; user-select: none; }
-.p1 .h6s__img--schem { clip-path: inset(0 calc(100% - var(--x)) 0 0); will-change: clip-path; }
-.p1 .h6s__img--render { clip-path: inset(0 0 0 var(--x)); will-change: clip-path; }
+.p1 .h6s__img--schem { clip-path: inset(0 calc(100% - var(--x)) 0 0); }
+.p1 .h6s__img--render { clip-path: inset(0 0 0 var(--x)); }
+/* each still sits in a window the size of the box. Beat 2 slides the window in and its still the
+ * other way by the same amount, so the still holds and the window's edge draws it in. Transforms only,
+ * so the GPU runs the reveal and a busy main thread at load cannot stall it. */
+.p1 .h6s__win { position: absolute; inset: 0; display: block; overflow: hidden; }
 .p1 .h6s__one { display: block; width: 100%; height: auto; user-select: none; }
 
 /* the seam, a 1px line the full height, and the two tags at its foot, one each side */
@@ -34,15 +38,23 @@
  * from the load, the same as the scene's, 0.6s to 2.8s. --h6-fz holds them at the ?t= time. Once the
  * hero is done, or the page scrolled, every animation drops and the pair is its settled state. */
 @keyframes h6s-seam { from { transform: translateX(-0.5px) scaleY(0); } to { transform: translateX(-0.5px) scaleY(1); } }
-@keyframes h6s-schem { from { clip-path: inset(0 calc(100% - var(--x)) 100% 0); } to { clip-path: inset(0 calc(100% - var(--x)) 0 0); } }
-@keyframes h6s-render { from { clip-path: inset(0 calc(100% - var(--x)) 0 var(--x)); } to { clip-path: inset(0 0 0 var(--x)); } }
+/* the schematic draws in from the top, the render from the seam to the right */
+@keyframes h6s-schem-win { from { transform: translateY(-100%); } to { transform: none; } }
+@keyframes h6s-schem-img { from { transform: translateY(100%); } to { transform: none; } }
+@keyframes h6s-render-win { from { transform: translateX(calc(var(--x) - 100%)); } to { transform: none; } }
+@keyframes h6s-render-img { from { transform: translateX(calc(100% - var(--x))); } to { transform: none; } }
 @keyframes h6s-tag { from { opacity: 0; } to { opacity: 1; } }
 .p1 .hv6[data-load='run'] .h6s--in .h6s__line,
+.p1 .hv6[data-load='run'] .h6s--in .h6s__win,
 .p1 .hv6[data-load='run'] .h6s--in .h6s__img,
 .p1 .hv6[data-load='run'] .h6s--in .h6s__tag,
 .p1 .hv6[data-load='run'] .h6s--in .h6s__tagbox { animation-fill-mode: backwards; animation-timing-function: var(--m-ease); animation-play-state: var(--h6-ps, running); }
 .p1 .hv6[data-load='run'] .h6s--in .h6s__line { transform-origin: top; animation-name: h6s-seam; animation-duration: 800ms; animation-delay: calc(600ms - var(--h6-fz, 0ms)); }
-.p1 .hv6[data-load='run'] .h6s--in .h6s__img--schem { animation-name: h6s-schem; animation-duration: 1500ms; animation-delay: calc(700ms - var(--h6-fz, 0ms)); }
-.p1 .hv6[data-load='run'] .h6s--in .h6s__img--render { animation-name: h6s-render; animation-duration: 1500ms; animation-delay: calc(1300ms - var(--h6-fz, 0ms)); }
+.p1 .hv6[data-load='run'] .h6s--in .h6s__win--schem { animation-name: h6s-schem-win; }
+.p1 .hv6[data-load='run'] .h6s--in .h6s__img--schem { animation-name: h6s-schem-img; }
+.p1 .hv6[data-load='run'] .h6s--in .h6s__win--render { animation-name: h6s-render-win; }
+.p1 .hv6[data-load='run'] .h6s--in .h6s__img--render { animation-name: h6s-render-img; }
+.p1 .hv6[data-load='run'] .h6s--in :is(.h6s__win--schem, .h6s__img--schem) { animation-duration: 1500ms; animation-delay: calc(700ms - var(--h6-fz, 0ms)); }
+.p1 .hv6[data-load='run'] .h6s--in :is(.h6s__win--render, .h6s__img--render) { animation-duration: 1500ms; animation-delay: calc(1300ms - var(--h6-fz, 0ms)); }
 .p1 .hv6[data-load='run'] .h6s--in .h6s__tag { animation-name: h6s-tag; animation-duration: 500ms; animation-delay: calc(1700ms - var(--h6-fz, 0ms)); }
 .p1 .hv6[data-load='run'] .h6s--in .h6s__tagbox { animation: none; }

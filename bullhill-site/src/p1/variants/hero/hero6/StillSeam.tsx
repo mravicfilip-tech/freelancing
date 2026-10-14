@@ -59,8 +59,12 @@ export function StillSeam({ view, p, alt, animate = false }: { view: Exclude<Vie
 
   return (
     <div className={animate ? 'h6s h6s--in' : 'h6s'} style={{ aspectRatio: String(aspect), ['--x' as string]: `${pct.toFixed(3)}%`, ['--wl' as string]: `${wL}px` }}>
-      <img className="h6s__img h6s__img--schem" src={`/render/hero6-${view}-schematic.webp`} width={w} height={h} alt="" decoding="async" draggable={false} />
-      <img className="h6s__img h6s__img--render" src={`/render/hero6-${view}-render.webp`} width={w} height={h} alt={alt} decoding="async" draggable={false} />
+      <span className="h6s__win h6s__win--schem">
+        <img className="h6s__img h6s__img--schem" src={`/render/hero6-${view}-schematic.webp`} width={w} height={h} alt="" decoding="async" draggable={false} />
+      </span>
+      <span className="h6s__win h6s__win--render">
+        <img className="h6s__img h6s__img--render" src={`/render/hero6-${view}-render.webp`} width={w} height={h} alt={alt} decoding="async" draggable={false} />
+      </span>
       {view === 'tall' ? null : (
       <div className="h6s__edge" aria-hidden="true">
         <span className="h6s__line" />

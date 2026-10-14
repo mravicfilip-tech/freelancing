@@ -66,7 +66,7 @@ export function runField(cv: HTMLCanvasElement, vw: number, vh: number, draw: (c
     last = 0;
     unsub = onScroll(() => {
       progress();
-      tick(performance.now());
+      return () => tick(performance.now());
     });
     idle = requestAnimationFrame(idleLoop);
   }

@@ -26,6 +26,25 @@ function groundOf(el: HTMLElement): Ground {
   return 'light';
 }
 
+// Every button's ground is read in one pass after a commit and written after, so the page styles
+// once and not once per button.
+const groundQ = new Set<HTMLElement>();
+let groundQueued = false;
+function askGround(el: HTMLElement) {
+  groundQ.add(el);
+  if (groundQueued) return;
+  groundQueued = true;
+  queueMicrotask(() => {
+    groundQueued = false;
+    const els = Array.from(groundQ).filter((e) => e.isConnected);
+    groundQ.clear();
+    const gs = els.map(groundOf);
+    els.forEach((e, i) => {
+      if (e.dataset.ground !== gs[i]) e.dataset.ground = gs[i];
+    });
+  });
+}
+
 function ArrowSvg({ className }: { className?: string }) {
   return (
     <svg className={className} width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="square" aria-hidden="true" focusable="false">
@@ -178,7 +197,7 @@ export function Bracket(props: AProps | BProps) {
     [outer],
   );
   useLayoutEffect(() => {
-    if (own.current) own.current.dataset.ground = groundOf(own.current);
+    if (own.current) askGround(own.current);
   }, [n, sv]);
   const bare = n === 3 && sv === 3 && !arrow && !square;
   const out = variant === 'line' && !lab();

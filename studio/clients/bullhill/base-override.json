@@ -1,5 +1,5 @@
 {
-  "_note": "BullHill values that sit off the base scale, set 14 October 2026 so the three pathways can match Filip's references. fontSizes adds the display sizes the references use above 48. Display tracking in pathway 2 goes to minus 0.04em, as on trymeridian.com. spacing adds 128, 160, 192 and 224 for marketing section padding, multiples of 32.",
+  "_note": "BullHill values that sit off the base scale, set 14 October 2026 so the three pathways can match Filip's references. fontSizes adds the display sizes the references use above 48. Display tracking in pathway 2 goes to minus 0.04em, as on trymeridian.com. spacing adds 128, 160, 192 and 224 for marketing section padding, multiples of 32. Display letter spacing is minus 0.05em on every Foundry headline, below the base floor of minus 0.01em, Filip 14 October 2026.",
   "fontSizes": [
     12,
     14,
@@ -53,5 +53,6 @@
     160,
     192,
     224
-  ]
+  ],
+  "displayLetterSpacing": "-0.05em"
 }

@@ -20,11 +20,11 @@ commit that carries it. Session branch `claude/hopeful-maxwell-bwuy3c`.
 | 12 | Who we are headline top aligned | Done, 9224651, gap back to 96px b373700 |
 | 13 | Crew placeholders on phones, "dont hide them" | Kept, nothing hidden |
 | 14 | Phone hero cramped, then "in one block" | Done, one 844px screen, 6b999fc |
-| 15 | Hero storyboard, five steps | Done, 2b8b208. Step 4 shows light, not cable, until Filip says whether the crew blows fibre |
+| 15 | Hero storyboard, five steps | Done, 2b8b208. Filip, the crew does blow fibre in, so step 4 becomes Fibre blown in, in build |
 | 16 | Audience particles moving like worldquantfoundry | Done, then rebuilt 1:1, then smaller and sparser, 93ad55c |
 | 17 | Service cards, micro animations, no entry from the left | Done, version 3 with a loop, 5e0c712 |
 | 18 | Dotted wave above the FAQ animated | Done, ccc5382 |
-| 19 | Closing headline, links and logo full white | Done, 24f8066 and 93ad55c, the all white logo needs his friend's yes |
+| 19 | Closing headline, links and logo full white | Done, 24f8066 and 93ad55c, the all white logo approved |
 | 20 | Process header dots animated | Done, ccc5382, small points, checked 19:00 |
 | 21 | Particles cut off and too big, density hurts reading | Done, 93ad55c |
 | 22 | Phone hero words disappearing on scroll | Done, 5f287dc |
@@ -37,5 +37,5 @@ commit that carries it. Session branch `claude/hopeful-maxwell-bwuy3c`.
 | 29 | Text revealed by blocks like landonorris.com | In build |
 | 30 | View project buttons with no page behind them | In build, removed under the note 10 rule |
 
-Still owed to Filip, the hero clip of the five steps, and one answer from him, whether the crew ever
-blows fibre in.
+Still owed to Filip, the hero clip of the five steps, after step 4 shows the fibre. Answered, the crew
+blows fibre in, FAQ and process lede changed to say so.

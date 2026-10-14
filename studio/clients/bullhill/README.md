@@ -32,7 +32,7 @@ lockups, use the files and never redraw them.
 | `brand/logo-on-red-all-white.svg` | red | white | white | white | white |
 
 The fifth lockup, all white on red, is Filip's ruling of 14 October 2026 for the closing panel, made from
-the red lockup with its black fills turned white. It still needs his friend's yes as the brand owner.
+the red lockup with its black fills turned white. Approved by the brand owner through Filip, "Approved", 14 October 2026.
 
 The SVGs are 1000 by 1000 squares with a filled ground rect. The artwork sits inside roughly x 78 to
 922 and y 264 to 737, so a header or favicon use needs a cropped viewBox, not the square file.

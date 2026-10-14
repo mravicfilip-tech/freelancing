@@ -224,7 +224,7 @@ const en: Content = {
   process: {
     kicker: 'How a route gets built',
     title: 'We dig now. The fibre comes later.',
-    lede: 'A fibre route is a set of empty ducts in the ground. Once we close the trench, the operator blows the cable through them, often months later.',
+    lede: 'A fibre route is a set of empty ducts in the ground. Once the trench is closed, the fibre is blown through them, by our crew or by the operator.',
     steps: [
       { n: '01', title: 'Survey and permits', body: 'We walk the route, mark existing lines and sort the road permits before a machine moves.' },
       { n: '02', title: 'Dig', photo: 'excavator-street', body: 'Excavators open the trench to plan depth, section by section, with the street kept passable.' },
@@ -314,7 +314,7 @@ const en: Content = {
     kicker: 'Questions',
     title: 'What people ask before they book us.',
     items: [
-      { q: 'Do you lay the fibre cable as well?', a: 'No. We build the route, the ducts and the chambers. The operator blows the cable in later, often months after we leave.' },
+      { q: 'Do you lay the fibre cable as well?', a: 'Yes. We build the route, the ducts and the chambers, and we can blow the fibre in too. If the operator does that part, we leave the ducts ready for it.' },
       { q: 'How many metres a day can you dig?', a: 'It depends on the ground and the surface. Open fields go fast, a paved town centre far slower. We give a figure per route after the survey.' },
       { q: 'Do you handle the permits?', a: 'Yes. We prepare the road permits and the utility checks with you or for you.' },
       { q: 'Which regions do you cover?', a: 'Austria and southern Germany. Longer jobs further away on request.' },
@@ -427,7 +427,7 @@ const de: Content = {
   process: {
     kicker: 'So entsteht eine Trasse',
     title: 'Wir graben jetzt. Die Glasfaser kommt später.',
-    lede: 'Eine Glasfasertrasse ist ein Bündel leerer Rohre im Boden. Sobald der Graben zu ist, bläst der Netzbetreiber das Kabel ein, oft Monate später.',
+    lede: 'Eine Glasfasertrasse ist ein Bündel leerer Rohre im Boden. Sobald der Graben zu ist, wird die Glasfaser eingeblasen, von unserem Team oder vom Netzbetreiber.',
     steps: [
       { n: '01', title: 'Planung und Genehmigung', body: 'Wir gehen die Trasse ab, markieren bestehende Leitungen und klären die Genehmigungen, bevor eine Maschine anrollt.' },
       { n: '02', title: 'Graben', photo: 'excavator-street', body: 'Bagger öffnen den Graben auf Plantiefe, Abschnitt für Abschnitt, die Straße bleibt befahrbar.' },
@@ -514,7 +514,7 @@ const de: Content = {
     kicker: 'Fragen',
     title: 'Was man uns vor dem ersten Auftrag fragt.',
     items: [
-      { q: 'Verlegen Sie auch das Glasfaserkabel?', a: 'Nein. Wir bauen die Trasse, die Rohre und die Schächte. Der Netzbetreiber bläst das Kabel später ein, oft Monate nachdem wir fertig sind.' },
+      { q: 'Verlegen Sie auch das Glasfaserkabel?', a: 'Ja. Wir bauen die Trasse, die Rohre und die Schächte und können die Glasfaser auch einblasen. Macht das der Netzbetreiber, übergeben wir die Rohre bereit dafür.' },
       { q: 'Wie viele Meter schaffen Sie am Tag?', a: 'Das hängt von Boden und Oberfläche ab. Auf freiem Feld geht es schnell, im gepflasterten Ortszentrum viel langsamer. Nach der Begehung nennen wir eine Zahl pro Trasse.' },
       { q: 'Kümmern Sie sich um die Genehmigungen?', a: 'Ja. Wir bereiten Aufgrabungsgenehmigungen und Leitungsauskünfte mit Ihnen oder für Sie vor.' },
       { q: 'In welchen Regionen arbeiten Sie?', a: 'In Österreich und Süddeutschland. Größere Aufträge weiter weg auf Anfrage.' },

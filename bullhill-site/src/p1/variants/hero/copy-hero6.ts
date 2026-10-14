@@ -10,7 +10,7 @@ const copy = {
     render: 'Render',
     figure: 'A block of ground cut open with five ducts running through it. The left half is a schematic drawing, the right half a render of the same block.',
     // the five steps of the scroll, named on screen as it reaches each
-    steps: ['Dig', 'Sand bed', 'Ducts', 'Ready for fibre', 'Backfill and restore'],
+    steps: ['Dig', 'Sand bed', 'Ducts', 'Fibre blown in', 'Backfill and restore'],
   },
   de: {
     code: 'BH 001',
@@ -19,7 +19,7 @@ const copy = {
     schematic: 'Schema',
     render: 'Render',
     figure: 'Ein aufgeschnittener Block Erdreich mit fünf Rohren. Die linke Hälfte ist eine Schemazeichnung, die rechte Hälfte ein Render desselben Blocks.',
-    steps: ['Graben', 'Sandbett', 'Leerrohre', 'Bereit für Glasfaser', 'Verfüllen und wiederherstellen'],
+    steps: ['Graben', 'Sandbett', 'Leerrohre', 'Glasfaser eingeblasen', 'Verfüllen und wiederherstellen'],
   },
 };
 

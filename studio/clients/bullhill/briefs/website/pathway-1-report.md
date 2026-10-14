@@ -50,3 +50,17 @@ Nothing blocking. Two optional notes.
 
 - Logo kind logo at 32 to 40px has a small wordmark. A wide lockup variant, mark beside wordmark, would read better in headers.
 - content.ts has no string for a second crew line, so one lives in copy.ts. If the other pathways need it too it could move into content.ts.
+
+## Round 2, real photos, work section and the red glow
+
+All in bullhill-site/src/p1/. Nothing in shared was touched.
+
+- Work section (id work) sits on #111 straight after the hero and before the light ethos panel, which still slides over it with its 24px top radius. Mono kicker row with Our work on the left and 07 photos on the right on a hairline, uppercase 40px title left, mono lede right. Then a snap row of seven tall cards with 24px radius, 480px tall on desktop and 400 on phone. The first card is 640 wide on desktop, the rest 320. On phone every card is 300 wide, so one whole photo and the edge of the next show under the title in the first screen. Captions sit under each card as 01 / 07 plus the caption in mono. Square prev and next buttons with a counter, same buttons as the projects row. The Scroll cue in the hero now points to the work section.
+- Focal points are set per photo in copy.ts (WORK_FOCAL for the tall cards, PROJECT_FOCAL for the 4 / 3 project crops), so the mountains and the dumper show in card 01, the duct bundle in 02 and 03, the machine in 04 and the manhole in 06.
+- Project cards show their photos with a 12px radius. Services cards keep their dot art and the crew strip keeps its placeholders. Real photos show clean, with no grain, mark or shot brief.
+- Sizes are set per slot. Work cards use 640px for the first card and 320px for the rest from 768 up, 300px below. Project photos use 372, 352 and 252px. No photo sits above the fold in this pathway, so none is marked priority.
+- Glow, carried from Daylight. Two bull-red radial ellipses rise from the bottom edge of the hero behind the dotted hill at alpha 0.45 and 0.3. The work section repeats the same ellipses mirrored at its top edge, so the glow runs across the seam and fades out under the title. In the closing section a bull-red hill rises from the bottom of the black half under the dotted hill, built like the planet in .p2-footer (a circle, radial red to red-dark to #111, inner highlight, soft outer red shadow), 840px wide on desktop and 520px on phone.
+
+Checks. typecheck and build pass. Shots at 390 and 1440 in English and German, two passes, plus scrolled viewport shots of the work row, the hero and work seam and the closing. The shoot tool reports no contrast fails, no small targets and no overflow. baselint shows 1 warning, the coloured glow shadow on the hill, which is the Daylight treatment on purpose.
+
+The worktree now has its own installed node_modules, so the dev server serves the fonts. Shots were retaken with Archivo and Azeret Mono and match the earlier ones.

@@ -1,4 +1,5 @@
 import type { Content } from '../shared/content';
+import type { PhotoId } from '../shared/photos';
 
 // Strings this pathway needs that content.ts does not carry.
 const copy = {
@@ -10,6 +11,7 @@ const copy = {
     hours: 'Hours',
     address: 'Address',
     scrollRow: 'Project routes',
+    workRow: 'Photos of our work',
     successTitle: 'Sent',
   },
   de: {
@@ -20,11 +22,29 @@ const copy = {
     hours: 'Zeiten',
     address: 'Adresse',
     scrollRow: 'Projekttrassen',
+    workRow: 'Fotos unserer Arbeit',
     successTitle: 'Gesendet',
   },
 };
 
 export const t = (c: Content) => copy[c.lang];
+
+// Focal points for the tall work cards and the 4 / 3 project photos, so the ducts, the machine
+// and the mountains stay in frame when the photo is cropped.
+export const WORK_FOCAL: Record<PhotoId, string> = {
+  'route-trench-village': '50% 40%',
+  'ducts-fence': '50% 62%',
+  'ducts-soil': '36% 50%',
+  'excavator-street': '68% 46%',
+  'restored-lane': '50% 62%',
+  'restored-manhole': '46% 60%',
+  'restored-wall': '40% 56%',
+};
+export const PROJECT_FOCAL: Partial<Record<PhotoId, string>> = {
+  'route-trench-village': '50% 36%',
+  'excavator-street': '50% 42%',
+  'ducts-fence': '50% 58%',
+};
 
 // Soft hyphens for the long German compounds, so a 24px title can break at 390 without
 // relying on the browser's hyphenation dictionary. Invisible everywhere else.

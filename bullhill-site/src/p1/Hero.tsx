@@ -18,7 +18,7 @@ export function Hero({ c }: { c: Content }) {
               <Bracket href="#contact">{c.ui.send}</Bracket>
             </div>
           </div>
-          <a className="hero__scroll mono" href="#services">
+          <a className="hero__scroll mono" href="#work">
             {c.ui.scroll}
             <Arrow dir="down" />
           </a>

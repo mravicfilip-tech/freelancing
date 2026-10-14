@@ -71,7 +71,7 @@ Task format
   - [x] Build the whole site motion, two slices, above and below Process
   - [x] Motion clips to Filip at 1440 and 390
   - [ ] Hero scroll as five named steps
-  - [ ] Audience dots moving like worldquantfoundry
+  - [x] Audience dots moving like worldquantfoundry
   - [ ] Service card micro animations, board of four, Filip picks a number
   - [ ] Hero clip to Filip
   - [x] Phone hero in one screen with air, smaller parts

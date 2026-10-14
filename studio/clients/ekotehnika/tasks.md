@@ -37,7 +37,8 @@ Task format
   - [x] Animate the map and wire it into the story, S runs 2000px, the forklift then the map, later beats move 1000px
   - [x] Shrink the map 30 percent and keep it centred inside the rules, Filip's "map is falling out"
   - [x] The fork pushes the map page up on its blade instead of crossing the type, Filip's "pushing up this content too"
-  - [ ] Filip looks at the map in the story on his localhost
+  - [x] Filip looks at the map in the story on his localhost
+  - [x] On production at ekotehnika-hero.vercel.app, Filip's "push to production" on 14 October
 
 - ekotehnika-9 Showcase reel of the website, 9:16 and 16:9, cut to T-Pain "Church". Brief in briefs/reel/brief.md, branch claude/awesome-faraday-lkhnn2-reel, chat session_01KEyRKaeQw5pSTYN96BmUKn
   - [x] Write the brief from Filip's ask and the portfolio reel

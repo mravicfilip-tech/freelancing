@@ -59,7 +59,7 @@ export function Closing({ c }: { c: Content }) {
               <a href="#top">{c.footer.legal}</a>
               <a href="#top">{c.footer.privacy}</a>
             </p>
-            <Logo variant="on-red" height={56} className="end__logo" />
+            <Logo variant="on-red-white" height={56} className="end__logo" />
           </div>
           <div className="end__base mono">
             <span>{c.footer.company}</span>

@@ -632,7 +632,7 @@
 }
 
 /* ---------- audiences ---------- */
-.p1 .auds { position: relative; background: var(--ink); color: var(--bh-grey-200); }
+.p1 .auds { position: relative; overflow-x: clip; background: var(--ink); color: var(--bh-grey-200); }
 .p1 .aud { grid-template-columns: minmax(0, 1fr); --d1: var(--bh-grey-500); --d2: var(--bh-grey-600); --d3: var(--bh-grey-700); position: relative; display: grid; gap: 48px; max-width: 1600px; margin-inline: auto; padding: 96px var(--pad) 0; }
 .p1 .aud__field { position: absolute; left: 0; top: 0; width: 100%; height: 520px; pointer-events: none; opacity: 0.7; z-index: 0; }
 .p1 .aud__text, .p1 .aud__cards { position: relative; }
@@ -669,8 +669,9 @@
 }
 @media (min-width: 1200px) {
   .p1 .aud { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 24px; padding-top: 128px; align-items: start; }
-  .p1 .aud__field { width: 50%; height: 100%; opacity: 1; }
-  .p1 .aud__field--r { left: auto; right: 0; }
+  /* the field runs from the middle of the grid out to the screen edge, so no dot is cut at the grid's edge */
+  .p1 .aud__field { --aud-out: max(0px, (100vw - var(--g-max)) / 2); left: calc(-1 * var(--aud-out)); width: calc(50% + var(--aud-out)); height: 100%; opacity: 1; }
+  .p1 .aud__field--r { left: auto; right: calc(-1 * var(--aud-out)); }
   .p1 .aud__text { position: sticky; top: 128px; max-width: 480px; }
   .p1 .aud--flip .aud__cards { order: -1; }
   .p1 .aud--flip .aud__text { justify-self: end; }

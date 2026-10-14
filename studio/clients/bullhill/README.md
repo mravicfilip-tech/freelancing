@@ -29,6 +29,10 @@ lockups, use the files and never redraw them.
 | `brand/logo-on-white.svg` | white | black | red | black | red |
 | `brand/logo-on-red-black-bull.svg` | red | white | black | white | black |
 | `brand/logo-on-red-white-bull.svg` | red | black | white | black | white |
+| `brand/logo-on-red-all-white.svg` | red | white | white | white | white |
+
+The fifth lockup, all white on red, is Filip's ruling of 14 October 2026 for the closing panel, made from
+the red lockup with its black fills turned white. It still needs his friend's yes as the brand owner.
 
 The SVGs are 1000 by 1000 squares with a filled ground rect. The artwork sits inside roughly x 78 to
 922 and y 264 to 737, so a header or favicon use needs a cropped viewBox, not the square file.
@@ -42,7 +46,7 @@ every photo slot is a placeholder that carries the brief for the shot to take (F
 ## Rules that never bend
 
 - Brand colours are the three tokens above, from the logo files Filip sent on 14 October 2026.
-- Logo artwork is used from `brand/`, never redrawn or recoloured outside the four lockups.
+- Logo artwork is used from `brand/`, never redrawn or recoloured outside the five lockups above.
 - Every page shows the full logo, the excavator mark over the wordmark. The wordmark or the mark alone never stands in for it (Filip, 14 October 2026).
 
 ## Accessibility

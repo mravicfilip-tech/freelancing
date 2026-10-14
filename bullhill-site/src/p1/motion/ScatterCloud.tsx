@@ -28,6 +28,14 @@ const TUBE = [16.4, 23.9];         // depth of the tunnel rings
 const RINGS = 16;
 const TRAVEL = 19;                  // camera travel over the block's whole pass
 const TURN = (Math.PI * 2) / 180;  // radians a second
+// Filip, "the particles need to be way smaller" and "the density is also reducing the readibility".
+// Points stay fine, SIZE scales every radius down, nothing grows past R_MAX, and points fade out from
+// R_FADE, so the swell reads as a point coming close, never a disc over the text.
+const SIZE = 0.13;
+const R_FADE = 4;
+const R_MAX = 9;
+const COUNT_DESK = 360;
+const COUNT_PHONE = 140;
 
 type Cloud = { n: number; x: Float32Array; y: Float32Array; z: Float32Array; rho: Float32Array };
 
@@ -118,7 +126,7 @@ export function ScatterCloud({ className, seed, mirror }: { className?: string; 
         }
         return;
       }
-      cloud ??= makeCloud(seed, window.innerWidth < 768 ? 460 : 1400, !!mirror);
+      cloud ??= makeCloud(seed, window.innerWidth < 768 ? COUNT_PHONE : COUNT_DESK, !!mirror);
       const cam = env.p * TRAVEL;
       const ang = start + env.time * TURN;
       const c = Math.cos(ang);
@@ -130,13 +138,13 @@ export function ScatterCloud({ className, seed, mirror }: { className?: string; 
       for (let i = 0; i < cloud.n; i++) {
         const ze = ZN + mod(cloud.z[i] - cam - ZN, LEN);
         const f = FOCAL / ze;
-        const r = cloud.rho[i] * f;
-        if (r > 120) continue;
+        const r = cloud.rho[i] * f * SIZE;
+        if (r > R_MAX) continue;
         const sx = CX + (cloud.x[i] * c - cloud.y[i] * s) * f;
         const sy = CY + (cloud.x[i] * s + cloud.y[i] * c) * f;
         if (sx < -r || sx > VW + r || sy < -r || sy > VH + r) continue;
         // a little fade as the point passes, and in from the back
-        const a = alphaOf(r) * Math.min(1, (ZMAX - ze) / 3) * (r > 60 ? 1 - (r - 60) / 60 : 1);
+        const a = 0.75 * alphaOf(r) * Math.min(1, (ZMAX - ze) / 3) * (r > R_FADE ? 1 - (r - R_FADE) / (R_MAX - R_FADE) : 1);
         ctx.globalAlpha = a;
         if (r < 3.5) {
           ctx.beginPath();

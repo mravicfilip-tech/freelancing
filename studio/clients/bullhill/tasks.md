@@ -74,7 +74,7 @@ Task format
   - [x] Audience dots moving, first build
   - [ ] Audience particles 1:1 with worldquantfoundry, and the FAQ wave moving
   - [x] Closing headline and links full white
-  - [ ] Service card micro animations, board of four, Filip picks a number
+  - [x] Service card micro animations, board of four, Filip picks a number, 3 with a loop
   - [ ] Hero clip to Filip
   - [x] Phone hero in one screen with air, smaller parts
   - [ ] /uireview, then Filip's ship line

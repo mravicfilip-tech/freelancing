@@ -167,6 +167,12 @@ scroll, the schematic half holds still as the plan.
    its red lockup with the black Bull, because the README allows only the four lockups and none is
    all white. An all white lockup needs Filip's friend's yes and the file in `brand/`.
 
+16. Process header dots animated, "particle animation here too", on the radiating field behind the
+   process title (`RadialField`). In build with notes 13 and 14.
+
+17. Service cards, "I like this one best i think v3 but need animation thats looping after load in".
+   Done, version 3 assembles and then runs version 2's loop while on screen, the default.
+
 ## Phone hero, proposed after the reference
 
 What the reference does. The wordmark top left and one square menu button top right. The headline in

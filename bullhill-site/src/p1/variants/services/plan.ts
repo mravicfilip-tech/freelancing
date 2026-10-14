@@ -103,6 +103,16 @@ function assemble(kind: Kind, dots: DotT[]): Item[] {
   });
 }
 
+// Version 3, Filip's pick, assembles and then runs version 2's loop for as long as the card is on
+// screen. The loop's own delay moves to ld, so it does not clash with the scatter delay d.
+function assembleLoop(kind: Kind, dots: DotT[]): Item[] {
+  const lp = loop(kind, dots);
+  return assemble(kind, dots).map((it, i): Item => {
+    const { d, gs } = lp[i].v;
+    return { ...it, l: lp[i].l, g: lp[i].g, v: { ...it.v, ...(d === undefined ? {} : { ld: d }), ...(gs === undefined ? {} : { gs }) } };
+  });
+}
+
 const SRC = { trench: trenchDots, ducts: ductDots, house: houseDots, layers: layerDots };
 const cache = new Map<string, Item[]>();
 
@@ -111,7 +121,7 @@ export function plan(kind: Kind, version: SvcN): Item[] {
   let hit = cache.get(key);
   if (!hit) {
     const dots = SRC[kind]();
-    hit = version === 2 ? loop(kind, dots) : version === 3 ? assemble(kind, dots) : drawIn(kind, dots);
+    hit = version === 2 ? loop(kind, dots) : version === 3 ? assembleLoop(kind, dots) : drawIn(kind, dots);
     cache.set(key, hit);
   }
   return hit;

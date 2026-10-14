@@ -13,7 +13,7 @@ import './services.css';
 // ServiceArt is returned, so reduced motion, ?motion=off and automated shots see it as it was.
 // The svg carries data-go, which the CSS reads.
 //   no     waiting for the card to enter, the dots are hidden (versions 1 and 3)
-//   yes    the move is playing or done
+//   yes    the move is playing or done, and in version 3 data-loop says whether the loop may run
 //   live   on screen, so the loop runs (version 2)
 //   off    off screen, so the loop is paused (version 2)
 //   idle   still, waiting for the pointer (version 4)
@@ -38,9 +38,23 @@ function useGo(ref: React.RefObject<SVGSVGElement | null>, v: SvcN) {
       io.observe(svg);
       return () => io.disconnect();
     };
-    if (v === 1 || v === 3) {
+    if (v === 1) {
       set('no');
       return once('0px 0px -12% 0px', () => set('yes'));
+    }
+    if (v === 3) {
+      // assemble once, then the loop runs only while the card is on screen
+      set('no');
+      let vis: IntersectionObserver | null = null;
+      const stop = once('0px 0px -12% 0px', () => {
+        set('yes');
+        vis = new IntersectionObserver((es) => svg.setAttribute('data-loop', es[es.length - 1].isIntersecting ? 'live' : 'off'));
+        vis.observe(svg);
+      });
+      return () => {
+        stop();
+        vis?.disconnect();
+      };
     }
     if (v === 2) {
       set('off');
@@ -98,7 +112,7 @@ export function ServiceArtMotion({ kind, className, index = 0 }: { kind: Kind; c
       />
     );
   };
-  const spin = v === 2 && kind === 'ducts';
+  const spin = (v === 2 || v === 3) && kind === 'ducts';
   const ring = items.map((it, i) => (spin && it.g ? circle(it, i) : null));
   const rest = items.map((it, i) => (spin && it.g ? null : circle(it, i)));
   const svgStyle = {

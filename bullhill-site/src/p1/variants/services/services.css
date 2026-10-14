@@ -88,3 +88,26 @@
 @keyframes svs-spin {
   to { transform: rotate(var(--turn)); }
 }
+
+/* ---------- 3 assemble, then version 2's loop runs on ----------
+ * The loop starts on each dot once it has landed, 1.4s after its scatter begins plus its own loop
+ * delay --ld, and pauses while the card is off screen. */
+.p1[data-motion='on'] .svs[data-v='3'][data-go='yes'] circle[data-l] {
+  animation-duration: 1.1s, var(--per);
+  animation-timing-function: var(--m-ease), ease-in-out;
+  animation-iteration-count: 1, infinite;
+  animation-fill-mode: both, none;
+  animation-delay: calc(var(--cd) + var(--d, 0) * 1s), calc(var(--cd) + var(--d, 0) * 1s + 1.4s + var(--ld, 0) * 1s);
+}
+.p1[data-motion='on'] .svs[data-v='3'][data-go='yes'] circle[data-l='run'] { animation-name: svs-scatter, svs-run; }
+.p1[data-motion='on'] .svs[data-v='3'][data-go='yes'] circle[data-l='fan'] { animation-name: svs-scatter, svs-fan; }
+.p1[data-motion='on'] .svs[data-v='3'][data-go='yes'] circle[data-l='glow'] { animation-name: svs-scatter, svs-glow; }
+.p1[data-motion='on'] .svs[data-v='3'][data-go='yes'] .svs__spin {
+  transform-box: view-box;
+  transform-origin: 120px 150px;
+  animation: svs-spin var(--per) linear calc(var(--cd) + 1.6s) infinite;
+}
+.p1[data-motion='on'] .svs[data-v='3'][data-loop='off'] circle,
+.p1[data-motion='on'] .svs[data-v='3'][data-loop='off'] .svs__spin {
+  animation-play-state: paused;
+}

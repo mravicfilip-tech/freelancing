@@ -1,0 +1,33 @@
+{
+  "name": "service-card-art-assemble",
+  "client": "bullhill",
+  "url": "http://localhost:5173/?v=1&hero=1",
+  "selector": ".svc",
+  "date": "2026-10-14",
+  "width": 1440,
+  "source": {
+    "repo": "bullhill-site",
+    "file": "src/p1/variants/services/ServiceArtMotion.tsx"
+  },
+  "note": "The four service cards. Dot art assembles from a scatter as the card enters, then loops quietly on screen. ?svc=3, the default. Picked 2026-10-14.",
+  "role": "ul",
+  "tag": "ul",
+  "text": "FIBRE TRENCHING 01 / 04 OPEN TRENCHES TO",
+  "fingerprint": {
+    "fontFamily": "archivo variable",
+    "fontSize": "16px",
+    "fontWeight": "400",
+    "lineHeight": "24px",
+    "letterSpacing": "0px",
+    "textTransform": "none",
+    "color": "#111111",
+    "background": "transparent",
+    "border": "none",
+    "radius": "0px",
+    "padding": "0px 0px 0px 0px",
+    "height": "660px",
+    "shadow": "none",
+    "width": "1376px"
+  },
+  "hover": null
+}

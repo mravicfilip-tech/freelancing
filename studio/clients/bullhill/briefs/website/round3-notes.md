@@ -48,6 +48,21 @@ frozen at commit b0bf997 and change only where Filip names them.
    hairlines between, the small square chevron toggle that turns red when open, and the soft red
    glow along the bottom. Source the FAQ in `SectionsC.tsx` and `.p3-faq` in `underground.css`.
    Foundry has no FAQ today.
+6. One grid for all content, APP-WIDE, logged in taste.md. "The whole website can have full width
+   backgrounds whatnot etc but the content needs to be within one same grid." Foundry's grid is
+   12 columns, 24px gutter, max width 1600 centred, side padding `--pad`. Places in
+   `bullhill-site/src/p1/foundry.css` that leave it today, none changed yet.
+   - line 336 `.wk__row`, the work photo row starts at the screen edge plus `--pad`, off the grid
+     above 1664 wide.
+   - line 452 `.proc__head`, the process title sits in its own 960 wide centred column.
+   - line 496 `.layer`, the layer list is a centred three column row, not on the grid columns.
+   - line 506 `.proj__head` and line 510 the project row, centred title and a row padded to centre
+     its first card, `calc(50% - var(--cw) / 2)`.
+   - line 602 to 605 `.crew__main`, centred intro, title and portrait strip.
+   - line 699 `.con`, the contact panel has no max width, so it runs edge to edge above 1664.
+   - line 770 to 828 `.end`, the closing splits the screen in two halves and insets the red panel
+     24px from the screen edge, not on the grid.
+   - The four Underground pieces in notes 1 to 5 come in on this grid, not on their own widths.
 
 ## Open questions
 
@@ -61,3 +76,5 @@ frozen at commit b0bf997 and change only where Filip names them.
   same family. Waits on Filip.
 - Where the FAQ sits in Foundry. Proposed default, after the audience cards and before the
   contact form, as on Underground. Waits on Filip.
+- Scroll rows and the grid. Proposed default, the work and project rows start on the grid's left
+  edge and may run off the right edge of the screen, so the next card peeks. Waits on Filip.

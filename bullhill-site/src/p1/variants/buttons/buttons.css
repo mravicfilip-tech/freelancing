@@ -1,0 +1,176 @@
+/* Five button styles for Foundry. Every selector sits under .p1.
+ * Style 1 is the bracket button in foundry.css, untouched. This file only adds the forced state
+ * classes for the lab (.is-hover .is-press .is-focus) and styles 2 to 5.
+ * The Bracket component sets data-btn (1 to 5) and data-ground (dark, light, red).
+ * Motion runs 150 to 280ms, eased, and none under prefers-reduced-motion.
+ * Colours are bull-red, black, white and the grey tokens only. */
+
+.p1 .bk[data-btn] {
+  --bk-e: cubic-bezier(0.25, 0.8, 0.25, 1);
+  /* light ground, the default */
+  --slab: var(--ink);
+  --slab-fg: #fff;
+  --hot: var(--bh-red);
+  --hot-fg: #fff;
+  --mark: var(--bh-red);
+  --fill-bg: var(--bh-red);
+  --fill-bg-fg: #fff;
+  --fill-hot: var(--ink);
+  --fill-hot-fg: #fff;
+}
+.p1 .bk[data-btn][data-ground='dark'] {
+  --slab: var(--bh-grey-200);
+  --slab-fg: var(--ink);
+  --fill-hot: var(--bh-grey-200);
+  --fill-hot-fg: var(--ink);
+}
+.p1 .bk[data-btn][data-ground='red'] {
+  --slab: var(--ink);
+  --slab-fg: #fff;
+  --hot: #fff;
+  --hot-fg: var(--ink);
+  --mark: var(--ink);
+  --fill-bg: var(--ink);
+  --fill-bg-fg: #fff;
+  --fill-hot: #fff;
+  --fill-hot-fg: var(--ink);
+}
+
+/* a forced focus ring, for the lab */
+.p1 .bk[data-btn].is-focus { outline: var(--bl-focus); outline-offset: var(--bl-focus-offset); }
+
+/* ---------- 1, bracket, as built. Forced states only, and the fill on a dark ground ---------- */
+.p1 .bk[data-btn='1'].is-hover::before { opacity: 0.1; }
+.p1 .bk[data-btn='1'].is-hover .bk__c--tl, .p1 .bk[data-btn='1'].is-focus .bk__c--tl { transform: translate(-2px, -2px); }
+.p1 .bk[data-btn='1'].is-hover .bk__c--tr, .p1 .bk[data-btn='1'].is-focus .bk__c--tr { transform: translate(2px, -2px); }
+.p1 .bk[data-btn='1'].is-hover .bk__c--bl, .p1 .bk[data-btn='1'].is-focus .bk__c--bl { transform: translate(-2px, 2px); }
+.p1 .bk[data-btn='1'].is-hover .bk__c--br, .p1 .bk[data-btn='1'].is-focus .bk__c--br { transform: translate(2px, 2px); }
+.p1 .bk[data-btn='1'].bk--fill.is-hover:not(:disabled) { background: var(--bh-red); }
+.p1 .bk[data-btn='1'].bk--fill[data-ground='dark'] { background: var(--bh-grey-200); color: var(--ink); }
+.p1 .bk[data-btn='1'].bk--fill[data-ground='dark']:is(:hover, .is-hover):not(:disabled) { background: var(--bh-red); color: #fff; }
+
+/* ---------- 2, bracket sweep ----------
+ * Corners stay put. A fill rises from the bottom edge, the label turns white, press pulls the corners in. */
+.p1 .bk[data-btn='2'] { transition: color 200ms var(--bk-e); }
+.p1 .bk[data-btn='2']::before {
+  display: block;
+  opacity: 1;
+  background: var(--hot);
+  transform: scaleY(0);
+  transform-origin: 50% 100%;
+  transition: transform 240ms var(--bk-e);
+}
+.p1 .bk[data-btn='2']:is(:hover, .is-hover):not(:disabled)::before { opacity: 1; transform: scaleY(1); }
+.p1 .bk[data-btn='2']:is(:hover, .is-hover):not(:disabled) { color: var(--hot-fg); }
+.p1 .bk[data-btn='2'] .bk__c { opacity: 1; transition: transform 150ms var(--bk-e); }
+.p1 .bk[data-btn='2'] .bk__c--tl { top: 0; left: 0; }
+.p1 .bk[data-btn='2'] .bk__c--tr { top: 0; right: 0; }
+.p1 .bk[data-btn='2'] .bk__c--bl { bottom: 0; left: 0; }
+.p1 .bk[data-btn='2'] .bk__c--br { bottom: 0; right: 0; }
+.p1 .bk[data-btn='2']:is(:hover, :focus-visible, .is-hover, .is-focus) .bk__c { transform: none; }
+.p1 .bk[data-btn='2']:is(:active, .is-press):not(:disabled) .bk__c--tl { transform: translate(2px, 2px); }
+.p1 .bk[data-btn='2']:is(:active, .is-press):not(:disabled) .bk__c--tr { transform: translate(-2px, 2px); }
+.p1 .bk[data-btn='2']:is(:active, .is-press):not(:disabled) .bk__c--bl { transform: translate(2px, -2px); }
+.p1 .bk[data-btn='2']:is(:active, .is-press):not(:disabled) .bk__c--br { transform: translate(-2px, -2px); }
+/* primary, a solid block with the corners set in, the red rises over it */
+.p1 .bk[data-btn='2'].bk--fill { background: var(--slab); color: var(--slab-fg); }
+.p1 .bk[data-btn='2'].bk--fill:is(:hover, .is-hover):not(:disabled) { background: var(--slab); color: var(--hot-fg); }
+.p1 .bk[data-btn='2'].bk--fill .bk__c--tl { top: 4px; left: 4px; }
+.p1 .bk[data-btn='2'].bk--fill .bk__c--tr { top: 4px; right: 4px; }
+.p1 .bk[data-btn='2'].bk--fill .bk__c--bl { bottom: 4px; left: 4px; }
+.p1 .bk[data-btn='2'].bk--fill .bk__c--br { bottom: 4px; right: 4px; }
+
+/* ---------- 3, slab and arrow ----------
+ * A solid slab with a mono label and an arrow. Hover sends the arrow out to the right, a new one
+ * slides in from the left, the slab turns bull-red. Press drops it 1px. */
+.p1 .bk[data-btn='3'] {
+  justify-content: space-between;
+  gap: 16px;
+  padding: 0 16px;
+  background: var(--slab);
+  color: var(--slab-fg);
+  transition: background-color 220ms var(--bk-e), color 220ms var(--bk-e), transform 150ms var(--bk-e);
+}
+.p1 .bk[data-btn='3'].bk--square { padding: 0; justify-content: center; }
+.p1 .bk[data-btn='3']::before { display: none; }
+.p1 .bk[data-btn='3'] .bk__ar { position: relative; flex: none; width: 16px; height: 16px; overflow: hidden; }
+.p1 .bk[data-btn='3'] .bk__ar svg { position: absolute; inset: 0; transition: transform 220ms var(--bk-e); }
+.p1 .bk[data-btn='3'] .bk__a2 { transform: translateX(-120%); }
+.p1 .bk[data-btn='3']:is(:hover, .is-hover):not(:disabled) { background: var(--hot); color: var(--hot-fg); }
+.p1 .bk[data-btn='3']:is(:hover, .is-hover):not(:disabled) .bk__a1 { transform: translateX(120%); }
+.p1 .bk[data-btn='3']:is(:hover, .is-hover):not(:disabled) .bk__a2 { transform: translateX(0); }
+.p1 .bk[data-btn='3']:is(:active, .is-press):not(:disabled) { transform: translateY(1px); }
+/* primary, a bull-red slab that goes to the ground's slab colour */
+.p1 .bk[data-btn='3'].bk--fill { padding: 0 16px 0 24px; background: var(--fill-bg); color: var(--fill-bg-fg); }
+.p1 .bk[data-btn='3'].bk--fill.bk--square { padding: 0; }
+.p1 .bk[data-btn='3'].bk--fill:is(:hover, .is-hover):not(:disabled) { background: var(--fill-hot); color: var(--fill-hot-fg); }
+
+/* ---------- 4, text roll ----------
+ * No box. A small bull-red square, the mono label, a rule under the label. Hover rolls the label
+ * up and its copy in from below, and the rule draws across in bull-red. */
+.p1 .bk[data-btn='4'] { gap: 12px; padding: 0 4px; background: none; transition: transform 150ms var(--bk-e); }
+.p1 .bk[data-btn='4'].bk--square { padding: 0; }
+.p1 .bk[data-btn='4']::before { display: none; }
+.p1 .bk[data-btn='4'] .bk__sq { flex: none; width: 8px; height: 8px; background: var(--mark); transform: translateY(-5px); }
+.p1 .bk[data-btn='4'] .bk__roll { display: flex; flex-direction: column; gap: 8px; }
+.p1 .bk[data-btn='4'] .bk__win { display: grid; overflow: hidden; }
+.p1 .bk[data-btn='4'] .bk__t {
+  grid-area: 1 / 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 240ms var(--bk-e);
+}
+.p1 .bk[data-btn='4'] .bk__t--2 { transform: translateY(100%); }
+.p1 .bk[data-btn='4']:is(:hover, .is-hover):not(:disabled) .bk__t { transform: translateY(-100%); }
+.p1 .bk[data-btn='4']:is(:hover, .is-hover):not(:disabled) .bk__t--2 { transform: translateY(0); }
+.p1 .bk[data-btn='4'] .bk__rule {
+  position: relative;
+  height: 2px;
+  background: linear-gradient(currentColor, currentColor) 0 100% / 100% 1px no-repeat;
+}
+.p1 .bk[data-btn='4'] .bk__rule::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: var(--hot);
+  transform: scaleX(0);
+  transform-origin: 0 50%;
+  transition: transform 260ms var(--bk-e);
+}
+.p1 .bk[data-btn='4']:is(:hover, .is-hover):not(:disabled) .bk__rule::after { transform: scaleX(1); }
+.p1 .bk[data-btn='4']:is(:active, .is-press):not(:disabled) { transform: translateY(1px); }
+/* primary, a heavier label and rule */
+.p1 .bk[data-btn='4'].bk--fill { padding: 0 4px; background: none; color: inherit; font-weight: 600; }
+.p1 .bk[data-btn='4'].bk--fill:is(:hover, .is-hover):not(:disabled) { background: none; }
+.p1 .bk[data-btn='4'].bk--fill.bk--square { padding: 0; }
+.p1 .bk[data-btn='4'].bk--fill .bk__rule { height: 4px; background-size: 100% 2px; }
+.p1 .bk[data-btn='4'].bk--fill .bk__sq { transform: translateY(-6px); }
+
+/* ---------- 5, split cell ----------
+ * A label cell and a square arrow cell, after Underground's Know more in Foundry type. Hover turns
+ * the arrow cell bull-red and the arrow to up and right, the label moves 4px. Press scales to 0.96. */
+.p1 .bk[data-btn='5'] { gap: 4px; padding: 0; background: none; color: inherit; transition: transform 150ms var(--bk-e); }
+.p1 .bk[data-btn='5'].bk--fill:is(:hover, .is-hover):not(:disabled) { background: none; }
+.p1 .bk[data-btn='5']::before { display: none; }
+.p1 .bk[data-btn='5'] .bk__cell {
+  display: inline-flex;
+  align-items: center;
+  align-self: stretch;
+  transition: background-color 220ms var(--bk-e), color 220ms var(--bk-e);
+}
+.p1 .bk[data-btn='5'] .bk__cell--l { flex: 1 1 auto; justify-content: flex-start; padding: 0 16px; border: 1px solid currentColor; }
+.p1 .bk[data-btn='5'] .bk__cell--l .bk__l { transition: transform 220ms var(--bk-e); }
+.p1 .bk[data-btn='5'] .bk__cell--i { flex: none; justify-content: center; width: 44px; background: var(--slab); color: var(--slab-fg); }
+.p1 .bk[data-btn='5'] .bk__a { transition: transform 220ms var(--bk-e); }
+.p1 .bk[data-btn='5']:is(:hover, .is-hover):not(:disabled) .bk__cell--i { background: var(--hot); color: var(--hot-fg); }
+.p1 .bk[data-btn='5']:is(:hover, .is-hover):not(:disabled) .bk__a { transform: rotate(-45deg); }
+.p1 .bk[data-btn='5']:is(:hover, .is-hover):not(:disabled) .bk__cell--l .bk__l { transform: translateX(4px); }
+.p1 .bk[data-btn='5']:is(:active, .is-press):not(:disabled) { transform: scale(0.96); }
+/* primary, both cells solid */
+.p1 .bk[data-btn='5'].bk--fill .bk__cell--l { background: var(--slab); color: var(--slab-fg); border-color: var(--slab); }
+
+/* ---------- reduced motion, none ---------- */
+@media (prefers-reduced-motion: reduce) {
+  .p1 .bk, .p1 .bk::before, .p1 .bk *, .p1 .bk *::before, .p1 .bk *::after { transition: none !important; animation: none !important; }
+}

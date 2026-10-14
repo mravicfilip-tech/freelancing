@@ -1,0 +1,35 @@
+/* The button lab page, ?v=1&lab=buttons. Every selector sits under .p1. */
+
+.p1 .blab { background: var(--ink); color: var(--paper); }
+.p1 .blab__intro { padding: calc(var(--hd-h) + 48px) 0 48px; }
+.p1 .blab__title { font-size: 40px; line-height: 40px; }
+.p1 .blab__lede { max-width: 720px; margin-top: 24px; }
+
+.p1 .blab__panel { padding: 48px 0 24px; }
+.p1 .blab__panel--dark { --hair: var(--hair-paper); --muted: var(--bh-grey-400); background: var(--ink); color: var(--paper); }
+.p1 .blab__panel--light { --hair: var(--hair-ink); --muted: var(--bh-grey-600); background: var(--paper); color: var(--ink); border-radius: 24px 24px 0 0; }
+.p1 .blab__phead { display: flex; justify-content: space-between; gap: 16px; padding-bottom: 16px; }
+.p1 .blab__ph { font-weight: 400; }
+.p1 .blab__phead p { color: var(--muted); }
+
+.p1 .blab__row { display: grid; grid-template-columns: minmax(0, 1fr); gap: 24px; padding: 32px 0 48px; border-top: 1px solid var(--hair); }
+.p1 .blab__n { display: block; font-family: var(--f-mono); font-size: 64px; line-height: 64px; font-weight: 300; letter-spacing: 0; color: var(--muted); }
+.p1 .blab__name { margin-top: 16px; font-size: 28px; line-height: 28px; }
+.p1 .blab__text { margin-top: 16px; max-width: 360px; color: var(--muted); }
+.p1 .blab__live { margin-top: 24px; }
+.p1 .blab__live-row { display: flex; flex-wrap: wrap; align-items: center; gap: 16px; margin-top: 12px; }
+
+.p1 .blab__scroll { min-width: 0; overflow-x: auto; }
+.p1 .blab__states { width: 100%; min-width: 900px; border-collapse: collapse; table-layout: fixed; }
+.p1 .blab__states thead th:first-child { width: 96px; }
+.p1 .blab__states th { padding: 0 8px 12px; font-weight: 400; text-align: left; color: var(--muted); }
+.p1 .blab__states td { padding: 16px 8px; border-top: 1px solid var(--hair); vertical-align: middle; }
+.p1 .blab__states tbody th { padding: 16px 8px 16px 0; border-top: 1px solid var(--hair); vertical-align: middle; }
+
+@media (min-width: 768px) {
+  .p1 .blab__title { font-size: 56px; line-height: 56px; }
+}
+@media (min-width: 1200px) {
+  .p1 .blab__row { grid-template-columns: minmax(0, 3fr) minmax(0, 9fr); gap: 24px; }
+  .p1 .blab__states { min-width: 0; }
+}

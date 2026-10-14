@@ -9,7 +9,7 @@ import { urlProgress, useProgress, type Progress } from './hero6/progress';
 import { StillSeam } from './hero6/StillSeam';
 import { DigCanvas } from './hero6/DigCanvas';
 import { STEPS, labelAt, stepAt, textGone } from './hero6/acts';
-import { LoadClock, SETTLED, assembleAt, riseEase, urlFreeze } from './hero6/timeline';
+import { LoadClock, SETTLED, assembleAt, urlFreeze } from './hero6/timeline';
 import './hero.css';
 import './hero6.css';
 
@@ -176,22 +176,13 @@ function PhoneStills({ view, progress, animate, load }: { view: View; progress: 
   );
 }
 
-// Beat 1 with the clock frozen by ?t=. The words of the headline are set to where the rise has got
-// to at t, the same curve and steps as the CSS (--m-rise 600ms, --m-step 80ms, --m-ease).
+// Beat 1 with the clock frozen by ?t=. The headline's blocks are held where the reveal has got to at
+// t, the same lines and steps as the CSS (motion/motion.css, --rz is the time, --rp pauses).
 function freezeHeadline(sec: HTMLElement, t: number) {
-  sec.querySelectorAll<HTMLElement>('.hv6__title .rise__w').forEach((w) => {
-    const li = Number(w.style.getPropertyValue('--li')) || 0;
-    const k = riseEase(clamp01((t - li * 80) / 600));
-    const i = w.querySelector<HTMLElement>('.rise__i');
-    if (i) {
-      i.style.transition = 'none';
-      i.style.transform = `translateY(${((1 - k) * 115).toFixed(3)}%)`;
-    }
-  });
-  sec.querySelectorAll<HTMLElement>('.hv6__title .rise__shy').forEach((n) => {
-    n.style.transition = 'none';
-    n.style.opacity = t > 600 ? '1' : '0';
-  });
+  const h1 = sec.querySelector<HTMLElement>('.hv6__title');
+  if (!h1) return;
+  h1.style.setProperty('--rz', `${t}ms`);
+  h1.style.setProperty('--rp', 'paused');
 }
 
 export function Hero6({ c }: { c: Content }) {

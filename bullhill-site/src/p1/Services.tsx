@@ -23,13 +23,17 @@ export function Services({ c }: { c: Content }) {
     <section id="services" className="eth" aria-labelledby="eth-title" ref={secRef}>
       <div className="eth__top">
         <div className="eth__l">
-          <p className="mono kicker">{c.ethos.kicker}</p>
+          <Rise as="p" body className="mono kicker">
+            {c.ethos.kicker}
+          </Rise>
           <Rise id="eth-title" className="eth__title display">
             {sh(c, c.ethos.title)}
           </Rise>
         </div>
         <div className="eth__r">
-          <p className="eth__body">{c.ethos.body}</p>
+          <Rise as="p" body className="eth__body">
+            {c.ethos.body}
+          </Rise>
           <Bracket href="#crew">{c.ethos.cta}</Bracket>
         </div>
       </div>

@@ -86,8 +86,10 @@ export function Crew({ c }: { c: Content }) {
       </div>
 
       <div className="g crew__main">
-        <p className="crew__intro mono-body">{c.crew.body}</p>
-        <Rise id="crew-title" className="crew__title display">
+        <Rise as="p" at={1.5} body className="crew__intro mono-body">
+          {c.crew.body}
+        </Rise>
+        <Rise id="crew-title" at={1} className="crew__title display">
           {sh(c, c.crew.title)}
         </Rise>
 
@@ -109,10 +111,12 @@ export function Crew({ c }: { c: Content }) {
       <div className="mx">
         <div className="g gc mx__in">
           <div className="mx__intro">
-            <h3 id="mx-title" className="mx__title display">
+            <Rise as="h3" plain id="mx-title" className="mx__title display">
               {sh(c, x.matrixTitle)}
-            </h3>
-            <p className="mx__body">{x.matrixBody}</p>
+            </Rise>
+            <Rise as="p" body className="mx__body">
+              {x.matrixBody}
+            </Rise>
             <Bracket href="#contact">{c.audiences.contractors.cta}</Bracket>
           </div>
 

@@ -25,11 +25,17 @@ function Block({ c, a, icons, flip, seed, row }: { c: Content; a: AudienceT; ico
   return (
     <div className={`aud${flip ? ' aud--flip' : ''}`} ref={ref} style={{ '--r': row } as CSSProperties}>
       <ScatterCloud className={`art aud__field${flip ? ' aud__field--r' : ''}`} seed={seed} mirror={flip} />
-      <div className="aud__text">
-        <p className="mono kicker">{a.kicker}</p>
+      <div className="aud__text" data-rise-scope="">
+        <Rise as="p" body className="mono kicker">
+          {a.kicker}
+        </Rise>
         <Rise className="aud__title display">{sh(c, a.title)}</Rise>
-        <p className="aud__line mono-body">{firstSentence(a.body)}</p>
-        <p className="aud__body mono-body">{a.body}</p>
+        <Rise as="p" body className="aud__line mono-body">
+          {firstSentence(a.body)}
+        </Rise>
+        <Rise as="p" body className="aud__body mono-body">
+          {a.body}
+        </Rise>
         <Bracket href="#contact">{a.cta}</Bracket>
       </div>
       <ul className="aud__cards">

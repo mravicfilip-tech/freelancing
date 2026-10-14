@@ -11,6 +11,14 @@ so the lesson outlives the context window.
 - The cloud stop hook asks for a commit whenever the working tree is dirty. Builders work in their
   own git worktree, per build recipe step 2, so the main tree stays clean while they run.
 
+## Worktrees
+
+- Worktrees of one repo share a single `git stash` list. A builder that stashes and pops in its own
+  worktree can pop another builder's changes. Builders never run `git stash`, they commit or copy.
+- A worktree with `node_modules` symlinked from the main tree makes the Vite dev server answer 403
+  on font files from packages, since they resolve outside the worktree root, and shots fall back
+  to a system font. Run a real `npm install` in each worktree.
+
 ## Shots
 
 - The container has 4 cores and no GPU. WebGL renders in software. Wait 9000 to 13000ms per frame

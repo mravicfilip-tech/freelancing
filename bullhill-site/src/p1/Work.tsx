@@ -4,8 +4,10 @@ import { Photo } from '../shared/Photo';
 import { photoAlt } from '../shared/photos';
 import { Arrow } from './art';
 import { WORK_FOCAL, sh, t } from './copy';
+import './r3-work.css';
 
-// Work photos straight after the hero. A snap row of tall cards, the first about twice as wide.
+// Work photos straight after the hero. A snap row of notched photo frames, the first about twice as
+// wide, starting on the grid's left edge and running off the right so the next card peeks.
 export function Work({ c }: { c: Content }) {
   const x = t(c);
   const rowRef = useRef<HTMLUListElement>(null);
@@ -65,17 +67,26 @@ export function Work({ c }: { c: Content }) {
       <ul className="wk__row" ref={rowRef} onScroll={measure} tabIndex={0} aria-label={x.workRow}>
         {items.map((it, i) => (
           <li key={it.photo} className="wk__card">
-            <Photo
-              id={it.photo}
-              alt={photoAlt(it.photo, c.lang)}
-              className="wk__ph"
-              focal={WORK_FOCAL[it.photo]}
-              sizes={i === 0 ? '(min-width: 768px) 640px, 300px' : '(min-width: 768px) 320px, 300px'}
-            />
-            <p className="wk__n mono">
-              {String(i + 1).padStart(2, '0')} / {total}
+            <div className="wk__frame">
+              <i className="wk__xh wk__xh--tl" aria-hidden="true" />
+              <i className="wk__xh wk__xh--tr" aria-hidden="true" />
+              <i className="wk__xh wk__xh--bl" aria-hidden="true" />
+              <i className="wk__xh wk__xh--br" aria-hidden="true" />
+              <div className="wk__clip">
+                <Photo
+                  id={it.photo}
+                  alt={photoAlt(it.photo, c.lang)}
+                  className="wk__ph"
+                  focal={WORK_FOCAL[it.photo]}
+                  sizes={i === 0 ? '(min-width: 768px) 720px, 300px' : '(min-width: 768px) 360px, 300px'}
+                />
+              </div>
+              <span className="wk__skew" aria-hidden="true" />
+            </div>
+            <p className="wk__cap">
+              <span className="wk__n">{String(i + 1).padStart(2, '0')}</span>
+              <span>{it.caption}</span>
             </p>
-            <p className="wk__cap mono">{it.caption}</p>
           </li>
         ))}
       </ul>

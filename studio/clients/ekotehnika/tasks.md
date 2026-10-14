@@ -25,6 +25,12 @@ Task format
 
 ## In progress
 
+- ekotehnika-10 Servis map section, Čurug and Vrčin, the two service centres whose vans cover the whole of Serbia. Options at ?servismap=1 to 3, board briefs/ui-pass/refs/round5/r5-board-servis-map.jpg
+  - [x] Map data from Natural Earth 1:10m, Serbia, Kosovo, the neighbours and the rivers
+  - [x] Three design options as still frames in the real shell, Mreža, Pokrivenost, Reljef
+  - [ ] Filip picks an option and answers the placement and Kosovo questions
+  - [ ] Animate the picked option and wire it into the story after Servis
+
 - ekotehnika-9 Showcase reel of the website, 9:16 and 16:9, cut to T-Pain "Church". Brief in briefs/reel/brief.md, branch claude/awesome-faraday-lkhnn2-reel, chat session_01KEyRKaeQw5pSTYN96BmUKn
   - [x] Write the brief from Filip's ask and the portfolio reel
   - [ ] Plan the reel and its beat table for Filip's review

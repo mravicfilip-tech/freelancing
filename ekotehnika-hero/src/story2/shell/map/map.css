@@ -1,0 +1,121 @@
+/* The servis map options, round 5. The stage keeps the Servis pure black ground, the map sits between the centre grid line
+   and the right one, from the top rule to the bottom rule, and the two centres use the Prodaja point (taste 2026-10-12 23:55). */
+.sm-ground {
+  background: #000;
+}
+
+.sm-fig {
+  position: absolute;
+  top: 136px;
+  bottom: 64px;
+  margin: 0;
+  display: grid;
+  place-items: center;
+}
+
+.sm-map {
+  position: relative;
+  width: 659px;
+  height: 700px;
+  overflow: hidden;
+}
+
+.sm-map svg,
+.sm-map canvas {
+  display: block;
+}
+
+/* the point keeps its ink plus and ink edge on the dark ground */
+.sm-dot.p-dot {
+  --fg: var(--black);
+  opacity: 1;
+}
+
+.sm-base {
+  position: absolute;
+  width: 0;
+  height: 0;
+}
+
+/* the name sits on a plate of the ground, so no route or town mark runs through the type */
+.sm-name {
+  position: absolute;
+  left: 20px;
+  top: -12px;
+  padding: 2px 8px;
+  font: 500 14px/20px var(--font);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--white);
+  background: #000;
+  white-space: nowrap;
+}
+
+/* the two centres as a list of grid cells above the bottom rule, the point at the left of each */
+.sm-bases {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.sm-bases li {
+  position: relative;
+  display: grid;
+  row-gap: 4px;
+  padding: 32px 24px 32px 72px;
+}
+
+.sm-bases li + li {
+  border-left: 1px solid var(--line);
+}
+
+.sm-bases .sm-dot {
+  left: 38.5px;
+  top: 46.5px;
+}
+
+.sm-bases .line {
+  font-size: 18px;
+  line-height: 24px;
+  color: var(--fg);
+}
+
+/* the key of option 2, two swatches at the bottom right of the map */
+.sm-key {
+  position: absolute;
+  right: 24px;
+  bottom: 24px;
+  display: grid;
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  font: 500 14px/20px var(--font);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--white);
+}
+
+.sm-key li {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.sm-sw {
+  width: 12px;
+  height: 12px;
+}
+
+/* only the top row of the frame shows on this section, the hero block belongs to H */
+.sm .hf-bottom {
+  display: none;
+}
+
+/* on the light slab of option 3 the names are ink */
+.sm-opt-3 .sm-name {
+  color: var(--black);
+  background: var(--white);
+}

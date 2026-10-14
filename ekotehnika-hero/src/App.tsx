@@ -6,6 +6,8 @@ const Gate = lazy(() => import('./r3f/Gate').then((m) => ({ default: m.Gate })))
 const Board = lazy(() => import('./board/Board').then((m) => ({ default: m.Board })));
 const StoryHarness = lazy(() => import('./story/Harness').then((m) => ({ default: m.Harness })));
 const StoryHarness2 = lazy(() => import('./story2/Harness').then((m) => ({ default: m.Harness2 })));
+// the servis map design options for Filip's pick, ?servismap=1 to 3, round 5
+const ServisMapOptions = lazy(() => import('./story2/shell/map/ServisMapOptions').then((m) => ({ default: m.ServisMapOptions })));
 
 const reducedQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
 
@@ -19,6 +21,12 @@ export function App() {
     return (
       <Suspense fallback={null}>
         <Gate />
+      </Suspense>
+    );
+  if (new URLSearchParams(window.location.search).has('servismap'))
+    return (
+      <Suspense fallback={null}>
+        <ServisMapOptions />
       </Suspense>
     );
   if (new URLSearchParams(window.location.search).has('story2'))

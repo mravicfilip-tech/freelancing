@@ -128,6 +128,19 @@ export const servis = {
   dataTel: hero.service.tel,
 };
 
+// The servis map, round 5, Filip 14 October, "Curug and Vrcin are the two service locations that pick ups cover the whole map
+// of Serbia". No numbers, the site has none for the service area.
+export const servisMap = {
+  title: ['Dva servisna centra,', 'cela Srbija.'], // dummy, from Filip's ask
+  text: 'Servisna vozila iz Vrčina i Čuruga dolaze do vas, gde god da radi vaš viljuškar.', // dummy, from the trust strip, "sa servisnim vozilima širom Srbije"
+  bases: [
+    { id: 'vrcin', label: 'Vrčin', line: 'Servisni centar i sedište firme' }, // analysis
+    { id: 'curug', label: 'Čurug', line: 'Servisni centar' }, // dummy, Filip's second location
+  ],
+  cover: 'Servisna vozila širom Srbije', // trust strip
+  cta: servis.cta,
+};
+
 export const najam = {
   title: ['Najam', 'viljuškara'], // dummy
   text: 'Od nekoliko sati do godinu dana, u ponudi je 84 modela za najam.', // pillars, najam, and the 84 rental models in the analysis

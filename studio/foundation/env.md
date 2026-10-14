@@ -20,6 +20,8 @@ so the lesson outlives the context window.
   once, at round end.
 - `shoot.mjs` needs puppeteer-core (install it in a scratch folder and set `PUPPETEER_CORE_PATH`), and on a live WebGL page
   its `networkidle0` wait times out at 30s. Shoot such pages with Playwright, `waitUntil: 'load'` and the swiftshader flags.
+  `variants.mjs`, `golden.mjs add` and `kit.mjs add` wait the same way and time out the same way on any page with a live
+  canvas, so a board of such pages is a Playwright contact sheet with each option numbered on it.
 - Rebuilding `dist` while a scroll pass runs against `vite preview` swaps the lazy chunks under it. Commit, build, then run the pass.
 - Several 3D builders shooting at once pushed the load to 18 on 4 cores. A heavy 3D slice goes to its
   own cloud session on a `<branch>-<slice>` branch rather than a fourth builder in the same container.

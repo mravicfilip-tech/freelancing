@@ -7,6 +7,7 @@ import { Audiences } from './Audiences';
 import { Closing } from './Closing';
 import { Contact } from './Contact';
 import { Crew } from './Crew';
+import { Faq } from './Faq';
 import { Header } from './Header';
 import { Hero } from './Hero';
 import { Process } from './Process';
@@ -43,6 +44,7 @@ export default function Foundry() {
         <Projects c={c} />
         <Crew c={c} />
         <Audiences c={c} />
+        <Faq c={c} />
         <Contact c={c} />
       </main>
       <Closing c={c} />

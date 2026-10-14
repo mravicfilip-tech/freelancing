@@ -1,0 +1,138 @@
+/* Round 3, slice C3. The crew matrix, the FAQ and the dark ground behind the contact panel.
+ * Every selector sits under .p1. Content sits on the one grid, .g and .gc from foundry.css. */
+
+/* ---------- crosshair marks, a plus at each corner of the box ---------- */
+.p1 .cxh {
+  position: absolute;
+  z-index: 0;
+  width: 9px;
+  height: 9px;
+  transform: translate(-50%, -50%);
+  background: linear-gradient(var(--ink), var(--ink)) center / 1px 100% no-repeat, linear-gradient(var(--ink), var(--ink)) center / 100% 1px no-repeat;
+  pointer-events: none;
+}
+.p1 .cxh--tl { left: 0; top: 0; }
+.p1 .cxh--tr { left: 100%; top: 0; }
+.p1 .cxh--bl { left: 0; top: 100%; }
+.p1 .cxh--br { left: 100%; top: 100%; }
+
+/* ---------- matrix, the stats and the fleet on the light panel ---------- */
+.p1 .mx {
+  position: relative;
+  max-width: var(--g-max);
+  margin: 64px auto 0;
+  padding: 48px 0;
+  border-radius: 24px;
+  background: var(--paper);
+  color: var(--ink);
+}
+.p1 .mx__in { row-gap: 48px; }
+.p1 .mx__intro, .p1 .mx__grid { grid-column: 1 / -1; min-width: 0; }
+.p1 .mx__intro { display: grid; gap: 24px; justify-items: start; align-content: start; }
+.p1 .mx__title { max-width: 14em; font-size: 28px; line-height: 28px; }
+.p1 .mx__body { max-width: 40ch; margin: 0; color: var(--bh-grey-800); text-wrap: pretty; }
+.p1 .mx__row { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); border-left: 1px solid var(--hair-ink); }
+.p1 .mx__row--stats { border-top: 1px solid var(--hair-ink); }
+.p1 .mx__cell { position: relative; display: flex; flex-direction: column; gap: 8px; min-width: 0; padding: 24px 16px; border-right: 1px solid var(--hair-ink); border-bottom: 1px solid var(--hair-ink); }
+.p1 .mx__stat { display: flex; align-items: baseline; gap: 4px; font-size: 32px; line-height: 32px; }
+.p1 .mx__stat small { font-size: 16px; line-height: 16px; }
+.p1 .mx__label { color: var(--bh-grey-700); }
+.p1 .mx__cell--machine { min-height: 184px; gap: 12px; }
+.p1 .mx__icon { margin-bottom: 8px; color: var(--ink); }
+.p1 .mx__type { font-family: var(--f-mono); font-size: 14px; line-height: 20px; letter-spacing: 0.04em; text-transform: uppercase; overflow-wrap: break-word; }
+.p1 .mx__meta { display: flex; justify-content: space-between; gap: 8px; margin-top: auto; color: var(--bh-grey-700); }
+.p1 .mx__regions { display: grid; gap: 8px; margin-top: 24px; }
+.p1 .mx__rk { margin: 0; color: var(--bh-grey-700); }
+.p1 .mx__rl { margin: 0; font-size: 14px; line-height: 24px; }
+
+@media (min-width: 768px) {
+  .p1 .mx { margin-top: 96px; padding: 64px 0; }
+  .p1 .mx__title { font-size: 32px; line-height: 32px; }
+  .p1 .mx__row { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+  .p1 .mx__cell { padding: 24px; }
+  .p1 .mx__cell--machine { min-height: 232px; }
+}
+@media (min-width: 1200px) {
+  .p1 .mx { margin-top: 128px; padding: 96px 0; }
+  .p1 .mx__intro { grid-column: 1 / span 4; padding-top: 24px; }
+  .p1 .mx__grid { grid-column: 5 / -1; }
+  .p1 .mx__stat { font-size: 40px; line-height: 40px; }
+}
+
+/* ---------- FAQ, a light panel with the crosshair frame, Radix accordion on the right ---------- */
+.p1 .faq { padding: 0 0 64px; background: var(--ink); }
+.p1 .faq__panel { position: relative; padding: 12px; border-radius: 24px; background: var(--paper); color: var(--ink); overflow: hidden; }
+/* Soft bull-red glow along the bottom edge, fading to transparent. */
+.p1 .faq__glow {
+  position: absolute;
+  left: -20%;
+  bottom: -24%;
+  width: 140%;
+  height: 70%;
+  pointer-events: none;
+  background: radial-gradient(closest-side, rgba(208, 11, 17, 0.18), rgba(208, 11, 17, 0.06) 60%, rgba(208, 11, 17, 0));
+}
+.p1 .faq__frame { position: relative; display: grid; gap: 32px; padding: 32px 12px; border: 1px solid var(--hair-ink); }
+.p1 .faq__intro { display: grid; gap: 24px; justify-items: start; align-content: start; }
+.p1 .faq__title { max-width: 12em; font-size: 32px; line-height: 32px; }
+.p1 .acc { position: relative; min-width: 0; }
+.p1 .acc__item { border-bottom: 1px solid var(--hair-ink); }
+.p1 .acc__item:first-child { border-top: 1px solid var(--hair-ink); }
+.p1 .acc__h { margin: 0; }
+.p1 .acc__trig {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  width: 100%;
+  min-height: 44px;
+  padding: 16px 0;
+  border: 0;
+  background: transparent;
+  color: var(--ink);
+  font-family: var(--f-display);
+  font-size: 18px;
+  line-height: 28px;
+  font-weight: 500;
+  text-align: left;
+  cursor: pointer;
+}
+.p1 .faq__arrow { flex: none; margin-top: 8px; color: var(--bh-red); }
+.p1 .acc__q { flex: 1 1 auto; min-width: 0; text-wrap: pretty; }
+.p1 .acc__tog {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 4px;
+  background: var(--ink);
+  color: #fff;
+  transition: transform 180ms ease, background-color 180ms ease;
+}
+.p1 .acc__trig:hover .acc__tog { background: var(--bh-red); }
+.p1 .acc__trig[data-state='open'] .acc__tog { background: var(--bh-red); transform: rotate(180deg); }
+.p1 .acc__content { overflow: hidden; }
+.p1 .acc__content[data-state='open'] { animation: p1-acc-down 220ms ease-out; }
+.p1 .acc__content[data-state='closed'] { animation: p1-acc-up 180ms ease-out; }
+.p1 .acc__content p { margin: 0; padding: 0 48px 24px calc(16px + 12px); color: var(--bh-grey-800); text-wrap: pretty; }
+@keyframes p1-acc-down { from { height: 0; } to { height: var(--radix-accordion-content-height); } }
+@keyframes p1-acc-up { from { height: var(--radix-accordion-content-height); } to { height: 0; } }
+@media (prefers-reduced-motion: reduce) {
+  .p1 .acc__content[data-state] { animation: none; }
+  .p1 .acc__tog { transition: none; }
+}
+
+@media (min-width: 768px) {
+  .p1 .faq { padding-bottom: 96px; }
+  .p1 .faq__panel { padding: 24px; }
+  .p1 .faq__frame { padding: 48px 32px; }
+  .p1 .faq__title { font-size: 40px; line-height: 40px; }
+}
+@media (min-width: 1200px) {
+  .p1 .faq { padding-bottom: 128px; }
+  .p1 .faq__frame { grid-template-columns: minmax(0, 1fr) minmax(0, 1.5fr); gap: 96px; padding: 96px 48px; }
+  .p1 .acc__trig { font-size: 20px; }
+}
+
+/* ---------- contact, dark ground behind the panel so the grid wide card reads above 1664 ---------- */
+.p1 .conw { position: relative; margin: -24px 0; background: var(--ink); }

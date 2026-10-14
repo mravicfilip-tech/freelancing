@@ -89,120 +89,122 @@ export function Contact({ c }: { c: Content }) {
   );
 
   return (
-    <section id="contact" className="con" aria-labelledby="con-title">
-      <div className="con__left">
-        <p className="mono kicker">{F.kicker}</p>
-        <h2 id="con-title" className="con__title display">
-          {sh(c, F.title)}
-        </h2>
-        <p className="con__lede mono-body">{F.lede}</p>
+    <div className="conw">
+      <section id="contact" className="con gc" aria-labelledby="con-title">
+        <div className="con__left">
+          <p className="mono kicker">{F.kicker}</p>
+          <h2 id="con-title" className="con__title display">
+            {sh(c, F.title)}
+          </h2>
+          <p className="con__lede mono-body">{F.lede}</p>
 
-        {status === 'success' ? (
-          <div className="done" role="status">
-            <p className="mono kicker">{x.successTitle}</p>
-            <p className="done__msg display">{F.success}</p>
-          </div>
-        ) : (
-          <form className="form" onSubmit={submit} noValidate>
-            <div className={`fld fld--role${errors.role ? ' fld--bad' : ''}`}>
-              <p id="role-label" className="mono fld__label">
-                {F.roleLabel}
-                <span className="fld__req" aria-hidden="true">
-                  {' '}
-                  *
-                </span>
-              </p>
-              <RadioGroup.Root
-                className="roles"
-                name="role"
-                value={v.role}
-                onValueChange={(val) => set('role', val)}
-                aria-labelledby="role-label"
-                aria-required
-                aria-invalid={errors.role ? true : undefined}
-                aria-describedby={errors.role ? 'f-role-err' : undefined}
-              >
-                {F.roles.map((r, i) => (
-                  <RadioGroup.Item key={r} value={r} id={i === 0 ? 'f-role' : undefined} className="bk bk--tog">
-                    <span className="bk__c bk__c--tl" aria-hidden="true" />
-                    <span className="bk__c bk__c--tr" aria-hidden="true" />
-                    <span className="bk__c bk__c--bl" aria-hidden="true" />
-                    <span className="bk__c bk__c--br" aria-hidden="true" />
-                    <span className="bk__l">
-                      <span className="tog__box" aria-hidden="true" />
-                      {r}
-                    </span>
-                  </RadioGroup.Item>
-                ))}
-              </RadioGroup.Root>
-              {errors.role && (
-                <p id="f-role-err" className="mono fld__err">
+          {status === 'success' ? (
+            <div className="done" role="status">
+              <p className="mono kicker">{x.successTitle}</p>
+              <p className="done__msg display">{F.success}</p>
+            </div>
+          ) : (
+            <form className="form" onSubmit={submit} noValidate>
+              <div className={`fld fld--role${errors.role ? ' fld--bad' : ''}`}>
+                <p id="role-label" className="mono fld__label">
+                  {F.roleLabel}
+                  <span className="fld__req" aria-hidden="true">
+                    {' '}
+                    *
+                  </span>
+                </p>
+                <RadioGroup.Root
+                  className="roles"
+                  name="role"
+                  value={v.role}
+                  onValueChange={(val) => set('role', val)}
+                  aria-labelledby="role-label"
+                  aria-required
+                  aria-invalid={errors.role ? true : undefined}
+                  aria-describedby={errors.role ? 'f-role-err' : undefined}
+                >
+                  {F.roles.map((r, i) => (
+                    <RadioGroup.Item key={r} value={r} id={i === 0 ? 'f-role' : undefined} className="bk bk--tog">
+                      <span className="bk__c bk__c--tl" aria-hidden="true" />
+                      <span className="bk__c bk__c--tr" aria-hidden="true" />
+                      <span className="bk__c bk__c--bl" aria-hidden="true" />
+                      <span className="bk__c bk__c--br" aria-hidden="true" />
+                      <span className="bk__l">
+                        <span className="tog__box" aria-hidden="true" />
+                        {r}
+                      </span>
+                    </RadioGroup.Item>
+                  ))}
+                </RadioGroup.Root>
+                {errors.role && (
+                  <p id="f-role-err" className="mono fld__err">
+                    <span aria-hidden="true">! </span>
+                    {errors.role}
+                  </p>
+                )}
+              </div>
+
+              <div className="form__grid">
+                {txt('name', F.fields.name, { required: true, auto: 'name' })}
+                {txt('company', F.fields.company, { auto: 'organization' })}
+                {txt('email', F.fields.email, { type: 'email', required: true, auto: 'email' })}
+                {txt('phone', F.fields.phone, { type: 'tel', required: true, auto: 'tel' })}
+                {txt('place', F.fields.place, { ph: F.placeholders.place })}
+                {txt('length', F.fields.length, { ph: F.placeholders.length })}
+                <Field id="f-message" label={F.fields.message}>
+                  <textarea id="f-message" name="message" className="in in--area" rows={3} placeholder={F.placeholders.message} value={v.message} onChange={(e) => set('message', e.target.value)} />
+                </Field>
+              </div>
+
+              {status === 'error' && (
+                <p className="form__error mono" role="alert">
                   <span aria-hidden="true">! </span>
-                  {errors.role}
+                  {F.error}
                 </p>
               )}
-            </div>
 
-            <div className="form__grid">
-              {txt('name', F.fields.name, { required: true, auto: 'name' })}
-              {txt('company', F.fields.company, { auto: 'organization' })}
-              {txt('email', F.fields.email, { type: 'email', required: true, auto: 'email' })}
-              {txt('phone', F.fields.phone, { type: 'tel', required: true, auto: 'tel' })}
-              {txt('place', F.fields.place, { ph: F.placeholders.place })}
-              {txt('length', F.fields.length, { ph: F.placeholders.length })}
-              <Field id="f-message" label={F.fields.message}>
-                <textarea id="f-message" name="message" className="in in--area" rows={3} placeholder={F.placeholders.message} value={v.message} onChange={(e) => set('message', e.target.value)} />
-              </Field>
-            </div>
-
-            {status === 'error' && (
-              <p className="form__error mono" role="alert">
-                <span aria-hidden="true">! </span>
-                {F.error}
+              <div className="form__foot">
+                <Bracket type="submit" variant="fill" disabled={status === 'sending'} aria-busy={status === 'sending'}>
+                  {status === 'sending' ? F.sending : F.submit}
+                </Bracket>
+                <p className="mono form__reply">{F.reply}</p>
+              </div>
+              <p className="mono form__note">
+                <span className="fld__req" aria-hidden="true">
+                  *
+                </span>{' '}
+                {F.required}. {F.consent}
               </p>
-            )}
+            </form>
+          )}
+        </div>
 
-            <div className="form__foot">
-              <Bracket type="submit" variant="fill" disabled={status === 'sending'} aria-busy={status === 'sending'}>
-                {status === 'sending' ? F.sending : F.submit}
-              </Bracket>
-              <p className="mono form__reply">{F.reply}</p>
-            </div>
-            <p className="mono form__note">
-              <span className="fld__req" aria-hidden="true">
-                *
-              </span>{' '}
-              {F.required}. {F.consent}
-            </p>
-          </form>
-        )}
-      </div>
-
-      <aside className="call" aria-label={c.ui.call}>
-        <p className="mono kicker">{c.ui.call}</p>
-        <a className="call__num display" href={c.contact.phoneHref}>
-          {c.contact.phone}
-        </a>
-        <ul className="call__rows">
-          <li>
-            <span className="mono call__k">{x.email}</span>
-            <a className="call__v" href={`mailto:${c.contact.email}`}>
-              {c.contact.email}
-            </a>
-          </li>
-          <li>
-            <span className="mono call__k">{c.contact.whatsapp}</span>
-            <a className="call__v" href={c.contact.whatsappHref}>
-              {c.contact.phone}
-            </a>
-          </li>
-          <li>
-            <span className="mono call__k">{x.hours}</span>
-            <span className="call__v">{c.contact.hours}</span>
-          </li>
-        </ul>
-        <Bracket href={c.contact.phoneHref}>{c.ui.call}</Bracket>
-      </aside>
-    </section>
+        <aside className="call" aria-label={c.ui.call}>
+          <p className="mono kicker">{c.ui.call}</p>
+          <a className="call__num display" href={c.contact.phoneHref}>
+            {c.contact.phone}
+          </a>
+          <ul className="call__rows">
+            <li>
+              <span className="mono call__k">{x.email}</span>
+              <a className="call__v" href={`mailto:${c.contact.email}`}>
+                {c.contact.email}
+              </a>
+            </li>
+            <li>
+              <span className="mono call__k">{c.contact.whatsapp}</span>
+              <a className="call__v" href={c.contact.whatsappHref}>
+                {c.contact.phone}
+              </a>
+            </li>
+            <li>
+              <span className="mono call__k">{x.hours}</span>
+              <span className="call__v">{c.contact.hours}</span>
+            </li>
+          </ul>
+          <Bracket href={c.contact.phoneHref}>{c.ui.call}</Bracket>
+        </aside>
+      </section>
+    </div>
   );
 }

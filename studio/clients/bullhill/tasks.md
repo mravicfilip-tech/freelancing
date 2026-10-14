@@ -72,7 +72,7 @@ Task format
   - [x] Motion clips to Filip at 1440 and 390
   - [ ] Hero scroll as five named steps
   - [x] Audience dots moving, first build
-  - [ ] Audience particles 1:1 with worldquantfoundry, and the FAQ wave moving
+  - [x] Audience particles 1:1 with worldquantfoundry, the FAQ wave and the process header dots moving
   - [x] Closing headline and links full white
   - [x] Service card micro animations, board of four, Filip picks a number, 3 with a loop
   - [ ] Hero clip to Filip

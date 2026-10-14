@@ -31,7 +31,8 @@ Task format
   - [x] Filip picks option 1, Mreža, and asks for the map 30 percent bigger and roads with movement
   - [x] Five road treatments on option 1 at ?servismap=1&road=1 to 5, board refs/round5/r5-board-servis-roads.jpg
   - [x] Filip picks road 1 and asks for fewer roads that reach the ends of Serbia without crossing borders, 12 roads built
-  - [ ] Filip answers the placement and Kosovo questions
+  - [x] Filip answers the Kosovo question, keep it inside the outline
+  - [ ] Filip answers the placement question, the map right after the Servis forklift
   - [x] Center the map on the page, it scales with the stage between the centre and right grid lines
   - [x] Animate the map and wire it into the story, S runs 2000px, the forklift then the map, later beats move 1000px
   - [x] Shrink the map 30 percent and keep it centred inside the rules, Filip's "map is falling out"

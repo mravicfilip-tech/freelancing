@@ -1,6 +1,6 @@
 // The servis map's geography, round 5, Filip's "Curug and Vrcin are the two service locations that pick ups cover the whole
 // map of Serbia". Borders and rivers are Natural Earth 1:10m (public domain), cut to the region in serbia.json. Serbia is
-// drawn with Kosovo inside one outer border, as a Serbian company's own map shows it, an open question for Filip.
+// drawn with Kosovo inside one outer border, as a Serbian company's own map shows it, Filip's call (taste 2026-10-14 11:08).
 import data from './serbia.json';
 
 export type LonLat = [number, number];

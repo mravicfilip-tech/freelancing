@@ -1,12 +1,12 @@
 import { useRef } from 'react';
 import type { CSSProperties } from 'react';
 import type { Content } from '../shared/content';
-import { ServiceArt } from './art';
 import { Bracket } from './Bracket';
 import { sh } from './copy';
 import { useInView, useScrollVar } from './motion/motion';
 import { Rise } from './motion/Rise';
 import './motion/sections-a.css';
+import { ServiceArtMotion } from './variants/services/ServiceArtMotion';
 
 const KINDS = ['trench', 'ducts', 'house', 'layers'] as const;
 const TONES = ['black', 'charcoal', 'red', 'light'] as const;
@@ -14,10 +14,9 @@ const TONES = ['black', 'charcoal', 'red', 'light'] as const;
 export function Services({ c }: { c: Content }) {
   const secRef = useRef<HTMLElement>(null);
   const listRef = useRef<HTMLUListElement>(null);
-  // the panel rides up over the work section, then from 1200 the cards slide out of the first card's
-  // place as the row goes from the bottom to the middle of the screen. Under 1200 they rise once.
+  // the panel rides up over the work section. The cards hold their places and fade in once, and the
+  // dot art inside each card moves, see variants/services.
   useScrollVar(secRef, '--sv', 1, 0.4);
-  useScrollVar(listRef, '--sp', 1, 0.5);
   useInView(listRef);
   const total = String(c.services.items.length).padStart(2, '0');
   return (
@@ -43,7 +42,7 @@ export function Services({ c }: { c: Content }) {
         {c.services.items.map((s, i) => (
           <li key={s.id} className={`card card--${TONES[i % 4]}`} style={{ '--i': i } as CSSProperties}>
             <h3 className="card__title display">{sh(c, s.title)}</h3>
-            <ServiceArt kind={KINDS[i % 4]} className="card__art art" />
+            <ServiceArtMotion kind={KINDS[i % 4]} className="card__art art" index={i} />
             <div className="card__foot">
               <p className="card__n mono">
                 {s.n} / {total}

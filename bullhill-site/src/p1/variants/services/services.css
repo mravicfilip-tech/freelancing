@@ -1,0 +1,90 @@
+/* Dot art motion of the four service cards, versions behind ?svc, see params.ts. Every rule sits
+ * under .p1[data-motion='on'] and under .svs, which only exists while motion is on, so reduced motion,
+ * ?motion=off and automated shots see the drawings still. Transform and opacity only. The svg sets
+ * --per, the loop length, --co, the card's loop offset, and --turn. The card's place --i, 0 to 3,
+ * staggers the once versions 120ms apart. Per dot --d is a delay in seconds, --u a length, --w the
+ * wave offset, --sx and --sy the scatter offset, --o the dot's own opacity, --gs the glow scale. */
+.p1[data-motion='on'] .svs {
+  --cd: calc(var(--i, 0) * 120ms);
+}
+.p1[data-motion='on'] .svs circle {
+  transform-box: fill-box;
+  transform-origin: center;
+}
+
+/* waiting for the card to enter */
+.p1[data-motion='on'] .svs[data-go='no'] circle { opacity: 0; }
+
+/* ---------- 1 draw in, and 4 on hover, the same draw ---------- */
+.p1[data-motion='on'] .svs:is([data-v='1'], [data-v='4'])[data-go='yes'] circle {
+  animation: var(--an) calc(var(--u, 0.4) * 1s) var(--m-ease) both;
+  animation-delay: calc(var(--cd) + var(--d, 0) * 1s);
+}
+.p1[data-motion='on'] .svs circle[data-a='fall'] { --an: svs-fall; }
+.p1[data-motion='on'] .svs circle[data-a='pop'] { --an: svs-pop; }
+.p1[data-motion='on'] .svs circle[data-a='fade'] { --an: svs-fade; }
+.p1[data-motion='on'] .svs circle[data-a='wave'] { --an: svs-wave; }
+@keyframes svs-fall {
+  from { opacity: 0; transform: translateY(-16px); }
+}
+@keyframes svs-pop {
+  from { opacity: 0; transform: scale(0.2); }
+}
+@keyframes svs-fade {
+  from { opacity: 0; }
+}
+@keyframes svs-wave {
+  from { opacity: 0; transform: translateY(calc(var(--w, 0) * 1px)); }
+}
+
+/* ---------- 3 assemble ---------- */
+.p1[data-motion='on'] .svs[data-v='3'][data-go='yes'] circle {
+  animation: svs-scatter 1.1s var(--m-ease) both;
+  animation-delay: calc(var(--cd) + var(--d, 0) * 1s);
+}
+@keyframes svs-scatter {
+  from { opacity: 0; transform: translate(calc(var(--sx) * 1px), calc(var(--sy) * 1px)); }
+  25% { opacity: var(--o, 1); }
+}
+
+/* ---------- 2 loop, only while the card is on screen ---------- */
+.p1[data-motion='on'] .svs[data-v='2'] circle[data-l],
+.p1[data-motion='on'] .svs[data-v='2'] .svs__spin {
+  animation-duration: var(--per);
+  animation-iteration-count: infinite;
+  animation-play-state: paused;
+  animation-delay: calc(var(--d, 0) * 1s - var(--co));
+}
+.p1[data-motion='on'] .svs[data-v='2'][data-go='live'] circle[data-l],
+.p1[data-motion='on'] .svs[data-v='2'][data-go='live'] .svs__spin {
+  animation-play-state: running;
+}
+.p1[data-motion='on'] .svs[data-v='2'] circle[data-l='run'] { animation-name: svs-run; animation-timing-function: ease-in-out; }
+.p1[data-motion='on'] .svs[data-v='2'] circle[data-l='fan'] { animation-name: svs-fan; animation-timing-function: ease-in-out; }
+.p1[data-motion='on'] .svs[data-v='2'] circle[data-l='glow'] { animation-name: svs-glow; animation-timing-function: ease-in-out; }
+.p1[data-motion='on'] .svs[data-v='2'] .svs__spin {
+  transform-box: view-box;
+  transform-origin: 120px 150px;
+  animation-name: svs-spin;
+  animation-timing-function: linear;
+  animation-delay: calc(0s - var(--co));
+}
+/* the red line runs down the column, a pulse a fifth of the loop long */
+@keyframes svs-run {
+  0%, 22% { transform: scale(1); }
+  10% { transform: scale(1.9); }
+}
+/* the light runs down the fan into the house, then down the red duct */
+@keyframes svs-fan {
+  0%, 22% { transform: scale(1); opacity: var(--o, 1); }
+  10% { transform: scale(1.7); opacity: 1; }
+}
+/* a glow runs along the restored layer, the red seam strongest */
+@keyframes svs-glow {
+  0%, 24% { transform: scale(1); }
+  12% { transform: scale(var(--gs, 1.5)); }
+}
+/* the outer ring turns three dot pitches, so the loop joins without a jump */
+@keyframes svs-spin {
+  to { transform: rotate(var(--turn)); }
+}

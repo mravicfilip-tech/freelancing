@@ -62,24 +62,12 @@
   clip-path: inset(calc(var(--sv, 1) * 100%) 0 0 0);
 }
 
-/* from 1200 the cards sit stacked on the first and slide out to the row as it scrolls from the
- * bottom to the middle of the screen. --sp is that, 0 to 1. A card's own width less the 24px
- * overlap is one step of the row. */
-@media (min-width: 1200px) {
-  .p1[data-motion='on'] .card {
-    transform: translateX(calc(var(--i, 0) * (24px - 100%) * (1 - var(--sp, 1))));
-  }
+/* the cards hold their places and fade in once, 80ms apart, no slide from any side. The motion lives
+ * in the dot art of each card, variants/services. */
+.p1[data-motion='on'] .card {
+  transition: opacity var(--m-rise) linear calc(var(--i, 0) * var(--m-step));
 }
-
-/* under 1200 each card rises 24px and fades in once, 80ms apart */
-@media (max-width: 1199px) {
-  .p1[data-motion='on'] .card {
-    transition:
-      transform var(--m-rise) var(--m-ease) calc(var(--i, 0) * var(--m-step)),
-      opacity var(--m-rise) linear calc(var(--i, 0) * var(--m-step));
-  }
-  .p1[data-motion='on'] .svc[data-in='no'] .card { opacity: 0; transform: translateY(24px); }
-}
+.p1[data-motion='on'] .svc[data-in='no'] .card { opacity: 0; }
 
 /* ---------- projects, once ----------
  * Each card slides in 48px from the right, 60ms apart, and its photo unmasks upward once the card

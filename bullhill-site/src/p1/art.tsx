@@ -370,3 +370,227 @@ export function Arrow({ dir }: { dir: 'left' | 'right' | 'down' }) {
     </svg>
   );
 }
+
+// ---------------------------------------------------------------------------------------------
+// The trench cut open, round 3 note 2. A real cross section on an oblique block. Front face is the
+// cut, top and right faces give it depth. Layers top to bottom are the surface slab, the base
+// course, backfill, warning tape, and the duct bundle on its sand bed, the trench sits in native
+// earth. Every part has its own texture so each reads on its own. One stroke weight, 1px.
+// Coordinates are viewBox units. The labels are HTML and sit on the two edges CUT_EDGE, so every
+// leader line starts exactly on a label edge, runs level, and ends on a dot inside its part.
+
+export const CUT_VB = { x: 0, y: 80, w: 1080, h: 390 };
+// Left labels end at x 170, right labels start at x 900. Phone and tablet crop to x 110 to 960 and
+// show a numbered square in place of each label, same edge, same leader line.
+export const CUT_EDGE = { l: 170, r: 900 };
+export const CUT_CROP = { x: 110, w: 850 };
+
+export type CutId = 'surface' | 'base' | 'tape' | 'backfill' | 'ducts' | 'sand';
+export const CUT_PINS: Record<CutId, { side: 'l' | 'r'; tx: number; ty: number }> = {
+  surface: { side: 'l', tx: 252, ty: 145 },
+  base: { side: 'r', tx: 748, ty: 180 },
+  tape: { side: 'r', tx: 604, ty: 306 },
+  backfill: { side: 'l', tx: 412, ty: 256 },
+  ducts: { side: 'l', tx: 482, ty: 365 },
+  sand: { side: 'r', tx: 592, ty: 404 },
+};
+
+// Block geometry. The front face runs X0 to X1, the trench T0 to T1, the oblique depth is DX, DY.
+const X0 = 200;
+const X1 = 800;
+const T0 = 360;
+const T1 = 640;
+const DX = 70;
+const DY = -36;
+const Y_TOP = 130;
+const Y_SLAB = 160;
+const Y_BASE = 200;
+const Y_TAPE0 = 300;
+const Y_TAPE1 = 312;
+const Y_SAND = 342;
+const Y_TRENCH = 420;
+const Y_BOT = 450;
+const DUCT_R = 15;
+const DUCTS: [number, number, boolean][] = [
+  [464, 396, false],
+  [500, 396, false],
+  [536, 396, false],
+  [482, 365, true],
+  [518, 365, false],
+];
+
+const dstr = (pts: [number, number][], close = false) => 'M' + pts.map((p) => `${f1(p[0])} ${f1(p[1])}`).join(' L') + (close ? ' Z' : '');
+
+function cutTextures() {
+  const r = rng(7);
+  // Surface slab, short level dashes.
+  let surface = '';
+  for (let i = 0; i < 46; i++) {
+    const x = X0 + 10 + r() * (X1 - X0 - 40);
+    const y = Y_TOP + 6 + r() * (Y_SLAB - Y_TOP - 12);
+    surface += `M${f1(x)} ${f1(y)} h${f1(5 + r() * 9)} `;
+  }
+  // Base course, small stones.
+  const stones: { x: number; y: number; r: number }[] = [];
+  for (let i = 0; i < 150 && stones.length < 70; i++) {
+    const s = { x: X0 + 8 + r() * (X1 - X0 - 16), y: Y_SLAB + 7 + r() * (Y_BASE - Y_SLAB - 14), r: 1.4 + r() * 1.8 };
+    if (stones.every((o) => (o.x - s.x) ** 2 + (o.y - s.y) ** 2 > (o.r + s.r + 4) ** 2)) stones.push(s);
+  }
+  // Backfill, compacted fines. Kept clear of the tape band.
+  const fill: { x: number; y: number; r: number }[] = [];
+  for (let y = Y_BASE + 9; y < Y_SAND - 4; y += 13) {
+    if (y > Y_TAPE0 - 8 && y < Y_TAPE1 + 8) continue;
+    for (let x = T0 + 9 + ((y / 13) % 2) * 6; x < T1 - 6; x += 12) fill.push({ x: x + (r() - 0.5) * 5, y: y + (r() - 0.5) * 5, r: 0.9 + r() * 0.8 });
+  }
+  // Sand, a fine stipple around the ducts.
+  const sand: { x: number; y: number }[] = [];
+  for (let y = Y_SAND + 5; y < Y_TRENCH - 3; y += 6.5) {
+    for (let x = T0 + 6 + ((y / 6.5) % 2) * 3; x < T1 - 3; x += 7) {
+      const px = x + (r() - 0.5) * 3;
+      const py = y + (r() - 0.5) * 3;
+      if (DUCTS.some(([cx, cy]) => (cx - px) ** 2 + (cy - py) ** 2 < (DUCT_R + 4) ** 2)) continue;
+      sand.push({ x: px, y: py });
+    }
+  }
+  // Earth, 45 degree hatching, drawn long and clipped to the earth shapes.
+  let hatch = '';
+  for (let x = X0 - 340; x < X1 + DX; x += 16) hatch += `M${x} ${Y_BOT + 40} L${x + 336} ${Y_BASE + DY - 10} `;
+  // Tape, hazard slashes.
+  let slashes = '';
+  for (let x = T0 + 4; x < T1 - 8; x += 14) slashes += `M${x} ${Y_TAPE1} L${x + 10} ${Y_TAPE0} `;
+  // Top face dashes.
+  let top = '';
+  for (let i = 0; i < 40; i++) {
+    const u = r();
+    const v = r();
+    const x = X0 + u * (X1 - X0) + v * DX + 4;
+    const y = Y_TOP + v * DY + 4;
+    if (x + 12 > X1 + DX - 4 || x < X0 + v * DX + 4) continue;
+    top += `M${f1(x)} ${f1(y)} h${f1(5 + r() * 8)} `;
+  }
+  return { surface, stones, fill, sand, hatch, slashes, top };
+}
+
+const CUT = cutTextures();
+
+export function TrenchCut({ className }: { className?: string }) {
+  const earthFront = dstr(
+    [
+      [X0, Y_BASE],
+      [T0, Y_BASE],
+      [T0, Y_TRENCH],
+      [T1, Y_TRENCH],
+      [T1, Y_BASE],
+      [X1, Y_BASE],
+      [X1, Y_BOT],
+      [X0, Y_BOT],
+    ],
+    true,
+  );
+  const earthSide = dstr(
+    [
+      [X1, Y_BASE],
+      [X1 + DX, Y_BASE + DY],
+      [X1 + DX, Y_BOT + DY],
+      [X1, Y_BOT],
+    ],
+    true,
+  );
+  const pins = Object.entries(CUT_PINS) as [CutId, (typeof CUT_PINS)[CutId]][];
+  return (
+    <svg
+      className={className}
+      viewBox={`${CUT_VB.x} ${CUT_VB.y} ${CUT_VB.w} ${CUT_VB.h}`}
+      aria-hidden="true"
+      focusable="false"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1"
+      strokeLinejoin="round"
+      strokeLinecap="round"
+    >
+      <defs>
+        <clipPath id="cut-earth">
+          <path d={earthFront} />
+        </clipPath>
+        <clipPath id="cut-earth-side">
+          <path d={earthSide} />
+        </clipPath>
+      </defs>
+
+      {/* native earth, hatched, front and right face */}
+      <g opacity="0.2" clipPath="url(#cut-earth)">
+        <path d={CUT.hatch} vectorEffect="non-scaling-stroke" />
+      </g>
+      <g opacity="0.2" clipPath="url(#cut-earth-side)">
+        <path d={CUT.hatch} vectorEffect="non-scaling-stroke" />
+      </g>
+
+      {/* surface slab */}
+      <path d={CUT.surface} opacity="0.42" vectorEffect="non-scaling-stroke" />
+      {/* base course, stones */}
+      <g opacity="0.5">
+        {CUT.stones.map((s, i) => (
+          <circle key={i} cx={f1(s.x)} cy={f1(s.y)} r={f1(s.r)} vectorEffect="non-scaling-stroke" />
+        ))}
+      </g>
+      {/* backfill, fines */}
+      <g stroke="none" fill="currentColor" opacity="0.5">
+        {CUT.fill.map((s, i) => (
+          <circle key={i} cx={f1(s.x)} cy={f1(s.y)} r={f1(s.r)} />
+        ))}
+      </g>
+      {/* sand bed, stipple */}
+      <g stroke="none" fill="currentColor" opacity="0.55">
+        {CUT.sand.map((s, i) => (
+          <circle key={i} cx={f1(s.x)} cy={f1(s.y)} r="0.7" />
+        ))}
+      </g>
+      {/* warning tape, band with slashes */}
+      <path d={CUT.slashes} opacity="0.7" vectorEffect="non-scaling-stroke" />
+
+      {/* the block, structure lines */}
+      <g opacity="0.92">
+        <path d={dstr([[X0, Y_TOP], [X1, Y_TOP], [X1, Y_BOT], [X0, Y_BOT]], true)} vectorEffect="non-scaling-stroke" />
+        <path d={dstr([[X0, Y_TOP], [X0 + DX, Y_TOP + DY], [X1 + DX, Y_TOP + DY], [X1, Y_TOP]])} vectorEffect="non-scaling-stroke" />
+        <path d={dstr([[X1 + DX, Y_TOP + DY], [X1 + DX, Y_BOT + DY], [X1, Y_BOT]])} vectorEffect="non-scaling-stroke" />
+        {/* layer joints across the face and down the right face */}
+        <path d={dstr([[X0, Y_SLAB], [X1, Y_SLAB], [X1 + DX, Y_SLAB + DY]])} vectorEffect="non-scaling-stroke" />
+        <path d={dstr([[X0, Y_BASE], [X1, Y_BASE], [X1 + DX, Y_BASE + DY]])} vectorEffect="non-scaling-stroke" />
+        {/* trench walls and floor */}
+        <path d={dstr([[T0, Y_BASE], [T0, Y_TRENCH], [T1, Y_TRENCH], [T1, Y_BASE]])} vectorEffect="non-scaling-stroke" />
+        {/* tape band */}
+        <path d={dstr([[T0, Y_TAPE0], [T1, Y_TAPE0]])} vectorEffect="non-scaling-stroke" />
+        <path d={dstr([[T0, Y_TAPE1], [T1, Y_TAPE1]])} vectorEffect="non-scaling-stroke" />
+        {/* top of the sand bed */}
+        <path d={dstr([[T0, Y_SAND], [T1, Y_SAND]])} vectorEffect="non-scaling-stroke" />
+      </g>
+      {/* where the trench runs under the surface, along the top face */}
+      <g opacity="0.45" strokeDasharray="3 5">
+        <path d={dstr([[T0, Y_TOP], [T0 + DX, Y_TOP + DY]])} vectorEffect="non-scaling-stroke" />
+        <path d={dstr([[T1, Y_TOP], [T1 + DX, Y_TOP + DY]])} vectorEffect="non-scaling-stroke" />
+      </g>
+      <g opacity="0.35">
+        <path d={CUT.top} vectorEffect="non-scaling-stroke" />
+      </g>
+
+      {/* ducts, ring with a wall. The one in bull-red is the duct the label names. */}
+      {DUCTS.map(([cx, cy, red], i) => (
+        <g key={i}>
+          <circle cx={cx} cy={cy} r={DUCT_R} style={red ? { fill: 'var(--bh-red)' } : { fill: 'var(--bh-grey-975)' }} vectorEffect="non-scaling-stroke" />
+          <circle cx={cx} cy={cy} r={DUCT_R - 4.5} opacity="0.7" vectorEffect="non-scaling-stroke" />
+        </g>
+      ))}
+
+      {/* leader lines, level, from the label edge to the dot inside the part */}
+      <g className="cut__leads">
+        {pins.map(([id, p]) => (
+          <g key={id} className={`cut__lead cut__lead--${id}`}>
+            <path d={`M${CUT_EDGE[p.side]} ${p.ty} H${p.tx}`} vectorEffect="non-scaling-stroke" />
+            <circle cx={p.tx} cy={p.ty} r="3.5" style={{ fill: '#fff', stroke: 'var(--bh-grey-975)', strokeWidth: 1.5 }} vectorEffect="non-scaling-stroke" />
+          </g>
+        ))}
+      </g>
+    </svg>
+  );
+}

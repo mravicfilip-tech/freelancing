@@ -877,3 +877,63 @@
   .p1 .proj__nav { margin-top: 24px; }
   .p1 .con { padding-top: 48px; padding-bottom: 48px; }
 }
+
+/* ---------- the page ground, motion on only ----------
+ * motion/ground.ts writes --page on .p1 and data-page="dark|light" as a section arrives. Each full
+ * width section loses its own background here, so the page ground is the only thing painted between
+ * sections and there are no hard edges. Panels, cards, the process drawing, the crew matrix, the FAQ
+ * panel, the contact box and the red closing panel keep their own colours. The hero keeps its red
+ * glow, which is its own gradient. The list is in step with SECTIONS in motion/ground.ts. With motion
+ * off none of this applies and every section keeps its background. */
+.p1[data-motion='on'] {
+  --m-ground: 600ms;
+  --m-ground-ease: cubic-bezier(0.22, 0.61, 0.36, 1);
+  --page: var(--ground);
+  background-color: var(--page);
+}
+.p1[data-motion='on'][data-gt='on'] {
+  transition: background-color var(--m-ground) var(--m-ground-ease);
+}
+.p1[data-motion='on'] :is(.hero, .hv6, .hv6__pin, .wk, .eth, .proc, .proj, .crew, .auds, .faq, .conw, .end) {
+  background-color: transparent;
+}
+/* the dark strip that closed the gap above the rising services panel is the page ground now */
+.p1[data-motion='on'] section.eth::before { background: transparent; }
+
+/* ---------- bare text on the moving ground, motion on only ----------
+ * Work and Crew are dark sections and Services and Projects are light ones. Their text, hairlines and
+ * buttons that sit straight on the page take the colours of whichever ground the page is on, through
+ * data-tx, which motion/ground.ts steps with the live ground value, see the note there. d is the
+ * dark ground's colour, l the light ground's, w and k are white and black for the few frames where
+ * the ground is mid grey. Panels, cards, the process drawing, the matrix, the FAQ panel and the contact
+ * box are not listed and keep their own colours. Every selector below is a class of one of the four. */
+.p1[data-motion='on'] .pc:not(.pc--on) {
+  /* the colour is stepped by data-tx, so it must not ease, the rest of the card's transition is kept */
+  transition:
+    background-color 200ms ease,
+    transform var(--m-rise) var(--m-ease) var(--pc-d),
+    opacity 400ms linear var(--pc-d);
+}
+.p1[data-motion='on'][data-tx='d'] :is(.wk, .wk__title, .eth, .proj, .crew, .crew__title, .crew__name) { color: var(--bh-grey-200); }
+.p1[data-motion='on'][data-tx='l'] :is(.wk, .wk__title, .eth, .proj, .crew, .crew__title, .crew__name) { color: var(--ink); }
+.p1[data-motion='on'][data-tx='d'] :is(.wk__bar, .wk__lede, .wk__cap, .wk__count, .proj__lede, .proj__count, .pc:not(.pc--on), .crew__bar, .crew__intro) { color: var(--bh-grey-300); }
+.p1[data-motion='on'][data-tx='l'] :is(.wk__bar, .wk__lede, .wk__cap, .wk__count, .proj__lede, .proj__count, .pc:not(.pc--on), .crew__bar, .crew__intro) { color: var(--bh-grey-700); }
+.p1[data-motion='on'][data-tx='d'] :is(.pc:not(.pc--on) .pc__rows dt, .crew__role) { color: var(--bh-grey-400); }
+.p1[data-motion='on'][data-tx='l'] :is(.pc:not(.pc--on) .pc__rows dt, .crew__role) { color: var(--bh-grey-600); }
+.p1[data-motion='on'][data-tx='w'] :is(.wk, .wk__title, .eth, .proj, .crew, .crew__title, .crew__name, .wk__bar, .wk__lede, .wk__cap, .wk__count, .proj__lede, .proj__count, .pc:not(.pc--on), .crew__bar, .crew__intro, .pc:not(.pc--on) .pc__rows dt, .crew__role) { color: #fff; }
+.p1[data-motion='on'][data-tx='k'] :is(.wk, .wk__title, .eth, .proj, .crew, .crew__title, .crew__name, .wk__bar, .wk__lede, .wk__cap, .wk__count, .proj__lede, .proj__count, .pc:not(.pc--on), .crew__bar, .crew__intro, .pc:not(.pc--on) .pc__rows dt, .crew__role) { color: #000; }
+/* hairlines, the work frame and its bar, the services rule, the project rows */
+.p1[data-motion='on']:is([data-tx='d'], [data-tx='w']) :is(.wk__bar, .wk .wk__frame::before, .eth__r, .pc:not(.pc--on) .pc__rows > div) { border-color: var(--hair-paper); }
+.p1[data-motion='on']:is([data-tx='k'], [data-tx='l']) :is(.wk__bar, .wk .wk__frame::before, .eth__r, .pc:not(.pc--on) .pc__rows > div) { border-color: var(--hair-ink); }
+/* the work crosshairs and the skewed bar in each photo's notch, which shows the page ground */
+.p1[data-motion='on']:is([data-tx='d'], [data-tx='w']) .wk { --wk-xh: rgba(255, 255, 255, 0.7); }
+.p1[data-motion='on']:is([data-tx='k'], [data-tx='l']) .wk { --wk-xh: rgba(17, 17, 17, 0.7); }
+.p1[data-motion='on']:is([data-tx='d'], [data-tx='w']) .wk .wk__skew { background-color: var(--bh-grey-200); }
+.p1[data-motion='on']:is([data-tx='k'], [data-tx='l']) .wk .wk__skew { background-color: var(--ink); }
+/* outline buttons on the page ground, the slab buttons follow data-ground from the controller */
+.p1[data-motion='on'][data-tx='d'] .pc:not(.pc--on) .pc__btn { --out: var(--bh-grey-200); }
+.p1[data-motion='on'][data-tx='l'] .pc:not(.pc--on) .pc__btn { --out: var(--ink); }
+.p1[data-motion='on'][data-tx='w'] :is(.bk[data-bare], .pc:not(.pc--on) .pc__btn) { --out: #fff; }
+.p1[data-motion='on'][data-tx='k'] :is(.bk[data-bare], .pc:not(.pc--on) .pc__btn) { --out: #000; }
+/* while the ground is changing, the button colours step with it and must not ease behind it */
+.p1.p1.p1[data-gmid] :is(.bk[data-bare], .pc:not(.pc--on) .pc__btn), .p1.p1.p1[data-gmid] :is(.bk[data-bare], .pc:not(.pc--on) .pc__btn) :is(.bk__cell3, .bk__l, .bk__arw) { transition: none; }

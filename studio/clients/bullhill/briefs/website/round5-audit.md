@@ -33,7 +33,7 @@ commit that carries it. Session branch `claude/hopeful-maxwell-bwuy3c`.
 | 25 | Phone contact gaps too big | Done, 5f287dc |
 | 26 | Phone menu, no numbers, better type | Done, 5f287dc |
 | 27 | Full black ground | Done, 5f287dc, every dark section ground |
-| 28 | Section grounds animate between sections | In build |
+| 28 | Section grounds animate between sections | Done, 77e1c8d, the page ground fades in 600ms at the two light and dark meets, the header stays black |
 | 29 | Text revealed by blocks like landonorris.com | In build |
 | 30 | View project buttons with no page behind them | In build, removed under the note 10 rule |
 

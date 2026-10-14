@@ -35,7 +35,7 @@ export function Header({ c, setLang, root }: { c: Content; setLang: (l: Lang) =>
           </Bracket>
           <Dialog.Root open={open} onOpenChange={setOpen}>
             <Dialog.Trigger asChild>
-              <Bracket>{c.ui.menu}</Bracket>
+              <Bracket arrow={false}>{c.ui.menu}</Bracket>
             </Dialog.Trigger>
             <Dialog.Portal container={root}>
               <Dialog.Content className="menu" aria-describedby={undefined}>
@@ -45,7 +45,7 @@ export function Header({ c, setLang, root }: { c: Content; setLang: (l: Lang) =>
                     <Logo variant="on-dark" height={32} />
                   </a>
                   <Dialog.Close asChild>
-                    <Bracket>{c.ui.close}</Bracket>
+                    <Bracket arrow={false}>{c.ui.close}</Bracket>
                   </Dialog.Close>
                 </div>
                 <nav className="menu__nav" aria-label={x.mainNav}>

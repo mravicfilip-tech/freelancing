@@ -17,8 +17,11 @@
   --fill-bg-fg: #fff;
   --fill-hot: var(--ink);
   --fill-hot-fg: #fff;
+  /* the outline version, its label and border colour on this ground */
+  --out: var(--ink);
 }
 .p1 .bk[data-btn][data-ground='dark'] {
+  --out: var(--bh-grey-200);
   --slab: var(--bh-grey-200);
   --slab-fg: var(--ink);
   --fill-hot: var(--bh-grey-200);
@@ -30,6 +33,7 @@
   --hot: #fff;
   --hot-fg: var(--ink);
   --mark: var(--ink);
+  --out: #fff;
   --fill-bg: var(--ink);
   --fill-bg-fg: #fff;
   --fill-hot: #fff;

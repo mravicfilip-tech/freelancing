@@ -1,0 +1,12 @@
+{
+  "name": "Read it in German",
+  "job": "A German speaking municipality switches the page to German and finds the contact form",
+  "start": "/?v=1",
+  "maxClicks": 3,
+  "steps": [
+    { "click": "DE" },
+    { "expect": "Trassen, die wir gebaut haben." },
+    { "click": "Auftrag senden" },
+    { "expect": "Schicken Sie uns die Trasse." }
+  ]
+}

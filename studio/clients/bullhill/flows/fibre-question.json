@@ -1,0 +1,10 @@
+{
+  "name": "Do they blow the fibre in",
+  "job": "An operator checks in the FAQ whether BullHill also blows the fibre in",
+  "start": "/?v=1",
+  "maxClicks": 2,
+  "steps": [
+    { "click": "Do you lay the fibre cable as well?" },
+    { "expect": "we can blow the fibre in too" }
+  ]
+}

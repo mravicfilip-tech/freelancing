@@ -1,0 +1,23 @@
+{
+  "name": "Read it in German on a phone",
+  "job": "A German speaking municipality on a phone switches the page to German in the menu and finds the contact form",
+  "start": "/?v=1",
+  "maxClicks": 4,
+  "steps": [
+    {
+      "click": "Menu"
+    },
+    {
+      "click": "DE"
+    },
+    {
+      "expect": "Schicken Sie uns die Trasse."
+    },
+    {
+      "click": "Auftrag senden"
+    },
+    {
+      "expect": "Wo verläuft die Trasse"
+    }
+  ]
+}

@@ -1,4 +1,4 @@
-import { clamp01, motionOn, onScroll } from './motion';
+import { clamp01, glide, motionOn, onScroll } from './motion';
 
 // Shared loop for the canvas 2D dot fields, the audience cloud and the wave. It sizes the canvas to
 // its CSS box at a device pixel ratio capped at 2, maps a vw by vh drawing space onto it with the
@@ -23,6 +23,7 @@ export function runField(cv: HTMLCanvasElement, vw: number, vh: number, draw: (c
   const env: Env = { live, tones: ['', '', '', ''], p: 0, time: 0, k: 1, w: 0, h: 0 };
   let last = 0;
   let lastDraw = 0;
+  let pTarget = -1; // the scroll's p, env.p glides toward it
   let running = false;
   let onScreen = false;
   let unsub: (() => void) | null = null;
@@ -47,18 +48,23 @@ export function runField(cv: HTMLCanvasElement, vw: number, vh: number, draw: (c
     ctx!.globalAlpha = 1;
   }
   function tick(now: number) {
-    if (last) env.time += Math.min(now - last, 100) / 1000;
+    const dt = last ? Math.min(now - last, 100) : 1000 / 60;
+    if (last) env.time += dt / 1000;
     last = now;
+    if (pTarget >= 0) env.p = glide(env.p, pTarget, dt);
     lastDraw = now;
     frame();
   }
   function progress() {
     const r = cv.getBoundingClientRect();
-    env.p = clamp01((window.innerHeight - r.top) / (window.innerHeight + r.height));
+    const t = clamp01((window.innerHeight - r.top) / (window.innerHeight + r.height));
+    if (pTarget < 0) env.p = t;
+    pTarget = t;
   }
   function idleLoop(now: number) {
     idle = requestAnimationFrame(idleLoop);
-    if (now - lastDraw >= 33) tick(now);
+    // every frame while the field still glides to the scroll, then 30 a second for the idle motion
+    if (now - lastDraw >= 33 || (pTarget >= 0 && env.p !== pTarget && now - lastDraw >= 14)) tick(now);
   }
   function start() {
     if (running) return;

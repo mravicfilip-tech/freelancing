@@ -25,11 +25,25 @@ import { Canvas, useFrame, useThree } from '@react-three/fiber';
 import { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import * as THREE from 'three';
 import { CAMS, OVERSCAN, VIEWS, clamp01, driftCam, seamAt, smooth, type View } from './geometry';
+import { P_DUCTS, P_LIGHT } from './acts';
 import { applyRig, buildDig, makeRig, type DigRig } from './Dig';
 import type { Progress } from './progress';
 import { Specimen, type FibreRig } from './Render';
 import { buildSchematic } from './Schematic';
 import { ASSEMBLE, SETTLED, assembleAt, idlePulse, msToNextPulse, pulseLevel, type LoadClock } from './timeline';
+
+// What casts a shadow and moves with p, the ducts as they slide, the fibre and its strands while they
+// are blown in, the trench floor and the trench itself. The shadow map is drawn again only when this
+// changes, so the dig, where only the points and the cut faces move, costs no shadow pass.
+function shadowKey(d: DigRig, p: number) {
+  let k = '';
+  for (const g of d.ducts) k += g ? `${g.position.x.toFixed(4)},` : '-,';
+  if (d.fibre) k += `${d.fibre.position.x.toFixed(4)}${d.fibre.visible ? 'v' : 'h'}`;
+  if (d.floor) k += d.floor.position.y.toFixed(4);
+  if (d.trench?.visible) k += 't';
+  if (p > P_DUCTS - 0.01 && p < P_LIGHT + 0.01) k += p.toFixed(4);
+  return k;
+}
 
 function Dual({ view, seam, drive, onReady, rig, dig, stillP, dust }: { view: View; seam: number; drive?: Drive; onReady: () => void; rig: React.MutableRefObject<FibreRig | null>; dig: DigRig; stillP: number; dust: boolean }) {
   const gl = useThree((s) => s.gl);
@@ -42,7 +56,7 @@ function Dual({ view, seam, drive, onReady, rig, dig, stillP, dust }: { view: Vi
   const points = useMemo(() => (drive?.acts || stillP > 0 ? buildDig(dpr) : null), [dpr, drive?.acts, stillP]);
   const done = useRef(false);
   const load = drive?.load;
-  const last = useRef({ t: 0, draw: 0, p: -1, warm: false, sp: -1, n: 0 });
+  const last = useRef({ t: 0, draw: 0, p: -1, warm: false, sk: '', n: 0 });
   const wake = useRef(0);
 
   useLayoutEffect(() => {
@@ -143,14 +157,15 @@ function Dual({ view, seam, drive, onReady, rig, dig, stillP, dust }: { view: Vi
     // the acts, from p, before anything is drawn
     const ap = drive?.acts ? p : stillP;
     applyRig(dig, ap);
-    // The key light and the specimen only move with p, so the shadow map is drawn again only when p
-    // changed and in the first frames while the specimen builds. The idle drift moves the camera
-    // alone and reuses it, which spares a full pass of the scene on every idle frame.
+    // The key light is fixed, so the shadow map is drawn again only when something that casts a shadow
+    // moved, and in the first frames while the specimen builds. The idle drift moves the camera alone
+    // and reuses it, which spares a full pass of the scene on most frames.
     gl.shadowMap.autoUpdate = false;
     last.current.n++;
-    if (ap !== last.current.sp || last.current.n < 90) {
+    const sk = shadowKey(dig, ap);
+    if (sk !== last.current.sk || last.current.n < 90) {
       gl.shadowMap.needsUpdate = true;
-      last.current.sp = ap;
+      last.current.sk = sk;
     }
     const pts = points ? points.update(ap, dust) : false;
     const bw = Math.round(size.width * dpr);

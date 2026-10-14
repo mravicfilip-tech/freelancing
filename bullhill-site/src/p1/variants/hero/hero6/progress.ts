@@ -4,6 +4,12 @@ import { clamp01 } from './geometry';
 // Beat 4 progress. p runs 0 to 1 across the pin, read from the hero section's own position in
 // requestAnimationFrame, so a scroll burst costs one read a frame. `?p=` pins a frame for stills and
 // shots, 0 to 1, and wins over the scroll. A disabled store (reduced motion) always reads 0.
+//
+// The p subscribers get glides toward the scroll, it is not the scroll itself. Each frame it closes
+// a share of the gap, the share set by a time constant, so a mouse wheel's 100px notches arrive as
+// one continuous move and not as steps, at any frame rate. Filip, 14 October 2026, "smooth as fuck,
+// the smoother it can get the better". Touch scrolling already glides, so it gets a shorter constant
+// and the scene stays under the finger.
 
 export type Progress = {
   sample(): number;
@@ -22,13 +28,19 @@ export function urlProgress(): number | null {
   return Number.isFinite(n) ? clamp01(n) : null;
 }
 
+// the time constants of the glide, in ms, for a mouse or trackpad and for touch
+const TAU = 150;
+const TAU_TOUCH = 90;
+
 function createStore(): Store {
   const subs = new Set<(p: number) => void>();
   const override = urlProgress();
   let section: HTMLElement | null = null;
   let pin: HTMLElement | null = null;
-  let last = -1;
+  let last = -1; // the glided p, what subscribers last got
   let raf = 0;
+  let t0 = 0;
+  const tau = typeof window !== 'undefined' && window.matchMedia('(pointer: coarse)').matches ? TAU_TOUCH : TAU;
 
   const store: Store = {
     enabled: false,
@@ -56,10 +68,22 @@ function createStore(): Store {
       };
     },
     start() {
-      const tick = () => {
+      const tick = (now: number) => {
         raf = 0;
-        const p = store.sample();
-        if (Math.abs(p - last) < 1e-4) return;
+        const target = store.sample();
+        // the gap to the scroll closes by 1 - e^(-dt/tau) each frame. The first frame after a pause
+        // counts as one frame, so the first wheel notch glides too. The very first frame and ?p= go
+        // straight to the target.
+        const gap = t0 ? now - t0 : 0;
+        const dt = gap > 0 && gap < 100 ? gap : 1000 / 60;
+        t0 = now;
+        let p = target;
+        if (last >= 0 && override === null) {
+          p = last + (target - last) * (1 - Math.exp(-dt / tau));
+          if (Math.abs(target - p) < 2e-4) p = target;
+        }
+        if (p !== target) raf = requestAnimationFrame(tick);
+        if (Math.abs(p - last) < 1e-5) return;
         last = p;
         subs.forEach((f) => f(p));
       };
@@ -67,6 +91,7 @@ function createStore(): Store {
         if (!raf) raf = requestAnimationFrame(tick);
       };
       last = -1;
+      t0 = 0;
       window.addEventListener('scroll', ask, { passive: true });
       window.addEventListener('resize', ask);
       const ro = new ResizeObserver(ask);

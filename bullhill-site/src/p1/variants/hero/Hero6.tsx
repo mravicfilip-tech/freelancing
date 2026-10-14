@@ -30,8 +30,8 @@ import './hero6.css';
 // plays the ground's points over them. With motionOn() false there is no pin, no label and no work,
 // the hero is the settled block. Reduced motion is the same.
 //
-// Beats 1 to 3 (hero6/timeline.ts). The h1 is the shared Rise, the lede and buttons rise after its
-// last line in CSS, and the assemble is built by a LoadClock that the scene, the overlay and the
+// Beats 1 to 3 (hero6/timeline.ts). The h1 and the lede are the shared Rise, the lede's blocks wait
+// for the h1's, the buttons rise after the lede's second line in CSS, and the assemble is built by a LoadClock that the scene, the overlay and the
 // CSS read. Phones and no WebGL run beats 1 and 2 in CSS on the stills. With motionOn() false the
 // clock does not exist and the hero is its settled state, as before beats 1 to 3. `?t=` freezes the
 // clock for shots, and the CSS follows it through animation-delay and --h6-fz.
@@ -179,10 +179,10 @@ function PhoneStills({ view, progress, animate, load }: { view: View; progress: 
 // Beat 1 with the clock frozen by ?t=. The headline's blocks are held where the reveal has got to at
 // t, the same lines and steps as the CSS (motion/motion.css, --rz is the time, --rp pauses).
 function freezeHeadline(sec: HTMLElement, t: number) {
-  const h1 = sec.querySelector<HTMLElement>('.hv6__title');
-  if (!h1) return;
-  h1.style.setProperty('--rz', `${t}ms`);
-  h1.style.setProperty('--rp', 'paused');
+  sec.querySelectorAll<HTMLElement>('.hv6__title, .hv6__lede').forEach((r) => {
+    r.style.setProperty('--rz', `${t}ms`);
+    r.style.setProperty('--rp', 'paused');
+  });
 }
 
 export function Hero6({ c }: { c: Content }) {
@@ -540,7 +540,9 @@ function Specimen({ c }: { c: Content }) {
 
           <div className="hv6__bot gc">
             <div className="hv6__side">
-              <p className="hv6__lede mono-body">{c.hero.lede}</p>
+              <Rise as="p" body className="hv6__lede mono-body">
+                {c.hero.lede}
+              </Rise>
               <div className="hv__cta">
                 {view === 'tall' ? null : <Bracket href={c.contact.phoneHref}>{c.ui.call}</Bracket>}
                 <Bracket variant="fill" href="#contact">{c.ui.send}</Bracket>

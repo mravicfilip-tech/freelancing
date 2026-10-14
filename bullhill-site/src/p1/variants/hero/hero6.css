@@ -111,18 +111,18 @@
  * ones in motion/motion.css. --h6-fz is the time ?t= froze the clock at, paused by --h6-ps, and a
  * negative animation delay is how a CSS animation is held at that time. */
 
-/* beat 1, the lede and the buttons rise after the headline's last line, --h6-last is its line index */
+/* beat 1, the buttons rise after the lede's second line, --h6-last is the headline's last line index */
 @keyframes h6-rise {
   from { opacity: 0; transform: translateY(16px); }
   to { opacity: 1; transform: none; }
 }
-.p1 .hv6[data-load='run'] .hv6__lede,
 .p1 .hv6[data-load='run'] .hv__cta {
   animation: h6-rise var(--m-rise) var(--m-ease) backwards;
   animation-play-state: var(--h6-ps, running);
 }
-.p1 .hv6[data-load='run'] .hv6__lede { animation-delay: calc(var(--h6-last, 1) * var(--m-step) + 300ms - var(--h6-fz, 0ms)); }
-.p1 .hv6[data-load='run'] .hv__cta { animation-delay: calc(var(--h6-last, 1) * var(--m-step) + 300ms + var(--m-step) - var(--h6-fz, 0ms)); }
+/* the lede is a body Rise whose lines start after the h1's last line, so its second line starts at
+ * (--h6-last + 2) steps and shows a cover later. The buttons rise then. */
+.p1 .hv6[data-load='run'] .hv__cta { animation-delay: calc((var(--h6-last, 1) + 2) * var(--m-bstep) + var(--m-bcover) - var(--h6-fz, 0ms)); }
 
 /* beat 2 without the scene, one poster on a wide screen with no WebGL wipes in left to right */
 @keyframes h6-poster {

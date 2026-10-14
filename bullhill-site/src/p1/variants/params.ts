@@ -6,6 +6,8 @@
 //                    the default, Filip's pick, 1 is style 3 as first built
 //   ?v=1&lab=buttons the five buttons side by side with their states
 //   ?v=1&lab=slab    the five slab and arrow versions as numbered rows on dark, light and red
+//   ?v=1&blk=1..3    the colour of the text reveal's blocks, 1 the text's own colour, 2 bull-red,
+//                    3 bull-red on headlines and the text's own colour on body copy. Red panels keep 1
 const q = () => new URLSearchParams(window.location.search);
 const pick = (key: string, max = 5, fallback = 1) => {
   const n = Number(q().get(key));
@@ -16,6 +18,7 @@ export type VariantN = 1 | 2 | 3 | 4 | 5;
 export type HeroN = VariantN | 6;
 export const heroVariant = () => pick('hero', 6, 6) as HeroN;
 export const btnVariant = () => pick('btn', 5, 3) as VariantN;
+export const blkVariant = () => pick('blk', 3, 1);
 export type SlabN = VariantN;
 // The slab switch. Null when the URL does not carry a valid ?slab, so the arrow cell, 3, holds.
 export const slabVariant = () => {

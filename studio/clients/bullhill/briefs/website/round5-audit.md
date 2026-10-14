@@ -34,8 +34,8 @@ commit that carries it. Session branch `claude/hopeful-maxwell-bwuy3c`.
 | 26 | Phone menu, no numbers, better type | Done, 5f287dc |
 | 27 | Full black ground | Done, 5f287dc, every dark section ground |
 | 28 | Section grounds animate between sections | Done, 77e1c8d, the page ground fades in 600ms at the two light and dark meets, the header stays black |
-| 29 | Text revealed by blocks like landonorris.com | In build |
-| 30 | View project buttons with no page behind them | In build, removed under the note 10 rule |
+| 29 | Text revealed by blocks like landonorris.com | Done, 6c8e852, the hero lede too. Block colour on a board, 1 to 3, for Filip |
+| 30 | View project buttons with no page behind them | Done, 6c8e852, removed under the note 10 rule |
 
 Still owed to Filip, the hero clip of the five steps, now that step 4 shows the fibre. Answered, the crew
 blows fibre in, FAQ and process lede changed to say so.

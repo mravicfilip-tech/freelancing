@@ -19,7 +19,7 @@ import { ButtonLab } from './variants/buttons/Lab';
 import { HERO_VARIANTS } from './variants/hero';
 import { useGround } from './motion/ground';
 import { motionOn } from './motion/motion';
-import { heroVariant, lab } from './variants/params';
+import { blkVariant, heroVariant, lab } from './variants/params';
 
 export default function Foundry() {
   const [c, setLang] = useContent();
@@ -39,7 +39,7 @@ export default function Foundry() {
     );
   }
   return (
-    <div className="p1" id="top" ref={setRoot} lang={c.lang} data-motion={motion ? 'on' : 'off'}>
+    <div className="p1" id="top" ref={setRoot} lang={c.lang} data-motion={motion ? 'on' : 'off'} data-blk={blkVariant()}>
       <Header c={c} setLang={setLang} root={root} />
       <main>
         <HeroN c={c} />

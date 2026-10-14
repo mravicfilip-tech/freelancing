@@ -34,6 +34,11 @@
 /* The block is a clip box over the line and a slab that slides inside it, so only transform moves. */
 .p1 .rise__bl { position: absolute; overflow: hidden; pointer-events: none; user-select: none; }
 .p1 .rise__bk { position: absolute; inset: 0; background: currentColor; transform: translateX(-101%); }
+/* the block colour variants, ?blk= in variants/params.ts. On the red closing panel a red block would not
+ * show, so it keeps the text's colour there. */
+.p1[data-blk='2'] .rise__bk,
+.p1[data-blk='3'] .rise:not(.rise--body) .rise__bk { background: var(--bh-red); }
+.p1[data-blk] .end__panel .rise__bk { background: currentColor; }
 /* the text waits under the block until the block covers the line */
 .p1[data-motion='on'] .rise[data-in='no'] .rise__i,
 .p1[data-motion='on'] .rise[data-in='no'] .rise__shy { opacity: 0; }

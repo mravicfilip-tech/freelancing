@@ -30,7 +30,7 @@ Task format
   - [x] With WebGL off the page crashed to a blank white screen, it now shows its text without the 3D
   - [x] With no 3D the Servis beats keep their black ground
   - [ ] Filip asks the client which browser and device, and whether the site is open on a work computer
-  - [ ] Filip's ship line, then deploy the fix to production
+  - [x] Filip's ship line, "push both to production", the fix and the bigger centre names are live
 
 - ekotehnika-10 Servis map section, Čurug and Vrčin, the two service centres whose vans cover the whole of Serbia. Options at ?servismap=1 to 3, board briefs/ui-pass/refs/round5/r5-board-servis-map.jpg
   - [x] Map data from Natural Earth 1:10m, Serbia, Kosovo, the neighbours and the rivers

@@ -77,6 +77,9 @@ Task format
   - [x] Hero scroll as five named steps, merged
   - [x] Phone fixes, hero words stay, service drawings back, projects and contact gaps, menu
   - [x] Full black ground across the site
+  - [x] Crew blows fibre in, FAQ, process lede and hero step 4 strands
+  - [ ] Text revealed by blocks after landonorris, View project buttons removed
+  - [ ] Section grounds move between light and dark sections
   - [ ] Hero clip to Filip
   - [x] Phone hero in one screen with air, smaller parts
   - [ ] /uireview, then Filip's ship line

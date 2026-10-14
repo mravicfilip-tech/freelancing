@@ -20,7 +20,7 @@ commit that carries it. Session branch `claude/hopeful-maxwell-bwuy3c`.
 | 12 | Who we are headline top aligned | Done, 9224651, gap back to 96px b373700 |
 | 13 | Crew placeholders on phones, "dont hide them" | Kept, nothing hidden |
 | 14 | Phone hero cramped, then "in one block" | Done, one 844px screen, 6b999fc |
-| 15 | Hero storyboard, five steps | Done, 2b8b208. The crew blows fibre in, so step 4 is Fibre blown in, copy 702675d, strands in build |
+| 15 | Hero storyboard, five steps | Done, 2b8b208. The crew blows fibre in, so step 4 is Fibre blown in, copy 702675d, strands ebab993 |
 | 16 | Audience particles moving like worldquantfoundry | Done, then rebuilt 1:1, then smaller and sparser, 93ad55c |
 | 17 | Service cards, micro animations, no entry from the left | Done, version 3 with a loop, 5e0c712 |
 | 18 | Dotted wave above the FAQ animated | Done, ccc5382 |
@@ -37,5 +37,5 @@ commit that carries it. Session branch `claude/hopeful-maxwell-bwuy3c`.
 | 29 | Text revealed by blocks like landonorris.com | In build |
 | 30 | View project buttons with no page behind them | In build, removed under the note 10 rule |
 
-Still owed to Filip, the hero clip of the five steps, after step 4 shows the fibre. Answered, the crew
+Still owed to Filip, the hero clip of the five steps, now that step 4 shows the fibre. Answered, the crew
 blows fibre in, FAQ and process lede changed to say so.

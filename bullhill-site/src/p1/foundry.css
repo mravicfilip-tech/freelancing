@@ -599,17 +599,19 @@
 }
 
 /* ---------- crew ---------- */
+/* Round 3, the crew content sits on the one grid, so the section carries no side padding and each
+ * block is a .g. The stats and the fleet became the matrix, see r3-crew.css. */
 .p1 .crew {
   position: relative;
   margin-top: -24px;
-  padding: 0 var(--pad) 96px;
+  padding: 0;
   border-radius: 24px 24px 0 0;
   background: var(--ink);
   color: var(--bh-grey-200);
 }
-.p1 .crew__bar { display: flex; justify-content: space-between; gap: 16px; max-width: 1600px; margin-inline: auto; padding: 32px 0 0; color: var(--bh-grey-300); }
+.p1 .crew__bar { display: flex; justify-content: space-between; gap: 16px; padding-top: 32px; color: var(--bh-grey-300); }
 .p1 .crew__bar span:nth-child(2) { display: none; }
-.p1 .crew__main { max-width: 1600px; margin: 0 auto; padding-top: 96px; text-align: center; }
+.p1 .crew__main { padding-top: 96px; text-align: center; }
 .p1 .crew__intro { max-width: 56ch; margin: 0 auto 48px; color: var(--bh-grey-300); }
 .p1 .crew__title { max-width: 18em; margin-inline: auto; font-size: 40px; line-height: 40px; color: var(--bh-grey-200); }
 .p1 .crew__strip { display: grid; grid-template-columns: minmax(0, 1fr); gap: 32px; margin: 64px 0; }
@@ -619,41 +621,15 @@
 .p1 .crew__role { margin-top: 4px; color: var(--bh-grey-400); }
 .p1 .crew__title--2 { margin-top: 0; }
 
-.p1 .stats { max-width: 1600px; margin: 96px auto 0; padding-top: 32px; border-top: 1px solid var(--hair-paper); }
-.p1 .stats__k { color: var(--bh-grey-400); }
-.p1 .stats__row { display: grid; grid-template-columns: 1fr 1fr; column-gap: 24px; }
-.p1 .stat { padding: 24px 0; border-top: 1px solid var(--hair-paper); }
-.p1 .stat:nth-child(-n + 2) { border-top: 0; }
-.p1 .stat__v { font-size: 40px; line-height: 40px; color: #fff; }
-.p1 .stat__u { margin-left: 8px; font-size: 20px; line-height: 20px; }
-.p1 .stat__l { margin-top: 12px; color: var(--bh-grey-300); }
-
-.p1 .fleet { display: grid; grid-template-columns: minmax(0, 1fr); gap: 48px; max-width: 1600px; margin: 64px auto 0; }
-.p1 .fleet .kicker { color: var(--bh-grey-400); }
-.p1 .fleet__row { display: grid; grid-template-columns: 1fr auto 56px; gap: 16px; padding: 12px 0; border-top: 1px solid var(--hair-paper); font-size: 14px; line-height: 20px; color: var(--bh-grey-200); }
-.p1 .fleet__row:last-child { border-bottom: 1px solid var(--hair-paper); }
-.p1 .fleet__row span:nth-child(3) { text-align: right; }
-.p1 .fleet__regions { font-size: 14px; line-height: 28px; color: var(--bh-grey-200); }
-
 @media (min-width: 768px) {
   .p1 .crew__bar span:nth-child(2) { display: inline; }
   .p1 .crew__strip { grid-template-columns: repeat(3, 1fr); gap: 0; text-align: center; }
   .p1 .crew__ph { aspect-ratio: 5 / 1; }
-  .p1 .stats__row { grid-template-columns: repeat(4, 1fr); }
-  .p1 .stat { padding: 0 24px; border-top: 0; border-left: 1px solid var(--hair-paper); }
-  .p1 .stat:nth-child(-n + 2) { border-top: 0; }
-  .p1 .stat:first-child { border-left: 0; padding-left: 0; }
-  .p1 .fleet { grid-template-columns: 7fr 5fr; gap: 64px; }
 }
 @media (min-width: 1200px) {
-  .p1 .crew { padding-bottom: 128px; }
   .p1 .crew__main { padding-top: 128px; }
   .p1 .crew__title { font-size: 48px; line-height: 48px; }
   .p1 .crew__strip { margin: 96px 0 96px; }
-  .p1 .stats { margin-top: 160px; }
-  .p1 .stat__v { font-size: 64px; line-height: 64px; }
-  .p1 .stat__u { font-size: 24px; line-height: 24px; }
-  .p1 .fleet { margin-top: 128px; }
 }
 
 /* ---------- audiences ---------- */
@@ -708,15 +684,15 @@
 /* ---------- contact ---------- */
 .p1 .con {
   position: relative;
-  display: grid;
-  grid-template-columns: minmax(0, 1fr);
-  gap: 64px;
-  margin: -24px 0 -24px;
+  max-width: var(--g-max);
+  margin-inline: auto;
+  row-gap: 64px;
   padding: 96px var(--pad);
   border-radius: 24px;
   background: var(--paper);
   color: var(--ink);
 }
+.p1 .con__left, .p1 .call { grid-column: 1 / -1; }
 .p1 .con__title { font-size: 40px; line-height: 40px; }
 .p1 .con__lede { max-width: 52ch; margin: 24px 0 48px; color: var(--bh-grey-700); }
 .p1 .form { display: grid; grid-template-columns: minmax(0, 1fr); gap: 32px; max-width: 760px; }
@@ -771,7 +747,9 @@
   .p1 .call__num { font-size: 40px; line-height: 40px; }
 }
 @media (min-width: 1200px) {
-  .p1 .con { grid-template-columns: 7fr 5fr; gap: 96px; padding-top: 128px; padding-bottom: 128px; }
+  .p1 .con { padding-top: 128px; padding-bottom: 128px; }
+  .p1 .con__left { grid-column: 1 / span 7; }
+  .p1 .call { grid-column: 9 / -1; }
   .p1 .con__title { font-size: 56px; line-height: 56px; }
   .p1 .call { position: sticky; top: 112px; margin-top: 160px; }
 }
@@ -782,13 +760,14 @@
   --d2: var(--bh-grey-500);
   --d3: var(--bh-grey-600);
   --dr: var(--bh-red);
-  display: grid;
-  grid-template-columns: minmax(0, 1fr);
   padding: 48px 0 var(--pad);
   background: var(--ink);
   color: var(--bh-grey-200);
+  overflow: hidden;
 }
-.p1 .end__art { position: relative; display: flex; align-items: center; justify-content: center; padding: 24px var(--pad) 120px; overflow: hidden; }
+/* Round 3, the art and the red panel sit on the grid columns. The hill glow may run past them. */
+.p1 .end__grid { row-gap: 48px; }
+.p1 .end__art { position: relative; grid-column: 1 / -1; display: flex; align-items: center; justify-content: center; padding: 24px 0 128px; clip-path: inset(-400px -100vw 0 -100vw); }
 .p1 .end__art .art { position: relative; max-width: 680px; }
 /* Glowing bull-red hill, built like .p2-footer__hill. A circle, only the top shows. */
 .p1 .end__hill {
@@ -805,10 +784,11 @@
 }
 .p1 .end__panel {
   --bl-focus: 2px solid #fff;
+  position: relative;
+  grid-column: 1 / -1;
   display: grid;
   grid-template-columns: minmax(0, 1fr);
   gap: 48px;
-  margin: 0 var(--pad);
   padding: 24px;
   border-radius: 24px;
   background: var(--bh-red);
@@ -834,16 +814,17 @@
   .p1 .end__panel { padding: 32px; }
 }
 @media (min-width: 1200px) {
-  .p1 .end { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); padding: 24px 0 0; min-height: 920px; }
-  .p1 .end__art { padding: 0 var(--pad) 120px; }
+  .p1 .end { padding: 24px 0 0; }
+  .p1 .end__grid { min-height: 896px; row-gap: 0; }
+  .p1 .end__art { grid-column: 1 / span 6; padding: 0 0 128px; }
   .p1 .end__hill { width: 840px; height: 840px; bottom: -620px; }
   .p1 .end__panel {
+    grid-column: 7 / -1;
     grid-template-columns: 1fr 1fr;
     grid-template-rows: auto 1fr auto;
     align-items: start;
-    margin: 24px var(--pad) var(--pad) 0;
+    margin: 24px 0 var(--pad);
     padding: 32px;
-    border-radius: 24px;
   }
   .p1 .end__ducts { width: 100%; max-width: 290px; justify-self: start; }
   .p1 .end__nav { align-self: end; }

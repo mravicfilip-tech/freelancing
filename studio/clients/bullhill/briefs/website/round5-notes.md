@@ -21,6 +21,14 @@ Then one note, below. Foundry at `/?v=1`, files in `bullhill-site/src/p1/`.
    The wider reading, the desktop header Call us and the menu sheet buttons, waits on Filip. It lands
    on the button slice's files (`Header.tsx`, `slab.css`), so it is planned after that slice reports.
 
+3. Hero "Send the job" in bull-red, queued while builders run. "should be primary red color", on the
+   second hero button, Send the job, on the phone frames of hero 6. Read as Send the job becoming the
+   hero's one primary action in the bull-red fill the form submit already uses, white label, and Call
+   us stepping down to the outline secondary, so the hero keeps one primary. This turns over the 16:13
+   default that made Call us the solid one. Narrow reading, the hero only. The wider reading, every
+   Send the job button on the page in red, waits on Filip. It lands in `Hero6.tsx`, owned by the hero
+   builder now, so it is planned after that slice reports.
+
 ## Phone structure, proposed
 
 | Section | Now at 390 | Proposed on phones | Screens after |

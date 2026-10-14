@@ -1,0 +1,26 @@
+/* Shared motion tokens and the headline rise, briefs/website/site-motion-story.md. Every selector
+ * under .p1. Hidden starting states apply only under [data-motion='on'], set by Foundry from
+ * motionOn(), so reduced motion, ?motion=off and automated shots see the settled page. */
+.p1 {
+  --m-rise: 600ms;
+  --m-reveal: 700ms;
+  --m-step: 80ms;
+  --m-ease: cubic-bezier(0.2, 0.7, 0.1, 1);
+}
+
+/* the headline rise, one mask per word, padded so umlauts, descenders and the tight tracking
+ * never clip, with the padding taken back by margins so the layout does not move */
+.p1 .rise__w {
+  display: inline-block;
+  overflow: hidden;
+  vertical-align: top;
+  padding: 0.14em 0.06em 0.1em;
+  margin: -0.14em -0.06em -0.1em;
+}
+.p1 .rise__i { display: inline-block; }
+.p1[data-motion='on'] .rise__i {
+  transition: transform var(--m-rise) var(--m-ease) calc(var(--li, 0) * var(--m-step));
+}
+.p1[data-motion='on'] .rise[data-in='no'] .rise__i { transform: translateY(115%); }
+.p1[data-motion='on'] .rise__shy { transition: opacity 200ms linear 360ms; }
+.p1[data-motion='on'] .rise[data-in='no'] .rise__shy { opacity: 0; }

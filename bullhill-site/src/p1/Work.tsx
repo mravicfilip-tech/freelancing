@@ -4,6 +4,7 @@ import { Photo } from '../shared/Photo';
 import { photoAlt } from '../shared/photos';
 import { Arrow } from './art';
 import { WORK_FOCAL, sh, t } from './copy';
+import { Rise } from './motion/Rise';
 import './r3-work.css';
 
 // Work photos straight after the hero. A snap row of notched photo frames, the first about twice as
@@ -57,9 +58,9 @@ export function Work({ c }: { c: Content }) {
           </span>
         </div>
         <div className="wk__head">
-          <h2 id="wk-title" className="wk__title display">
+          <Rise id="wk-title" className="wk__title display">
             {sh(c, c.work.title)}
-          </h2>
+          </Rise>
           <p className="wk__lede mono-body">{c.work.lede}</p>
         </div>
       </div>

@@ -17,7 +17,27 @@ import { motionOn, onScroll } from './motion';
 // the top. The outgoing text has the same 600ms to leave. Direction counts once the page has moved
 // 12px against the last one, so a small back step does not flip the ground.
 
+// Bare text. Text, hairlines and bare buttons in Work, Services, Projects and Crew sit straight on the
+// page ground, so while the ground changes they have to change with it. A colour that fades from light
+// to dark crosses the ground at 1 to 1, so instead the text takes four steps by the live ground value g
+// (0 black, 218 paper), d below 30 its dark colour, w below 117 white, k below 214 black, l its light
+// colour. 117 is where white and black on the ground measure 4.6 to 1 each, so a frame on either side
+// of the swap holds 4.5 to 1. The step is written as data-tx on .p1 and foundry.css does the rest. Buttons
+// that sit on no panel of their own are marked data-bare, and take data-ground from the same step.
+
 type Ground = 'dark' | 'light';
+type Tx = 'd' | 'w' | 'k' | 'l';
+const txFor = (g: number): Tx => (g < 30 ? 'd' : g < 117.2 ? 'w' : g < 214 ? 'k' : 'l');
+const PAPER_G = 218;
+
+// Whether a button has a panel of its own, the first opaque background above it before the page.
+function onPanel(el: HTMLElement, root: HTMLElement): boolean {
+  for (let n = el.parentElement; n && n !== root; n = n.parentElement) {
+    const m = getComputedStyle(n).backgroundColor.match(/[\d.]+/g);
+    if (m && m.length >= 3 && (m.length < 4 || Number(m[3]) >= 0.5)) return true;
+  }
+  return false;
+}
 
 // In page order. Keep in step with the transparent list in foundry.css.
 const SECTIONS: [string, Ground][] = [
@@ -85,12 +105,47 @@ export function useGround(root: HTMLElement | null) {
       }
     };
 
+    // buttons straight on the page ground, read once while every section is transparent
+    const bare = Array.from(root.querySelectorAll<HTMLElement>('.bk[data-btn]')).filter((b) => !onPanel(b, root));
+    bare.forEach((b) => b.setAttribute('data-bare', ''));
+
+    let tx: Tx | null = null;
+    let target = 0;
+    let track = 0;
+    const setTx = (t: Tx) => {
+      if (t === tx) return;
+      tx = t;
+      root.dataset.tx = t;
+      const gr = t === 'd' || t === 'w' ? 'dark' : 'light';
+      bare.forEach((b) => (b.dataset.ground = gr));
+    };
+    // follows the live ground through the transition, one read a frame, and stops once it lands
+    const follow = () => {
+      track = 0;
+      const m = getComputedStyle(root).backgroundColor.match(/[\d.]+/g);
+      const g = m ? Number(m[0]) : target;
+      setTx(txFor(g));
+      if (Math.abs(g - target) > 0.5) track = requestAnimationFrame(follow);
+      else {
+        setTx(txFor(target));
+        delete root.dataset.gmid;
+      }
+    };
+
     let dir = 1;
     let anchor = window.scrollY;
     let shown: Ground | null = null;
     const apply = (g: Ground) => {
       if (g === shown) return;
+      const first = shown === null;
       shown = g;
+      target = g === 'light' ? PAPER_G : 0;
+      cancelAnimationFrame(track);
+      if (first) setTx(txFor(target));
+      else {
+        root.dataset.gmid = '';
+        track = requestAnimationFrame(follow);
+      }
       root.style.setProperty('--page', g === 'light' ? 'var(--paper)' : 'var(--ground)');
       root.dataset.page = g;
       // the first ground is set with no transition, so a reload part way down does not fade from black
@@ -140,6 +195,10 @@ export function useGround(root: HTMLElement | null) {
 
     return () => {
       stop();
+      cancelAnimationFrame(track);
+      bare.forEach((b) => b.removeAttribute('data-bare'));
+      delete root.dataset.tx;
+      delete root.dataset.gmid;
       ro.disconnect();
       window.removeEventListener('load', onLoad);
       root.style.removeProperty('--page');

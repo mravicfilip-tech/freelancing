@@ -100,6 +100,15 @@
       "round": 1
     }
   ],
-  "cards": [],
-  "cardAt": "2026-10-14T20:17:53.991Z"
+  "cards": [
+    {
+      "after": 2,
+      "kind": "ship",
+      "choice": "ship bullhill-1",
+      "at": "2026-10-14T20:54:37.972Z",
+      "proof": "a62624d2-789d-420a-810e-760d99eedf74"
+    }
+  ],
+  "cardAt": "2026-10-14T20:17:53.991Z",
+  "closed": "shipped"
 }

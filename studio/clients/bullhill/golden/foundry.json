@@ -1,0 +1,97 @@
+{
+  "name": "foundry",
+  "client": "bullhill",
+  "url": "http://localhost:5173/?v=1",
+  "date": "2026-10-14",
+  "width": 1440,
+  "fingerprint": {
+    "elements": 1005,
+    "scrollHeight": 15607,
+    "maps": {
+      "fontSizes": {
+        "12px": 168,
+        "64px": 13,
+        "14px": 18,
+        "40px": 42,
+        "18px": 27,
+        "32px": 9,
+        "56px": 15,
+        "16px": 12,
+        "24px": 11,
+        "48px": 17,
+        "20px": 6,
+        "28px": 5
+      },
+      "fontFamilies": {
+        "azeret mono variable": 193,
+        "archivo variable": 150
+      },
+      "colors": {
+        "#dadada": 67,
+        "#000000": 11,
+        "#c4c4c4": 40,
+        "#ffffff": 55,
+        "#d00b11": 8,
+        "#dadada38": 9,
+        "#9a9a9a": 4,
+        "#222222": 13,
+        "#111111": 130,
+        "#1111113d": 44,
+        "#3d3d3d": 58,
+        "#ecece9": 6,
+        "#0e0f0f": 7,
+        "#7a7a7a": 7,
+        "#5c5c5c": 30,
+        "#2b2b2b": 10,
+        "#ffffff99": 1
+      },
+      "radii": {},
+      "spacing": {
+        "12px": 100,
+        "32px": 92,
+        "16px": 137,
+        "8px": 234,
+        "64px": 22,
+        "100px": 1,
+        "24px": 149,
+        "8.96px": 7,
+        "3.84px": 14,
+        "6.4px": 7,
+        "128px": 11,
+        "5.6px": 48,
+        "2.4px": 66,
+        "4px": 82,
+        "48px": 33,
+        "1px": 8,
+        "6px": 8,
+        "96px": 12,
+        "44.5px": 4,
+        "160px": 3,
+        "7.84px": 15,
+        "3.36px": 30,
+        "104px": 2,
+        "256px": 4,
+        "6.72px": 17,
+        "2.88px": 34,
+        "4.8px": 17,
+        "83px": 3,
+        "63px": 1,
+        "73px": 2,
+        "4.48px": 4,
+        "1.92px": 8,
+        "3.2px": 4
+      },
+      "controlHeights": {
+        "40px": 2,
+        "44px": 9,
+        "64px": 6,
+        "49px": 6,
+        "97px": 1
+      },
+      "shadows": {
+        "#dadada 0px 0px 0px 1px inset": 4,
+        "#111111 0px 0px 0px 1px inset": 5
+      }
+    }
+  }
+}

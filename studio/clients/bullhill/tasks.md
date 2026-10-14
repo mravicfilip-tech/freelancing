@@ -25,7 +25,7 @@ Task format
 
 ## In progress
 
-- bullhill-1 BullHill company website, one page, Foundry direction at /?v=1. Plan in briefs/website/plan.md, branch claude/hopeful-maxwell-bwuy3c
+- bullhill-1 BullHill company website, one page, Foundry direction at /?v=1. Plan in briefs/website/plan.md, branch claude/hopeful-maxwell-bwuy3c. Link https://bullhill-site.vercel.app
   - [x] Put the logo files and brand colours on file
   - [x] Propose the page sections
   - [x] Filip answers the plan questions and sends references
@@ -84,7 +84,7 @@ Task format
   - [x] Hero clip to Filip
   - [x] Phone hero in one screen with air, smaller parts
   - [x] /uireview round and re-check, no open sev 1, card with Filip
-  - [ ] Filip's line on the card, ship, fix or drop
+  - [x] Filip's line on the card, ship bullhill-1, golden foundry recorded
   - [x] Phone hero block bigger and centred, stills rendered again
   - [x] Production at bullhill-site.vercel.app moved to ced40a6 on Filip's "Sent to production"
 

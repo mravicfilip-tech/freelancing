@@ -4,7 +4,7 @@ import './underground.css';
 import { useState } from 'react';
 import { useContent } from '../shared/lang';
 import { Header } from './Header';
-import { CrewPhoto, DescentBand, Hero, Process, Services, Steps } from './SectionsA';
+import { CrewPhoto, DescentBand, Hero, Process, Services, Steps, Work } from './SectionsA';
 import { Audiences, Matrix, Projects } from './SectionsB';
 import { Contact, Faq, Footer } from './SectionsC';
 
@@ -18,6 +18,7 @@ export default function Underground() {
       <Header c={c} lang={c.lang} setLang={setLang} container={root} />
       <main>
         <Hero c={c} />
+        <Work c={c} />
         <DescentBand />
         <Process c={c} />
         <Services c={c} />

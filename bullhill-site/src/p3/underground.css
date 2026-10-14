@@ -72,7 +72,8 @@
 
 /* ---------- hero and descent ---------- */
 
-.p3-hero { position: relative; height: 100svh; min-height: 560px; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 96px 24px 0; text-align: center; overflow: hidden; }
+.p3-hero { --p3-hero-focal: 60% 50%; position: relative; height: 100svh; min-height: 560px; display: flex; flex-direction: column; align-items: center; justify-content: flex-end; padding: 96px 24px 64px; text-align: center; overflow: hidden; background: var(--bh-grey-975); }
+.p3-hero::before { content: ''; position: absolute; inset: 0; z-index: 1; pointer-events: none; background: linear-gradient(180deg, rgba(14, 15, 15, 0.5) 0%, rgba(14, 15, 15, 0) 22%, rgba(14, 15, 15, 0.1) 40%, rgba(14, 15, 15, 0.55) 60%, rgba(14, 15, 15, 0.74) 74%, rgba(14, 15, 15, 0.92) 88%, var(--bh-grey-975) 100%); }
 .p3 .p3-hero__ph { position: absolute; inset: 0; --ph-pad: 48px; --ph-mono: var(--mono); --ph-fg: var(--bh-white); --ph-mark-opacity: 0.07; --ph-shade: var(--bh-grey-850); --ph-glow: rgba(14, 15, 15, 0.5); --ph-bg: radial-gradient(90% 55% at 50% 30%, var(--bh-grey-600) 0%, var(--bh-grey-700) 40%, var(--bh-grey-850) 100%); text-align: left; }
 .p3-corners { position: absolute; inset: 72px 12px 24px; z-index: 2; pointer-events: none; }
 .p3-corners i { position: absolute; width: 32px; height: 32px; border: 0 solid rgba(255, 255, 255, 0.85); }
@@ -80,12 +81,17 @@
 .p3-corners i:nth-child(2) { right: 0; top: 0; border-right-width: 1px; border-top-width: 1px; }
 .p3-corners i:nth-child(3) { left: 0; bottom: 0; border-left-width: 1px; border-bottom-width: 1px; }
 .p3-corners i:nth-child(4) { right: 0; bottom: 0; border-right-width: 1px; border-bottom-width: 1px; }
-.p3-hero__title { position: relative; z-index: 3; margin: 0; max-width: 16em; font-size: 32px; line-height: 1.2; text-wrap: balance; }
+.p3-hero .photo { background: var(--bh-grey-975); }
+.p3-hero__title { position: relative; z-index: 3; margin: 0; text-shadow: 0 1px 24px rgba(14, 15, 15, 0.6); max-width: 16em; font-size: 32px; line-height: 1.2; text-wrap: balance; }
 .p3-hero__chev { position: relative; z-index: 3; margin-top: 24px; color: var(--bh-red); display: block; }
 
-.p3-descent { position: relative; height: 360px; margin-top: -1px; overflow: hidden; background: linear-gradient(180deg, var(--bh-grey-850) 0%, var(--bh-grey-900) 24%, #131414 56%, var(--bh-grey-975) 100%); }
-.p3-descent svg { position: absolute; inset: 0; width: 100%; height: 100%; max-width: none; }
-.p3-descent::after { content: ''; position: absolute; inset: 0; background: linear-gradient(180deg, rgba(14, 15, 15, 0) 40%, var(--bh-grey-975) 100%); }
+.p3-descent { position: relative; height: 360px; margin-top: -1px; background: linear-gradient(180deg, var(--bh-grey-975) 0%, #131414 40%, var(--bh-grey-975) 100%); }
+/* Daylight's glowing hill, a half circle rising from the foot of the band into the wireframe. Alpha kept low so the wireframe stays the focus. */
+.p3-descent__hill { --d: 640px; --rise: 200px; --fade: 200px; position: absolute; left: 50%; bottom: calc(var(--fade) * -1); width: calc(var(--d) + 480px); height: calc(var(--rise) + var(--fade) + 100px); transform: translateX(-50%); pointer-events: none; -webkit-mask-image: linear-gradient(180deg, #000 calc(100% - var(--fade) - 40px), transparent 100%); mask-image: linear-gradient(180deg, #000 calc(100% - var(--fade) - 40px), transparent 100%); }
+.p3-descent__hill::before { content: ''; position: absolute; left: 50%; top: 100px; width: var(--d); height: var(--d); transform: translateX(-50%); border-radius: 50%; opacity: 0.55;
+  background: radial-gradient(circle at 50% 8%, var(--bh-red) 0, var(--bh-red) 10%, var(--bh-red-dark) 22%, rgba(0, 0, 0, 0.9) 38%, var(--bh-black) 50%);
+  box-shadow: inset 0 10px 30px -8px rgba(255, 255, 255, 0.45), 0 0 160px 30px rgba(208, 11, 17, 0.38), 0 -6px 50px rgba(208, 11, 17, 0.55); }
+.p3-descent svg { position: absolute; inset: 0; width: 100%; height: 100%; max-width: none; -webkit-mask-image: linear-gradient(180deg, #000 40%, transparent 100%); mask-image: linear-gradient(180deg, #000 40%, transparent 100%); }
 
 /* ---------- tags, lists, buttons ---------- */
 
@@ -117,13 +123,30 @@
 .p3-kicker::after { right: 0; }
 
 /* crosshair registration marks */
-.p3-xh { position: absolute; width: 9px; height: 9px; transform: translate(-50%, -50%); background: linear-gradient(var(--ink), var(--ink)) center / 1px 100% no-repeat, linear-gradient(var(--ink), var(--ink)) center / 100% 1px no-repeat; pointer-events: none; z-index: 2; }
+.p3-xh { position: absolute; width: 9px; height: 9px; transform: translate(-50%, -50%); background: linear-gradient(var(--xh, var(--ink)), var(--xh, var(--ink))) center / 1px 100% no-repeat, linear-gradient(var(--xh, var(--ink)), var(--xh, var(--ink))) center / 100% 1px no-repeat; pointer-events: none; z-index: 2; }
 .p3-xh--tl { left: 0; top: 0; }
 .p3-xh--tr { left: 100%; top: 0; }
 .p3-xh--bl { left: 0; top: 100%; }
 .p3-xh--br { left: 100%; top: 100%; }
 .p3-xh--long::before { content: ''; position: absolute; left: 4px; top: -24px; bottom: -24px; width: 1px; background: var(--hair-light); }
 .p3-xh--long::after { content: ''; position: absolute; top: 4px; left: -24px; right: -24px; height: 1px; background: var(--hair-light); }
+
+/* ---------- work photos ---------- */
+
+.p3-work { --hair-light: var(--hair-dark); --xh: rgba(255, 255, 255, 0.7); position: relative; padding: 64px 0 64px; background-color: var(--bh-grey-975); }
+.p3-work__head { display: grid; gap: 24px; padding: 0 var(--pad); }
+.p3-work__intro { display: grid; justify-items: start; gap: 16px; }
+.p3 .p3-work__title { max-width: 18em; }
+.p3-work .p3-lede { margin: 0; max-width: 36em; }
+.p3-work__nav { display: none; }
+.p3-work__row { display: flex; gap: 16px; margin: 32px 0 0; padding: 8px var(--pad) 8px; list-style: none; overflow-x: auto; scroll-snap-type: x mandatory; scroll-padding-inline: var(--pad); scrollbar-width: none; overscroll-behavior-x: contain; }
+.p3-work__row::-webkit-scrollbar { display: none; }
+.p3-work__card { flex: 0 0 280px; scroll-snap-align: start; }
+.p3-work .p3-notch__clip { aspect-ratio: 4 / 5; }
+.p3 .p3-work .p3-sqbtn { background: var(--bh-grey-200); color: var(--ink); }
+.p3 .p3-work .p3-sqbtn:hover { background: var(--bh-red); color: var(--bh-white); }
+.p3-work__cap { display: grid; grid-template-columns: 56px minmax(0, 1fr); align-items: baseline; margin: 16px 0 0; font-size: 16px; line-height: 24px; color: var(--bh-grey-300); text-wrap: pretty; }
+.p3-work__n { font-family: var(--mono); font-weight: 400; font-size: 24px; line-height: 24px; letter-spacing: 0.02em; color: var(--bh-red); }
 
 /* ---------- process wireframe ---------- */
 
@@ -163,6 +186,7 @@
 .p3-notch { position: relative; padding: 8px; border: 1px solid var(--hair-light); }
 .p3-notch__clip { position: relative; aspect-ratio: 5 / 4; clip-path: polygon(0 0, 100% 0, 100% calc(100% - var(--notch-h)), calc(100% - var(--notch-w)) calc(100% - var(--notch-h)), calc(100% - var(--notch-w) - var(--notch-c)) 100%, 0 100%); }
 .p3 .p3-notch__ph { position: absolute; inset: 0; --ph-bg: var(--bh-black); --ph-fg: var(--bh-white); --ph-radius: 8px; --ph-pad: 16px; --ph-mono: var(--mono); --ph-mark-opacity: 0.1; }
+.p3 .p3-notch__ph.photo, .p3 .p3-pnotch__ph.photo { border-radius: 8px; }
 .p3-notch .ph__brief, .p3-pnotch .ph__brief { right: calc(var(--notch-w) + var(--notch-c) + 24px); }
 .p3-notch__bar { position: absolute; right: 24px; bottom: calc(8px + var(--notch-h) / 2 - 3px); width: calc(var(--notch-w) - 24px); height: 6px; background: var(--bh-grey-200); transform: skewX(-30deg); }
 .p3-step__text { display: grid; grid-template-columns: 40px minmax(0, 1fr); align-content: end; }
@@ -184,7 +208,7 @@
 .p3-thumb { position: relative; display: block; width: 88px; padding: 4px; border-right: 1px solid var(--bh-grey-700); }
 .p3-thumb:last-child { border-right: 0; }
 .p3-thumb[data-active='true']::before { content: ''; position: absolute; left: 0; right: 0; top: 0; height: 2px; background: var(--bh-red); }
-.p3 .p3-thumb__ph { aspect-ratio: 16 / 10; --ph-bg: var(--bh-grey-600); --ph-radius: 0; --ph-pad: 4px; }
+.p3 .p3-thumb__ph { aspect-ratio: 16 / 10; width: 100%; --ph-bg: var(--bh-grey-600); --ph-radius: 0; --ph-pad: 4px; }
 .p3-thumb .ph__label { display: none; }
 
 /* ---------- matrix ---------- */
@@ -326,6 +350,14 @@
   .p3 { --pad: 24px; --notch-h: 40px; --notch-w: 128px; --notch-c: 40px; }
   .p3 .p3-h2 { font-size: 32px; }
   .p3-descent { height: 480px; }
+  .p3-descent__hill { --d: 800px; --rise: 240px; --fade: 240px; }
+  .p3-hero { padding-bottom: 96px; }
+  .p3-work { padding: 96px 0 96px; }
+  .p3-work__head { grid-template-columns: minmax(0, 1fr) auto; align-items: end; gap: 48px; }
+  .p3-work__nav { display: flex; align-items: center; gap: 8px; }
+  .p3-work__nav .p3-mono { margin-right: 16px; color: var(--bh-grey-400); }
+  .p3-work__row { gap: 24px; margin-top: 48px; }
+  .p3-work__card { flex-basis: 340px; }
   .p3-process { margin-top: -128px; padding-bottom: 96px; }
   .p3-svc { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); column-gap: 48px; row-gap: 32px; align-items: center; padding: 64px 0; }
   .p3-svc__media { grid-column: 1; grid-row: 1 / span 3; }
@@ -370,13 +402,19 @@
   .p3-pill { clip-path: polygon(0 0, 100% 0, calc(100% - 20px) 100%, 0 100%); }
   .p3 .p3-btn { min-height: 40px; }
 
-  .p3-hero { padding-top: 96px; }
+  .p3-hero { --p3-hero-focal: 50% 40%; padding: 96px 24px 128px; }
   .p3 .p3-hero__ph { --ph-pad: 48px; }
   .p3-hero .ph__label { top: 24px; }
   .p3-hero__title { font-size: 56px; line-height: 1.15; max-width: 16em; }
   .p3-corners { inset: 72px 24px 24px; }
   .p3-corners i { width: 36px; height: 36px; }
   .p3-descent { height: 560px; }
+  .p3-descent__hill { --d: 1000px; --rise: 280px; --fade: 300px; }
+  .p3-work { padding: 128px 0 128px; }
+  .p3-work__head { padding: 0 24px; }
+  .p3-work__row { padding-inline: 24px; scroll-padding-inline: 24px; }
+  .p3-work__card { flex-basis: 400px; }
+  .p3-work__cap { font-size: 18px; line-height: 28px; grid-template-columns: 64px minmax(0, 1fr); }
 
   .p3-process { margin-top: -160px; padding-bottom: 128px; }
   .p3-process__text { margin-top: 48px; }

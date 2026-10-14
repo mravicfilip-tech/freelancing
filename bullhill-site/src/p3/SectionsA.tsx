@@ -1,7 +1,9 @@
-import type { CSSProperties } from 'react';
-import type { Content } from '../shared/content';
-import { Placeholder } from '../shared/Placeholder';
-import { ChevronDown, Corners, Crosshairs, Descent, MINI_SCENES, TRENCH_VIEW, TrenchWireframe, trenchAnchors } from './art';
+import { useRef, type CSSProperties } from 'react';
+import type { Content, Shot } from '../shared/content';
+import { Media } from '../shared/Media';
+import { Photo } from '../shared/Photo';
+import { photoAlt } from '../shared/photos';
+import { ChevronDown, ChevronLeft, ChevronRightLg, Corners, Crosshairs, Descent, MINI_SCENES, TRENCH_VIEW, TrenchWireframe, trenchAnchors } from './art';
 import { stepShot, t } from './copy';
 import { useActiveId } from './Header';
 import { ArrowList, GreyBtn, Kicker, Tag } from './ui';
@@ -11,7 +13,7 @@ import { ArrowList, GreyBtn, Kicker, Tag } from './ui';
 export function Hero({ c }: { c: Content }) {
   return (
     <section id="top" className="p3-hero">
-      <Placeholder shot={c.hero.shot} label={c.ui.photo} className="p3-hero__ph" />
+      <Media shot={c.hero.shot} lang={c.lang} label={c.ui.photo} className="p3-hero__ph" sizes="100vw" priority focal="var(--p3-hero-focal)" />
       <Corners />
       <h1 className="p3-hero__title">{c.hero.title}</h1>
       <span className="p3-hero__chev" aria-hidden="true">
@@ -23,6 +25,59 @@ export function Hero({ c }: { c: Content }) {
 
 export function DescentBand() {
   return <Descent />;
+}
+
+/* ---------- work photos, right after the hero ---------- */
+
+export function Work({ c }: { c: Content }) {
+  const row = useRef<HTMLUListElement>(null);
+  const items = c.work.items;
+  const num = (i: number) => String(i + 1).padStart(3, '0');
+  const go = (d: number) => {
+    const el = row.current;
+    if (!el) return;
+    const card = el.querySelector('li');
+    el.scrollBy({ left: d * ((card?.getBoundingClientRect().width ?? 320) + 16), behavior: 'smooth' });
+  };
+  return (
+    <section id="work" className="p3-work p3-grid" aria-labelledby="p3-work-h">
+      <div className="p3-work__head">
+        <div className="p3-work__intro">
+          <Tag>{c.work.kicker}</Tag>
+          <h2 id="p3-work-h" className="p3-h2 p3-work__title">
+            {c.work.title}
+          </h2>
+          <p className="p3-lede">{c.work.lede}</p>
+        </div>
+        <div className="p3-work__nav">
+          <span className="p3-mono">{`${String(items.length).padStart(2, '0')} ${c.work.count}`}</span>
+          <button type="button" className="p3-sqbtn" onClick={() => go(-1)} aria-label={c.ui.prev}>
+            <ChevronLeft />
+          </button>
+          <button type="button" className="p3-sqbtn" onClick={() => go(1)} aria-label={c.ui.next}>
+            <ChevronRightLg />
+          </button>
+        </div>
+      </div>
+      <ul className="p3-work__row" ref={row} tabIndex={0} aria-label={c.work.title}>
+        {items.map((it, i) => (
+          <li key={it.photo} className="p3-work__card">
+            <div className="p3-notch">
+              <Crosshairs />
+              <div className="p3-notch__clip">
+                <Photo id={it.photo} alt={photoAlt(it.photo, c.lang)} sizes="(min-width: 1200px) 400px, 280px" className="p3-notch__ph" />
+              </div>
+              <span className="p3-notch__bar" aria-hidden="true" />
+            </div>
+            <p className="p3-work__cap">
+              <span className="p3-work__n">{num(i)}</span>
+              <span>{it.caption}</span>
+            </p>
+          </li>
+        ))}
+      </ul>
+    </section>
+  );
 }
 
 /* ---------- process wireframe ---------- */
@@ -117,12 +172,12 @@ export function Services({ c }: { c: Content }) {
 
 /* ---------- steps panel ---------- */
 
-function Notch({ shot, label }: { shot: { id: string; brief: string }; label: string }) {
+function Notch({ shot, label, lang }: { shot: Shot; label: string; lang: Content['lang'] }) {
   return (
     <div className="p3-notch">
       <Crosshairs long />
       <div className="p3-notch__clip">
-        <Placeholder shot={shot} label={label} className="p3-notch__ph" />
+        <Media shot={shot} lang={lang} label={label} className="p3-notch__ph" sizes="(min-width: 1200px) 40vw, (min-width: 768px) 45vw, 90vw" />
       </div>
       <span className="p3-notch__bar" aria-hidden="true" />
     </div>
@@ -139,7 +194,7 @@ export function Steps({ c }: { c: Content }) {
       <ol className="p3-steps__list">
         {c.process.steps.map((s, i) => (
           <li key={s.n} className="p3-step" data-flip={i % 2 === 1 ? 'true' : undefined}>
-            <Notch shot={stepShot(c, i)} label={c.ui.photo} />
+            <Notch shot={{ ...stepShot(c, i), photo: s.photo }} label={c.ui.photo} lang={c.lang} />
             <div className="p3-step__text">
               <span className="p3-num">{`0${s.n}`}</span>
               <h3 className="p3-step__title">{s.title}</h3>
@@ -155,16 +210,18 @@ export function Steps({ c }: { c: Content }) {
 
 /* ---------- full bleed crew photo ---------- */
 
+const CREW_THUMBS = ['ducts-fence', 'restored-lane', 'route-trench-village'] as const;
+
 export function CrewPhoto({ c }: { c: Content }) {
   return (
     <section className="p3-crewphoto" aria-label={c.crew.kicker}>
-      <Placeholder shot={c.crew.shot} label={c.ui.photo} className="p3-crewphoto__ph" />
+      <Media shot={c.crew.shot} lang={c.lang} label={c.ui.photo} className="p3-crewphoto__ph" sizes="100vw" />
       <Corners />
       <div className="p3-ruler" aria-hidden="true" />
       <div className="p3-thumbs" aria-hidden="true">
-        {c.crew.people.map((p, i) => (
-          <span key={p.shot.id} className="p3-thumb" data-active={i === 0 ? 'true' : undefined}>
-            <Placeholder shot={p.shot} label={c.ui.photo} brief={false} mark={false} className="p3-thumb__ph" />
+        {CREW_THUMBS.map((id) => (
+          <span key={id} className="p3-thumb">
+            <Photo id={id} alt="" sizes="88px" className="p3-thumb__ph" />
           </span>
         ))}
       </div>

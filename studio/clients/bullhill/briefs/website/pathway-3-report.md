@@ -39,3 +39,18 @@ Nothing. No change to `src/shared/`, `main.tsx` or `package.json` was needed. On
 ## Strings added in copy.ts
 
 Contact us label, service points (four per service), the steps line, step photo briefs, know more, the projects line, speak with BullHill, the FAQ button, the contact line, the email format message and the contact detail labels. English and German both.
+
+## Round 2, real photos
+
+Built in `bullhill-site/src/p3/` only. Checked at 390 and 1440, English and German, three shoot and fix passes, typecheck and build pass.
+
+- Hero is `route-trench-village` full bleed. Focal point 60% 50% on phone (trench, dumper and mountains in frame) and 50% 40% on desktop (mountains, dumper and the trench with ducts). A dark gradient rises from the middle to solid #0e0f0f at the bottom, and the headline sits low on it. Worst pixel behind the headline measured at 5.0 to 1 against white at 1200 wide, 6.0 to 1 at 1440, 8.5 to 1 or better on phone and tablet. Corner marks and chevron stay.
+- New work section, `id="work"`, right after the hero. Tag with the kicker, 32px title, lede, then a sideways snap row of seven notched frames with crosshair marks and a bull-red 24px `001` to `007` with the caption beneath. Red numbers are 24px because red on dark is only allowed at 24px and up. Square prev and next buttons and a `07 photos` count show from 768 up. On phone one whole photo and the edge of the next show in the first screen after the hero.
+- The descent band now starts on #0e0f0f, since the work section sits above it and no longer the hero photo. Its bottom carries Daylight's glowing hill, a half circle with the same radial and glow as `.p2-footer__hill`, at 0.55 alpha and faded out below the band so the wireframe stays the focus.
+- Steps 02 to 04 show their photos in the notched frames, step 01 keeps its placeholder. The full bleed crew photo is `excavator-street` with `ducts-fence`, `restored-lane` and `route-trench-village` as the three thumbnails. The project tab card shows each project photo. Service frames keep their wireframes.
+- `sizes` is set per slot. The hero is eager with high priority, everything else is lazy.
+
+Not matched or worth a look.
+- The three thumbnails are not clickable yet, they are static like the rest of the round. The red active bar on the first thumbnail was removed since it would imply a selection.
+- Lazy photos in the far end of the work row load when the row is swiped, as expected.
+- Baselint still flags three z-index values and one 1px overlap from round 1, and the hill box shadow, which is copied from Daylight on purpose.

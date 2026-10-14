@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Tabs } from 'radix-ui';
 import type { Content } from '../shared/content';
-import { Placeholder } from '../shared/Placeholder';
+import { Media } from '../shared/Media';
 import { ChevronLeft, ChevronRightLg, Crosshairs, MachineIcon } from './art';
 import { t } from './copy';
 import { ArrowList, DarkBtn, GreyBtn, Kicker, Tag } from './ui';
@@ -90,7 +90,7 @@ export function Projects({ c }: { c: Content }) {
         {items.map((p, i) => (
           <Tabs.Content key={p.id} value={p.id} className="p3-ppanel">
             <div className="p3-pnotch">
-              <Placeholder shot={p.shot} label={c.ui.photo} index={i + 1} className="p3-pnotch__ph" />
+              <Media shot={p.shot} lang={c.lang} label={c.ui.photo} index={i + 1} className="p3-pnotch__ph" sizes="(min-width: 1200px) 40vw, (min-width: 768px) 45vw, 90vw" />
             </div>
             <div className="p3-ppanel__text">
               <p className="p3-mono p3-ppanel__count">{`${t(c, 'projectWord')} ${num(i)}/${num(n - 1)}`}</p>

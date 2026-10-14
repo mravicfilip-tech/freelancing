@@ -29,6 +29,35 @@ Then one note, below. Foundry at `/?v=1`, files in `bullhill-site/src/p1/`.
    Send the job button on the page in red, waits on Filip. It lands in `Hero6.tsx`, owned by the hero
    builder now, so it is planned after that slice reports.
 
+4. Phone hero after worldquantfoundry's phone hero, queued while builders run. "a structure something
+   like this for mobile would be dope", with a shot of worldquantfoundry.com at phone width,
+   `round5-refs/wqf-phone-hero.png`. Read as the phone hero only, the rest of the phone structure
+   below still waits on his yes. It meets notes 2 and 3, so all three are planned together.
+
+## Phone hero, proposed after the reference
+
+What the reference does. The wordmark top left and one square menu button top right. The headline in
+two halves, "Forging companies that" high on the left and "Pull the future forward" lower and right
+aligned, with the dot sphere large behind and between them, running off the right edge. At the foot a
+hairline, a mono paragraph, one bracket button bottom left and the mark bottom right. One screen,
+nothing else.
+
+BullHill on phones.
+- Header. Full logo left, the phone icon and MENU right in note 2's ghost style, MENU with the two line
+  burger. Refused from the reference, the single button, because a call is BullHill's fastest lead on a
+  phone.
+- Headline in two halves. "We dig the routes" high on the left, "Fibre runs through" lower and right
+  aligned.
+- The specimen sits large between and behind the halves, its right end running off the screen edge the
+  way the sphere does. No seam line and no tags. The render still takes over the schematic with the
+  scroll, as beat 4 does now.
+- Foot. A hairline, the mono lede, then one button bottom left, Send the job in bull-red (note 3). Call
+  us leaves the phone hero, the header phone icon does that job.
+- Refused from the reference, the mark alone bottom right. The taste log rules the full logo or nothing,
+  so the corner stays empty.
+- The BH 001 card goes on phones. The hero fills one screen, 844px, plus the 30svh pin.
+- The tall still is likely re-rendered for the larger block, so it stays sharp at 3x.
+
 ## Phone structure, proposed
 
 | Section | Now at 390 | Proposed on phones | Screens after |

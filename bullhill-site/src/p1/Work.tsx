@@ -1,11 +1,26 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
+import type { CSSProperties, ReactNode } from 'react';
 import type { Content } from '../shared/content';
 import { Photo } from '../shared/Photo';
 import { photoAlt } from '../shared/photos';
 import { Arrow } from './art';
 import { WORK_FOCAL, sh, t } from './copy';
+import { useInView } from './motion/motion';
 import { Rise } from './motion/Rise';
 import './r3-work.css';
+import './motion/sections-a.css';
+
+// One card. Marked in once as it enters, the frame lines draw, then the photo unmasks, then the
+// caption rises. Only the first three cards are in view together, so only they stagger.
+function WorkCard({ i, children }: { i: number; children: ReactNode }) {
+  const ref = useRef<HTMLLIElement>(null);
+  useInView(ref);
+  return (
+    <li ref={ref} className="wk__card" style={{ '--ci': i < 3 ? i : 0 } as CSSProperties}>
+      {children}
+    </li>
+  );
+}
 
 // Work photos straight after the hero. A snap row of notched photo frames, the first about twice as
 // wide, starting on the grid's left edge and running off the right so the next card peeks.
@@ -67,7 +82,7 @@ export function Work({ c }: { c: Content }) {
 
       <ul className="wk__row" ref={rowRef} onScroll={measure} tabIndex={0} aria-label={x.workRow}>
         {items.map((it, i) => (
-          <li key={it.photo} className="wk__card">
+          <WorkCard key={it.photo} i={i}>
             <div className="wk__frame">
               <i className="wk__xh wk__xh--tl" aria-hidden="true" />
               <i className="wk__xh wk__xh--tr" aria-hidden="true" />
@@ -88,7 +103,7 @@ export function Work({ c }: { c: Content }) {
               <span className="wk__n">{String(i + 1).padStart(2, '0')}</span>
               <span>{it.caption}</span>
             </p>
-          </li>
+          </WorkCard>
         ))}
       </ul>
 

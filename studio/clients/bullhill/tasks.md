@@ -83,7 +83,8 @@ Task format
   - [x] Section grounds move between light and dark sections
   - [x] Hero clip to Filip
   - [x] Phone hero in one screen with air, smaller parts
-  - [ ] /uireview, then Filip's ship line
+  - [x] /uireview round and re-check, no open sev 1, card with Filip
+  - [ ] Filip's line on the card, ship, fix or drop
 
 ## Review
 

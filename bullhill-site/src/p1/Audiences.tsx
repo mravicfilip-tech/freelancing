@@ -1,9 +1,10 @@
 import { useRef, type CSSProperties } from 'react';
 import type { Audience as AudienceT, Content } from '../shared/content';
-import { PixelIcon, ScatterField, WaveArt, type PixelName } from './art';
+import { PixelIcon, WaveArt, type PixelName } from './art';
 import { Bracket } from './Bracket';
 import { sh } from './copy';
 import { Rise } from './motion/Rise';
+import { ScatterCloud } from './motion/ScatterCloud';
 import { useInView } from './motion/motion';
 import './motion/sections-b.css';
 
@@ -22,7 +23,7 @@ function Block({ c, a, icons, flip, seed, row }: { c: Content; a: AudienceT; ico
   useInView(ref);
   return (
     <div className={`aud${flip ? ' aud--flip' : ''}`} ref={ref} style={{ '--r': row } as CSSProperties}>
-      <ScatterField className={`art aud__field${flip ? ' aud__field--r' : ''}`} seed={seed} />
+      <ScatterCloud className={`art aud__field${flip ? ' aud__field--r' : ''}`} seed={seed} />
       <div className="aud__text">
         <p className="mono kicker">{a.kicker}</p>
         <Rise className="aud__title display">{sh(c, a.title)}</Rise>

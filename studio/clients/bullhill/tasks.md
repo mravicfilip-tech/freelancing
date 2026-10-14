@@ -28,11 +28,17 @@ Task format
 - bullhill-2 Hero scroll smooth, frame rate on phones and desktop
   - [x] Measure frame cost on a scripted scroll, phone and desktop
   - [x] Fix the worst costs, measure again, c9d30f3
+  - [x] Scroll linked motion glides toward the scroll, 1c63514
   - [ ] Filip feels it on his phone and desktop
 - bullhill-3 Excavator hero, a storyboard of the work, hero 7. Plan in briefs/website/hero7-excavator.md
   - [x] Plan, storyboard and the grilled answers
   - [x] Dig beat built at 1440, sheet to Filip, 5a2f3e1 merged behind ?hero=7
-  - [ ] Filip's yes on the Dig beat, then the other four steps
+  - [x] Filip's answer on the Dig beat, 2, fix the weak spots first
+  - [ ] Dig beat fixed, a detailed machine, a trench along the stretch, a travelling camera
+  - [ ] Steps 1, 3, 4 and 5, labels in English and German
+  - [ ] Phone stills and the reduced motion still
+  - [ ] Frame cost check and /uireview
+  - [ ] Production, on Filip's "Push to production when done all of it", hero 6 stays the default
 - bullhill-1 BullHill company website, one page, Foundry direction at /?v=1. Plan in briefs/website/plan.md, branch claude/hopeful-maxwell-bwuy3c. Link https://bullhill-site.vercel.app
   - [x] Put the logo files and brand colours on file
   - [x] Propose the page sections

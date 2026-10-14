@@ -2,7 +2,9 @@
 
 Status. Filip said "go" at 16:13 on 14 October 2026 to the whole site motion story, hero 6 as the
 default hero, the outline version of the arrow cell for secondary buttons and the 30svh phone pin.
-Then one note, below. Foundry at `/?v=1`, files in `bullhill-site/src/p1/`.
+Then the notes below. Filip said "build go go" at 16:30 to notes 2 to 4, the phone hero and the
+phone structure, and the client sees only hero 6. In build. Foundry at `/?v=1`, files in
+`bullhill-site/src/p1/`.
 
 ## Notes
 

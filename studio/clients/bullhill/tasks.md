@@ -59,7 +59,8 @@ Task format
   - [x] Hero 6 as the default, phone pin 30svh, phone hero tags off
   - [x] Outline arrow cell for secondary buttons, MENU without the arrow
   - [ ] Notes 2 to 4 of round 5, phone header, red Send the job, phone hero after worldquantfoundry
-  - [ ] Phone structure, too dense, briefs/website/round5-notes.md, Filip's yes
+  - [x] Phone structure, too dense, briefs/website/round5-notes.md, Filip's yes
+  - [ ] Build the phone structure and the phone header
   - [ ] Build hero 6 beats 1 to 3
   - [ ] Build the headline rise and the Process beat, Filip's yes
   - [ ] Build the whole site motion

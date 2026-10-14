@@ -73,3 +73,26 @@ Phones keep the still image. Beat 1 and a seam wipe on the still run there in CS
   still's clip-path inset follows p, so the seam slides in CSS. The pin is 50svh there.
 - Shots. One frame per scroll position, p 0, 0.25, 0.5, 0.75 and 1, at 1440 and 390, on one contact
   sheet, English. Software WebGL needs about 12 seconds a frame.
+
+## Beat 4 redraw, dig, lay, restore
+
+Filip, 14 October 2026, beat 4 as built was "dull", "its just model moving". The redraw in
+`round5-notes.md` note 5 was accepted with "go go, yes to both". It replaces the seam slide and dolly
+as the scroll's main event. Builds after the beats 1 to 3 slice is merged, in the same files.
+
+- Pin 120svh on desktop, p 0 to 1 across it, the same progress store and `?p=` override.
+- Dig, p 0 to 0.35. A trench opens along the duct line. The surface, base and backfill above the
+  ducts break into particles in their own colours and lift into a slow cloud above the block, so the
+  cut shows in section. Particles are points sampled inside each layer's volume, the layer mesh fades
+  as its points leave.
+- Lay, p 0.35 to 0.65. The ducts slide in along the trench from the far end. Light runs through them
+  and out of the open ends as a stream of bright points.
+- Restore, p 0.65 to 1. The cloud falls back in layer order, sand, backfill, tape, base, surface, and
+  settles flat. The seam sweeps left with the falling ground, so what settles is the real render. The
+  headline, lede and buttons leave as now, the specimen card stays.
+- The camera keeps beat 4's short dolly, no bigger move.
+- Phones keep the stills, no WebGL. A 2D canvas of about 600 points plays the dig cloud lifting and
+  falling over the still pair, on the 30svh pin.
+- Reduced motion and automated shots get the settled block.
+- 60 frames a second on an ordinary laptop is the bar. Point counts are set by that, not by looks.
+- Shots. p 0, 0.15, 0.35, 0.5, 0.65, 0.8 and 1 at 1440 and 390, one sheet each.

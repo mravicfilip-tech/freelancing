@@ -2,7 +2,9 @@ import './lab.css';
 import type { Content } from '../../../shared/content';
 import { PhoneIcon } from '../../art';
 import { Bracket } from '../../Bracket';
+import { labKind } from '../params';
 import type { VariantN } from '../params';
+import { SlabLab } from './SlabLab';
 
 // The five button styles side by side with their states, at ?v=1&lab=buttons. The state cells are
 // demo copies forced with state classes so one still screenshot shows every state. English only,
@@ -109,6 +111,8 @@ function Panel({ c, ground, kicker, note }: { c: Content; ground: 'dark' | 'ligh
 }
 
 export function ButtonLab({ c }: { c: Content }) {
+  // ?lab=slab opens the slab and arrow lab, any other lab value opens the five styles.
+  if (labKind() === 'slab') return <SlabLab c={c} />;
   return (
     <section className="blab" aria-labelledby="blab-title">
       <div className="blab__intro">

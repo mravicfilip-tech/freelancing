@@ -81,7 +81,7 @@ Task format
   - [x] Text revealed by blocks after landonorris, View project buttons removed
   - [ ] Block colour, Filip picks 1, 2 or 3
   - [x] Section grounds move between light and dark sections
-  - [ ] Hero clip to Filip
+  - [x] Hero clip to Filip
   - [x] Phone hero in one screen with air, smaller parts
   - [ ] /uireview, then Filip's ship line
 

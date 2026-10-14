@@ -37,5 +37,5 @@ commit that carries it. Session branch `claude/hopeful-maxwell-bwuy3c`.
 | 29 | Text revealed by blocks like landonorris.com | Done, 6c8e852, the hero lede too. Block colour on a board, 1 to 3, for Filip |
 | 30 | View project buttons with no page behind them | Done, 6c8e852, removed under the note 10 rule |
 
-Still owed to Filip, the hero clip of the five steps, now that step 4 shows the fibre. Answered, the crew
+The hero clip of the five steps went to Filip at 20:00, at 390 and 1440, on c067505. Still owed, the block colour pick and `/uireview`. Answered, the crew
 blows fibre in, FAQ and process lede changed to say so.

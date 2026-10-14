@@ -1,10 +1,13 @@
 import { Suspense, lazy, useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import type { Content } from '../../../shared/content';
 import { Bracket } from '../../Bracket';
+import { motionOn } from '../../motion/motion';
+import { Rise } from '../../motion/Rise';
 import { t6 } from './copy-hero6';
-import { ANCHORS, VIEWS, clamp01, dollyCam, project, seamAt, smooth, type LayerId, type View } from './hero6/geometry';
+import { ANCHORS, VIEWS, clamp01, dollyCam, driftCam, project, seamAt, smooth, type LayerId, type View } from './hero6/geometry';
 import { useProgress, useProgressValue, type Progress } from './hero6/progress';
 import { StillSeam } from './hero6/StillSeam';
+import { LoadClock, SETTLED, assembleAt, riseEase, urlFreeze } from './hero6/timeline';
 import './hero.css';
 import './hero6.css';
 
@@ -21,12 +24,22 @@ import './hero6.css';
 // dolly, draws, and then calls paint(p) here, so the seam line, its two tags and the labels move in
 // the same animation frame as the canvas. Phones and no WebGL show StillSeam, the still pair with
 // the seam sliding in CSS, and the labels follow the same seam. Reduced motion gets no pin and p 0.
+//
+// Beats 1 to 3 (hero6/timeline.ts). The h1 is the shared Rise, the lede and buttons rise after its
+// last line in CSS, and the assemble is built by a LoadClock that the scene, the overlay and the
+// CSS read. Phones and no WebGL run beats 1 and 2 in CSS on the stills. With motionOn() false the
+// clock does not exist and the hero is its settled state, as before beats 1 to 3. `?t=` freezes the
+// clock for shots, and the CSS follows it through animation-delay and --h6-fz.
 
 const Scene = lazy(() => import('./hero6/Scene'));
 
 const CHAR = 7.68; // Azeret Mono 12px, advance 0.6em plus 0.04em tracking
 const TAG_H = 22;
 const TAG_GAP = 32;
+// phone framing, the box is 1.6 times the stage wide, ends 0.2 of it past the right edge and sits a little low
+const TALL_SCALE = 1.6;
+const TALL_OVER = 0.2;
+const TALL_DROP = 0;
 const ORDER: LayerId[] = ['surface', 'base', 'tape', 'backfill', 'ducts', 'sand'];
 
 function useBox(ref: React.RefObject<HTMLElement | null>) {
@@ -83,8 +96,8 @@ type Box = { w: number; h: number; x: number; y: number };
 
 // Where every moving piece of the overlay sits at ease e, in stage pixels. The part of a label is
 // real once the seam has gone left of its anchor, and its leader fades out while the tag stays.
-function place(view: View, box: Box, ch: number, metas: Meta[], e: number, moveCam: boolean) {
-  const cam = dollyCam(view, moveCam ? e : 0);
+function place(view: View, box: Box, ch: number, metas: Meta[], e: number, moveCam: boolean, yaw = 0, pitch = 0) {
+  const cam = driftCam(dollyCam(view, moveCam ? e : 0), moveCam ? yaw : 0, moveCam ? pitch : 0);
   const sf = seamAt(view, e);
   const items: Item[] = metas
     .map((m) => {
@@ -109,9 +122,27 @@ type Els = { lead: SVGGElement | null; line: SVGLineElement | null; dot: SVGCirc
 
 // Phones and no WebGL, beat 4 on the still pair. Its own component, so a scroll re-renders the two
 // stills and not the whole hero.
-function SeamStill({ view, progress, enabled }: { view: View; progress: Progress; enabled: boolean }) {
+function SeamStill({ view, progress, enabled, animate }: { view: View; progress: Progress; enabled: boolean; animate: boolean }) {
   const p = useProgressValue(progress, enabled);
-  return <StillSeam view={view} p={p} alt="" />;
+  return <StillSeam view={view} p={p} alt="" animate={animate} />;
+}
+
+// Beat 1 with the clock frozen by ?t=. The words of the headline are set to where the rise has got
+// to at t, the same curve and steps as the CSS (--m-rise 600ms, --m-step 80ms, --m-ease).
+function freezeHeadline(sec: HTMLElement, t: number) {
+  sec.querySelectorAll<HTMLElement>('.hv6__title .rise__w').forEach((w) => {
+    const li = Number(w.style.getPropertyValue('--li')) || 0;
+    const k = riseEase(clamp01((t - li * 80) / 600));
+    const i = w.querySelector<HTMLElement>('.rise__i');
+    if (i) {
+      i.style.transition = 'none';
+      i.style.transform = `translateY(${((1 - k) * 115).toFixed(3)}%)`;
+    }
+  });
+  sec.querySelectorAll<HTMLElement>('.hv6__title .rise__shy').forEach((n) => {
+    n.style.transition = 'none';
+    n.style.opacity = t > 600 ? '1' : '0';
+  });
 }
 
 export function Hero6({ c }: { c: Content }) {
@@ -132,6 +163,8 @@ function Specimen({ c }: { c: Content }) {
   const wide = useMedia('(min-width: 1200px)', true);
   const reduced = useMedia('(prefers-reduced-motion: reduce)', false);
   const [gl] = useState(hasWebgl);
+  const [clock] = useState(() => (motionOn() ? new LoadClock(urlFreeze()) : null));
+  const frozen = clock?.frozen ?? null;
   const [mounted, setMounted] = useState(false);
   const [ready, setReady] = useState(false);
   useEffect(() => setMounted(true), []);
@@ -142,6 +175,7 @@ function Specimen({ c }: { c: Content }) {
 
   const view: View = wide ? 'wide' : desk ? 'mid' : 'tall';
   const live = desk && gl && !reduced;
+  // with motion the poster never shows, the scene builds the specimen itself
   const pinned = !reduced;
   // the still pair exists for tall and mid, wide without WebGL keeps its one poster
   const stills = !live && view !== 'wide';
@@ -153,9 +187,12 @@ function Specimen({ c }: { c: Content }) {
   // the box the specimen fills, centred in the stage, always the view's own aspect
   const box = useMemo<Box | null>(() => {
     if (!cw || !ch) return null;
-    const w = view === 'tall' ? cw : Math.min(cw, ch * spec.aspect);
+    // phones, the block is large and runs off the right screen edge, the stage already sits one
+    // side padding in, so the box ends TALL_OVER past the stage's right edge
+    const w = view === 'tall' ? Math.round(cw * TALL_SCALE) : Math.min(cw, ch * spec.aspect);
     const h = Math.round(w / spec.aspect);
-    return { w: Math.round(w), h, x: Math.round((cw - w) / 2), y: Math.round((ch - h) / 2) };
+    const x = view === 'tall' ? Math.round(cw + cw * TALL_OVER - w) : Math.round((cw - w) / 2);
+    return { w: Math.round(w), h, x, y: Math.round((ch - h) / 2) + (view === 'tall' ? Math.round(ch * TALL_DROP) : 0) };
   }, [cw, ch, view, spec.aspect]);
 
   const metas = useMemo<Meta[]>(
@@ -178,8 +215,8 @@ function Specimen({ c }: { c: Content }) {
   const tagLEl = useRef<SVGGElement>(null);
   const tagREl = useRef<SVGGElement>(null);
   const els = useRef<Partial<Record<LayerId, Els>>>({});
-  const ctx = useRef({ view, box, ch, metas, live, stills, wL });
-  ctx.current = { view, box, ch, metas, live, stills, wL };
+  const ctx = useRef({ view, box, ch, metas, live, stills, wL, tags });
+  ctx.current = { view, box, ch, metas, live, stills, wL, tags };
 
   const text = (p: number) => {
     const t = smooth(clamp01((p - 2 / 3) * 3));
@@ -194,23 +231,33 @@ function Specimen({ c }: { c: Content }) {
     if (!k.box) return;
     // the still pair follows p with a fixed camera, the one poster is a still at p 0 and the overlay holds there
     const e = k.live || k.stills ? smooth(p) : 0;
-    const { seamX, items } = place(k.view, k.box, k.ch, k.metas, e, k.live);
+    const ck = clock;
+    const { seamX, items } = place(k.view, k.box, k.ch, k.metas, e, k.live, ck?.view.yaw, ck?.view.pitch);
     const top = k.box.y + k.box.h - TAG_H;
+    // beat 2 on the overlay, the seam drops, the two tags and the leaders come in
+    const st = ck ? assembleAt(ck.a()) : SETTLED;
     seamEl.current?.setAttribute('x1', String(seamX));
     seamEl.current?.setAttribute('x2', String(seamX));
+    seamEl.current?.setAttribute('y2', String(k.box.y + k.box.h * st.seam));
     tagLEl.current?.setAttribute('transform', `translate(${seamX - k.wL} ${top})`);
     tagREl.current?.setAttribute('transform', `translate(${seamX} ${top})`);
-    for (const it of items) {
+    tagLEl.current?.setAttribute('opacity', st.tags.toFixed(3));
+    tagREl.current?.setAttribute('opacity', st.tags.toFixed(3));
+    items.forEach((it, i) => {
       const o = els.current[it.id];
-      if (!o) continue;
+      if (!o) return;
+      const d = st.leader(i);
+      const x1 = it.w;
       o.line?.setAttribute('y1', String(it.ty));
-      o.line?.setAttribute('x2', String(it.px));
-      o.line?.setAttribute('y2', String(it.py));
+      o.line?.setAttribute('x2', String(x1 + (it.px - x1) * d));
+      o.line?.setAttribute('y2', String(it.ty + (it.py - it.ty) * d));
       o.dot?.setAttribute('cx', String(it.px));
       o.dot?.setAttribute('cy', String(it.py));
+      o.dot?.setAttribute('opacity', clamp01((d - 0.85) / 0.15).toFixed(3));
       o.lead?.setAttribute('opacity', it.op.toFixed(3));
       o.tag?.setAttribute('transform', `translate(0 ${it.ty})`);
-    }
+      o.tag?.setAttribute('opacity', clamp01(d * 5).toFixed(3));
+    });
   };
   const paintRef = useRef(paint);
   paintRef.current = paint;
@@ -222,7 +269,130 @@ function Specimen({ c }: { c: Content }) {
     return progress.subscribe((p) => (live ? text(p) : paintRef.current(p)));
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [progress, pinned, live]);
-  const drive = useMemo(() => ({ progress, onFrame: (p: number) => paintRef.current(p) }), [progress]);
+  const drive = useMemo(() => ({ progress, load: clock ?? undefined, onFrame: (p: number) => paintRef.current(p) }), [progress, clock]);
+
+  // ---- beats 1 to 3
+  // The hero's own CSS reads data-load (off, run, done), data-idle (wait, run, pause, frozen) and
+  // the variables --h6-last, --h6-fz and --h6-bd. All written here, never by React, so a re-render
+  // cannot undo them.
+  useLayoutEffect(() => {
+    const sec = section.current;
+    if (!sec) return;
+    if (!clock) {
+      sec.dataset.load = 'off';
+      return;
+    }
+    sec.dataset.load = clock.assembled() ? 'done' : 'run';
+    if (frozen !== null) {
+      sec.style.setProperty('--h6-fz', `${frozen}ms`);
+      sec.style.setProperty('--h6-ps', 'paused');
+      sec.style.setProperty('--h6-bd', `${-Math.max(0, frozen - 2800)}ms`);
+    }
+    const mark = () => {
+      // the last line of the headline, read from the lines Rise has measured
+      let last = 0;
+      sec.querySelectorAll<HTMLElement>('.hv6__title .rise__w').forEach((w) => {
+        last = Math.max(last, Number(w.style.getPropertyValue('--li')) || 0);
+      });
+      sec.style.setProperty('--h6-last', String(last));
+      if (frozen !== null) freezeHeadline(sec, frozen);
+    };
+    mark();
+    let alive = true;
+    document.fonts?.ready.then(() => alive && mark());
+    const h1 = sec.querySelector('.hv6__title');
+    const ro = new ResizeObserver(mark);
+    if (h1) ro.observe(h1);
+    return () => {
+      alive = false;
+      ro.disconnect();
+    };
+  }, [clock, frozen, c.lang]);
+
+  // the clock's state to the CSS, the idle glow runs while assembled and on screen
+  useEffect(() => {
+    const pinEl = pin.current;
+    const sec = section.current;
+    if (!clock || !pinEl || !sec) return;
+    const sync = () => {
+      sec.dataset.load = clock.assembled() ? 'done' : 'run';
+      pinEl.dataset.idle = frozen !== null ? (clock.assembled() ? 'frozen' : 'wait') : !clock.assembled() ? 'wait' : clock.isVisible() ? 'run' : 'pause';
+    };
+    sync();
+    return clock.on(sync);
+  }, [clock, frozen]);
+
+  // on screen and tab visible, the idle loop pauses when either is false
+  useEffect(() => {
+    const el = section.current;
+    if (!clock || !el || frozen !== null) return;
+    let inView = true;
+    let shown = !document.hidden;
+    const apply = () => clock.setVisible(inView && shown);
+    const io = new IntersectionObserver((es) => {
+      inView = es[es.length - 1].isIntersecting;
+      apply();
+    });
+    io.observe(el);
+    const vis = () => {
+      shown = !document.hidden;
+      apply();
+    };
+    document.addEventListener('visibilitychange', vis);
+    return () => {
+      io.disconnect();
+      document.removeEventListener('visibilitychange', vis);
+    };
+  }, [clock, frozen]);
+
+  // a small tilt towards the pointer, desktop with a mouse only
+  useEffect(() => {
+    if (!clock || !live || frozen !== null || !window.matchMedia('(pointer: fine)').matches) return;
+    const move = (e: PointerEvent) => {
+      clock.pointer.x = Math.max(-1, Math.min(1, (e.clientX / window.innerWidth - 0.5) * 2));
+      clock.pointer.y = Math.max(-1, Math.min(1, (e.clientY / window.innerHeight - 0.5) * 2));
+      clock.poke();
+    };
+    const leave = () => {
+      clock.pointer.x = 0;
+      clock.pointer.y = 0;
+      clock.poke();
+    };
+    window.addEventListener('pointermove', move, { passive: true });
+    document.documentElement.addEventListener('pointerleave', leave);
+    return () => {
+      window.removeEventListener('pointermove', move);
+      document.documentElement.removeEventListener('pointerleave', leave);
+    };
+  }, [clock, live, frozen]);
+
+  // Without the scene (phones, no WebGL) the clock starts at once, 0.6s in, and the overlay is driven
+  // by a frame loop that lasts only as long as the assemble. With the scene it starts on the first
+  // frame, and a slow or failed load starts it after 8s so the page never waits on it.
+  useEffect(() => {
+    if (!clock || frozen !== null) return;
+    if (live) {
+      const id = window.setTimeout(() => clock.begin(), 8000);
+      return () => window.clearTimeout(id);
+    }
+    clock.begin();
+    if (!tags) return;
+    let raf = 0;
+    const tick = () => {
+      paintRef.current(progress.sample());
+      if (!clock.assembled()) raf = requestAnimationFrame(tick);
+    };
+    raf = requestAnimationFrame(tick);
+    return () => cancelAnimationFrame(raf);
+  }, [clock, frozen, live, tags, progress]);
+
+  // scrolling during the load completes it at once. The scene does this on its frames, this covers the CSS.
+  useEffect(() => {
+    if (!clock || frozen !== null) return;
+    return progress.subscribe((p) => {
+      if (p > 0) clock.skip();
+    });
+  }, [clock, frozen, progress]);
 
   const p0 = progress.sample();
   const first = box ? place(view, box, ch, metas, live || stills ? smooth(p0) : 0, live) : null;
@@ -234,18 +404,18 @@ function Specimen({ c }: { c: Content }) {
       <div ref={pin} className="hv6__pin" data-gone="no">
         <div className="hv6__in g">
           <div className="hv6__top gc">
-            <h1 id="hv6-title" className="hv6__title display">
-              <span>{c.hero.split[0]}</span> <span>{c.hero.split[1]}</span>
-            </h1>
+            <Rise as="h1" id="hv6-title" className="hv6__title display">
+              {[c.hero.split[0], c.hero.split[1]]}
+            </Rise>
           </div>
 
           <div ref={stage} className="hv6__stage" role="img" aria-label={x.figure}>
             {box ? (
               <div className="hv6__box" style={{ left: box.x, top: box.y, width: box.w, height: box.h }}>
                 {stills ? (
-                  <SeamStill view={view} progress={progress} enabled={pinned} />
+                  <SeamStill view={view} progress={progress} enabled={pinned} animate={!!clock} />
                 ) : (
-                  <img className="hv6__poster" data-ready={ready && live ? 'yes' : 'no'} src={`/render/hero6-${view}.webp`} width={box.w} height={box.h} alt="" draggable={false} />
+                  <img className="hv6__poster" data-ready={(ready || !!clock) && live ? 'yes' : 'no'} data-anim={clock && !live ? 'yes' : undefined} src={`/render/hero6-${view}.webp`} width={box.w} height={box.h} alt="" draggable={false} />
                 )}
                 {live && mounted ? (
                   <div className="hv6__canvas">
@@ -293,8 +463,8 @@ function Specimen({ c }: { c: Content }) {
             <div className="hv6__side">
               <p className="hv6__lede mono-body">{c.hero.lede}</p>
               <div className="hv__cta">
-                <Bracket variant="solid" href={c.contact.phoneHref}>{c.ui.call}</Bracket>
-                <Bracket href="#contact">{c.ui.send}</Bracket>
+                {view === 'tall' ? null : <Bracket href={c.contact.phoneHref}>{c.ui.call}</Bracket>}
+                <Bracket variant="fill" href="#contact">{c.ui.send}</Bracket>
               </div>
             </div>
             <aside className="hv6__card">

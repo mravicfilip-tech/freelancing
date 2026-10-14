@@ -33,7 +33,7 @@ export type ViewSpec = { aspect: number; az: number; el: number; fov: number; fi
 export const VIEWS: Record<View, ViewSpec> = {
   wide: { aspect: 2.2, az: 44, el: 15, fov: 11, fit: { x0: 0.1, x1: 0.985, y0: 0.06, y1: 0.94 }, nominal: [1376, 625] },
   mid: { aspect: 1.5, az: 56, el: 20, fov: 11, fit: { x0: 0.2, x1: 0.985, y0: 0.06, y1: 0.94 }, nominal: [720, 480] },
-  tall: { aspect: 1, az: 68, el: 22, fov: 12, fit: { x0: 0.37, x1: 0.985, y0: 0.06, y1: 0.94 }, nominal: [358, 358] },
+  tall: { aspect: 1, az: 68, el: 22, fov: 12, fit: { x0: 0.37, x1: 0.985, y0: 0.06, y1: 0.94 }, nominal: [600, 600] },
 };
 
 export type Cam = { pos: V3; target: V3; fov: number };
@@ -207,7 +207,25 @@ export function dollyCam(view: View, e: number): Cam {
 }
 
 // The seam as a fraction of the canvas width, 0 all render, 1 all schematic.
+// On phones the block sits in the right of its box and runs off the screen, so the seam starts at
+// the middle of the block, 0.6 of the box, and not at 0.5.
+export const SEAM0_TALL = 0.6;
 export function seamAt(view: View, e: number): number {
-  void view;
-  return DOLLY.seam0 + (DOLLY.seam1 - DOLLY.seam0) * e;
+  const s0 = view === 'tall' ? SEAM0_TALL : DOLLY.seam0;
+  return s0 + (DOLLY.seam1 - s0) * e;
+}
+
+// Beat 3, the idle drift. Turns the camera round its target by yaw degrees about the vertical and
+// pitch degrees about its own right axis, the same distance and lens. Zero returns the camera itself.
+export function driftCam(cam: Cam, yaw: number, pitch: number): Cam {
+  if (!yaw && !pitch) return cam;
+  const off = sub(cam.pos, cam.target);
+  const a = (yaw * Math.PI) / 180;
+  const o: V3 = [off[0] * Math.cos(a) + off[2] * Math.sin(a), off[1], off[2] * Math.cos(a) - off[0] * Math.sin(a)];
+  const f = norm([-o[0], -o[1], -o[2]]);
+  const r = norm(cross(f, [0, 1, 0]));
+  const b = (pitch * Math.PI) / 180;
+  const rxo = cross(r, o);
+  const q: V3 = [o[0] * Math.cos(b) + rxo[0] * Math.sin(b), o[1] * Math.cos(b) + rxo[1] * Math.sin(b), o[2] * Math.cos(b) + rxo[2] * Math.sin(b)];
+  return { pos: [cam.target[0] + q[0], cam.target[1] + q[1], cam.target[2] + q[2]], target: cam.target, fov: cam.fov };
 }

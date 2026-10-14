@@ -43,7 +43,7 @@ const chrome =
     const dir = existsSync(root) ? readdirSync(root).find((d) => /^chromium-\d+$/.test(d)) : null;
     return dir ? join(root, dir, 'chrome-linux', 'chrome') : undefined;
   })();
-const NOMINAL = { wide: [1376, 625], mid: [720, 480], tall: [358, 358] };
+const NOMINAL = { wide: [1376, 625], mid: [720, 480], tall: [600, 600] };
 
 const { default: puppeteer } = await import(pathToFileURL(core).href);
 mkdirSync(out, { recursive: true });

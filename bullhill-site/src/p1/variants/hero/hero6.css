@@ -4,13 +4,17 @@
 
 /* clip, never hidden, so the sticky stage still pins */
 .p1 .hv6 { background: var(--ink); overflow: clip; }
-.p1 .hv6__pin {
-  position: relative;
+.p1 .hv6__pin { position: relative; background: var(--ink); }
+/* the red glow is its own layer, so beat 3 can breathe it with opacity alone */
+.p1 .hv6__pin::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
   background:
     radial-gradient(38% 46% at 50% 54%, rgba(208, 11, 17, 0.36), transparent 74%),
     radial-gradient(70% 34% at 50% 100%, rgba(208, 11, 17, 0.45), transparent 72%),
-    radial-gradient(46% 26% at 88% 100%, rgba(208, 11, 17, 0.3), transparent 72%),
-    var(--ink);
+    radial-gradient(46% 26% at 88% 100%, rgba(208, 11, 17, 0.3), transparent 72%);
 }
 /* beat 4, the stage is pinned for the run below it, 50svh on phones and 70svh from 768 */
 .p1 .hv6[data-pin='yes'] .hv6__pin { position: sticky; top: 0; z-index: 0; }
@@ -22,7 +26,7 @@
 .p1 .hv6__pin[data-gone='yes'] .hv6__side { visibility: hidden; }
 .p1 .hv6__in { position: relative; display: flex; flex-direction: column; min-height: 100svh; padding-top: calc(var(--hd-h) + 24px); padding-bottom: 24px; }
 .p1 .hv6__title { grid-column: 1 / -1; font-size: 40px; line-height: 40px; color: #fff; text-wrap: balance; }
-.p1 .hv6__title span { display: block; }
+.p1 .hv6__title .rise__part { display: block; }
 
 .p1 .hv6__stage { position: relative; flex: none; width: 100%; aspect-ratio: 1; margin-top: 16px; }
 .p1 .hv6__box { position: absolute; }
@@ -67,3 +71,61 @@
 
 /* still render mode, scripts/render-hero6.mjs */
 .p1 .h6-still { position: fixed; left: 0; top: 0; z-index: 60; }
+
+/* Phone hero, under 768, after worldquantfoundry's. One screen. The headline in two halves, the first
+ * high on the left and the second low and right aligned, the specimen large behind and between them
+ * with its right end running off the screen, then a hairline, the mono lede and one button. No seam
+ * line, no tags, no BH 001 card. The h1 and the stage share one grid cell, the h1 above. */
+@media (max-width: 767px) {
+  .p1 .hv6__in { display: grid; grid-template-columns: minmax(0, 1fr); grid-template-rows: minmax(0, 1fr) auto; }
+  .p1 .hv6__top { display: flex; grid-area: 1 / 1; position: relative; z-index: 10; padding-bottom: 24px; }
+  .p1 .hv6__title { display: flex; flex-direction: column; justify-content: space-between; width: 100%; font-size: 48px; line-height: 48px; pointer-events: none; }
+  .p1 .hv6__title .rise__part:last-child { align-self: flex-end; text-align: right; }
+  .p1 .hv6__stage { grid-area: 1 / 1; margin-top: 0; aspect-ratio: auto; }
+  .p1 .hv6__bot { grid-area: 2 / 1; margin-top: 0; padding-top: 16px; border-top: 1px solid var(--hair-paper); }
+  .p1 .hv6__card { display: none; }
+}
+
+/* ---- beats 1 to 3, only under data-load run or done and data-idle, set by Hero6 from the LoadClock.
+ * Without motion none of it applies and the hero is its settled state. The tokens are the shared
+ * ones in motion/motion.css. --h6-fz is the time ?t= froze the clock at, paused by --h6-ps, and a
+ * negative animation delay is how a CSS animation is held at that time. */
+
+/* beat 1, the lede and the buttons rise after the headline's last line, --h6-last is its line index */
+@keyframes h6-rise {
+  from { opacity: 0; transform: translateY(16px); }
+  to { opacity: 1; transform: none; }
+}
+.p1 .hv6[data-load='run'] .hv6__lede,
+.p1 .hv6[data-load='run'] .hv__cta {
+  animation: h6-rise var(--m-rise) var(--m-ease) backwards;
+  animation-play-state: var(--h6-ps, running);
+}
+.p1 .hv6[data-load='run'] .hv6__lede { animation-delay: calc(var(--h6-last, 1) * var(--m-step) + 300ms - var(--h6-fz, 0ms)); }
+.p1 .hv6[data-load='run'] .hv__cta { animation-delay: calc(var(--h6-last, 1) * var(--m-step) + 300ms + var(--m-step) - var(--h6-fz, 0ms)); }
+
+/* beat 2 without the scene, one poster on a wide screen with no WebGL wipes in left to right */
+@keyframes h6-poster {
+  from { clip-path: inset(0 100% 0 0); }
+  to { clip-path: inset(0 0 0 0); }
+}
+.p1 .hv6[data-load='run'] .hv6__poster[data-anim='yes'] {
+  animation: h6-poster 1600ms var(--m-ease) backwards;
+  animation-delay: calc(700ms - var(--h6-fz, 0ms));
+  animation-play-state: var(--h6-ps, running);
+}
+
+/* beat 3, the red glow breathes while the hero is on screen and the page is assembled */
+@keyframes h6-breathe {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.7; }
+}
+.p1 .hv6__pin[data-idle='run']::before,
+.p1 .hv6__pin[data-idle='pause']::before,
+.p1 .hv6__pin[data-idle='frozen']::before {
+  animation: h6-breathe 8s ease-in-out infinite;
+  animation-delay: var(--h6-bd, 0ms);
+  will-change: opacity;
+}
+.p1 .hv6__pin[data-idle='pause']::before,
+.p1 .hv6__pin[data-idle='frozen']::before { animation-play-state: paused; }

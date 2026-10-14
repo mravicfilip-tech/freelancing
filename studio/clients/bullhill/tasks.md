@@ -57,7 +57,8 @@ Task format
   - [x] Filip's yes on beat 4
   - [x] Whole site motion story, every section in words, Filip's yes
   - [x] Hero 6 as the default, phone pin 30svh, phone hero tags off
-  - [ ] Outline arrow cell for secondary buttons, MENU without the arrow
+  - [x] Outline arrow cell for secondary buttons, MENU without the arrow
+  - [ ] Notes 2 to 4 of round 5, phone header, red Send the job, phone hero after worldquantfoundry
   - [ ] Phone structure, too dense, briefs/website/round5-notes.md, Filip's yes
   - [ ] Build hero 6 beats 1 to 3
   - [ ] Build the headline rise and the Process beat, Filip's yes

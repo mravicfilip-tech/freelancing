@@ -133,9 +133,11 @@ export const servis = {
 export const servisMap = {
   title: ['Dva servisna centra,', 'cela Srbija.'], // dummy, from Filip's ask
   text: 'Servisna vozila iz Vrčina i Čuruga dolaze do vas, gde god da radi vaš viljuškar.', // dummy, from the trust strip, "sa servisnim vozilima širom Srbije"
+  // each centre with its address and a number to call, Filip 14 October, "the service locations with their address / phone
+  // numbers for contact". Both call the one service line until Čurug has its own.
   bases: [
-    { id: 'vrcin', label: 'Vrčin', line: 'Servisni centar i sedište firme' }, // analysis
-    { id: 'curug', label: 'Čurug', line: 'Servisni centar' }, // dummy, Filip's second location
+    { id: 'vrcin', label: 'Vrčin', line: 'Servisni centar i sedište firme', address: 'Moše Pijade 17b, 11224 Vrčin', phone: hero.service }, // analysis, the contact page
+    { id: 'curug', label: 'Čurug', line: 'Servisni centar', address: 'Ulica i broj, Čurug', phone: hero.service }, // dummy, Filip's second location, its address and number to come from Filip
   ],
   cover: 'Servisna vozila širom Srbije', // trust strip
   cta: servis.cta,

@@ -120,16 +120,22 @@ export function SMPane() {
           {c.cta.label}
         </Btn>
       </div>
-      <ul className="sm-bases blk at-bottom" style={between(1, 3)} data-rule="t">
+      <ul className="sm-bases sm-bases-live blk at-bottom" style={between(1, 3)} data-rule="t">
         {c.bases.map((b, i) => (
           <li key={b.id}>
             <i className="p-dot sm-dot" aria-hidden="true" data-wipe={7 + i} />
-            <b className="lab" data-wipe={7 + i}>
+            <b className="fig" data-wipe={7 + i}>
               {b.label}
             </b>
             <span className="line" data-wipe={8 + i}>
               {b.line}
             </span>
+            <address className="sm-adr">
+              <span data-wipe={9 + i}>{b.address}</span>
+              <a href={b.phone.tel} data-cta="call-service" data-wipe={10 + i}>
+                {b.phone.number}
+              </a>
+            </address>
           </li>
         ))}
       </ul>

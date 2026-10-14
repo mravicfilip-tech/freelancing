@@ -84,6 +84,38 @@
   color: var(--fg);
 }
 
+/* The list in the story, Filip's "the headlines bigger and the service locations with their address / phone numbers for
+   contact". Each centre leads with its name at the 40px figure size of the spec rows, then its role, its address and the
+   number to call, with the point on the centre of the name. The options pages keep the small label. */
+.sm-bases-live li {
+  row-gap: 8px;
+}
+
+.sm-bases-live .sm-dot {
+  top: 52.5px;
+}
+
+.sm-adr {
+  display: grid;
+  justify-items: start;
+  row-gap: 4px;
+  margin-top: 8px;
+  font: 400 18px/24px var(--font);
+  font-style: normal;
+  font-variant-numeric: lining-nums tabular-nums;
+  color: var(--fg2);
+}
+
+.sm-adr a {
+  color: var(--fg);
+  text-decoration: none;
+}
+
+.sm-adr a:hover {
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+
 /* the key of option 2, two swatches at the bottom right of the map */
 .sm-key {
   position: absolute;

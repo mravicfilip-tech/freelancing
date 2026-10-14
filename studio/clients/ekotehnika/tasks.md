@@ -39,6 +39,8 @@ Task format
   - [x] The fork pushes the map page up on its blade instead of crossing the type, Filip's "pushing up this content too"
   - [x] Filip looks at the map in the story on his localhost
   - [x] On production at ekotehnika-hero.vercel.app, Filip's "push to production" on 14 October
+  - [x] Centre names at 40px, each with its address and the service number, Filip's "headlines bigger" and "address / phone numbers"
+  - [ ] Filip sends Čurug's street address and says whether it has its own phone number
 
 - ekotehnika-9 Showcase reel of the website, 9:16 and 16:9, cut to T-Pain "Church". Brief in briefs/reel/brief.md, branch claude/awesome-faraday-lkhnn2-reel, chat session_01KEyRKaeQw5pSTYN96BmUKn
   - [x] Write the brief from Filip's ask and the portfolio reel

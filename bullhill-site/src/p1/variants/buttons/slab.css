@@ -1,0 +1,165 @@
+/* Five versions of the slab and arrow, style 3 of the button picks. ?v=1&btn=3&slab=1..5, and the
+ * lab at ?v=1&lab=slab. Every selector sits under .p1 and carries data-btn='3' plus data-slab, so
+ * it wins over the style 3 rules in buttons.css without !important. Version 1 is style 3 as built
+ * and needs nothing here. Square corners, solid slab, mono uppercase label, an arrow.
+ * Motion runs 150 to 280ms, eased, and none under prefers-reduced-motion, which buttons.css covers
+ * for every .bk and everything inside it. Colours are bull-red, bull-red-dark, black, white and
+ * the grey tokens only. The pair of colours for each ground comes from buttons.css. */
+
+.p1.p1 .bk[data-btn='3'][data-slab] {
+  /* secondary, the slab colour of the ground and the hot colour it turns to */
+  --s-bg: var(--slab);
+  --s-fg: var(--slab-fg);
+  --s-hot: var(--hot);
+  --s-hot-fg: var(--hot-fg);
+}
+.p1.p1 .bk[data-btn='3'][data-slab].bk--fill {
+  /* primary, the bull-red slab on light and dark, black on the red panel */
+  --s-bg: var(--fill-bg);
+  --s-fg: var(--fill-bg-fg);
+  --s-hot: var(--fill-hot);
+  --s-hot-fg: var(--fill-hot-fg);
+}
+/* the screen reader copy of a split label */
+.p1 .bk__sr { position: absolute; margin: 0; padding: 0; overflow: hidden; clip-path: inset(50%); white-space: nowrap; border: 0; }
+
+/* ---------- 2, offset plate ----------
+ * A hard 4px block of bull-red-dark sits behind the slab, down and to the right. Hover moves the
+ * slab 2px onto it and pushes the arrow 4px right. Press moves it the full 4px, flat. The button
+ * box holds slab and plate, so the plate adds 4px to the width and the height. */
+.p1.p1 .bk[data-btn='3'][data-slab='2'] {
+  --plate: var(--bh-red-dark);
+  min-height: calc(var(--bl-h-44) + 4px);
+  padding: 0 4px 4px 0;
+  background: none;
+  color: var(--s-fg);
+  transition: none;
+}
+.p1.p1 .bk[data-btn='3'][data-slab='2'][data-ground='red'] { --plate: var(--bh-red-dark); }
+.p1.p1 .bk[data-btn='3'][data-slab='2'].bk--fill, .p1.p1 .bk[data-btn='3'][data-slab='2'].bk--fill.bk--square { background: none; }
+.p1.p1 .bk[data-btn='3'][data-slab='2'].bk--square { width: 48px; padding: 0 4px 4px 0; }
+.p1.p1 .bk[data-btn='3'][data-slab='2']::before {
+  display: block;
+  inset: 4px 0 0 4px;
+  opacity: 1;
+  background: var(--plate);
+  transition: none;
+}
+.p1.p1 .bk[data-btn='3'][data-slab='2'] .bk__s2 {
+  position: relative;
+  flex: 1 1 auto;
+  align-self: stretch;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 0 16px;
+  background: var(--s-bg);
+  color: var(--s-fg);
+  transition: transform 160ms var(--bk-e);
+}
+.p1.p1 .bk[data-btn='3'][data-slab='2'].bk--fill .bk__s2 { padding: 0 16px 0 24px; }
+.p1.p1 .bk[data-btn='3'][data-slab='2'].bk--square .bk__s2, .p1.p1 .bk[data-btn='3'][data-slab='2'].bk--fill.bk--square .bk__s2 { justify-content: center; padding: 0; }
+.p1.p1 .bk[data-btn='3'][data-slab='2'] .bk__arw { flex: none; transition: transform 200ms var(--bk-e); }
+.p1.p1 .bk[data-btn='3'][data-slab='2']:is(:hover, .is-hover):not(:disabled), .p1.p1 .bk[data-btn='3'][data-slab='2'].bk--fill:is(:hover, .is-hover):not(:disabled) { background: none; color: var(--s-fg); }
+.p1.p1 .bk[data-btn='3'][data-slab='2']:is(:hover, .is-hover):not(:disabled) .bk__s2 { transform: translate(2px, 2px); }
+.p1.p1 .bk[data-btn='3'][data-slab='2']:is(:hover, .is-hover):not(:disabled) .bk__arw { transform: translateX(4px); }
+.p1.p1 .bk[data-btn='3'][data-slab='2']:is(:active, .is-press):not(:disabled) { transform: none; }
+.p1.p1 .bk[data-btn='3'][data-slab='2']:is(:active, .is-press):not(:disabled) .bk__s2 { transform: translate(4px, 4px); }
+.p1.p1 .bk[data-btn='3'][data-slab='2'].is-focus, .p1.p1 .bk[data-btn='3'][data-slab='2']:focus-visible { outline-offset: 2px; }
+
+/* ---------- 3, arrow cell ----------
+ * The arrow sits in its own square cell at the right end, behind a 1px hairline. Hover widens the
+ * cell leftwards from 44 to 56px, turns it to the hot colour and runs the arrow to its far edge.
+ * The label and the slab hold still. The button reserves the room, so nothing around it moves. */
+.p1.p1 .bk[data-btn='3'][data-slab='3'] {
+  justify-content: flex-start;
+  gap: 0;
+  padding: 0 64px 0 16px;
+  background: var(--s-bg);
+  color: var(--s-fg);
+}
+.p1.p1 .bk[data-btn='3'][data-slab='3'].bk--fill { padding: 0 64px 0 24px; background: var(--s-bg); color: var(--s-fg); }
+.p1.p1 .bk[data-btn='3'][data-slab='3'].bk--square, .p1.p1 .bk[data-btn='3'][data-slab='3'].bk--fill.bk--square { padding: 0; justify-content: center; }
+.p1.p1 .bk[data-btn='3'][data-slab='3']:is(:hover, .is-hover):not(:disabled), .p1.p1 .bk[data-btn='3'][data-slab='3'].bk--fill:is(:hover, .is-hover):not(:disabled) { background: var(--s-bg); color: var(--s-fg); }
+/* the icon button has no cell, the whole slab turns */
+.p1.p1 .bk[data-btn='3'][data-slab='3'].bk--square:is(:hover, .is-hover):not(:disabled), .p1.p1 .bk[data-btn='3'][data-slab='3'].bk--fill.bk--square:is(:hover, .is-hover):not(:disabled) { background: var(--s-hot); color: var(--s-hot-fg); }
+.p1.p1 .bk[data-btn='3'][data-slab='3'] .bk__cell3 {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  box-sizing: border-box;
+  width: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-left: 1px solid color-mix(in srgb, currentColor 40%, transparent);
+  background: var(--s-bg);
+  color: var(--s-fg);
+  transition: width 240ms var(--bk-e), background-color 220ms var(--bk-e), color 220ms var(--bk-e);
+}
+.p1.p1 .bk[data-btn='3'][data-slab='3'] .bk__arw { flex: none; transition: transform 240ms var(--bk-e); }
+.p1.p1 .bk[data-btn='3'][data-slab='3']:is(:hover, .is-hover):not(:disabled) .bk__cell3 { width: 56px; background: var(--s-hot); color: var(--s-hot-fg); }
+.p1.p1 .bk[data-btn='3'][data-slab='3']:is(:hover, .is-hover):not(:disabled) .bk__arw { transform: translateX(14px); }
+
+/* ---------- 4, cut line ----------
+ * A 2px rule under the label draws across from the left on hover, like a cut being made, and the
+ * arrow rides along toward its end. The slab colour holds. The rule takes the hot colour. */
+.p1.p1 .bk[data-btn='3'][data-slab='4'] {
+  --s-cut: var(--s-hot);
+  justify-content: flex-start;
+  gap: 8px;
+  padding: 0 12px 8px 16px;
+  background: var(--s-bg);
+  color: var(--s-fg);
+}
+.p1.p1 .bk[data-btn='3'][data-slab='4'].bk--fill { padding: 0 12px 8px 24px; background: var(--s-bg); color: var(--s-fg); }
+.p1.p1 .bk[data-btn='3'][data-slab='4'].bk--square, .p1.p1 .bk[data-btn='3'][data-slab='4'].bk--fill.bk--square { padding: 0 0 8px; justify-content: center; }
+.p1.p1 .bk[data-btn='3'][data-slab='4']:is(:hover, .is-hover):not(:disabled), .p1.p1 .bk[data-btn='3'][data-slab='4'].bk--fill:is(:hover, .is-hover):not(:disabled) { background: var(--s-bg); color: var(--s-fg); }
+.p1.p1 .bk[data-btn='3'][data-slab='4'] .bk__trk { position: relative; flex: 1 1 auto; align-self: center; min-width: 32px; height: 16px; }
+.p1.p1 .bk[data-btn='3'][data-slab='4'] .bk__arw { position: absolute; top: 0; left: 0; transition: left 260ms var(--bk-e); }
+.p1.p1 .bk[data-btn='3'][data-slab='4']:is(:hover, .is-hover):not(:disabled) .bk__arw { left: calc(100% - 16px); }
+.p1.p1 .bk[data-btn='3'][data-slab='4'] .bk__cut {
+  position: absolute;
+  left: 16px;
+  right: 12px;
+  bottom: 10px;
+  height: 2px;
+  background: var(--s-cut);
+  transform: scaleX(0);
+  transform-origin: 0 50%;
+  transition: transform 260ms var(--bk-e);
+}
+.p1.p1 .bk[data-btn='3'][data-slab='4'].bk--fill .bk__cut { left: 24px; }
+.p1.p1 .bk[data-btn='3'][data-slab='4'].bk--square .bk__cut, .p1.p1 .bk[data-btn='3'][data-slab='4'].bk--fill.bk--square .bk__cut { left: 12px; right: 12px; bottom: 8px; }
+.p1.p1 .bk[data-btn='3'][data-slab='4']:is(:hover, .is-hover):not(:disabled) .bk__cut { transform: scaleX(1); }
+
+/* ---------- 5, split flap ----------
+ * On hover the letters of the label flip one by one, left to right, each one a quick turn about
+ * its middle line like a split flap board, 180ms a letter. The stagger shrinks on a long label so
+ * the whole flip stays under 270ms. The slab turns hot and the arrow steps 6px right. The letters
+ * are spans for the motion, the plain label stays in a hidden span for the accessible name. */
+.p1.p1 .bk[data-btn='3'][data-slab='5'] {
+  justify-content: space-between;
+  gap: 16px;
+  padding: 0 16px;
+  background: var(--s-bg);
+  color: var(--s-fg);
+}
+.p1.p1 .bk[data-btn='3'][data-slab='5'].bk--fill { padding: 0 16px 0 24px; background: var(--s-bg); color: var(--s-fg); }
+.p1.p1 .bk[data-btn='3'][data-slab='5'].bk--square, .p1.p1 .bk[data-btn='3'][data-slab='5'].bk--fill.bk--square { padding: 0; justify-content: center; }
+.p1.p1 .bk[data-btn='3'][data-slab='5']:is(:hover, .is-hover):not(:disabled), .p1.p1 .bk[data-btn='3'][data-slab='5'].bk--fill:is(:hover, .is-hover):not(:disabled) { background: var(--s-hot); color: var(--s-hot-fg); }
+.p1.p1 .bk[data-btn='3'][data-slab='5'] .bk__fx { display: inline-flex; }
+.p1.p1 .bk[data-btn='3'][data-slab='5'] .bk__fc { display: inline-block; transform-origin: 50% 50%; }
+.p1.p1 .bk[data-btn='3'][data-slab='5'] .bk__arw { flex: none; transition: transform 200ms var(--bk-e); }
+.p1.p1 .bk[data-btn='3'][data-slab='5']:is(:hover, .is-hover):not(:disabled) .bk__arw { transform: translateX(6px); }
+.p1.p1 .bk[data-btn='3'][data-slab='5']:is(:hover, .is-hover):not(:disabled) .bk__fc {
+  animation: bk-flap 180ms linear calc(var(--i) * min(14ms, 90ms / var(--n))) both;
+}
+@keyframes bk-flap {
+  0% { transform: perspective(160px) rotateX(0); animation-timing-function: cubic-bezier(0.5, 0, 0.9, 0.6); }
+  50% { transform: perspective(160px) rotateX(-90deg); }
+  50.01% { transform: perspective(160px) rotateX(90deg); animation-timing-function: cubic-bezier(0.1, 0.4, 0.5, 1); }
+  100% { transform: perspective(160px) rotateX(0); }
+}

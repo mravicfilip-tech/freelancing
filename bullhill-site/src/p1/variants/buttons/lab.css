@@ -7,7 +7,7 @@
 
 .p1 .blab__panel { padding: 48px 0 24px; }
 .p1 .blab__panel--dark { --hair: var(--hair-paper); --muted: var(--bh-grey-400); background: var(--ink); color: var(--paper); }
-.p1 .blab__panel--light { --hair: var(--hair-ink); --muted: var(--bh-grey-600); background: var(--paper); color: var(--ink); border-radius: 24px 24px 0 0; }
+.p1 .blab__panel--light { --hair: var(--hair-ink); --muted: var(--bh-grey-600); background: var(--paper); color: var(--ink);  }
 .p1 .blab__phead { display: flex; justify-content: space-between; gap: 16px; padding-bottom: 16px; }
 .p1 .blab__ph { font-weight: 400; }
 .p1 .blab__phead p { color: var(--muted); }
@@ -33,3 +33,23 @@
   .p1 .blab__row { grid-template-columns: minmax(0, 3fr) minmax(0, 9fr); gap: 24px; }
   .p1 .blab__states { min-width: 0; }
 }
+
+/* ---------- the slab lab, ?v=1&lab=slab. One numbered section per version, three ground bands ---------- */
+.p1 .slab__v { padding-top: 48px; }
+.p1 .slab__vh { display: grid; grid-template-columns: minmax(0, 1fr); gap: 0; padding-bottom: 32px; }
+.p1 .slab__vh .blab__text { max-width: 640px; margin-top: 16px; color: var(--bh-grey-400); }
+.p1 .slab__vh .blab__n { color: var(--bh-grey-400); }
+.p1 .slab__band { padding: 24px 0 24px; }
+.p1 .slab__band--dark { --hair: var(--hair-paper); --muted: var(--bh-grey-400); background: var(--ink); color: var(--paper); border-top: 1px solid var(--hair-paper); }
+.p1 .slab__band--light { --hair: var(--hair-ink); --muted: var(--bh-grey-600); background: var(--paper); color: var(--ink); }
+.p1 .slab__band--red { --hair: rgba(255, 255, 255, 0.4); --muted: #fff; --bl-focus: 2px solid #fff; background: var(--bh-red); color: #fff; }
+.p1 .slab__bgrid { display: grid; grid-template-columns: minmax(0, 1fr); gap: 16px; align-items: start; }
+.p1 .slab__bid { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 16px 32px; }
+.p1 .slab__bl { margin: 0; }
+.p1 .slab__bn { margin-top: 4px; color: var(--muted); }
+.p1 .slab__live { display: flex; flex-wrap: wrap; align-items: center; gap: 16px; }
+.p1 .slab__band .blab__states td { padding: 12px 8px; }
+.p1 .slab__band .blab__states tbody th { padding: 12px 8px 12px 0; }
+/* the band is wide, so the state table gets the whole grid and the version 3 cell has room */
+.p1 .slab__band .blab__states { min-width: 1000px; }
+.p1 .slab__band .blab__states thead th:first-child { width: 112px; }

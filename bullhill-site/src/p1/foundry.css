@@ -649,10 +649,13 @@
 /* ---------- contact ---------- */
 .p1 .con {
   position: relative;
-  max-width: var(--g-max);
+  /* The box sits on the grid's content edges, the same as the FAQ panel above it, and its content
+   * starts on the FAQ's content line, the panel padding plus the frame hairline plus the frame padding. */
+  width: calc(100% - 2 * var(--pad));
+  max-width: calc(var(--g-max) - 2 * var(--pad));
   margin-inline: auto;
   row-gap: 64px;
-  padding: 96px var(--pad);
+  padding: 96px calc(12px + 1px + 12px);
   border-radius: 0;
   background: var(--paper);
   color: var(--ink);
@@ -707,12 +710,13 @@
 .p1 a.call__v:hover { color: var(--bh-red); }
 
 @media (min-width: 768px) {
+  .p1 .con { padding-inline: calc(24px + 1px + 32px); }
   .p1 .form__grid { grid-template-columns: 1fr 1fr; gap: 24px 32px; }
   .p1 .form__grid .fld:last-child { grid-column: 1 / -1; }
   .p1 .call__num { font-size: 40px; line-height: 40px; }
 }
 @media (min-width: 1200px) {
-  .p1 .con { padding-top: 128px; padding-bottom: 128px; }
+  .p1 .con { padding: 128px calc(24px + 1px + 48px); }
   .p1 .con__left { grid-column: 1 / span 7; }
   .p1 .call { grid-column: 9 / -1; }
   .p1 .con__title { font-size: 56px; line-height: 56px; }

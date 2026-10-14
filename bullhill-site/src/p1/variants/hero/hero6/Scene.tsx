@@ -1,16 +1,21 @@
 // The lazy chunk for hero 6. Imports three.js, react three fiber and the scene, so heroes 1 to 5
 // never load it. One camera, two scenes, drawn with the scissor test. The left half is the
 // schematic, the right the render, split at `seam`, a fraction of the canvas width, 0.5 by default.
-// 0 is all render, 1 is all schematic. Beat 4 drives it from the scroll.
+// 0 is all render, 1 is all schematic. Beat 4 drives it from the scroll. With `drive`, every frame
+// reads p, sets the seam and the dollied camera from it, draws, and then calls onFrame(p), so the
+// HTML seam line and the labels move in the same animation frame as the canvas.
+
+export type Drive = { progress: Progress; onFrame: (p: number) => void };
 
 import { Canvas, useFrame, useThree } from '@react-three/fiber';
-import { useLayoutEffect, useMemo, useRef } from 'react';
+import { useEffect, useLayoutEffect, useMemo, useRef } from 'react';
 import * as THREE from 'three';
-import { CAMS, VIEWS, type View } from './geometry';
+import { CAMS, OVERSCAN, VIEWS, dollyCam, seamAt, smooth, type View } from './geometry';
+import type { Progress } from './progress';
 import { Specimen } from './Render';
 import { buildSchematic } from './Schematic';
 
-function Dual({ view, seam, onReady }: { view: View; seam: number; onReady: () => void }) {
+function Dual({ view, seam, drive, onReady }: { view: View; seam: number; drive?: Drive; onReady: () => void }) {
   const gl = useThree((s) => s.gl);
   const camera = useThree((s) => s.camera) as THREE.PerspectiveCamera;
   const size = useThree((s) => s.size);
@@ -29,10 +34,34 @@ function Dual({ view, seam, onReady }: { view: View; seam: number; onReady: () =
     camera.updateProjectionMatrix();
   }, [camera, cam, size.width, size.height]);
 
+  // a scroll tick asks for one frame, R3F draws it at most once per animation frame
+  useEffect(() => {
+    if (!drive) return;
+    return drive.progress.subscribe(() => invalidate());
+  }, [drive, invalidate]);
+
   useFrame(({ scene }) => {
+    let s = seam;
+    let p = 0;
+    if (drive) {
+      p = drive.progress.sample();
+      const e = smooth(p);
+      const c = dollyCam(view, e);
+      camera.position.set(...c.pos);
+      camera.lookAt(...c.target);
+      camera.updateMatrixWorld();
+      s = seamAt(view, e);
+      // the canvas is the stage plus OVERSCAN above and below, the camera frames the stage inside it
+      const fh = size.height / (1 + 2 * OVERSCAN);
+      const asp = size.width / fh;
+      if (camera.aspect !== asp || !camera.view?.enabled) {
+        camera.aspect = asp;
+        camera.setViewOffset(size.width, fh, 0, -OVERSCAN * fh, size.width, size.height);
+      }
+    }
     const bw = Math.round(size.width * dpr);
     const bh = Math.round(size.height * dpr);
-    const sx = Math.floor(bw * Math.min(1, Math.max(0, seam)));
+    const sx = Math.floor(bw * Math.min(1, Math.max(0, s)));
     const eps = 0.001;
     schem.setResolution(bw, bh);
     gl.setClearColor(0x000000, 0);
@@ -45,6 +74,7 @@ function Dual({ view, seam, onReady }: { view: View; seam: number; onReady: () =
     gl.clear();
     gl.render(scene, camera);
     gl.setScissorTest(false);
+    if (drive) drive.onFrame(p);
     if (!done.current) {
       done.current = true;
       // read one pixel back, so the flag means the frame is really drawn
@@ -59,7 +89,7 @@ function Dual({ view, seam, onReady }: { view: View; seam: number; onReady: () =
   return null;
 }
 
-export default function Scene({ view, still, seam = 0.5, onReady }: { view: View; still?: boolean; seam?: number; onReady: () => void }) {
+export default function Scene({ view, still, seam = 0.5, drive, onReady }: { view: View; still?: boolean; seam?: number; drive?: Drive; onReady: () => void }) {
   const cam = CAMS[view];
   return (
     <Canvas
@@ -75,7 +105,7 @@ export default function Scene({ view, still, seam = 0.5, onReady }: { view: View
       }}
     >
       <Specimen view={view} />
-      <Dual view={view} seam={seam} onReady={onReady} />
+      <Dual view={view} seam={seam} drive={drive} onReady={onReady} />
     </Canvas>
   );
 }

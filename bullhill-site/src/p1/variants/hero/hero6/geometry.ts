@@ -141,3 +141,73 @@ export function camDir(view: View): { c: V3; r: V3 } {
   const c: V3 = [Math.sin(az), 0, Math.cos(az)];
   return { c, r: [Math.cos(az), 0, -Math.sin(az)] };
 }
+
+// ---------- beat 4, the scroll out ----------
+// p runs 0 to 1 across the pin. e is p eased, and drives the seam and the camera together.
+export const clamp01 = (v: number) => Math.min(1, Math.max(0, v));
+export const smooth = (p: number) => {
+  const t = clamp01(p);
+  return t * t * (3 - 2 * t);
+};
+// the seam runs from 0.5 to 0.15 of the stage width, smoothstep on p, the same ends and curve as the phone stills
+export const DOLLY = { closer: 0.12, deg: 4, seam0: 0.5, seam1: 0.15 };
+
+// The camera at ease e. 12 percent closer along the line of sight, 4 degrees round the block towards
+// the near cut end, then trucked and raised until the right end and the foot of the specimen sit
+// where they did, so the duct ends grow in frame and stay clear of the card. The lens is the same.
+// The top of the block rises past the stage, so the canvas has OVERSCAN of the stage height spare
+// above and below it, and the camera renders the stage's own rectangle inside that, so nothing
+// at rest changes.
+export const OVERSCAN = 0.1;
+
+function dollyAt(view: View, e: number, truck: number, ped: number): Cam {
+  const b = CAMS[view];
+  const off = sub(b.pos, b.target);
+  const a = (DOLLY.deg * Math.PI * e) / 180;
+  const k = 1 - DOLLY.closer * e;
+  const o: V3 = [(off[0] * Math.cos(a) + off[2] * Math.sin(a)) * k, off[1] * k, (off[2] * Math.cos(a) - off[0] * Math.sin(a)) * k];
+  const f = norm([-o[0], -o[1], -o[2]]);
+  const r = norm(cross(f, [0, 1, 0]));
+  const u = cross(r, f);
+  const target = madd(madd(b.target, r, truck), u, ped);
+  return { pos: [target[0] + o[0], target[1] + o[1], target[2] + o[2]], target, fov: b.fov };
+}
+
+function extent(cam: Cam, aspect: number) {
+  let x0 = Infinity, x1 = -Infinity, y1 = -Infinity;
+  for (const p of extremes()) {
+    const [fx, fy] = project(cam, aspect, p);
+    x0 = Math.min(x0, fx);
+    x1 = Math.max(x1, fx);
+    y1 = Math.max(y1, fy);
+  }
+  return { x0, x1, y1 };
+}
+
+function solveDolly(view: View) {
+  const v = VIEWS[view];
+  const t = Math.tan((v.fov * Math.PI) / 360);
+  let truck = 0;
+  let ped = 0;
+  for (let i = 0; i < 40; i++) {
+    const cam = dollyAt(view, 1, truck, ped);
+    const d = Math.hypot(...sub(cam.pos, cam.target));
+    const ex = extent(cam, v.aspect);
+    truck += (ex.x1 - v.fit.x1) * 2 * d * t * v.aspect;
+    ped -= (ex.y1 - v.fit.y1) * 2 * d * t;
+  }
+  return { truck, ped };
+}
+
+const SOLVED: Record<View, { truck: number; ped: number }> = { wide: solveDolly('wide'), mid: solveDolly('mid'), tall: solveDolly('tall') };
+
+export function dollyCam(view: View, e: number): Cam {
+  const s = SOLVED[view];
+  return e <= 0 ? CAMS[view] : dollyAt(view, e, s.truck * e, s.ped * e);
+}
+
+// The seam as a fraction of the canvas width, 0 all render, 1 all schematic.
+export function seamAt(view: View, e: number): number {
+  void view;
+  return DOLLY.seam0 + (DOLLY.seam1 - DOLLY.seam0) * e;
+}

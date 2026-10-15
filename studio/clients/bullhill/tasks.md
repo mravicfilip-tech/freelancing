@@ -24,7 +24,8 @@ Task format
 ## Backlog
 
 - bullhill-12 Place the client's new photos where they work best. Note 14 in briefs/website/round6-notes.md
-  - [ ] The photos arrive by mail
+  - [x] The photos arrive by mail, 18 from Dusan, 15 October 15:23, pulled from the Drive links
+  - [ ] Filip's yes on where they go
 ## In progress
 
 - bullhill-10 Whole page scroll silky, a deep dive on frame cost. Baseline 45d40e6, nothing may look different

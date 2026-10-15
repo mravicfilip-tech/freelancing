@@ -25,9 +25,9 @@ Task format
 
 ## In progress
 
-- ovallo-1 Bring the Ovallo landing page into the studio repo. Source https://github.com/tankosic2324-design/ovallo-landing, folder ovallo-landing/, branch claude/exciting-johnson-577zey
+- ovallo-1 Bring the Ovallo landing page into the studio repo. Source https://github.com/tankosic2324-design/ovallo-landing, fork https://github.com/mravicfilip-tech/ovallo-landing at 7a18b5b, folder ovallo-landing/, branch claude/exciting-johnson-577zey
   - [x] Register the client folder
-  - [ ] Get this session read access to the source repo
+  - [x] Get this session read access to the source repo
   - [ ] Copy the code into ovallo-landing/ and confirm it builds
   - [ ] Turn off git deploys for claude/* in its vercel.json
   - [ ] Fill the brand rules in README.md from the code

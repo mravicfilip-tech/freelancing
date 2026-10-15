@@ -53,6 +53,8 @@ so the lesson outlives the context window.
   `claude/*` pushes from building, but changing the link or the protection needs Filip.
 - `deploy.mjs` misses the URL when the CLI prints it after a label such as `Production`, and
   reports a failure. Read the deployment through the API before calling it failed.
+- A deploy can die mid upload with `fetch failed` or `AbortError` when the container's network drops.
+  Production is untouched then. Check the alias through the API and run the same deploy again.
 
 ```json
 { "git": { "deploymentEnabled": { "claude/*": false } } }

@@ -34,9 +34,10 @@ background is built from brand tokens, with a paper coloured grain at 6%.
    bottom, with the dashboard set into it.
 4. Term sheet. The headline across, the plan facts as a list on the left, the dashboard beside them, light rising
    from below behind the screen.
-5. Pair. Centred copy, the dashboard with the phone view in front of its right corner, on the brand board gradient
-   Coco approved on 2026-10-08 (slate top left, ink, lilac bottom right). The phone copy is inert and hidden from
-   screen readers, since it repeats the dashboard.
+5. Brand. Centred copy and the dashboard, on the brand board gradient Coco approved on 2026-10-08 (slate top left,
+   ink, lilac bottom right). Built first as Pair, with the phone view in front of the dashboard. Filip, "Like I told
+   you that we don't use this", so the phone view is out of the hero for good, fork commit `252dd64`. 5 now differs from 1
+   in its background only, which his "five examples for the background only" allows.
 
 ## Checks
 
@@ -51,4 +52,4 @@ background is built from brand tokens, with a paper coloured grain at 6%.
 Variant 2. It is the layout Filip said looks good, now dark, with the screen at full size and the diagonal from black
 to light that his black to white search was after. Variant 1 second, the one he called semi-OK, now with the bigger
 screen and the fade he described. Variant 5 is the closest to another, it shares variant 1's composition and differs
-in the brand colour background and the phone.
+in the brand colour background only.

@@ -115,6 +115,10 @@ Task format
 
 ## Review
 
+- bullhill-13 Phone hero at 60 frames a second, Filip "the animation in the hero on the mobile is moving at 15 fps"
+  - [x] The canvas covers only the part the scrims leave visible, 45 percent of the pixels at 390 by 844, same picture
+  - [x] The pixel ratio steps from 1.5 to 1 while the story plays when frames run under 50 a second, ?h7dbg=1 shows the rate
+  - [ ] Filip reads the rate on his phone with ?h7dbg=1
 - bullhill-10 Whole page scroll silky, a deep dive on frame cost. Baseline 45d40e6, nothing may look different
   - [x] Measure a wheel scroll of the whole page at 1440 and a touch scroll at 390, frame by frame, by section
   - [x] Audit the scroll path, listeners, layers, masks, filters, canvases and per frame work

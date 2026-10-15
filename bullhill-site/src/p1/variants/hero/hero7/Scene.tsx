@@ -38,8 +38,11 @@ const LOST_MS = 2000;
 
 export type Drive = { progress: Progress; clock: LoadClock; onFrame: (p: number) => void };
 export type StillSpec = { view: View; p: number; w: number; h: number; cy?: number };
-// the phone's clear band, the middle of it in pixels from the top of the screen
-export type Frame = { cy: number };
+// the phone's clear band, the middle of it in pixels from the top of the screen. The canvas covers only the part
+// of the screen the scrims leave to be seen, from `top` down, on a screen `full` tall, so the GPU fills about half
+// the pixels it did when the canvas ran under the solid black behind the text. The camera still frames the whole
+// screen and draws its window of it, so the picture is the same.
+export type Frame = { cy: number; top?: number; full?: number };
 
 // the route draws in over this long once the load has begun
 const ROUTE_MS = 1500;
@@ -61,11 +64,21 @@ function Rig({ drive, still, phone, frame, onReady }: { drive?: Drive; still?: S
   const scene = useThree((s) => s.scene);
   const camera = useThree((s) => s.camera) as THREE.PerspectiveCamera;
   const invalidate = useThree((s) => s.invalidate);
+  const setDpr = useThree((s) => s.setDpr);
   const stage = useRef<Stage | null>(null);
   const cam = useMemo(makeCam, []);
   const state = useRef({ drawn: 0, done: false, p: NaN });
   const lensKey = useRef('');
   const rockWake = useRef(0);
+  // the phone's frame watch, see the end of the frame
+  const watch = useRef({ last: 0, gaps: [] as number[], from: 0, frames: 0, t: 0, fps: 0 });
+  const dbg7 = useMemo(() => (phone && !still && new URLSearchParams(window.location.search).get('h7dbg') === '1' ? document.createElement('div') : null), [phone, still]);
+  useEffect(() => {
+    if (!dbg7) return;
+    dbg7.style.cssText = 'position:fixed;left:8px;bottom:8px;z-index:9999;padding:4px 6px;background:#000;color:#0f0;font:12px monospace;pointer-events:none';
+    document.body.appendChild(dbg7);
+    return () => dbg7.remove();
+  }, [dbg7]);
   const cy = frame?.cy;
 
   useLayoutEffect(() => {
@@ -125,11 +138,14 @@ function Rig({ drive, still, phone, frame, onReady }: { drive?: Drive; still?: S
     // frozen for a shot, the rock holds at its phase and no more frames are asked for
     const running = !!clock && clock.idleRun() && clock.frozen === null;
     if (st.update(p, routeX, rock, idleMs)) gl.shadowMap.needsUpdate = true;
-    const aspect = still ? still.w / still.h : fs.size.width / Math.max(1, fs.size.height);
+    // the whole screen's height, of which the phone's canvas is a window from `off` down
+    const fullH = frame?.full ?? fs.size.height;
+    const off = frame?.top ?? 0;
+    const aspect = still ? still.w / still.h : fs.size.width / Math.max(1, fullH);
     camAt(p, cam, still ? still.view : phone ? 'tall' : 'wide', aspect);
     // the phone's lens, from the screen's size and the middle of the clear band
     const tall = still ? still.view === 'tall' : !!phone;
-    const lens = tall ? phoneLens(fs.size.width, fs.size.height, (still ? still.cy : cy) ?? fs.size.height / 2) : null;
+    const lens = tall ? phoneLens(fs.size.width, still ? fs.size.height : fullH, (still ? still.cy : cy) ?? fullH / 2) : null;
     if (lens) cam.fov = lens.fov;
     // DEBUG, development only, `?cam=tx,ty,tz,az,el,dist` frames the shot by eye
     if (import.meta.env.DEV && dbg) {
@@ -151,11 +167,13 @@ function Rig({ drive, still, phone, frame, onReady }: { drive?: Drive; still?: S
     }
     if (lens) {
       // the principal point moved by view offset, the frame is the whole screen, its window shifted
-      const key = `${fs.size.width}|${fs.size.height}|${lens.shift.toFixed(1)}|${lens.fov.toFixed(3)}`;
+      const fh = still ? fs.size.height : fullH;
+      const oy = still ? 0 : off;
+      const key = `${fs.size.width}|${fs.size.height}|${fh}|${oy}|${lens.shift.toFixed(1)}|${lens.fov.toFixed(3)}`;
       if (key !== lensKey.current) {
         lensKey.current = key;
-        camera.aspect = fs.size.width / fs.size.height;
-        camera.setViewOffset(fs.size.width, fs.size.height, 0, -lens.shift, fs.size.width, fs.size.height);
+        camera.aspect = fs.size.width / fh;
+        camera.setViewOffset(fs.size.width, fh, 0, -lens.shift + oy, fs.size.width, fs.size.height);
         camera.updateProjectionMatrix();
       }
     }
@@ -183,6 +201,41 @@ function Rig({ drive, still, phone, frame, onReady }: { drive?: Drive; still?: S
     // the damped p is still gliding or the route is still being drawn, so ask for the next frame. The idle
     // rock alone is a slow sway, so 30 frames a second draw it smoothly and leave the GPU free for the
     // page, where it asked for 60 for as long as the hero sat at the top. A scroll still asks at once.
+    // On a phone the story plays by itself, so a frame that comes late shows as a stutter. While it moves, the
+    // gaps between drawn frames are watched in windows of 0.6s. When the middle gap of a window is over 20ms,
+    // under 50 frames a second, the pixel ratio steps down by a quarter, from 1.5 to 1, so the GPU has less to
+    // fill and the story keeps 60 frames a second. The middle gap, not the mean, so one hitch never steps it.
+    // It never steps back up, so it cannot flicker between the two. Filip, 15 October 2026, "make it move at
+    // 60 fps". `?h7dbg=1` shows the rate and the ratio in a corner.
+    if (phone && !still) {
+      const w = watch.current;
+      const now = performance.now();
+      const moving = s.p !== p && s.drawn > 1;
+      if (moving && w.last) {
+        if (!w.gaps.length) w.from = w.last;
+        w.gaps.push(now - w.last);
+        if (now - w.from >= 600 && w.gaps.length >= 5) {
+          const mid = [...w.gaps].sort((x, y) => x - y)[w.gaps.length >> 1];
+          const d = gl.getPixelRatio();
+          const next = Math.max(1, Math.round((d - 0.25) * 100) / 100);
+          if (mid > 20 && next < d) {
+            setDpr(next);
+            st.setScreen(next);
+          }
+          w.gaps.length = 0;
+        }
+      }
+      w.last = moving ? now : 0;
+      if (dbg7) {
+        w.frames++;
+        if (now - w.t >= 1000) {
+          w.fps = Math.round((w.frames * 1000) / Math.max(1, now - w.t));
+          w.frames = 0;
+          w.t = now;
+          dbg7.textContent = `live ${w.fps} fps, ratio ${gl.getPixelRatio()}`;
+        }
+      }
+    }
     if ((s.p !== p && s.drawn > 1) || (a >= 0 && a < ROUTE_MS + 40)) invalidate();
     else if (running && p < 0.1) {
       window.clearTimeout(rockWake.current);

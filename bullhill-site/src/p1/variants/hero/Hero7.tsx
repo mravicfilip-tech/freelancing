@@ -490,7 +490,9 @@ function PhoneStills({ progress, load, gate }: { progress: Progress; load: boole
 }
 
 // the clear band, in pixels from the top of the screen, from the two blocks. null until measured.
-type Band = { w: number; h: number; top: number; bot: number };
+// top and bot are the middle of each scrim's fade, vt and vb where its solid black ends, so the scene shows
+// only between vt and vb
+type Band = { w: number; h: number; top: number; bot: number; vt: number; vb: number };
 function useBand(pin: React.RefObject<HTMLElement | null>, top: React.RefObject<HTMLElement | null>, foot: React.RefObject<HTMLElement | null>) {
   const [band, setBand] = useState<Band | null>(null);
   useLayoutEffect(() => {
@@ -502,8 +504,15 @@ function useBand(pin: React.RefObject<HTMLElement | null>, top: React.RefObject<
       const fade = parseFloat(getComputedStyle(p).getPropertyValue('--h7p-fade')) || 56;
       const w = p.clientWidth;
       const h = p.clientHeight;
-      const b: Band = { w, h, top: Math.round(t.offsetHeight - fade / 2), bot: Math.round(h - f.offsetHeight + fade / 2) };
-      setBand((o) => (o && o.w === b.w && o.h === b.h && o.top === b.top && o.bot === b.bot ? o : b));
+      const b: Band = {
+        w,
+        h,
+        top: Math.round(t.offsetHeight - fade / 2),
+        bot: Math.round(h - f.offsetHeight + fade / 2),
+        vt: Math.max(0, Math.floor(t.offsetHeight - fade) - 2),
+        vb: Math.min(h, Math.ceil(h - f.offsetHeight + fade) + 2),
+      };
+      setBand((o) => (o && o.w === b.w && o.h === b.h && o.top === b.top && o.bot === b.bot && o.vt === b.vt && o.vb === b.vb ? o : b));
     };
     read();
     const ro = new ResizeObserver(read);
@@ -585,7 +594,7 @@ function Phone({ c, mode, onFail }: { c: Content; mode: 'live' | 'flip' | 'poste
   }, [progress, animate]);
   const onReady = useCallback(() => clock?.begin(), [clock]);
   const drive = useMemo(() => (clock ? { progress, clock, onFrame: label } : null), [progress, clock, label]);
-  const frame = useMemo(() => (band ? { cy: (band.top + band.bot) / 2 } : undefined), [band]);
+  const frame = useMemo(() => (band ? { cy: (band.top + band.bot) / 2, top: band.vt, full: band.h } : undefined), [band]);
   useLoad(section, pin, clock, live, progress, c.lang);
 
   // the flipbook's strip, as wide as the screen, its band on the screen's band
@@ -600,8 +609,8 @@ function Phone({ c, mode, onFail }: { c: Content; mode: 'live' | 'flip' | 'poste
       <div ref={pin} className="hv7p__pin">
         <div className="hv7p__scene" role="img" aria-label={x.figure} aria-describedby="hv7-steps">
           {live ? (
-            mounted && drive && frame ? (
-              <div className="h7live">
+            mounted && drive && frame && band ? (
+              <div className="h7live" style={{ top: band.vt, height: band.vb - band.vt, bottom: 'auto' }}>
                 <LiveBoundary onFail={onFail}>
                   <Suspense fallback={null}>
                     <Scene drive={drive} phone frame={frame} onReady={onReady} onFail={onFail} />

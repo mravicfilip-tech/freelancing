@@ -9,7 +9,7 @@ import { mergeGeometries } from 'three/addons/utils/BufferGeometryUtils.js';
 import { Bag, box, cylY, prism, sq, type V3 } from './geo';
 import { PALETTE } from '../hero6/acts';
 import { rng } from '../hero6/geometry';
-import { D, DUCTS, DUCT_R, DUCT_X0, DUCT_X1, HOUSE, NOTCH, ORANGE, PINS, PIN_Z, PIT, SAND, X_CUT, X_T0, type Pose } from './world';
+import { D, DUCTS, DUCT_R, DUCT_X0, DUCT_X1, HOUSE, ORANGE, PINS, PIN_Z, PIT, SAND, X_CUT, X_T0, type Pose } from './world';
 
 const GREEN = '#37864f';
 const ORANGE_HEX = '#c9531f';
@@ -161,14 +161,12 @@ export function buildStory(dpr: number): StoryRig {
     }
     return keepM(m);
   };
-  const clipDuct = new THREE.Plane(new THREE.Vector3(-1, 0, 0), 99);
   const green = new THREE.Mesh(keep(ductGeometry(false)), ductMat(false));
   const orange = new THREE.Mesh(keep(ductGeometry(true)), ductMat(true));
   for (const m of [green, orange]) {
     m.position.set(DUCT_X0, 0, 0);
     m.frustumCulled = false;
     m.visible = false;
-    (m.material as THREE.Material).clippingPlanes = [clipDuct];
     group.add(m);
   }
 
@@ -357,6 +355,12 @@ export function buildStory(dpr: number): StoryRig {
   collarM.visible = false;
   collarM.receiveShadow = true;
   group.add(collarM);
+  // the cover, lowered on the chamber once the surface is back, a slab on the collar
+  const lidM = new THREE.Mesh(keep(box(pw + 0.3, 0.04, PIT.hw * 2 + 0.3, 0.012, 1)), keepM(new THREE.MeshStandardMaterial({ color: '#5e5e64', roughness: 0.8, metalness: 0.05 })));
+  lidM.position.x = pcx;
+  lidM.visible = false;
+  lidM.receiveShadow = true;
+  group.add(lidM);
 
   // ---- the stakes along the route, a thin pole and a flag, each one pops up as the route is drawn past it
   const pinB = new Bag();
@@ -391,16 +395,16 @@ export function buildStory(dpr: number): StoryRig {
       const ductOn = len > 0.02 && p.fillX > X_T0 - 0.35;
       green.visible = orange.visible = ductOn;
       green.scale.x = orange.scale.x = Math.max(0.001, len);
-      clipDuct.constant = p.notch > 0.001 ? NOTCH.x0 : 99;
       glowU.tip.value = p.tipX;
       glowU.glow.value = p.tipOn > 0 || p.tipX <= DUCT_X1 + 0.01 ? 1 : 0;
       // the sand
       sand.visible = p.sandOn > 0;
       sandU.uSandX.value = p.sandX;
       // the strands and the glows
-      strands.visible = p.strand > 0.001;
+      const open = p.lid < 0.55;
+      strands.visible = p.strand > 0.001 && open;
       strandU.uGrow.value = p.strand;
-      glow.visible = p.tipOn > 0.01 || p.strand > 0.001;
+      glow.visible = (p.tipOn > 0.01 || p.strand > 0.001) && open;
       glowPos[0] = p.tipX;
       glowPos[1] = ORANGE.y;
       glowPos[2] = ORANGE.z;
@@ -427,15 +431,17 @@ export function buildStory(dpr: number): StoryRig {
       (houseGlass.material as THREE.MeshStandardMaterial).emissiveIntensity = p.windows * 2.2;
       // the chamber's collar
       collarM.visible = p.pit > 0.02;
-      collarM.scale.y = 0.2 + 0.8 * p.pit;
+      collarM.scale.y = 0.2 + 0.8 * p.pit * (1 - 0.9 * p.lid);
+      lidM.visible = p.lid > 0.001;
+      lidM.position.y = 0.048 + 0.6 * (1 - p.lid) * (1 - p.lid);
       // the stakes
-      const key = `${routeX.toFixed(3)}|${p.notch.toFixed(3)}`;
+      const key = routeX.toFixed(3);
       if (key !== lastPins) {
         lastPins = key;
         let any = false;
         for (let i = 0; i < PINS.length; i++) {
           const t = Math.min(1, Math.max(0, (PINS[i] + 0.25 - routeX) / 0.7));
-          const s = (t <= 0 ? 0 : outBack(t)) * (PINS[i] > NOTCH.x0 - 0.4 ? 1 - p.notch : 1);
+          const s = t <= 0 ? 0 : outBack(t);
           any = any || s > 0.01;
           _p.set(PINS[i], 0, PIN_Z);
           _s.set(1, Math.max(0.0001, s), 1);

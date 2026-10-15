@@ -4,10 +4,9 @@ import { Bracket } from '../../Bracket';
 import { motionOn } from '../../motion/motion';
 import { Rise } from '../../motion/Rise';
 import { t7 } from './copy-hero7';
-import { clamp01 } from './hero6/geometry';
 import { urlProgress, useProgress, type Progress } from './hero6/progress';
 import { LoadClock, urlFreeze } from './hero6/timeline';
-import { STEPS, labelAt, stepAt, textGone } from './hero7/acts';
+import { FRAMES, frameFades, labelAt, stepAt, textGone } from './hero7/acts';
 import './hero.css';
 import './hero6.css';
 import './hero7.css';
@@ -26,8 +25,8 @@ import './hero7.css';
 // ground and the plan fill the height of the stage. At load the route draws in from the street to the house
 // on the LoadClock of hero 6 (`?t=` freezes it) and the machine idles on its tracks.
 //
-// Phones under 768 never run WebGL. They crossfade five stills of the scene, one per step end, rendered
-// by scripts/render-hero7.mjs from this same scene at a tall framing, with hero 6's phone layout and its
+// Phones under 768 never run WebGL. They flip through 24 stills of the scene, held and crossfaded between
+// neighbours by scroll, rendered by scripts/render-hero7.mjs from this same scene at a tall framing, with hero 6's phone layout and its
 // CSS classes, the headline in two halves, the box between them, the words that stay. Reduced motion and
 // browsers without WebGL get the last frame, the restored route, as a still, wide on a desktop and tall on
 // a phone, with no pin.
@@ -190,7 +189,7 @@ function useStepLabel(stepEl: React.RefObject<HTMLElement | null>, cls: string) 
 
 // ---- still render mode, for scripts/render-hero7.mjs. Only the scene, on a transparent page, at the still's
 // own framing and size. `&p=` is the step state.
-const STILL_SIZE = { wide: [1376, 760], tall: [600, 600] } as const;
+const STILL_SIZE = { wide: [1376, 760], tall: [360, 360] } as const;
 function StillStage({ view, p }: { view: 'wide' | 'tall'; p: number }) {
   const [w, h] = STILL_SIZE[view];
   return (
@@ -351,40 +350,37 @@ const TALL_VIS_LEFT = 0;
 const TALL_VIS_W = 1;
 const TALL_VIS_TOP = 0.16;
 const TALL_VIS_H = 0.68;
-const NAMES = ['s1', 's2', 's3', 's4', 's5'];
+const frameSrc = (i: number) => `/render/hero7-tall-f${String(i).padStart(2, '0')}.webp`;
+const FRAME_PX = 720;
 
-function stepFades(p: number) {
-  // t[i] is how far still i has come in, 0 to 1. Step i spans STEPS[i] to STEPS[i + 1], and the fade
-  // takes its middle 80 percent so each end holds still.
-  const t = NAMES.map((_, i) => {
-    const a = STEPS[i];
-    const b = STEPS[i + 1];
-    // the first still is there from the top, so the box is never empty at the start of the pin
-    const k = i === 0 ? 1 : clamp01((p - a - 0.1 * (b - a)) / (0.8 * (b - a)));
-    return k * k * (3 - 2 * k);
-  });
-  // a still stays under the next until the next is fully in, then it goes
-  return t.map((k, i) => (i + 1 < t.length && t[i + 1] >= 0.999 ? 0 : k));
-}
-
-// the five steps on stills. Within a step the one before fades out under the next, and the opacities are
-// written straight on the images from p, so a scroll never re-renders the hero. A still more than one step
-// from the one coming in has no layer at all, so a phone holds at most three full size stills on the GPU.
+// The flipbook. Each frame is a still of the scene, they hold and crossfade with their neighbour (acts.ts,
+// frameFades), and the opacities are written straight on the images from p, so a scroll never re-renders the
+// hero. A frame more than one from the one on top has display none, so a phone holds at most three of them
+// on the GPU. The first frame comes with the page. The rest are asked for after it has loaded, the nearest to
+// where the scroll is first and then outwards, two at a time, and the ones just ahead are decoded early.
 function PhoneStills({ progress, load }: { progress: Progress; load: boolean }) {
   const box = useRef<HTMLDivElement>(null);
   useEffect(() => {
     const el = box.current;
     if (!el) return;
     const ims = Array.from(el.querySelectorAll<HTMLImageElement>('.h7st__img'));
-    // decoded ahead, so a still is ready before the scroll reaches it
-    ims.forEach((im) => void im.decode?.().catch(() => undefined));
-    const last = ims.map(() => '');
-    const shown = ims.map(() => true);
+    const o: number[] = new Array(FRAMES).fill(0);
+    const last = ims.map((im) => im.style.opacity);
+    const shown = ims.map((im) => im.style.display !== 'none');
+    const wanted = ims.map((im) => !!im.getAttribute('src'));
+    let top = 0;
+    const decode = (i: number) => {
+      const im = ims[i];
+      if (im && wanted[i]) void im.decode?.().catch(() => undefined);
+    };
     const apply = (p: number) => {
-      const o = stepFades(p);
-      const on = o.findIndex((v, i) => v > 0 && (i + 1 >= o.length || o[i + 1] < 0.999));
+      const t = frameFades(p, o);
+      if (t !== top) {
+        top = t;
+        for (let d = -2; d <= 2; d++) decode(top + d);
+      }
       ims.forEach((im, i) => {
-        const keep = o[i] > 0 || Math.abs(i - Math.max(0, on)) <= 1;
+        const keep = o[i] > 0 || Math.abs(i - top) <= 1;
         if (keep !== shown[i]) {
           shown[i] = keep;
           im.style.display = keep ? '' : 'none';
@@ -397,11 +393,44 @@ function PhoneStills({ progress, load }: { progress: Progress; load: boolean }) 
       });
     };
     apply(progress.current());
-    return progress.subscribe(apply);
+    let live = true;
+    let busy = 0;
+    // the nearest frame not yet asked for, ahead of the scroll first
+    const pump = () => {
+      while (live && load && busy < 2) {
+        let pick = -1;
+        for (let d = 0; d < FRAMES && pick < 0; d++) {
+          for (const i of [top + d, top - d]) if (i >= 0 && i < FRAMES && !wanted[i]) { pick = i; break; }
+        }
+        if (pick < 0) return;
+        wanted[pick] = true;
+        busy++;
+        const im = ims[pick];
+        const done = () => {
+          busy--;
+          if (Math.abs(pick - top) <= 2) decode(pick);
+          pump();
+        };
+        im.onload = done;
+        im.onerror = done;
+        im.src = frameSrc(pick);
+      }
+    };
+    pump();
+    const un = progress.subscribe((p) => {
+      apply(p);
+      pump();
+    });
+    return () => {
+      live = false;
+      un();
+    };
   }, [progress, load]);
   return (
     <div ref={box} className="h7st" aria-hidden="true">
-      {load ? NAMES.map((n) => <img key={n} className="h7st__img" src={`/render/hero7-tall-${n}.webp`} width={600} height={600} alt="" decoding="async" fetchPriority="low" draggable={false} />) : null}
+      {Array.from({ length: FRAMES }, (_, i) => (
+        <img key={i} className="h7st__img" src={i === 0 ? frameSrc(0) : undefined} width={FRAME_PX} height={FRAME_PX} alt="" decoding="async" fetchPriority={i === 0 ? 'high' : 'low'} draggable={false} style={{ display: i === 0 ? undefined : 'none' }} />
+      ))}
     </div>
   );
 }
@@ -469,7 +498,7 @@ function Phone({ c, animate }: { c: Content; animate: boolean }) {
                 {animate ? (
                   <PhoneStills progress={progress} load={stillsLoad} />
                 ) : (
-                  <img className="h7st__still" src="/render/hero7-tall-s5.webp" width={600} height={600} alt="" draggable={false} />
+                  <img className="h7st__still" src={frameSrc(FRAMES - 1)} width={FRAME_PX} height={FRAME_PX} alt="" draggable={false} />
                 )}
               </div>
             ) : null}

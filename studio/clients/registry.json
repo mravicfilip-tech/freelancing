@@ -27,6 +27,13 @@
       "previewProjects": [
         "ekotehnika-hero"
       ]
+    },
+    {
+      "id": "ovallo",
+      "repos": [
+        "ovallo-landing"
+      ],
+      "previewProjects": []
     }
   ]
 }

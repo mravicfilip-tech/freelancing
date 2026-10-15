@@ -25,6 +25,17 @@ Task format
 
 ## In progress
 
+- ovallo-4 Clean up the Ovallo design, three directions and a pass on every section. Brief in briefs/clean-up/brief.md, fork branch claude/exciting-johnson-577zey, baseline Ovallo6 at 7a18b5b
+  - [x] Read the client feedback, the Ovallo5 and Ovallo6 briefs and rho.co
+  - [x] Shoot Ovallo6 and rho.co at 1440
+  - [x] Log the planet section rejection
+  - [x] Write three directions, the Why Choose replacement and the section plan
+  - [ ] Filip answers the grill
+  - [ ] Build home in a fresh session
+  - [ ] Filip accepts home
+  - [ ] Fixed Income and Tokenized Bonds from the same parts
+  - [ ] /uireview at 390 and 1440
+
 ## Review
 
 ## Done

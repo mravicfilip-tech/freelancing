@@ -9,6 +9,8 @@
 // stop together. The shadow map is drawn only on a frame where something that casts a shadow moved.
 // Pixel ratio is held to 1.5. In still mode, for the phone's stills and the posters, it draws one frame of
 // the scene at ?p= at the still's own framing, 2 pixels to the pixel, with the ground melting into the page.
+// On a phone that can take it the scene is live in the tall framing the stills were rendered from, a square
+// box, the same ground fade, a shadow map of 1024 and the same pixel ratio of 1 to 1.5.
 
 import { Canvas, useFrame, useThree } from '@react-three/fiber';
 import { useEffect, useLayoutEffect, useMemo, useRef } from 'react';
@@ -43,7 +45,7 @@ const smooth = (t: number) => {
   return k * k * (3 - 2 * k);
 };
 
-function Rig({ drive, still, onReady }: { drive?: Drive; still?: StillSpec; onReady: () => void }) {
+function Rig({ drive, still, phone, onReady }: { drive?: Drive; still?: StillSpec; phone?: boolean; onReady: () => void }) {
   const gl = useThree((s) => s.gl);
   const scene = useThree((s) => s.scene);
   const camera = useThree((s) => s.camera) as THREE.PerspectiveCamera;
@@ -53,7 +55,7 @@ function Rig({ drive, still, onReady }: { drive?: Drive; still?: StillSpec; onRe
   const state = useRef({ drawn: 0, done: false, p: NaN });
 
   useLayoutEffect(() => {
-    const st = buildStage(gl, gl.getPixelRatio());
+    const st = buildStage(gl, gl.getPixelRatio(), phone ? 1024 : 2048);
     stage.current = st;
     // the shoots read the render cost from here, development only
     if (import.meta.env.DEV) (window as unknown as { __h7gl?: THREE.WebGLRenderer }).__h7gl = gl;
@@ -105,7 +107,9 @@ function Rig({ drive, still, onReady }: { drive?: Drive; still?: StillSpec; onRe
     const running = !!clock && clock.idleRun() && clock.frozen === null;
     if (st.update(p, routeX, rock, idleMs)) gl.shadowMap.needsUpdate = true;
     const aspect = still ? still.w / still.h : fs.size.width / Math.max(1, fs.size.height);
-    camAt(p, cam, still ? still.view : 'wide', aspect);
+    camAt(p, cam, still ? still.view : phone ? 'tall' : 'wide', aspect);
+    // the ground melts into the page at the edges of the phone's box, sized to the drawing buffer
+    if (phone) st.ground.setVignette(true, fs.size.width * gl.getPixelRatio(), fs.size.height * gl.getPixelRatio());
     // DEBUG, development only, `?cam=tx,ty,tz,az,el,dist` frames the shot by eye
     if (import.meta.env.DEV && dbg) {
       const [tx, ty, tz, az, el, d] = dbg;
@@ -126,6 +130,24 @@ function Rig({ drive, still, onReady }: { drive?: Drive; still?: StillSpec; onRe
     }
     drive?.onFrame(p);
     const s = state.current;
+    // On the second frame every program is linked, with every part shown and drawn into one pixel, so none of
+    // them stalls the scroll the first time its part appears, the strands, the sand, the house, the stubs. The
+    // shadow map is drawn again for the real frame.
+    if (s.drawn === 1) {
+      const hidden: THREE.Object3D[] = [];
+      st.group.traverse((o) => {
+        if (!o.visible) {
+          hidden.push(o);
+          o.visible = true;
+        }
+      });
+      const vp = gl.getViewport(new THREE.Vector4());
+      gl.setViewport(0, 0, 1, 1);
+      gl.render(scene, camera);
+      gl.setViewport(vp);
+      hidden.forEach((o) => (o.visible = false));
+      gl.shadowMap.needsUpdate = true;
+    }
     s.drawn++;
     // the damped p is still gliding, the route is still being drawn or the house is still idling, so ask for the next frame
     if ((s.p !== p && s.drawn > 1) || (a >= 0 && a < ROUTE_MS + 40) || (running && p < 0.1)) invalidate();
@@ -147,7 +169,7 @@ function Rig({ drive, still, onReady }: { drive?: Drive; still?: StillSpec; onRe
   return null;
 }
 
-export default function Scene({ drive, still, onReady }: { drive?: Drive; still?: StillSpec; onReady: () => void }) {
+export default function Scene({ drive, still, phone, onReady }: { drive?: Drive; still?: StillSpec; phone?: boolean; onReady: () => void }) {
   return (
     <Canvas
       frameloop="demand"
@@ -167,7 +189,7 @@ export default function Scene({ drive, still, onReady }: { drive?: Drive; still?
         gl.shadowMap.needsUpdate = true;
       }}
     >
-      <Rig drive={drive} still={still} onReady={onReady} />
+      <Rig drive={drive} still={still} phone={phone} onReady={onReady} />
     </Canvas>
   );
 }

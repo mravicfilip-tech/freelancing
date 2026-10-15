@@ -49,6 +49,9 @@
  * section is never covered once the panel has landed. */
 .p1[data-motion='on'] .eth {
   transform: translateY(calc((1 - var(--sv, 1)) * 96px));
+  /* an anchor jump reads the box with the ride up still in it, so the margin takes it back out and
+   * the panel lands under the header, the 88px of base.css, wherever the jump starts */
+  scroll-margin-top: calc(88px + (1 - var(--sv, 1)) * 96px);
 }
 .p1[data-motion='on'] .eth::before {
   content: '';

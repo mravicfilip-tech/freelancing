@@ -109,4 +109,10 @@ Task format
 
 ## Review
 
+- bullhill-4 Phone menu locks the page, Services link lands under the header
+  - [x] Measure both before, the menu let the page move 300px, Services landed at minus 8px from the top
+  - [x] Radix overlay for the menu lock, a scroll margin on Services that takes its ride up back out
+  - [x] Every nav link lands at 88px at 390 and 1440, native and Lenis, the menu holds the page
+  - [ ] Filip feels it on his localhost
+
 ## Done

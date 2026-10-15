@@ -51,6 +51,8 @@ export function Header({ c, setLang, root }: { c: Content; setLang: (l: Lang) =>
               </Bracket>
             </Dialog.Trigger>
             <Dialog.Portal container={root}>
+              {/* the overlay carries Radix's scroll lock, so the page stays put under the open menu */}
+              <Dialog.Overlay className="menu__scrim" />
               <Dialog.Content className="menu" aria-describedby={undefined}>
                 <Dialog.Title className="sr-only">{c.ui.menu}</Dialog.Title>
                 <div className="menu__top">

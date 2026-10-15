@@ -27,8 +27,9 @@ export function useSmoothScroll() {
       lerp: 0.09,
       anchors: true,
       allowNestedScroll: true,
-      // only mouse wheels are smoothed, a trackpad's own events pass to the browser untouched
-      virtualScroll: ({ event }) => !(event instanceof WheelEvent) || isMouseWheel(event),
+      // only mouse wheels are smoothed, a trackpad's own events pass to the browser untouched. A wheel
+      // the open menu's scroll lock already stopped is left alone, so the page stays put under it.
+      virtualScroll: ({ event }) => !event.defaultPrevented && (!(event instanceof WheelEvent) || isMouseWheel(event)),
     });
     return () => lenis.destroy();
   }, []);

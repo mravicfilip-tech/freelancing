@@ -1,4 +1,5 @@
-import { Suspense, lazy, useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
+import { Component, Suspense, lazy, useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
+import type { ReactNode } from 'react';
 import type { Content } from '../../../shared/content';
 import { Bracket } from '../../Bracket';
 import { motionOn } from '../../motion/motion';
@@ -225,18 +226,36 @@ function phoneLiveOk(motion: boolean) {
   }
 }
 
+// The live scene is never left blank. A WebGL context that cannot be made, or is lost and not back in about
+// 2s, drops a phone to the flipbook and a desktop or a tablet to the poster. `?glfail=1` and `?glfail=lost`
+// force each failure.
+class LiveBoundary extends Component<{ onFail: () => void; children: ReactNode }, { failed: boolean }> {
+  state = { failed: false };
+  static getDerivedStateFromError() {
+    return { failed: true };
+  }
+  componentDidCatch() {
+    this.props.onFail();
+  }
+  render() {
+    return this.state.failed ? null : this.props.children;
+  }
+}
+
 function Specimen({ c }: { c: Content }) {
   const desk = useMedia('(min-width: 768px)');
   const [gl] = useState(hasWebgl);
   const [motion] = useState(motionOn);
   const [liveOk] = useState(() => phoneLiveOk(motion));
-  if (desk && gl && motion) return <Live c={c} />;
-  if (!desk) return <Phone c={c} mode={!motion ? 'poster' : liveOk ? 'live' : 'flip'} />;
+  const [failed, setFailed] = useState(false);
+  const fail = useCallback(() => setFailed(true), []);
+  if (desk && gl && motion && !failed) return <Live c={c} onFail={fail} />;
+  if (!desk) return <Phone c={c} mode={!motion ? 'poster' : liveOk && !failed ? 'live' : 'flip'} onFail={fail} />;
   return <Poster c={c} />;
 }
 
 // ---- the live hero, 768 and up
-function Live({ c }: { c: Content }) {
+function Live({ c, onFail }: { c: Content; onFail: () => void }) {
   const x = t7(c);
   const section = useRef<HTMLElement>(null);
   const pin = useRef<HTMLDivElement>(null);
@@ -278,9 +297,11 @@ function Live({ c }: { c: Content }) {
           <div className="hv7__stage" role="img" aria-label={x.figure}>
             {mounted ? (
               <div className="hv7__canvas">
-                <Suspense fallback={null}>
-                  <Scene drive={drive} onReady={onReady} />
-                </Suspense>
+                <LiveBoundary onFail={onFail}>
+                  <Suspense fallback={null}>
+                    <Scene drive={drive} onReady={onReady} onFail={onFail} />
+                  </Suspense>
+                </LiveBoundary>
               </div>
             ) : null}
             <div ref={stepEl} className="hv7__step" aria-hidden="true">
@@ -453,7 +474,7 @@ function PhoneStills({ progress, load }: { progress: Progress; load: boolean }) 
   );
 }
 
-function Phone({ c, mode }: { c: Content; mode: 'live' | 'flip' | 'poster' }) {
+function Phone({ c, mode, onFail }: { c: Content; mode: 'live' | 'flip' | 'poster'; onFail: () => void }) {
   const x = t7(c);
   const animate = mode !== 'poster';
   const live = mode === 'live';
@@ -523,9 +544,11 @@ function Phone({ c, mode }: { c: Content; mode: 'live' | 'flip' | 'poster' }) {
                 {live ? (
                   mounted && drive ? (
                     <div className="h7live">
-                      <Suspense fallback={null}>
-                        <Scene drive={drive} phone onReady={onReady} />
-                      </Suspense>
+                      <LiveBoundary onFail={onFail}>
+                        <Suspense fallback={null}>
+                          <Scene drive={drive} phone onReady={onReady} onFail={onFail} />
+                        </Suspense>
+                      </LiveBoundary>
                     </div>
                   ) : null
                 ) : animate ? (

@@ -28,6 +28,11 @@ const dbg = import.meta.env.DEV
     })()
   : null;
 
+// `?glfail=1` makes context creation throw and `?glfail=lost` loses the context after a moment, to test the fallback
+const glfail = new URLSearchParams(window.location.search).get('glfail');
+// how long a lost context may take to come back before the hero gives up on it
+const LOST_MS = 2000;
+
 export type Drive = { progress: Progress; clock: LoadClock; onFrame: (p: number) => void };
 export type StillSpec = { view: View; p: number; w: number; h: number };
 
@@ -169,14 +174,37 @@ function Rig({ drive, still, phone, onReady }: { drive?: Drive; still?: StillSpe
   return null;
 }
 
-export default function Scene({ drive, still, phone, onReady }: { drive?: Drive; still?: StillSpec; phone?: boolean; onReady: () => void }) {
+export default function Scene({ drive, still, phone, onReady, onFail }: { drive?: Drive; still?: StillSpec; phone?: boolean; onReady: () => void; onFail?: () => void }) {
+  // a context that cannot be made, or is lost and does not come back in LOST_MS, hands the hero to its fallback
+  const fail = useRef(onFail);
+  fail.current = onFail;
+  const lost = useRef(0);
+  useEffect(() => () => window.clearTimeout(lost.current), []);
   return (
     <Canvas
       frameloop="demand"
       dpr={still ? [2, 2] : [1, 1.5]}
       camera={{ position: [-10, 4, 8], fov: CAM.fov, near: 0.5, far: 320 }}
-      gl={{ antialias: true, alpha: true, powerPreference: 'high-performance' }}
+      gl={(d) => {
+        const give = () => fail.current?.();
+        d.canvas.addEventListener('webglcontextcreationerror', give, { once: true });
+        try {
+          if (glfail === '1') throw new Error('glfail');
+          return new THREE.WebGLRenderer({ ...d, antialias: true, alpha: true, powerPreference: 'high-performance' });
+        } catch (e) {
+          give();
+          throw e;
+        }
+      }}
       onCreated={({ gl }) => {
+        const cv = gl.domElement;
+        cv.addEventListener('webglcontextlost', (e) => {
+          e.preventDefault();
+          window.clearTimeout(lost.current);
+          lost.current = window.setTimeout(() => fail.current?.(), LOST_MS);
+        });
+        cv.addEventListener('webglcontextrestored', () => window.clearTimeout(lost.current));
+        if (glfail === 'lost') window.setTimeout(() => gl.getContext().getExtension('WEBGL_lose_context')?.loseContext(), 1500);
         gl.toneMapping = THREE.ACESFilmicToneMapping;
         gl.toneMappingExposure = 1;
         gl.setClearColor(0x000000, 0);

@@ -23,6 +23,10 @@ Task format
 
 ## Backlog
 
+- bullhill-7 No own machines anywhere on the site, crew section and numbers block first. Notes 3 and 4 in briefs/website/round6-notes.md
+  - [x] Notes queued, every own machines line listed
+  - [ ] The client's exact figures, kilometres and the rest
+  - [ ] Filip says build
 - bullhill-6 Blur the company sign in the Business park photo. Note 2 in briefs/website/round6-notes.md
   - [x] Note queued
   - [ ] Filip says build

@@ -1,23 +1,24 @@
 // Renders the hero 7 stills from the same scene the page draws, headless Chromium on SwiftShader, at 2x,
-// saved as WebP in public/render/, the ground fading to the page's black at its edges. The tall stills are the phone's, one at the end
-// of each of the five steps, hero7-tall-s1.webp to s5, crossfaded by scroll. The last of them, the restored
-// route, is also the phone's poster for reduced motion and browsers without WebGL. The wide still,
-// hero7-wide.webp, is the same last frame at the desktop framing, the poster for reduced motion and browsers
-// without WebGL on a desktop and a tablet.
+// saved as WebP in public/render/, the ground fading to the page's black at its edges. The phone's flipbook
+// is 24 tall frames, hero7-tall-f00.webp to f23, at the p of FRAME_P in src/p1/variants/hero/hero7/acts.ts,
+// which this script reads from there. Each is a 360 by 360 scene at 2x, 720 pixels, the size of the box on a
+// 390 phone at 2x, and held to 45KB. The last of them, the restored route, is also the phone's poster for
+// reduced motion and browsers without WebGL. The wide still, hero7-wide.webp, is the same last frame at the
+// desktop framing, the poster for reduced motion and browsers without WebGL on a desktop and a tablet.
 //
 //   npx vite --port 5197 --strictPort &
-//   node scripts/render-hero7.mjs [--url http://localhost:5197] [--only s1,s2,s3,s4,s5,wide] [--wait 12000] [--out dir]
+//   node scripts/render-hero7.mjs [--url http://localhost:5197] [--only f00,f05,wide] [--wait 12000] [--out dir]
 //
 // The scene is reached through ?v=1&hero=7&still=tall|wide&p=, which draws only the scene at the still's
 // nominal size (STILL_SIZE in src/p1/variants/hero/Hero7.tsx) with the ground melting into the page at its
 // edges. Software WebGL needs 9 to 15 seconds per frame, so the script waits for the scene's ready flag and
-// then --wait more. Each still is held to 90KB for the phone's and 200KB for the wide one, the script steps
-// the WebP quality down until it fits, encoding with Pillow (python3). The stills are opaque, an alpha edge
-// came out noisy and banded, and the page behind them is black. STEP_P is the p of each still, the end of its step.
+// then --wait more. Each still is held to its byte budget by stepping the WebP quality down until it fits,
+// encoding with Pillow (python3). The stills are opaque, an alpha edge came out noisy and banded, and the
+// page behind them is black.
 //
 // Paths for the two tools can be set with PUPPETEER_CORE and CHROME_PATH.
 
-import { mkdirSync, readdirSync, existsSync, writeFileSync } from 'node:fs';
+import { mkdirSync, readdirSync, existsSync, writeFileSync, readFileSync } from 'node:fs';
 import { execFileSync } from 'node:child_process';
 import { dirname, join } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
@@ -28,19 +29,16 @@ const arg = (name, fallback) => {
   return i > -1 ? process.argv[i + 1] : fallback;
 };
 const base = arg('url', 'http://localhost:5197');
-const only = arg('only', 's1,s2,s3,s4,s5,wide').split(',');
 const wait = Number(arg('wait', '12000'));
 const out = arg('out', join(here, '..', 'public', 'render'));
-// the end of each step, 0.15, 0.45, 0.6, 0.75 and 1, and the final frame again for the wide poster
-const JOBS = {
-  s1: { view: 'tall', p: 0.15, size: [600, 600], max: 90000 },
-  s2: { view: 'tall', p: 0.45, size: [600, 600], max: 90000 },
-  s3: { view: 'tall', p: 0.6, size: [600, 600], max: 90000 },
-  s4: { view: 'tall', p: 0.75, size: [600, 600], max: 90000 },
-  s5: { view: 'tall', p: 1, size: [600, 600], max: 90000 },
-  wide: { view: 'wide', p: 1, size: [1376, 760], max: 200000 },
-};
-const QUALITY = [88, 84, 80, 76, 72, 68, 64, 60, 56, 52, 48, 44].map((q) => [q, 0]);
+const acts = readFileSync(join(here, '..', 'src', 'p1', 'variants', 'hero', 'hero7', 'acts.ts'), 'utf8');
+const FRAME_P = JSON.parse(acts.match(/export const FRAME_P = (\[[^\]]*\])/)[1]);
+const JOBS = { wide: { view: 'wide', p: 1, size: [1376, 760], max: 200000 } };
+FRAME_P.forEach((p, i) => {
+  JOBS[`f${String(i).padStart(2, '0')}`] = { view: 'tall', p, size: [360, 360], max: 45000 };
+});
+const only = arg('only', Object.keys(JOBS).join(',')).split(',');
+const QUALITY = [90, 86, 82, 78, 74, 70, 66, 62, 58, 54, 50, 46, 42, 38, 34].map((q) => [q, 0]);
 const PY = 'import sys, io\nfrom PIL import Image\nim = Image.open(io.BytesIO(sys.stdin.buffer.read())).convert("RGB")\nb = io.BytesIO()\nim.save(b, "WEBP", quality=int(sys.argv[1]), method=6)\nsys.stdout.buffer.write(b.getvalue())';
 const encode = (png, q, aq) => execFileSync('python3', ['-I', '-c', PY, String(q), String(aq)], { input: png, maxBuffer: 1 << 26 });
 

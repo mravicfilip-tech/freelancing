@@ -23,6 +23,8 @@
  * tenth of the story and a good deal more for the dig */
 .p1 .hv7__run { height: 300svh; }
 .p1 .hv7--still .hv7__run { display: none; }
+/* on phones the flipbook is pinned for 200svh */
+.p1 .hv7p .hv6__run { height: 200svh; }
 /* headline, lede and buttons move up and fade out in the last part of step 5, --h7-t runs 0 to 1 */
 .p1 .hv7 .hv7__top,
 .p1 .hv7 .hv7__side { opacity: calc(1 - var(--h7-t, 0)); transform: translateY(calc(var(--h7-t, 0) * -32px)); will-change: opacity, transform; }

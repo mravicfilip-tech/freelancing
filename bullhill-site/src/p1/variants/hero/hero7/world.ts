@@ -134,11 +134,10 @@ export const DUCTS: DuctSpec[] = [
   { y: DUCT_TOP, z: -DUCT_S / 2, orange: false },
   { y: DUCT_TOP, z: DUCT_S / 2, orange: true },
 ];
-export const DUCT_X0 = X_CUT - 0.4; // where the ducts come in from the street
+export const EDGE = { x: ROUTE_X0, depth: 2.0 }; // the front edge of the slab at the street end, a clean cut
+export const DUCT_X0 = EDGE.x - 0.03; // where the ducts come in from the street, through the front edge
 export const DUCT_X1 = PIT.x0 + 0.7; // and where they end, open, in the chamber
 export const ORANGE = DUCTS[4];
-// the cut away, at the street end, the ground is lowered and the face it leaves shows the courses
-export const NOTCH = { x0: 10.0, x1: 12.8, hz: 2.0, depth: 1.6 };
 
 // ---- the backfill, the dig turned round. The machine drives forward, draws a mound in and dumps it in
 // the trench, five cycles, and the trench fills behind the bucket from the street end to the house.
@@ -167,7 +166,9 @@ export const WIN = {
   pre: [0.735, 0.76],
   post: [0.91, 0.95],
   restore: [0.9, 0.965],
-  notch: [0.925, 0.985],
+  cut: [0.9, 0.935],
+  lid: [0.93, 0.965],
+  notch: [0.935, 0.985],
   windows: [0.94, 0.99],
 } as const;
 const win = (p: number, w: readonly [number, number]) => smooth(clamp01((p - w[0]) / (w[1] - w[0])));
@@ -202,14 +203,15 @@ export type Pose = {
   windows: number; // the windows are lit, 0 to 1
   fillX: number; // the trench is filled at and beyond this x
   restore: number; // the surface is finished, 0 to 1
-  notch: number; // the cut away is open, 0 to 1
+  notch: number; // the ground beyond the front edge has sunk away and the cut face shows, 0 to 1
+  lid: number; // the cover is lowered on the chamber, 0 to 1
 };
 
 export function makePose(): Pose {
   return {
     k: 0, u: 0, xm: XM0, xf: X_T0, seam: XM0 + SEAM_BEHIND, tip: [0, 0, 0], psi: 0, boom: 0, stick: 0, bucket: 0,
     dump: new Array(CYCLES).fill(0), heap: new Array(CYCLES).fill(0), carry: 0, fall: 0, ex: 0, ey: 0, wx: 0, wy: 0,
-    sandX: 14, sandOn: 0, ductX: DUCT_X0, tipX: DUCT_X0 + 1, tipOn: 0, strand: 0, houseX: HOUSE.x1 + 0.1, pit: 0, windows: 0, fillX: X_CUT + 0.45, restore: 0, notch: 0,
+    sandX: 14, sandOn: 0, ductX: DUCT_X0, tipX: DUCT_X0 + 1, tipOn: 0, strand: 0, houseX: HOUSE.x1 + 0.1, pit: 0, windows: 0, fillX: X_CUT + 0.45, restore: 0, notch: 0, lid: 0,
   };
 }
 
@@ -316,6 +318,8 @@ export function solve(p: number, out: Pose): Pose {
   else out.xm = XM0;
   // the seam rides the machine in the dig and holds where it stopped, so the render keeps the ground
   out.seam = (digging ? out.xm : XM_END) + SEAM_BEHIND;
+  // at the end the render draws back to the front edge, so the slab ends in a clean face
+  out.seam += (EDGE.x + 0.003 - out.seam) * win(p, WIN.cut);
 
   // the trench front, the cut so far. The first plunge opens the start of the trench under the bucket.
   if (k >= CYCLES) out.xf = X_CUT;
@@ -415,6 +419,7 @@ export function solve(p: number, out: Pose): Pose {
   out.strand = win(p, WIN.strand);
   out.houseX = lerp(HOUSE.x1 + 0.1, HOUSE.x0 - 0.2, win(p, WIN.house));
   out.pit = win(p, WIN.pit);
+  out.lid = win(p, WIN.lid);
   out.windows = win(p, WIN.windows);
   out.restore = win(p, WIN.restore);
   out.notch = win(p, WIN.notch);
@@ -445,13 +450,13 @@ const KEYS_A: Key[] = [
 ];
 const KEYS_B: Key[] = [
   DIG1,
-  [0.53, 9.6, 0.1, -0.2, 78, 36, 24],
-  [0.6, 8.0, 0, -0.1, 78, 41, 22.5],
-  [0.655, 4.0, 0.1, -0.1, 80, 40, 21.5],
-  [0.705, 0.2, 0.5, -0.2, 84, 36, 23],
-  [0.785, 7.5, 0.5, -0.3, 92, 30, 30],
-  [0.9, 6.0, 0.4, -0.3, 100, 29, 31],
-  [1, 6.2, 1.0, -0.4, 122, 28, 27],
+  [0.5, 12.2, 0.85, -0.25, 79.5, 27, 25.3],
+  [0.6, 8.6, 0, -0.1, 78, 40, 24],
+  [0.7, 5.0, 0.2, -0.1, 80, 39, 24],
+  [0.76, 3.4, 0.4, -0.15, 84, 36, 25],
+  [0.84, 5.2, 0.5, -0.2, 96, 31, 28.5],
+  [0.92, 7.0, 0.5, -0.1, 120, 26, 29],
+  [1, 8.0, 1.2, 0.3, 144, 21, 28],
 ];
 // the phone's framing, a tall box with the machine and the route big in the middle of it, at the end of
 // each step. Between the keys the same cubic.
@@ -460,8 +465,12 @@ const KEYS_TALL: Key[] = [
   [0.15, 5.0, 0.8, -0.4, 52, 21, 24],
   [0.45, 11.5, 0.8, -0.4, 52, 21, 22],
   [0.6, 9.2, 0, 0.4, 62, 40, 25],
-  [0.75, 2.5, 0.3, 0, 66, 34, 24],
-  [1, 2.6, 0.2, -0.5, 112, 30, 27],
+  [0.68, 5.8, 0.2, 0.2, 64, 38, 24],
+  [0.75, 3.4, 0.3, 0, 66, 34, 24],
+  [0.8, 8.0, 0.4, 0, 68, 33, 27],
+  [0.86, 8.6, 0.4, 0, 80, 30, 28],
+  [0.91, 7.2, 0.8, 0, 106, 26, 29],
+  [1, 7, 1.5, 0, 150, 20, 29],
 ];
 
 // tangents, zero at the two ends of a run and the slope across the neighbours between

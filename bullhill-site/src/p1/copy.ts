@@ -45,6 +45,13 @@ export const WORK_FOCAL: Record<PhotoId, string> = {
   'restored-lane': '50% 62%',
   'restored-manhole': '46% 60%',
   'restored-wall': '40% 56%',
+  'ducts-trench': '40% 55%',
+  'crew-dusk': '55% 58%',
+  'road-crew': '42% 55%',
+  'restored-path': '45% 62%',
+  'restored-fence': '45% 62%',
+  'dumper-dusk': '45% 62%',
+  'site-setup': '45% 60%',
 };
 export const PROJECT_FOCAL: Partial<Record<PhotoId, string>> = {
   'route-trench-village': '50% 36%',

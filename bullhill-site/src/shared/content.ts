@@ -168,13 +168,20 @@ const en: Content = {
     lede: 'Photos from our own routes. Ducts in the ground, surfaces put back.',
     count: 'photos',
     items: [
+      // in the order of a job, the trench and the ducts, the crew at work, the surface put back
       { photo: 'route-trench-village', caption: 'Ducts in the trench along a village road' },
+      { photo: 'ducts-trench', caption: 'Duct bundle on the bed of a deep trench' },
       { photo: 'ducts-fence', caption: 'Duct bundle laid along a garden fence' },
       { photo: 'ducts-soil', caption: 'Green and orange ducts on the trench bed' },
+      { photo: 'crew-dusk', caption: 'The crew at work along the verge at dusk' },
       { photo: 'excavator-street', caption: 'Mini excavator on a street section' },
+      { photo: 'road-crew', caption: 'Excavator and dumper behind the barriers' },
       { photo: 'restored-lane', caption: 'Crossing closed and resurfaced' },
+      { photo: 'restored-path', caption: 'Path restored along the village road' },
       { photo: 'restored-manhole', caption: 'Pavement restored around a manhole' },
+      { photo: 'restored-fence', caption: 'Verge restored along a garden fence' },
       { photo: 'restored-wall', caption: 'Restored strip along the kerb' },
+      { photo: 'dumper-dusk', caption: 'The last load of the day at dusk' },
     ],
   },
   ethos: {
@@ -227,7 +234,7 @@ const en: Content = {
     title: 'We dig now. The fibre comes later.',
     lede: 'A fibre route is a set of empty ducts in the ground. Once the trench is closed, the fibre is blown through them, by our crew or by the operator.',
     steps: [
-      { n: '01', title: 'Survey and marking', body: 'We walk the route and mark the existing lines and the trench line before a machine moves.' },
+      { n: '01', title: 'Survey and marking', photo: 'site-setup', body: 'We walk the route and mark the existing lines and the trench line before a machine moves.' },
       { n: '02', title: 'Dig', photo: 'excavator-street', body: 'Excavators open the trench to plan depth, section by section, with the street kept passable.' },
       { n: '03', title: 'Lay ducts', photo: 'ducts-soil', body: 'Ducts go onto a sand bed, chambers are set, warning tape goes in above.' },
       { n: '04', title: 'Backfill and restore', photo: 'restored-manhole', body: 'We compact the trench and put the surface back. The route is ready for cable.' },
@@ -396,12 +403,18 @@ const de: Content = {
     count: 'Fotos',
     items: [
       { photo: 'route-trench-village', caption: 'Rohre im Graben entlang einer Ortsstraße' },
+      { photo: 'ducts-trench', caption: 'Rohrverband auf der Sohle eines tiefen Grabens' },
       { photo: 'ducts-fence', caption: 'Rohrverband entlang eines Gartenzauns' },
       { photo: 'ducts-soil', caption: 'Grüne und orange Rohre auf der Grabensohle' },
+      { photo: 'crew-dusk', caption: 'Die Mannschaft am Bankett in der Abenddämmerung' },
       { photo: 'excavator-street', caption: 'Minibagger auf einem Straßenabschnitt' },
+      { photo: 'road-crew', caption: 'Bagger und Dumper hinter den Absperrungen' },
       { photo: 'restored-lane', caption: 'Querung geschlossen und neu befestigt' },
+      { photo: 'restored-path', caption: 'Gehweg entlang der Ortsstraße wiederhergestellt' },
       { photo: 'restored-manhole', caption: 'Gehweg rund um einen Schacht wiederhergestellt' },
+      { photo: 'restored-fence', caption: 'Bankett entlang eines Gartenzauns wiederhergestellt' },
       { photo: 'restored-wall', caption: 'Wiederhergestellter Streifen entlang der Bordsteinkante' },
+      { photo: 'dumper-dusk', caption: 'Die letzte Fuhre des Tages in der Abenddämmerung' },
     ],
   },
   ethos: {
@@ -426,7 +439,7 @@ const de: Content = {
     title: 'Wir graben jetzt. Die Glasfaser kommt später.',
     lede: 'Eine Glasfasertrasse ist ein Bündel leerer Rohre im Boden. Sobald der Graben zu ist, wird die Glasfaser eingeblasen, von unserem Team oder vom Netzbetreiber.',
     steps: [
-      { n: '01', title: 'Begehung und Markierung', body: 'Wir gehen die Trasse ab und markieren bestehende Leitungen und die Grabenlinie, bevor eine Maschine anrollt.' },
+      { n: '01', title: 'Begehung und Markierung', photo: 'site-setup', body: 'Wir gehen die Trasse ab und markieren bestehende Leitungen und die Grabenlinie, bevor eine Maschine anrollt.' },
       { n: '02', title: 'Graben', photo: 'excavator-street', body: 'Bagger öffnen den Graben auf Plantiefe, Abschnitt für Abschnitt, die Straße bleibt befahrbar.' },
       { n: '03', title: 'Rohre verlegen', photo: 'ducts-soil', body: 'Die Rohre kommen auf ein Sandbett, Schächte werden gesetzt, darüber das Warnband.' },
       { n: '04', title: 'Verfüllen und wiederherstellen', photo: 'restored-manhole', body: 'Wir verdichten den Graben und stellen die Oberfläche wieder her. Die Trasse ist bereit für das Kabel.' },

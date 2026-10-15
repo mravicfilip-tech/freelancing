@@ -23,9 +23,6 @@ Task format
 
 ## Backlog
 
-- bullhill-12 Place the client's new photos where they work best. Note 14 in briefs/website/round6-notes.md
-  - [x] The photos arrive by mail, 18 from Dusan, 15 October 15:23, pulled from the Drive links
-  - [ ] Filip's yes on where they go
 ## In progress
 
 - bullhill-10 Whole page scroll silky, a deep dive on frame cost. Baseline 45d40e6, nothing may look different
@@ -121,6 +118,10 @@ Task format
 
 ## Review
 
+- bullhill-12 Place the client's new photos where they work best. Note 14 in briefs/website/round6-notes.md
+  - [x] The photos arrive by mail, 18 from Dusan, 15 October 15:23, pulled from the Drive links
+  - [x] Filip's yes on where they go
+  - [x] Seven placed, the work row at 13, the closing and step 01, plate and rental label blurred, GPS stamps and metadata gone
 - bullhill-11 No asphalt and no permits anywhere in the copy. Note 13 in briefs/website/round6-notes.md
   - [x] FAQ, the restoration card, the layer note and process step 01, both languages
 - bullhill-5 Phone hero full screen, plays by itself on load. Notes in briefs/website/round6-notes.md

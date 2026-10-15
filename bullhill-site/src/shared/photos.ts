@@ -2,6 +2,9 @@
 // metadata field stripped, location included. The four small ones (route-trench-village and the
 // three square shots) were upscaled four times with Real-ESRGAN general x4v3 on CPU, then cut to
 // the widths below as WebP, with one 1280 JPEG as the fallback.
+// The second set, ducts-trench to site-setup, came from Dusan by mail on 15 October 2026. Display P3
+// converted to sRGB, the GPS camera stamp cropped off the bottom of four, a number plate and a rental
+// label blurred, every metadata field stripped, cut the same way.
 import type { Lang } from './content';
 
 export type PhotoId =
@@ -11,7 +14,14 @@ export type PhotoId =
   | 'excavator-street'
   | 'restored-lane'
   | 'restored-manhole'
-  | 'restored-wall';
+  | 'restored-wall'
+  | 'ducts-trench'
+  | 'crew-dusk'
+  | 'road-crew'
+  | 'restored-path'
+  | 'restored-fence'
+  | 'dumper-dusk'
+  | 'site-setup';
 
 type PhotoMeta = { w: number; h: number; widths: number[]; focal: string; alt: Record<Lang, string> };
 
@@ -43,6 +53,34 @@ export const PHOTOS: Record<PhotoId, PhotoMeta> = {
   'restored-wall': {
     w: 5528, h: 5596, widths: [640, 1280, 1920, 2560], focal: '50% 56%',
     alt: { en: 'Restored strip along the kerb of a village street', de: 'Wiederhergestellter Streifen entlang der Bordsteinkante einer Ortsstraße' },
+  },
+  'ducts-trench': {
+    w: 2634, h: 2580, widths: [640, 1280, 1920, 2560], focal: '45% 55%',
+    alt: { en: 'Green and orange ducts on the bed of a deep trench, a measuring staff standing in it', de: 'Grüne und orange Rohre auf der Sohle eines tiefen Grabens, darin eine Messlatte' },
+  },
+  'crew-dusk': {
+    w: 3024, h: 4032, widths: [640, 1280, 1920, 2560], focal: '50% 58%',
+    alt: { en: 'Crew, a flatbed truck and a dumper at work along a village road under an orange evening sky', de: 'Mannschaft, Pritschenwagen und Dumper bei der Arbeit an einer Ortsstraße unter orangem Abendhimmel' },
+  },
+  'road-crew': {
+    w: 2721, h: 2580, widths: [640, 1280, 1920, 2560], focal: '45% 55%',
+    alt: { en: 'Mini excavator and yellow dumper at work on a village street behind red and white barriers, mountains behind', de: 'Minibagger und gelber Dumper bei der Arbeit auf einer Ortsstraße hinter rot-weißen Absperrungen, dahinter Berge' },
+  },
+  'restored-path': {
+    w: 2591, h: 2580, widths: [640, 1280, 1920, 2560], focal: '50% 62%',
+    alt: { en: 'Restored path along a village road, a small dumper parked beside it, mountains behind', de: 'Wiederhergestellter Gehweg entlang einer Ortsstraße, daneben ein kleiner Dumper, dahinter Berge' },
+  },
+  'restored-fence': {
+    w: 3024, h: 4032, widths: [640, 1280, 1920, 2560], focal: '50% 62%',
+    alt: { en: 'Freshly restored verge along a new wooden fence', de: 'Frisch wiederhergestelltes Bankett entlang eines neuen Holzzauns' },
+  },
+  'dumper-dusk': {
+    w: 3024, h: 4032, widths: [640, 1280, 1920, 2560], focal: '50% 62%',
+    alt: { en: 'Dumper coming down a village lane at dusk under an orange sky, mountains behind', de: 'Dumper auf einer Dorfstraße in der Abenddämmerung unter orangem Himmel, dahinter Berge' },
+  },
+  'site-setup': {
+    w: 2721, h: 2580, widths: [640, 1280, 1920, 2560], focal: '50% 60%',
+    alt: { en: 'Road works signs and barriers set up on a village road before the dig, mountains behind', de: 'Baustellenschilder und Absperrungen auf einer Ortsstraße vor dem Graben, dahinter Berge' },
   },
 };
 

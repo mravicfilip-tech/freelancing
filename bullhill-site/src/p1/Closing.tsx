@@ -16,7 +16,7 @@ export function Closing({ c }: { c: Content }) {
   const navRef = useRef<HTMLElement>(null);
   useInView(figRef);
   useInView(navRef);
-  const doneN = c.work.items.findIndex((w) => w.photo === 'restored-lane') + 1;
+  const doneN = c.work.items.findIndex((w) => w.photo === 'dumper-dusk') + 1;
   const done = c.work.items[doneN - 1];
   return (
     <footer className="end">

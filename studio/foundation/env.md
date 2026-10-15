@@ -8,6 +8,8 @@ so the lesson outlives the context window.
 
 - Never `pkill -f`. Its pattern matches the agent's own shell and kills it. Free a port with
   `fuser -k <port>/tcp`, or kill the one PID that `lsof -ti :<port>` prints.
+- Never wait on `pgrep -f` either. Its pattern matches the waiting loop's own shell, so the loop
+  never ends. Wait on a PID with `while kill -0 <pid>`, or on a file the job writes.
 - The cloud stop hook asks for a commit whenever the working tree is dirty. Builders work in their
   own git worktree, per build recipe step 2, so the main tree stays clean while they run.
 

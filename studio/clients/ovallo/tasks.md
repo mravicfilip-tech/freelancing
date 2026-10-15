@@ -30,9 +30,13 @@ Task format
   - [x] Shoot Ovallo6 and rho.co at 1440
   - [x] Log the planet section rejection
   - [x] Write three directions, the Why Choose replacement and the section plan
-  - [ ] Filip answers the grill
-  - [ ] Build home in a fresh session
-  - [ ] Filip accepts home
+  - [x] Filip asks for all three directions built, with a switcher to compare
+  - [x] Add the direction switcher beside Ovallo6
+  - [ ] Build home in direction A, product first
+  - [ ] Build home in direction B, private bank
+  - [ ] Build home in direction C, term sheet
+  - [ ] Merge, shoot and check Ovallo6 did not change
+  - [ ] Filip picks a direction
   - [ ] Fixed Income and Tokenized Bonds from the same parts
   - [ ] /uireview at 390 and 1440
 

@@ -33,5 +33,6 @@ it on 2026-10-15. Read section Referenca in `docs/studio/brend.md` for the Figma
 ## Run
 
 Folder `/home/user/ovallo-landing`, branch `claude/<session>` on the fork. `npm ci`, then
-`npm run dev` on http://localhost:5173, and `npm run build` before a commit Filip reviews.
+`npm run live` on http://localhost:5173, which pulls the branch every 8 seconds. `npm run build`
+before a commit Filip reviews.
 Changes reach Milos as a pull request from the fork.

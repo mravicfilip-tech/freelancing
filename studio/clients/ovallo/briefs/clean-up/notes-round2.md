@@ -7,7 +7,7 @@ it was said and the direction on screen, read from the direction switcher in tha
 |---|---|---|---|---|
 | 1 | 0m20 | Ovallo6 hero | "I really like this hero, I think the hero should be kept the same." | The hero stays Ovallo6's, unchanged |
 | 2 | 0m28 to 1m03 | B plans | "I like this version better, where it's on light mode, but we need to play more a bit with the fonts" ... "this is the biggest font" ... "mostly three different types of sizing of fonts on this section" | Plans from B. The title is the largest type in the section, all else smaller, three sizes at most |
-| 3 | 1m07 | B bento, with photos | "for the second section, we can keep this as it is" | Bento from B, unchanged |
+| 3 | 1m07 | B bento, with photos | "for the second section, we can keep this as it is" | Misread. Filip meant the Ovallo6 bento, see notes-round3.md |
 | 4 | 1m29 to 1m40 | C add funds | "I like this section most, but this title needs to be aligned with here, and then you need to fix up the spacing" | Add funds from C. The title's top lines up with the paragraph on the right. Spacing tidied |
 | 5 | 1m40 to 1m51 | C add funds, the Debit and Visa chips, then the network chips | "For the visa debit cards here, let's do icons please, same here too, so text plus icon" | Every chip in that section gets an icon beside its text |
 | 6 | 1m49 to 2m03 | C rewards | "Then I really like this section here" | Rewards from C |

@@ -41,6 +41,11 @@ Task format
   - [x] Plans type scale, the title largest, three sizes at most
   - [x] Add funds title alignment, spacing and icon chips
   - [x] Background lines from the mark
+  - [x] Round 3 video notes, in briefs/clean-up/notes-round3.md
+  - [x] Hero dashboard sinks into the plans section
+  - [x] Ovallo6 bento back in place of the photo bento
+  - [x] Ovallo6 rewards back, with the Why Choose content folded in
+  - [x] A different kind of line in each place
   - [ ] Filip accepts the combined page
   - [ ] Fixed Income and Tokenized Bonds from the same parts
   - [ ] /uireview at 390 and 1440

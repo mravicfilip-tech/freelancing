@@ -25,7 +25,7 @@ Task format
 
 ## In progress
 
-- ovallo-4 Clean up the Ovallo design, three directions and a pass on every section. Brief in briefs/clean-up/brief.md, fork branch claude/exciting-johnson-577zey, baseline Ovallo6 at 7a18b5b, three directions merged at 4d833dd, the combined page D is the page at / from 72c3f0f. Preview https://ovallo-landing-omqwpolv8-filip-mravic-s-projects.vercel.app (72c3f0f, behind Vercel login)
+- ovallo-4 Clean up the Ovallo design, three directions and a pass on every section. Brief in briefs/clean-up/brief.md, fork branch claude/exciting-johnson-577zey, baseline Ovallo6 at 7a18b5b, three directions merged at 4d833dd, the combined page D is the page at / from 72c3f0f. Live https://ovallo-landing.vercel.app (72c3f0f, public, Filip 2026-10-15 "make it public and on a production domain"), previews behind Vercel login
   - [x] Read the client feedback, the Ovallo5 and Ovallo6 briefs and rho.co
   - [x] Shoot Ovallo6 and rho.co at 1440
   - [x] Log the planet section rejection
@@ -58,7 +58,7 @@ Task format
   - [x] Running micro animation in the bento and rewards cards
   - [x] Load in across the page, blur in for text
   - [x] Vercel link for round 5
-  - [ ] Filip opens the round 5 link
+  - [x] Round 5 public on the production domain, Filip's call
   - [ ] Filip accepts the combined page
   - [ ] Fixed Income and Tokenized Bonds from the same parts
   - [ ] /uireview at 390 and 1440

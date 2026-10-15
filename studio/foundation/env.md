@@ -35,8 +35,9 @@ so the lesson outlives the context window.
 
 ## Network
 
-- The agent proxy blocks `vercel.app`, so a preview cannot be opened from inside the container. Check
-  a deployment through the Vercel API, as `studio/scripts/deploy.mjs` does, and send Filip the link to click.
+- The agent proxy blocked `vercel.app` before, and let it through on 2026-10-15, so a public deployment
+  can be checked with curl or Playwright. A deployment behind Vercel Authentication still can't be opened
+  from here. Check it through the Vercel API, as `studio/scripts/deploy.mjs` does, and send Filip the link.
 
 ## Vercel Hobby
 
@@ -53,6 +54,8 @@ so the lesson outlives the context window.
   team. Create it through the API, link it by writing `.vercel/project.json`, and register it with
   `registry.mjs add <id> --project <name>`. A new project starts with Vercel Authentication on every
   deployment except custom domains, so its links open only for someone logged in to Filip's team.
+  To open production only, PATCH the project with `ssoProtection` `{ "deploymentType": "preview" }`.
+  Previews stay behind the login.
 - Turn off git deploys for agent branches in each project's `vercel.json`.
 
 ```json

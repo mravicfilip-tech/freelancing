@@ -75,7 +75,9 @@ async function main() {
   const copy = mkdtempSync(join(tmpdir(), 'deploy-'));
   try {
     cpSync(o.dir, copy, { recursive: true, filter: (src) => !SKIP.has(basename(src)) });
-    const args = ['--yes', 'vercel', 'deploy', '--yes', ...(o.prod ? ['--prod'] : []), '--token', token];
+    // A preview names its target. Without it the first deploy of a new project goes to production.
+    const args = ['--yes', 'vercel', 'deploy', '--yes', ...(o.prod ? ['--prod'] : ['--target', 'preview']), '--token', token];
+    const t0 = Date.now();
     const run = spawnSync('npx', args, {
       cwd: copy,
       encoding: 'utf8',
@@ -83,7 +85,13 @@ async function main() {
       stdio: ['ignore', 'pipe', 'inherit'],
       env: { ...process.env, VERCEL_ORG_ID: orgId, VERCEL_PROJECT_ID: projectId },
     });
-    const url = (run.stdout || '').split(/\r?\n/).map((l) => l.trim()).filter((l) => /^https:\/\//.test(l)).pop();
+    // The CLI labels its lines ("Production  https://...", "Aliased  https://..."), so take the first URL, and
+    // when stdout holds none, the project's newest deployment made since this run started.
+    let url = (run.stdout || '').split(/\r?\n/).map((l) => (l.match(/https:\/\/\S+/) || [])[0]).filter(Boolean)[0];
+    if (run.status === 0 && !url) {
+      const list = await api(`/v6/deployments?projectId=${projectId}&limit=1&since=${t0}`, token, teamId);
+      if (list.deployments && list.deployments[0]) url = `https://${list.deployments[0].url}`;
+    }
     if (run.status !== 0 || !url) { console.error('vercel deploy failed, see the output above.'); return 1; }
     const host = url.replace(/^https:\/\//, '').replace(/\/.*$/, '');
     console.log(`deployment ${url}`);

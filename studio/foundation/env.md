@@ -44,6 +44,15 @@ so the lesson outlives the context window.
   cap returns a 402 that blocks production too.
 - A git deploy of a commit an agent authored is refused. Deploy with
   `node studio/scripts/deploy.mjs --dir <project>`, which uploads a copy with no git history.
+- The first deploy of a new project goes to production even without `--prod`. ovallo-landing's first
+  deploy did, on 2026-10-15. `deploy.mjs` now passes `--target preview` for every preview.
+- CLI 64 labels its output lines, "Production  https://..." and "Aliased  https://...", so a check for a
+  bare URL line called a READY deploy a failure. `deploy.mjs` now reads labelled lines and falls back to
+  the project's newest deployment through the API. Check the API before retrying a "failed" deploy.
+- A client fork whose Vercel projects sit in the client's account gets its own project in Filip's
+  team. Create it through the API, link it by writing `.vercel/project.json`, and register it with
+  `registry.mjs add <id> --project <name>`. A new project starts with Vercel Authentication on every
+  deployment except custom domains, so its links open only for someone logged in to Filip's team.
 - Turn off git deploys for agent branches in each project's `vercel.json`.
 
 ```json

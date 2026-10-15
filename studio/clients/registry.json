@@ -33,7 +33,9 @@
       "repos": [
         "ovallo-landing"
       ],
-      "previewProjects": []
+      "previewProjects": [
+        "ovallo-landing"
+      ]
     }
   ]
 }

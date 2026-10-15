@@ -25,10 +25,6 @@ Task format
 
 ## In progress
 
-- bullhill-10 Whole page scroll silky, a deep dive on frame cost. Baseline 45d40e6, nothing may look different
-  - [ ] Measure a wheel scroll of the whole page at 1440 and a touch scroll at 390, frame by frame, by section
-  - [ ] Audit the scroll path, listeners, layers, masks, filters, canvases and per frame work
-  - [ ] Fix the worst costs, measure again, before and after shots
 - bullhill-2 Hero scroll smooth, frame rate on phones and desktop
   - [x] Measure frame cost on a scripted scroll, phone and desktop
   - [x] Fix the worst costs, measure again, c9d30f3
@@ -118,6 +114,11 @@ Task format
 
 ## Review
 
+- bullhill-10 Whole page scroll silky, a deep dive on frame cost. Baseline 45d40e6, nothing may look different
+  - [x] Measure a wheel scroll of the whole page at 1440 and a touch scroll at 390, frame by frame, by section
+  - [x] Audit the scroll path, listeners, layers, masks, filters, canvases and per frame work
+  - [x] Fix the worst costs, measure again, the service dots on canvas 5fe6083, the page ground and Lenis on demand 7f9054f, the hero 7 idle rock at 30 a second 962604c
+  - [ ] Filip feels it on his machine and phone
 - bullhill-12 Place the client's new photos where they work best. Note 14 in briefs/website/round6-notes.md
   - [x] The photos arrive by mail, 18 from Dusan, 15 October 15:23, pulled from the Drive links
   - [x] Filip's yes on where they go

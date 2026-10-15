@@ -45,7 +45,13 @@ written by `/taste`.
   "something like this", find where the cursor rests for a second, at 4 frames a second, and crop what
   is under it before building. A board of search results is a set of picks, each "this" is one image.
 - Shots at the wrong width. Filip reviews at about 2560 CSS px wide. Boards are shot at 2560 beside
-  the client's widths, and a hero is judged at 2560 for empty sides.
+  the client's widths. Empty sides at 2560 are filled with background, never by pushing content past
+  the page column.
+- A hero off the page grid. Hero copy and product shots sit on the same column as the sections below,
+  measured edge for edge at every board width. A wider hero column reads as overflow.
+- A smooth gradient image saved lossy. Lossy WebP or JPEG blocks in soft gradients on a large display.
+  Ship them lossless at full size, and end every dark section in the next section's colour through an
+  eased fade, never a hard edge.
 
 ## Accessibility bar
 

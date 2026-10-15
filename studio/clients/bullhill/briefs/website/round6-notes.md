@@ -59,8 +59,10 @@ structure in words, no code yet. Foundry at `/?v=1`, files in `bullhill-site/src
    names six regions, Upper Austria, Lower Austria, Vienna, Salzburg, Styria, Bavaria (310, 510), and
    becomes the five countries. The address stays Wels.
 
-7. Two photos of the contractor cards with no words yet, Weekly progress in bull-red and As built
-   records and One site lead in grey (`content.ts` 273 and on). Waiting for Filip's note on them.
+7. Two photos of the contractor cards, Weekly progress in bull-red and As built records and One
+   site lead in grey (`content.ts` 273 and on). Then Filip, "dont apply the data on the boxes below
+   just on the stats boxes where we have those things listed". Read as, the client's figures of note
+   5 go into the four stats boxes only, and nothing changes on these cards. No change from this note.
 
 ## Proposed structure, waiting on Filip
 

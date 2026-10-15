@@ -44,6 +44,24 @@ structure in words, no code yet. Foundry at `/?v=1`, files in `bullhill-site/src
    (293, 294, 301 to 307, 495, 496, 502). Matrix title and body (`p1/copy.ts` 16, 17, 30, 31).
    The hero 7 scene shows an excavator at work and claims no ownership, so it stays.
 
+5. The client's figures for the numbers block, "8km; 270 house conn; 5 towns; 1 years in ground".
+   They replace the stand-ins one for one, 240 km of trench dug to 8 km, 1,900 house connections to
+   270, 38 towns and municipalities to 5, 12 years in the ground to 1, with the label in the singular,
+   "year in the ground" (`content.ts` 247 to 250 and the German block). Open at plan time, whether
+   "1 year" stays on the page, a first year reads as new, not as proven.
+
+6. Where we work, wider, "A lokaciju prosiri na celu nemacku i austriju, belgiju holandiju, cesku,",
+   widen the area to all of Germany and Austria, Belgium, the Netherlands, Czechia. The message ends
+   on a comma, so the list may go on, ask before building. "Austria and southern Germany" is in nine
+   places, both languages. The meta description (`index.html` 7, `content.ts` 124, 355), the contact
+   area (155, 386), the hero lede (161, 392, live in production), the Short notice starts card (286,
+   488), the FAQ answer on regions (320, 520) and the footer line (342, 542). The Where we work list
+   names six regions, Upper Austria, Lower Austria, Vienna, Salzburg, Styria, Bavaria (310, 510), and
+   becomes the five countries. The address stays Wels.
+
+7. Two photos of the contractor cards with no words yet, Weekly progress in bull-red and As built
+   records and One site lead in grey (`content.ts` 273 and on). Waiting for Filip's note on them.
+
 ## Proposed structure, waiting on Filip
 
 1. The scene fills the first screen, 100svh, edge to edge, behind the header. No pin, the page

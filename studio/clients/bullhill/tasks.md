@@ -25,7 +25,11 @@ Task format
 
 - bullhill-7 No own machines anywhere on the site, crew section and numbers block first. Notes 3 and 4 in briefs/website/round6-notes.md
   - [x] Notes queued, every own machines line listed
-  - [ ] The client's exact figures, kilometres and the rest
+  - [x] The client's exact figures, 8 km, 270 house connections, 5 towns, 1 year, note 5
+  - [ ] Filip says build
+- bullhill-8 Where we work, all of Germany and Austria, Belgium, the Netherlands, Czechia. Note 6 in briefs/website/round6-notes.md
+  - [x] Note queued, nine places listed
+  - [ ] The full country list from the client
   - [ ] Filip says build
 - bullhill-6 Blur the company sign in the Business park photo. Note 2 in briefs/website/round6-notes.md
   - [x] Note queued

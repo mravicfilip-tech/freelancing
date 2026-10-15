@@ -44,7 +44,9 @@ Task format
   - [x] Revised story, the house real from the start, the route from the street cabinet, dda3977 merged in 18c14ff
   - [ ] Filip's answer on the end frame cut edge and the dig direction
   - [x] Smooth scroll on desktop wheels (Lenis), 0dee82a
-  - [ ] Vercel on hold, Filip 15 October, "Dont send to Vercel until I say so", no preview and no production until he says
+  - [x] Vercel on hold, Filip 15 October, "Dont send to Vercel until I say so", no preview and no production until he says
+  - [x] Production with hero 7 as the default hero, 07b7e8f at bullhill-site.vercel.app on Filip's "just deploy it bro"
+  - [ ] Hero 7 phone frame cost against hero 6
 - bullhill-1 BullHill company website, one page, Foundry direction at /?v=1. Plan in briefs/website/plan.md, branch claude/hopeful-maxwell-bwuy3c. Link https://bullhill-site.vercel.app
   - [x] Put the logo files and brand colours on file
   - [x] Propose the page sections

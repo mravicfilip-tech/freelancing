@@ -1,0 +1,105 @@
+{
+  "task": "ovallo-5",
+  "repo": "/home/user/ovallo-landing",
+  "client": "ovallo",
+  "trigger": "auto",
+  "openedAt": "2026-10-15T18:52:41.254Z",
+  "rounds": [
+    {
+      "n": 1,
+      "tree": "c719695da5df54b8ac2179126c8ef52fa8232898",
+      "at": "2026-10-15T18:59:20.353Z",
+      "score": 6
+    },
+    {
+      "n": 2,
+      "tree": "14b74a7b3a1f774ee7c6a69b629f680df4551788",
+      "at": "2026-10-15T19:03:29.586Z",
+      "score": 7.5
+    }
+  ],
+  "findings": [
+    {
+      "id": "F1",
+      "sev": 2,
+      "where": "/?hero=2 and /?hero=4 at 1440, .hv--2 .hv__stage and .hv--4 .hv__stage, Product maxScale",
+      "what": "Dashboard on 9 columns, 976px against a 1120px design, scale 0.87, 12px labels near 10.5px, 7 controls under 32px against 2 in 1, 3 and 5. Derived from the scale, not measured.",
+      "status": "open",
+      "round": 1
+    },
+    {
+      "id": "F2",
+      "sev": 2,
+      "where": "every hero variant, bottom edge under the screen (.vh overflow clip)",
+      "what": "Filip, 'i see background cut'. The screen's drop shadow is clipped at the hero's last row, 239 then 244 in one pixel under the screen at 1558. Outside the screen the fade is clean.",
+      "status": "fixed",
+      "round": 1
+    },
+    {
+      "id": "F3",
+      "sev": 3,
+      "where": "/?hero=4 at 1440, .hv__facts dt last row",
+      "what": "unverified. Last fact row may sit where the mist lightens, mist dt at 14px estimated 2.6 to 3.4 to 1. Not sampled.",
+      "status": "fixed",
+      "round": 1
+    },
+    {
+      "id": "F4",
+      "sev": 3,
+      "where": "/ at 1440, h2 and h3, span.btn__label Secure Your Fixed Rate",
+      "what": "unverified. Shot tool reports 1:1 on the CTA label in hero 2 and 3 only, most likely sampled mid load-in.",
+      "status": "fixed",
+      "round": 1
+    },
+    {
+      "id": "F5",
+      "sev": 3,
+      "where": "heroD.css z-index -1 on hv__bg and hv--1 stage pseudo elements",
+      "what": "z-index -1 off the 0 to 60 scale, baselint sev 3.",
+      "status": "open",
+      "round": 1
+    },
+    {
+      "id": "F6",
+      "sev": 3,
+      "where": "heroD.css phone block, .hv padding-top 128px",
+      "what": "128px off the spacing scale.",
+      "status": "open",
+      "round": 1
+    },
+    {
+      "id": "F7",
+      "sev": 3,
+      "where": "src/dir/dir.css .dir-switch against src/v/v.css .v-switch",
+      "what": "unverified. At 390 the centred hero switcher (about 42 to 348px) and the plans switcher at left 16px, both z-index 60, would overlap on localhost and ovallo4-varijante hosts.",
+      "status": "open",
+      "round": 1
+    },
+    {
+      "id": "F8",
+      "sev": 3,
+      "where": "src/dir/d/HomeD.tsx comment",
+      "what": "Comment says Round 6 (notes-round6.md), the hero files say round 9.",
+      "status": "open",
+      "round": 1
+    },
+    {
+      "id": "F9",
+      "sev": 3,
+      "where": "pre-existing, Product.tsx Welcome back h3",
+      "what": "pre-existing. Heading level skips from h1 to h3 in the dashboard preview.",
+      "status": "open",
+      "round": 1
+    },
+    {
+      "id": "F10",
+      "sev": 3,
+      "where": "pre-existing, header.vn.is-compact at 390, .dc-faq__head at 1440",
+      "what": "pre-existing. Compact header moves 4 to 6px at scroll, sticky FAQ head does not hold. Also on the unchanged now route.",
+      "status": "open",
+      "round": 1
+    }
+  ],
+  "cards": [],
+  "cardAt": "2026-10-15T19:02:57.591Z"
+}

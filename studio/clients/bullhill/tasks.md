@@ -29,10 +29,6 @@ Task format
   - [ ] Measure a wheel scroll of the whole page at 1440 and a touch scroll at 390, frame by frame, by section
   - [ ] Audit the scroll path, listeners, layers, masks, filters, canvases and per frame work
   - [ ] Fix the worst costs, measure again, before and after shots
-- bullhill-5 Phone hero full screen, plays by itself on load. Notes in briefs/website/round6-notes.md
-  - [x] Note queued, structure proposed in words
-  - [x] Filip's yes, as proposed, 12 seconds, play once
-  - [ ] Builder on it in its own worktree
 - bullhill-2 Hero scroll smooth, frame rate on phones and desktop
   - [x] Measure frame cost on a scripted scroll, phone and desktop
   - [x] Fix the worst costs, measure again, c9d30f3
@@ -122,6 +118,11 @@ Task format
 
 ## Review
 
+- bullhill-5 Phone hero full screen, plays by itself on load. Notes in briefs/website/round6-notes.md
+  - [x] Note queued, structure proposed in words
+  - [x] Filip's yes, as proposed, 12 seconds, play once
+  - [x] Built, c123579 merged in 7f15d38, 12 seconds from about 3s after load, pauses off screen, holds the lit house
+  - [ ] Filip sees it on his phone
 - bullhill-6 Blur the company sign in the Business park photo. Note 2 in briefs/website/round6-notes.md
   - [x] Note queued
   - [x] Blurred in all five sizes, 3a3b5eb, the other six photos checked, only a Takeuchi maker badge

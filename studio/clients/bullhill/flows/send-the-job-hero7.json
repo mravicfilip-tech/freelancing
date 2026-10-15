@@ -1,0 +1,41 @@
+{
+  "name": "Send the job from the excavator hero",
+  "job": "A network operator on the excavator hero goes to the contact form and fills in their route",
+  "start": "/?v=1&hero=7",
+  "maxClicks": 6,
+  "steps": [
+    {
+      "click": "Send the job"
+    },
+    {
+      "expect": "Send us the route."
+    },
+    {
+      "click": "Network operator"
+    },
+    {
+      "fill": {
+        "label": "Name",
+        "value": "Anna Gruber"
+      }
+    },
+    {
+      "fill": {
+        "label": "Email",
+        "value": "anna.gruber@example.at"
+      }
+    },
+    {
+      "fill": {
+        "label": "Where is the route",
+        "value": "4600 Wels"
+      }
+    },
+    {
+      "fill": {
+        "label": "Length, roughly",
+        "value": "2 km"
+      }
+    }
+  ]
+}

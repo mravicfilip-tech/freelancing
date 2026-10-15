@@ -75,7 +75,7 @@ function Rig({ drive, still, phone, frame, onReady }: { drive?: Drive; still?: S
   const dbg7 = useMemo(() => (phone && !still && new URLSearchParams(window.location.search).get('h7dbg') === '1' ? document.createElement('div') : null), [phone, still]);
   useEffect(() => {
     if (!dbg7) return;
-    dbg7.style.cssText = 'position:fixed;left:8px;bottom:8px;z-index:9999;padding:4px 8px;background:#000;color:#0f0;font:12px monospace;pointer-events:none';
+    dbg7.style.cssText = 'position:fixed;left:8px;bottom:8px;z-index:60;padding:4px 8px;background:#000;color:#0f0;font:12px monospace;pointer-events:none';
     document.body.appendChild(dbg7);
     return () => dbg7.remove();
   }, [dbg7]);

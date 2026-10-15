@@ -5,6 +5,7 @@ import { Bracket } from '../../Bracket';
 import { motionOn } from '../../motion/motion';
 import { Rise } from '../../motion/Rise';
 import { t7 } from './copy-hero7';
+import { StepList } from './StepList';
 import { urlProgress, useProgress, type Progress } from './hero6/progress';
 import { LoadClock, urlFreeze } from './hero6/timeline';
 import { FRAMES, frameFades, labelAt, stepAt, textGone } from './hero7/acts';
@@ -294,7 +295,7 @@ function Live({ c, onFail }: { c: Content; onFail: () => void }) {
             </Rise>
           </div>
 
-          <div className="hv7__stage" role="img" aria-label={x.figure}>
+          <div className="hv7__stage" role="img" aria-label={x.figure} aria-describedby="hv7-steps">
             {mounted ? (
               <div className="hv7__canvas">
                 <LiveBoundary onFail={onFail}>
@@ -333,6 +334,7 @@ function Live({ c, onFail }: { c: Content; onFail: () => void }) {
         </div>
       </div>
       <div className="hv7__run" aria-hidden="true" />
+      <StepList id="hv7-steps" steps={x.steps} />
     </section>
   );
 }
@@ -349,7 +351,7 @@ function Poster({ c }: { c: Content }) {
               {[c.hero.split[0], c.hero.split[1]]}
             </Rise>
           </div>
-          <div className="hv7__stage" role="img" aria-label={x.figure}>
+          <div className="hv7__stage" role="img" aria-label={x.figure} aria-describedby="hv7-steps">
             <div className="hv7__canvas">
               <img className="hv7__poster" src="/render/hero7-wide.webp" width={1376} height={760} alt="" draggable={false} />
             </div>
@@ -372,6 +374,7 @@ function Poster({ c }: { c: Content }) {
           </div>
         </div>
       </div>
+      <StepList id="hv7-steps" steps={x.steps} />
     </section>
   );
 }
@@ -538,7 +541,7 @@ function Phone({ c, mode, onFail }: { c: Content; mode: 'live' | 'flip' | 'poste
             </Rise>
           </div>
 
-          <div ref={stage} className="hv6__stage" role="img" aria-label={x.figure}>
+          <div ref={stage} className="hv6__stage" role="img" aria-label={x.figure} aria-describedby="hv7-steps">
             {box ? (
               <div className="hv6__box" style={{ left: box.x, top: box.y, width: box.w, height: box.h }}>
                 {live ? (
@@ -588,6 +591,7 @@ function Phone({ c, mode, onFail }: { c: Content; mode: 'live' | 'flip' | 'poste
         </div>
       </div>
       {animate ? <div className="hv6__run" aria-hidden="true" /> : null}
+      <StepList id="hv7-steps" steps={x.steps} />
     </section>
   );
 }

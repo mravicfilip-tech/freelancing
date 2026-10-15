@@ -4,6 +4,8 @@
 
 /* clip, never hidden, so the sticky stage still pins */
 .p1 .hv6 { background: var(--ground); overflow: clip; }
+/* the hero keeps its own stack, so its headline's z-index never rises over the sticky header */
+.p1 .hv6 { isolation: isolate; }
 .p1 .hv6__pin { position: relative; background: var(--ground); }
 /* the red glow is its own layer, so beat 3 can breathe it with opacity alone */
 .p1 .hv6__pin::before {

@@ -7,6 +7,7 @@ import { t6 } from './copy-hero6';
 import { ANCHORS, CAMS, VIEWS, clamp01, driftCam, project, seamAt, type LayerId, type View } from './hero6/geometry';
 import { urlProgress, useProgress, type Progress } from './hero6/progress';
 import { StillSeam } from './hero6/StillSeam';
+import { StepList } from './StepList';
 import { DigCanvas } from './hero6/DigCanvas';
 import { STEPS, labelAt, stepAt, textGone } from './hero6/acts';
 import { LoadClock, SETTLED, assembleAt, urlFreeze } from './hero6/timeline';
@@ -523,7 +524,7 @@ function Specimen({ c }: { c: Content }) {
             </Rise>
           </div>
 
-          <div ref={stage} className="hv6__stage" role="img" aria-label={x.figure}>
+          <div ref={stage} className="hv6__stage" role="img" aria-label={x.figure} aria-describedby="hv6-steps">
             {box ? (
               <div className="hv6__box" style={{ left: box.x, top: box.y, width: box.w, height: box.h }}>
                 {stills ? (
@@ -603,6 +604,7 @@ function Specimen({ c }: { c: Content }) {
         </div>
       </div>
       {steps ? <div className="hv6__run" aria-hidden="true" /> : null}
+      <StepList id="hv6-steps" steps={x.steps} />
     </section>
   );
 }

@@ -1,3 +1,5 @@
+/* the hero keeps its own stack, so its headline's z-index never rises over the sticky header */
+.p1 .hv7 { isolation: isolate; }
 /* Hero 7, the excavator. Desktop and tablet only, 768 and up, phones show hero 6 and its CSS. Every
  * selector under .p1. The grid is .g and .gc from foundry.css. The canvas is transparent, so the red glow
  * is the hero's own CSS background, Foundry's full black ground with bull-red radial gradients, the
@@ -49,6 +51,14 @@
 }
 /* the still for reduced motion and no WebGL, filling the canvas the way the scene does */
 .p1 .hv7__poster { position: absolute; inset: 0; display: block; width: 100%; height: 100%; object-fit: cover; object-position: 50% 58%; user-select: none; }
+/* the poster is a still, so it needs no room behind the headline. It sits in the stage under it, with
+ * a short top fade, so the boom and the roof are in frame and not under the headline */
+.p1 .hv7--still .hv7__canvas {
+  inset: 0 0 -64px 0;
+  -webkit-mask-image: linear-gradient(to bottom, transparent, #000 8%, #000 74%, transparent 96%), linear-gradient(to right, transparent, #000 5%, #000 95%, transparent);
+  mask-image: linear-gradient(to bottom, transparent, #000 8%, #000 74%, transparent 96%), linear-gradient(to right, transparent, #000 5%, #000 95%, transparent);
+}
+.p1 .hv7--still .hv7__poster { object-position: 50% 40%; }
 /* phones, hero 6's layout and classes. The five stills sit one over another in the box. At load the first
  * one draws in from the street end, the right, to the house, the left, as the route does on a desktop. */
 .p1 .h7st,

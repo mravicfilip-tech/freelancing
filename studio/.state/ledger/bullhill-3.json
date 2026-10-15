@@ -4,7 +4,63 @@
   "client": "bullhill",
   "trigger": "auto",
   "openedAt": "2026-10-15T03:27:21.493Z",
-  "rounds": [],
-  "findings": [],
+  "rounds": [
+    {
+      "n": 1,
+      "tree": "823e81bba2cb17f04502829c9539b28c42060bba",
+      "at": "2026-10-15T03:38:38.240Z",
+      "score": 4.3
+    }
+  ],
+  "findings": [
+    {
+      "id": "F1",
+      "sev": 1,
+      "where": "/?v=1&hero=7 @390, no pin path (reduced motion, data-pin no), hero6.css:99 .hv6__top z-index 10 against .hd z-index 10 in foundry.css:161",
+      "what": "At scroll 600 the headline div.hv6__top paints over the sticky header (MENU), z-index 10 against 10. With no pin there is no stacking context, so the later hero wins. Expected the header above the headline.",
+      "status": "fixed",
+      "round": 1
+    },
+    {
+      "id": "F2",
+      "sev": 2,
+      "where": "/?v=1&hero=7 @1440 and ?lang=de, poster path, hero7.css:41-51 .hv7__canvas mask and .hv7__poster object-position 50% 58%",
+      "what": "The top fade plus the headline and header hide the excavator boom and the house roof. The machine reads as a cab with a floating bucket. Expected the boom visible in the frame.",
+      "status": "fixed",
+      "round": 1
+    },
+    {
+      "id": "F3",
+      "sev": 2,
+      "where": "hero7.css:85 .hv7__stepi and hero6.css:44 .hv6__stepi, the five step names",
+      "what": "The step name is the main content of the five step story, set in mono at 12px under the 14px floor, and aria-hidden, so it reaches neither small type readers nor screen readers.",
+      "status": "partly",
+      "round": 1
+    },
+    {
+      "id": "F4",
+      "sev": 3,
+      "where": "/?v=1&hero=7 live scene, phone flipbook and the glide",
+      "what": "unverified. Shots ran with motion off, so the live scene, the flipbook, the pin, the label crossfade and the glide have no shot, interact or walk evidence in the pack.",
+      "status": "open",
+      "round": 1
+    },
+    {
+      "id": "F5",
+      "sev": 3,
+      "where": "bullhill-site/src/p1/Foundry.tsx:21-60 staged mount",
+      "what": "unverified. With motion on, a #contact link pressed or the End key used in the first second finds no target, since the later sections mount about 400ms after the hero, one per frame.",
+      "status": "open",
+      "round": 1
+    },
+    {
+      "id": "F6",
+      "sev": 3,
+      "where": "copy-hero7.ts:9-10 and 17 against the figure text",
+      "what": "The card note says From the road to the house while the figure text says the trench runs from a house to the street, DE the same. One route has two directions in the copy.",
+      "status": "open",
+      "round": 1
+    }
+  ],
   "cards": []
 }

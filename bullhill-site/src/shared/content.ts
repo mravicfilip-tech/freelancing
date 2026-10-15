@@ -121,7 +121,7 @@ const en: Content = {
   lang: 'en',
   meta: {
     title: 'BullHill, fibre trenching and duct laying',
-    description: 'Trenching, ducts and house connections for fibre networks across Germany, Austria, Belgium, the Netherlands and Czechia.',
+    description: 'Trenching, ducts and house connections for fibre networks across Germany, Austria, Belgium, the Netherlands, Czechia and Slovenia.',
   },
   nav: [
     { id: 'services', label: 'Services' },
@@ -153,13 +153,13 @@ const en: Content = {
     whatsappHref: 'https://wa.me/4366565942472',
     hours: 'Mon to Fri, 7am to 5pm',
     address: ['Kidričeva ulica 24', '3000 Celje, Slovenia'],
-    area: 'Germany, Austria, Belgium, the Netherlands and Czechia',
+    area: 'Germany, Austria, Belgium, the Netherlands, Czechia and Slovenia',
   },
   hero: {
     kicker: 'Fibre civil works',
     title: 'We dig the routes fibre runs through.',
     split: ['We dig the routes', 'fibre runs through'],
-    lede: 'Trenching, ducts and house connections for fibre networks across Germany, Austria, Belgium, the Netherlands and Czechia. Our own crew.',
+    lede: 'Trenching, ducts and house connections for fibre networks across Germany, Austria, Belgium, the Netherlands, Czechia and Slovenia. Our own crew.',
     shot: { id: 'hero', brief: shots.hero.en, photo: 'route-trench-village' },
   },
   work: {
@@ -292,7 +292,7 @@ const en: Content = {
       points: [
         { title: 'Machines for the ground', body: 'Excavators, trucks and compaction gear matched to each route.' },
         { title: 'Your site rules', body: 'We work to your safety plan, your traffic plan and your reporting.' },
-        { title: 'Short notice starts', body: 'Across Germany, Austria, Belgium, the Netherlands and Czechia, when a section needs more hands.' },
+        { title: 'Short notice starts', body: 'Across Germany, Austria, Belgium, the Netherlands, Czechia and Slovenia, when a section needs more hands.' },
       ],
       cta: 'Book the crew',
     },
@@ -311,7 +311,7 @@ const en: Content = {
     // none until BullHill has machines of its own, the client 15 October 2026. The fleet row hides while empty.
     machines: [],
     areaTitle: 'Where we work',
-    regions: ['Germany', 'Austria', 'Belgium', 'Netherlands', 'Czechia'],
+    regions: ['Germany', 'Austria', 'Belgium', 'Netherlands', 'Czechia', 'Slovenia'],
     shot: { id: 'crew', brief: shots.crew.en, photo: 'excavator-street' },
   },
   faq: {
@@ -320,7 +320,7 @@ const en: Content = {
     items: [
       { q: 'Do you lay the fibre cable as well?', a: 'Yes. We build the route, the ducts and the chambers, and we can blow the fibre in too. If the operator does that part, we leave the ducts ready for it.' },
       { q: 'How many metres a day can you dig?', a: 'It depends on the ground and the surface. Open fields go fast, a paved town centre far slower. We give a figure per route after the survey.' },
-      { q: 'Which regions do you cover?', a: 'Germany, Austria, Belgium, the Netherlands and Czechia. Jobs further away on request.' },
+      { q: 'Which regions do you cover?', a: 'Germany, Austria, Belgium, the Netherlands, Czechia and Slovenia. Jobs further away on request.' },
       { q: 'Do you restore paving and turf?', a: 'Yes. Every trench is closed and the surface put back, paving stones, gravel or turf.' },
       { q: 'Can we hire you as a subcontractor?', a: 'Yes. Most of our work is for main contractors and network operators.' },
     ],
@@ -342,7 +342,7 @@ const en: Content = {
     reply: 'We reply within one working day.', // STAND-IN promise, to confirm with BullHill
   },
   footer: {
-    line: 'Fibre civil works. Germany, Austria, Belgium, the Netherlands and Czechia.',
+    line: 'Fibre civil works. Germany, Austria, Belgium, the Netherlands, Czechia and Slovenia.',
     legal: 'Legal notice',
     privacy: 'Privacy',
     rights: '© 2026 BullHill',
@@ -356,7 +356,7 @@ const de: Content = {
   lang: 'de',
   meta: {
     title: 'BullHill, Tiefbau für Glasfaser',
-    description: 'Grabenbau, Leerrohre und Hausanschlüsse für Glasfasernetze in Deutschland, Österreich, Belgien, den Niederlanden und Tschechien.',
+    description: 'Grabenbau, Leerrohre und Hausanschlüsse für Glasfasernetze in Deutschland, Österreich, Belgien, den Niederlanden, Tschechien und Slowenien.',
   },
   nav: [
     { id: 'services', label: 'Leistungen' },
@@ -387,13 +387,13 @@ const de: Content = {
     whatsappHref: 'https://wa.me/4366565942472',
     hours: 'Mo bis Fr, 7 bis 17 Uhr',
     address: ['Kidričeva ulica 24', '3000 Celje, Slowenien'],
-    area: 'Deutschland, Österreich, Belgien, Niederlande und Tschechien',
+    area: 'Deutschland, Österreich, Belgien, Niederlande, Tschechien und Slowenien',
   },
   hero: {
     kicker: 'Tiefbau für Glasfaser',
     title: 'Wir graben die Trassen, durch die Glasfaser läuft.',
     split: ['Wir graben die Trassen', 'für die Glasfaser'],
-    lede: 'Grabenbau, Leerrohre und Hausanschlüsse für Glasfasernetze in Deutschland, Österreich, Belgien, den Niederlanden und Tschechien. Eigene Mannschaft.',
+    lede: 'Grabenbau, Leerrohre und Hausanschlüsse für Glasfasernetze in Deutschland, Österreich, Belgien, den Niederlanden, Tschechien und Slowenien. Eigene Mannschaft.',
     shot: { id: 'hero', brief: shots.hero.de, photo: 'route-trench-village' },
   },
   work: {
@@ -495,7 +495,7 @@ const de: Content = {
       points: [
         { title: 'Maschinen für den Boden', body: 'Bagger, LKW und Verdichtungsgeräte, passend zu jeder Trasse.' },
         { title: 'Ihre Baustellenregeln', body: 'Wir arbeiten nach Ihrem Sicherheitsplan, Ihrem Verkehrsplan und Ihrem Berichtswesen.' },
-        { title: 'Kurzfristiger Start', body: 'In Deutschland, Österreich, Belgien, den Niederlanden und Tschechien, wenn ein Abschnitt mehr Leute braucht.' },
+        { title: 'Kurzfristiger Start', body: 'In Deutschland, Österreich, Belgien, den Niederlanden, Tschechien und Slowenien, wenn ein Abschnitt mehr Leute braucht.' },
       ],
       cta: 'Mannschaft buchen',
     },
@@ -512,7 +512,7 @@ const de: Content = {
     machinesTitle: 'Der Fuhrpark',
     machines: [],
     areaTitle: 'Wo wir arbeiten',
-    regions: ['Deutschland', 'Österreich', 'Belgien', 'Niederlande', 'Tschechien'],
+    regions: ['Deutschland', 'Österreich', 'Belgien', 'Niederlande', 'Tschechien', 'Slowenien'],
     shot: { id: 'crew', brief: shots.crew.de, photo: 'excavator-street' },
   },
   faq: {
@@ -521,7 +521,7 @@ const de: Content = {
     items: [
       { q: 'Verlegen Sie auch das Glasfaserkabel?', a: 'Ja. Wir bauen die Trasse, die Rohre und die Schächte und können die Glasfaser auch einblasen. Macht das der Netzbetreiber, übergeben wir die Rohre bereit dafür.' },
       { q: 'Wie viele Meter schaffen Sie am Tag?', a: 'Das hängt von Boden und Oberfläche ab. Auf freiem Feld geht es schnell, im gepflasterten Ortszentrum viel langsamer. Nach der Begehung nennen wir eine Zahl pro Trasse.' },
-      { q: 'In welchen Regionen arbeiten Sie?', a: 'In Deutschland, Österreich, Belgien, den Niederlanden und Tschechien. Aufträge weiter weg auf Anfrage.' },
+      { q: 'In welchen Regionen arbeiten Sie?', a: 'In Deutschland, Österreich, Belgien, den Niederlanden, Tschechien und Slowenien. Aufträge weiter weg auf Anfrage.' },
       { q: 'Stellen Sie Pflaster und Rasen wieder her?', a: 'Ja. Jeder Graben wird geschlossen und die Oberfläche wiederhergestellt, Pflaster, Schotter oder Rasen.' },
       { q: 'Können wir Sie als Subunternehmer beauftragen?', a: 'Ja. Der Großteil unserer Arbeit ist für Generalunternehmer und Netzbetreiber.' },
     ],
@@ -543,7 +543,7 @@ const de: Content = {
     reply: 'Antwort innerhalb eines Werktags.',
   },
   footer: {
-    line: 'Tiefbau für Glasfaser. Deutschland, Österreich, Belgien, Niederlande und Tschechien.',
+    line: 'Tiefbau für Glasfaser. Deutschland, Österreich, Belgien, Niederlande, Tschechien und Slowenien.',
     legal: 'Impressum',
     privacy: 'Datenschutz',
     rights: '© 2026 BullHill',

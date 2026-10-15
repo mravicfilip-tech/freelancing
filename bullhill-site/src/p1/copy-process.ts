@@ -7,7 +7,7 @@ const copy = {
     drawing: 'Cross section of a fibre trench',
     stepBrief: 'Site lead marking existing lines on the road with spray paint, survey day',
     ticks: {
-      '01': ['Route walked.', 'Existing lines marked.', 'Road permits sorted.'],
+      '01': ['Route walked.', 'Existing lines marked.', 'Trench line marked.'],
       '02': ['Trench to plan depth.', 'Section by section.', 'Street kept passable.'],
       '03': ['Ducts on a sand bed.', 'Chambers set.', 'Warning tape above.'],
       '04': ['Trench compacted.', 'Surface put back.', 'Ready for cable.'],
@@ -18,7 +18,7 @@ const copy = {
     drawing: 'Querschnitt eines Glasfasergrabens',
     stepBrief: 'Bauleiter markiert bestehende Leitungen mit Sprühfarbe auf der Straße, Begehungstag',
     ticks: {
-      '01': ['Trasse abgegangen.', 'Bestehende Leitungen markiert.', 'Genehmigungen geklärt.'],
+      '01': ['Trasse abgegangen.', 'Bestehende Leitungen markiert.', 'Grabenlinie markiert.'],
       '02': ['Graben auf Plantiefe.', 'Abschnitt für Abschnitt.', 'Straße bleibt befahrbar.'],
       '03': ['Rohre im Sandbett.', 'Schächte gesetzt.', 'Warnband darüber.'],
       '04': ['Graben verdichtet.', 'Oberfläche wiederhergestellt.', 'Bereit für das Kabel.'],

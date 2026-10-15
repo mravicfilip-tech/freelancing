@@ -23,6 +23,8 @@ Task format
 
 ## Backlog
 
+- bullhill-12 Place the client's new photos where they work best. Note 14 in briefs/website/round6-notes.md
+  - [ ] The photos arrive by mail
 ## In progress
 
 - bullhill-10 Whole page scroll silky, a deep dive on frame cost. Baseline 45d40e6, nothing may look different
@@ -118,6 +120,8 @@ Task format
 
 ## Review
 
+- bullhill-11 No asphalt and no permits anywhere in the copy. Note 13 in briefs/website/round6-notes.md
+  - [x] FAQ, the restoration card, the layer note and process step 01, both languages
 - bullhill-5 Phone hero full screen, plays by itself on load. Notes in briefs/website/round6-notes.md
   - [x] Note queued, structure proposed in words
   - [x] Filip's yes, as proposed, 12 seconds, play once

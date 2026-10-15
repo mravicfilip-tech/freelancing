@@ -50,8 +50,10 @@ with the scroll and still read at 60 frames a second. It is built first.
    the machine carries it. Type, step labels, ground and red glow are hero 6's.
 8. What plays at load, before any scroll? The route line draws in over the schematic, then the
    machine settles with a small idle rock of the house on its tracks. Under two seconds.
-9. Phones? Five stills, one per step end, the way hero 6 does it, with only the two stills either
-   side of the scroll position on the GPU at a time. No live 3D on phones.
+9. Phones? First built as five stills, then a 27 frame flipbook. Both are steppy with a travelling
+   camera, the view jumps between frames. So phones that can take it run the live scene in the tall
+   framing (WebGL2, four cores or more, not save data, motion on), with a 1024 shadow map, and the
+   flipbook stays as the fallback. Superseded 15 October 2026 for smoothness, Filip, "smooth as fuck".
 10. Frame budget? One scene render per frame. The plan and render split is done in the materials by
     world position, not by drawing the scene twice. Device pixel ratio capped at 1.5, frames drawn
     only when p changes, static shadows. The spoil and dust are one points draw call.

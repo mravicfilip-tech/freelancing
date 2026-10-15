@@ -10,7 +10,7 @@
 import * as THREE from 'three';
 import { rng } from '../hero6/geometry';
 import { makeGround } from '../hero6/textures';
-import { CYCLES, D, DUCTS, DUCT_R, DUMPX, EDGE, HALF_W, HOUSE, KEY_Y, MZ, PILE_Z, PIT, ROAD_W, ROAD_Z, ROUTE_X0, SAND, SHOULDER, X_CUT, X_END, X_T0, camDirs, type Pose, type V3 } from './world';
+import { CYCLES, D, DUMPX, EDGE, HALF_W, HOUSE, KEY_Y, MZ, PILE_Z, PIT, ROAD_W, ROAD_Z, ROUTE_X0, SAND, SHOULDER, X_CUT, X_END, X_T0, camDirs, type Pose, type V3 } from './world';
 import { clamp01 } from '../hero6/geometry';
 
 const HEAP_H = 0.85; // the height of a mound
@@ -114,44 +114,24 @@ void main() {
 }
 `;
 
-// the courses of the cut away, the hero 6 palette, a colour for each, and the five ducts as circles
-const DUCT_GLSL = DUCTS.map((d) => `vec3(${f2(d.z)}, ${f2(d.y)}, ${d.orange ? '1.0' : '0.0'})`).join(', ');
+// the courses of the front face, hero 6's own four textures in its proportions, scaled to the 1.25 deep trench.
+// Surface, base gravel, backfill and the sand bed from the top, the red warning tape in the backfill where the
+// route crosses the edge. The ducts are real stubs drawn by the story, not painted here.
 const COURSES_GLSL = /* glsl */ `
-const vec3 DUCTS[${DUCTS.length}] = vec3[${DUCTS.length}](${DUCT_GLSL});
-// the native ground, a dark topsoil over the paler subsoil
-vec3 nativeCol(float y, float k) {
-  vec3 top = ${lin('#2c241d')};
-  vec3 sub = ${lin('#5d4f40')};
-  vec3 deep = ${lin('#463e35')};
-  vec3 c = mix(top, sub, smoothstep(-0.2, -0.45, y));
-  c = mix(c, deep, smoothstep(-1.1, -1.6, y));
-  return c * (0.85 + 0.3 * k);
-}
-// the trench's courses from the surface down, as in hero 6, surface, base, backfill, tape, sand haunch,
-// the ducts and the sand bed, in the plane z and y across the route
-vec3 sectionCol(float z, float y, float k) {
-  float inT = (1.0 - smoothstep(uHalfW - 0.01, uHalfW + 0.03, abs(z))) * smoothstep(-uDepth - 0.02, -uDepth + 0.01, y);
-  vec3 c = ${lin('#6e6559')} * (0.9 + 0.2 * k);
-  c = mix(c, ${lin('#8f897d')}, smoothstep(-0.32, -0.3, y));
-  c = mix(c, ${lin('#2b2b2e')}, smoothstep(-0.12, -0.1, y));
-  c = mix(c, ${lin('#b7ae9f')}, (1.0 - smoothstep(-0.6, -0.58, y)));
-  float tape = (1.0 - smoothstep(0.008, 0.016, abs(y + 0.45))) * (1.0 - smoothstep(0.5, 0.56, abs(z)));
+vec3 faceAlb(float z, float y) {
+  vec2 uv = vec2(z / 2.6, y / 1.3);
+  vec3 c = texture2D(uSand, uv).rgb * 0.85;
+  c = mix(c, texture2D(uSoil, uv).rgb * 2.0, smoothstep(-0.596, -0.588, y));
+  c = mix(c, texture2D(uGravel, uv).rgb * 1.9, smoothstep(-0.293, -0.285, y));
+  c = mix(c, texture2D(uAsph, uv).rgb * 1.6, smoothstep(-0.122, -0.114, y));
+  float tape = (1.0 - smoothstep(0.009, 0.015, abs(y + 0.447))) * (1.0 - smoothstep(0.5, 0.56, abs(z)));
   c = mix(c, ${lin('#d00b11')}, tape);
-  for (int i = 0; i < ${DUCTS.length}; i++) {
-    vec3 d = DUCTS[i];
-    float r = length(vec2(z - d.x, y - d.y));
-    vec3 dc = d.z > 0.5 ? ${lin('#c9531f')} : ${lin('#37864f')};
-    c = mix(c, dc, 1.0 - smoothstep(${f2(DUCT_R)} - 0.004, ${f2(DUCT_R)}, r));
-    c = mix(c, dc * 0.55, 1.0 - smoothstep(${f2(DUCT_R - 0.02)} - 0.004, ${f2(DUCT_R - 0.02)}, r));
-  }
-  return mix(nativeCol(y, k), c, inT);
-}
-// the face of the slab, the road's own courses under the kerb, the route's courses where the trench was and
-// the native ground between
-vec3 faceCol(float z, float y, float k) {
-  vec3 r = mix(${lin('#2b2b2e')}, ${lin('#8f897d')}, 1.0 - smoothstep(-0.13, -0.11, y));
-  r = mix(r, nativeCol(y, k), 1.0 - smoothstep(-0.45, -0.43, y));
-  return mix(sectionCol(z, y, k), r, smoothstep(uRoadZ - 0.02, uRoadZ + 0.02, z));
+  // a contact shade under each course edge, so the strata read as separate courses
+  float sh = 1.0;
+  sh *= 1.0 - 0.45 * exp(-max(-0.118 - y, 0.0) / 0.03) * step(y, -0.118);
+  sh *= 1.0 - 0.4 * exp(-max(-0.289 - y, 0.0) / 0.03) * step(y, -0.289);
+  sh *= 1.0 - 0.4 * exp(-max(-0.592 - y, 0.0) / 0.04) * step(y, -0.592);
+  return c * sh;
 }
 `;
 
@@ -161,6 +141,8 @@ const FRAG = /* glsl */ `
 #include <shadowmap_pars_fragment>
 uniform sampler2D uSoil;
 uniform sampler2D uAsph;
+uniform sampler2D uGravel;
+uniform sampler2D uSand;
 uniform float uSeam;
 uniform float uFront;
 uniform float uDpr;
@@ -300,12 +282,13 @@ void main() {
     // the courses of the road and of the route across it. It is the vertical sliver the ground steps down by.
     float wall = step(0.001, uNotch) * smoothstep(0.3, 0.6, 1.0 - abs(gn.y)) * step(${f2(EDGE.x - 0.003)}, vW.x);
     if (wall > 0.0) {
-      float k = dot(swatch(vec2(vW.z / 1.1, vW.y / 1.1)), vec3(0.333)) * 1.6;
-      vec3 face = faceCol(vW.z, vW.y, k) * (0.82 + 0.2 * smoothstep(-1.9, 0.0, vW.y));
-      // the cut lip is a little bright where the sun takes the edge, and the foot of the face is dark
+      vec3 face = faceAlb(vW.z, vW.y);
+      // lit from the rim side and the sky, the key is behind it. A little darker the deeper it goes.
+      face *= (0.3 + 0.95 * max(uRim.x, 0.0)) * (0.8 + 0.2 * smoothstep(-1.25, 0.0, vW.y));
+      // the cut lip is a little bright where the light takes the edge, and the foot of the face is dark
       float bot = vW.y + uNotch * ${f2(EDGE.depth)};
-      face *= 1.0 - 0.55 * (1.0 - smoothstep(0.0, 0.09, bot));
-      face = mix(face, face * 1.35 + 0.03, 1.0 - smoothstep(0.0, 0.03, -vW.y));
+      face *= 1.0 - 0.5 * (1.0 - smoothstep(0.0, 0.07, bot));
+      face = mix(face, face * 1.4 + 0.03, 1.0 - smoothstep(0.0, 0.025, -vW.y));
       col = mix(col, face, wall);
     }
     // the road's centre line, long dashes in a pale grey
@@ -472,6 +455,8 @@ export type GroundRig = {
 export function buildGround(dpr: number): GroundRig {
   const soil = makeGround('backfill');
   const asph = makeGround('asphalt');
+  const gravel = makeGround('gravel');
+  const sand = makeGround('sand');
   const { c, r } = camDirs();
   // the key from the upper left and in front of the camera, the rim from behind and to the right
   const norm = (v: V3): V3 => {
@@ -513,6 +498,8 @@ export function buildGround(dpr: number): GroundRig {
     uRim: { value: new THREE.Vector3(...rim) },
     uSoil: { value: soil.map },
     uAsph: { value: asph.map },
+    uGravel: { value: gravel.map },
+    uSand: { value: sand.map },
   };
   const geo = gridGeometry();
   const mat = new THREE.ShaderMaterial({ vertexShader: VERT, fragmentShader: FRAG, uniforms: u, transparent: true, depthWrite: true, lights: true });
@@ -580,7 +567,7 @@ export function buildGround(dpr: number): GroundRig {
       mat.dispose();
       dmat.dispose();
       tex.dispose();
-      for (const t of [soil.map, soil.bump, asph.map, asph.bump]) t.dispose();
+      for (const t of [soil.map, soil.bump, asph.map, asph.bump, gravel.map, gravel.bump, sand.map, sand.bump]) t.dispose();
     },
   };
 }

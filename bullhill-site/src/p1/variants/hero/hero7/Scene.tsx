@@ -65,6 +65,7 @@ function Rig({ drive, still, phone, frame, onReady }: { drive?: Drive; still?: S
   const cam = useMemo(makeCam, []);
   const state = useRef({ drawn: 0, done: false, p: NaN });
   const lensKey = useRef('');
+  const rockWake = useRef(0);
   const cy = frame?.cy;
 
   useLayoutEffect(() => {
@@ -105,6 +106,7 @@ function Rig({ drive, still, phone, frame, onReady }: { drive?: Drive; still?: S
 
   // the clear band moved, for a new text length or screen, ask for a frame
   useEffect(() => invalidate(), [cy, invalidate]);
+  useEffect(() => () => window.clearTimeout(rockWake.current), []);
 
   useFrame((fs) => {
     const st = stage.current;
@@ -178,8 +180,14 @@ function Rig({ drive, still, phone, frame, onReady }: { drive?: Drive; still?: S
       gl.shadowMap.needsUpdate = true;
     }
     s.drawn++;
-    // the damped p is still gliding, the route is still being drawn or the house is still idling, so ask for the next frame
-    if ((s.p !== p && s.drawn > 1) || (a >= 0 && a < ROUTE_MS + 40) || (running && p < 0.1)) invalidate();
+    // the damped p is still gliding or the route is still being drawn, so ask for the next frame. The idle
+    // rock alone is a slow sway, so 30 frames a second draw it smoothly and leave the GPU free for the
+    // page, where it asked for 60 for as long as the hero sat at the top. A scroll still asks at once.
+    if ((s.p !== p && s.drawn > 1) || (a >= 0 && a < ROUTE_MS + 40)) invalidate();
+    else if (running && p < 0.1) {
+      window.clearTimeout(rockWake.current);
+      rockWake.current = window.setTimeout(invalidate, 33);
+    }
     s.p = p;
     if (s.drawn === 1) {
       // the first frame compiles the shaders, the next one is the first that is really on screen

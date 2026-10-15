@@ -1,6 +1,6 @@
 // Variant switches for Foundry, read from the URL so a link opens the variant it names.
-//   ?v=1&hero=1..7   hero design, 6 the cable specimen is the default, Filip's pick, 1 is the hero
-//                    as built in round 2, 7 is the excavator, in build
+//   ?v=1&hero=1..7   hero design, 7 the excavator is the default, Filip's pick for production on
+//                    15 October, 6 the cable specimen before it, 1 is the hero as built in round 2
 //   ?v=1&btn=1..5    button style site wide, 3 the slab and arrow is the default, Filip's pick
 //   ?v=1&btn=3&slab=1..5 the five versions of the slab and arrow, site wide, 3 the arrow cell is
 //                    the default, Filip's pick, 1 is style 3 as first built
@@ -16,7 +16,7 @@ const pick = (key: string, max = 5, fallback = 1) => {
 
 export type VariantN = 1 | 2 | 3 | 4 | 5;
 export type HeroN = VariantN | 6 | 7;
-export const heroVariant = () => pick('hero', 7, 6) as HeroN;
+export const heroVariant = () => pick('hero', 7, 7) as HeroN;
 export const btnVariant = () => pick('btn', 5, 3) as VariantN;
 export const blkVariant = () => pick('blk', 3, 1);
 export type SlabN = VariantN;

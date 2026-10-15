@@ -1,7 +1,7 @@
 /* the hero keeps its own stack, so its headline's z-index never rises over the sticky header */
 .p1 .hv7 { isolation: isolate; }
-/* Hero 7, the excavator. Desktop and tablet only, 768 and up, phones show hero 6 and its CSS. Every
- * selector under .p1. The grid is .g and .gc from foundry.css. The canvas is transparent, so the red glow
+/* Hero 7, the excavator. Desktop and tablet, 768 and up, then the phone's own full screen layout under
+ * .hv7p further down. Every selector under .p1. The grid is .g and .gc from foundry.css. The canvas is transparent, so the red glow
  * is the hero's own CSS background, Foundry's full black ground with bull-red radial gradients, the
  * same as hero 6. */
 
@@ -29,8 +29,6 @@
  * tenth of the story and a good deal more for the dig */
 .p1 .hv7__run { height: 300svh; }
 .p1 .hv7--still .hv7__run { display: none; }
-/* on phones the flipbook is pinned for 200svh */
-.p1 .hv7p .hv6__run { height: 200svh; }
 /* headline, lede and buttons move up and fade out in the last part of step 5, --h7-t runs 0 to 1 */
 .p1 .hv7 .hv7__top,
 .p1 .hv7 .hv7__side { opacity: calc(1 - var(--h7-t, 0)); transform: translateY(calc(var(--h7-t, 0) * -32px)); will-change: opacity, transform; }
@@ -65,30 +63,114 @@
   mask-image: linear-gradient(to bottom, transparent, #000 8%, #000 74%, transparent 96%), linear-gradient(to right, transparent, #000 5%, #000 95%, transparent);
 }
 .p1 .hv7--still .hv7__poster { object-position: 50% 40%; }
-/* phones, hero 6's layout and classes. The five stills sit one over another in the box. At load the first
- * one draws in from the street end, the right, to the house, the left, as the route does on a desktop. */
-.p1 .h7st,
-.p1 .h7live {
+/* ---- phones, under 768. One screen, no pin. The scene fills the whole first screen, 100svh, edge to edge
+ * behind the header, and a black scrim over the top carries the headline and a black scrim over the foot
+ * carries the step name, the lede and the button. The action sits in the clear band between them, which
+ * Hero7.tsx measures from the two blocks and hands to the scene. Every rule is under .hv7p, new classes,
+ * nothing of hero 6's shared rules is used or changed. --h7p-fade is the soft edge of each scrim, half of it
+ * counts as clear band. */
+.p1 .hv7p { --h7p-fade: 56px; }
+/* the pin is a plain block here, never sticky. It is one screen tall and grows when a long text needs more, the
+ * two blocks sit at its top and its foot in the flow, so they never overlap */
+.p1 .hv7p__pin { position: relative; display: flex; flex-direction: column; justify-content: space-between; min-height: 100svh; overflow: hidden; isolation: isolate; background: var(--ground); }
+/* the middle red glow sits behind the scene and breathes while the hero is on screen, as on a desktop */
+.p1 .hv7p__pin::before {
+  content: '';
   position: absolute;
+  z-index: 0;
   inset: 0;
   pointer-events: none;
-  /* the stills fade at the sides of the box too, so a house or a machine cut by the screen edge melts into the page */
-  -webkit-mask-image: linear-gradient(90deg, transparent, #000 9%, #000 91%, transparent), linear-gradient(180deg, transparent, #000 8%, #000 92%, transparent);
-  -webkit-mask-composite: source-in;
-  mask-image: linear-gradient(90deg, transparent, #000 9%, #000 91%, transparent), linear-gradient(180deg, transparent, #000 8%, #000 92%, transparent);
-  mask-composite: intersect;
+  background: radial-gradient(38% 46% at 50% 54%, rgba(208, 11, 17, 0.36), transparent 74%);
 }
+.p1 .hv7p__pin[data-idle='run']::before,
+.p1 .hv7p__pin[data-idle='pause']::before,
+.p1 .hv7p__pin[data-idle='frozen']::before {
+  animation: h7-breathe 8s ease-in-out infinite;
+  animation-delay: var(--h6-bd, 0ms);
+  will-change: opacity;
+}
+.p1 .hv7p__pin[data-idle='pause']::before,
+.p1 .hv7p__pin[data-idle='frozen']::before { animation-play-state: paused; }
+.p1 .hv7p__scene { position: absolute; inset: 0; z-index: 0; pointer-events: none; }
+.p1 .h7live { position: absolute; inset: 0; pointer-events: none; }
+/* the flipbook's strip, as wide as the screen, top and height set by Hero7.tsx from the clear band */
+.p1 .h7flip { position: absolute; left: 0; right: 0; pointer-events: none; }
+.p1 .h7st { position: absolute; inset: 0; pointer-events: none; }
 .p1 .h7st__img,
 .p1 .h7st__still { position: absolute; inset: 0; display: block; width: 100%; height: 100%; user-select: none; }
 .p1 .h7st__img { opacity: 0; will-change: opacity; }
+/* at load the first still draws in from the street end, the right, to the house, the left, as the route does
+ * on the live scene */
 @keyframes h7-wipe {
   from { clip-path: inset(0 0 0 100%); }
   to { clip-path: inset(0); }
 }
-.p1 .hv7p[data-load='run'] .h7st {
+.p1 .hv7p[data-load='run'] .h7flip {
   animation: h7-wipe 1500ms var(--m-ease) backwards;
   animation-delay: calc(600ms - var(--h6-fz, 0ms));
   animation-play-state: var(--h6-ps, running);
+}
+/* the scrims. Foundry's --ground, solid behind the text and eased to clear over --h7p-fade, so there is no
+ * line where the scene takes over. They are pseudo elements of the two blocks, under the glow and the text. */
+.p1 .hv7p__top,
+.p1 .hv7p__foot { position: relative; flex: none; padding-inline: var(--pad); }
+.p1 .hv7p__top::before,
+.p1 .hv7p__foot::before { content: ''; position: absolute; z-index: 10; inset: 0; pointer-events: none; }
+.p1 .hv7p__top { padding-top: calc(var(--hd-h) + 20px); padding-bottom: var(--h7p-fade); }
+.p1 .hv7p__top::before {
+  background: linear-gradient(
+    to bottom,
+    var(--ground) calc(100% - var(--h7p-fade)),
+    rgba(0, 0, 0, 0.9) calc(100% - var(--h7p-fade) * 0.8),
+    rgba(0, 0, 0, 0.65) calc(100% - var(--h7p-fade) * 0.6),
+    rgba(0, 0, 0, 0.35) calc(100% - var(--h7p-fade) * 0.4),
+    rgba(0, 0, 0, 0.1) calc(100% - var(--h7p-fade) * 0.2),
+    transparent
+  );
+}
+.p1 .hv7p__foot { padding-top: var(--h7p-fade); padding-bottom: 24px; }
+.p1 .hv7p__foot::before {
+  background: linear-gradient(
+    to top,
+    var(--ground) calc(100% - var(--h7p-fade)),
+    rgba(0, 0, 0, 0.9) calc(100% - var(--h7p-fade) * 0.8),
+    rgba(0, 0, 0, 0.65) calc(100% - var(--h7p-fade) * 0.6),
+    rgba(0, 0, 0, 0.35) calc(100% - var(--h7p-fade) * 0.4),
+    rgba(0, 0, 0, 0.1) calc(100% - var(--h7p-fade) * 0.2),
+    transparent
+  );
+}
+.p1 .hv7p__top > *,
+.p1 .hv7p__foot > * { position: relative; z-index: 30; }
+/* the red glow at the foot is the pin's own, drawn over the foot's scrim, at the strength of the desktop's
+ * and of the work section's glow (.wk__glow) under it, and held still. It runs on to the last row of the
+ * hero, so the glow meets the work section's at the seam at the same colour and no line shows there. */
+.p1 .hv7p__glow {
+  position: absolute;
+  inset: 0;
+  z-index: 20;
+  pointer-events: none;
+  background:
+    radial-gradient(70% 34% at 50% 100%, rgba(208, 11, 17, 0.45), transparent 72%),
+    radial-gradient(46% 26% at 88% 100%, rgba(208, 11, 17, 0.3), transparent 72%);
+}
+/* the headline, both halves in one block, 40px */
+.p1 .hv7p__title { font-size: 40px; line-height: 40px; color: #fff; text-wrap: balance; }
+.p1 .hv7p__title .rise__part { display: block; }
+/* the step name, Foundry's mono label, 12px, over the lede. The five names are stacked in one cell and
+ * crossfade by opacity, written from p. The cell is 16px tall with no name in it too, so the lede does not
+ * move when the first one comes in. */
+.p1 .hv7p__step { display: grid; justify-items: start; min-height: 16px; margin-bottom: 8px; pointer-events: none; }
+.p1 .hv7p__stepi { grid-area: 1 / 1; display: flex; gap: 12px; margin: 0; line-height: 16px; color: var(--bh-grey-100); will-change: opacity; }
+.p1 .hv7p__stepn { flex: none; color: var(--bh-grey-300); }
+.p1 .hv7p__lede { max-width: 44ch; margin: 0; color: var(--bh-grey-300); }
+/* a short screen, 360 by 640 and the like, tighter blocks and a shorter fade, so the clear band keeps
+ * its height */
+@media (max-height: 700px) {
+  .p1 .hv7p { --h7p-fade: 40px; }
+  .p1 .hv7p__top { padding-top: calc(var(--hd-h) + 8px); }
+  .p1 .hv7p__foot { padding-bottom: 16px; }
+  .p1 .hv7p .hv__cta { margin-top: 16px; }
 }
 /* still render mode, scripts/render-hero7.mjs */
 .p1 .h7-still { position: fixed; left: 0; top: 0; z-index: 60; }

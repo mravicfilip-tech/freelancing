@@ -19,8 +19,10 @@
     radial-gradient(70% 34% at 50% 100%, rgba(208, 11, 17, 0.45), transparent 72%),
     radial-gradient(46% 26% at 88% 100%, rgba(208, 11, 17, 0.3), transparent 72%);
 }
-/* the five steps, the stage is pinned for 200svh of scroll below it */
-.p1 .hv7__run { height: 200svh; }
+/* the five steps, the stage is pinned for 300svh of scroll below it, a third of a screen of scroll for every
+ * tenth of the story and a good deal more for the dig */
+.p1 .hv7__run { height: 300svh; }
+.p1 .hv7--still .hv7__run { display: none; }
 /* headline, lede and buttons move up and fade out in the last part of step 5, --h7-t runs 0 to 1 */
 .p1 .hv7 .hv7__top,
 .p1 .hv7 .hv7__side { opacity: calc(1 - var(--h7-t, 0)); transform: translateY(calc(var(--h7-t, 0) * -32px)); will-change: opacity, transform; }
@@ -36,13 +38,41 @@
  * fades into the page at the top, under the headline, at the foot and at both sides. */
 .p1 .hv7__canvas {
   position: absolute;
-  inset: -132px 0 -64px 0;
+  inset: -240px 0 -64px 0;
   pointer-events: none;
-  -webkit-mask-image: linear-gradient(to bottom, transparent 6%, #000 24%, #000 72%, transparent 96%), linear-gradient(to right, transparent, #000 5%, #000 95%, transparent);
+  -webkit-mask-image: linear-gradient(to bottom, transparent 3%, rgba(0, 0, 0, 0.3) 20%, #000 38%, #000 74%, transparent 96%), linear-gradient(to right, transparent, #000 5%, #000 95%, transparent);
   -webkit-mask-composite: source-in;
-  mask-image: linear-gradient(to bottom, transparent 6%, #000 24%, #000 72%, transparent 96%), linear-gradient(to right, transparent, #000 5%, #000 95%, transparent);
+  mask-image: linear-gradient(to bottom, transparent 3%, rgba(0, 0, 0, 0.3) 20%, #000 38%, #000 74%, transparent 96%), linear-gradient(to right, transparent, #000 5%, #000 95%, transparent);
   mask-composite: intersect;
 }
+/* the still for reduced motion and no WebGL, filling the canvas the way the scene does */
+.p1 .hv7__poster { position: absolute; inset: 0; display: block; width: 100%; height: 100%; object-fit: cover; object-position: 50% 58%; user-select: none; }
+/* phones, hero 6's layout and classes. The five stills sit one over another in the box. At load the first
+ * one draws in from the street end, the right, to the house, the left, as the route does on a desktop. */
+.p1 .h7st {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  /* the stills fade at the sides of the box too, so a house or a machine cut by the screen edge melts into the page */
+  -webkit-mask-image: linear-gradient(90deg, transparent, #000 9%, #000 91%, transparent), linear-gradient(180deg, transparent, #000 8%, #000 92%, transparent);
+  -webkit-mask-composite: source-in;
+  mask-image: linear-gradient(90deg, transparent, #000 9%, #000 91%, transparent), linear-gradient(180deg, transparent, #000 8%, #000 92%, transparent);
+  mask-composite: intersect;
+}
+.p1 .h7st__img,
+.p1 .h7st__still { position: absolute; inset: 0; display: block; width: 100%; height: 100%; user-select: none; }
+.p1 .h7st__img { opacity: 0; will-change: opacity; }
+@keyframes h7-wipe {
+  from { clip-path: inset(0 0 0 100%); }
+  to { clip-path: inset(0); }
+}
+.p1 .hv7p[data-load='run'] .h7st {
+  animation: h7-wipe 1500ms var(--m-ease) backwards;
+  animation-delay: calc(600ms - var(--h6-fz, 0ms));
+  animation-play-state: var(--h6-ps, running);
+}
+/* still render mode, scripts/render-hero7.mjs */
+.p1 .h7-still { position: fixed; left: 0; top: 0; z-index: 60; }
 /* the headline stays above the canvas it now overlaps */
 .p1 .hv7__top { position: relative; z-index: 10; }
 /* the step name, Foundry's mono label, 12px. One fixed place, the top right of the stage, under the

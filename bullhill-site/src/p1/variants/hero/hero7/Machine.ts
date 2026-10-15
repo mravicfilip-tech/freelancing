@@ -14,127 +14,9 @@
 // root is turned half a turn so the machine faces the camera's end of the route.
 
 import * as THREE from 'three';
-import { mergeGeometries, toCreasedNormals } from 'three/addons/utils/BufferGeometryUtils.js';
-import { RoundedBoxGeometry } from 'three/addons/geometries/RoundedBoxGeometry.js';
+import { mergeGeometries } from 'three/addons/utils/BufferGeometryUtils.js';
+import { Bag, box, cylX, cylY, cylZ, planSlab, prism, ribbon, sq } from './geo';
 import { E0, HOUSE_Y, L2, MZ, PIV, XM0, type Pose } from './world';
-
-// ---- geometry helpers
-type V3 = [number, number, number];
-
-// a bag of parts, each one baked to a position and a grey, then merged into one geometry
-class Bag {
-  private list: THREE.BufferGeometry[] = [];
-  add(g: THREE.BufferGeometry, hex: string, p: V3 = [0, 0, 0], r: V3 = [0, 0, 0]) {
-    const out = g.index ? g.toNonIndexed() : g;
-    if (out !== g) g.dispose();
-    if (r[0]) out.rotateX(r[0]);
-    if (r[1]) out.rotateY(r[1]);
-    if (r[2]) out.rotateZ(r[2]);
-    out.translate(p[0], p[1], p[2]);
-    const c = new THREE.Color(hex);
-    const n = out.attributes.position.count;
-    const a = new Float32Array(n * 3);
-    for (let i = 0; i < n; i++) {
-      a[i * 3] = c.r;
-      a[i * 3 + 1] = c.g;
-      a[i * 3 + 2] = c.b;
-    }
-    out.setAttribute('color', new THREE.BufferAttribute(a, 3));
-    this.list.push(out);
-    return this;
-  }
-  // `shade` bakes a little ambient occlusion into the vertex greys, a function of where the vertex is,
-  // darker low down and in the crevices, so a flat panel is not one flat grey
-  build(shade?: (x: number, y: number, z: number) => number) {
-    const g = mergeGeometries(this.list)!;
-    if (shade) {
-      const pos = g.attributes.position;
-      const col = g.attributes.color;
-      for (let i = 0; i < pos.count; i++) {
-        const k = shade(pos.getX(i), pos.getY(i), pos.getZ(i));
-        col.setXYZ(i, col.getX(i) * k, col.getY(i) * k, col.getZ(i) * k);
-      }
-    }
-    this.list.forEach((x) => x.dispose());
-    this.list = [];
-    return g;
-  }
-}
-
-// a side profile prism, x forward and y up, centred on z, depth is the width of the part. The normals
-// are creased, so a curved profile shades smooth and a bevel reads as a rounded edge.
-function prism(pts: [number, number][], depth: number, bevel = 0.03, seg = 2) {
-  const s = new THREE.Shape(pts.map(([x, y]) => new THREE.Vector2(x, y)));
-  const g = new THREE.ExtrudeGeometry(s, { depth, bevelEnabled: bevel > 0, bevelThickness: bevel, bevelSize: bevel, bevelSegments: seg, curveSegments: 6 });
-  g.translate(0, 0, -depth / 2);
-  return toCreasedNormals(g, 0.7);
-}
-
-// A limb as a ribbon round a centre line, half widths per point and a round cap at each end
-function ribbon(line: [number, number][], hw: number[], depth: number, cap = 8, bevel = 0.035) {
-  const n = line.length;
-  const left: [number, number][] = [];
-  const right: [number, number][] = [];
-  for (let i = 0; i < n; i++) {
-    const a = line[Math.max(0, i - 1)];
-    const b = line[Math.min(n - 1, i + 1)];
-    const tx = b[0] - a[0];
-    const ty = b[1] - a[1];
-    const l = Math.hypot(tx, ty) || 1;
-    const nx = -ty / l;
-    const ny = tx / l;
-    left.push([line[i][0] + nx * hw[i], line[i][1] + ny * hw[i]]);
-    right.push([line[i][0] - nx * hw[i], line[i][1] - ny * hw[i]]);
-  }
-  // a round cap, half a turn clockwise from the first point about c
-  const arc = (c: [number, number], from: [number, number]) => {
-    const a0 = Math.atan2(from[1] - c[1], from[0] - c[0]);
-    const r = Math.hypot(from[0] - c[0], from[1] - c[1]);
-    const out: [number, number][] = [];
-    for (let k = 1; k < cap; k++) {
-      const t = a0 - (Math.PI * k) / cap;
-      out.push([c[0] + Math.cos(t) * r, c[1] + Math.sin(t) * r]);
-    }
-    return out;
-  };
-  const tip = arc(line[n - 1], left[n - 1]);
-  const foot = arc(line[0], right[0]);
-  return prism([...left, ...tip, ...right.reverse(), ...foot], depth, bevel, 2);
-}
-
-const box = (w: number, h: number, d: number, r = 0.03, seg = 2) => new RoundedBoxGeometry(w, h, d, seg, Math.min(r, w / 2 - 1e-3, h / 2 - 1e-3, d / 2 - 1e-3));
-const sq = (w: number, h: number, d: number) => new THREE.BoxGeometry(w, h, d);
-// a cylinder along z, a pin or a wheel
-const cylZ = (r: number, len: number, seg = 16) => {
-  const g = new THREE.CylinderGeometry(r, r, len, seg);
-  g.rotateX(Math.PI / 2);
-  return g;
-};
-// a cylinder along x
-const cylX = (r: number, len: number, seg = 8) => {
-  const g = new THREE.CylinderGeometry(r, r, len, seg);
-  g.rotateZ(Math.PI / 2);
-  return g;
-};
-const cylY = (r: number, len: number, seg = 10) => new THREE.CylinderGeometry(r, r, len, seg);
-
-// a plan shape, x forward and z to the right, standing on y, for the rounded counterweight
-function planSlab(x0: number, x1: number, hw: number, corner: number, y0: number, h: number, bevel: number) {
-  const s = new THREE.Shape();
-  const cx = x0 + corner;
-  s.moveTo(x1, -hw);
-  s.lineTo(x1, hw);
-  s.lineTo(cx, hw);
-  s.absarc(cx, hw - corner, corner, Math.PI / 2, Math.PI, false);
-  s.lineTo(x0, -hw + corner);
-  s.absarc(cx, -hw + corner, corner, Math.PI, Math.PI * 1.5, false);
-  s.closePath();
-  const g = new THREE.ExtrudeGeometry(s, { depth: h - bevel * 2, bevelEnabled: true, bevelThickness: bevel, bevelSize: bevel, bevelSegments: 3, curveSegments: 10 });
-  // shape y becomes z, the extrusion becomes up
-  g.rotateX(-Math.PI / 2);
-  g.translate(0, y0 + bevel, 0);
-  return toCreasedNormals(g, 0.8);
-}
 
 // ---- the track loop, the path of the outer face of the shoes. Two straight runs and a half turn at each
 // end, driven by the travel of the machine so the shoes roll round as it reverses.
@@ -189,26 +71,87 @@ const STEEL = '#b4b4ba';
 const STEEL_D = '#85858c';
 const HUB = '#55555c';
 
+// a hash of a position, 0 to 1, the same every time, for the dust and the dirt
+const hash = (x: number, y: number, z: number) => {
+  const s = Math.sin(x * 12.9898 + y * 78.233 + z * 37.719) * 43758.5453;
+  return s - Math.floor(s);
+};
+
+// a small tiling noise for the roughness, clouds and fine speckle and a few long scuffs, from 0.5 to 1.
+// Only its green channel is read.
+function noiseTexture() {
+  const n = 256;
+  const cv = document.createElement('canvas');
+  cv.width = cv.height = n;
+  const c = cv.getContext('2d')!;
+  c.fillStyle = 'rgb(205,205,205)';
+  c.fillRect(0, 0, n, n);
+  let s = 7;
+  const rnd = () => {
+    s = (s * 16807) % 2147483647;
+    return s / 2147483647;
+  };
+  // soft clouds, wrapped so the tile has no seam
+  for (let i = 0; i < 160; i++) {
+    const x = rnd() * n;
+    const y = rnd() * n;
+    const r = 8 + rnd() * 34;
+    const v = Math.floor(120 + rnd() * 135);
+    for (const [ox, oy] of [[0, 0], [n, 0], [-n, 0], [0, n], [0, -n]]) {
+      const g = c.createRadialGradient(x + ox, y + oy, 0, x + ox, y + oy, r);
+      g.addColorStop(0, `rgba(${v},${v},${v},0.5)`);
+      g.addColorStop(1, `rgba(${v},${v},${v},0)`);
+      c.fillStyle = g;
+      c.fillRect(x + ox - r, y + oy - r, r * 2, r * 2);
+    }
+  }
+  // fine speckle and a few scuffs
+  for (let i = 0; i < 2600; i++) {
+    const v = Math.floor(110 + rnd() * 140);
+    c.fillStyle = `rgba(${v},${v},${v},0.35)`;
+    c.fillRect(rnd() * n, rnd() * n, 1 + rnd() * 2, 1 + rnd() * 2);
+  }
+  c.lineWidth = 1;
+  for (let i = 0; i < 40; i++) {
+    const v = Math.floor(90 + rnd() * 60);
+    c.strokeStyle = `rgba(${v},${v},${v},0.4)`;
+    const x = rnd() * n;
+    const y = rnd() * n;
+    c.beginPath();
+    c.moveTo(x, y);
+    c.lineTo(x + 10 + rnd() * 30, y + (rnd() - 0.5) * 6);
+    c.stroke();
+  }
+  const t = new THREE.CanvasTexture(cv);
+  t.wrapS = t.wrapT = THREE.RepeatWrapping;
+  t.colorSpace = THREE.NoColorSpace;
+  return t;
+}
+
 export type MachineRig = {
   root: THREE.Group;
   bucketPivot: THREE.Object3D;
-  update(p: Pose): void;
+  update(p: Pose, rock?: number, clock?: number): void;
   dispose(): void;
 };
 
 export function buildMachine(): MachineRig {
   const geos: THREE.BufferGeometry[] = [];
   const keep = <G extends THREE.BufferGeometry>(g: G) => (geos.push(g), g);
-  const paintMat = new THREE.MeshPhysicalMaterial({ vertexColors: true, roughness: 0.46, metalness: 0.25, clearcoat: 0.7, clearcoatRoughness: 0.22 });
-  const darkMat = new THREE.MeshStandardMaterial({ vertexColors: true, roughness: 0.72, metalness: 0.2 });
-  const steelMat = new THREE.MeshStandardMaterial({ vertexColors: true, roughness: 0.34, metalness: 0.85 });
-  const shoeMat = new THREE.MeshStandardMaterial({ color: '#2d2d32', roughness: 0.55, metalness: 0.6 });
+  // the paint is not one roughness. A soft noise lifts and drops it across the panels, so the clearcoat
+  // breaks up where the paint is chalked and thin, and a sheen lightens the grazing edges
+  const grain = noiseTexture();
+  const paintMat = new THREE.MeshPhysicalMaterial({ vertexColors: true, roughness: 0.62, roughnessMap: grain, metalness: 0.25, clearcoat: 0.7, clearcoatRoughness: 0.24, sheen: 0.25, sheenRoughness: 0.6, sheenColor: new THREE.Color('#9a9aa2') });
+  const darkMat = new THREE.MeshStandardMaterial({ vertexColors: true, roughness: 0.9, roughnessMap: grain, metalness: 0.2 });
+  const steelMat = new THREE.MeshStandardMaterial({ vertexColors: true, roughness: 0.52, roughnessMap: grain, metalness: 0.85 });
+  const shoeMat = new THREE.MeshStandardMaterial({ vertexColors: true, roughness: 0.7, roughnessMap: grain, metalness: 0.55 });
   const barrelMat = new THREE.MeshStandardMaterial({ color: '#34343a', roughness: 0.45, metalness: 0.5 });
   const rodMat = new THREE.MeshStandardMaterial({ color: '#d2d2d6', roughness: 0.2, metalness: 1 });
   const glass = new THREE.MeshPhysicalMaterial({ vertexColors: true, roughness: 0.2, metalness: 0.4, clearcoat: 1, clearcoatRoughness: 0.03, envMapIntensity: 1.6 });
   const mats = [paintMat, darkMat, steelMat, shoeMat, barrelMat, rodMat, glass];
-  const mesh = (b: Bag, m: THREE.Material, cast = true, shade?: (x: number, y: number, z: number) => number) => {
-    const o = new THREE.Mesh(keep(b.build(shade)), m);
+  type Fn = (x: number, y: number, z: number) => number;
+  const mesh = (b: Bag, m: THREE.Material, cast = true, shade?: Fn, opt?: { dirt?: Fn; edge?: number }) => {
+    const o = new THREE.Mesh(keep(b.build(shade, opt)), m);
     o.castShadow = cast;
     o.receiveShadow = true;
     return o;
@@ -248,17 +191,18 @@ export function buildMachine(): MachineRig {
   under.add(box(1.5, 0.26, 1.78, 0.06), '#26262a', [0, 0.52, 0]);
   under.add(cylY(1.06, 0.12, 40), '#222226', [0, 0.89, 0]);
   under.add(cylY(1.09, 0.025, 40), STEEL_D, [0, 0.935, 0]);
-  const underMesh = mesh(under, darkMat);
+  // the undercarriage has been on a verge, dust and soil to the height of the track and a little higher
+  const dust: Fn = (x, y, z) => Math.min(0.3, Math.max(0, 0.42 - y * 0.4)) * (0.55 + 0.9 * hash(x * 9, y * 5, z * 7));
+  const underMesh = mesh(under, darkMat, true, undefined, { dirt: dust });
   root.add(underMesh);
 
   // the loop of shoes, 42 a side, in one instanced draw. A plate, a grouser ridge on its outer face and
   // a link bar down each edge.
   const shoe = new Bag();
-  shoe.add(sq(0.185, 0.035, 0.5), '#ffffff', [0, -0.0675, 0]);
-  shoe.add(sq(0.032, 0.05, 0.47), '#ffffff', [0, -0.025, 0]);
-  for (const s of [-1, 1]) shoe.add(sq(0.185, 0.07, 0.05), '#ffffff', [0, -0.09, s * 0.225]);
-  const shoeG = keep(shoe.build());
-  shoeG.deleteAttribute('color');
+  shoe.add(sq(0.185, 0.035, 0.5), '#35353b', [0, -0.0675, 0]);
+  shoe.add(sq(0.032, 0.05, 0.47), '#6f6a60', [0, -0.025, 0]);
+  for (const s of [-1, 1]) shoe.add(sq(0.185, 0.07, 0.05), '#26262b', [0, -0.09, s * 0.225]);
+  const shoeG = keep(shoe.build(undefined, { dirt: (x, y, z) => (y > -0.045 ? 0.3 : 0.16) * (0.5 + 0.9 * hash(x * 31, y * 17, z * 23)), edge: 0.3 }));
   const shoes = new THREE.InstancedMesh(shoeG, shoeMat, SHOES * 2);
   shoes.castShadow = true;
   shoes.receiveShadow = true;
@@ -351,7 +295,7 @@ export function buildMachine(): MachineRig {
   body.add(box(0.2, 0.2, 0.9, 0.03), PANEL, [PIV[0] - 0.7, PIV[1] - 0.48, PIV[2]]);
   // darker low on the house and under the cab and the roof's edge, lighter on the tops
   const houseAo = (_x: number, y: number) => 0.5 + 0.5 * Math.min(1, Math.max(0, (y - 0.1) / 1.1));
-  house.add(mesh(body, paintMat, true, houseAo), mesh(metal, steelMat), mesh(gl, glass, false, (_x, y) => 0.3 + 0.7 * Math.min(1, Math.max(0, (y - 1.05) / 0.9))));
+  house.add(mesh(body, paintMat, true, houseAo, { dirt: (x, y, z) => Math.min(0.26, Math.max(0, 0.34 - y * 0.5)) * (0.45 + 1.0 * hash(x * 11, y * 3, z * 13)), edge: 0.4 }), mesh(metal, steelMat, false), mesh(gl, glass, false, (_x, y) => 0.3 + 0.7 * Math.min(1, Math.max(0, (y - 1.05) / 0.9))));
 
   // ---- the arm, the boom foot sits on the house, every joint a pivot
   const armBase = new THREE.Group();
@@ -374,7 +318,7 @@ export function buildMachine(): MachineRig {
   boomM.add(cylZ(0.055, 0.26, 10), STEEL, [1.15, 2.85, 0]);
   const boom = new THREE.Group();
   armBase.add(boom);
-  boom.add(mesh(boomB, paintMat, true, (_x, y) => 0.72 + 0.28 * Math.min(1, Math.max(0, (y - 0.4) / 2.2))), mesh(boomM, steelMat));
+  boom.add(mesh(boomB, paintMat, true, (_x, y) => 0.72 + 0.28 * Math.min(1, Math.max(0, (y - 0.4) / 2.2)), { edge: 0.35, dirt: (x, y, z) => Math.max(0, 0.22 - y * 0.1) * hash(x * 7, y * 7, z * 7) }), mesh(boomM, steelMat, false));
 
   // the stick, with the ear that carries its cylinder behind the elbow and a lug for the bucket cylinder
   const stickB = new Bag();
@@ -390,7 +334,7 @@ export function buildMachine(): MachineRig {
   const stick = new THREE.Group();
   stick.position.set(E0[0], E0[1], 0);
   boom.add(stick);
-  stick.add(mesh(stickB, paintMat, true, (x) => 0.78 + 0.22 * Math.min(1, Math.max(0, x / 1.6))), mesh(stickM, steelMat));
+  stick.add(mesh(stickB, paintMat, true, (x) => 0.78 + 0.22 * Math.min(1, Math.max(0, x / 1.6)), { edge: 0.35, dirt: (x, y, z) => Math.max(0, 0.18 * (x / 2.4)) * hash(x * 9, y * 5, z * 9) }), mesh(stickM, steelMat, false));
 
   // the bucket, mouth towards the machine. Two side plates, the shell, the lip with five teeth and the side
   // cutters, two ribs on the back and the ears at the pin.
@@ -413,7 +357,7 @@ export function buildMachine(): MachineRig {
   const bucket = new THREE.Group();
   bucket.position.set(L2, 0, 0);
   stick.add(bucket);
-  bucket.add(mesh(bk, steelMat));
+  bucket.add(mesh(bk, steelMat, true, undefined, { edge: 0.25, dirt: (x, y, z) => Math.min(0.6, Math.max(0, (-y - 0.35) / 0.6)) * Math.min(1, Math.max(0, (y + 1.2) / 0.12)) * (0.5 + 0.9 * hash(x * 13, y * 9, z * 11)) }));
 
   // ---- the three hydraulic cylinders, a barrel and a rod each, a unit length cylinder standing on y that
   // is moved, turned and stretched in the arm plane every frame. The boom pair is two cylinders in one mesh.
@@ -430,7 +374,7 @@ export function buildMachine(): MachineRig {
     }
     const barrel = new THREE.Mesh(keep(mergeGeometries(barrelB)!), barrelMat);
     const rod = new THREE.Mesh(keep(mergeGeometries(rodB)!), rodMat);
-    barrel.castShadow = true;
+    barrel.castShadow = false;
     rod.castShadow = false;
     armBase.add(barrel, rod);
     return { barrel, rod };
@@ -457,10 +401,18 @@ export function buildMachine(): MachineRig {
   return {
     root,
     bucketPivot: bucket,
-    update(p: Pose) {
+    update(p: Pose, rock = 0, clock = 0) {
       root.position.x = p.xm;
       setShoes(p.xm - XM0);
       house.rotation.y = -p.psi;
+      // the house idles on its tracks, a slow sway on two axes and a faint engine tremor, a fraction of a
+      // degree, its size set by rock, 0 to 1, and its phase by the clock
+      const w1 = clock * 0.00264;
+      const w2 = clock * 0.00195;
+      const w3 = clock * 0.0302;
+      house.rotation.x = rock * (0.0042 * Math.sin(w1) + 0.0007 * Math.sin(w3 * 1.3));
+      house.rotation.z = rock * (0.0036 * Math.sin(w2 + 1) + 0.001 * Math.sin(w3));
+      house.position.y = HOUSE_Y + rock * 0.004 * Math.sin(w3 * 0.9);
       boom.rotation.z = p.boom;
       stick.rotation.z = p.stick - p.boom;
       bucket.rotation.z = p.bucket - p.stick;
@@ -480,6 +432,7 @@ export function buildMachine(): MachineRig {
     dispose() {
       geos.forEach((g) => g.dispose());
       mats.forEach((m) => m.dispose());
+      grain.dispose();
       shoes.dispose();
     },
   };

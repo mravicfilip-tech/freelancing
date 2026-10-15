@@ -3,30 +3,34 @@ import type { Content } from '../../../shared/content';
 import { Bracket } from '../../Bracket';
 import { motionOn } from '../../motion/motion';
 import { Rise } from '../../motion/Rise';
-import { Hero6 } from './Hero6';
 import { t7 } from './copy-hero7';
-import { useProgress } from './hero6/progress';
-import { labelAt, stepAt, textGone } from './hero7/acts';
+import { clamp01 } from './hero6/geometry';
+import { urlProgress, useProgress, type Progress } from './hero6/progress';
+import { LoadClock, urlFreeze } from './hero6/timeline';
+import { STEPS, labelAt, stepAt, textGone } from './hero7/acts';
 import './hero.css';
+import './hero6.css';
 import './hero7.css';
 
-// Hero 7, the excavator. One route along a village verge, seen from a low three quarter angle that
-// tracks along with the machine. Ahead of the machine's seam the route is the schematic of hero 6, white
-// hairlines, station ticks and a stipple of dots on the black, and behind it the same ground is the
-// render. The machine stands on the route line facing back down it and reverses along it while it digs,
-// the way a real excavator trenches, so the trench opens in front of it and grows away from the camera,
-// the spoil heaps along the far side, and the seam rides with the machine. The seam is a world x set in
-// the ground's own material, so the scene is drawn once. The scene is a lazy chunk, so the other heroes
+// Hero 7, the excavator, the five steps of the work as one continuous shot along one route, from a
+// house at one end to the street at the other, see briefs/website/hero7-excavator.md. Ahead of the
+// machine's seam the route is the schematic of hero 6, white hairlines, station ticks and a stipple of
+// dots on the black, and behind it the same ground is the render. The seam is a world x set in the
+// ground's own material, so the scene is drawn once. The scene is a lazy chunk, so the other heroes
 // never load three.js.
 //
-// Same page structure as hero 6, the headline in two halves, the lede and Send the job, a pinned
-// stage over 200svh of scroll and a step label slot. p runs 0 to 1 across the pin (hero6/progress.ts,
-// `?p=` pins a frame). The scene reads the damped p every frame, sets the machine, the trench, the seam,
-// the spoil and the camera from it, draws, and calls paint(p) here, and the step label is written straight
-// on its elements. The canvas reaches up behind the headline, so the ground and the plan fill the height
-// of the stage. Step 2, Dig, is built (hero7/world.ts, p 0.15 to 0.45), the other four steps hold its end
-// state until they are. Phones under 768, reduced motion and browsers without WebGL get hero 6 as it
-// is, its phone path and its poster, and hero 7's own phone stills come with the other steps.
+// Desktop and tablet, 768 and up, are live. The stage is pinned for 300svh of scroll and p runs 0 to 1 across
+// it (hero6/progress.ts, `?p=` pins a frame, and the p the scene reads is the glided one). The scene sets
+// the machine, the ground, the spoil, the ducts and the house from p, draws, and calls paint(p) here, and
+// the step label is written straight on its elements. The canvas reaches up behind the headline, so the
+// ground and the plan fill the height of the stage. At load the route draws in from the street to the house
+// on the LoadClock of hero 6 (`?t=` freezes it) and the machine idles on its tracks.
+//
+// Phones under 768 never run WebGL. They crossfade five stills of the scene, one per step end, rendered
+// by scripts/render-hero7.mjs from this same scene at a tall framing, with hero 6's phone layout and its
+// CSS classes, the headline in two halves, the box between them, the words that stay. Reduced motion and
+// browsers without WebGL get the last frame, the restored route, as a still, wide on a desktop and tall on
+// a phone, with no pin.
 
 const Scene = lazy(() => import('./hero7/Scene'));
 
@@ -42,6 +46,20 @@ function useMedia(q: string) {
   return on;
 }
 
+function useBox(ref: React.RefObject<HTMLElement | null>) {
+  const [size, setSize] = useState<[number, number]>([0, 0]);
+  useLayoutEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    const read = () => setSize([Math.round(el.clientWidth), Math.round(el.clientHeight)]);
+    read();
+    const ro = new ResizeObserver(read);
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, [ref]);
+  return size;
+}
+
 function hasWebgl() {
   try {
     const cv = document.createElement('canvas');
@@ -51,101 +69,38 @@ function hasWebgl() {
   }
 }
 
-// `?t=<ms>` freezes the load, the way `?p=` freezes the scroll, for shots
-function urlFreeze(): number | null {
-  const v = new URLSearchParams(window.location.search).get('t');
-  if (v === null || v.trim() === '') return null;
-  const n = Number(v);
-  return Number.isFinite(n) ? Math.max(0, n) : null;
-}
-
-// the load ends this long after the scene's first frame, and the headline's reveal runs inside it
-const LOAD_END = 2800;
-
 // Beat 1 with the clock frozen by ?t=. The headline's blocks are held where the reveal has got to at
 // t, the same lines and steps as the CSS (motion/motion.css, --rz is the time, --rp pauses).
 function freezeHeadline(sec: HTMLElement, t: number) {
-  sec.querySelectorAll<HTMLElement>('.hv7__title, .hv7__lede').forEach((r) => {
+  sec.querySelectorAll<HTMLElement>('.hv7__title, .hv7__lede, .hv6__title, .hv6__lede').forEach((r) => {
     r.style.setProperty('--rz', `${t}ms`);
     r.style.setProperty('--rp', 'paused');
   });
 }
 
-export function Hero7({ c }: { c: Content }) {
-  const desk = useMedia('(min-width: 768px)');
-  const [gl] = useState(hasWebgl);
-  const [motion] = useState(motionOn);
-  if (!desk || !gl || !motion) return <Hero6 c={c} />;
-  return <Dig c={c} />;
-}
-
-function Dig({ c }: { c: Content }) {
-  const x = t7(c);
-  const section = useRef<HTMLElement>(null);
-  const pin = useRef<HTMLDivElement>(null);
-  const stepEl = useRef<HTMLDivElement>(null);
-  const labels = useRef<HTMLElement[] | null>(null);
-  const frozen = useMemo(urlFreeze, []);
-  const [mounted, setMounted] = useState(false);
-  useEffect(() => setMounted(true), []);
-  const progress = useProgress(section, pin, true);
-
-  // the headline, lede and buttons leave in the last part of step 5, and the step label follows p
-  const text = useCallback((p: number) => {
-    const el = pin.current;
-    if (!el) return;
-    const t = textGone(p);
-    el.style.setProperty('--h7-t', t.toFixed(4));
-    el.dataset.gone = t > 0.98 ? 'yes' : 'no';
-    const lab = stepEl.current;
-    if (lab) {
-      lab.dataset.step = String(stepAt(p) + 1);
-      labels.current ??= Array.from(lab.querySelectorAll<HTMLElement>('.hv7__stepi'));
-      const ls = labels.current;
-      for (let i = 0; i < ls.length; i++) ls[i].style.opacity = labelAt(p, i).toFixed(3);
-    }
-  }, []);
-  const drive = useMemo(() => ({ progress, onFrame: text }), [progress, text]);
-  // the scene's frame writes the label from the damped p, so the label and the canvas move together
-  useLayoutEffect(() => text(progress.current()));
-
-  // ---- the load. The hero's own CSS reads data-load (run, done), data-idle (wait, run, pause, frozen)
-  // and the variables --h6-last, --h6-fz, --h6-ps and --h6-bd, written here and never by React. The
-  // load starts on the scene's first frame, and a slow or failed scene starts it after 8s so the page
-  // never waits on it.
-  const [begun, setBegun] = useState(false);
-  const onReady = useCallback(() => setBegun(true), []);
-  useEffect(() => {
-    if (frozen !== null) return;
-    const id = window.setTimeout(() => setBegun(true), 8000);
-    return () => window.clearTimeout(id);
-  }, [frozen]);
-
+// The load, shared by the live hero and the phone's. The hero's own CSS reads data-load (run, done) and
+// data-idle (wait, run, pause, frozen) and the variables --h6-last, --h6-fz, --h6-ps and --h6-bd, written
+// here and never by React. The live scene starts the clock on its first frame, and a slow or failed scene
+// starts it after 8s so the page never waits on it. Without a scene it starts at once.
+function useLoad(section: React.RefObject<HTMLElement | null>, pin: React.RefObject<HTMLElement | null>, clock: LoadClock | null, live: boolean, progress: Progress, lang: string) {
+  const frozen = clock?.frozen ?? null;
   useLayoutEffect(() => {
     const sec = section.current;
-    const pinEl = pin.current;
-    if (!sec || !pinEl) return;
-    let id = 0;
+    if (!sec) return;
+    if (!clock) {
+      sec.dataset.load = 'off';
+      return;
+    }
+    sec.dataset.load = clock.assembled() ? 'done' : 'run';
     if (frozen !== null) {
-      sec.dataset.load = frozen >= LOAD_END ? 'done' : 'run';
-      pinEl.dataset.idle = frozen >= LOAD_END ? 'frozen' : 'wait';
       sec.style.setProperty('--h6-fz', `${frozen}ms`);
       sec.style.setProperty('--h6-ps', 'paused');
-      sec.style.setProperty('--h6-bd', `${-Math.max(0, frozen - LOAD_END)}ms`);
-    } else {
-      sec.dataset.load = 'run';
-      pinEl.dataset.idle = 'wait';
-      if (begun) {
-        id = window.setTimeout(() => {
-          sec.dataset.load = 'done';
-          pinEl.dataset.idle = 'run';
-        }, LOAD_END - 600);
-      }
+      sec.style.setProperty('--h6-bd', `${-Math.max(0, frozen - 2800)}ms`);
     }
     const mark = () => {
       // the last line of the headline, read from the lines Rise has measured
       let last = 0;
-      sec.querySelectorAll<HTMLElement>('.hv7__title .rise__w').forEach((w) => {
+      sec.querySelectorAll<HTMLElement>('.hv7__title .rise__w, .hv6__title .rise__w').forEach((w) => {
         last = Math.max(last, Number(w.style.getPropertyValue('--li')) || 0);
       });
       sec.style.setProperty('--h6-last', String(last));
@@ -154,27 +109,35 @@ function Dig({ c }: { c: Content }) {
     mark();
     let alive = true;
     document.fonts?.ready.then(() => alive && mark());
-    const h1 = sec.querySelector('.hv7__title');
+    const h1 = sec.querySelector('.hv7__title, .hv6__title');
     const ro = new ResizeObserver(mark);
     if (h1) ro.observe(h1);
     return () => {
       alive = false;
-      window.clearTimeout(id);
       ro.disconnect();
     };
-  }, [frozen, begun, c.lang]);
+  }, [clock, frozen, lang, section]);
 
-  // the red glow breathes while the hero is on screen and the tab is visible, and holds still when not
+  // the clock's state to the CSS, the idle glow runs while assembled and on screen
+  useEffect(() => {
+    const pinEl = pin.current;
+    const sec = section.current;
+    if (!clock || !pinEl || !sec) return;
+    const sync = () => {
+      sec.dataset.load = clock.assembled() ? 'done' : 'run';
+      pinEl.dataset.idle = frozen !== null ? (clock.assembled() ? 'frozen' : 'wait') : !clock.assembled() ? 'wait' : clock.isVisible() ? 'run' : 'pause';
+    };
+    sync();
+    return clock.on(sync);
+  }, [clock, frozen, pin, section]);
+
+  // on screen and tab visible, the idle loop pauses when either is false
   useEffect(() => {
     const el = section.current;
-    const pinEl = pin.current;
-    if (!el || !pinEl || frozen !== null) return;
+    if (!clock || !el || frozen !== null) return;
     let inView = true;
     let shown = !document.hidden;
-    const apply = () => {
-      if (pinEl.dataset.idle === 'wait') return;
-      pinEl.dataset.idle = inView && shown ? 'run' : 'pause';
-    };
+    const apply = () => clock.setVisible(inView && shown);
     const io = new IntersectionObserver((es) => {
       inView = es[es.length - 1].isIntersecting;
       apply();
@@ -189,7 +152,101 @@ function Dig({ c }: { c: Content }) {
       io.disconnect();
       document.removeEventListener('visibilitychange', vis);
     };
-  }, [frozen]);
+  }, [clock, frozen, section]);
+
+  useEffect(() => {
+    if (!clock || frozen !== null) return;
+    if (live) {
+      const id = window.setTimeout(() => clock.begin(), 8000);
+      return () => window.clearTimeout(id);
+    }
+    clock.begin();
+  }, [clock, frozen, live]);
+
+  // scrolling during the load completes it at once
+  useEffect(() => {
+    if (!clock || frozen !== null) return;
+    return progress.subscribe((p) => {
+      if (p > 0) clock.skip();
+    });
+  }, [clock, frozen, progress]);
+}
+
+// the step name, written straight on its elements, the old one fades out before the new one fades in
+function useStepLabel(stepEl: React.RefObject<HTMLElement | null>, cls: string) {
+  const labels = useRef<HTMLElement[] | null>(null);
+  return useCallback(
+    (p: number) => {
+      const lab = stepEl.current;
+      if (!lab) return;
+      lab.dataset.step = String(stepAt(p) + 1);
+      labels.current ??= Array.from(lab.querySelectorAll<HTMLElement>(cls));
+      const ls = labels.current;
+      for (let i = 0; i < ls.length; i++) ls[i].style.opacity = labelAt(p, i).toFixed(3);
+    },
+    [stepEl, cls],
+  );
+}
+
+// ---- still render mode, for scripts/render-hero7.mjs. Only the scene, on a transparent page, at the still's
+// own framing and size. `&p=` is the step state.
+const STILL_SIZE = { wide: [1376, 760], tall: [600, 600] } as const;
+function StillStage({ view, p }: { view: 'wide' | 'tall'; p: number }) {
+  const [w, h] = STILL_SIZE[view];
+  return (
+    <div className="h7-still" style={{ width: w, height: h }}>
+      <Suspense fallback={null}>
+        <Scene still={{ view, p, w, h }} onReady={() => undefined} />
+      </Suspense>
+    </div>
+  );
+}
+
+export function Hero7({ c }: { c: Content }) {
+  const q = new URLSearchParams(window.location.search);
+  const still = q.get('still');
+  if (still === 'wide' || still === 'tall') return <StillStage view={still} p={urlProgress() ?? 0} />;
+  return <Specimen c={c} />;
+}
+
+function Specimen({ c }: { c: Content }) {
+  const desk = useMedia('(min-width: 768px)');
+  const [gl] = useState(hasWebgl);
+  const [motion] = useState(motionOn);
+  if (desk && gl && motion) return <Live c={c} />;
+  if (!desk) return <Phone c={c} animate={motion} />;
+  return <Poster c={c} />;
+}
+
+// ---- the live hero, 768 and up
+function Live({ c }: { c: Content }) {
+  const x = t7(c);
+  const section = useRef<HTMLElement>(null);
+  const pin = useRef<HTMLDivElement>(null);
+  const stepEl = useRef<HTMLDivElement>(null);
+  const [clock] = useState(() => new LoadClock(urlFreeze()));
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => setMounted(true), []);
+  const progress = useProgress(section, pin, true);
+  const label = useStepLabel(stepEl, '.hv7__stepi');
+
+  // the headline, lede and buttons leave in the last part of step 5, and the step label follows p
+  const text = useCallback(
+    (p: number) => {
+      const el = pin.current;
+      if (!el) return;
+      const t = textGone(p);
+      el.style.setProperty('--h7-t', t.toFixed(4));
+      el.dataset.gone = t > 0.98 ? 'yes' : 'no';
+      label(p);
+    },
+    [label],
+  );
+  const onReady = useCallback(() => clock.begin(), [clock]);
+  const drive = useMemo(() => ({ progress, clock, onFrame: text }), [progress, clock, text]);
+  // the scene's frame writes the label from the damped p, so the label and the canvas move together
+  useLayoutEffect(() => text(progress.current()));
+  useLoad(section, pin, clock, true, progress, c.lang);
 
   return (
     <section ref={section} className="hero hv hv7" data-hero="7" data-pin="yes" aria-labelledby="hv7-title">
@@ -238,6 +295,214 @@ function Dig({ c }: { c: Content }) {
         </div>
       </div>
       <div className="hv7__run" aria-hidden="true" />
+    </section>
+  );
+}
+
+// ---- reduced motion and no WebGL on a desktop or a tablet, the restored route as one still, no pin
+function Poster({ c }: { c: Content }) {
+  const x = t7(c);
+  return (
+    <section className="hero hv hv7 hv7--still" data-hero="7" data-pin="no" aria-labelledby="hv7-title">
+      <div className="hv7__pin" data-gone="no">
+        <div className="hv7__in g">
+          <div className="hv7__top gc">
+            <Rise as="h1" id="hv7-title" className="hv7__title display">
+              {[c.hero.split[0], c.hero.split[1]]}
+            </Rise>
+          </div>
+          <div className="hv7__stage" role="img" aria-label={x.figure}>
+            <div className="hv7__canvas">
+              <img className="hv7__poster" src="/render/hero7-wide.webp" width={1376} height={760} alt="" draggable={false} />
+            </div>
+          </div>
+          <div className="hv7__bot gc">
+            <div className="hv7__side">
+              <Rise as="p" body className="hv7__lede mono-body">
+                {c.hero.lede}
+              </Rise>
+              <div className="hv__cta">
+                <Bracket href={c.contact.phoneHref}>{c.ui.call}</Bracket>
+                <Bracket variant="fill" href="#contact">{c.ui.send}</Bracket>
+              </div>
+            </div>
+            <aside className="hv7__card">
+              <p className="hv7__code mono">{x.code}</p>
+              <p className="hv7__name mono-body">{x.name}</p>
+              <p className="hv7__note mono">{x.note}</p>
+            </aside>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+// ---- phones, under 768. hero 6's phone layout, its classes and its CSS. The block sits centred between the
+// two headline halves, TALL_GAP clear of each, as big as the room between them or the stage's width allows,
+// Filip, 14 October 2026, "bigger and central". TALL_HALF is one half, two lines of the 40px phone headline,
+// and TALL_FOOT the space under the second half, both set in hero6.css. The scene fills the part of the still
+// from TALL_VIS_LEFT for TALL_VIS_W of the box width and from TALL_VIS_TOP for TALL_VIS_H of its height,
+// measured from public/render/hero7-tall-*.
+const TALL_HALF = 80;
+const TALL_GAP = 16;
+const TALL_FOOT = 48;
+const TALL_VIS_LEFT = 0;
+const TALL_VIS_W = 1;
+const TALL_VIS_TOP = 0.16;
+const TALL_VIS_H = 0.68;
+const NAMES = ['s1', 's2', 's3', 's4', 's5'];
+
+function stepFades(p: number) {
+  // t[i] is how far still i has come in, 0 to 1. Step i spans STEPS[i] to STEPS[i + 1], and the fade
+  // takes its middle 80 percent so each end holds still.
+  const t = NAMES.map((_, i) => {
+    const a = STEPS[i];
+    const b = STEPS[i + 1];
+    // the first still is there from the top, so the box is never empty at the start of the pin
+    const k = i === 0 ? 1 : clamp01((p - a - 0.1 * (b - a)) / (0.8 * (b - a)));
+    return k * k * (3 - 2 * k);
+  });
+  // a still stays under the next until the next is fully in, then it goes
+  return t.map((k, i) => (i + 1 < t.length && t[i + 1] >= 0.999 ? 0 : k));
+}
+
+// the five steps on stills. Within a step the one before fades out under the next, and the opacities are
+// written straight on the images from p, so a scroll never re-renders the hero. A still more than one step
+// from the one coming in has no layer at all, so a phone holds at most three full size stills on the GPU.
+function PhoneStills({ progress, load }: { progress: Progress; load: boolean }) {
+  const box = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    const el = box.current;
+    if (!el) return;
+    const ims = Array.from(el.querySelectorAll<HTMLImageElement>('.h7st__img'));
+    // decoded ahead, so a still is ready before the scroll reaches it
+    ims.forEach((im) => void im.decode?.().catch(() => undefined));
+    const last = ims.map(() => '');
+    const shown = ims.map(() => true);
+    const apply = (p: number) => {
+      const o = stepFades(p);
+      const on = o.findIndex((v, i) => v > 0 && (i + 1 >= o.length || o[i + 1] < 0.999));
+      ims.forEach((im, i) => {
+        const keep = o[i] > 0 || Math.abs(i - Math.max(0, on)) <= 1;
+        if (keep !== shown[i]) {
+          shown[i] = keep;
+          im.style.display = keep ? '' : 'none';
+        }
+        const v = o[i].toFixed(3);
+        if (v !== last[i]) {
+          last[i] = v;
+          im.style.opacity = v;
+        }
+      });
+    };
+    apply(progress.current());
+    return progress.subscribe(apply);
+  }, [progress, load]);
+  return (
+    <div ref={box} className="h7st" aria-hidden="true">
+      {load ? NAMES.map((n) => <img key={n} className="h7st__img" src={`/render/hero7-tall-${n}.webp`} width={600} height={600} alt="" decoding="async" fetchPriority="low" draggable={false} />) : null}
+    </div>
+  );
+}
+
+function Phone({ c, animate }: { c: Content; animate: boolean }) {
+  const x = t7(c);
+  const section = useRef<HTMLElement>(null);
+  const pin = useRef<HTMLDivElement>(null);
+  const stage = useRef<HTMLDivElement>(null);
+  const stepEl = useRef<HTMLDivElement>(null);
+  const [cw, ch] = useBox(stage);
+  const [clock] = useState(() => (animate ? new LoadClock(urlFreeze()) : null));
+  const progress = useProgress(section, pin, animate);
+  const label = useStepLabel(stepEl, '.hv6__stepi');
+  const [stillsLoad, setStillsLoad] = useState(false);
+  // the five stills load once the page has, so the first view needs only the first
+  useEffect(() => {
+    if (!animate) return;
+    let id = 0;
+    const go = () => {
+      id = window.setTimeout(() => setStillsLoad(true), 300);
+    };
+    if (document.readyState === 'complete') go();
+    else window.addEventListener('load', go, { once: true });
+    return () => {
+      window.clearTimeout(id);
+      window.removeEventListener('load', go);
+    };
+  }, [animate]);
+  useEffect(() => {
+    if (!animate) return;
+    return progress.subscribe(label);
+  }, [animate, progress, label]);
+  useLayoutEffect(() => {
+    if (animate) label(progress.current());
+  });
+  useLoad(section, pin, clock, false, progress, c.lang);
+
+  // the box the scene fills, centred in the room between the headline halves and as wide as the stage
+  const box = useMemo(() => {
+    if (!cw || !ch) return null;
+    const room = Math.max(120, ch - 2 * TALL_HALF - 2 * TALL_GAP - TALL_FOOT);
+    const s = Math.round(Math.min(room / TALL_VIS_H, cw / TALL_VIS_W));
+    return {
+      w: s,
+      h: s,
+      x: Math.round((cw - s * TALL_VIS_W) / 2 - s * TALL_VIS_LEFT),
+      y: Math.round(TALL_HALF + TALL_GAP + (room - s * TALL_VIS_H) / 2 - s * TALL_VIS_TOP),
+    };
+  }, [cw, ch]);
+
+  return (
+    <section ref={section} className="hero hv hv6 hv7p" data-hero="7" data-pin={animate ? 'yes' : 'no'} aria-labelledby="hv7-title">
+      <div ref={pin} className="hv6__pin" data-gone="no">
+        <div className="hv6__in g">
+          <div className="hv6__top gc">
+            <Rise as="h1" id="hv7-title" className="hv6__title display">
+              {[c.hero.split[0], c.hero.split[1]]}
+            </Rise>
+          </div>
+
+          <div ref={stage} className="hv6__stage" role="img" aria-label={x.figure}>
+            {box ? (
+              <div className="hv6__box" style={{ left: box.x, top: box.y, width: box.w, height: box.h }}>
+                {animate ? (
+                  <PhoneStills progress={progress} load={stillsLoad} />
+                ) : (
+                  <img className="h7st__still" src="/render/hero7-tall-s5.webp" width={600} height={600} alt="" draggable={false} />
+                )}
+              </div>
+            ) : null}
+            {animate ? (
+              <div ref={stepEl} className="hv6__step" aria-hidden="true">
+                {x.steps.map((name, i) => (
+                  <p key={name} className="hv6__stepi mono" style={{ opacity: 0 }}>
+                    <span className="hv6__stepn">{`0${i + 1} / 05`}</span>
+                    <span className="hv6__stepw">{name}</span>
+                  </p>
+                ))}
+              </div>
+            ) : null}
+          </div>
+
+          <div className="hv6__bot gc">
+            <div className="hv6__side">
+              <Rise as="p" body className="hv6__lede mono-body">
+                {c.hero.lede}
+              </Rise>
+              <div className="hv__cta">
+                <Bracket variant="fill" href="#contact">{c.ui.send}</Bracket>
+              </div>
+            </div>
+            <aside className="hv6__card">
+              <p className="hv6__code mono">{x.code}</p>
+              <p className="hv6__name mono-body">{x.name}</p>
+              <p className="hv6__note mono">{x.note}</p>
+            </aside>
+          </div>
+        </div>
+      </div>
+      {animate ? <div className="hv6__run" aria-hidden="true" /> : null}
     </section>
   );
 }

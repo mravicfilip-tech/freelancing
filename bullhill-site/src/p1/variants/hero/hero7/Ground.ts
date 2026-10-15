@@ -10,11 +10,19 @@
 import * as THREE from 'three';
 import { rng } from '../hero6/geometry';
 import { makeGround } from '../hero6/textures';
-import { CYCLES, D, DUMPX, HALF_W, KEY_Y, heapAmp, MZ, PILE_Z, ROAD_W, ROAD_Z, SHOULDER, X_END, X_T0, camDirs, type Pose, type V3 } from './world';
+import { CYCLES, D, DUCTS, DUCT_R, DUMPX, HALF_W, HOUSE, KEY_Y, MZ, NOTCH, PILE_Z, PIT, ROAD_W, ROAD_Z, ROUTE_X0, SAND, SHOULDER, X_CUT, X_END, X_T0, camDirs, type Pose, type V3 } from './world';
+import { clamp01 } from '../hero6/geometry';
 
 const HEAP_H = 0.85; // the height of a mound
 const HEAP_RX = 1.9; // its half length along the route
 const HEAP_RZ = 1.25; // and half width
+
+// a colour in the working space, as the three numbers a shader wants
+const lin = (hex: string) => {
+  const c = new THREE.Color(hex);
+  return `vec3(${c.r.toFixed(4)}, ${c.g.toFixed(4)}, ${c.b.toFixed(4)})`;
+};
+const f2 = (v: number) => v.toFixed(3);
 
 const FIELD_GLSL = /* glsl */ `
 uniform float uFront;
@@ -23,15 +31,39 @@ uniform float uDepth;
 uniform float uHalfW;
 uniform float uShoulder;
 uniform float uPileZ;
+uniform float uSandX;
+uniform float uFillX;
+uniform float uPit;
+uniform float uNotch;
 uniform float uHeapX[${CYCLES}];
 uniform float uHeapA[${CYCLES}];
+float sandAt(float x) {
+  return ${f2(SAND)} * smoothstep(uSandX - 0.3, uSandX + 1.0, x);
+}
+float fillAt(float x) {
+  return smoothstep(uFillX - 0.35, uFillX + 0.35, x);
+}
+// a rounded box on the ground, 1 inside it
+float boxM(vec2 q, float x0, float x1, float hz, float e) {
+  return smoothstep(x0 - e, x0 + e, q.x) * (1.0 - smoothstep(x1 - e, x1 + e, q.x)) * (1.0 - smoothstep(hz - e, hz + e, abs(q.y)));
+}
+float pitM(vec2 q) {
+  return boxM(q, ${f2(PIT.x0)}, ${f2(PIT.x1)}, ${f2(PIT.hw)}, 0.07) * uPit;
+}
+float notchM(vec2 q) {
+  return boxM(q, ${f2(NOTCH.x0)}, ${f2(NOTCH.x1)}, ${f2(NOTCH.hz)}, 0.05) * uNotch;
+}
+// how deep the trench is at q, as cut, then with the sand bed raising its floor and the backfill filling it
 float trenchDepth(vec2 q) {
   float wz = 1.0 - smoothstep(uHalfW, uHalfW + uShoulder, abs(q.y));
   float wx = smoothstep(uX0, uX0 + 0.3, q.x) * (1.0 - smoothstep(uFront - 0.4, uFront + 0.2, q.x));
   float amp = clamp((uFront - uX0) / 0.6, 0.0, 1.0);
-  return uDepth * wz * wx * amp;
+  float d = uDepth * wz * wx * amp;
+  d = max(d, uDepth * pitM(q));
+  d = max(0.0, d - sandAt(q.x) * smoothstep(0.0, 0.6, d));
+  return d * (1.0 - fillAt(q.x));
 }
-// the spoil, one mound a dump, each as tall as its dump has got
+// the spoil, one mound a dump, each as tall as its dump has got and as much as the backfill has left
 float heapHeight(vec2 q) {
   float h = 0.0;
   for (int i = 0; i < ${CYCLES}; i++) {
@@ -43,7 +75,7 @@ float heapHeight(vec2 q) {
   return h;
 }
 float field(vec2 q) {
-  return heapHeight(q) - trenchDepth(q);
+  return heapHeight(q) - trenchDepth(q) - notchM(q) * ${f2(NOTCH.depth)};
 }
 `;
 
@@ -55,6 +87,9 @@ varying vec3 vW;
 varying vec3 vN;
 varying float vD;
 varying float vH;
+varying float vSand;
+varying float vPit;
+varying float vNotch;
 void main() {
   vec3 p = position;
   float h = field(p.xz);
@@ -66,9 +101,46 @@ void main() {
   vW = p;
   vD = trenchDepth(p.xz);
   vH = heapHeight(p.xz);
+  vSand = sandAt(p.x) * (1.0 - fillAt(p.x));
+  vPit = pitM(p.xz);
+  vNotch = notchM(p.xz);
   vec4 worldPosition = modelMatrix * vec4(p, 1.0);
   #include <shadowmap_vertex>
   gl_Position = projectionMatrix * viewMatrix * worldPosition;
+}
+`;
+
+// the courses of the cut away, the hero 6 palette, a colour for each, and the five ducts as circles
+const DUCT_GLSL = DUCTS.map((d) => `vec3(${f2(d.z)}, ${f2(d.y)}, ${d.orange ? '1.0' : '0.0'})`).join(', ');
+const COURSES_GLSL = /* glsl */ `
+const vec3 DUCTS[${DUCTS.length}] = vec3[${DUCTS.length}](${DUCT_GLSL});
+// the native ground, a dark topsoil over the paler subsoil
+vec3 nativeCol(float y, float k) {
+  vec3 top = ${lin('#2c241d')};
+  vec3 sub = ${lin('#5d4f40')};
+  vec3 deep = ${lin('#463e35')};
+  vec3 c = mix(top, sub, smoothstep(-0.2, -0.45, y));
+  c = mix(c, deep, smoothstep(-1.1, -1.6, y));
+  return c * (0.85 + 0.3 * k);
+}
+// the trench's courses from the surface down, as in hero 6, surface, base, backfill, tape, sand haunch,
+// the ducts and the sand bed, in the plane z and y across the route
+vec3 sectionCol(float z, float y, float k) {
+  float inT = 1.0 - smoothstep(uHalfW - 0.01, uHalfW + 0.03, abs(z));
+  vec3 c = ${lin('#6e6559')} * (0.9 + 0.2 * k);
+  c = mix(c, ${lin('#8f897d')}, smoothstep(-0.32, -0.3, y));
+  c = mix(c, ${lin('#2b2b2e')}, smoothstep(-0.1, -0.08, y));
+  c = mix(c, ${lin('#b7ae9f')}, (1.0 - smoothstep(-0.6, -0.58, y)));
+  float tape = (1.0 - smoothstep(0.008, 0.016, abs(y + 0.45))) * (1.0 - smoothstep(0.5, 0.56, abs(z)));
+  c = mix(c, ${lin('#d00b11')}, tape);
+  for (int i = 0; i < ${DUCTS.length}; i++) {
+    vec3 d = DUCTS[i];
+    float r = length(vec2(z - d.x, y - d.y));
+    vec3 dc = d.z > 0.5 ? ${lin('#c9531f')} : ${lin('#37864f')};
+    c = mix(c, dc, 1.0 - smoothstep(${f2(DUCT_R)} - 0.004, ${f2(DUCT_R)}, r));
+    c = mix(c, vec3(0.01), 1.0 - smoothstep(${f2(DUCT_R - 0.024)} - 0.004, ${f2(DUCT_R - 0.024)}, r));
+  }
+  return mix(nativeCol(y, k), c, inT);
 }
 `;
 
@@ -84,9 +156,16 @@ uniform float uDpr;
 uniform float uRoadZ;
 uniform float uRoadW;
 uniform float uAoDepth;
+uniform float uDepth;
 uniform float uHalfW;
 uniform float uShoulder;
 uniform float uX0;
+uniform float uRouteX;
+uniform float uHouseRev;
+uniform float uRestore;
+uniform float uFillX;
+uniform float uVig;
+uniform vec2 uRes;
 uniform vec2 uMach;
 uniform vec3 uKey;
 uniform vec3 uRim;
@@ -94,18 +173,27 @@ varying vec3 vW;
 varying vec3 vN;
 varying float vD;
 varying float vH;
+varying float vSand;
+varying float vPit;
+varying float vNotch;
+${COURSES_GLSL}
 
 float ln(float c, float v, float fw) {
   float w = max(1.0, uDpr) * fw;
   return 1.0 - smoothstep(0.35 * w, 0.9 * w + 1e-5, abs(c - v));
 }
-// the swatch twice, at two scales turned against each other, so its tile does not show, and pulled a
+// the outline of a rectangle on the ground
+float rectLn(vec2 w, float x0, float x1, float z0, float z1, float fwx, float fwz) {
+  float inx = step(x0 - 0.03, w.x) * step(w.x, x1 + 0.03);
+  float inz = step(z0 - 0.03, w.y) * step(w.y, z1 + 0.03);
+  return max(max(ln(w.y, z0, fwz), ln(w.y, z1, fwz)) * inx, max(ln(w.x, x0, fwx), ln(w.x, x1, fwx)) * inz);
+}
+// the swatch three times, at three scales turned against each other, so its tile does not show, and pulled a
 // little towards its mean so the big blotches stay quiet
 vec3 swatch(vec2 uv) {
   vec3 a = texture2D(uSoil, uv).rgb;
   vec2 v = vec2(uv.x * 0.8 - uv.y * 0.6, uv.x * 0.6 + uv.y * 0.8) * 0.37 + vec2(0.31, 0.17);
   vec3 b = texture2D(uSoil, v).rgb;
-  // a third turn at a third scale, so three tiles average and no one tile's blotch is left to read
   vec2 w = vec2(uv.x * 0.6 + uv.y * 0.8, uv.y * 0.6 - uv.x * 0.8) * 1.7 + vec2(0.57, 0.83);
   vec3 d = texture2D(uSoil, w).rgb;
   vec3 c = a * 0.4 + b * 0.3 + d * 0.3;
@@ -116,13 +204,26 @@ vec3 soilAt(vec3 w, vec3 n) {
   b /= (b.x + b.y + b.z);
   return swatch(vec2(w.z / 2.6, w.y / 1.3)) * b.x + swatch(vec2(w.x / 2.6, w.z / 1.3)) * b.y + swatch(vec2(w.x / 2.6, w.y / 1.3)) * b.z;
 }
+// a soft fade at the four edges, for the stills, so the ground melts into the page
+float vignette() {
+  vec2 uv = gl_FragCoord.xy / uRes;
+  float v = smoothstep(0.0, 0.14, uv.x) * smoothstep(1.0, 0.86, uv.x) * smoothstep(0.0, 0.2, uv.y) * smoothstep(1.0, 0.8, uv.y);
+  return mix(1.0, v, uVig);
+}
 
 void main() {
   float fwx = fwidth(vW.x);
   float fwz = fwidth(vW.z);
   float dist = length(vW.xz - cameraPosition.xz);
-  float far = 1.0 - smoothstep(60.0, 120.0, dist);
+  float far = (1.0 - smoothstep(60.0, 120.0, dist)) * vignette();
   float sl = (1.0 - smoothstep(0.6 * max(1.0, uDpr) * fwx, 1.5 * max(1.0, uDpr) * fwx + 1e-5, abs(vW.x - uSeam))) * (1.0 - smoothstep(22.0, 55.0, dist));
+  // the route is drawn from the street end to the house, so it shows from its front on towards the street,
+  // and the house outline and the chamber's come with it
+  float rv = smoothstep(uRouteX - 0.1, uRouteX + 0.3, vW.x) * (1.0 - smoothstep(${f2(ROUTE_X0)} - 0.05, ${f2(ROUTE_X0)} + 0.05, vW.x));
+  float onRoute = rv * smoothstep(${f2(HOUSE.x1)} - 0.3, ${f2(HOUSE.x1)}, vW.x);
+  float glint = exp(-abs(vW.x - uRouteX) / 0.3) * step(uRouteX, ${f2(ROUTE_X0)}) * step(${f2(HOUSE.x0)} - 0.5, uRouteX);
+  float foot = max(rectLn(vW.xz, ${f2(HOUSE.x0)}, ${f2(HOUSE.x1)}, ${f2(HOUSE.z0)}, ${f2(HOUSE.z1)}, fwx, fwz), rectLn(vW.xz, ${f2(PIT.x0)}, ${f2(PIT.x1)}, ${f2(-PIT.hw)}, ${f2(PIT.hw)}, fwx, fwz));
+  float footV = smoothstep(uRouteX - 0.1, uRouteX + 0.3, vW.x) * (1.0 - uHouseRev);
 
   if (vW.x < uSeam) {
     // the render
@@ -134,6 +235,14 @@ void main() {
     float inside = smoothstep(0.03, 0.25, vD);
     vec3 alb = mix(soil * vec3(0.78, 0.76, 0.74), asph * 1.25, road);
     alb = mix(alb, vec3(0.2, 0.2, 0.21), kerb);
+    // the finished surface where the trench was, a little paler and finer, the reinstated verge
+    float rs = uRestore * (1.0 - smoothstep(${f2(X_CUT)} + 0.1, ${f2(X_CUT)} + 0.5, vW.x));
+    float stripW = uHalfW + 0.3;
+    float strip = (1.0 - smoothstep(stripW - 0.05, stripW + 0.05, abs(vW.z))) * smoothstep(uFillX - 0.45, uFillX + 0.45, vW.x) * rs * (1.0 - road);
+    float stripEdge = (1.0 - smoothstep(0.0, 0.07, abs(abs(vW.z) - stripW))) * smoothstep(uFillX - 0.45, uFillX + 0.45, vW.x) * rs * (1.0 - road);
+    vec3 patchC = vec3(0.34, 0.32, 0.29) * (0.65 + 0.9 * dot(soil, vec3(0.333)));
+    alb = mix(alb, patchC, strip * 0.85);
+    alb *= 1.0 - 0.55 * stripEdge;
     // the walls and floor of the cut, darker the deeper, the soil under the verge's top layer. The spoil is
     // fresh, a touch lighter on top and darker where it meets the verge.
     float ao = mix(1.0, 0.1, smoothstep(0.12, uAoDepth * 0.95, vD));
@@ -141,8 +250,13 @@ void main() {
     // the cut shows its layers, a dark topsoil over the paler subsoil, so the walls read against the verge
     float layer = smoothstep(-0.22, -0.4, vW.y) * (1.0 - smoothstep(-0.55, -0.95, vW.y));
     alb = mix(alb, soil * vec3(1.5, 1.34, 1.12), layer * inside);
-    alb *= mix(1.0, 0.7, inside) * ao;
+    // the sand bed on the floor of the cut, and up the foot of its walls
+    float sandM = (1.0 - smoothstep(-uDepth + vSand + 0.03, -uDepth + vSand + 0.09, vW.y)) * smoothstep(0.004, 0.03, vSand) * smoothstep(0.2, 0.5, vD);
+    alb = mix(alb, vec3(0.62, 0.56, 0.47) * (0.55 + 1.3 * dot(soil, vec3(0.333))), sandM);
+    alb *= mix(1.0, 0.7, inside * (1.0 - sandM * 0.5)) * mix(ao, mix(1.0, ao, 0.55), sandM);
     alb *= mix(1.0, 0.78 + 0.4 * smoothstep(0.0, 0.8, vH), heap);
+    // the chamber at the house, poured concrete
+    alb = mix(alb, vec3(0.34, 0.34, 0.36) * (0.8 + 0.4 * dot(soil, vec3(0.333))), smoothstep(0.02, 0.2, vPit));
     float sh = 1.0;
 #if defined( USE_SHADOWMAP ) && ( NUM_DIR_LIGHT_SHADOWS > 0 )
     sh = getShadow(directionalShadowMap[0], directionalLightShadows[0].shadowMapSize, directionalLightShadows[0].shadowIntensity, directionalLightShadows[0].shadowBias, directionalLightShadows[0].shadowRadius, vDirectionalShadowCoord[0]);
@@ -167,15 +281,32 @@ void main() {
     col *= 1.0 - 0.5 * (1.0 - smoothstep(0.0, 0.8, sd));
     // the ground falls off round the machine, so the eye stays on it and the far verge sinks into the page
     col *= mix(1.0, 0.3, smoothstep(9.0, 40.0, length(vW.xz - uMach)));
+    // the cut away. The face of the notch that looks at the street shows the courses, flat lit like a
+    // diagram, its sides and floor the native ground
+    float nm = smoothstep(0.005, 0.1, vNotch);
+    if (nm > 0.0) {
+      // the vertices straddle the wall, so its slope is read from the face itself
+      vec3 gn = normalize(cross(dFdx(vW), dFdy(vW)));
+      if (dot(gn, cameraPosition - vW) < 0.0) gn = -gn;
+      float wall = smoothstep(0.3, 0.6, 1.0 - gn.y);
+      float k = dot(swatch(vec2(vW.z / 1.1, vW.y / 1.1)), vec3(0.333)) * 1.6;
+      vec3 flatC = gn.x > 0.5 ? sectionCol(vW.z, vW.y, k) : nativeCol(vW.y, k);
+      vec3 face = flatC * (0.8 + 0.2 * smoothstep(-1.9, 0.0, vW.y));
+      vec3 floorC = nativeCol(-1.0, k) * 0.55 * (0.4 + 0.6 * ndl);
+      col = mix(col, mix(floorC, face, wall), nm);
+    }
     // the road's centre line, long dashes in a pale grey
     float rline = ln(vW.z, uRoadZ + uRoadW * 0.5, fwz) * step(fract(vW.x / 3.2), 0.5) * road;
     col = mix(col, vec3(0.62), rline * 0.6);
     // a faint lift where the render begins, so the seam reads as an edge being drawn
     col += vec3(0.06) * exp(-(uSeam - vW.x) / 0.5);
-    // the route, marked out on the ground in white paint where the trench is still to be cut
+    // the route, marked out on the ground in white paint where the trench is still to be cut, and the
+    // outline of the house and its chamber until the house is rendered
     float marked = step(uFront + 0.35, vW.x) * step(uX0, vW.x) * (1.0 - road);
     float paint = ln(vW.z, -uHalfW, fwz) + ln(vW.z, uHalfW, fwz) + ln(vW.z, 0.0, fwz) * step(fract(vW.x / 0.7), 0.58);
-    col = mix(col, vec3(0.92), clamp(paint, 0.0, 1.0) * 0.5 * marked);
+    col = mix(col, vec3(0.92), clamp(paint, 0.0, 1.0) * 0.5 * marked * onRoute * (1.0 - nm));
+    col = mix(col, vec3(0.95), foot * 0.6 * footV * (1.0 - nm));
+    col += vec3(0.5) * glint * 0.35 * step(abs(vW.z), 1.0);
 #ifdef TONE_MAPPING
     col = toneMapping(col);
 #endif
@@ -185,18 +316,20 @@ void main() {
   } else {
     // the plan, hairlines only, the page's black shows through
     float a = 0.0;
-    // the trench's two edges and the route line down its middle, dashed
-    a = max(a, 0.95 * ln(vW.z, -uHalfW, fwz));
-    a = max(a, 0.95 * ln(vW.z, uHalfW, fwz));
+    // the trench's two edges and the route line down its middle, dashed, drawn from the street to the house
+    a = max(a, 0.95 * ln(vW.z, -uHalfW, fwz) * onRoute);
+    a = max(a, 0.95 * ln(vW.z, uHalfW, fwz) * onRoute);
     float dash = step(fract(vW.x / 0.7), 0.58);
-    a = max(a, 0.9 * ln(vW.z, 0.0, fwz) * dash);
+    a = max(a, 0.9 * ln(vW.z, 0.0, fwz) * dash * onRoute);
     // stations, a tick across the route every two metres and a longer one every ten
     float st = abs(mod(vW.x + 1.0, 2.0) - 1.0);
     float tk = 1.0 - smoothstep(0.6 * max(1.0, uDpr) * fwx, 1.5 * max(1.0, uDpr) * fwx + 1e-5, st);
     float st10 = abs(mod(vW.x + 5.0, 10.0) - 5.0);
     float tk10 = 1.0 - smoothstep(0.6 * max(1.0, uDpr) * fwx, 1.5 * max(1.0, uDpr) * fwx + 1e-5, st10);
-    a = max(a, 0.8 * tk * step(abs(vW.z), 1.15));
-    a = max(a, 0.8 * tk10 * step(abs(vW.z), 2.3));
+    a = max(a, 0.8 * tk * step(abs(vW.z), 1.15) * onRoute);
+    a = max(a, 0.8 * tk10 * step(abs(vW.z), 2.3) * onRoute);
+    a = max(a, 0.9 * foot * footV);
+    a = max(a, 0.8 * glint * step(abs(vW.z), 1.1));
     // the road's kerb and far edge, and two lines under the road as dashed hairlines
     a = max(a, 0.95 * ln(vW.z, uRoadZ, fwz));
     a = max(a, 0.95 * ln(vW.z, uRoadZ + uRoadW, fwz));
@@ -230,8 +363,8 @@ function axis(spans: [number, number, number][]) {
 }
 
 function gridGeometry() {
-  const xs = axis([[-36, -2, 1.7], [-2, 17, 0.12], [17, 66, 1.6]]);
-  const zs = axis([[-150, -40, 10], [-40, -12, 3], [-12, -4.2, 0.8], [-4.2, -1.3, 0.1], [-1.3, 1.3, 0.06], [1.3, 3.5, 0.3], [3.5, 12, 1], [12, 42, 5]]);
+  const xs = axis([[-40, -9, 1.7], [-9, 17, 0.12], [17, 66, 1.6]]);
+  const zs = axis([[-150, -40, 10], [-40, -12, 3], [-12, -4.2, 0.8], [-4.2, -1.3, 0.1], [-1.3, 1.3, 0.06], [1.3, 3.7, 0.1], [3.7, 12, 1], [12, 42, 5]]);
   const nx = xs.length;
   const nz = zs.length;
   const pos = new Float32Array(nx * nz * 3);
@@ -310,6 +443,10 @@ export type GroundRig = {
   group: THREE.Group;
   mesh: THREE.Mesh;
   set(p: Pose): void;
+  // the route's draw, the front's x, from the street end to the house
+  setRoute(x: number): void;
+  // the soft edge for the stills, with the size of the canvas in pixels
+  setVignette(on: boolean, w: number, h: number): void;
   setScreen(dpr: number): void;
   dispose(): void;
 };
@@ -342,6 +479,15 @@ export function buildGround(dpr: number): GroundRig {
     uRoadZ: { value: ROAD_Z },
     uRoadW: { value: ROAD_W },
     uPileZ: { value: PILE_Z },
+    uSandX: { value: 14 },
+    uFillX: { value: X_CUT + 0.45 },
+    uPit: { value: 0 },
+    uNotch: { value: 0 },
+    uRouteX: { value: ROUTE_X0 + 1 },
+    uHouseRev: { value: 0 },
+    uRestore: { value: 0 },
+    uVig: { value: 0 },
+    uRes: { value: new THREE.Vector2(1, 1) },
     uHeapX: { value: heapX },
     uHeapA: { value: heapA },
     uMach: { value: new THREE.Vector2(0, MZ) },
@@ -389,10 +535,21 @@ export function buildGround(dpr: number): GroundRig {
       u.uSeam.value = p.seam;
       u.uFront.value = p.xf;
       u.uMach.value.x = p.xm;
-      // a mound grows as its dump goes, after the first of the soil has left the bucket
-      for (let i = 0; i < CYCLES; i++) {
-        heapA[i] = heapAmp(p.dump[i]);
-      }
+      // a mound grows as its dump goes and is drawn down again by the backfill
+      for (let i = 0; i < CYCLES; i++) heapA[i] = p.heap[i];
+      u.uSandX.value = p.sandX;
+      u.uFillX.value = p.fillX;
+      u.uPit.value = p.pit;
+      u.uNotch.value = p.notch;
+      u.uRestore.value = p.restore;
+      u.uHouseRev.value = clamp01((HOUSE.x1 + 0.1 - p.houseX) / (HOUSE.x1 - HOUSE.x0 + 0.3));
+    },
+    setRoute(x) {
+      u.uRouteX.value = x;
+    },
+    setVignette(on, w, h) {
+      u.uVig.value = on ? 1 : 0;
+      u.uRes.value.set(w, h);
     },
     setScreen(d) {
       u.uDpr.value = d;

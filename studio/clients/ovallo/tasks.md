@@ -25,13 +25,14 @@ Task format
 
 ## In progress
 
-- ovallo-1 Bring the Ovallo landing page into the studio repo. Source https://github.com/tankosic2324-design/ovallo-landing, fork https://github.com/mravicfilip-tech/ovallo-landing at 7a18b5b, folder ovallo-landing/, branch claude/exciting-johnson-577zey
-  - [x] Register the client folder
-  - [x] Get this session read access to the source repo
-  - [ ] Copy the code into ovallo-landing/ and confirm it builds
-  - [ ] Turn off git deploys for claude/* in its vercel.json
-  - [ ] Fill the brand rules in README.md from the code
-
 ## Review
 
 ## Done
+
+- ovallo-3 Set up the Ovallo landing fork for building. Fork https://github.com/mravicfilip-tech/ovallo-landing of https://github.com/tankosic2324-design/ovallo-landing, branch claude/exciting-johnson-577zey at a0e2996, baseline Ovallo6 https://ovallo6.vercel.app at 7a18b5b. Keys start at 3 because the fork's docs/studio/zadaci.md already holds ovallo-1 and ovallo-2
+  - [x] Register the client folder
+  - [x] Get this session access to the code through the fork
+  - [x] Clone it and confirm it builds
+  - [x] Turn off git deploys for claude/* in its vercel.json
+  - [x] Point brand and taste at the fork's docs/studio files
+  - [x] Name the baseline

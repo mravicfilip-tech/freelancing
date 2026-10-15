@@ -58,6 +58,9 @@ so the lesson outlives the context window.
 - CLI 64 labels its output lines, "Production  https://..." and "Aliased  https://...", so a check for a
   bare URL line called a READY deploy a failure. `deploy.mjs` now reads labelled lines and falls back to
   the project's newest deployment through the API. Check the API before retrying a "failed" deploy.
+- A `--prod` run also prints JSON lines, and on 2026-10-15 the URL was read with a trailing quote and comma,
+  so the API check got a 404 on a deployment that was live. The URL match now stops at a quote or a comma.
+  Check the live host with curl before retrying a production deploy.
 - A client fork whose Vercel projects sit in the client's account gets its own project in Filip's
   team. Create it through the API, link it by writing `.vercel/project.json`, and register it with
   `registry.mjs add <id> --project <name>`. A new project starts with Vercel Authentication on every

@@ -86,8 +86,9 @@ async function main() {
       env: { ...process.env, VERCEL_ORG_ID: orgId, VERCEL_PROJECT_ID: projectId },
     });
     // The CLI labels its lines ("Production  https://...", "Aliased  https://..."), so take the first URL, and
-    // when stdout holds none, the project's newest deployment made since this run started.
-    let url = (run.stdout || '').split(/\r?\n/).map((l) => (l.match(/https:\/\/\S+/) || [])[0]).filter(Boolean)[0];
+    // when stdout holds none, the project's newest deployment made since this run started. A --prod run also
+    // prints JSON lines, so the URL stops at a quote or a comma (it once read `...vercel.app",` and got a 404).
+    let url = (run.stdout || '').split(/\r?\n/).map((l) => (l.match(/https:\/\/[^\s"',]+/) || [])[0]).filter(Boolean)[0];
     if (run.status === 0 && !url) {
       const list = await api(`/v6/deployments?projectId=${projectId}&limit=1&since=${t0}`, token, teamId);
       if (list.deployments && list.deployments[0]) url = `https://${list.deployments[0].url}`;

@@ -30,7 +30,19 @@ Source. Filip, 2026-10-15, four notes with screenshots after the round 9 set. Ta
 on 9 columns in 2 and 4, which is what the facts beside it cost. That is Filip's call. Six sev 3 open, two of them
 pre-existing.
 
-## Preview
+## Production
 
-The preview deploy was refused by the session's permission check, so no preview link exists yet. Production stays
-at `72c3f0f` until Filip opens a preview and replies with a ship line for it.
+Filip, "deploy to production straight", so the preview step was skipped on his word. Fork commit `c8b347e` (code at
+`de8d9fc`) went to production on 2026-10-15 and https://ovallo-landing.vercel.app serves it, checked by its asset
+hash. The deploy script reported a failure on a live deployment, its URL read with a trailing quote, now fixed and
+logged in env.md.
+
+## After production
+
+| # | Filip's words | What it means |
+|---|---|---|
+| 5 | "two buttons side by side please" | Variant 5's stacked CTAs go back side by side |
+
+Fork commit `2ad964c`. The paragraph and buttons move to columns 8 to 12 of the hero grid, 528px, where the two fixed
+width CTAs fit (488px). The paragraph no longer lines up with the plans lead. No movement on hover at 2560, 1558 and
+1440, lowest contrast 5.04 to 1. Not on production yet, it needs Filip's word for this change.

@@ -39,7 +39,11 @@ Task format
   - [x] Phone stills and the reduced motion still, 4b93c19
   - [ ] Final round, the restored end as a cut face, a phone flipbook, an even camera pan, the tablet framing
   - [ ] Frame cost check and /uireview
-  - [ ] Production, on Filip's "Push to production when done all of it", hero 6 stays the default
+  - [x] Review bullhill-3, no open sev 1, preview went to Filip
+  - [x] Scene full width, not kept to the grid
+  - [ ] Revised story, the house real from the start, the route from the street cabinet, Filip's yes first
+  - [ ] Smooth scroll on desktop wheels (Lenis), Filip's yes first
+  - [ ] Vercel on hold, Filip 15 October, "Dont send to Vercel until I say so", no preview and no production until he says
 - bullhill-1 BullHill company website, one page, Foundry direction at /?v=1. Plan in briefs/website/plan.md, branch claude/hopeful-maxwell-bwuy3c. Link https://bullhill-site.vercel.app
   - [x] Put the logo files and brand colours on file
   - [x] Propose the page sections

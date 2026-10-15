@@ -40,9 +40,11 @@
 /* the canvas is the stage and a little more. It reaches up behind the headline, so the horizon and the plan
  * lines have the whole height to fill instead of a strip, and down under the lede and the card. The ground
  * fades into the page at the top, under the headline, at the foot and at both sides. */
+/* The canvas runs the full width of the screen, not the grid, so the street fills the frame edge to
+ * edge on any width and only the text keeps to the grid. Filip, 15 October 2026. */
 .p1 .hv7__canvas {
   position: absolute;
-  inset: -240px 0 -64px 0;
+  inset: -240px calc(50% - 50vw) -64px calc(50% - 50vw);
   pointer-events: none;
   -webkit-mask-image: linear-gradient(to bottom, transparent 3%, rgba(0, 0, 0, 0.3) 20%, #000 38%, #000 74%, transparent 96%), linear-gradient(to right, transparent, #000 5%, #000 95%, transparent);
   -webkit-mask-composite: source-in;
@@ -54,7 +56,7 @@
 /* the poster is a still, so it needs no room behind the headline. It sits in the stage under it, with
  * a short top fade, so the boom and the roof are in frame and not under the headline */
 .p1 .hv7--still .hv7__canvas {
-  inset: 0 0 -64px 0;
+  inset: 0 calc(50% - 50vw) -64px calc(50% - 50vw);
   -webkit-mask-image: linear-gradient(to bottom, transparent, #000 8%, #000 74%, transparent 96%), linear-gradient(to right, transparent, #000 5%, #000 95%, transparent);
   mask-image: linear-gradient(to bottom, transparent, #000 8%, #000 74%, transparent 96%), linear-gradient(to right, transparent, #000 5%, #000 95%, transparent);
 }

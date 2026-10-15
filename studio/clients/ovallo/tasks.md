@@ -50,7 +50,7 @@ Task format
   - [x] Hero back to Ovallo6, plan rows to the bottom, icons for the reasons
   - [x] Testimonials white, light sections alternate tone
   - [x] Three footer graphic variants on a board
-  - [ ] Filip picks a footer graphic
+  - [x] Filip picks a footer graphic, the mark blueprint
   - [ ] Filip accepts the combined page
   - [ ] Fixed Income and Tokenized Bonds from the same parts
   - [ ] /uireview at 390 and 1440

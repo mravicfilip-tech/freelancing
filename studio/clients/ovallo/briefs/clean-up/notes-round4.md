@@ -31,3 +31,8 @@ which element "this" is before moving anything outside the section on screen.
   1. Mark blueprint, the Ovallo mark drawn from its own geometry with its generating ellipses and nodes.
   2. Yield curve, the three plans' APY at their terms from `src/data/plans.ts`, Growth in the accent.
   3. Contour field, nested contour lines of one landform, one line in the accent.
+
+## Pick
+
+Filip, "go with 1". The footer carries the mark blueprint. Variants 2 and 3 are removed from the code and
+stay in fork commit `f7e0451`.

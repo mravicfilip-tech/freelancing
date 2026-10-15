@@ -51,6 +51,7 @@ Task format
   - [x] Production at 45d40e6 with the seam fix and round 6 notes 2 to 12, on Filip's "deploy"
   - [x] Production at bd50d8a with the phone hero, the scroll work, the copy fixes and Dusan's photos, on Filip's "deploy"
   - [x] Production at 7ff0efa with the phone hero band canvas and the stepping ratio, on Filip's "deploy"
+  - [x] Production at 80b8ba0 with the phone hero fix and 18 second pace, Slovenia and the projects back arrow, on Filip's "deploy"
 - bullhill-1 BullHill company website, one page, Foundry direction at /?v=1. Plan in briefs/website/plan.md, branch claude/hopeful-maxwell-bwuy3c. Link https://bullhill-site.vercel.app
   - [x] Put the logo files and brand colours on file
   - [x] Propose the page sections

@@ -49,6 +49,10 @@ written by `/taste`.
   the page column.
 - A hero off the page grid. Hero copy and product shots sit on the same column as the sections below,
   measured edge for edge at every board width. A wider hero column reads as overflow.
+- A section that clips both axes cuts its product shot's drop shadow at its last row, a step a large
+  display shows as a line. Clip only the axis that needs it, clip on x and visible on y.
+- A button that grows on hover moves its neighbours, and in a tight row rewraps under the cursor and
+  flickers. Keep the outer width the same at rest and on hover.
 - A smooth gradient image saved lossy. Lossy WebP or JPEG blocks in soft gradients on a large display.
   Ship them lossless at full size, and end every dark section in the next section's colour through an
   eased fade, never a hard edge.

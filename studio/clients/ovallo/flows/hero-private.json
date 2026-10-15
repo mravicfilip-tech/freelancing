@@ -1,0 +1,10 @@
+{
+  "name": "Hero to Ovallo Private",
+  "job": "A visitor with $100,000 or more opens the Ovallo Private view from the hero",
+  "start": "/?hero=2",
+  "maxClicks": 2,
+  "steps": [
+    { "click": "Discover Ovallo Private" },
+    { "expect": "Ovallo Private" }
+  ]
+}

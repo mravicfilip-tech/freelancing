@@ -1,0 +1,11 @@
+{
+  "name": "Hero to the plans",
+  "job": "A visitor reads the offer in the hero and reaches the fixed rate plans",
+  "start": "/?hero=5",
+  "maxClicks": 2,
+  "steps": [
+    { "expect": "Digital asset investing," },
+    { "click": "Secure Your Fixed Rate" },
+    { "expect": "Explore Fixed Investment Opportunities" }
+  ]
+}

@@ -25,7 +25,7 @@ Task format
 
 ## In progress
 
-- ovallo-5 Hero, five cleaner variants without the mark and the tilt. Notes in briefs/clean-up/notes-round6.md to notes-round9.md, fork branch claude/exciting-johnson-577zey, ?hero=1..5 on page D at 58ba268, first set at 3c6a69c
+- ovallo-5 Hero, five cleaner variants without the mark and the tilt. Notes in briefs/clean-up/notes-round6.md to notes-round10.md, fork branch claude/exciting-johnson-577zey, ?hero=1..5 on page D at de8d9fc, first set at 3c6a69c
   - [x] Read the current hero, the photos and the rho.co reference
   - [x] Build five variants, break, paper, two tone, term sheet and photograph
   - [x] Board at 1440 and 390
@@ -36,6 +36,12 @@ Task format
   - [x] Third set, backgrounds rendered from the pins Filip pointed at, checked at 2560
   - [x] Fourth set, every block on the page grid, lossless backgrounds, a smooth fade into the plans
   - [x] Variant 5 secondary text in paper at 64%
+  - [x] Plan facts beside the screen in variant 2
+  - [x] Hero CTAs keep one width on hover
+  - [x] Screen shadow no longer cut at the bottom of the hero
+  - [x] /uireview, no open sev 1
+  - [ ] Preview link with the hero switcher for Filip
+  - [ ] Production with the switcher for the client to choose, after Filip's ship line
   - [ ] Filip picks a hero
   - [ ] Make the pick the hero and take out the other four
 

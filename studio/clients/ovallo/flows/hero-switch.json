@@ -1,0 +1,14 @@
+{
+  "name": "Compare hero variants",
+  "job": "The client switches between the five hero variants and the current hero to choose one",
+  "start": "/",
+  "maxClicks": 6,
+  "steps": [
+    { "click": "1" },
+    { "expect": "Digital asset investing," },
+    { "click": "4" },
+    { "expect": "Payout Schedule" },
+    { "click": "Now" },
+    { "expect": "Digital asset investing," }
+  ]
+}

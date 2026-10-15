@@ -116,6 +116,10 @@ Task format
 
 ## Review
 
+- bullhill-14 Projects row will not scroll back. Note 16 in briefs/website/round6-notes.md
+  - [x] Reproduced at 1366 wide, five clicks on the back arrow at the end of the row stay on 05 / 05
+  - [x] The back arrow steps one card back from where the row is
+  - [ ] Filip clicks back from the end on his laptop
 - bullhill-13 Phone hero at 60 frames a second, Filip "the animation in the hero on the mobile is moving at 15 fps"
   - [x] The canvas covers only the part the scrims leave visible, 45 percent of the pixels at 390 by 844, same picture
   - [x] The pixel ratio steps from 1.5 to 1 when frames run under 50 a second, ?h7dbg=1 shows the rate
@@ -151,6 +155,7 @@ Task format
   - [x] Note queued, nine places listed
   - [ ] The full country list from the client
   - [x] Built with the five countries, 3a3b5eb
+  - [x] Slovenia added, Filip 15 October, note 15, fifteen places, both languages
 - bullhill-9 Real contact details and address, Celje. Notes 10 and 12 in briefs/website/round6-notes.md
   - [x] Phone, WhatsApp, email and address queued
   - [ ] Registration and VAT number from the client

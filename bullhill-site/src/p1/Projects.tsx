@@ -61,6 +61,23 @@ export function Projects({ c }: { c: Content }) {
     row.scrollTo({ left: el.offsetLeft - startPad(row), behavior: 'smooth' });
   };
 
+  // Back one card from where the row really is. On a wide screen the last cards share one scroll
+  // position, the end of the row, so a step back by index from the last card asked for the end again
+  // and the row stuck there. Filip, 15 October 2026, "wont scroll back". A card that starts within one
+  // gap of where the row is counts as the card on screen.
+  const back = () => {
+    const row = rowRef.current;
+    if (!row) return;
+    const pad = startPad(row);
+    const near = parseFloat(getComputedStyle(row).columnGap) || 24;
+    let to = 0;
+    Array.from(row.children).forEach((el) => {
+      const s = (el as HTMLElement).offsetLeft - pad;
+      if (s < row.scrollLeft - near && s > to) to = s;
+    });
+    row.scrollTo({ left: to, behavior: 'smooth' });
+  };
+
   return (
     <section id="projects" className="proj" aria-labelledby="proj-title">
       <div className="proj__head g">
@@ -130,7 +147,7 @@ export function Projects({ c }: { c: Content }) {
       </ul>
 
       <div className="proj__nav">
-        <button type="button" className="sq" onClick={() => go(active - 1)} disabled={active === 0} aria-label={c.ui.prev}>
+        <button type="button" className="sq" onClick={back} disabled={active === 0} aria-label={c.ui.prev}>
           <Arrow dir="left" />
         </button>
         <p className="mono proj__count" aria-live="polite">

@@ -104,6 +104,14 @@ structure in words, no code yet. Foundry at `/?v=1`, files in `bullhill-site/src
 14. More photos to come, "Poslacu ti jos slika na mail, pa ih ti rasporedi, kako mislis da bi bilo
     dobro", I will send more photos by mail, place them as you think best. Waiting for the mail.
 
+15. Slovenia joins the country list, Filip, "Add slovenie as a country we work with as well". It answers
+    the question under note 12. Slovenia goes last, after Czechia, in all fifteen places, both languages
+    and the meta description, and the Where we work list has six countries.
+
+16. "wont scroll back", a phone photo of a laptop on the Projects row, Town centre rollout and Village
+    connection on screen. At 1366 wide the last three cards share the end of the row, so the back arrow
+    asked for the end again and the row stuck on 05 / 05. The back arrow now steps from where the row is.
+
 ## Round plan, Filip "build" at 13:3x, note 1 "Yes, as proposed"
 
 Live version touched, Foundry at `/?v=1` with hero 7, production at 07b7e8f. Daylight and Underground

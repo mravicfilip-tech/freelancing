@@ -31,6 +31,10 @@ Task format
   - [x] Note queued, nine places listed
   - [ ] The full country list from the client
   - [ ] Filip says build
+- bullhill-9 Real contact details and address, Celje. Notes 10 and 12 in briefs/website/round6-notes.md
+  - [x] Phone, WhatsApp, email and address queued
+  - [ ] Registration and VAT number from the client
+  - [ ] Filip says build
 - bullhill-6 Blur the company sign in the Business park photo. Note 2 in briefs/website/round6-notes.md
   - [x] Note queued
   - [ ] Filip says build

@@ -74,6 +74,26 @@ structure in words, no code yet. Foundry at `/?v=1`, files in `bullhill-site/src
    lokaciju", on the card "Across Austria and southern Germany, when a section needs more hands."
    Already on the list under note 6 (`content.ts` 286, 488), it takes the same country list.
 
+10. Real contact details, forwarded from the client. Phone "+43 665 65942472" ("Ovaj br"), the same
+    number for WhatsApp ("Isti br i za whatsup"), email "bullhilldoo@gmail.com". They replace the
+    stand-ins `+43 660 000 00 00`, `tel:+436600000000`, `https://wa.me/436600000000` and
+    `office@bullhill.at` (`content.ts` 148 to 152, 379 to 383). The phone feeds the header call
+    buttons, the menu, the hero and the contact block through `phoneHref`, so one change covers them.
+    New values `tel:+4366565942472` and `https://wa.me/4366565942472`. Shown as the client wrote it
+    unless Filip wants it grouped.
+
+11. A question from the client, not a change, "I sta treba da ide, sta si zamislio u tim poslednjim
+    padaju..." (cut off), what should go in those last drop-downs, what did you have in mind. Read as
+    the FAQ accordion, the last expanding rows before the contact block, four stand-in questions on
+    fibre laying, metres a day, permits and regions (`content.ts` 315 and on). Filip answers him.
+
+12. The address, forwarded from the client, "Kidričeva ulica 24, 3000 Celje". Celje is in Slovenia,
+    and "doo" in the email is the Slovenian d.o.o. It replaces the stand-in "Street and number, 4600
+    Wels, Austria" (`content.ts` 154, 385, German "Slowenien"). The footer still carries the stand-in
+    Austrian register numbers "FN 000000x · UID ATU00000000" (346, 546), which do not fit a Slovenian
+    company. Ask the client for the registration number and the VAT number, SI and eight digits, or
+    drop the line until they arrive. Ask too whether Slovenia joins the country list of note 6.
+
 ## Proposed structure, waiting on Filip
 
 1. The scene fills the first screen, 100svh, edge to edge, behind the header. No pin, the page

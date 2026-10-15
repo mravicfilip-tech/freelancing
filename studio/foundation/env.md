@@ -11,6 +11,13 @@ so the lesson outlives the context window.
 - The cloud stop hook asks for a commit whenever the working tree is dirty. Builders work in their
   own git worktree, per build recipe step 2, so the main tree stays clean while they run.
 
+## Git
+
+- A repo cloned with `--depth 1` tracks only its default branch, so `git push -u` of a new branch
+  leaves no remote tracking ref and the stop hook calls it unpushed. After the first push, run
+  `git config --add remote.origin.fetch '+refs/heads/<branch>:refs/remotes/origin/<branch>'`, then
+  `git fetch origin <branch>` and `git branch -u origin/<branch>`.
+
 ## Shots
 
 - The container has 4 cores and no GPU. WebGL renders in software. Wait 9000 to 13000ms per frame

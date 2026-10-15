@@ -36,7 +36,12 @@ Task format
   - [x] Build home in direction B, private bank
   - [x] Build home in direction C, term sheet
   - [x] Merge, shoot and check Ovallo6 did not change
-  - [ ] Filip picks a direction
+  - [x] Filip picks section by section in a video, notes in briefs/clean-up/notes-round2.md
+  - [ ] Build the combined page D from the picks
+  - [ ] Plans type scale, the title largest, three sizes at most
+  - [ ] Add funds title alignment, spacing and icon chips
+  - [ ] Background lines from the mark
+  - [ ] Filip accepts the combined page
   - [ ] Fixed Income and Tokenized Bonds from the same parts
   - [ ] /uireview at 390 and 1440
 

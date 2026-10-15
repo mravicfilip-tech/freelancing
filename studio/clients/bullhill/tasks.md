@@ -23,6 +23,9 @@ Task format
 
 ## Backlog
 
+- bullhill-6 Blur the company sign in the Business park photo. Note 2 in briefs/website/round6-notes.md
+  - [x] Note queued
+  - [ ] Filip says build
 - bullhill-5 Phone hero full screen, plays by itself on load. Notes in briefs/website/round6-notes.md
   - [x] Note queued, structure proposed in words
   - [ ] Filip's yes on the structure, the length and play once or loop

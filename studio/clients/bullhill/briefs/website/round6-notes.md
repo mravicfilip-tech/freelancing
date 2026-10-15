@@ -12,6 +12,14 @@ structure in words, no code yet. Foundry at `/?v=1`, files in `bullhill-site/src
    like a decent normal speed". Today at 390 the scene is a box of about 330 by 300 between the two
    headline halves, pinned for 200svh and driven by the scroll.
 
+2. Blur the company sign, forwarded from the client chat, "Na ovoj slici ima tabla sa firmom,
+   bluruj tablu da ne bi popili kaznu neku", a sign with a company name on it, blur it so nobody
+   gets fined. The photo is `restored-wall`, the Business park access card in Projects
+   (Seekirchen, Salzburg), where the sign hangs on the wall top left. The same photo is in the
+   work section as "Restored strip along the kerb", so the blur goes into the photo files
+   themselves, all five sizes in `bullhill-site/public/photos/`, not a CSS overlay. While there,
+   check the other six photos for readable company names, signs or number plates.
+
 ## Proposed structure, waiting on Filip
 
 1. The scene fills the first screen, 100svh, edge to edge, behind the header. No pin, the page

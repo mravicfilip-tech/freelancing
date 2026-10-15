@@ -35,8 +35,9 @@ Task format
   - [x] Dig beat built at 1440, sheet to Filip, 5a2f3e1 merged behind ?hero=7
   - [x] Filip's answer on the Dig beat, 2, fix the weak spots first
   - [x] Dig beat fixed, a detailed machine, a trench along the stretch, a travelling camera, 052030f
-  - [ ] Steps 1, 3, 4 and 5, labels in English and German
-  - [ ] Phone stills and the reduced motion still
+  - [x] Steps 1, 3, 4 and 5, labels in English and German, 4b93c19
+  - [x] Phone stills and the reduced motion still, 4b93c19
+  - [ ] Final round, the restored end as a cut face, a phone flipbook, an even camera pan, the tablet framing
   - [ ] Frame cost check and /uireview
   - [ ] Production, on Filip's "Push to production when done all of it", hero 6 stays the default
 - bullhill-1 BullHill company website, one page, Foundry direction at /?v=1. Plan in briefs/website/plan.md, branch claude/hopeful-maxwell-bwuy3c. Link https://bullhill-site.vercel.app

@@ -70,6 +70,10 @@ structure in words, no code yet. Foundry at `/?v=1`, files in `bullhill-site/src
    note 4, the body (`content.ts` 282, 484) and the Own machines card beside it (284, 486), which
    goes or gets a new point the client can stand behind.
 
+9. Short notice starts with the wider area, forwarded from the client, "Isto i ovde prosiri
+   lokaciju", on the card "Across Austria and southern Germany, when a section needs more hands."
+   Already on the list under note 6 (`content.ts` 286, 488), it takes the same country list.
+
 ## Proposed structure, waiting on Filip
 
 1. The scene fills the first screen, 100svh, edge to edge, behind the header. No pin, the page

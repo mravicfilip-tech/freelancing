@@ -94,7 +94,29 @@ structure in words, no code yet. Foundry at `/?v=1`, files in `bullhill-site/src
     company. Ask the client for the registration number and the VAT number, SI and eight digits, or
     drop the line until they arrive. Ask too whether Slovenia joins the country list of note 6.
 
-## Proposed structure, waiting on Filip
+## Round plan, Filip "build" at 13:3x, note 1 "Yes, as proposed"
+
+Live version touched, Foundry at `/?v=1` with hero 7, production at 07b7e8f. Daylight and Underground
+read the same `content.ts`, so the facts (phone, email, address, area, figures) change there too.
+
+1. Note 1, the phone hero, by a builder in its own worktree. Hero 7 under 768 only, hero 6 and the
+   desktop untouched.
+2. Notes 3, 4 and 8, no own machines. The hero lede ends "Our own crew." The crew title becomes "A small
+   crew that knows the work.", the body loses the excavator and the fleet. The machine row leaves the
+   numbers block, its title becomes "The numbers behind the routes.". The contractors body loses
+   "our own machines, our own transport", and the Own machines card becomes "Machines for the ground,
+   excavators, trucks and compaction gear matched to each route." The three crew portraits stay.
+3. Note 5, the four stats boxes only, 8 km, 270, 5, 1 year.
+4. Notes 6 and 9, the area becomes Germany, Austria, Belgium, the Netherlands and Czechia in all nine
+   places, Where we work lists the five countries. The list grows when the client sends more.
+5. Notes 10 and 12, the phone, WhatsApp, email and the Celje address. The stand-in FN and UID line
+   leaves the footer until the client sends the Slovenian numbers.
+6. Note 2, the sign in `restored-wall` blurred in all five files, the other six photos checked.
+7. Note 11 is Filip's to answer, a draft reply on request.
+
+Defaults Filip can correct after the build, the copy lines in step 2 and dropping the FN and UID line.
+
+## Proposed structure, accepted 13:38
 
 1. The scene fills the first screen, 100svh, edge to edge, behind the header. No pin, the page
    scrolls on into the work section after one screen.

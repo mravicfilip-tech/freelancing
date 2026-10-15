@@ -25,7 +25,7 @@ Task format
 
 ## In progress
 
-- ovallo-4 Clean up the Ovallo design, three directions and a pass on every section. Brief in briefs/clean-up/brief.md, fork branch claude/exciting-johnson-577zey, baseline Ovallo6 at 7a18b5b, three directions merged at 4d833dd behind ?dir=a|b|c
+- ovallo-4 Clean up the Ovallo design, three directions and a pass on every section. Brief in briefs/clean-up/brief.md, fork branch claude/exciting-johnson-577zey, baseline Ovallo6 at 7a18b5b, three directions merged at 4d833dd, the combined page D is the page at / from 72c3f0f
   - [x] Read the client feedback, the Ovallo5 and Ovallo6 briefs and rho.co
   - [x] Shoot Ovallo6 and rho.co at 1440
   - [x] Log the planet section rejection
@@ -51,6 +51,12 @@ Task format
   - [x] Testimonials white, light sections alternate tone
   - [x] Three footer graphic variants on a board
   - [x] Filip picks a footer graphic, the mark blueprint
+  - [x] Round 5 video notes, in briefs/clean-up/notes-round5.md
+  - [x] Show only the combined page, A, B and C frozen
+  - [x] Most Popular in the 12 Months row and a thicker sold bar
+  - [x] Bento tops and bottoms lined up, 12px gaps
+  - [x] Running micro animation in the bento and rewards cards
+  - [x] Load in across the page, blur in for text
   - [ ] Filip accepts the combined page
   - [ ] Fixed Income and Tokenized Bonds from the same parts
   - [ ] /uireview at 390 and 1440

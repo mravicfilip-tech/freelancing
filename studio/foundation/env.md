@@ -29,6 +29,9 @@ so the lesson outlives the context window.
   once, at round end.
 - Several 3D builders shooting at once pushed the load to 18 on 4 cores. A heavy 3D slice goes to its
   own cloud session on a `<branch>-<slice>` branch rather than a fourth builder in the same container.
+- A full page shot of a page with infinite CSS loops can come out with far sections blank or caught
+  mid reveal, though the DOM says they are shown. Full page shots run with reduced motion. Motion is
+  checked in viewport shots, taken 2500ms or more after the section's reveal starts.
 
 ## Network
 

@@ -23,6 +23,10 @@ Task format
 
 ## Backlog
 
+- bullhill-5 Phone hero full screen, plays by itself on load. Notes in briefs/website/round6-notes.md
+  - [x] Note queued, structure proposed in words
+  - [ ] Filip's yes on the structure, the length and play once or loop
+
 ## In progress
 
 - bullhill-2 Hero scroll smooth, frame rate on phones and desktop
@@ -47,6 +51,7 @@ Task format
   - [x] Vercel on hold, Filip 15 October, "Dont send to Vercel until I say so", no preview and no production until he says
   - [x] Production with hero 7 as the default hero, 07b7e8f at bullhill-site.vercel.app on Filip's "just deploy it bro"
   - [ ] Hero 7 phone frame cost against hero 6
+  - [x] Glow seam between the hero and the work section, c08b793, not deployed
 - bullhill-1 BullHill company website, one page, Foundry direction at /?v=1. Plan in briefs/website/plan.md, branch claude/hopeful-maxwell-bwuy3c. Link https://bullhill-site.vercel.app
   - [x] Put the logo files and brand colours on file
   - [x] Propose the page sections

@@ -6,10 +6,10 @@ import { clamp01 } from './geometry';
 // shots, 0 to 1, and wins over the scroll. A disabled store (reduced motion) always reads 0.
 //
 // The p subscribers get glides toward the scroll, it is not the scroll itself. Each frame it closes
-// a share of the gap, the share set by a time constant, so a mouse wheel's 100px notches arrive as
-// one continuous move and not as steps, at any frame rate. Filip, 14 October 2026, "smooth as fuck,
-// the smoother it can get the better". Touch scrolling already glides, so it gets a shorter constant
-// and the scene stays under the finger.
+// a share of the gap, the share set by a time constant, so any step left in the scroll arrives as a
+// continuous move, at any frame rate. Filip, 14 October 2026, "smooth as fuck, the smoother it can
+// get the better". The page itself glides on a mouse wheel (motion/smoothScroll.ts) and natively on a
+// trackpad or touch, so the constant is short and the scene stays with the page.
 
 export type Progress = {
   sample(): number;
@@ -28,9 +28,11 @@ export function urlProgress(): number | null {
   return Number.isFinite(n) ? clamp01(n) : null;
 }
 
-// the time constants of the glide, in ms, for a mouse or trackpad and for touch
-const TAU = 150;
-const TAU_TOUCH = 90;
+// the time constants of the glide, in ms. Short since 15 October 2026, a mouse wheel's notches are
+// smoothed by Lenis (motion/smoothScroll.ts) and trackpads and touch glide natively, so a long glide
+// only made the scene trail the page.
+const TAU = 70;
+const TAU_TOUCH = 70;
 
 function createStore(): Store {
   const subs = new Set<(p: number) => void>();

@@ -19,6 +19,7 @@ import { ButtonLab } from './variants/buttons/Lab';
 import { HERO_VARIANTS } from './variants/hero';
 import { useGround } from './motion/ground';
 import { motionOn } from './motion/motion';
+import { useSmoothScroll } from './motion/smoothScroll';
 import { blkVariant, heroVariant, lab } from './variants/params';
 
 // The sections after the hero, in page order. They mount after it, one a frame, so
@@ -58,6 +59,7 @@ export default function Foundry() {
     };
   }, [shown]);
   useGround(root, shown >= ALL);
+  useSmoothScroll();
   if (lab() === 'buttons') {
     return (
       <div className="p1" id="top" ref={setRoot} lang={c.lang}>

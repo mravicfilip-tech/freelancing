@@ -64,6 +64,12 @@ structure in words, no code yet. Foundry at `/?v=1`, files in `bullhill-site/src
    just on the stats boxes where we have those things listed". Read as, the client's figures of note
    5 go into the four stats boxes only, and nothing changes on these cards. No change from this note.
 
+8. Contractors block without our machines, forwarded from the client, "Bez nasih masina", on
+   "Extra capacity when the schedule is tight. We join your project as a subcontractor with our own
+   machines, our own transport and a crew that knows the work." Already on the site wide list under
+   note 4, the body (`content.ts` 282, 484) and the Own machines card beside it (284, 486), which
+   goes or gets a new point the client can stand behind.
+
 ## Proposed structure, waiting on Filip
 
 1. The scene fills the first screen, 100svh, edge to edge, behind the header. No pin, the page

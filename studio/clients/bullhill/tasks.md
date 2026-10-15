@@ -50,6 +50,7 @@ Task format
   - [x] Glow seam between the hero and the work section, c08b793
   - [x] Production at 45d40e6 with the seam fix and round 6 notes 2 to 12, on Filip's "deploy"
   - [x] Production at bd50d8a with the phone hero, the scroll work, the copy fixes and Dusan's photos, on Filip's "deploy"
+  - [x] Production at 7ff0efa with the phone hero band canvas and the stepping ratio, on Filip's "deploy"
 - bullhill-1 BullHill company website, one page, Foundry direction at /?v=1. Plan in briefs/website/plan.md, branch claude/hopeful-maxwell-bwuy3c. Link https://bullhill-site.vercel.app
   - [x] Put the logo files and brand colours on file
   - [x] Propose the page sections

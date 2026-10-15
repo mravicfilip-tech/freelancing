@@ -29,7 +29,7 @@ import './hero7.css';
 //
 // Phones under 768 run the same scene live in the tall framing the stills were rendered from, in hero 6's phone
 // layout and its CSS classes, the headline in two halves, the box between them, the words that stay, when they
-// can take it, see phoneLiveOk. Every other phone flips through 27 stills of the scene, held and crossfaded
+// can take it, see phoneLiveOk. Every other phone flips through 28 stills of the scene, held and crossfaded
 // between neighbours by scroll, rendered by scripts/render-hero7.mjs, and reduced motion and browsers without
 // WebGL get the last frame, the restored route, as a still, wide on a desktop and tall on a phone, with no pin.
 // `?flip=1` forces the flipbook.

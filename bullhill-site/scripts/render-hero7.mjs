@@ -1,6 +1,6 @@
 // Renders the hero 7 stills from the same scene the page draws, headless Chromium on SwiftShader, at 2x,
 // saved as WebP in public/render/, the ground fading to the page's black at its edges. The phone's flipbook
-// is 27 tall frames, hero7-tall-f00.webp to f26, at the p of FRAME_P in src/p1/variants/hero/hero7/acts.ts,
+// is 28 tall frames, hero7-tall-f00.webp to f27, at the p of FRAME_P in src/p1/variants/hero/hero7/acts.ts,
 // which this script reads from there. Each is a 360 by 360 scene at 2x, 720 pixels, the size of the box on a
 // 390 phone at 2x, and held to 43KB. The last of them, the restored route, is also the phone's poster for
 // reduced motion and browsers without WebGL. The wide still, hero7-wide.webp, is the same last frame at the

@@ -18,7 +18,7 @@ import * as THREE from 'three';
 import type { Progress } from '../hero6/progress';
 import { LoadClock, riseEase } from '../hero6/timeline';
 import { buildStage, type Stage } from './stage';
-import { CAM, HOUSE, ROUTE_X0, camAt, makeCam, type View } from './world';
+import { CAM, ROUTE_LEN, camAt, makeCam, type View } from './world';
 
 const dbg = import.meta.env.DEV
   ? (() => {
@@ -38,12 +38,13 @@ export type StillSpec = { view: View; p: number; w: number; h: number };
 
 // the route draws in over this long once the load has begun
 const ROUTE_MS = 1500;
-// where the route's front is, ms into the load. From the street end to the house, eased.
+// how much of the route is drawn, in metres from the cabinet, ms into the load. From the cabinet to the house
+// wall, eased.
 const routeAt = (a: number) => {
-  if (a === Infinity) return HOUSE.x0 - 1.3;
-  if (a < 0) return ROUTE_X0 + 1;
+  if (a === Infinity) return ROUTE_LEN + 1;
+  if (a < 0) return -1;
   const t = riseEase(Math.min(1, a / ROUTE_MS));
-  return ROUTE_X0 + 0.6 + (HOUSE.x0 - 1.3 - ROUTE_X0 - 0.6) * t;
+  return (ROUTE_LEN + 1) * t;
 };
 const smooth = (t: number) => {
   const k = Math.min(1, Math.max(0, t));

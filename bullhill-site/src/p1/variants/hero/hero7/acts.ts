@@ -36,14 +36,14 @@ export function labelAt(p: number, i: number) {
 // the headline, lede and buttons leave in the last part of step 5, 0 to 1
 export const textGone = (p: number) => (BUILT < 5 ? 0 : smooth(clamp01((p - 0.82) / 0.18)));
 
-// ---- the phone's flipbook. Phones draw no WebGL, they show 27 stills of the scene at a tall framing, rendered
+// ---- the phone's flipbook. Phones that cannot run the live scene show 28 stills of the scene at a tall framing, rendered
 // by scripts/render-hero7.mjs at these p, which it reads from this line. The frames are spaced by how far the
 // picture moves, the camera across the screen and the machine, the ducts and the ground under it, so
 // neighbouring frames sit about the same distance apart on the screen, 60 pixels of the 360 a frame. That
 // puts them close where the camera pans and the machine works and wide apart where the shot holds. The
 // frame at 0.17 is the dig just opened. Each frame holds, and a very short crossfade between two neighbours
 // carries the scroll from one to the next.
-export const FRAME_P = [0, 0.17, 0.21, 0.244, 0.279, 0.307, 0.339, 0.37, 0.409, 0.475, 0.514, 0.555, 0.595, 0.633, 0.657, 0.685, 0.716, 0.749, 0.763, 0.78, 0.816, 0.859, 0.883, 0.902, 0.932, 0.959, 1];
+export const FRAME_P = [0, 0.17, 0.215, 0.254, 0.289, 0.324, 0.357, 0.396, 0.461, 0.494, 0.519, 0.549, 0.575, 0.61, 0.64, 0.666, 0.697, 0.73, 0.756, 0.78, 0.808, 0.832, 0.86, 0.888, 0.915, 0.945, 0.972, 1];
 export const FRAMES = FRAME_P.length;
 // where frame i + 1 takes over from frame i, halfway between the two, except the first, which waits for the
 // dig to open at 0.15, and how wide the crossfade there is, in p

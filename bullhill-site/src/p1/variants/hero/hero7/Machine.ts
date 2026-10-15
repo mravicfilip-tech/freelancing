@@ -402,8 +402,10 @@ export function buildMachine(): MachineRig {
     root,
     bucketPivot: bucket,
     update(p: Pose, rock = 0, clock = 0) {
-      root.position.x = p.xm;
-      setShoes(p.xm - XM0);
+      // on the route it faces the house and backs along it, at the end it turns right round and drives off
+      root.position.set(p.xm + p.drv, 0, MZ);
+      root.rotation.y = Math.PI * (1 - p.turn);
+      setShoes(p.xm - XM0 - p.drv);
       house.rotation.y = -p.psi;
       // the house idles on its tracks, a slow sway on two axes and a faint engine tremor, a fraction of a
       // degree, its size set by rock, 0 to 1, and its phase by the clock

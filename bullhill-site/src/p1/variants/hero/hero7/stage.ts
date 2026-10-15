@@ -52,6 +52,8 @@ export type Stage = {
 };
 
 // `shadow` is the shadow map's side, 2048 and 1024 on phones
+// half the side of the shadow's box, wide enough for the house, the trench and the machine at the street end
+const HALF = 16;
 export function buildStage(gl: THREE.WebGLRenderer, dpr: number, shadow = 2048): Stage {
   const { c, r } = camDirs();
   const group = new THREE.Group();
@@ -71,10 +73,10 @@ export function buildStage(gl: THREE.WebGLRenderer, dpr: number, shadow = 2048):
   key.castShadow = true;
   key.shadow.mapSize.set(shadow, shadow);
   const sc = key.shadow.camera;
-  sc.left = -10;
-  sc.right = 10;
-  sc.top = 10;
-  sc.bottom = -10;
+  sc.left = -HALF;
+  sc.right = HALF;
+  sc.top = HALF;
+  sc.bottom = -HALF;
   sc.near = 1;
   sc.far = 40;
   sc.updateProjectionMatrix();
@@ -92,7 +94,7 @@ export function buildStage(gl: THREE.WebGLRenderer, dpr: number, shadow = 2048):
   const lrl = Math.hypot(kd[2], kd[0]);
   const lr: V3 = [kd[2] / lrl, 0, -kd[0] / lrl];
   const lu: V3 = [kd[1] * lr[2] - kd[2] * lr[1], kd[2] * lr[0] - kd[0] * lr[2], kd[0] * lr[1] - kd[1] * lr[0]];
-  const TEXEL = 20 / shadow;
+  const TEXEL = (2 * HALF) / shadow;
   const env = buildEnv(gl);
   const pose = makePose();
   let last = NaN;
@@ -121,7 +123,7 @@ export function buildStage(gl: THREE.WebGLRenderer, dpr: number, shadow = 2048):
       if (!moved) return false;
       // the shadow's box is centred ahead of the machine, over the arm, the trench and the heap, and snapped to
       // the shadow map's texels along the light's own axes, so the shadow's edges do not crawl while it travels
-      let tx = pose.xm - 2.5;
+      let tx = Math.min(6, Math.max(-2, (pose.xm + pose.drv - 4) / 2));
       let ty = 0;
       let tz = MZ - 1.2;
       const du = tx * lr[0] + ty * lr[1] + tz * lr[2];
@@ -133,8 +135,8 @@ export function buildStage(gl: THREE.WebGLRenderer, dpr: number, shadow = 2048):
       tz -= lr[2] * fu + lu[2] * fv;
       key.target.position.set(tx, ty, tz);
       key.position.set(tx + kx, ty + KEY_Y, tz + kz);
-      rim.position.set(pose.xm - c[0] * 8 + r[0] * 4, 4, MZ - c[2] * 8 + r[2] * 4);
-      rim.target.position.set(pose.xm, 0, MZ);
+      rim.position.set(pose.xm + pose.drv - c[0] * 8 + r[0] * 4, 4, MZ - c[2] * 8 + r[2] * 4);
+      rim.target.position.set(pose.xm + pose.drv, 0, MZ);
       return true;
     },
     setScreen(d) {

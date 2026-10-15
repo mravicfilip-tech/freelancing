@@ -1,6 +1,7 @@
 import { useLayoutEffect, useRef } from 'react';
 import type { CSSProperties } from 'react';
 import { ServiceArt } from '../../art';
+import { ServiceArtCanvas } from './ServiceArtCanvas';
 import { motionOn } from '../../motion/motion';
 import { svcVariant } from './params';
 import type { SvcN } from './params';
@@ -86,7 +87,15 @@ function useGo(ref: React.RefObject<SVGSVGElement | null>, v: SvcN) {
   }, [ref, v]);
 }
 
-export function ServiceArtMotion({ kind, className, index = 0 }: { kind: Kind; className?: string; index?: number }) {
+type Props = { kind: Kind; className?: string; index?: number };
+
+// Version 3, the default, is drawn on a canvas, see ServiceArtCanvas.tsx. The versions behind ?svc=1,
+// 2 and 4 stay svg. Motion off returns the plain still ServiceArt in every version.
+export function ServiceArtMotion(props: Props) {
+  return motionOn() && svcVariant() === 3 ? <ServiceArtCanvas {...props} /> : <ServiceArtSvg {...props} />;
+}
+
+function ServiceArtSvg({ kind, className, index = 0 }: Props) {
   const ref = useRef<SVGSVGElement>(null);
   const on = motionOn();
   const v = svcVariant();

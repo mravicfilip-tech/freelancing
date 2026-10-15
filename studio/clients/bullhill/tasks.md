@@ -25,6 +25,10 @@ Task format
 
 ## In progress
 
+- bullhill-10 Whole page scroll silky, a deep dive on frame cost. Baseline 45d40e6, nothing may look different
+  - [ ] Measure a wheel scroll of the whole page at 1440 and a touch scroll at 390, frame by frame, by section
+  - [ ] Audit the scroll path, listeners, layers, masks, filters, canvases and per frame work
+  - [ ] Fix the worst costs, measure again, before and after shots
 - bullhill-5 Phone hero full screen, plays by itself on load. Notes in briefs/website/round6-notes.md
   - [x] Note queued, structure proposed in words
   - [x] Filip's yes, as proposed, 12 seconds, play once

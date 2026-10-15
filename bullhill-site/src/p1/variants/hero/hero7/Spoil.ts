@@ -8,7 +8,7 @@
 import * as THREE from 'three';
 import { rng } from '../hero6/geometry';
 import { PALETTE } from '../hero6/acts';
-import { CYCLES, DUMPX, PILE_Z, heapAmp, type Pose } from './world';
+import { CYCLES, DUMPX, PILE_Z, type Pose } from './world';
 
 const PER = 2600; // grains per dump
 const CARRY = 240; // points in the bucket
@@ -25,6 +25,7 @@ uniform float uHeapX[${CYCLES}];
 uniform float uHeapA[${CYCLES}];
 uniform float uPileZ;
 uniform float uCarry;
+uniform float uFall;
 uniform mat4 uBucket;
 uniform float uPx;
 varying vec3 vCol;
@@ -44,15 +45,21 @@ void main() {
   if (aMeta.x > ${(CYCLES - 0.5).toFixed(1)}) {
     // the load, in the bucket's own frame, so it turns with it
     p = (uBucket * vec4(position, 1.0)).xyz;
+    // over the trench the load pours out of the bucket, each grain on its own delay
+    float fl = clamp((uFall - aMeta.y * 0.5) / 0.5, 0.0, 1.0);
+    p.y -= fl * fl * 2.2;
     vA = step(aMeta.y, uCarry);
   } else {
-    float q = uDump[int(aMeta.x + 0.5)];
+    int i = int(aMeta.x + 0.5);
+    float q = uDump[i];
     float t = q - aMeta.y * 0.55;
     float f = clamp(t / 0.45, 0.0, 1.0);
     float land = heapHeight(position.xz) + 0.012 + position.y;
     p.xz = mix(aStart.xz, position.xz, smoothstep(0.0, 1.0, f));
     p.y = mix(aStart.y, land, f * f);
     vA = t > 0.0 ? 1.0 : 0.0;
+    // once its dump is done the grain follows its mound down as the backfill draws it in
+    if (q > 0.999) vA *= smoothstep(0.0, 0.2, uHeapA[i]);
   }
   vCol = aCol;
   gl_Position = projectionMatrix * modelViewMatrix * vec4(p, 1.0);
@@ -137,6 +144,7 @@ export function buildSpoil(dpr: number, bucket: THREE.Object3D): SpoilRig {
     uHeapA: { value: heapA },
     uPileZ: { value: PILE_Z },
     uCarry: { value: 0 },
+    uFall: { value: 0 },
     uBucket: { value: bucket.matrixWorld },
     uPx: { value: 2.3 * Math.max(1, dpr) },
   };
@@ -149,9 +157,10 @@ export function buildSpoil(dpr: number, bucket: THREE.Object3D): SpoilRig {
     set(p) {
       for (let q = 0; q < CYCLES; q++) {
         dump[q] = p.dump[q];
-        heapA[q] = heapAmp(p.dump[q]);
+        heapA[q] = p.heap[q];
       }
       u.uCarry.value = p.carry;
+      u.uFall.value = p.fall;
     },
     dispose() {
       g.dispose();

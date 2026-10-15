@@ -5,9 +5,10 @@
 // shadow map that follows the machine, drawn only on a frame where p moved, the way hero 6 does it.
 
 import * as THREE from 'three';
-import { buildGround } from './Ground';
+import { buildGround, type GroundRig } from './Ground';
 import { buildMachine } from './Machine';
 import { buildSpoil } from './Spoil';
+import { buildStory } from './Story';
 import { KEY_Y, MZ, camDirs, makePose, solve, type V3 } from './world';
 
 function buildEnv(gl: THREE.WebGLRenderer) {
@@ -42,8 +43,11 @@ function buildEnv(gl: THREE.WebGLRenderer) {
 export type Stage = {
   group: THREE.Group;
   env: THREE.Texture;
-  // sets everything from p, and says whether anything that casts a shadow moved
-  update(p: number): boolean;
+  // Sets everything from p, and says whether anything that casts a shadow moved. `routeX` is how far the
+  // route has been drawn at load, `rock` the idle rock of the house on its tracks, both 0 to 1 from the clock.
+  update(p: number, routeX: number, rock: number, clock: number): boolean;
+  ground: GroundRig;
+  setScreen(dpr: number): void;
   dispose(): void;
 };
 
@@ -52,14 +56,16 @@ export function buildStage(gl: THREE.WebGLRenderer, dpr: number): Stage {
   const group = new THREE.Group();
   const machine = buildMachine();
   const ground = buildGround(dpr);
+  const story = buildStory(dpr);
   // the bucket is the last pivot of the arm, the load rides in its frame
   const bucket = machine.bucketPivot;
   const spoil = buildSpoil(dpr, bucket);
-  group.add(ground.group, machine.root, spoil.points);
+  group.add(ground.group, machine.root, spoil.points, story.group);
 
   const kx = -r[0] * 3 + c[0] * 8;
   const kz = -r[2] * 3 + c[2] * 8;
-  const key = new THREE.DirectionalLight('#fff1e2', 3.2);
+  // a warm key, a touch of orange in the white, the machine's greys stay greys
+  const key = new THREE.DirectionalLight('#ffe4c8', 3.3);
   key.position.set(kx, KEY_Y, kz);
   key.castShadow = true;
   key.shadow.mapSize.set(2048, 2048);
@@ -89,21 +95,31 @@ export function buildStage(gl: THREE.WebGLRenderer, dpr: number): Stage {
   const env = buildEnv(gl);
   const pose = makePose();
   let last = NaN;
+  let lastRoute = NaN;
+  let lastRock = 0;
 
   return {
     group,
     env: env.texture,
-    update(p) {
-      if (p === last) return false;
-      last = p;
-      solve(p, pose);
-      machine.update(pose);
-      ground.set(pose);
-      spoil.set(pose);
-      // the lights ride with the machine, so every frame is lit the same way
-      // the shadow's box is centred ahead of the machine, over the arm, the trench and the heap
-      // snapped to the shadow map's texels along the light's own axes, so the shadow's edges do not crawl
-      // while the box travels with the machine
+    ground,
+    update(p, routeX, rock, clock) {
+      const moved = p !== last || rock !== 0 || lastRock !== 0;
+      if (moved) {
+        last = p;
+        solve(p, pose);
+        machine.update(pose, rock, clock);
+        ground.set(pose);
+        spoil.set(pose);
+      }
+      lastRock = rock;
+      if (routeX !== lastRoute || moved) {
+        lastRoute = routeX;
+        ground.setRoute(routeX);
+        story.update(pose, routeX);
+      }
+      if (!moved) return false;
+      // the shadow's box is centred ahead of the machine, over the arm, the trench and the heap, and snapped to
+      // the shadow map's texels along the light's own axes, so the shadow's edges do not crawl while it travels
       let tx = pose.xm - 2.5;
       let ty = 0;
       let tz = MZ - 1.2;
@@ -120,10 +136,15 @@ export function buildStage(gl: THREE.WebGLRenderer, dpr: number): Stage {
       rim.target.position.set(pose.xm, 0, MZ);
       return true;
     },
+    setScreen(d) {
+      ground.setScreen(d);
+      story.setScreen(d);
+    },
     dispose() {
       ground.dispose();
       machine.dispose();
       spoil.dispose();
+      story.dispose();
       key.shadow.map?.dispose();
       env.dispose();
     },

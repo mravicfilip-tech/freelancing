@@ -1,7 +1,7 @@
 import { clamp01, smooth } from '../hero6/geometry';
 
-// Hero 7 as five named steps, briefs/website/hero7-excavator.md. p runs 0 to 1 across the pin. Only
-// step 2, Dig, is built (hero7/world.ts), the others hold the Dig end state until they are.
+// Hero 7 as five named steps, briefs/website/hero7-excavator.md. p runs 0 to 1 across the pin. All five
+// are built (hero7/world.ts).
 //
 //   1 Mark the route        p 0 to 0.15
 //   2 Dig                   p 0.15 to 0.45
@@ -11,8 +11,9 @@ import { clamp01, smooth } from '../hero6/geometry';
 
 export const STEPS = [0, 0.15, 0.45, 0.6, 0.75, 1] as const;
 // how many of the five steps are built. The label of the last built step stays up to the end of the pin,
-// and the headline holds, until the next one is built. Raise it as each step lands.
-export const BUILT = 2;
+// and the headline holds, until the next one is built. All five are, so the headline leaves in the last
+// part of step 5.
+export const BUILT = 5;
 
 // the step p is in, 0 to 4
 export function stepAt(p: number) {

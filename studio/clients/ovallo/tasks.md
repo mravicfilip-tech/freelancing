@@ -46,6 +46,11 @@ Task format
   - [x] Ovallo6 bento back in place of the photo bento
   - [x] Ovallo6 rewards back, with the Why Choose content folded in
   - [x] A different kind of line in each place
+  - [x] Round 4 screenshot notes, in briefs/clean-up/notes-round4.md
+  - [x] Hero back to Ovallo6, plan rows to the bottom, icons for the reasons
+  - [x] Testimonials white, light sections alternate tone
+  - [x] Three footer graphic variants on a board
+  - [ ] Filip picks a footer graphic
   - [ ] Filip accepts the combined page
   - [ ] Fixed Income and Tokenized Bonds from the same parts
   - [ ] /uireview at 390 and 1440

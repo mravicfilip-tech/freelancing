@@ -5,7 +5,7 @@ was said and what was on screen, read from the direction switcher and the cursor
 
 | # | At | On screen | Filip's words | What it means |
 |---|---|---|---|---|
-| 1 | 0m07 to 0m35 | D hero, then plans, back to the hero's bottom edge | "this section, this is fine, but if we can somehow make this go towards here, the bottom, it would be dope" | The hero stays. Its dashboard sinks to the hero's bottom edge and crosses into the plans section, as on rho.co |
+| 1 | 0m07 to 0m35 | D hero, then plans, back to the hero's bottom edge | "this section, this is fine, but if we can somehow make this go towards here, the bottom, it would be dope" | Misread as the hero dashboard. It meant the plan rows, see notes-round4.md |
 | 2 | 0m35 | D bento, B's photos | "This section, I don't want, I told you not to do this" | The photo bento goes. Round 2 note 3 was misread, see below |
 | 3 | 0m42 to 0m53 | D add funds, partners, rewards, then Why Choose | "This section is fine" ... "but I don't want, like, why choose a little like this" | Add funds stays. D's Why Choose is rejected |
 | 4 | 1m03 to 1m20 | The line graphics in the footer, Why Choose and plans | "we're repeating the same type of lines" ... "it needs to be a more mix and match" | Each place gets a different kind of line |

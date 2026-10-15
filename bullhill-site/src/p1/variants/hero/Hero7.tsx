@@ -7,8 +7,9 @@ import { Rise } from '../../motion/Rise';
 import { t7 } from './copy-hero7';
 import { StepList } from './StepList';
 import { urlProgress, useProgress, type Progress } from './hero6/progress';
+import { useAutoplay } from './hero7/autoplay';
 import { LoadClock, urlFreeze } from './hero6/timeline';
-import { FRAMES, frameFades, labelAt, stepAt, textGone } from './hero7/acts';
+import { FLIP, FRAMES, FRAME_P, frameFades, labelAt, stepAt, textGone } from './hero7/acts';
 import './hero.css';
 import './hero6.css';
 import './hero7.css';
@@ -27,12 +28,14 @@ import './hero7.css';
 // ground and the plan fill the height of the stage. At load the route draws in from the street to the house
 // on the LoadClock of hero 6 (`?t=` freezes it) and the machine idles on its tracks.
 //
-// Phones under 768 run the same scene live in the tall framing the stills were rendered from, in hero 6's phone
-// layout and its CSS classes, the headline in two halves, the box between them, the words that stay, when they
-// can take it, see phoneLiveOk. Every other phone flips through 28 stills of the scene, held and crossfaded
-// between neighbours by scroll, rendered by scripts/render-hero7.mjs, and reduced motion and browsers without
-// WebGL get the last frame, the restored route, as a still, wide on a desktop and tall on a phone, with no pin.
-// `?flip=1` forces the flipbook.
+// Phones under 768 are one screen, no pin and no scroll driven story. The scene fills the whole first screen
+// behind the header, the headline and the foot sit over it on black scrims, and the story plays by itself in
+// about 12 seconds once the load has shown the headline, pauses while the hero is off screen and holds the lit
+// house at the end (hero7/autoplay.ts). A phone that can take it runs the same scene live, see phoneLiveOk.
+// Every other phone flips through 28 stills of the scene in the same lens, dissolved into one another by the
+// same time, rendered by scripts/render-hero7.mjs. Reduced motion gets the last frame, the restored route, as a
+// still and does not play, and browsers without WebGL on a desktop or a tablet get the wide one. `?flip=1`
+// forces the flipbook, `?p=` pins a frame.
 
 const Scene = lazy(() => import('./hero7/Scene'));
 
@@ -48,20 +51,6 @@ function useMedia(q: string) {
   return on;
 }
 
-function useBox(ref: React.RefObject<HTMLElement | null>) {
-  const [size, setSize] = useState<[number, number]>([0, 0]);
-  useLayoutEffect(() => {
-    const el = ref.current;
-    if (!el) return;
-    const read = () => setSize([Math.round(el.clientWidth), Math.round(el.clientHeight)]);
-    read();
-    const ro = new ResizeObserver(read);
-    ro.observe(el);
-    return () => ro.disconnect();
-  }, [ref]);
-  return size;
-}
-
 function hasWebgl() {
   try {
     const cv = document.createElement('canvas');
@@ -74,7 +63,7 @@ function hasWebgl() {
 // Beat 1 with the clock frozen by ?t=. The headline's blocks are held where the reveal has got to at
 // t, the same lines and steps as the CSS (motion/motion.css, --rz is the time, --rp pauses).
 function freezeHeadline(sec: HTMLElement, t: number) {
-  sec.querySelectorAll<HTMLElement>('.hv7__title, .hv7__lede, .hv6__title, .hv6__lede').forEach((r) => {
+  sec.querySelectorAll<HTMLElement>('.hv7__title, .hv7__lede, .hv7p__title, .hv7p__lede').forEach((r) => {
     r.style.setProperty('--rz', `${t}ms`);
     r.style.setProperty('--rp', 'paused');
   });
@@ -102,7 +91,7 @@ function useLoad(section: React.RefObject<HTMLElement | null>, pin: React.RefObj
     const mark = () => {
       // the last line of the headline, read from the lines Rise has measured
       let last = 0;
-      sec.querySelectorAll<HTMLElement>('.hv7__title .rise__w, .hv6__title .rise__w').forEach((w) => {
+      sec.querySelectorAll<HTMLElement>('.hv7__title .rise__w, .hv7p__title .rise__w').forEach((w) => {
         last = Math.max(last, Number(w.style.getPropertyValue('--li')) || 0);
       });
       sec.style.setProperty('--h6-last', String(last));
@@ -111,7 +100,7 @@ function useLoad(section: React.RefObject<HTMLElement | null>, pin: React.RefObj
     mark();
     let alive = true;
     document.fonts?.ready.then(() => alive && mark());
-    const h1 = sec.querySelector('.hv7__title, .hv6__title');
+    const h1 = sec.querySelector('.hv7__title, .hv7p__title');
     const ro = new ResizeObserver(mark);
     if (h1) ro.observe(h1);
     return () => {
@@ -192,13 +181,15 @@ function useStepLabel(stepEl: React.RefObject<HTMLElement | null>, cls: string) 
 
 // ---- still render mode, for scripts/render-hero7.mjs. Only the scene, on a transparent page, at the still's
 // own framing and size. `&p=` is the step state.
-const STILL_SIZE = { wide: [1376, 760], tall: [360, 360] } as const;
+// The tall one is the whole phone screen at the reference size of the flipbook (FLIP in hero7/acts.ts), and
+// the script crops its strip out of it.
+const STILL_SIZE = { wide: [1376, 760], tall: [FLIP.w, FLIP.h] } as const;
 function StillStage({ view, p }: { view: 'wide' | 'tall'; p: number }) {
   const [w, h] = STILL_SIZE[view];
   return (
     <div className="h7-still" style={{ width: w, height: h }}>
       <Suspense fallback={null}>
-        <Scene still={{ view, p, w, h }} onReady={() => undefined} />
+        <Scene still={{ view, p, w, h, cy: view === 'tall' ? FLIP.cy : undefined }} onReady={() => undefined} />
       </Suspense>
     </div>
   );
@@ -379,28 +370,34 @@ function Poster({ c }: { c: Content }) {
   );
 }
 
-// ---- phones, under 768. hero 6's phone layout, its classes and its CSS. The block sits centred between the
-// two headline halves, TALL_GAP clear of each, as big as the room between them or the stage's width allows,
-// Filip, 14 October 2026, "bigger and central". TALL_HALF is one half, two lines of the 40px phone headline,
-// and TALL_FOOT the space under the second half, both set in hero6.css. The scene fills the part of the still
-// from TALL_VIS_LEFT for TALL_VIS_W of the box width and from TALL_VIS_TOP for TALL_VIS_H of its height,
-// measured from public/render/hero7-tall-*.
-const TALL_HALF = 80;
-const TALL_GAP = 16;
-const TALL_FOOT = 48;
-const TALL_VIS_LEFT = 0;
-const TALL_VIS_W = 1;
-const TALL_VIS_TOP = 0.16;
-const TALL_VIS_H = 0.68;
+// ---- phones, under 768. The scene fills the whole first screen, 100svh, edge to edge, behind the header,
+// Filip, 15 October 2026, "take way more of the screen like full VH". There is no pin and no scroll driven
+// story, the page scrolls straight on into the work section after one screen. A black scrim over the top
+// carries the headline in one block, a black scrim over the foot carries the step name, the lede and the
+// button, and the action sits in the clear band between them. The band is measured from the two blocks, so a
+// longer German headline or lede moves it and the scene follows, the middle of the picture on the middle of
+// the band (phoneLens in hero7/world.ts). The story plays by itself (hero7/autoplay.ts).
+//
+// The soft edge of each scrim is FADE px, set in hero7.css as --h7p-fade and read from there, and the band
+// takes half of it at each end, since the scene is half there.
+// the route takes 1.5s to draw (ROUTE_MS in hero7/Scene.tsx), the story starts just after
+const ARM_AT = 1600;
 const frameSrc = (i: number) => `/render/hero7-tall-f${String(i).padStart(2, '0')}.webp`;
-const FRAME_PX = 720;
 
-// The flipbook. Each frame is a still of the scene, they hold and crossfade with their neighbour (acts.ts,
-// frameFades), and the opacities are written straight on the images from p, so a scroll never re-renders the
-// hero. A frame more than one from the one on top has display none, so a phone holds at most three of them
-// on the GPU. The first frame comes with the page. The rest are asked for after it has loaded, the nearest to
-// where the scroll is first and then outwards, two at a time, and the ones just ahead are decoded early.
-function PhoneStills({ progress, load }: { progress: Progress; load: boolean }) {
+// The flipbook. Each frame is a still of the scene in the same lens as the live one, a strip of the screen
+// around the clear band, FLIP.rows tall at a 390 wide screen, with black baked into its top and bottom edges.
+// They dissolve into one another as the story plays (acts.ts, frameFades), and the opacities are written
+// straight on the images, so the hero never re-renders. A frame more than one from the one on top has
+// display none, so a phone holds at most three of them on the GPU. The first frame comes with the page, the
+// rest are asked for after the page has loaded, the next ones ahead of the story first, three at a time, and the
+// ones just ahead are decoded early. `gate` tells the story whether the two frames it is between have
+// arrived, so a slow connection holds the story where it is and it goes on when the next one is in. A frame
+// that failed does not hold it, the picture stays on the one before.
+const WAIT = 0;
+const ASKED = 1;
+const IN = 2;
+const LOST = 3;
+function PhoneStills({ progress, load, gate }: { progress: Progress; load: boolean; gate: (fn: ((p: number) => boolean) | null) => void }) {
   const box = useRef<HTMLDivElement>(null);
   useEffect(() => {
     const el = box.current;
@@ -409,17 +406,23 @@ function PhoneStills({ progress, load }: { progress: Progress; load: boolean }) 
     const o: number[] = new Array(FRAMES).fill(0);
     const last = ims.map((im) => im.style.opacity);
     const shown = ims.map((im) => im.style.display !== 'none');
-    const wanted = ims.map((im) => !!im.getAttribute('src'));
+    const state = ims.map((im) => (!im.getAttribute('src') ? WAIT : im.complete ? (im.naturalWidth > 0 ? IN : LOST) : ASKED));
+    ims.forEach((im, i) => {
+      if (state[i] === ASKED) {
+        im.onload = () => (state[i] = IN);
+        im.onerror = () => (state[i] = LOST);
+      }
+    });
     let top = 0;
     const decode = (i: number) => {
       const im = ims[i];
-      if (im && wanted[i]) void im.decode?.().catch(() => undefined);
+      if (im && state[i] === IN) void im.decode?.().catch(() => undefined);
     };
     const apply = (p: number) => {
       const t = frameFades(p, o);
       if (t !== top) {
         top = t;
-        for (let d = -2; d <= 2; d++) decode(top + d);
+        for (let d = -1; d <= 2; d++) decode(top + d);
       }
       ims.forEach((im, i) => {
         const keep = o[i] > 0 || Math.abs(i - top) <= 1;
@@ -437,44 +440,79 @@ function PhoneStills({ progress, load }: { progress: Progress; load: boolean }) 
     apply(progress.current());
     let live = true;
     let busy = 0;
-    // the nearest frame not yet asked for, ahead of the scroll first
+    // the nearest frame not yet asked for, ahead of the story first
     const pump = () => {
-      while (live && load && busy < 2) {
+      // before the page has loaded only the first two after the first are asked for, the story needs them
+      const reach = load ? FRAMES : 3;
+      while (live && busy < 3) {
         let pick = -1;
         for (let d = 0; d < FRAMES && pick < 0; d++) {
-          for (const i of [top + d, top - d]) if (i >= 0 && i < FRAMES && !wanted[i]) { pick = i; break; }
+          for (const i of [top + d, top - d]) if (i >= 0 && i < reach && state[i] === WAIT) { pick = i; break; }
         }
         if (pick < 0) return;
-        wanted[pick] = true;
+        state[pick] = ASKED;
         busy++;
         const im = ims[pick];
-        const done = () => {
+        const done = (ok: boolean) => {
           busy--;
-          if (Math.abs(pick - top) <= 2) decode(pick);
+          state[pick] = ok ? IN : LOST;
+          if (ok && pick - top <= 2) decode(pick);
           pump();
         };
-        im.onload = done;
-        im.onerror = done;
+        im.onload = () => done(true);
+        im.onerror = () => done(false);
         im.src = frameSrc(pick);
       }
     };
     pump();
+    gate((p) => {
+      let i = 0;
+      while (i < FRAMES - 2 && p >= FRAME_P[i + 1]) i++;
+      return state[i] >= IN && state[i + 1] >= IN;
+    });
     const un = progress.subscribe((p) => {
       apply(p);
       pump();
     });
     return () => {
       live = false;
+      gate(null);
       un();
     };
-  }, [progress, load]);
+  }, [progress, load, gate]);
   return (
     <div ref={box} className="h7st" aria-hidden="true">
       {Array.from({ length: FRAMES }, (_, i) => (
-        <img key={i} className="h7st__img" src={i === 0 ? frameSrc(0) : undefined} width={FRAME_PX} height={FRAME_PX} alt="" decoding="async" fetchPriority={i === 0 ? 'high' : 'low'} draggable={false} style={{ display: i === 0 ? undefined : 'none' }} />
+        <img key={i} className="h7st__img" src={i === 0 ? frameSrc(0) : undefined} width={FLIP.w * 2} height={FLIP.rows * 2} alt="" decoding="async" fetchPriority={i === 0 ? 'high' : 'low'} draggable={false} style={{ display: i === 0 ? undefined : 'none' }} />
       ))}
     </div>
   );
+}
+
+// the clear band, in pixels from the top of the screen, from the two blocks. null until measured.
+type Band = { w: number; h: number; top: number; bot: number };
+function useBand(pin: React.RefObject<HTMLElement | null>, top: React.RefObject<HTMLElement | null>, foot: React.RefObject<HTMLElement | null>) {
+  const [band, setBand] = useState<Band | null>(null);
+  useLayoutEffect(() => {
+    const p = pin.current;
+    const t = top.current;
+    const f = foot.current;
+    if (!p || !t || !f) return;
+    const read = () => {
+      const fade = parseFloat(getComputedStyle(p).getPropertyValue('--h7p-fade')) || 56;
+      const w = p.clientWidth;
+      const h = p.clientHeight;
+      const b: Band = { w, h, top: Math.round(t.offsetHeight - fade / 2), bot: Math.round(h - f.offsetHeight + fade / 2) };
+      setBand((o) => (o && o.w === b.w && o.h === b.h && o.top === b.top && o.bot === b.bot ? o : b));
+    };
+    read();
+    const ro = new ResizeObserver(read);
+    ro.observe(p);
+    ro.observe(t);
+    ro.observe(f);
+    return () => ro.disconnect();
+  }, [pin, top, foot]);
+  return band;
 }
 
 function Phone({ c, mode, onFail }: { c: Content; mode: 'live' | 'flip' | 'poster'; onFail: () => void }) {
@@ -483,12 +521,13 @@ function Phone({ c, mode, onFail }: { c: Content; mode: 'live' | 'flip' | 'poste
   const live = mode === 'live';
   const section = useRef<HTMLElement>(null);
   const pin = useRef<HTMLDivElement>(null);
-  const stage = useRef<HTMLDivElement>(null);
+  const topEl = useRef<HTMLDivElement>(null);
+  const footEl = useRef<HTMLDivElement>(null);
   const stepEl = useRef<HTMLDivElement>(null);
-  const [cw, ch] = useBox(stage);
+  const band = useBand(pin, topEl, footEl);
   const [clock] = useState(() => (animate ? new LoadClock(urlFreeze()) : null));
-  const progress = useProgress(section, pin, animate);
-  const label = useStepLabel(stepEl, '.hv6__stepi');
+  const progress = useAutoplay(section, animate);
+  const label = useStepLabel(stepEl, '.hv7p__stepi');
   const [stillsLoad, setStillsLoad] = useState(false);
   const [mounted, setMounted] = useState(false);
   useEffect(() => setMounted(true), []);
@@ -506,7 +545,7 @@ function Phone({ c, mode, onFail }: { c: Content; mode: 'live' | 'flip' | 'poste
       window.removeEventListener('load', go);
     };
   }, [mode]);
-  // the live scene writes the label from its own frame, the flipbook from the scroll
+  // the live scene writes the label from its own frame, the flipbook from the story's time
   useEffect(() => {
     if (mode !== 'flip') return;
     return progress.subscribe(label);
@@ -514,83 +553,96 @@ function Phone({ c, mode, onFail }: { c: Content; mode: 'live' | 'flip' | 'poste
   useLayoutEffect(() => {
     if (animate) label(progress.current());
   });
+  // the story starts when the load has shown the headline and drawn the route, and a frozen load (?t=) holds it
+  // The story starts when the route is drawn, ARM_AT ms after the assemble began, a little before the load's
+  // own end. The clock's change ticks come ASSEMBLE after the call to begin, which is earlier than the end of
+  // the assemble when begin comes before 0.6s, so the time is waited out here and not read from the ticks.
+  useEffect(() => {
+    if (!clock || clock.frozen !== null) return;
+    let id = 0;
+    const sync = () => {
+      window.clearTimeout(id);
+      const a = clock.a();
+      if (a >= ARM_AT) progress.arm(true);
+      else if (a >= 0) id = window.setTimeout(sync, ARM_AT - a + 20);
+    };
+    sync();
+    const off = clock.on(sync);
+    return () => {
+      window.clearTimeout(id);
+      off();
+    };
+  }, [clock, progress]);
+  // the pin's p, for a check of the timing, as a plain attribute so the page is not styled by it
+  useEffect(() => {
+    const el = pin.current;
+    if (!el || !animate) return;
+    const w = (p: number) => {
+      el.dataset.p = p.toFixed(3);
+    };
+    w(progress.current());
+    return progress.subscribe(w);
+  }, [progress, animate]);
   const onReady = useCallback(() => clock?.begin(), [clock]);
   const drive = useMemo(() => (clock ? { progress, clock, onFrame: label } : null), [progress, clock, label]);
+  const frame = useMemo(() => (band ? { cy: (band.top + band.bot) / 2 } : undefined), [band]);
   useLoad(section, pin, clock, live, progress, c.lang);
 
-  // the box the scene fills, centred in the room between the headline halves and as wide as the stage
-  const box = useMemo(() => {
-    if (!cw || !ch) return null;
-    const room = Math.max(120, ch - 2 * TALL_HALF - 2 * TALL_GAP - TALL_FOOT);
-    const s = Math.round(Math.min(room / TALL_VIS_H, cw / TALL_VIS_W));
-    return {
-      w: s,
-      h: s,
-      x: Math.round((cw - s * TALL_VIS_W) / 2 - s * TALL_VIS_LEFT),
-      y: Math.round(TALL_HALF + TALL_GAP + (room - s * TALL_VIS_H) / 2 - s * TALL_VIS_TOP),
-    };
-  }, [cw, ch]);
+  // the flipbook's strip, as wide as the screen, its band on the screen's band
+  const strip = useMemo(() => {
+    if (!band) return null;
+    const k = band.w / FLIP.w;
+    return { top: Math.round((band.top + band.bot) / 2 - (FLIP.cy - FLIP.top) * k), height: Math.round(FLIP.rows * k) };
+  }, [band]);
 
   return (
-    <section ref={section} className="hero hv hv6 hv7p" data-hero="7" data-pin={animate ? 'yes' : 'no'} aria-labelledby="hv7-title">
-      <div ref={pin} className="hv6__pin" data-gone="no">
-        <div className="hv6__in g">
-          <div className="hv6__top gc">
-            <Rise as="h1" id="hv7-title" className="hv6__title display">
-              {[c.hero.split[0], c.hero.split[1]]}
-            </Rise>
-          </div>
-
-          <div ref={stage} className="hv6__stage" role="img" aria-label={x.figure} aria-describedby="hv7-steps">
-            {box ? (
-              <div className="hv6__box" style={{ left: box.x, top: box.y, width: box.w, height: box.h }}>
-                {live ? (
-                  mounted && drive ? (
-                    <div className="h7live">
-                      <LiveBoundary onFail={onFail}>
-                        <Suspense fallback={null}>
-                          <Scene drive={drive} phone onReady={onReady} onFail={onFail} />
-                        </Suspense>
-                      </LiveBoundary>
-                    </div>
-                  ) : null
-                ) : animate ? (
-                  <PhoneStills progress={progress} load={stillsLoad} />
-                ) : (
-                  <img className="h7st__still" src={frameSrc(FRAMES - 1)} width={FRAME_PX} height={FRAME_PX} alt="" draggable={false} />
-                )}
+    <section ref={section} className="hero hv hv7 hv7p" data-hero="7" data-pin="no" data-mode={mode} aria-labelledby="hv7-title">
+      <div ref={pin} className="hv7p__pin">
+        <div className="hv7p__scene" role="img" aria-label={x.figure} aria-describedby="hv7-steps">
+          {live ? (
+            mounted && drive && frame ? (
+              <div className="h7live">
+                <LiveBoundary onFail={onFail}>
+                  <Suspense fallback={null}>
+                    <Scene drive={drive} phone frame={frame} onReady={onReady} onFail={onFail} />
+                  </Suspense>
+                </LiveBoundary>
               </div>
-            ) : null}
-            {animate ? (
-              <div ref={stepEl} className="hv6__step" aria-hidden="true">
-                {x.steps.map((name, i) => (
-                  <p key={name} className="hv6__stepi mono" style={{ opacity: 0 }}>
-                    <span className="hv6__stepn">{`0${i + 1} / 05`}</span>
-                    <span className="hv6__stepw">{name}</span>
-                  </p>
-                ))}
-              </div>
-            ) : null}
-          </div>
-
-          <div className="hv6__bot gc">
-            <div className="hv6__side">
-              <Rise as="p" body className="hv6__lede mono-body">
-                {c.hero.lede}
-              </Rise>
-              <div className="hv__cta">
-                <Bracket variant="fill" href="#contact">{c.ui.send}</Bracket>
-              </div>
+            ) : null
+          ) : strip ? (
+            <div className="h7flip" style={{ top: strip.top, height: strip.height }}>
+              {animate ? <PhoneStills progress={progress} load={stillsLoad} gate={progress.hold} /> : <img className="h7st__still" src={frameSrc(FRAMES - 1)} width={FLIP.w * 2} height={FLIP.rows * 2} alt="" draggable={false} />}
             </div>
-            <aside className="hv6__card">
-              <p className="hv6__code mono">{x.code}</p>
-              <p className="hv6__name mono-body">{x.name}</p>
-              <p className="hv6__note mono">{x.note}</p>
-            </aside>
+          ) : null}
+        </div>
+
+        <div ref={topEl} className="hv7p__top">
+          <Rise as="h1" id="hv7-title" className="hv7p__title display">
+            {[c.hero.split[0], c.hero.split[1]]}
+          </Rise>
+        </div>
+
+        <div className="hv7p__glow" aria-hidden="true" />
+
+        <div ref={footEl} className="hv7p__foot">
+          {animate ? (
+            <div ref={stepEl} className="hv7p__step" aria-hidden="true">
+              {x.steps.map((name, i) => (
+                <p key={name} className="hv7p__stepi mono" style={{ opacity: 0 }}>
+                  <span className="hv7p__stepn">{`0${i + 1} / 05`}</span>
+                  <span className="hv7p__stepw">{name}</span>
+                </p>
+              ))}
+            </div>
+          ) : null}
+          <Rise as="p" body className="hv7p__lede mono-body">
+            {c.hero.lede}
+          </Rise>
+          <div className="hv__cta">
+            <Bracket variant="fill" href="#contact">{c.ui.send}</Bracket>
           </div>
         </div>
       </div>
-      {animate ? <div className="hv6__run" aria-hidden="true" /> : null}
       <StepList id="hv7-steps" steps={x.steps} />
     </section>
   );

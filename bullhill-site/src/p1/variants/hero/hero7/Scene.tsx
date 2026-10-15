@@ -8,9 +8,12 @@
 // frame is asked for again while it is still moving and the dolly, the arm and the trench all ease to a
 // stop together. The shadow map is drawn only on a frame where something that casts a shadow moved.
 // Pixel ratio is held to 1.5. In still mode, for the phone's stills and the posters, it draws one frame of
-// the scene at ?p= at the still's own framing, 2 pixels to the pixel, with the ground melting into the page.
-// On a phone that can take it the scene is live in the tall framing the stills were rendered from, a square
-// box, the same ground fade, a shadow map of 1024 and the same pixel ratio of 1 to 1.5.
+// the scene at ?p= at the still's own framing, 2 pixels to the pixel. The wide poster has the ground melting
+// into the page at its edges.
+// On a phone that can take it the scene is live and fills the whole first screen, edge to edge, in the
+// portrait framing the stills are rendered from (phoneLens in world.ts, the focal length from the screen's
+// width and the middle of the picture on the middle of the clear band, `frame.cy`), a shadow map of 1024 and
+// the same pixel ratio of 1 to 1.5. The headline and the foot sit over it on black scrims in the page's CSS.
 
 import { Canvas, useFrame, useThree } from '@react-three/fiber';
 import { useEffect, useLayoutEffect, useMemo, useRef } from 'react';
@@ -18,7 +21,7 @@ import * as THREE from 'three';
 import type { Progress } from '../hero6/progress';
 import { LoadClock, riseEase } from '../hero6/timeline';
 import { buildStage, type Stage } from './stage';
-import { CAM, ROUTE_LEN, camAt, makeCam, type View } from './world';
+import { CAM, ROUTE_LEN, camAt, makeCam, phoneLens, type View } from './world';
 
 const dbg = import.meta.env.DEV
   ? (() => {
@@ -34,7 +37,9 @@ const glfail = new URLSearchParams(window.location.search).get('glfail');
 const LOST_MS = 2000;
 
 export type Drive = { progress: Progress; clock: LoadClock; onFrame: (p: number) => void };
-export type StillSpec = { view: View; p: number; w: number; h: number };
+export type StillSpec = { view: View; p: number; w: number; h: number; cy?: number };
+// the phone's clear band, the middle of it in pixels from the top of the screen
+export type Frame = { cy: number };
 
 // the route draws in over this long once the load has begun
 const ROUTE_MS = 1500;
@@ -51,7 +56,7 @@ const smooth = (t: number) => {
   return k * k * (3 - 2 * k);
 };
 
-function Rig({ drive, still, phone, onReady }: { drive?: Drive; still?: StillSpec; phone?: boolean; onReady: () => void }) {
+function Rig({ drive, still, phone, frame, onReady }: { drive?: Drive; still?: StillSpec; phone?: boolean; frame?: Frame; onReady: () => void }) {
   const gl = useThree((s) => s.gl);
   const scene = useThree((s) => s.scene);
   const camera = useThree((s) => s.camera) as THREE.PerspectiveCamera;
@@ -59,6 +64,8 @@ function Rig({ drive, still, phone, onReady }: { drive?: Drive; still?: StillSpe
   const stage = useRef<Stage | null>(null);
   const cam = useMemo(makeCam, []);
   const state = useRef({ drawn: 0, done: false, p: NaN });
+  const lensKey = useRef('');
+  const cy = frame?.cy;
 
   useLayoutEffect(() => {
     const st = buildStage(gl, gl.getPixelRatio(), phone ? 1024 : 2048);
@@ -68,7 +75,8 @@ function Rig({ drive, still, phone, onReady }: { drive?: Drive; still?: StillSpe
     scene.add(st.group);
     scene.environment = st.env;
     scene.environmentIntensity = 0.95;
-    if (still) {
+    // the wide poster's ground melts into the page at its edges, the phone's scene runs edge to edge
+    if (still && still.view === 'wide') {
       const b = gl.getDrawingBufferSize(new THREE.Vector2());
       st.ground.setVignette(true, b.x, b.y);
     }
@@ -95,6 +103,9 @@ function Rig({ drive, still, phone, onReady }: { drive?: Drive; still?: StillSpe
     };
   }, [drive, invalidate]);
 
+  // the clear band moved, for a new text length or screen, ask for a frame
+  useEffect(() => invalidate(), [cy, invalidate]);
+
   useFrame((fs) => {
     const st = stage.current;
     if (!st) return;
@@ -114,8 +125,10 @@ function Rig({ drive, still, phone, onReady }: { drive?: Drive; still?: StillSpe
     if (st.update(p, routeX, rock, idleMs)) gl.shadowMap.needsUpdate = true;
     const aspect = still ? still.w / still.h : fs.size.width / Math.max(1, fs.size.height);
     camAt(p, cam, still ? still.view : phone ? 'tall' : 'wide', aspect);
-    // the ground melts into the page at the edges of the phone's box, sized to the drawing buffer
-    if (phone) st.ground.setVignette(true, fs.size.width * gl.getPixelRatio(), fs.size.height * gl.getPixelRatio());
+    // the phone's lens, from the screen's size and the middle of the clear band
+    const tall = still ? still.view === 'tall' : !!phone;
+    const lens = tall ? phoneLens(fs.size.width, fs.size.height, (still ? still.cy : cy) ?? fs.size.height / 2) : null;
+    if (lens) cam.fov = lens.fov;
     // DEBUG, development only, `?cam=tx,ty,tz,az,el,dist` frames the shot by eye
     if (import.meta.env.DEV && dbg) {
       const [tx, ty, tz, az, el, d] = dbg;
@@ -133,6 +146,16 @@ function Rig({ drive, still, phone, onReady }: { drive?: Drive; still?: StillSpe
     if (camera.fov !== cam.fov) {
       camera.fov = cam.fov;
       camera.updateProjectionMatrix();
+    }
+    if (lens) {
+      // the principal point moved by view offset, the frame is the whole screen, its window shifted
+      const key = `${fs.size.width}|${fs.size.height}|${lens.shift.toFixed(1)}|${lens.fov.toFixed(3)}`;
+      if (key !== lensKey.current) {
+        lensKey.current = key;
+        camera.aspect = fs.size.width / fs.size.height;
+        camera.setViewOffset(fs.size.width, fs.size.height, 0, -lens.shift, fs.size.width, fs.size.height);
+        camera.updateProjectionMatrix();
+      }
     }
     drive?.onFrame(p);
     const s = state.current;
@@ -175,7 +198,7 @@ function Rig({ drive, still, phone, onReady }: { drive?: Drive; still?: StillSpe
   return null;
 }
 
-export default function Scene({ drive, still, phone, onReady, onFail }: { drive?: Drive; still?: StillSpec; phone?: boolean; onReady: () => void; onFail?: () => void }) {
+export default function Scene({ drive, still, phone, frame, onReady, onFail }: { drive?: Drive; still?: StillSpec; phone?: boolean; frame?: Frame; onReady: () => void; onFail?: () => void }) {
   // a context that cannot be made, or is lost and does not come back in LOST_MS, hands the hero to its fallback
   const fail = useRef(onFail);
   fail.current = onFail;
@@ -218,7 +241,7 @@ export default function Scene({ drive, still, phone, onReady, onFail }: { drive?
         gl.shadowMap.needsUpdate = true;
       }}
     >
-      <Rig drive={drive} still={still} phone={phone} onReady={onReady} />
+      <Rig drive={drive} still={still} phone={phone} frame={frame} onReady={onReady} />
     </Canvas>
   );
 }

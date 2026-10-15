@@ -462,6 +462,19 @@ export function makeCam(): CamPose {
 }
 export type View = 'wide' | 'tall';
 
+// The phone's lens, for the full screen scene under 768. The scene fills the whole first screen and the
+// action sits in the clear band between the headline's scrim and the foot's. The focal length is set by the
+// screen's width, so the action is as wide as the screen whatever its height and a taller phone only shows
+// more ground above and below. LENS_K is the focal length in widths of the 30 degree square the phone
+// framing was first keyed in. The principal point is moved so the middle of the keyed picture falls on the
+// middle of the band, cy in pixels from the top of the screen. The stills and the live scene both read this
+// one function, so a still is the live frame.
+export const LENS_K = 1 / (2 * Math.tan(Math.PI / 12));
+export function phoneLens(w: number, h: number, cy: number) {
+  const f = LENS_K * w;
+  return { fov: (2 * Math.atan(h / 2 / f) * 180) / Math.PI, shift: cy - h / 2 };
+}
+
 // p, then tx ty tz, azimuth and elevation in degrees, distance
 type Key = [number, number, number, number, number, number, number];
 const DIG0: Key = [P0, XM0 + CAM.ahead, CAM.ty, CAM.tz, CAM.az, CAM.el, CAM.dist0];

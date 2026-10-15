@@ -24,23 +24,25 @@ export function Crew({ c }: { c: Content }) {
             ))}
           </ul>
           <div className="p2-crew__side">
-            <div className="p2-w p2-w--black p2-fleet">
-              <p className="p2-mono p2-fleet__title">{c.crew.machinesTitle}</p>
-              <div role="table" aria-label={c.crew.machinesTitle}>
-                <div className="p2-fleet__row p2-fleet__head" role="row">
-                  {k.heads.map((h) => (
-                    <span key={h} role="columnheader">{h}</span>
+            {c.crew.machines.length ? (
+              <div className="p2-w p2-w--black p2-fleet">
+                <p className="p2-mono p2-fleet__title">{c.crew.machinesTitle}</p>
+                <div role="table" aria-label={c.crew.machinesTitle}>
+                  <div className="p2-fleet__row p2-fleet__head" role="row">
+                    {k.heads.map((h) => (
+                      <span key={h} role="columnheader">{h}</span>
+                    ))}
+                  </div>
+                  {c.crew.machines.map((m) => (
+                    <div className="p2-fleet__row" role="row" key={m.type}>
+                      <span role="cell">{m.type}</span>
+                      <span role="cell">{m.size || k.various}</span>
+                      <span role="cell">{m.count}</span>
+                    </div>
                   ))}
                 </div>
-                {c.crew.machines.map((m) => (
-                  <div className="p2-fleet__row" role="row" key={m.type}>
-                    <span role="cell">{m.type}</span>
-                    <span role="cell">{m.size || k.various}</span>
-                    <span role="cell">{m.count}</span>
-                  </div>
-                ))}
               </div>
-            </div>
+            ) : null}
             <div className="p2-area">
               <p className="p2-mono p2-area__title">{c.crew.areaTitle}</p>
               <ul className="p2-area__chips">

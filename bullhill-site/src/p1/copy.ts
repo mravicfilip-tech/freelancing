@@ -13,8 +13,8 @@ const copy = {
     scrollRow: 'Project routes',
     workRow: 'Photos of our work',
     successTitle: 'Sent',
-    matrixTitle: 'The numbers, and the machines behind them.',
-    matrixBody: 'The totals so far, and the fleet that did the digging.',
+    matrixTitle: 'The numbers behind the routes.',
+    matrixBody: 'The totals so far.',
     faqCta: 'Ask us directly',
   },
   de: {
@@ -27,8 +27,8 @@ const copy = {
     scrollRow: 'Projekttrassen',
     workRow: 'Fotos unserer Arbeit',
     successTitle: 'Gesendet',
-    matrixTitle: 'Die Zahlen und die Maschinen dahinter.',
-    matrixBody: 'Die Summen bisher und der Fuhrpark, der sie gegraben hat.',
+    matrixTitle: 'Die Zahlen hinter den Trassen.',
+    matrixBody: 'Die Summen bisher.',
     faqCta: 'Direkt anfragen',
   },
 };

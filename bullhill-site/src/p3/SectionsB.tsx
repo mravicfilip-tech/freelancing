@@ -33,19 +33,21 @@ export function Matrix({ c }: { c: Content }) {
               </li>
             ))}
           </ul>
-          <ul className="p3-mrow p3-mrow--machines" aria-label={c.crew.machinesTitle}>
-            {c.crew.machines.map((m, i) => (
-              <li key={m.type} className="p3-cell p3-cell--machine">
-                <Crosshairs />
-                <MachineIcon index={i} />
-                <span className="p3-cell__type">{m.type}</span>
-                <span className="p3-cell__meta">
-                  <span>{m.size}</span>
-                  <span>{`×${m.count}`}</span>
-                </span>
-              </li>
-            ))}
-          </ul>
+          {c.crew.machines.length ? (
+            <ul className="p3-mrow p3-mrow--machines" aria-label={c.crew.machinesTitle}>
+              {c.crew.machines.map((m, i) => (
+                <li key={m.type} className="p3-cell p3-cell--machine">
+                  <Crosshairs />
+                  <MachineIcon index={i} />
+                  <span className="p3-cell__type">{m.type}</span>
+                  <span className="p3-cell__meta">
+                    <span>{m.size}</span>
+                    <span>{`×${m.count}`}</span>
+                  </span>
+                </li>
+              ))}
+            </ul>
+          ) : null}
           <div className="p3-matrix__regions">
             <p className="p3-mono">{c.crew.areaTitle}</p>
             <ul className="p3-regions">

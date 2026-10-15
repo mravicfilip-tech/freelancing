@@ -133,19 +133,22 @@ export function Crew({ c }: { c: Content }) {
                 </li>
               ))}
             </ul>
-            <ul className="mx__row mx__row--machines" aria-label={c.crew.machinesTitle}>
-              {c.crew.machines.map((m, i) => (
-                <li key={m.type} className="mx__cell mx__cell--machine" style={cell(c.stats.items.length + i)}>
-                  <Crosshairs />
-                  <MachineIcon index={i} />
-                  <span className="mx__type">{m.type}</span>
-                  <span className="mx__meta mono">
-                    <span>{m.size}</span>
-                    <span>{`×${m.count}`}</span>
-                  </span>
-                </li>
-              ))}
-            </ul>
+            {/* the fleet row only shows once BullHill lists machines of its own */}
+            {c.crew.machines.length ? (
+              <ul className="mx__row mx__row--machines" aria-label={c.crew.machinesTitle}>
+                {c.crew.machines.map((m, i) => (
+                  <li key={m.type} className="mx__cell mx__cell--machine" style={cell(c.stats.items.length + i)}>
+                    <Crosshairs />
+                    <MachineIcon index={i} />
+                    <span className="mx__type">{m.type}</span>
+                    <span className="mx__meta mono">
+                      <span>{m.size}</span>
+                      <span>{`×${m.count}`}</span>
+                    </span>
+                  </li>
+                ))}
+              </ul>
+            ) : null}
             <div className="mx__regions">
               <p className="mono mx__rk">{c.crew.areaTitle}</p>
               <p className="mono mx__rl">{c.crew.regions.join(' / ')}</p>

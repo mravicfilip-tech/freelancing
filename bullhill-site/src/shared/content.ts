@@ -121,7 +121,7 @@ const en: Content = {
   lang: 'en',
   meta: {
     title: 'BullHill, fibre trenching and duct laying',
-    description: 'Trenching, ducts and house connections for fibre networks across Austria and southern Germany.',
+    description: 'Trenching, ducts and house connections for fibre networks across Germany, Austria, Belgium, the Netherlands and Czechia.',
   },
   nav: [
     { id: 'services', label: 'Services' },
@@ -145,20 +145,21 @@ const en: Content = {
     backToTop: 'Back to top',
   },
   contact: {
-    phone: '+43 660 000 00 00', // STAND-IN
-    phoneHref: 'tel:+436600000000', // STAND-IN
-    email: 'office@bullhill.at', // STAND-IN, the domain is not confirmed
+    // the client's own, 15 October 2026, the same number for calls and WhatsApp
+    phone: '+43 665 65942472',
+    phoneHref: 'tel:+4366565942472',
+    email: 'bullhilldoo@gmail.com',
     whatsapp: 'WhatsApp',
-    whatsappHref: 'https://wa.me/436600000000', // STAND-IN
+    whatsappHref: 'https://wa.me/4366565942472',
     hours: 'Mon to Fri, 7am to 5pm',
-    address: ['Street and number', '4600 Wels, Austria'], // STAND-IN
-    area: 'Austria and southern Germany',
+    address: ['Kidričeva ulica 24', '3000 Celje, Slovenia'],
+    area: 'Germany, Austria, Belgium, the Netherlands and Czechia',
   },
   hero: {
     kicker: 'Fibre civil works',
     title: 'We dig the routes fibre runs through.',
     split: ['We dig the routes', 'fibre runs through'],
-    lede: 'Trenching, ducts and house connections for fibre networks across Austria and southern Germany. Our own crew, our own machines.',
+    lede: 'Trenching, ducts and house connections for fibre networks across Germany, Austria, Belgium, the Netherlands and Czechia. Our own crew.',
     shot: { id: 'hero', brief: shots.hero.en, photo: 'route-trench-village' },
   },
   work: {
@@ -179,7 +180,7 @@ const en: Content = {
   ethos: {
     kicker: 'Who we are',
     title: 'The ground work comes first.',
-    body: 'Fibre only reaches a house once someone has dug the way. That is our job. BullHill is a trenching crew with its own excavators, working for network operators, main contractors and municipalities. We plan the route with you, dig it, lay the ducts and leave the street the way we found it.',
+    body: 'Fibre only reaches a house once someone has dug the way. That is our job. BullHill is a trenching crew working for network operators, main contractors and municipalities. We plan the route with you, dig it, lay the ducts and leave the street the way we found it.',
     cta: 'Meet the crew',
   },
   services: {
@@ -244,10 +245,11 @@ const en: Content = {
   stats: {
     kicker: 'In the ground so far',
     items: [
-      { value: '240', unit: 'km', label: 'of trench dug' }, // STAND-IN
-      { value: '1,900', label: 'house connections' }, // STAND-IN
-      { value: '38', label: 'towns and municipalities' }, // STAND-IN
-      { value: '12', label: 'years in the ground' }, // STAND-IN
+      // the client's figures, 15 October 2026
+      { value: '8', unit: 'km', label: 'of trench dug' },
+      { value: '270', label: 'house connections' },
+      { value: '5', label: 'towns and municipalities' },
+      { value: '1', label: 'year in the ground' },
     ],
   },
   projects: {
@@ -279,19 +281,19 @@ const en: Content = {
     contractors: {
       kicker: 'For main contractors',
       title: 'Extra capacity when the schedule is tight.',
-      body: 'We join your project as a subcontractor with our own machines, our own transport and a crew that knows the work.',
+      body: 'We join your project as a subcontractor with a crew that knows the work.',
       points: [
-        { title: 'Own machines', body: 'Excavators, trucks and compaction gear, no hire delays.' },
+        { title: 'Machines for the ground', body: 'Excavators, trucks and compaction gear matched to each route.' },
         { title: 'Your site rules', body: 'We work to your safety plan, your traffic plan and your reporting.' },
-        { title: 'Short notice starts', body: 'Across Austria and southern Germany, when a section needs more hands.' },
+        { title: 'Short notice starts', body: 'Across Germany, Austria, Belgium, the Netherlands and Czechia, when a section needs more hands.' },
       ],
       cta: 'Book the crew',
     },
   },
   crew: {
-    kicker: 'Crew and machines',
-    title: 'A small crew with its own machines.',
-    body: 'BullHill started with one excavator and one route. Today the crew runs its own fleet and works every season, from the first frost-free week to the last.',
+    kicker: 'Crew',
+    title: 'A small crew that knows the work.',
+    body: 'BullHill started with one route. Today the crew works every season, from the first frost-free week to the last.',
     people: [
       // STAND-IN people
       { name: 'Name to follow', role: 'Founder and site lead', shot: { id: 'c1', brief: 'Portrait, site lead next to the excavator, eye level' } },
@@ -299,15 +301,10 @@ const en: Content = {
       { name: 'Name to follow', role: 'Ducts and connections', shot: { id: 'c3', brief: 'Portrait in the trench, holding a duct' } },
     ],
     machinesTitle: 'The fleet',
-    machines: [
-      // STAND-IN fleet
-      { type: 'Tracked excavator', size: '14 t', count: '2' },
-      { type: 'Mini excavator', size: '2.7 t', count: '3' },
-      { type: 'Tipper truck', size: '3 axle', count: '2' },
-      { type: 'Plate compactor and roller', size: '', count: '4' },
-    ],
+    // none until BullHill has machines of its own, the client 15 October 2026. The fleet row hides while empty.
+    machines: [],
     areaTitle: 'Where we work',
-    regions: ['Upper Austria', 'Lower Austria', 'Vienna', 'Salzburg', 'Styria', 'Bavaria'],
+    regions: ['Germany', 'Austria', 'Belgium', 'Netherlands', 'Czechia'],
     shot: { id: 'crew', brief: shots.crew.en, photo: 'excavator-street' },
   },
   faq: {
@@ -317,7 +314,7 @@ const en: Content = {
       { q: 'Do you lay the fibre cable as well?', a: 'Yes. We build the route, the ducts and the chambers, and we can blow the fibre in too. If the operator does that part, we leave the ducts ready for it.' },
       { q: 'How many metres a day can you dig?', a: 'It depends on the ground and the surface. Open fields go fast, a paved town centre far slower. We give a figure per route after the survey.' },
       { q: 'Do you handle the permits?', a: 'Yes. We prepare the road permits and the utility checks with you or for you.' },
-      { q: 'Which regions do you cover?', a: 'Austria and southern Germany. Longer jobs further away on request.' },
+      { q: 'Which regions do you cover?', a: 'Germany, Austria, Belgium, the Netherlands and Czechia. Jobs further away on request.' },
       { q: 'Do you restore asphalt and paving?', a: 'Yes. Every trench is closed and the surface put back, asphalt, paving stones, gravel or turf.' },
       { q: 'Can we hire you as a subcontractor?', a: 'Yes. Most of our work is for main contractors and network operators.' },
     ],
@@ -339,11 +336,12 @@ const en: Content = {
     reply: 'We reply within one working day.', // STAND-IN promise, to confirm with BullHill
   },
   footer: {
-    line: 'Fibre civil works. Austria and southern Germany.',
+    line: 'Fibre civil works. Germany, Austria, Belgium, the Netherlands and Czechia.',
     legal: 'Legal notice',
     privacy: 'Privacy',
     rights: '© 2026 BullHill',
-    company: 'FN 000000x · UID ATU00000000', // STAND-IN
+    // the Slovenian register and VAT numbers follow from the client, the line hides while empty
+    company: '',
     madeFor: 'Back to top',
   },
 };
@@ -352,7 +350,7 @@ const de: Content = {
   lang: 'de',
   meta: {
     title: 'BullHill, Tiefbau für Glasfaser',
-    description: 'Grabenbau, Leerrohre und Hausanschlüsse für Glasfasernetze in Österreich und Süddeutschland.',
+    description: 'Grabenbau, Leerrohre und Hausanschlüsse für Glasfasernetze in Deutschland, Österreich, Belgien, den Niederlanden und Tschechien.',
   },
   nav: [
     { id: 'services', label: 'Leistungen' },
@@ -376,20 +374,20 @@ const de: Content = {
     backToTop: 'Nach oben',
   },
   contact: {
-    phone: '+43 660 000 00 00',
-    phoneHref: 'tel:+436600000000',
-    email: 'office@bullhill.at',
+    phone: '+43 665 65942472',
+    phoneHref: 'tel:+4366565942472',
+    email: 'bullhilldoo@gmail.com',
     whatsapp: 'WhatsApp',
-    whatsappHref: 'https://wa.me/436600000000',
+    whatsappHref: 'https://wa.me/4366565942472',
     hours: 'Mo bis Fr, 7 bis 17 Uhr',
-    address: ['Straße und Hausnummer', '4600 Wels, Österreich'],
-    area: 'Österreich und Süddeutschland',
+    address: ['Kidričeva ulica 24', '3000 Celje, Slowenien'],
+    area: 'Deutschland, Österreich, Belgien, Niederlande und Tschechien',
   },
   hero: {
     kicker: 'Tiefbau für Glasfaser',
     title: 'Wir graben die Trassen, durch die Glasfaser läuft.',
     split: ['Wir graben die Trassen', 'für die Glasfaser'],
-    lede: 'Grabenbau, Leerrohre und Hausanschlüsse für Glasfasernetze in Österreich und Süddeutschland. Eigene Mannschaft, eigene Maschinen.',
+    lede: 'Grabenbau, Leerrohre und Hausanschlüsse für Glasfasernetze in Deutschland, Österreich, Belgien, den Niederlanden und Tschechien. Eigene Mannschaft.',
     shot: { id: 'hero', brief: shots.hero.de, photo: 'route-trench-village' },
   },
   work: {
@@ -410,7 +408,7 @@ const de: Content = {
   ethos: {
     kicker: 'Wer wir sind',
     title: 'Zuerst kommt der Tiefbau.',
-    body: 'Glasfaser erreicht ein Haus erst, wenn jemand den Weg gegraben hat. Das ist unsere Arbeit. BullHill ist eine Tiefbau-Mannschaft mit eigenen Baggern und arbeitet für Netzbetreiber, Generalunternehmer und Gemeinden. Wir planen die Trasse mit Ihnen, graben sie, verlegen die Rohre und hinterlassen die Straße so, wie wir sie vorgefunden haben.',
+    body: 'Glasfaser erreicht ein Haus erst, wenn jemand den Weg gegraben hat. Das ist unsere Arbeit. BullHill ist eine Tiefbau-Mannschaft und arbeitet für Netzbetreiber, Generalunternehmer und Gemeinden. Wir planen die Trasse mit Ihnen, graben sie, verlegen die Rohre und hinterlassen die Straße so, wie wir sie vorgefunden haben.',
     cta: 'Das Team kennenlernen',
   },
   services: {
@@ -447,10 +445,10 @@ const de: Content = {
   stats: {
     kicker: 'Bisher im Boden',
     items: [
-      { value: '240', unit: 'km', label: 'Graben gebaut' },
-      { value: '1.900', label: 'Hausanschlüsse' },
-      { value: '38', label: 'Orte und Gemeinden' },
-      { value: '12', label: 'Jahre im Tiefbau' },
+      { value: '8', unit: 'km', label: 'Graben gebaut' },
+      { value: '270', label: 'Hausanschlüsse' },
+      { value: '5', label: 'Orte und Gemeinden' },
+      { value: '1', label: 'Jahr im Tiefbau' },
     ],
   },
   projects: {
@@ -481,33 +479,28 @@ const de: Content = {
     contractors: {
       kicker: 'Für Generalunternehmer',
       title: 'Zusätzliche Kapazität, wenn der Zeitplan eng wird.',
-      body: 'Wir steigen als Subunternehmer in Ihr Projekt ein, mit eigenen Maschinen, eigenem Transport und einer Mannschaft, die die Arbeit kennt.',
+      body: 'Wir steigen als Subunternehmer in Ihr Projekt ein, mit einer Mannschaft, die die Arbeit kennt.',
       points: [
-        { title: 'Eigene Maschinen', body: 'Bagger, LKW und Verdichtungsgeräte, keine Wartezeit auf Mietgeräte.' },
+        { title: 'Maschinen für den Boden', body: 'Bagger, LKW und Verdichtungsgeräte, passend zu jeder Trasse.' },
         { title: 'Ihre Baustellenregeln', body: 'Wir arbeiten nach Ihrem Sicherheitsplan, Ihrem Verkehrsplan und Ihrem Berichtswesen.' },
-        { title: 'Kurzfristiger Start', body: 'In ganz Österreich und Süddeutschland, wenn ein Abschnitt mehr Leute braucht.' },
+        { title: 'Kurzfristiger Start', body: 'In Deutschland, Österreich, Belgien, den Niederlanden und Tschechien, wenn ein Abschnitt mehr Leute braucht.' },
       ],
       cta: 'Mannschaft buchen',
     },
   },
   crew: {
-    kicker: 'Team und Maschinen',
-    title: 'Eine kleine Mannschaft mit eigenen Maschinen.',
-    body: 'BullHill begann mit einem Bagger und einer Trasse. Heute fährt die Mannschaft ihren eigenen Fuhrpark und arbeitet jede Saison, von der ersten frostfreien Woche bis zur letzten.',
+    kicker: 'Team',
+    title: 'Eine kleine Mannschaft, die die Arbeit kennt.',
+    body: 'BullHill begann mit einer Trasse. Heute arbeitet die Mannschaft jede Saison, von der ersten frostfreien Woche bis zur letzten.',
     people: [
       { name: 'Name folgt', role: 'Gründer und Bauleiter', shot: { id: 'c1', brief: 'Porträt, Bauleiter neben dem Bagger, auf Augenhöhe' } },
       { name: 'Name folgt', role: 'Maschinist', shot: { id: 'c2', brief: 'Porträt in der Kabine, Tür offen' } },
       { name: 'Name folgt', role: 'Rohre und Anschlüsse', shot: { id: 'c3', brief: 'Porträt im Graben, mit einem Leerrohr in der Hand' } },
     ],
     machinesTitle: 'Der Fuhrpark',
-    machines: [
-      { type: 'Kettenbagger', size: '14 t', count: '2' },
-      { type: 'Minibagger', size: '2,7 t', count: '3' },
-      { type: 'Kipper', size: '3-Achser', count: '2' },
-      { type: 'Rüttelplatte und Walze', size: '', count: '4' },
-    ],
+    machines: [],
     areaTitle: 'Wo wir arbeiten',
-    regions: ['Oberösterreich', 'Niederösterreich', 'Wien', 'Salzburg', 'Steiermark', 'Bayern'],
+    regions: ['Deutschland', 'Österreich', 'Belgien', 'Niederlande', 'Tschechien'],
     shot: { id: 'crew', brief: shots.crew.de, photo: 'excavator-street' },
   },
   faq: {
@@ -517,7 +510,7 @@ const de: Content = {
       { q: 'Verlegen Sie auch das Glasfaserkabel?', a: 'Ja. Wir bauen die Trasse, die Rohre und die Schächte und können die Glasfaser auch einblasen. Macht das der Netzbetreiber, übergeben wir die Rohre bereit dafür.' },
       { q: 'Wie viele Meter schaffen Sie am Tag?', a: 'Das hängt von Boden und Oberfläche ab. Auf freiem Feld geht es schnell, im gepflasterten Ortszentrum viel langsamer. Nach der Begehung nennen wir eine Zahl pro Trasse.' },
       { q: 'Kümmern Sie sich um die Genehmigungen?', a: 'Ja. Wir bereiten Aufgrabungsgenehmigungen und Leitungsauskünfte mit Ihnen oder für Sie vor.' },
-      { q: 'In welchen Regionen arbeiten Sie?', a: 'In Österreich und Süddeutschland. Größere Aufträge weiter weg auf Anfrage.' },
+      { q: 'In welchen Regionen arbeiten Sie?', a: 'In Deutschland, Österreich, Belgien, den Niederlanden und Tschechien. Aufträge weiter weg auf Anfrage.' },
       { q: 'Stellen Sie Asphalt und Pflaster wieder her?', a: 'Ja. Jeder Graben wird geschlossen und die Oberfläche wiederhergestellt, Asphalt, Pflaster, Schotter oder Rasen.' },
       { q: 'Können wir Sie als Subunternehmer beauftragen?', a: 'Ja. Der Großteil unserer Arbeit ist für Generalunternehmer und Netzbetreiber.' },
     ],
@@ -539,11 +532,11 @@ const de: Content = {
     reply: 'Antwort innerhalb eines Werktags.',
   },
   footer: {
-    line: 'Tiefbau für Glasfaser. Österreich und Süddeutschland.',
+    line: 'Tiefbau für Glasfaser. Deutschland, Österreich, Belgien, Niederlande und Tschechien.',
     legal: 'Impressum',
     privacy: 'Datenschutz',
     rights: '© 2026 BullHill',
-    company: 'FN 000000x · UID ATU00000000',
+    company: '',
     madeFor: 'Nach oben',
   },
 };

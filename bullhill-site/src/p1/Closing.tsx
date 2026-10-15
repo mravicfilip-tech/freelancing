@@ -64,7 +64,7 @@ export function Closing({ c }: { c: Content }) {
             <Logo variant="on-red-white" height={56} className="end__logo" />
           </div>
           <div className="end__base mono">
-            <span>{c.footer.company}</span>
+            {c.footer.company ? <span>{c.footer.company}</span> : null}
             <span>{c.footer.rights}</span>
             <a href="#top">{c.footer.madeFor}</a>
           </div>

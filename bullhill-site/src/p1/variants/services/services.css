@@ -111,3 +111,13 @@
 .p1[data-motion='on'] .svs[data-v='3'][data-loop='off'] .svs__spin {
   animation-play-state: paused;
 }
+
+/* ---------- 3 on a canvas ----------
+ * Version 3 is drawn by ServiceArtCanvas.tsx. The box takes the svg's place, same width, a 240 to 300
+ * ratio. The canvas reaches past the box by at least 24 units at the sides and 64 above and below, so
+ * the scattered dots show outside it as they did with the svg. Its size and offset are set in
+ * ServiceArtCanvas.tsx, in whole pixels past the box. The foot is positioned only so its text
+ * stays above the canvas, as it was above the svg. */
+.p1 .svsc { position: relative; aspect-ratio: 240 / 300; }
+.p1 .svsc__c { position: absolute; display: block; pointer-events: none; }
+.p1 .svsc ~ .card__foot { position: relative; }

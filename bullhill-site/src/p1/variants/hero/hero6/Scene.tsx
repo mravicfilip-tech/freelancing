@@ -32,6 +32,24 @@ import { Specimen, type FibreRig } from './Render';
 import { buildSchematic } from './Schematic';
 import { ASSEMBLE, SETTLED, assembleAt, idlePulse, msToNextPulse, pulseLevel, type LoadClock } from './timeline';
 
+// Every program the five steps will need, linked in the warm up frame while nothing moves. Hidden
+// parts are shown for the call, so the trench, the fibre and the dig points do not link their shaders
+// the first time they appear, which stalls that frame, at the start or in the middle of a scroll.
+function warmUp(gl: THREE.WebGLRenderer, scenes: (THREE.Object3D | null | undefined)[], camera: THREE.Camera) {
+  for (const s of scenes) {
+    if (!s) continue;
+    const hidden: THREE.Object3D[] = [];
+    s.traverse((o) => {
+      if (!o.visible) {
+        hidden.push(o);
+        o.visible = true;
+      }
+    });
+    gl.compile(s, camera);
+    for (const o of hidden) o.visible = false;
+  }
+}
+
 // What casts a shadow and moves with p, the ducts as they slide, the fibre and its strands while they
 // are blown in, the trench floor and the trench itself. The shadow map is drawn again only when this
 // changes, so the dig, where only the points and the cut faces move, costs no shadow pass.
@@ -105,6 +123,7 @@ function Dual({ view, seam, drive, onReady, rig, dig, stillP, dust }: { view: Vi
             last.current.warm = true;
             st = assembleAt(-1);
             moving = true;
+            warmUp(gl, [scene, schem.scene, points?.scene], camera);
           } else {
             load.begin();
           }

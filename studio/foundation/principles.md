@@ -41,6 +41,11 @@ written by `/taste`.
 - A reference or storyboard frame traced one to one instead of read for the idea behind it.
 - A verdict with no fix. When Filip says what failed but not what good looks like, ask for one
   reference or one property before rebuilding, and log the answer with `/taste`.
+- A video note read from its transcript alone. When Filip points with the cursor, "this", "here",
+  "something like this", find where the cursor rests for a second, at 4 frames a second, and crop what
+  is under it before building. A board of search results is a set of picks, each "this" is one image.
+- Shots at the wrong width. Filip reviews at about 2560 CSS px wide. Boards are shot at 2560 beside
+  the client's widths, and a hero is judged at 2560 for empty sides.
 
 ## Accessibility bar
 

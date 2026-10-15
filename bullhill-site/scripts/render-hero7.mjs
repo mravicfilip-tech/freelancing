@@ -1,8 +1,8 @@
 // Renders the hero 7 stills from the same scene the page draws, headless Chromium on SwiftShader, at 2x,
 // saved as WebP in public/render/, the ground fading to the page's black at its edges. The phone's flipbook
-// is 24 tall frames, hero7-tall-f00.webp to f23, at the p of FRAME_P in src/p1/variants/hero/hero7/acts.ts,
+// is 27 tall frames, hero7-tall-f00.webp to f26, at the p of FRAME_P in src/p1/variants/hero/hero7/acts.ts,
 // which this script reads from there. Each is a 360 by 360 scene at 2x, 720 pixels, the size of the box on a
-// 390 phone at 2x, and held to 45KB. The last of them, the restored route, is also the phone's poster for
+// 390 phone at 2x, and held to 43KB. The last of them, the restored route, is also the phone's poster for
 // reduced motion and browsers without WebGL. The wide still, hero7-wide.webp, is the same last frame at the
 // desktop framing, the poster for reduced motion and browsers without WebGL on a desktop and a tablet.
 //
@@ -35,7 +35,7 @@ const acts = readFileSync(join(here, '..', 'src', 'p1', 'variants', 'hero', 'her
 const FRAME_P = JSON.parse(acts.match(/export const FRAME_P = (\[[^\]]*\])/)[1]);
 const JOBS = { wide: { view: 'wide', p: 1, size: [1376, 760], max: 200000 } };
 FRAME_P.forEach((p, i) => {
-  JOBS[`f${String(i).padStart(2, '0')}`] = { view: 'tall', p, size: [360, 360], max: 45000 };
+  JOBS[`f${String(i).padStart(2, '0')}`] = { view: 'tall', p, size: [360, 360], max: 43000 };
 });
 const only = arg('only', Object.keys(JOBS).join(',')).split(',');
 const QUALITY = [90, 86, 82, 78, 74, 70, 66, 62, 58, 54, 50, 46, 42, 38, 34].map((q) => [q, 0]);

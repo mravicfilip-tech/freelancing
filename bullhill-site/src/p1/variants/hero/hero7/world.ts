@@ -121,9 +121,9 @@ export const ROUTE_X0 = 12.6; // the street end of the route
 export const PINS = [11.4, 8.9, 6.4, 3.9, 1.4];
 export const PIN_Z = 1.75;
 // the ducts, three on the sand bed and two nested above, the orange one carries the fibre
-export const SAND = 0.25; // the sand bed's depth
-export const DUCT_R = 0.085;
-const DUCT_S = 0.19;
+export const SAND = 0.12; // the sand bed's depth
+export const DUCT_R = 0.125; // hero 6's duct on its block, scaled to the trench
+const DUCT_S = 0.26;
 const DUCT_BOT = -D + SAND + DUCT_R;
 const DUCT_TOP = DUCT_BOT + DUCT_S * 0.866;
 export type DuctSpec = { y: number; z: number; orange: boolean };
@@ -134,7 +134,7 @@ export const DUCTS: DuctSpec[] = [
   { y: DUCT_TOP, z: -DUCT_S / 2, orange: false },
   { y: DUCT_TOP, z: DUCT_S / 2, orange: true },
 ];
-export const EDGE = { x: ROUTE_X0, depth: 2.0 }; // the front edge of the slab at the street end, a clean cut
+export const EDGE = { x: ROUTE_X0, depth: D }; // the front edge of the slab at the street end, a clean cut
 export const DUCT_X0 = EDGE.x - 0.03; // where the ducts come in from the street, through the front edge
 export const DUCT_X1 = PIT.x0 + 0.7; // and where they end, open, in the chamber
 export const ORANGE = DUCTS[4];
@@ -455,8 +455,8 @@ const KEYS_B: Key[] = [
   [0.7, 5.0, 0.2, -0.1, 80, 39, 24],
   [0.76, 3.4, 0.4, -0.15, 84, 36, 25],
   [0.84, 5.2, 0.5, -0.2, 96, 31, 28.5],
-  [0.92, 7.0, 0.5, -0.1, 120, 26, 29],
-  [1, 8.0, 1.2, 0.3, 144, 21, 28],
+  [0.92, 6.8, 0.4, -0.1, 122, 22, 28],
+  [1, 6.5, 0.2, 0, 146, 16, 25],
 ];
 // the phone's framing, a tall box with the machine and the route big in the middle of it, at the end of
 // each step. Between the keys the same cubic.
@@ -465,12 +465,12 @@ const KEYS_TALL: Key[] = [
   [0.15, 5.0, 0.8, -0.4, 52, 21, 24],
   [0.45, 11.5, 0.8, -0.4, 52, 21, 22],
   [0.6, 9.2, 0, 0.4, 62, 40, 25],
-  [0.68, 5.8, 0.2, 0.2, 64, 38, 24],
-  [0.75, 3.4, 0.3, 0, 66, 34, 24],
-  [0.8, 8.0, 0.4, 0, 68, 33, 27],
-  [0.86, 8.6, 0.4, 0, 80, 30, 28],
+  [0.68, 6.0, 0.2, 0.2, 64, 38, 24],
+  [0.725, 4.4, 0.3, 0, 66, 35, 24],
+  [0.79, 8.4, 0.4, 0, 68, 33, 27],
+  [0.86, 8.8, 0.4, 0, 80, 30, 28],
   [0.91, 7.2, 0.8, 0, 106, 26, 29],
-  [1, 7, 1.5, 0, 150, 20, 29],
+  [1, 7.5, 1.2, 0, 150, 17, 27],
 ];
 
 // tangents, zero at the two ends of a run and the slope across the neighbours between

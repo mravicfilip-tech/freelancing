@@ -9,7 +9,7 @@ import { mergeGeometries } from 'three/addons/utils/BufferGeometryUtils.js';
 import { Bag, box, cylY, prism, sq, type V3 } from './geo';
 import { PALETTE } from '../hero6/acts';
 import { rng } from '../hero6/geometry';
-import { D, DUCTS, DUCT_R, DUCT_X0, DUCT_X1, HOUSE, ORANGE, PINS, PIN_Z, PIT, SAND, X_CUT, X_T0, type Pose } from './world';
+import { D, DUCTS, DUCT_R, DUCT_X0, DUCT_X1, EDGE, HOUSE, ORANGE, PINS, PIN_Z, PIT, SAND, X_CUT, X_T0, type Pose } from './world';
 
 const GREEN = '#37864f';
 const ORANGE_HEX = '#c9531f';
@@ -32,7 +32,7 @@ function ductGeometry(orange: boolean) {
     o.setAttribute('color', new THREE.BufferAttribute(a, 3));
     list.push(o);
   };
-  const wall = 0.022;
+  const wall = 0.02;
   for (const d of DUCTS.filter((q) => q.orange === orange)) {
     const outer = new THREE.CylinderGeometry(DUCT_R, DUCT_R, 1, 24, 1, true);
     outer.rotateZ(Math.PI / 2);
@@ -147,9 +147,9 @@ export function buildStory(dpr: number): StoryRig {
 
   // ---- ducts
   const glowU = { tip: { value: 99 }, glow: { value: 0 } };
-  const ductMat = (orange: boolean) => {
+  const ductMat = (orange: boolean, glowing = true) => {
     const m = new THREE.MeshPhysicalMaterial({ vertexColors: true, roughness: 0.5, metalness: 0, clearcoat: 1, clearcoatRoughness: 0.05, side: THREE.DoubleSide });
-    if (orange) {
+    if (orange && glowing) {
       m.onBeforeCompile = (sh) => {
         sh.uniforms.uTipX = glowU.tip;
         sh.uniforms.uGlow = glowU.glow;
@@ -165,6 +165,17 @@ export function buildStory(dpr: number): StoryRig {
   const orange = new THREE.Mesh(keep(ductGeometry(true)), ductMat(true));
   for (const m of [green, orange]) {
     m.position.set(DUCT_X0, 0, 0);
+    m.frustumCulled = false;
+    m.visible = false;
+    group.add(m);
+  }
+
+  // the ends of the ducts where the route crosses the front edge, short stubs standing out of the cut face, the
+  // same tubes with open bores, plain, no glow. They grow out of the face as the cut finishes.
+  const stubs = [new THREE.Mesh(keep(ductGeometry(false)), ductMat(false, false)), new THREE.Mesh(keep(ductGeometry(true)), ductMat(true, false))];
+  for (const m of stubs) {
+    m.position.set(EDGE.x + 0.28, 0, 0);
+    m.scale.x = 0.001;
     m.frustumCulled = false;
     m.visible = false;
     group.add(m);
@@ -429,6 +440,13 @@ export function buildStory(dpr: number): StoryRig {
       planeOut.constant = p.houseX;
       edges.visible = p.houseX > HOUSE.x0 - 0.19 && routeX < HOUSE.x1 + 0.4;
       (houseGlass.material as THREE.MeshStandardMaterial).emissiveIntensity = p.windows * 2.2;
+      // the stubs at the front edge
+      const so = Math.min(1, Math.max(0, (p.notch - 0.75) / 0.25));
+      const sg = so * so * (3 - 2 * so);
+      for (const m of stubs) {
+        m.visible = sg > 0.001;
+        m.scale.x = Math.max(0.001, 0.28 * sg);
+      }
       // the chamber's collar
       collarM.visible = p.pit > 0.02;
       collarM.scale.y = 0.2 + 0.8 * p.pit * (1 - 0.9 * p.lid);

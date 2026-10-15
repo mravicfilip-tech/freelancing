@@ -25,7 +25,7 @@ import './hero7.css';
 // ground and the plan fill the height of the stage. At load the route draws in from the street to the house
 // on the LoadClock of hero 6 (`?t=` freezes it) and the machine idles on its tracks.
 //
-// Phones under 768 never run WebGL. They flip through 24 stills of the scene, held and crossfaded between
+// Phones under 768 never run WebGL. They flip through 27 stills of the scene, held and crossfaded between
 // neighbours by scroll, rendered by scripts/render-hero7.mjs from this same scene at a tall framing, with hero 6's phone layout and its
 // CSS classes, the headline in two halves, the box between them, the words that stay. Reduced motion and
 // browsers without WebGL get the last frame, the restored route, as a still, wide on a desktop and tall on

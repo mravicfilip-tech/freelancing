@@ -885,6 +885,12 @@
  * panel, the contact box and the red closing panel keep their own colours. The hero keeps its red
  * glow, which is its own gradient. The list is in step with SECTIONS in motion/ground.ts. With motion
  * off none of this applies and every section keeps its background. */
+/* --page is read by .p1 alone, so it does not inherit. A ground change then restyles the root and not
+ * every element under it, about 3,500 of them, each time a section arrives */
+@property --page {
+  syntax: '*';
+  inherits: false;
+}
 .p1[data-motion='on'] {
   --m-ground: 600ms;
   --m-ground-ease: cubic-bezier(0.22, 0.61, 0.36, 1);

@@ -32,6 +32,10 @@ so the lesson outlives the context window.
 - A full page shot of a page with infinite CSS loops can come out with far sections blank or caught
   mid reveal, though the DOM says they are shown. Full page shots run with reduced motion. Motion is
   checked in viewport shots, taken 2500ms or more after the section's reveal starts.
+- The same paint gap hits viewport shots while a heavy element animates, here the hero dashboard. The
+  fixed nav came out with links, its menu button or its bar missing at random, though the DOM had them at
+  opacity 1. Board shots pass `animations: 'disabled'`, then count light pixels in the nav against a shot
+  of a page known good, and retry when they fall short.
 
 ## Network
 

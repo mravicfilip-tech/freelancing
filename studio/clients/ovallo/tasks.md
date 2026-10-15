@@ -25,6 +25,13 @@ Task format
 
 ## In progress
 
+- ovallo-5 Hero, five cleaner variants without the mark and the tilt. Notes in briefs/clean-up/notes-round6.md, fork branch claude/exciting-johnson-577zey, ?hero=1..5 on page D at 3c6a69c
+  - [x] Read the current hero, the photos and the rho.co reference
+  - [x] Build five variants, break, paper, two tone, term sheet and photograph
+  - [x] Board at 1440 and 390
+  - [ ] Filip picks a hero
+  - [ ] Make the pick the hero and take out the other four
+
 - ovallo-4 Clean up the Ovallo design, three directions and a pass on every section. Brief in briefs/clean-up/brief.md, fork branch claude/exciting-johnson-577zey, baseline Ovallo6 at 7a18b5b, three directions merged at 4d833dd, the combined page D is the page at / from 72c3f0f. Live https://ovallo-landing.vercel.app (72c3f0f, public, Filip 2026-10-15 "make it public and on a production domain"), previews behind Vercel login
   - [x] Read the client feedback, the Ovallo5 and Ovallo6 briefs and rho.co
   - [x] Shoot Ovallo6 and rho.co at 1440

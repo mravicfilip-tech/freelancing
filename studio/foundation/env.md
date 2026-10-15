@@ -13,6 +13,10 @@ so the lesson outlives the context window.
 - The cloud stop hook asks for a commit whenever the working tree is dirty. Builders work in their
   own git worktree, per build recipe step 2, so the main tree stays clean while they run.
 
+- The container can restart mid session. `uptime` shows minutes, the dev server is gone and a background job may
+  have started over. When a background job shows no output, check `uptime` before waiting on it, then restart the
+  dev server.
+
 ## Git
 
 - A repo cloned with `--depth 1` tracks only its default branch, so `git push -u` of a new branch

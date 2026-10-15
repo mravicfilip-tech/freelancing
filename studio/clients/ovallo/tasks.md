@@ -25,10 +25,13 @@ Task format
 
 ## In progress
 
-- ovallo-5 Hero, five cleaner variants without the mark and the tilt. Notes in briefs/clean-up/notes-round6.md, fork branch claude/exciting-johnson-577zey, ?hero=1..5 on page D at 3c6a69c
+- ovallo-5 Hero, five cleaner variants without the mark and the tilt. Notes in briefs/clean-up/notes-round6.md and notes-round7.md, fork branch claude/exciting-johnson-577zey, ?hero=1..5 on page D at 082d81f, first set at 3c6a69c
   - [x] Read the current hero, the photos and the rho.co reference
   - [x] Build five variants, break, paper, two tone, term sheet and photograph
   - [x] Board at 1440 and 390
+  - [x] Filip's video on the first set, notes in briefs/clean-up/notes-round7.md
+  - [x] Second set of five, the screen in each, gradient backgrounds, never fully white
+  - [x] Board at 1920, 1440 and 390
   - [ ] Filip picks a hero
   - [ ] Make the pick the hero and take out the other four
 

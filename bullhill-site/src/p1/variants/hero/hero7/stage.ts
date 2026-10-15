@@ -51,7 +51,8 @@ export type Stage = {
   dispose(): void;
 };
 
-export function buildStage(gl: THREE.WebGLRenderer, dpr: number): Stage {
+// `shadow` is the shadow map's side, 2048 and 1024 on phones
+export function buildStage(gl: THREE.WebGLRenderer, dpr: number, shadow = 2048): Stage {
   const { c, r } = camDirs();
   const group = new THREE.Group();
   const machine = buildMachine();
@@ -68,7 +69,7 @@ export function buildStage(gl: THREE.WebGLRenderer, dpr: number): Stage {
   const key = new THREE.DirectionalLight('#ffe4c8', 3.3);
   key.position.set(kx, KEY_Y, kz);
   key.castShadow = true;
-  key.shadow.mapSize.set(2048, 2048);
+  key.shadow.mapSize.set(shadow, shadow);
   const sc = key.shadow.camera;
   sc.left = -10;
   sc.right = 10;
@@ -91,7 +92,7 @@ export function buildStage(gl: THREE.WebGLRenderer, dpr: number): Stage {
   const lrl = Math.hypot(kd[2], kd[0]);
   const lr: V3 = [kd[2] / lrl, 0, -kd[0] / lrl];
   const lu: V3 = [kd[1] * lr[2] - kd[2] * lr[1], kd[2] * lr[0] - kd[0] * lr[2], kd[0] * lr[1] - kd[1] * lr[0]];
-  const TEXEL = 20 / 2048;
+  const TEXEL = 20 / shadow;
   const env = buildEnv(gl);
   const pose = makePose();
   let last = NaN;

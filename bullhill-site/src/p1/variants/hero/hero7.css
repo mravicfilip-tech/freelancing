@@ -51,7 +51,8 @@
 .p1 .hv7__poster { position: absolute; inset: 0; display: block; width: 100%; height: 100%; object-fit: cover; object-position: 50% 58%; user-select: none; }
 /* phones, hero 6's layout and classes. The five stills sit one over another in the box. At load the first
  * one draws in from the street end, the right, to the house, the left, as the route does on a desktop. */
-.p1 .h7st {
+.p1 .h7st,
+.p1 .h7live {
   position: absolute;
   inset: 0;
   pointer-events: none;

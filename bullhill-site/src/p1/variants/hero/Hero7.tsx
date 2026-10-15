@@ -1,4 +1,5 @@
-import { Suspense, lazy, useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
+import { Component, Suspense, lazy, useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
+import type { ReactNode } from 'react';
 import type { Content } from '../../../shared/content';
 import { Bracket } from '../../Bracket';
 import { motionOn } from '../../motion/motion';
@@ -25,11 +26,12 @@ import './hero7.css';
 // ground and the plan fill the height of the stage. At load the route draws in from the street to the house
 // on the LoadClock of hero 6 (`?t=` freezes it) and the machine idles on its tracks.
 //
-// Phones under 768 never run WebGL. They flip through 27 stills of the scene, held and crossfaded between
-// neighbours by scroll, rendered by scripts/render-hero7.mjs from this same scene at a tall framing, with hero 6's phone layout and its
-// CSS classes, the headline in two halves, the box between them, the words that stay. Reduced motion and
-// browsers without WebGL get the last frame, the restored route, as a still, wide on a desktop and tall on
-// a phone, with no pin.
+// Phones under 768 run the same scene live in the tall framing the stills were rendered from, in hero 6's phone
+// layout and its CSS classes, the headline in two halves, the box between them, the words that stay, when they
+// can take it, see phoneLiveOk. Every other phone flips through 27 stills of the scene, held and crossfaded
+// between neighbours by scroll, rendered by scripts/render-hero7.mjs, and reduced motion and browsers without
+// WebGL get the last frame, the restored route, as a still, wide on a desktop and tall on a phone, with no pin.
+// `?flip=1` forces the flipbook.
 
 const Scene = lazy(() => import('./hero7/Scene'));
 
@@ -208,17 +210,52 @@ export function Hero7({ c }: { c: Content }) {
   return <Specimen c={c} />;
 }
 
+// A phone runs the live scene when it can take it, WebGL2, four cores or more, 3GB of memory or more or not
+// said, no data saver and no reduced motion. `?flip=1` forces the flipbook for a check. Every other phone gets
+// the flipbook, and reduced motion and no WebGL get the poster.
+function phoneLiveOk(motion: boolean) {
+  if (!motion || new URLSearchParams(window.location.search).get('flip') === '1') return false;
+  const nav = navigator as Navigator & { deviceMemory?: number; connection?: { saveData?: boolean } };
+  if ((nav.hardwareConcurrency ?? 0) < 4) return false;
+  if (nav.deviceMemory !== undefined && nav.deviceMemory < 3) return false;
+  if (nav.connection?.saveData === true) return false;
+  try {
+    return !!document.createElement('canvas').getContext('webgl2');
+  } catch {
+    return false;
+  }
+}
+
+// The live scene is never left blank. A WebGL context that cannot be made, or is lost and not back in about
+// 2s, drops a phone to the flipbook and a desktop or a tablet to the poster. `?glfail=1` and `?glfail=lost`
+// force each failure.
+class LiveBoundary extends Component<{ onFail: () => void; children: ReactNode }, { failed: boolean }> {
+  state = { failed: false };
+  static getDerivedStateFromError() {
+    return { failed: true };
+  }
+  componentDidCatch() {
+    this.props.onFail();
+  }
+  render() {
+    return this.state.failed ? null : this.props.children;
+  }
+}
+
 function Specimen({ c }: { c: Content }) {
   const desk = useMedia('(min-width: 768px)');
   const [gl] = useState(hasWebgl);
   const [motion] = useState(motionOn);
-  if (desk && gl && motion) return <Live c={c} />;
-  if (!desk) return <Phone c={c} animate={motion} />;
+  const [liveOk] = useState(() => phoneLiveOk(motion));
+  const [failed, setFailed] = useState(false);
+  const fail = useCallback(() => setFailed(true), []);
+  if (desk && gl && motion && !failed) return <Live c={c} onFail={fail} />;
+  if (!desk) return <Phone c={c} mode={!motion ? 'poster' : liveOk && !failed ? 'live' : 'flip'} onFail={fail} />;
   return <Poster c={c} />;
 }
 
 // ---- the live hero, 768 and up
-function Live({ c }: { c: Content }) {
+function Live({ c, onFail }: { c: Content; onFail: () => void }) {
   const x = t7(c);
   const section = useRef<HTMLElement>(null);
   const pin = useRef<HTMLDivElement>(null);
@@ -260,9 +297,11 @@ function Live({ c }: { c: Content }) {
           <div className="hv7__stage" role="img" aria-label={x.figure}>
             {mounted ? (
               <div className="hv7__canvas">
-                <Suspense fallback={null}>
-                  <Scene drive={drive} onReady={onReady} />
-                </Suspense>
+                <LiveBoundary onFail={onFail}>
+                  <Suspense fallback={null}>
+                    <Scene drive={drive} onReady={onReady} onFail={onFail} />
+                  </Suspense>
+                </LiveBoundary>
               </div>
             ) : null}
             <div ref={stepEl} className="hv7__step" aria-hidden="true">
@@ -435,8 +474,10 @@ function PhoneStills({ progress, load }: { progress: Progress; load: boolean }) 
   );
 }
 
-function Phone({ c, animate }: { c: Content; animate: boolean }) {
+function Phone({ c, mode, onFail }: { c: Content; mode: 'live' | 'flip' | 'poster'; onFail: () => void }) {
   const x = t7(c);
+  const animate = mode !== 'poster';
+  const live = mode === 'live';
   const section = useRef<HTMLElement>(null);
   const pin = useRef<HTMLDivElement>(null);
   const stage = useRef<HTMLDivElement>(null);
@@ -446,9 +487,11 @@ function Phone({ c, animate }: { c: Content; animate: boolean }) {
   const progress = useProgress(section, pin, animate);
   const label = useStepLabel(stepEl, '.hv6__stepi');
   const [stillsLoad, setStillsLoad] = useState(false);
-  // the five stills load once the page has, so the first view needs only the first
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => setMounted(true), []);
+  // the flipbook's frames load once the page has, so the first view needs only the first
   useEffect(() => {
-    if (!animate) return;
+    if (mode !== 'flip') return;
     let id = 0;
     const go = () => {
       id = window.setTimeout(() => setStillsLoad(true), 300);
@@ -459,15 +502,18 @@ function Phone({ c, animate }: { c: Content; animate: boolean }) {
       window.clearTimeout(id);
       window.removeEventListener('load', go);
     };
-  }, [animate]);
+  }, [mode]);
+  // the live scene writes the label from its own frame, the flipbook from the scroll
   useEffect(() => {
-    if (!animate) return;
+    if (mode !== 'flip') return;
     return progress.subscribe(label);
-  }, [animate, progress, label]);
+  }, [mode, progress, label]);
   useLayoutEffect(() => {
     if (animate) label(progress.current());
   });
-  useLoad(section, pin, clock, false, progress, c.lang);
+  const onReady = useCallback(() => clock?.begin(), [clock]);
+  const drive = useMemo(() => (clock ? { progress, clock, onFrame: label } : null), [progress, clock, label]);
+  useLoad(section, pin, clock, live, progress, c.lang);
 
   // the box the scene fills, centred in the room between the headline halves and as wide as the stage
   const box = useMemo(() => {
@@ -495,7 +541,17 @@ function Phone({ c, animate }: { c: Content; animate: boolean }) {
           <div ref={stage} className="hv6__stage" role="img" aria-label={x.figure}>
             {box ? (
               <div className="hv6__box" style={{ left: box.x, top: box.y, width: box.w, height: box.h }}>
-                {animate ? (
+                {live ? (
+                  mounted && drive ? (
+                    <div className="h7live">
+                      <LiveBoundary onFail={onFail}>
+                        <Suspense fallback={null}>
+                          <Scene drive={drive} phone onReady={onReady} onFail={onFail} />
+                        </Suspense>
+                      </LiveBoundary>
+                    </div>
+                  ) : null
+                ) : animate ? (
                   <PhoneStills progress={progress} load={stillsLoad} />
                 ) : (
                   <img className="h7st__still" src={frameSrc(FRAMES - 1)} width={FRAME_PX} height={FRAME_PX} alt="" draggable={false} />

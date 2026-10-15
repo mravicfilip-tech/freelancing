@@ -1,21 +1,22 @@
 // Everything of hero 7 that is not the ground, the machine or the spoil. The sand that is poured, the five
-// ducts that unroll along the trench floor, the lit tip that runs the orange duct and the strands that
-// come out of it at the chamber, the house at the end of the route with its windows, the chamber's collar
-// and the stakes along the route. All of it is set from the pose, so every frame at p is the same frame.
-// Each piece is one draw call and is hidden while it has nothing to show, so the frame cost stays low.
+// ducts that unroll along the trench floor, the lit tip that leaves the street cabinet and runs the orange duct
+// to the house wall, the house itself, real and lived in with its windows dark until the end, the cabinet, the
+// connection box on the wall and the stakes along the marked line. All of it is set from the pose, so every
+// frame at p is the same frame. Each piece is one draw call and is hidden while it has nothing to show, so the
+// frame cost stays low.
 
 import * as THREE from 'three';
 import { mergeGeometries } from 'three/addons/utils/BufferGeometryUtils.js';
-import { Bag, box, cylY, prism, sq, type V3 } from './geo';
+import { Bag, box, cylY, prism, sq } from './geo';
 import { PALETTE } from '../hero6/acts';
 import { rng } from '../hero6/geometry';
-import { D, DUCTS, DUCT_R, DUCT_X0, DUCT_X1, EDGE, HOUSE, ORANGE, PINS, PIN_Z, PIT, SAND, X_CUT, X_T0, type Pose } from './world';
+import { CAB, D, DUCTS, DUCT_R, DUCT_X0, DUCT_X1, EDGE, FEED_X, HOUSE, LEAD_X, ORANGE, PINS, ROUTE_LEG, SAND, X_CUT, X_T0, type Pose } from './world';
 
 const GREEN = '#37864f';
 const ORANGE_HEX = '#c9531f';
 
 // ---- the ducts, open tubes along x from 0 back to -1, scaled in x so they unroll from the street end
-function ductGeometry(orange: boolean) {
+function ductGeometry(orange: boolean, alongZ = false) {
   const list: THREE.BufferGeometry[] = [];
   const base = new THREE.Color(orange ? ORANGE_HEX : GREEN);
   const dark = base.clone().multiplyScalar(0.38);
@@ -50,7 +51,10 @@ function ductGeometry(orange: boolean) {
       add(ring, base, d.y, d.z);
     }
   }
-  return mergeGeometries(list)!;
+  const out = mergeGeometries(list)!;
+  // the feeder under the road runs along z, the same tubes turned a quarter, from 0 out to +1
+  if (alongZ) out.rotateY(Math.PI / 2);
+  return out;
 }
 
 // ---- the sand that is poured, a curtain of grains that falls and settles on the floor of the trench
@@ -58,6 +62,7 @@ const SAND_VERT = /* glsl */ `
 attribute vec3 aSeed;
 attribute vec3 aCol;
 uniform float uSandX;
+uniform float uFade;
 uniform float uPx;
 varying vec3 vCol;
 varying float vA;
@@ -69,7 +74,7 @@ void main() {
   float land = ${(-D).toFixed(3)} + lvl + 0.012;
   float y = mix(1.5 + aSeed.y * 0.6, land, f * f);
   float xs = x + (1.0 - f) * (aSeed.z - 0.5) * 0.5;
-  vA = f > 0.0 ? 1.0 - smoothstep(0.0, 1.0, (x - uSandX - 0.8) / 1.2) * 0.8 : 0.0;
+  vA = (f > 0.0 ? 1.0 - smoothstep(0.0, 1.0, (x - uSandX - 0.8) / 1.2) * 0.8 : 0.0) * uFade;
   vCol = aCol;
   gl_Position = projectionMatrix * viewMatrix * vec4(xs, y, position.z, 1.0);
   gl_PointSize = vA > 0.01 ? uPx * (0.9 + aSeed.z * 0.7) : 0.0;
@@ -86,7 +91,7 @@ void main() {
 }
 `;
 
-// ---- the lit tip and the strands' tips, soft glows added over the scene
+// ---- the lit tip, the cabinet's light and the connection box, soft glows added over the scene
 const GLOW_VERT = /* glsl */ `
 attribute float aA;
 attribute float aS;
@@ -107,33 +112,10 @@ void main() {
 }
 `;
 
-// ---- the strands, thin tubes with their own distance along them, drawn as far as they have come out
-const STRAND_VERT = /* glsl */ `
-attribute float aT;
-varying float vT;
-void main() {
-  vT = aT;
-  gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
-}
-`;
-const STRAND_FRAG = /* glsl */ `
-uniform float uGrow;
-varying float vT;
-void main() {
-  if (vT > uGrow) discard;
-  float head = smoothstep(uGrow - 0.22, uGrow, vT);
-  vec3 c = mix(vec3(0.82, 0.83, 0.8), vec3(2.2, 2.0, 1.7), head);
-  gl_FragColor = vec4(c, 1.0);
-}
-`;
-
-const N_STRANDS = 9;
-const STRAND_SAMPLES = 48;
-
 export type StoryRig = {
   group: THREE.Group;
-  // set from the pose and the route's draw, the front's x
-  update(p: Pose, routeX: number): void;
+  // set from the pose and the route's draw, the metres drawn in from the cabinet
+  update(p: Pose, routeS: number): void;
   setScreen(dpr: number): void;
   dispose(): void;
 };
@@ -170,12 +152,13 @@ export function buildStory(dpr: number): StoryRig {
     group.add(m);
   }
 
-  // the ends of the ducts where the route crosses the front edge, short stubs standing out of the cut face, the
-  // same tubes with open bores, plain, no glow. They grow out of the face as the cut finishes.
-  const stubs = [new THREE.Mesh(keep(ductGeometry(false)), ductMat(false, false)), new THREE.Mesh(keep(ductGeometry(true)), ductMat(true, false))];
+  // the operator's own feeder to the cabinet crosses under the road, and the cut edge shows its ducts, short stubs
+  // standing out of the face, the same tubes with open bores, plain, no glow. They grow out of the face as the cut
+  // finishes.
+  const stubs = [new THREE.Mesh(keep(ductGeometry(false, true)), ductMat(false, false)), new THREE.Mesh(keep(ductGeometry(true, true)), ductMat(true, false))];
   for (const m of stubs) {
-    m.position.set(EDGE.x + 0.28, 0, 0);
-    m.scale.x = 0.001;
+    m.position.set(FEED_X, 0, EDGE.z);
+    m.scale.z = 0.001;
     m.frustumCulled = false;
     m.visible = false;
     group.add(m);
@@ -202,60 +185,15 @@ export function buildStory(dpr: number): StoryRig {
     g.setAttribute('aCol', new THREE.BufferAttribute(col, 3));
     return keep(g);
   })();
-  const sandU = { uSandX: { value: 99 }, uPx: { value: 2.2 * Math.max(1, dpr) } };
+  const sandU = { uSandX: { value: 99 }, uFade: { value: 1 }, uPx: { value: 2.2 * Math.max(1, dpr) } };
   const sand = new THREE.Points(sandG, keepM(new THREE.ShaderMaterial({ vertexShader: SAND_VERT, fragmentShader: DOT_FRAG, uniforms: sandU, transparent: true, depthWrite: false })));
   sand.frustumCulled = false;
   sand.renderOrder = 2;
   sand.visible = false;
   group.add(sand);
 
-  // ---- the strands, out of the mouth of the orange duct into the chamber
-  const paths: Float32Array[] = [];
-  const strandG = (() => {
-    const r = rng(41);
-    const list: THREE.BufferGeometry[] = [];
-    const x0 = DUCT_X1;
-    for (let i = 0; i < N_STRANDS; i++) {
-      const a = r() * Math.PI * 2;
-      const rad = Math.sqrt(r()) * (DUCT_R - 0.035);
-      const oy = Math.sin(a) * rad;
-      const oz = Math.cos(a) * rad;
-      const fan = (r() - 0.5) * 0.5;
-      const side = (r() - 0.5) * 0.5;
-      const reach = 0.5 + r() * 0.35;
-      const lift = 0.3 + r() * 0.3;
-      const pts = [
-        new THREE.Vector3(x0 + 1.1, ORANGE.y + oy, ORANGE.z + oz),
-        new THREE.Vector3(x0 + 0.25, ORANGE.y + oy * 0.9, ORANGE.z + oz * 0.9),
-        new THREE.Vector3(x0 - 0.12, ORANGE.y + oy * 0.8 + 0.03, ORANGE.z + oz * 0.8 + side * 0.08),
-        new THREE.Vector3(x0 - reach * 0.55, ORANGE.y + lift * 0.45, ORANGE.z + side * 0.5),
-        new THREE.Vector3(x0 - reach, ORANGE.y + lift, ORANGE.z + side + fan * 0.3),
-      ];
-      const curve = new THREE.CatmullRomCurve3(pts, false, 'catmullrom', 0.5);
-      const tube = new THREE.TubeGeometry(curve, 40, 0.017, 5, false);
-      const nv = tube.attributes.position.count;
-      const aT = new Float32Array(nv);
-      const per = 5 + 1;
-      for (let v = 0; v < nv; v++) aT[v] = Math.floor(v / per) / 40;
-      tube.setAttribute('aT', new THREE.BufferAttribute(aT, 1));
-      tube.deleteAttribute('normal');
-      tube.deleteAttribute('uv');
-      list.push(tube);
-      const sp = curve.getSpacedPoints(STRAND_SAMPLES);
-      const arr = new Float32Array((STRAND_SAMPLES + 1) * 3);
-      sp.forEach((v, k) => arr.set([v.x, v.y, v.z], k * 3));
-      paths.push(arr);
-    }
-    return keep(mergeGeometries(list)!);
-  })();
-  const strandU = { uGrow: { value: 0 } };
-  const strands = new THREE.Mesh(strandG, keepM(new THREE.ShaderMaterial({ vertexShader: STRAND_VERT, fragmentShader: STRAND_FRAG, uniforms: strandU, side: THREE.DoubleSide })));
-  strands.frustumCulled = false;
-  strands.visible = false;
-  group.add(strands);
-
-  // ---- the glows, the lit tip and the tip of every strand
-  const nGlow = 1 + N_STRANDS;
+  // ---- the glows, the lit tip, the light on the cabinet and the connection box on the house wall
+  const nGlow = 3;
   const glowPos = new Float32Array(nGlow * 3);
   const glowA = new Float32Array(nGlow);
   const glowS = new Float32Array(nGlow);
@@ -271,8 +209,9 @@ export function buildStory(dpr: number): StoryRig {
   group.add(glow);
   const pxK = { v: Math.max(1, dpr) };
 
-  // ---- the house, a simple clean house in the greys of the specimen. Walls, a plinth, a gable roof, a
-  // chimney, window frames and a door, one mesh. The glass is another, and lit by its emissive.
+  // ---- the house, real from the first frame, a lived in house in the greys of the specimen. Walls, a plinth, a
+  // gable roof, a chimney, window frames and a door with a little porch, a hedge, a path and a bin, one mesh. The
+  // glass is another, dark until the end, then lit warm by its emissive.
   const wallW = HOUSE.x1 - HOUSE.x0;
   const wallD = HOUSE.z1 - HOUSE.z0;
   const cx = (HOUSE.x0 + HOUSE.x1) / 2;
@@ -284,7 +223,7 @@ export function buildStory(dpr: number): StoryRig {
   roof.rotateY(Math.PI / 2);
   body.add(roof, '#3d3d43', [cx, HOUSE.h + 0.1, 0]);
   body.add(box(0.5, 1.1, 0.5, 0.03), '#6d6d73', [HOUSE.x0 + 1.3, HOUSE.h + 0.9, -0.7]);
-  // windows on the street side and the long side, a frame and a pane each
+  body.add(cylY(0.11, 0.22, 10), '#4a4a50', [HOUSE.x0 + 1.3, HOUSE.h + 1.55, -0.7]);
   // a frame, a pane proud of it, and a sill under it, on a wall that faces dir along its axis
   const win = (x: number, y: number, z: number, onX: boolean, dir: number) => {
     if (onX) {
@@ -305,73 +244,69 @@ export function buildStory(dpr: number): StoryRig {
   win(xf, 1.55, 0.95, true, 1);
   win(HOUSE.x0 + 1.15, 1.55, HOUSE.z0, false, -1);
   win(HOUSE.x1 - 1.15, 1.55, HOUSE.z0, false, -1);
-  // the door on the long side
+  // window boxes with a little green under the two windows on the road side
+  for (const x of [HOUSE.x0 + 1.15, HOUSE.x1 - 1.15]) {
+    body.add(box(1.2, 0.18, 0.22, 0.02, 1), '#4a4a50', [x, 0.9, zf + 0.2]);
+    body.add(box(1.1, 0.16, 0.16, 0.06, 2), '#3d5f39', [x, 1.05, zf + 0.2]);
+  }
+  // the door with a porch roof over it and a step, and a lamp that is off
   body.add(box(1.0, 2.0, 0.08, 0.02, 1), '#2b2b30', [cx, 1.3, zf + 0.02]);
   body.add(box(0.06, 0.06, 0.1, 0.01, 1), '#cfcfd3', [cx + 0.34, 1.3, zf + 0.08]);
   body.add(box(1.4, 0.1, 0.5, 0.02, 1), '#6a6a70', [cx, 0.35, zf + 0.3]);
-  // the pipe up the wall at the chamber end, where the duct goes in
-  body.add(cylY(0.07, 1.0, 10), ORANGE_HEX, [xf + 0.06, 0.35, 0]);
+  body.add(box(1.7, 0.1, 0.8, 0.02, 1), '#3d3d43', [cx, 2.5, zf + 0.4]);
+  body.add(box(0.08, 0.08, 0.08, 0.01, 1), '#cfcfd3', [cx + 0.7, 2.0, zf + 0.12]);
+  // a hedge along the road side of the plot with a gap for the path, the path itself and a bin by the gable
+  const hz = zf + 0.75;
+  for (const [x0, x1] of [[HOUSE.x0 - 0.2, cx - 0.75], [cx + 0.75, HOUSE.x1 + 0.4]]) {
+    const n = Math.max(1, Math.round((x1 - x0) / 0.6));
+    for (let i = 0; i < n; i++) body.add(box((x1 - x0) / n + 0.06, 0.6 + 0.08 * ((i * 7) % 3), 0.5, 0.18, 2), i % 2 ? '#35532f' : '#3d5f39', [x0 + ((i + 0.5) * (x1 - x0)) / n, 0.3, hz]);
+  }
+  for (let i = 0; i < 4; i++) body.add(box(0.7, 0.04, 0.34, 0.01, 1), '#8f8f95', [cx + 0.04 * ((i % 2) * 2 - 1), 0.02, zf + 0.75 + i * 0.4]);
+  body.add(box(0.5, 0.9, 0.55, 0.04, 1), '#2f4a33', [xf - 0.5, 0.45, HOUSE.z0 - 0.5]);
+  body.add(box(0.56, 0.08, 0.6, 0.02, 1), '#24392a', [xf - 0.5, 0.94, HOUSE.z0 - 0.5]);
+  // a downpipe at the corner, the way a house looks lived in
+  body.add(cylY(0.04, 2.4, 8), '#6d6d73', [xf + 0.05, 1.3, HOUSE.z1 - 0.2]);
+  // the connection box on the gable wall, where the duct goes in. Its lens is a pane of its own that lights.
+  body.add(box(0.1, 0.42, 0.34, 0.02, 1), '#c4c4c9', [xf + 0.05, 1.05, 0]);
+  const lens = new Bag();
+  lens.add(sq(0.02, 0.1, 0.2), '#fff2dc', [xf + 0.11, 1.05, 0]);
   const houseBody = new THREE.Mesh(keep(body.build()), keepM(new THREE.MeshStandardMaterial({ vertexColors: true, roughness: 0.78, metalness: 0.05 })));
   const houseGlass = new THREE.Mesh(keep(glass.build()), keepM(new THREE.MeshStandardMaterial({ vertexColors: true, roughness: 0.2, metalness: 0.3, emissive: new THREE.Color('#ffd9a0'), emissiveIntensity: 0 })));
+  const boxLens = new THREE.Mesh(keep(lens.build()), keepM(new THREE.MeshStandardMaterial({ vertexColors: true, roughness: 0.4, metalness: 0, emissive: new THREE.Color('#ffb870'), emissiveIntensity: 0 })));
   houseBody.receiveShadow = true;
-  const planeIn = new THREE.Plane(new THREE.Vector3(1, 0, 0), 99);
-  (houseBody.material as THREE.Material).clippingPlanes = [planeIn];
-  (houseGlass.material as THREE.Material).clippingPlanes = [planeIn];
-  // the house as a drawing, its edges, until the route reaches it
-  const wire = (() => {
-    const { x0, x1, z0, z1 } = HOUSE;
-    const yb = 0.1;
-    const yt = HOUSE.h + 0.1;
-    const yr = yt + HOUSE.ridge;
-    const e = 0.35;
-    const v: number[] = [];
-    const seg = (a: V3, b: V3) => v.push(...a, ...b);
-    // the walls, the floor and the eaves, the corners between them
-    const c = (y: number): V3[] => [[x0, y, z0], [x1, y, z0], [x1, y, z1], [x0, y, z1]];
-    for (const y of [yb, yt]) {
-      const q = c(y);
-      for (let i = 0; i < 4; i++) seg(q[i], q[(i + 1) % 4]);
-    }
-    for (let i = 0; i < 4; i++) seg(c(yb)[i], c(yt)[i]);
-    // the roof, the ridge, the eaves with their overhang and the two gables
-    seg([x0 - e, yr, 0], [x1 + e, yr, 0]);
-    seg([x0 - e, yt, z0 - e], [x1 + e, yt, z0 - e]);
-    seg([x0 - e, yt, z1 + e], [x1 + e, yt, z1 + e]);
-    for (const x of [x0 - e, x1 + e]) {
-      seg([x, yt, z0 - e], [x, yr, 0]);
-      seg([x, yt, z1 + e], [x, yr, 0]);
-      seg([x, yt, z0 - e], [x, yt, z1 + e]);
-    }
-    const g = new THREE.BufferGeometry();
-    g.setAttribute('position', new THREE.Float32BufferAttribute(v, 3));
-    return g;
-  })();
-  const edges = new THREE.LineSegments(keep(wire), keepM(new THREE.LineBasicMaterial({ color: '#ffffff', transparent: true, opacity: 0.85 })));
-  const planeOut = new THREE.Plane(new THREE.Vector3(-1, 0, 0), -99);
-  (edges.material as THREE.Material).clippingPlanes = [planeOut];
-  houseBody.visible = false;
-  houseGlass.visible = false;
-  edges.visible = false;
-  group.add(houseBody, houseGlass, edges);
+  houseBody.castShadow = true;
+  group.add(houseBody, houseGlass, boxLens);
+  // the conduit up the gable wall from the duct to the box, lit orange as the tip climbs it
+  const riserM = new THREE.Mesh(keep(new THREE.CylinderGeometry(0.05, 0.05, 1.95, 12, 1, true)), keepM(new THREE.MeshStandardMaterial({ color: ORANGE_HEX, roughness: 0.5, metalness: 0, emissive: new THREE.Color('#ff6a18'), emissiveIntensity: 0, side: THREE.DoubleSide })));
+  riserM.position.set(xf + 0.07, -0.95 + 0.975, 0);
+  group.add(riserM);
 
-  // ---- the chamber's collar, a low concrete frame round the pit
-  const collar = new Bag();
-  const pw = PIT.x1 - PIT.x0;
-  const pcx = (PIT.x0 + PIT.x1) / 2;
-  collar.add(box(pw + 0.3, 0.1, 0.16, 0.03, 1), '#6e6e73', [pcx, 0.05, PIT.hw + 0.05]);
-  collar.add(box(pw + 0.3, 0.1, 0.16, 0.03, 1), '#6e6e73', [pcx, 0.05, -PIT.hw - 0.05]);
-  collar.add(box(0.16, 0.1, PIT.hw * 2 + 0.3, 0.03, 1), '#6e6e73', [PIT.x0 - 0.05, 0.05, 0]);
-  collar.add(box(0.16, 0.1, PIT.hw * 2 + 0.3, 0.03, 1), '#6e6e73', [PIT.x1 + 0.05, 0.05, 0]);
-  const collarM = new THREE.Mesh(keep(collar.build()), keepM(new THREE.MeshStandardMaterial({ vertexColors: true, roughness: 0.85, metalness: 0 })));
-  collarM.visible = false;
-  collarM.receiveShadow = true;
-  group.add(collarM);
-  // the cover, lowered on the chamber once the surface is back, a slab on the collar
-  const lidM = new THREE.Mesh(keep(box(pw + 0.3, 0.04, PIT.hw * 2 + 0.3, 0.012, 1)), keepM(new THREE.MeshStandardMaterial({ color: '#5e5e64', roughness: 0.8, metalness: 0.05 })));
-  lidM.position.x = pcx;
-  lidM.visible = false;
-  lidM.receiveShadow = true;
-  group.add(lidM);
+  // ---- the street cabinet at the road edge, the operator's, in the specimen's greys. A plinth, a body, two doors
+  // facing the road with louvres and a lock, a cap, and a light that comes on when the tip leaves it.
+  const cab = new Bag();
+  const cw = CAB.x1 - CAB.x0;
+  const cd = CAB.z1 - CAB.z0;
+  const ccx = (CAB.x0 + CAB.x1) / 2;
+  const ccz = (CAB.z0 + CAB.z1) / 2;
+  cab.add(box(cw + 0.12, 0.16, cd + 0.12, 0.02, 1), '#4a4a50', [ccx, 0.08, ccz]);
+  cab.add(box(cw, CAB.h - 0.2, cd, 0.03, 1), '#8f9096', [ccx, 0.16 + (CAB.h - 0.2) / 2, ccz]);
+  cab.add(box(cw + 0.1, 0.1, cd + 0.1, 0.03, 1), '#6c6d73', [ccx, CAB.h - 0.04, ccz]);
+  const fz = CAB.z1 + 0.012;
+  for (const dx of [-0.245, 0.245]) cab.add(box(0.47, CAB.h - 0.42, 0.03, 0.01, 1), '#9fa0a6', [ccx + dx, 0.22 + (CAB.h - 0.42) / 2, fz]);
+  cab.add(box(0.012, CAB.h - 0.42, 0.045, 0.002, 1), '#4a4a50', [ccx, 0.22 + (CAB.h - 0.42) / 2, fz + 0.004]);
+  for (let i = 0; i < 6; i++) for (const dx of [-0.245, 0.245]) cab.add(box(0.36, 0.014, 0.04, 0.002, 1), '#55565c', [ccx + dx, CAB.h - 0.42 + 0.02 - i * 0.045, fz + 0.012]);
+  cab.add(box(0.05, 0.12, 0.05, 0.01, 1), '#cfcfd3', [ccx + 0.06, 0.8, fz + 0.03]);
+  cab.add(box(0.2, 0.11, 0.012, 0.002, 1), '#2b2b30', [ccx - 0.245, 0.62, fz + 0.016]);
+  cab.add(box(0.15, 0.02, 0.014, 0.002, 1), '#b5b6bb', [ccx - 0.245, 0.64, fz + 0.02]);
+  cab.add(box(0.15, 0.02, 0.014, 0.002, 1), '#b5b6bb', [ccx - 0.245, 0.6, fz + 0.02]);
+  const cabM = new THREE.Mesh(keep(cab.build()), keepM(new THREE.MeshStandardMaterial({ vertexColors: true, roughness: 0.6, metalness: 0.15 })));
+  cabM.castShadow = true;
+  cabM.receiveShadow = true;
+  group.add(cabM);
+  const led = new Bag();
+  led.add(sq(0.06, 0.04, 0.012), '#fff2dc', [ccx + 0.38, CAB.h - 0.3, fz + 0.03]);
+  const ledM = new THREE.Mesh(keep(led.build()), keepM(new THREE.MeshStandardMaterial({ vertexColors: true, roughness: 0.4, emissive: new THREE.Color('#ffb870'), emissiveIntensity: 0 })));
+  group.add(ledM);
 
   // ---- the stakes along the route, a thin pole and a flag, each one pops up as the route is drawn past it
   const pinB = new Bag();
@@ -400,68 +335,65 @@ export function buildStory(dpr: number): StoryRig {
 
   return {
     group,
-    update(p, routeX) {
+    update(p, routeS) {
       // ducts
       const len = DUCT_X0 - p.ductX;
       const ductOn = len > 0.02 && p.fillX > X_T0 - 0.35;
       green.visible = orange.visible = ductOn;
       green.scale.x = orange.scale.x = Math.max(0.001, len);
       glowU.tip.value = p.tipX;
-      glowU.glow.value = p.tipOn > 0 || p.tipX <= DUCT_X1 + 0.01 ? 1 : 0;
+      // the orange duct is lit behind the tip once the tip is in the trench
+      glowU.glow.value = sm(ROUTE_LEG, ROUTE_LEG + 0.4, p.tipS);
       // the sand
-      sand.visible = p.sandOn > 0;
+      sand.visible = p.sandOn > 0.002;
+      sandU.uFade.value = p.sandOn;
       sandU.uSandX.value = p.sandX;
-      // the strands and the glows
-      const open = p.lid < 0.55;
-      strands.visible = p.strand > 0.001 && open;
-      strandU.uGrow.value = p.strand;
-      glow.visible = (p.tipOn > 0.01 || p.strand > 0.001) && open;
-      glowPos[0] = p.tipX;
-      glowPos[1] = ORANGE.y;
-      glowPos[2] = ORANGE.z;
-      glowA[0] = p.tipOn * (1 - p.strand * 0.6);
+      // the lit tip on the lead along the ground, down into the trench, along the duct and up the conduit, the
+      // light on the cabinet and the connection box on the wall
+      const dive = sm(ROUTE_LEG, ROUTE_LEG + 0.9, p.tipS);
+      const onLead = p.tipS <= ROUTE_LEG;
+      glowPos[0] = onLead ? LEAD_X : Math.max(DUCT_X1, p.tipX);
+      glowPos[1] = (1 - dive) * 0.04 + dive * ORANGE.y + p.riser * (1.05 - ORANGE.y) * dive;
+      glowPos[2] = onLead ? ROUTE_LEG - p.tipS : ORANGE.z * dive * (1 - p.riser);
+      if (p.riser > 0) glowPos[0] = DUCT_X1 + (HOUSE.x1 + 0.07 - DUCT_X1) * sm(0, 0.3, p.riser);
+      glowA[0] = p.tipOn * 0.95;
       glowS[0] = 26 * pxK.v;
-      for (let i = 0; i < N_STRANDS; i++) {
-        const path = paths[i];
-        const f = Math.min(p.strand, 1) * STRAND_SAMPLES;
-        const k = Math.min(STRAND_SAMPLES - 1, Math.floor(f));
-        const w = f - k;
-        for (let c = 0; c < 3; c++) glowPos[(1 + i) * 3 + c] = path[k * 3 + c] * (1 - w) + path[(k + 1) * 3 + c] * w;
-        glowA[1 + i] = p.strand > 0.02 ? 0.85 * sm(0, 0.15, p.strand) : 0;
-        glowS[1 + i] = 16 * pxK.v;
-      }
+      glowPos[3] = CAB.x0 + 0.88;
+      glowPos[4] = CAB.h - 0.3;
+      glowPos[5] = CAB.z1 + 0.05;
+      glowA[1] = p.led * 0.8;
+      glowS[1] = 22 * pxK.v;
+      glowPos[6] = HOUSE.x1 + 0.14;
+      glowPos[7] = 1.05;
+      glowPos[8] = 0;
+      glowA[2] = p.box * 0.9;
+      glowS[2] = 34 * pxK.v;
+      glow.visible = glowA[0] > 0.01 || glowA[1] > 0.01 || glowA[2] > 0.01;
       (glowG.attributes.position as THREE.BufferAttribute).needsUpdate = true;
       (glowG.attributes.aA as THREE.BufferAttribute).needsUpdate = true;
       (glowG.attributes.aS as THREE.BufferAttribute).needsUpdate = true;
-      // the house, rendered from the street side as the route reaches it, the drawing wiped away as it comes
-      const rev = p.houseX < HOUSE.x1 + 0.099;
-      houseBody.visible = houseGlass.visible = rev;
-      planeIn.constant = -p.houseX;
-      planeOut.constant = p.houseX;
-      edges.visible = p.houseX > HOUSE.x0 - 0.19 && routeX < HOUSE.x1 + 0.4;
+      // the windows light warm, the box on the wall, the light on the cabinet, the conduit as the tip climbs it
       (houseGlass.material as THREE.MeshStandardMaterial).emissiveIntensity = p.windows * 2.2;
-      // the stubs at the front edge
+      (boxLens.material as THREE.MeshStandardMaterial).emissiveIntensity = p.box * 2.6;
+      (ledM.material as THREE.MeshStandardMaterial).emissiveIntensity = p.led * 2.4;
+      (riserM.material as THREE.MeshStandardMaterial).emissiveIntensity = p.riser * 2;
+      // the stubs at the cut edge
       const so = Math.min(1, Math.max(0, (p.notch - 0.75) / 0.25));
       const sg = so * so * (3 - 2 * so);
       for (const m of stubs) {
         m.visible = sg > 0.001;
-        m.scale.x = Math.max(0.001, 0.28 * sg);
+        m.scale.z = Math.max(0.001, 0.28 * sg);
       }
-      // the chamber's collar
-      collarM.visible = p.pit > 0.02;
-      collarM.scale.y = 0.2 + 0.8 * p.pit * (1 - 0.9 * p.lid);
-      lidM.visible = p.lid > 0.001;
-      lidM.position.y = 0.048 + 0.6 * (1 - p.lid) * (1 - p.lid);
-      // the stakes
-      const key = routeX.toFixed(3);
+      // the stakes along the marked line, each pops up as the route is drawn past it and goes with the plan
+      const key = `${routeS.toFixed(3)}|${p.plan.toFixed(3)}`;
       if (key !== lastPins) {
         lastPins = key;
         let any = false;
         for (let i = 0; i < PINS.length; i++) {
-          const t = Math.min(1, Math.max(0, (PINS[i] + 0.25 - routeX) / 0.7));
-          const s = t <= 0 ? 0 : outBack(t);
+          const t = Math.min(1, Math.max(0, (routeS - PINS[i].s + 0.25) / 0.7));
+          const s = (t <= 0 ? 0 : outBack(t)) * p.plan;
           any = any || s > 0.01;
-          _p.set(PINS[i], 0, PIN_Z);
+          _p.set(PINS[i].x, 0, PINS[i].z);
           _s.set(1, Math.max(0.0001, s), 1);
           _m.compose(_p, _q.identity(), _s);
           pins.setMatrixAt(i, _m);

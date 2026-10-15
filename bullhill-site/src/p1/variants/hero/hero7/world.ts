@@ -23,10 +23,9 @@ import { clamp01, smooth, type V3 } from '../hero6/geometry';
 export type { V3 };
 
 // ---- the route
-export const X_T0 = 0; // where the trench begins, the end nearest the camera
-export const X_END = 34; // the end of the drawn route
+export const X_T0 = -1.9; // where the trench begins, at the house wall
 export const D = 1.25; // trench depth
-export const HALF_W = 0.8; // half the trench width at the floor
+export const HALF_W = 1.0; // half the trench width at the floor
 export const SHOULDER = 0.25; // how far each lip rounds off
 export const ROAD_Z = 4.2; // the kerb, a wide verge, the road runs on towards the camera
 export const ROAD_W = 4.6;
@@ -36,7 +35,7 @@ export const MZ = 0; // its centre line, z
 export const HOUSE_Y = 0.95; // top of the tracks
 export const PIV: V3 = [0.95, 1.0, 0.35]; // the boom foot in the house, forward, up, to the right
 export const ARM_OFF = PIV[2];
-export const SEAM_BEHIND = 3.1; // the seam rides this far behind the swing axis, so the tracks stand on render
+export const EXIT_D = 30; // how far the machine drives off at the end, along the verge to the street
 
 // the arm in its own plane, x forward and y up, origin at the boom foot. The boom is a gooseneck, E is
 // where the stick hangs from it, the stick runs to the bucket's pin W, the tip is on the bucket.
@@ -53,7 +52,7 @@ export const CYC0 = 0.16;
 export const P1 = 0.45; // and holds its last frame
 export const CYCLES = 5;
 export const F_FAR = 4.6; // how far ahead of the swing axis a bite begins
-export const S_TOTAL = 10.4; // how far the machine reverses across the beat
+export const S_TOTAL = 9.8; // how far the machine reverses across the beat
 const RUN_IN = 1.4; // the first bite begins this far in from the start of the trench, so the bucket comes down inside it
 export const XM0 = X_T0 + RUN_IN + F_FAR; // where the machine waits
 export const DUMP_F = 3.6; // the dump point, forward of the swing axis
@@ -114,12 +113,29 @@ export const X_CUT = XK[CYCLES]; // where the trench ends when the beat is done
 export const heapAmp = (q: number) => smooth(clamp01((q - 0.2) / 0.8));
 
 // ---- the other places of the story
-// the house at the far end of the route, the chamber at its wall, the stakes along the route
+// the house at the far end of the route, real from the first frame, the operator's street cabinet at the road
+// edge, and the stakes along the marked line. The route is the only thing here that is drawn as a plan. It
+// starts at the cabinet, runs ROUTE_LEG along z to the corner at LEAD_X, and then along x to the house wall.
 export const HOUSE = { x0: -7.4, x1: -2.0, z0: -2.3, z1: 2.3, h: 2.6, ridge: 1.5 };
-export const PIT = { x0: -1.5, x1: 0.15, hw: 0.8 };
-export const ROUTE_X0 = 12.6; // the street end of the route
-export const PINS = [11.4, 8.9, 6.4, 3.9, 1.4];
-export const PIN_Z = 1.75;
+export const CAB = { x0: 9.6, x1: 10.6, z0: 2.1, z1: 2.9, h: 1.55 };
+export const LEAD_X = 10.1; // the corner, in line with the middle of the cabinet
+export const ROUTE_LEG = CAB.z0; // the lead from the cabinet to the line of the trench
+export const ROUTE_LEN = ROUTE_LEG + (LEAD_X - HOUSE.x1); // the whole route, the cabinet to the house wall
+// how far along the route a point on the line is, metres from the cabinet
+export const sOfX = (x: number) => ROUTE_LEG + (LEAD_X - x);
+export const sOfZ = (z: number) => ROUTE_LEG - z;
+export type Pin = { x: number; z: number; s: number };
+export const PINS: Pin[] = [
+  { x: 11.0, z: 1.1, s: sOfZ(1.1) },
+  { x: 8.4, z: 1.5, s: sOfX(8.4) },
+  { x: 6.1, z: 1.5, s: sOfX(6.1) },
+  { x: 3.8, z: 1.5, s: sOfX(3.8) },
+  { x: 1.5, z: 1.5, s: sOfX(1.5) },
+  { x: -0.8, z: 1.5, s: sOfX(-0.8) },
+];
+// the cut edge on the road side of the slab, a clean face along x where the layers show. The operator's own
+// feeder ducts to the cabinet cross under the road there.
+export const FEED_X = LEAD_X;
 // the ducts, three on the sand bed and two nested above, the orange one carries the fibre
 export const SAND = 0.12; // the sand bed's depth
 export const DUCT_R = 0.125; // hero 6's duct on its block, scaled to the trench
@@ -134,15 +150,15 @@ export const DUCTS: DuctSpec[] = [
   { y: DUCT_TOP, z: -DUCT_S / 2, orange: false },
   { y: DUCT_TOP, z: DUCT_S / 2, orange: true },
 ];
-export const EDGE = { x: ROUTE_X0, depth: D }; // the front edge of the slab at the street end, a clean cut
-export const DUCT_X0 = EDGE.x - 0.03; // where the ducts come in from the street, through the front edge
-export const DUCT_X1 = PIT.x0 + 0.7; // and where they end, open, in the chamber
+export const EDGE = { z: 9.0, depth: D }; // the cut edge, the slab ends here in a clean face
+export const DUCT_X0 = X_CUT + 0.4; // where the ducts come in from the street, into the end wall of the trench
+export const DUCT_X1 = HOUSE.x1 + 0.15; // and where they end, open, at the house wall
 export const ORANGE = DUCTS[4];
 
 // ---- the backfill, the dig turned round. The machine drives forward, draws a mound in and dumps it in
 // the trench, five cycles, and the trench fills behind the bucket from the street end to the house.
 export const BF0 = 0.76;
-export const BF1 = 0.91;
+export const BF1 = 0.89;
 export const BF_CYCLES = 5;
 const XM_END = xmAt(1); // where the dig leaves the machine
 const xmBack = (t: number) => XM_END - (XM_END - XM0) * ease(t, RAMP);
@@ -159,17 +175,18 @@ export const WIN = {
   park: [0.455, 0.5],
   sand: [0.468, 0.55],
   duct: [0.525, 0.6],
-  pit: [0.63, 0.67],
-  house: [0.64, 0.7],
-  tip: [0.605, 0.68],
-  strand: [0.67, 0.725],
+  led: [0.596, 0.62],
+  tip: [0.605, 0.72],
+  riser: [0.712, 0.745],
+  box: [0.73, 0.765],
   pre: [0.735, 0.76],
-  post: [0.91, 0.95],
-  restore: [0.9, 0.965],
-  cut: [0.9, 0.935],
-  lid: [0.93, 0.965],
-  notch: [0.935, 0.985],
-  windows: [0.94, 0.99],
+  post: [0.89, 0.93],
+  turn: [0.915, 0.94],
+  drive: [0.93, 1],
+  plan: [0.86, 0.95],
+  restore: [0.88, 0.95],
+  notch: [0.93, 0.985],
+  windows: [0.92, 1],
 } as const;
 const win = (p: number, w: readonly [number, number]) => smooth(clamp01((p - w[0]) / (w[1] - w[0])));
 
@@ -178,7 +195,9 @@ export type Pose = {
   u: number; // how far through it, 0 to 1
   xm: number; // the machine
   xf: number; // the trench front, the cut so far
-  seam: number; // where the plan turns into the render
+  drv: number; // how far the machine has driven off along the route to the street, metres
+  turn: number; // the tracks have turned from the route to the way out, 0 to 1
+  drive: number; // how far along the way out the machine is, 0 to 1
   tip: V3; // the cutting edge, world
   psi: number; // house yaw, radians, 0 along its facing, positive to its right
   boom: number; // boom rotation about its foot
@@ -195,23 +214,24 @@ export type Pose = {
   sandX: number; // the sand bed is poured at and beyond this x, towards the street
   sandOn: number; // the pour is in the air
   ductX: number; // the ducts run from the street to this x
-  tipX: number; // the lit tip
+  tipS: number; // the lit tip, metres along the route from the cabinet
+  tipX: number; // the same in x for the ducts in the trench
   tipOn: number; // how bright the tip is
-  strand: number; // how far the strands have come out
-  houseX: number; // the house is rendered at and beyond this x, towards the street end of its own width
-  pit: number; // the chamber at the house is open, 0 to 1
+  led: number; // the light on the cabinet, 0 to 1
+  riser: number; // the tip is up the conduit on the house wall, 0 to 1
+  box: number; // the connection box on the wall is lit, 0 to 1
+  plan: number; // the plan is on, 1 until the surface is put back
   windows: number; // the windows are lit, 0 to 1
   fillX: number; // the trench is filled at and beyond this x
   restore: number; // the surface is finished, 0 to 1
-  notch: number; // the ground beyond the front edge has sunk away and the cut face shows, 0 to 1
-  lid: number; // the cover is lowered on the chamber, 0 to 1
+  notch: number; // the ground beyond the cut edge has sunk away and the face shows, 0 to 1
 };
 
 export function makePose(): Pose {
   return {
-    k: 0, u: 0, xm: XM0, xf: X_T0, seam: XM0 + SEAM_BEHIND, tip: [0, 0, 0], psi: 0, boom: 0, stick: 0, bucket: 0,
+    k: 0, u: 0, xm: XM0, drv: 0, turn: 0, drive: 0, xf: X_T0, tip: [0, 0, 0], psi: 0, boom: 0, stick: 0, bucket: 0,
     dump: new Array(CYCLES).fill(0), heap: new Array(CYCLES).fill(0), carry: 0, fall: 0, ex: 0, ey: 0, wx: 0, wy: 0,
-    sandX: 14, sandOn: 0, ductX: DUCT_X0, tipX: DUCT_X0 + 1, tipOn: 0, strand: 0, houseX: HOUSE.x1 + 0.1, pit: 0, windows: 0, fillX: X_CUT + 0.45, restore: 0, notch: 0, lid: 0,
+    sandX: 14, sandOn: 0, ductX: DUCT_X0, tipS: 0, tipX: LEAD_X, tipOn: 0, led: 0, riser: 0, box: 0, plan: 1, windows: 0, fillX: X_CUT + 0.45, restore: 0, notch: 0,
   };
 }
 
@@ -316,10 +336,10 @@ export function solve(p: number, out: Pose): Pose {
   else if (p < BF0) out.xm = XM_END;
   else if (p < BF1) out.xm = xmBack((p - BF0) / (BF1 - BF0));
   else out.xm = XM0;
-  // the seam rides the machine in the dig and holds where it stopped, so the render keeps the ground
-  out.seam = (digging ? out.xm : XM_END) + SEAM_BEHIND;
-  // at the end the render draws back to the front edge, so the slab ends in a clean face
-  out.seam += (EDGE.x + 0.003 - out.seam) * win(p, WIN.cut);
+  // at the end the machine turns right round in place and drives off along the verge, away down the street
+  out.turn = win(p, WIN.turn);
+  out.drive = win(p, WIN.drive);
+  out.drv = EXIT_D * out.drive;
 
   // the trench front, the cut so far. The first plunge opens the start of the trench under the bucket.
   if (k >= CYCLES) out.xf = X_CUT;
@@ -345,8 +365,8 @@ export function solve(p: number, out: Pose): Pose {
     const a = bk === 0 ? X_CUT + 0.45 : XK[j + 1];
     const b = j === 0 ? X_T0 - 0.4 : XK[j];
     fillX = lerp(a, b, smooth(seg(bu, [0.62, 0.88])));
-    out.carry = smooth(seg(bu, [0.14, 0.32])) * (1 - smooth(seg(bu, [0.84, 0.88])));
-    out.fall = smooth(seg(bu, [0.62, 0.84]));
+    out.carry = smooth(seg(bu, [0.14, 0.32])) * (1 - smooth(seg(bu, [0.8, 0.92])));
+    out.fall = smooth(seg(bu, [0.62, 0.84])) * (1 - smooth(seg(bu, [0.9, 0.98])));
   }
   out.fillX = fillX;
 
@@ -410,16 +430,18 @@ export function solve(p: number, out: Pose): Pose {
 
   // ---- the rest of the story
   const sw = win(p, WIN.sand);
-  out.sandX = p < WIN.sand[0] ? 14 : lerp(X_CUT + 0.6, X_T0 - 1.4, sw);
-  out.sandOn = p > WIN.sand[0] - 0.004 && p < WIN.sand[1] + 0.05 ? 1 : 0;
+  out.sandX = lerp(X_CUT + 0.6, X_T0 - 1.4, sw);
+  out.sandOn = smooth(clamp01((p - (WIN.sand[0] - 0.004)) / 0.008)) * (1 - win(p, [WIN.sand[1], WIN.sand[1] + 0.05]));
   out.ductX = lerp(DUCT_X0, DUCT_X1, win(p, WIN.duct));
-  const tw = win(p, WIN.tip);
-  out.tipX = lerp(DUCT_X0 + 0.2, DUCT_X1, tw);
-  out.tipOn = smooth(clamp01((p - WIN.tip[0] + 0.004) / 0.008)) * (1 - win(p, [WIN.strand[1], WIN.strand[1] + 0.04]) * 0.55);
-  out.strand = win(p, WIN.strand);
-  out.houseX = lerp(HOUSE.x1 + 0.1, HOUSE.x0 - 0.2, win(p, WIN.house));
-  out.pit = win(p, WIN.pit);
-  out.lid = win(p, WIN.lid);
+  // the lit tip leaves the cabinet, runs the lead and the duct to the house wall, climbs the conduit and lights
+  // the connection box. One eased run, so its speed never jumps.
+  out.tipS = ROUTE_LEN * win(p, WIN.tip);
+  out.tipX = out.tipS <= ROUTE_LEG ? LEAD_X : LEAD_X - (out.tipS - ROUTE_LEG);
+  out.led = win(p, WIN.led);
+  out.tipOn = smooth(clamp01((p - WIN.tip[0] + 0.006) / 0.012)) * (1 - win(p, [0.74, 0.79]));
+  out.riser = win(p, WIN.riser);
+  out.box = win(p, WIN.box);
+  out.plan = 1 - win(p, WIN.plan);
   out.windows = win(p, WIN.windows);
   out.restore = win(p, WIN.restore);
   out.notch = win(p, WIN.notch);
@@ -445,32 +467,27 @@ type Key = [number, number, number, number, number, number, number];
 const DIG0: Key = [P0, XM0 + CAM.ahead, CAM.ty, CAM.tz, CAM.az, CAM.el, CAM.dist0];
 const DIG1: Key = [P1, XM0 + CAM.follow * S_TOTAL + CAM.ahead, CAM.ty, CAM.tz, CAM.az, CAM.el, CAM.dist1];
 const KEYS_A: Key[] = [
-  [0, 3.4, 1.0, -0.3, 82, 24, 37],
+  [0, 3.0, 1.0, -0.3, 82, 25, 31],
   DIG0,
 ];
 const KEYS_B: Key[] = [
   DIG1,
-  [0.5, 12.2, 0.85, -0.25, 79.5, 27, 25.3],
-  [0.6, 8.6, 0, -0.1, 78, 40, 24],
-  [0.7, 5.0, 0.2, -0.1, 80, 39, 24],
-  [0.76, 3.4, 0.4, -0.15, 84, 36, 25],
-  [0.84, 5.2, 0.5, -0.2, 96, 31, 28.5],
-  [0.92, 6.8, 0.4, -0.1, 122, 22, 28],
-  [1, 6.5, 0.2, 0, 146, 16, 25],
+  [0.6, 6.0, 0.2, -0.1, 78, 40, 24],
+  [0.68, 4.2, 0.3, 0, 86, 38, 23],
+  [0.75, 2.6, 0.5, 0, 96, 33, 22],
+  [0.86, 3.6, 0.6, 0.8, 99, 25, 26],
+  [1, 3.6, 0.7, 4.6, 101, 17, 25],
 ];
 // the phone's framing, a tall box with the machine and the route big in the middle of it, at the end of
 // each step. Between the keys the same cubic.
 const KEYS_TALL: Key[] = [
-  [0, 5.0, 0.8, -0.4, 52, 21, 24],
-  [0.15, 5.0, 0.8, -0.4, 52, 21, 24],
-  [0.45, 11.5, 0.8, -0.4, 52, 21, 22],
-  [0.6, 9.2, 0, 0.4, 62, 40, 25],
-  [0.68, 6.0, 0.2, 0.2, 64, 38, 24],
-  [0.725, 4.4, 0.3, 0, 66, 35, 24],
-  [0.79, 8.4, 0.4, 0, 68, 33, 27],
-  [0.86, 8.8, 0.4, 0, 80, 30, 28],
-  [0.91, 7.2, 0.8, 0, 106, 26, 29],
-  [1, 7.5, 1.2, 0, 150, 17, 27],
+  [0, 4.5, 0.8, -0.4, 56, 24, 25],
+  [0.15, 4.5, 0.8, -0.4, 56, 24, 25],
+  [0.45, 10.0, 0.8, -0.4, 56, 22, 22],
+  [0.6, 5.0, 0, 0.3, 62, 36, 24],
+  [0.73, 1.4, 0.8, 0, 100, 28, 16],
+  [0.85, 6.0, 0.5, 0.4, 82, 28, 24],
+  [1, 4.0, 0.8, 3.2, 100, 19, 30],
 ];
 
 // tangents, zero at the two ends of a run and the slope across the neighbours between

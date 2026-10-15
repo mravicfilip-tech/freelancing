@@ -25,17 +25,17 @@ Task format
 
 ## In progress
 
-- ovallo-4 Clean up the Ovallo design, three directions and a pass on every section. Brief in briefs/clean-up/brief.md, fork branch claude/exciting-johnson-577zey, baseline Ovallo6 at 7a18b5b
+- ovallo-4 Clean up the Ovallo design, three directions and a pass on every section. Brief in briefs/clean-up/brief.md, fork branch claude/exciting-johnson-577zey, baseline Ovallo6 at 7a18b5b, three directions merged at 4d833dd behind ?dir=a|b|c
   - [x] Read the client feedback, the Ovallo5 and Ovallo6 briefs and rho.co
   - [x] Shoot Ovallo6 and rho.co at 1440
   - [x] Log the planet section rejection
   - [x] Write three directions, the Why Choose replacement and the section plan
   - [x] Filip asks for all three directions built, with a switcher to compare
   - [x] Add the direction switcher beside Ovallo6
-  - [ ] Build home in direction A, product first
-  - [ ] Build home in direction B, private bank
-  - [ ] Build home in direction C, term sheet
-  - [ ] Merge, shoot and check Ovallo6 did not change
+  - [x] Build home in direction A, product first
+  - [x] Build home in direction B, private bank
+  - [x] Build home in direction C, term sheet
+  - [x] Merge, shoot and check Ovallo6 did not change
   - [ ] Filip picks a direction
   - [ ] Fixed Income and Tokenized Bonds from the same parts
   - [ ] /uireview at 390 and 1440

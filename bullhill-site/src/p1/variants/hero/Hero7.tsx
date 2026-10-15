@@ -30,7 +30,7 @@ import './hero7.css';
 //
 // Phones under 768 are one screen, no pin and no scroll driven story. The scene fills the whole first screen
 // behind the header, the headline and the foot sit over it on black scrims, and the story plays by itself in
-// about 12 seconds once the load has shown the headline, pauses while the hero is off screen and holds the lit
+// about 18 seconds once the load has shown the headline, pauses while the hero is off screen and holds the lit
 // house at the end (hero7/autoplay.ts). A phone that can take it runs the same scene live, see phoneLiveOk.
 // Every other phone flips through 28 stills of the scene in the same lens, dissolved into one another by the
 // same time, rendered by scripts/render-hero7.mjs. Reduced motion gets the last frame, the restored route, as a

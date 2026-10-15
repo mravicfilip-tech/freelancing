@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { clamp01, smooth } from '../hero6/geometry';
+import { clamp01 } from '../hero6/geometry';
 import { urlProgress, type Progress } from '../hero6/progress';
 
 // The phone's progress. Hero 7 on a phone plays by itself, Filip, 15 October 2026, "it can just autoplay
@@ -11,16 +11,46 @@ import { urlProgress, type Progress } from '../hero6/progress';
 // and wins. A `gate` can hold the clock while the flipbook has not got the next frame yet, so a slow
 // connection waits and never skips.
 
-export const PLAY_MS = 12000;
-// how much of a smoothstep is mixed into the linear run, 0 is linear, 1 a full smoothstep. A gentle ease at
-// both ends, the first and the last tenth of the story move at about half speed.
-const EASE = 0.5;
+// The pace, seconds from the start to p, a key at the end of each beat. The story was paced for the scroll, so
+// an even run of 12 seconds gave a dig cycle of 0.63s and a backfill cycle of 0.31s, and in the backfill the
+// house swung up to 16 degrees from one frame to the next at 60 frames a second, which reads as a jerk at any
+// frame rate. Filip, 15 October 2026, "acting weird and still not smooth". Each beat now gets the time its
+// motion needs, a dig cycle of 1.1s and a backfill cycle of 0.9s, the house swings under 7 degrees a frame,
+// and the still opening is short. Between the keys the speed changes smoothly and never runs backwards, and it
+// eases from rest at the start and to rest on the lit house.
+const PACE: readonly (readonly [number, number])[] = [
+  [0, 0],
+  [1.5, 0.15], // the route marked, nothing moves, long enough to read the first step
+  [7, 0.45], // the dig, five cycles
+  [11, 0.76], // the ducts laid and the fibre blown in, the camera's widest moves
+  [15.5, 0.89], // the backfill, five cycles
+  [18, 1], // the surface put back, the machine drives off and the house lights up
+];
+export const PLAY_MS = PACE[PACE.length - 1][0] * 1000;
+// the speed at each key, zero at the two ends, the harmonic mean of the speeds either side between
+const RATE = PACE.map((k, i) => {
+  if (i === 0 || i === PACE.length - 1) return 0;
+  const a = (k[1] - PACE[i - 1][1]) / (k[0] - PACE[i - 1][0]);
+  const b = (PACE[i + 1][1] - k[1]) / (PACE[i + 1][0] - k[0]);
+  return (2 * a * b) / (a + b);
+});
 // the share of the hero that must be on screen for the story to run
 export const SEEN = 0.25;
 
-export const playAt = (t: number) => {
-  const k = clamp01(t);
-  return k + EASE * (smooth(k) - k);
+// p at ms into the story
+export const playAt = (ms: number) => {
+  const s = ms / 1000;
+  if (s <= 0) return 0;
+  if (s >= PACE[PACE.length - 1][0]) return 1;
+  let i = 0;
+  while (s > PACE[i + 1][0]) i++;
+  const [t0, p0] = PACE[i];
+  const [t1, p1] = PACE[i + 1];
+  const h = t1 - t0;
+  const t = (s - t0) / h;
+  const t2 = t * t;
+  const t3 = t2 * t;
+  return clamp01((2 * t3 - 3 * t2 + 1) * p0 + (t3 - 2 * t2 + t) * h * RATE[i] + (-2 * t3 + 3 * t2) * p1 + (t3 - t2) * h * RATE[i + 1]);
 };
 
 export type Autoplay = Progress & {
@@ -59,7 +89,7 @@ export function createAutoplay(): Autoplay {
     t0 = now;
     if (!gate || gate(p)) {
       elapsed += dt;
-      const q = playAt(elapsed / PLAY_MS);
+      const q = playAt(elapsed);
       if (q !== p) {
         p = q;
         emit();

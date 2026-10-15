@@ -21,7 +21,7 @@ import * as THREE from 'three';
 import type { Progress } from '../hero6/progress';
 import { LoadClock, riseEase } from '../hero6/timeline';
 import { buildStage, type Stage } from './stage';
-import { CAM, ROUTE_LEN, camAt, makeCam, phoneLens, type View } from './world';
+import { CAM, P0, ROUTE_LEN, camAt, makeCam, phoneLens, type View } from './world';
 
 const dbg = import.meta.env.DEV
   ? (() => {
@@ -137,7 +137,40 @@ function Rig({ drive, still, phone, frame, onReady }: { drive?: Drive; still?: S
     }
     // frozen for a shot, the rock holds at its phase and no more frames are asked for
     const running = !!clock && clock.idleRun() && clock.frozen === null;
-    if (st.update(p, routeX, rock, idleMs)) gl.shadowMap.needsUpdate = true;
+    // On a phone the story plays by itself, so a frame that comes late shows as a stutter. While the route draws
+    // and the first step holds, before anything moves, the gaps between drawn frames are watched in windows of
+    // 0.6s. When the middle gap of a window is over 20ms, under 50 frames a second, the pixel ratio steps down by
+    // a quarter, from 1.5 to 1, so the GPU has less to fill. The middle gap, not the mean, so one hitch never
+    // steps it. The shadow is drawn on each of these frames, so they cost what a moving one does. Once the dig
+    // starts the ratio holds, so the picture never changes its sharpness while it moves, Filip, 15 October 2026,
+    // "acting weird". `?h7dbg=1` shows the rate and the ratio in a corner.
+    const now = performance.now();
+    const w = watch.current;
+    const watching = !!phone && !still && p < P0 && state.current.drawn > 1;
+    if (watching && w.last) {
+      if (!w.gaps.length) w.from = w.last;
+      w.gaps.push(now - w.last);
+      if (now - w.from >= 600 && w.gaps.length >= 5) {
+        const mid = [...w.gaps].sort((x, y) => x - y)[w.gaps.length >> 1];
+        const d = gl.getPixelRatio();
+        const next = Math.max(1, Math.round((d - 0.25) * 100) / 100);
+        if (mid > 20 && next < d) {
+          setDpr(next);
+          st.setScreen(next);
+        }
+        w.gaps.length = 0;
+      }
+    } else if (!watching) w.gaps.length = 0;
+    if (dbg7) {
+      w.frames++;
+      if (now - w.t >= 1000) {
+        w.fps = Math.round((w.frames * 1000) / Math.max(1, now - w.t));
+        w.frames = 0;
+        w.t = now;
+        dbg7.textContent = `live ${w.fps} fps, ratio ${gl.getPixelRatio()}`;
+      }
+    }
+    if (st.update(p, routeX, rock, idleMs) || watching) gl.shadowMap.needsUpdate = true;
     // the whole screen's height, of which the phone's canvas is a window from `off` down
     const fullH = frame?.full ?? fs.size.height;
     const off = frame?.top ?? 0;
@@ -170,9 +203,12 @@ function Rig({ drive, still, phone, frame, onReady }: { drive?: Drive; still?: S
       const fh = still ? fs.size.height : fullH;
       const oy = still ? 0 : off;
       const key = `${fs.size.width}|${fs.size.height}|${fh}|${oy}|${lens.shift.toFixed(1)}|${lens.fov.toFixed(3)}`;
-      if (key !== lensKey.current) {
+      // R3F sets the aspect to the canvas's own on every resize and every change of pixel ratio, which on the
+      // phone's band canvas squeezed the picture to about half its width, so the aspect is checked as well
+      const ar = fs.size.width / fh;
+      if (key !== lensKey.current || camera.aspect !== ar) {
         lensKey.current = key;
-        camera.aspect = fs.size.width / fh;
+        camera.aspect = ar;
         camera.setViewOffset(fs.size.width, fh, 0, -lens.shift + oy, fs.size.width, fs.size.height);
         camera.updateProjectionMatrix();
       }
@@ -201,42 +237,10 @@ function Rig({ drive, still, phone, frame, onReady }: { drive?: Drive; still?: S
     // the damped p is still gliding or the route is still being drawn, so ask for the next frame. The idle
     // rock alone is a slow sway, so 30 frames a second draw it smoothly and leave the GPU free for the
     // page, where it asked for 60 for as long as the hero sat at the top. A scroll still asks at once.
-    // On a phone the story plays by itself, so a frame that comes late shows as a stutter. While it moves, the
-    // gaps between drawn frames are watched in windows of 0.6s. When the middle gap of a window is over 20ms,
-    // under 50 frames a second, the pixel ratio steps down by a quarter, from 1.5 to 1, so the GPU has less to
-    // fill and the story keeps 60 frames a second. The middle gap, not the mean, so one hitch never steps it.
-    // It never steps back up, so it cannot flicker between the two. Filip, 15 October 2026, "make it move at
-    // 60 fps". `?h7dbg=1` shows the rate and the ratio in a corner.
-    if (phone && !still) {
-      const w = watch.current;
-      const now = performance.now();
-      const moving = s.p !== p && s.drawn > 1;
-      if (moving && w.last) {
-        if (!w.gaps.length) w.from = w.last;
-        w.gaps.push(now - w.last);
-        if (now - w.from >= 600 && w.gaps.length >= 5) {
-          const mid = [...w.gaps].sort((x, y) => x - y)[w.gaps.length >> 1];
-          const d = gl.getPixelRatio();
-          const next = Math.max(1, Math.round((d - 0.25) * 100) / 100);
-          if (mid > 20 && next < d) {
-            setDpr(next);
-            st.setScreen(next);
-          }
-          w.gaps.length = 0;
-        }
-      }
-      w.last = moving ? now : 0;
-      if (dbg7) {
-        w.frames++;
-        if (now - w.t >= 1000) {
-          w.fps = Math.round((w.frames * 1000) / Math.max(1, now - w.t));
-          w.frames = 0;
-          w.t = now;
-          dbg7.textContent = `live ${w.fps} fps, ratio ${gl.getPixelRatio()}`;
-        }
-      }
-    }
-    if ((s.p !== p && s.drawn > 1) || (a >= 0 && a < ROUTE_MS + 40)) invalidate();
+    const more = (s.p !== p && s.drawn > 1) || (a >= 0 && a < ROUTE_MS + 40);
+    // the phone's watch times a gap only between two frames where the first asked for the second
+    w.last = watching && more ? now : 0;
+    if (more) invalidate();
     else if (running && p < 0.1) {
       window.clearTimeout(rockWake.current);
       rockWake.current = window.setTimeout(invalidate, 33);

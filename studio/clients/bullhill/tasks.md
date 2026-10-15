@@ -118,7 +118,11 @@ Task format
 
 - bullhill-13 Phone hero at 60 frames a second, Filip "the animation in the hero on the mobile is moving at 15 fps"
   - [x] The canvas covers only the part the scrims leave visible, 45 percent of the pixels at 390 by 844, same picture
-  - [x] The pixel ratio steps from 1.5 to 1 while the story plays when frames run under 50 a second, ?h7dbg=1 shows the rate
+  - [x] The pixel ratio steps from 1.5 to 1 when frames run under 50 a second, ?h7dbg=1 shows the rate
+  - [x] Filip "acting weird and still not smooth". The step squeezed the picture to half its width, R3F reset the camera's aspect, fixed
+  - [x] The ratio steps only while the route draws and the first step holds, never once the machine moves
+  - [x] The story paced per beat, 18 seconds, a dig cycle of 1.1s and a backfill cycle of 0.9s, were 0.63s and 0.31s in 12 seconds
+  - [ ] Filip's yes on 18 seconds
   - [ ] Filip reads the rate on his phone with ?h7dbg=1
 - bullhill-10 Whole page scroll silky, a deep dive on frame cost. Baseline 45d40e6, nothing may look different
   - [x] Measure a wheel scroll of the whole page at 1440 and a touch scroll at 390, frame by frame, by section

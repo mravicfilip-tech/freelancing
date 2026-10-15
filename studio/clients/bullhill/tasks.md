@@ -23,27 +23,12 @@ Task format
 
 ## Backlog
 
-- bullhill-7 No own machines anywhere on the site, crew section and numbers block first. Notes 3 and 4 in briefs/website/round6-notes.md
-  - [x] Notes queued, every own machines line listed
-  - [x] The client's exact figures, 8 km, 270 house connections, 5 towns, 1 year, note 5
-  - [ ] Filip says build
-- bullhill-8 Where we work, all of Germany and Austria, Belgium, the Netherlands, Czechia. Note 6 in briefs/website/round6-notes.md
-  - [x] Note queued, nine places listed
-  - [ ] The full country list from the client
-  - [ ] Filip says build
-- bullhill-9 Real contact details and address, Celje. Notes 10 and 12 in briefs/website/round6-notes.md
-  - [x] Phone, WhatsApp, email and address queued
-  - [ ] Registration and VAT number from the client
-  - [ ] Filip says build
-- bullhill-6 Blur the company sign in the Business park photo. Note 2 in briefs/website/round6-notes.md
-  - [x] Note queued
-  - [ ] Filip says build
-- bullhill-5 Phone hero full screen, plays by itself on load. Notes in briefs/website/round6-notes.md
-  - [x] Note queued, structure proposed in words
-  - [ ] Filip's yes on the structure, the length and play once or loop
-
 ## In progress
 
+- bullhill-5 Phone hero full screen, plays by itself on load. Notes in briefs/website/round6-notes.md
+  - [x] Note queued, structure proposed in words
+  - [x] Filip's yes, as proposed, 12 seconds, play once
+  - [ ] Builder on it in its own worktree
 - bullhill-2 Hero scroll smooth, frame rate on phones and desktop
   - [x] Measure frame cost on a scripted scroll, phone and desktop
   - [x] Fix the worst costs, measure again, c9d30f3
@@ -132,6 +117,21 @@ Task format
 
 ## Review
 
+- bullhill-6 Blur the company sign in the Business park photo. Note 2 in briefs/website/round6-notes.md
+  - [x] Note queued
+  - [x] Blurred in all five sizes, 3a3b5eb, the other six photos checked, only a Takeuchi maker badge
+- bullhill-7 No own machines anywhere on the site, crew section and numbers block first. Notes 3 and 4 in briefs/website/round6-notes.md
+  - [x] Notes queued, every own machines line listed
+  - [x] The client's exact figures, 8 km, 270 house connections, 5 towns, 1 year, note 5
+  - [x] Built, 3a3b5eb, the fleet row hides while empty, the crew portraits stay
+- bullhill-8 Where we work, all of Germany and Austria, Belgium, the Netherlands, Czechia. Note 6 in briefs/website/round6-notes.md
+  - [x] Note queued, nine places listed
+  - [ ] The full country list from the client
+  - [x] Built with the five countries, 3a3b5eb
+- bullhill-9 Real contact details and address, Celje. Notes 10 and 12 in briefs/website/round6-notes.md
+  - [x] Phone, WhatsApp, email and address queued
+  - [ ] Registration and VAT number from the client
+  - [x] Built, 3a3b5eb, the FN and UID line hidden until the numbers arrive
 - bullhill-4 Phone menu locks the page, Services link lands under the header
   - [x] Measure both before, the menu let the page move 300px, Services landed at minus 8px from the top
   - [x] Radix overlay for the menu lock, a scroll margin on Services that takes its ride up back out

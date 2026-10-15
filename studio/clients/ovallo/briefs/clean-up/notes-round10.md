@@ -45,4 +45,5 @@ logged in env.md.
 
 Fork commit `2ad964c`. The paragraph and buttons move to columns 8 to 12 of the hero grid, 528px, where the two fixed
 width CTAs fit (488px). The paragraph no longer lines up with the plans lead. No movement on hover at 2560, 1558 and
-1440, lowest contrast 5.04 to 1. Not on production yet, it needs Filip's word for this change.
+1440, lowest contrast 5.04 to 1. On production on Filip's "deploy", fork commit `36a4b42`, checked on the live host at
+1558, side by side and still on hover.

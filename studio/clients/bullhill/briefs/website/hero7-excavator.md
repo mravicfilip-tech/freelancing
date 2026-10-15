@@ -69,3 +69,17 @@ with the scroll and still read at 60 frames a second. It is built first.
    sheet. Stop for Filip.
 2. After his yes, the other four steps, the phone stills, the labels in both languages, a frame
    budget check, then `/uireview`.
+
+## Revised story, accepted 15 October 2026
+
+Filip, "It also doesn't make sense for the house to a schematic, we're not building a house in this process. We're just connecting cables to the house as an infrastructure. Let's revise the idea and process here." Then "1 yes".
+
+The plan layer only ever shows what BullHill builds, the route. The road, the verge, the house and the operator's street cabinet are real from the first frame. The scene runs the full screen width.
+
+| Step | What the scene shows |
+|---|---|
+| 1 Mark the route | The route from the street cabinet to the house wall drawn as the plan, a marked line and flags on the verge, the planned trench and its ducts as hairlines seen through the ground, the existing cables under the verge as dashed hairlines. The house has dark windows |
+| 2 Dig | The excavator opens the trench along the marked line, cabinet to house, the plan turning into real trench as it goes |
+| 3 Lay ducts | Sand bed, the orange and green ducts, the warning tape |
+| 4 Fibre blown in | A lit tip leaves the street cabinet, runs the orange duct and reaches the house wall, where the connection box lights |
+| 5 Backfill and restore | The machine closes the trench, the verge is put back, the cut edge keeps the layers, the house windows light, the machine leaves |

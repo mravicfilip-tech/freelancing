@@ -11,6 +11,8 @@ this file at the end. The source is Profitable Skills 3.0, module 2, read throug
 | 2026-10-16 | Market is funded tech companies, seed to Series B, across SaaS, AI, fintech and web3. One buyer type, wide on industry and stage | ACCEPTED | Filip agreed. DesignMe is the reference, broad on industry but always selling to funded tech teams |
 | 2026-10-16 | Startups that need a working prototype before a raise or a launch | SUPERSEDED by the row above | Filip wanted a wider audience than startups alone |
 | 2026-10-16 | A wide audience across any type of buyer | NOT TAKEN | Mixed buyers do not share 8 to 10 pains, so the pain research and the logic chain both fail |
+| 2026-10-16 | Filip's view. The work is worth more than $3k to $5k and only needs the right audience to be priced higher | OPEN | Claude's counter is the row below. Funded buyers pick on proof, and no deal so far is in the market |
+| 2026-10-16 | First 2 to 3 deals in the market at $10k to $15k, fixed scope, published price, with a case study clause. Raise after 3 case studies | PROPOSED by Claude | Matches the $10k floor at DesignMe, Eleken, Halo Lab and Phenomenon, and our own best deal |
 
 ## Rob's method, in the order we run it
 
@@ -113,10 +115,51 @@ Unconfirmed until the offer is drafted.
 - DesignMe is the only one of 8 competitors with public prices.
 - Buyers sort providers into "Figma jockeys" and "design thinkers". The offer has to sound like the second.
 
+## Proof we have
+
+From Filip, 2026-10-16.
+
+| Work | Market | Price | In our market |
+|---|---|---|---|
+| NS-Group, real estate, Novi Sad | Real estate | $10k, the biggest deal so far | No |
+| Typical past client, big scope | Mixed | $3k to $5k | No |
+| Remittix landing page hero, WebGL globe, in this repo | Crypto payments | Not known | Yes, fintech and web3. Paid status and case study rights not known |
+| Ekotehnika hero rebuild, Linde dealer, in this repo | Industrial | Not known | No |
+
+No reputable client history in the market yet. Rob's lesson 1 is the course's answer to that. Cold buyers
+are sold the idea before they care who you are, so the logic chain carries more weight for us than for an
+established agency.
+
+## What we deliver
+
+From Filip, 2026-10-16. End to end, from design to fully coded websites and web applications, using AI
+generation and our own code.
+
+AI speed is not the pitch. DesignMe already sells "AI-native, human-directed", and founders see AI as good
+enough for cheap output. It is our margin and speed advantage, used to keep a fixed scope and a short
+timeline.
+
+## Pain to delivery map, draft
+
+Lesson 4, step 2. Strong means what we deliver today answers it fully.
+
+| # | Pain | What answers it | Match |
+|---|---|---|---|
+| 1 | Developer built first version | Product redesign, and the same team ships the code, so the client's developers do not rebuild it | Strong |
+| 2 | Less credible than competitors | Website. Brand identity not confirmed | Partial |
+| 3 | Site or brand out of date after a raise or pivot | Website. Brand identity not confirmed | Partial |
+| 4 | Visitors do not convert | Website, but no conversion measurement offered | Weak |
+| 5 | Complex product, users get lost | Product design and coded web app | Strong |
+| 6 | No design capacity in house | Nothing ongoing offered yet | Gap |
+| 7 | Launch date at risk | AI assisted design and code from one team, fixed timeline | Strong |
+| 8 | Messaging unclear | Copy and positioning not confirmed | Gap |
+
+Complaint gap from the research with no answer yet. Support after launch.
+
 ## Open questions
 
-- What each of the other three partners delivers today, and whether they have sold it.
-- What raw material we have from past clients, such as call recordings, emails or Slack threads.
-- The biggest single deal any of the four has closed, and for what.
+- Remittix. Was it paid, what did it pay, and can it become a case study. It is the only work we have in the market.
+- Can any of the four do brand identity, and copy or positioning. This decides pains 2, 3 and 8.
+- Will we offer ongoing work after launch. Proposed default is 30 days of support included, a monthly retainer optional.
 - The agency's name. The folder id is `agency` until then.
 - Lesson 6 notes, Testing Your Logic Chain.

@@ -32,7 +32,7 @@ Task format
   - [ ] Score the market on Rob's five tests
   - [x] Competitor research
   - [x] Community research
-  - [ ] Pains from our own client history
+  - [x] Pains from our own client history, none in the market beyond Remittix
   - [ ] One page pain doc, 8 to 10 pains
   - [ ] Map the pains to what the four of us deliver
   - [ ] Logic chain

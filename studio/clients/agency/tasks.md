@@ -34,7 +34,8 @@ Task format
   - [x] Community research
   - [x] Pains from our own client history, none in the market beyond Remittix
   - [ ] One page pain doc, 8 to 10 pains
-  - [ ] Map the pains to what the four of us deliver
+  - [x] Map the pains to what the three of us deliver
+  - [ ] Settle tracking, copy scope and price
   - [ ] Logic chain
   - [ ] Compose the offer md
 

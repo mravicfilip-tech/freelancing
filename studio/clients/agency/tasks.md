@@ -36,7 +36,7 @@ Task format
   - [ ] One page pain doc, 8 to 10 pains
   - [x] Map the pains to what the three of us deliver
   - [x] Settle tracking and copy scope
-  - [ ] Settle the price
+  - [x] Settle the price
   - [x] Draft the logic chain
   - [x] Write the test kit for the chain
   - [ ] Test the chain in 5 to 10 buyer conversations

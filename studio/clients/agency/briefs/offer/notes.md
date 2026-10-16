@@ -11,9 +11,9 @@ this file at the end. The source is Profitable Skills 3.0, module 2, read throug
 | 2026-10-16 | Market is funded tech companies, seed to Series B, across SaaS, AI, fintech and web3. One buyer type, wide on industry and stage | ACCEPTED | Filip agreed. DesignMe is the reference, broad on industry but always selling to funded tech teams |
 | 2026-10-16 | Startups that need a working prototype before a raise or a launch | SUPERSEDED by the row above | Filip wanted a wider audience than startups alone |
 | 2026-10-16 | A wide audience across any type of buyer | NOT TAKEN | Mixed buyers do not share 8 to 10 pains, so the pain research and the logic chain both fail |
-| 2026-10-16 | Filip's view. The work is worth more than $3k to $5k and only needs the right audience to be priced higher | OPEN | Claude's counter is the row below. Funded buyers pick on proof, and no deal so far is in the market |
-| 2026-10-16 | First 2 to 3 deals in the market at $10k to $15k, fixed scope, published price, with a case study clause. Raise after 3 case studies | PROPOSED by Claude | Matches the $10k floor at DesignMe, Eleken, Halo Lab and Phenomenon, and our own best deal |
-| 2026-10-16 | Sell a fixed result, never hours | PROPOSED by Claude | Eleken, Halo Lab and Arounda list $25 to $49 an hour on Clutch, the same range as the Remittix rate, yet take nothing under $10k |
+| 2026-10-16 | Filip's view. The work is worth more than $3k to $5k and only needs the right audience to be priced higher | SUPERSEDED by the row below | Funded buyers pick on proof, and no deal so far is in the market |
+| 2026-10-16 | First 2 to 3 deals in the market at $10k to $15k, fixed scope, published price, with a case study clause. Raise after 3 case studies | ACCEPTED | Filip said go with it. Matches the $10k floor at DesignMe, Eleken, Halo Lab and Phenomenon, and our own best deal |
+| 2026-10-16 | Sell a fixed result, never hours | ACCEPTED, part of the pricing call | Eleken, Halo Lab and Arounda list $25 to $49 an hour on Clutch, the same range as the Remittix rate, yet take nothing under $10k |
 | 2026-10-16 | The team is three people in total | ACCEPTED | From Filip |
 | 2026-10-16 | Brand identity is in scope | ACCEPTED | The team can do it. Turns pains 2 and 3 into strong matches |
 | 2026-10-16 | 30 days of support after launch included, a monthly retainer optional | ACCEPTED | Filip agreed. Answers pain 6 and the "nothing after launch" complaint |
@@ -190,6 +190,31 @@ Rob's diagnosis.
 | They agree with the pain but not the steps | Simplify the chain | Logic chain |
 | They follow the chain but do not want the offer | The offer does not match where the chain led | Offer components |
 
+### Test plan
+
+The test needs real founders in the market, not clients. The test conversations and the first sales
+conversations are the same conversations. Timebox two weeks. PROPOSED.
+
+| Source | How | Target |
+|---|---|---|
+| Remittix contact | The past client question above, by message | 1 conversation |
+| Recently funded teams | 30 short notes to seed to Series A teams in SaaS, AI, fintech and web3 that announced a round in the last 60 days and whose product or site still looks developer built. Funding rounds are public on Crunchbase, TechCrunch and LinkedIn | 5 to 10 replies that turn into a real exchange. The reply rate is a guess |
+| LinkedIn posts | 3 posts over two weeks that run the pain, then step 1, then step 2, with no pitch | Comments and DMs from founders that go past a like |
+
+Proposed split is 10 notes per partner.
+
+Draft note to a recently funded founder, in Filip's voice. DRAFT.
+
+> Hi [name], congrats on the [round]. I had a look at [product] and the site. It looks like your engineers
+> built it to prove the product works, which is usually the right call early on. Is the design something you
+> plan to deal with before [the launch or the next raise], or is it fine for now? I run a small design and
+> code studio, and before I pitch anyone I want to understand how funded teams think about this.
+
+Draft note to the Remittix contact. DRAFT.
+
+> Quick question for something I'm working on. Before you brought me in for the site, how was it getting
+> built, what wasn't working, and what made you go with a freelancer?
+
 ### Tracker
 
 Strong, weak or pushback in each step column. Lock the chain at 5 to 10 rows that read strong all the way.
@@ -275,6 +300,5 @@ Rob's formula is who we help, the main pain, the outcome and our approach. DRAFT
 
 ## Open questions
 
-- Price. Filip's view and Claude's proposal are both in the decisions table.
-- Who of the three runs the test conversations, and where the first 10 come from.
+- Who of the three runs the test conversations. Proposed split is 10 notes each.
 - The agency's name. The folder id is `agency` until then.

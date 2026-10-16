@@ -40,7 +40,8 @@ Task format
   - [x] Draft the logic chain
   - [x] Write the test kit for the chain
   - [ ] Test the chain in 5 to 10 buyer conversations
-  - [ ] Compose the offer md
+  - [x] Compose the offer md, draft 1 in `briefs/offer/offer.md`
+  - [ ] Settle the timeline, limits and package split in the offer
 
 ## Review
 

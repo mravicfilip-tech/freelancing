@@ -15,6 +15,7 @@ this file at the end. The source is Profitable Skills 3.0, module 2, read throug
 | 2026-10-16 | First 2 to 3 deals in the market at $10k to $15k, fixed scope, published price, with a case study clause. Raise after 3 case studies | ACCEPTED | Filip said go with it. Matches the $10k floor at DesignMe, Eleken, Halo Lab and Phenomenon, and our own best deal |
 | 2026-10-16 | Sell a fixed result, never hours | ACCEPTED, part of the pricing call | Eleken, Halo Lab and Arounda list $25 to $49 an hour on Clutch, the same range as the Remittix rate, yet take nothing under $10k |
 | 2026-10-16 | The team is three people in total | ACCEPTED | From Filip |
+| 2026-10-16 | Offer draft 1 written to `offer.md`. Six week timeline, page and screen limits, backend out of scope, and two packages at $15k and $10k | PROPOSED by Claude | None of these were decided. A fixed scope with no limits invites the cost shock clients complain about most |
 | 2026-10-16 | Brand identity is in scope | ACCEPTED | The team can do it. Turns pains 2 and 3 into strong matches |
 | 2026-10-16 | 30 days of support after launch included, a monthly retainer optional | ACCEPTED | Filip agreed. Answers pain 6 and the "nothing after launch" complaint |
 | 2026-10-16 | Add conversion tracking at launch with a 30 day before and after read | ACCEPTED | Filip said yes. Covers pain 4, and gives every first client the numbers a case study needs |

@@ -27,7 +27,7 @@ this file at the end. The source is Profitable Skills 3.0, module 2, read throug
 3. Map the pains against what the three of us deliver. Fill gaps by adding, outsourcing or ruling out of scope. Cut anything tied to no pain.
 4. Write the one page offer. Transformation summary on top, components in delivery order, timeline at the bottom.
 5. Write the logic chain. The pain, at most 3 steps, then our solution as the conclusion. Step 2 names a category, never our service.
-6. Test the chain. Lesson 6 notes are still missing from the module doc.
+6. Test the chain in 5 to 10 real buyer conversations where it lands strongly, then lock it. Testing runs alongside the next sections and only has to finish before any website copy is written. Test kit below.
 
 ## Market scorecard
 
@@ -124,7 +124,8 @@ Unconfirmed until the offer is drafted.
 ## Logic chain, draft
 
 Lesson 5 structure. The pain, at most 3 steps, then our solution as the conclusion. One chain for the whole
-market. DRAFT, untested until the lesson 6 notes are in.
+market. ACCEPTED by Filip on 2026-10-16, step 3 included. UNTESTED with buyers. Lock it after 5 to 10
+strong buyer conversations, before any website copy.
 
 | Stage | Our version | Evidence behind it |
 |---|---|---|
@@ -138,7 +139,56 @@ Sense check against Rob's list in lesson 5.
 
 - Pain in the market's words. Pass, built from founder and review quotes.
 - Step 2 names a category, not our service. Pass.
-- Every step obvious with no leap. Step 3 is the weak one. No quote in the research says "keep developers on the roadmap" outright.
+- Every step obvious with no leap. Filip nods at step 3. No quote in the research says "keep developers on the roadmap" outright, so it is the first step to watch in buyer tests.
+
+## Test kit for the chain
+
+Lesson 6. Never pitch and never show the document. Make each point in conversation and watch the reaction.
+A strong signal sounds like "yes, that's exactly my situation". A lukewarm "yeah, I guess" means something is off.
+
+Where to test, best first.
+
+1. Discovery calls. We have none in the market yet.
+2. Past clients. Remittix is the only one in the market. It cannot be a case study, but it can be a test.
+3. Content. Posts that run pain, then problem, then solution, judged by comments, shares and DMs. The only place we can test at volume today.
+
+Recently funded founders are reachable for real conversations, since funding rounds are announced publicly.
+
+| Stage | What we reflect back | Strong | Weak or pushback |
+|---|---|---|---|
+| Pain | You raised, but the product and site still look like the version your developers built to get here. Fair? | They agree and name the date that worries them | "It's fine for now" |
+| Step 1 | Have the fixes so far been patches on top of that first version, one screen at a time? | They list patches or a redesign that stalled | "We just haven't got to it yet" |
+| Step 2 | Would it change things if the brand, site and product moved together, before the raise or launch, instead of piece by piece? | They see the whole picture as the fix | They want one piece only |
+| Step 3 | If you redesigned today, who would build it, and what would they stop working on? | "Our developers, and the roadmap slips" | "We have a front end person for that". Strengthen step 3 against this, like Eli's coach who wanted better sales calls |
+| Offer | What would you need to see before handing this to one outside team? | They ask about price, date or process | They follow the chain but do not want it |
+
+Question for Remittix, adapted from Rob's past client script. Before you brought me in, how was the site getting
+built, and what was not working?
+
+Rob's diagnosis.
+
+| What happens | What it means | Go back to |
+|---|---|---|
+| They do not relate to the pain | Wrong people, or the research is off | Market and pain research |
+| They agree with the pain but not the steps | Simplify the chain | Logic chain |
+| They follow the chain but do not want the offer | The offer does not match where the chain led | Offer components |
+
+### Tracker
+
+Strong, weak or pushback in each step column. Lock the chain at 5 to 10 rows that read strong all the way.
+
+| # | Who | Stage and market | Pain | Step 1 | Step 2 | Step 3 | Offer | Diagnosis |
+|---|---|---|---|---|---|---|---|---|
+| 1 | Remittix contact | Crypto payments | | | | | | |
+| 2 | | | | | | | | |
+| 3 | | | | | | | | |
+| 4 | | | | | | | | |
+| 5 | | | | | | | | |
+| 6 | | | | | | | | |
+| 7 | | | | | | | | |
+| 8 | | | | | | | | |
+| 9 | | | | | | | | |
+| 10 | | | | | | | | |
 - The solution reads as a conclusion, not a pitch. Pass, if step 3 holds.
 - Not unique on its own. DesignMe already promises "no handoffs", so step 3 alone does not set us apart. The date and the published fixed price do.
 
@@ -209,6 +259,5 @@ Rob's formula is who we help, the main pain, the outcome and our approach. DRAFT
 ## Open questions
 
 - Price. Filip's view and Claude's proposal are both in the decisions table.
-- Does every step of the logic chain get an instant nod from Filip. Step 3 is the weakest.
+- Who of the three runs the test conversations, and where the first 10 come from.
 - The agency's name. The folder id is `agency` until then.
-- Lesson 6 notes, Testing Your Logic Chain.

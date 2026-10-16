@@ -27,7 +27,7 @@ Task format
 
 - agency-1 Agency offer from Profitable Skills module 2. Notes in `briefs/offer/notes.md`
   - [x] Read the module 2 notes, lessons 1 to 5
-  - [ ] Get the lesson 6 notes
+  - [x] Get the lesson 6 notes
   - [x] Pick the market
   - [ ] Score the market on Rob's five tests
   - [x] Competitor research
@@ -38,7 +38,8 @@ Task format
   - [x] Settle tracking and copy scope
   - [ ] Settle the price
   - [x] Draft the logic chain
-  - [ ] Test the logic chain with the lesson 6 notes
+  - [x] Write the test kit for the chain
+  - [ ] Test the chain in 5 to 10 buyer conversations
   - [ ] Compose the offer md
 
 ## Review

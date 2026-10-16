@@ -144,7 +144,24 @@ Sense check against Rob's list in lesson 5.
 ## Test kit for the chain
 
 Lesson 6. Never pitch and never show the document. Make each point in conversation and watch the reaction.
-A strong signal sounds like "yes, that's exactly my situation". A lukewarm "yeah, I guess" means something is off.
+Calls, client chats and DM exchanges all count, but only the ones where the chain lands. Rob's warning is
+about 3 months lost building on a chain nobody tested.
+
+| Signal | What we hear | What it means |
+|---|---|---|
+| Strong | "That's exactly my situation", "I've noticed that too", nodding at each step | On track. The goal is the prospect feeling we understand their business better than they do |
+| Lukewarm | "What do you mean by that?", "I'm not sure I follow", a polite "I guess so" | The chain is unclear or wrong |
+| Pushback | Agrees with the pain and step 1, resists step 2 or 3, or says it is really something else | That step is where the logic breaks |
+
+Pushback does not kill the chain. Our argument has to beat the alternative they name. The research already
+shows the alternatives founders reach for at step 3, so the answers are drafted here. Unproven until a real
+conversation tries them.
+
+| Alternative they name | Where it comes from | Draft answer |
+|---|---|---|
+| "Our developers can restyle it with AI" | "vibecode the style" in founder threads | That is still patching one screen at a time, which is step 1 again |
+| "We'll hire a designer" | "why shouldn't a company just hire the designer directly" | A hire takes months and still hands files to the developers, so the date slips |
+| "A design subscription at $5k a month" | Designjoy named as the model to beat | A subscription works a queue of requests. Nobody owns one finished version by the date |
 
 Where to test, best first.
 
@@ -163,7 +180,7 @@ Recently funded founders are reachable for real conversations, since funding rou
 | Offer | What would you need to see before handing this to one outside team? | They ask about price, date or process | They follow the chain but do not want it |
 
 Question for Remittix, adapted from Rob's past client script. Before you brought me in, how was the site getting
-built, and what was not working?
+built, what was not working, and what made you pick a freelancer for it?
 
 Rob's diagnosis.
 

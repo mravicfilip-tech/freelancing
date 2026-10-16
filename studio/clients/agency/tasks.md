@@ -35,8 +35,10 @@ Task format
   - [x] Pains from our own client history, none in the market beyond Remittix
   - [ ] One page pain doc, 8 to 10 pains
   - [x] Map the pains to what the three of us deliver
-  - [ ] Settle tracking, copy scope and price
-  - [ ] Logic chain
+  - [x] Settle tracking and copy scope
+  - [ ] Settle the price
+  - [x] Draft the logic chain
+  - [ ] Test the logic chain with the lesson 6 notes
   - [ ] Compose the offer md
 
 ## Review

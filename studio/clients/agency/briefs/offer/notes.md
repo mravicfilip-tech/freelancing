@@ -17,8 +17,8 @@ this file at the end. The source is Profitable Skills 3.0, module 2, read throug
 | 2026-10-16 | The team is three people in total | ACCEPTED | From Filip |
 | 2026-10-16 | Brand identity is in scope | ACCEPTED | The team can do it. Turns pains 2 and 3 into strong matches |
 | 2026-10-16 | 30 days of support after launch included, a monthly retainer optional | ACCEPTED | Filip agreed. Answers pain 6 and the "nothing after launch" complaint |
-| 2026-10-16 | Add conversion tracking at launch with a 30 day before and after read | PROPOSED by Claude | Covers pain 4, and gives every first client the numbers a case study needs |
-| 2026-10-16 | Copy and positioning out of scope. Discovery flags a weak message before design starts | PROPOSED by Claude | Nobody on the team writes copy. Pain 8 is the weakest on the list, with no competitor reviews behind it |
+| 2026-10-16 | Add conversion tracking at launch with a 30 day before and after read | ACCEPTED | Filip said yes. Covers pain 4, and gives every first client the numbers a case study needs |
+| 2026-10-16 | Copy and positioning out of scope. Discovery flags a weak message before design starts | ACCEPTED | Filip said yes. Nobody on the team writes copy. Pain 8 is the weakest on the list, with no competitor reviews behind it |
 
 ## Rob's method, in the order we run it
 
@@ -121,6 +121,27 @@ Unconfirmed until the offer is drafted.
 - DesignMe is the only one of 8 competitors with public prices.
 - Buyers sort providers into "Figma jockeys" and "design thinkers". The offer has to sound like the second.
 
+## Logic chain, draft
+
+Lesson 5 structure. The pain, at most 3 steps, then our solution as the conclusion. One chain for the whole
+market. DRAFT, untested until the lesson 6 notes are in.
+
+| Stage | Our version | Evidence behind it |
+|---|---|---|
+| Pain | We raised, but our product and site still look like the MVP our developers built, and the next raise or launch is when people judge it | "my MVP sucks in aesthetics", "not ready for the next stage", about 16 reviews on developer built first versions |
+| Step 1, why the current approach fails | A first version is built to prove the product works, not to earn trust. Patching it one screen at a time never changes the impression the whole thing makes | Developers designing is the top failed solution in the competitor reviews |
+| Step 2, what they need instead | One consistent version of the company, the brand, the site and the product together, that looks like where the company is now and is live before the date that matters | Pains 2 and 3, triggers 1 and 2 |
+| Step 3, the best way to get it | Your developers belong on the roadmap, not rebuilding mockups. So the redesign has to arrive as working code, built by the people who designed it, on a fixed scope and date | Messy handoff in about 7 reviews, overruns and repeated requirements in the complaint list |
+| Conclusion | One team that designs and codes your brand, site and product for a fixed published price, live before your raise or launch, with tracking that shows what changed | The offer components above |
+
+Sense check against Rob's list in lesson 5.
+
+- Pain in the market's words. Pass, built from founder and review quotes.
+- Step 2 names a category, not our service. Pass.
+- Every step obvious with no leap. Step 3 is the weak one. No quote in the research says "keep developers on the roadmap" outright.
+- The solution reads as a conclusion, not a pitch. Pass, if step 3 holds.
+- Not unique on its own. DesignMe already promises "no handoffs", so step 3 alone does not set us apart. The date and the published fixed price do.
+
 ## Proof we have
 
 From Filip, 2026-10-16.
@@ -155,11 +176,11 @@ Lesson 4, step 2. Strong means what we deliver today answers it fully.
 | 1 | Developer built first version | Product redesign, and the same team ships the code, so the client's developers do not rebuild it | Strong |
 | 2 | Less credible than competitors | Brand identity and website | Strong |
 | 3 | Site or brand out of date after a raise or pivot | Brand identity and website | Strong |
-| 4 | Visitors do not convert | Website, plus conversion tracking if the proposal is accepted | Weak until then |
+| 4 | Visitors do not convert | Website and conversion tracking with a 30 day before and after read | Matched |
 | 5 | Complex product, users get lost | Product design and coded web app | Strong |
 | 6 | No design capacity in house | Optional monthly retainer | Matched |
 | 7 | Launch date at risk | AI assisted design and code from one team, fixed timeline | Strong |
-| 8 | Messaging unclear | Nobody on the team writes copy | Proposed out of scope |
+| 8 | Messaging unclear | Out of scope. Discovery flags a weak message before design starts | Out of scope |
 
 The "nothing after launch" complaint is answered by the 30 days of support.
 
@@ -173,7 +194,7 @@ Lesson 4 format. Plain names, the pains each solves, what the client gets. In de
 | 2 | Brand Identity | 2, 3 | Logo, type, colour and a short brand guide |
 | 3 | Product Redesign, Designed and Coded | 1, 5 | The product redesigned and shipped as code the client's developers can merge |
 | 4 | Coded Website | 2, 3, 7 | A fully coded marketing site built on the new brand |
-| 5 | Conversion Tracking | 4 | Analytics at launch and a 30 day before and after read. PROPOSED |
+| 5 | Conversion Tracking | 4 | Analytics at launch and a 30 day before and after read |
 | 6 | 30 Day Support | Nothing after launch | 30 days of fixes, questions and small changes |
 | 7 | Monthly Retainer, optional | 6 | Ongoing design and code capacity |
 
@@ -188,7 +209,6 @@ Rob's formula is who we help, the main pain, the outcome and our approach. DRAFT
 ## Open questions
 
 - Price. Filip's view and Claude's proposal are both in the decisions table.
-- Conversion tracking as a component, proposed yes.
-- Copy and positioning out of scope, proposed yes.
+- Does every step of the logic chain get an instant nod from Filip. Step 3 is the weakest.
 - The agency's name. The folder id is `agency` until then.
 - Lesson 6 notes, Testing Your Logic Chain.

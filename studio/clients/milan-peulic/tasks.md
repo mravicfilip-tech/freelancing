@@ -28,7 +28,7 @@ Task format
 ## Review
 
 - milan-peulic-1 Rebrand the Diversify portfolio as Milan Peulic, in first person. File
-  milan-peulic-portfolio/Portfolio_Milan_Peulic_2026.pdf, commit b086f27
+  milan-peulic-portfolio/Portfolio_Milan_Peulic_2026.pdf, commit 2ae235b
   - [x] Swap the Diversify name on the cover, page 2, 20 headers and 24 footers
   - [x] Remove the Diversify mark, the 4 watermarks and the letsdiversify.com pill
   - [x] Change we to I on pages 2, 8, 10, 13, 15, 16, 17 and 19
@@ -38,7 +38,7 @@ Task format
   - [ ] Filip's call on the MP monogram, the kept tagline and the empty pill spot
   - [ ] Milan's URL or email for the header pill
 - milan-peulic-2 Rebrand the Diversify iGaming portfolio as Milan Peulic, in first person. File
-  milan-peulic-portfolio/Portfolio_iGaming_Milan_Peulic_2026.pdf
+  milan-peulic-portfolio/Portfolio_iGaming_Milan_Peulic_2026.pdf, commit 2ae235b
   - [x] Swap the Diversify name on the cover, page 2, the closing page, 11 headers and 17 footers
   - [x] Remove the Diversify mark, the 2 watermarks and the letsdiversify.com pill
   - [x] Remove Diversify's email, LinkedIn and website from the closing page, links included

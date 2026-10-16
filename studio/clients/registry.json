@@ -27,6 +27,13 @@
       "previewProjects": [
         "ekotehnika-hero"
       ]
+    },
+    {
+      "id": "milan-peulic",
+      "repos": [
+        "milan-peulic-portfolio"
+      ],
+      "previewProjects": []
     }
   ]
 }

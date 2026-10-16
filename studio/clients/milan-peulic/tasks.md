@@ -34,7 +34,17 @@ Task format
   - [x] Change we to I on pages 2, 8, 10, 13, 15, 16, 17 and 19
   - [x] Clean the quote baked into the page 19 photo
   - [x] Pixel diff against the source, changes only where planned
+  - [x] Strip the hidden Diversify contact page the source kept behind bookmark 26
   - [ ] Filip's call on the MP monogram, the kept tagline and the empty pill spot
   - [ ] Milan's URL or email for the header pill
+- milan-peulic-2 Rebrand the Diversify iGaming portfolio as Milan Peulic, in first person. File
+  milan-peulic-portfolio/Portfolio_iGaming_Milan_Peulic_2026.pdf
+  - [x] Swap the Diversify name on the cover, page 2, the closing page, 11 headers and 17 footers
+  - [x] Remove the Diversify mark, the 2 watermarks and the letsdiversify.com pill
+  - [x] Remove Diversify's email, LinkedIn and website from the closing page, links included
+  - [x] Change we to I on pages 2, 3, 5, 11 and 13, the page 5 paragraph on outlines only
+  - [x] Rewrite the tagged ActualText so copy and search read the new words
+  - [x] Pixel diff against the source and a full file scan, no Diversify left
+  - [ ] Milan's email, LinkedIn and website for the closing page
 
 ## Done

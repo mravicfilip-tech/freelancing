@@ -448,5 +448,23 @@ class PageModel:
             i += 1
 
 
-def load(path):
-    return pymupdf.open(path)
+
+
+def merge_contents(doc):
+    """Join pages whose /Contents is an array into one stream, so op indices are stable."""
+    merged = 0
+    for page in doc:
+        cont = page.get_contents()
+        if len(cont) > 1:
+            data = b"\n".join(doc.xref_stream(x) for x in cont)
+            doc.update_stream(cont[0], data)
+            doc.xref_set_key(page.xref, "Contents", f"{cont[0]} 0 R")
+            merged += 1
+    return merged
+
+
+def load(path, merge=True):
+    doc = pymupdf.open(path)
+    if merge:
+        merge_contents(doc)
+    return doc

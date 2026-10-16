@@ -1,7 +1,7 @@
 # milan-peulic
 
-Milan Peulic. The work so far is his portfolio deck, rebuilt from the Diversify general portfolio.
-The deck lives in `milan-peulic-portfolio/` at the repo root.
+Milan Peulic. The work so far is his two portfolio decks, general and iGaming, rebuilt from the
+Diversify portfolios. Both live in `milan-peulic-portfolio/` at the repo root.
 
 ## Brand
 
@@ -24,8 +24,8 @@ WCAG 2.2 AA as the default bar. Nothing reviewed yet.
 
 ## Reference
 
-The Diversify General Portfolio 2026 PDF, received 2026-10-16. It is marked confidential and is
-not kept in this repo.
+The Diversify General Portfolio 2026 and iGaming Portfolio 2026 PDFs, received 2026-10-16. Both
+are marked confidential and are not kept in this repo.
 
 ## Widths
 

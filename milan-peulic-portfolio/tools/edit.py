@@ -217,15 +217,18 @@ class Editor:
 
     # ---------- line level ----------
 
-    def line(self, pm, y, x0, x1, tol=1.0):
+    def line(self, pm, y, x0, x1, tol=1.0, only_pos=None, only_runs=None):
         vis = [(po, vg) for po in pm.paths for vg in po.glyphs
-               if not vg.get("deleted") and abs(vg["py"] - y) < tol and x0 <= vg["px"] <= x1]
+               if not vg.get("deleted") and abs(vg["py"] - y) < tol and x0 <= vg["px"] <= x1
+               and (only_pos is None or po in only_pos)]
         inv = []
         if not hasattr(self, "run_page"):
             self.run_page = {}
         for r in pm.runs:
             self.run_page[id(r)] = pm.pno
             if r.trm0[1] != 0 or r.trm0[0] <= 0:
+                continue
+            if only_runs is not None and r not in only_runs:
                 continue
             ents = self.entries(r)
             for e in ents:
@@ -247,8 +250,8 @@ class Editor:
         return res[len(res) // 2]
 
     def replace_text(self, pm, y, x0, x1, old, new, face, anchor="left", start_x=None,
-                     occurrence=0, tracking=None, size=None):
-        vis, inv = self.line(pm, y, x0, x1)
+                     occurrence=0, tracking=None, size=None, only_pos=None, only_runs=None):
+        vis, inv = self.line(pm, y, x0, x1, only_pos=only_pos, only_runs=only_runs)
         text = "".join(e["char"] for _, e in inv)
         # map string index -> glyph index (ligatures carry two chars)
         idx_of = []
@@ -334,6 +337,32 @@ class Editor:
             ents_a.insert(pos + k, dict(char=g["char"], code=None, x=xs[k], y=inv[a][1]["y"], w=g["width"]))
         self.log.append(f"p{pm.pno + 1} y={y:.0f}: {old!r} -> {new!r} (shift {delta_after:+.2f}/{delta_before:+.2f})")
         return dict(new_start=new_start, xs=xs, size=size, po=po_target, base_y=base_y)
+
+    def replace_visible(self, pm, line, a, b, new, face):
+        """Edit a line that has outlines but no text layer. line holds dicts of po, vg, char,
+        width and size, sorted by x, as named by the shape recognizer."""
+        size = line[a]["size"]
+        res = []
+        for g1, g2 in zip(line, line[1:]):
+            gap = g2["vg"]["px"] - g1["vg"]["px"] - g1["width"] * g1["size"]
+            if gap < 0.15 * size:
+                res.append(gap)
+        res.sort()
+        trk = res[len(res) // 2] if res else 0.0
+        lay = face.layout(new)
+        T_new = sum(g["adv"] * size + trk for g in lay)
+        old_start = line[a]["vg"]["px"]
+        last = line[b - 1]
+        old_end = last["vg"]["px"] + last["width"] * size + trk
+        delta = old_start + T_new - old_end
+        for g in line[a:b]:
+            self.delete_glyph(g["po"], g["vg"])
+        for g in line[b:]:
+            if delta:
+                self.shift_glyph(g["po"], g["vg"], delta)
+        self.add_glyphs(line[a]["po"], lay, size, old_start, line[a]["vg"]["py"], trk)
+        old = "".join(g["char"] for g in line[a:b])
+        self.log.append(f"p{pm.pno + 1} y={line[a]['vg']['py']:.0f}: {old!r} -> {new!r} outlines only (shift {delta:+.2f})")
 
     def path_to_text(self, po, face, text, size, cx, cy, ref_ch="M"):
         """Swap a path object's outline for a short string, centred on (cx, cy)."""

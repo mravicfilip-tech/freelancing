@@ -156,3 +156,57 @@ class Faces:
         cl = max(cls, key=lambda c: len(c["members"]))
         e = cl["members"][0]
         return dict(shape=cl["shape"], width=e["width"], n=len(cl["members"]))
+
+
+class Recognizer:
+    """Name outline glyphs that have no text layer, by matching shapes against the library."""
+
+    def __init__(self, faces):
+        self.faces = faces
+        self.by_ops = {}
+        for cl in faces.clusters:
+            key = tuple(op for op, _ in cl["shape"])
+            self.by_ops.setdefault(key, []).append(cl)
+
+    @staticmethod
+    def _bbox(shape):
+        pts = [p for _, ps in shape for p in ps]
+        xs, ys = [p[0] for p in pts], [p[1] for p in pts]
+        return min(xs), min(ys), max(xs), max(ys)
+
+    def raw_shape(self, po, vg):
+        ops = po.stream.ops
+        out = []
+        for i in vg["ops"][2:]:
+            o = ops[i]
+            if o.op not in PATH_OPS or o.op == "re":
+                return None
+            n = o.nums()
+            pts = []
+            for k in range(0, len(n), 2):
+                px, py = P.apply(po.ctm, n[k], n[k + 1])
+                pts.append((px - vg["px"], py - vg["py"]))
+            out.append((o.op, pts))
+        return out
+
+    def recognize(self, po, vg, tol=0.006):
+        raw = self.raw_shape(po, vg)
+        if not raw:
+            return None
+        key = tuple(op for op, _ in raw)
+        rb = self._bbox(raw)
+        best = None
+        for cl in self.by_ops.get(key, []):
+            cb = self._bbox(cl["shape"])
+            h = cb[3] - cb[1]
+            w = cb[2] - cb[0]
+            s = (rb[3] - rb[1]) / h if h > 1e-3 else (rb[2] - rb[0]) / w if w > 1e-3 else None
+            if not s:
+                continue
+            norm = [(op, [(x / s, y / s) for x, y in pts]) for op, pts in raw]
+            if shapes_close(norm, cl["shape"], tol):
+                e = cl["members"][0]
+                cand = dict(char=cl["char"], face=self.faces.face_of[cl["id"]], size=s, width=e["width"])
+                if best is None or len(cl["members"]) > best[0]:
+                    best = (len(cl["members"]), cand)
+        return best[1] if best else None

@@ -1,0 +1,43 @@
+# Tasks, agency
+
+Claude keeps this file current as a side effect of normal work and never asks first. A task is one
+thing Filip would say out loud in a status call, titled the way he would say it. Keys run
+`agency-1`, `agency-2` and so on, one higher than the highest key in this file.
+
+Rules
+- New work goes under Backlog, or under In progress when it starts at once.
+- When the state changes, cut the whole task block and paste it under the new heading.
+- Steps are the checklist under a task. Add them as the shape of the work becomes clear and tick
+  each one the moment the conversation shows it done. Ticking a step never moves the task.
+- Steps are for this file only. They never appear in anything sent to a client, a status note, an
+  invoice line or a summary. Those read at task level.
+- Put the preview URL, the ticket number or the design link in the task line.
+
+Task format
+
+```
+- agency-1 Pricing page prototype. Link https://example.com/preview
+  - [x] Capture the reference
+  - [ ] Build the page
+```
+
+## Backlog
+
+## In progress
+
+- agency-1 Agency offer from Profitable Skills module 2. Notes in `briefs/offer/notes.md`
+  - [x] Read the module 2 notes, lessons 1 to 5
+  - [ ] Get the lesson 6 notes
+  - [x] Pick the market
+  - [ ] Score the market on Rob's five tests
+  - [ ] Competitor research
+  - [ ] Community research
+  - [ ] Pains from our own client history
+  - [ ] One page pain doc, 8 to 10 pains
+  - [ ] Map the pains to what the four of us deliver
+  - [ ] Logic chain
+  - [ ] Compose the offer md
+
+## Review
+
+## Done

@@ -31,7 +31,7 @@ Task format
   - [x] Pick the market
   - [ ] Score the market on Rob's five tests
   - [x] Competitor research
-  - [ ] Community research
+  - [x] Community research
   - [ ] Pains from our own client history
   - [ ] One page pain doc, 8 to 10 pains
   - [ ] Map the pains to what the four of us deliver

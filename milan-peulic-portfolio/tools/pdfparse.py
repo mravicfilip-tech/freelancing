@@ -468,3 +468,13 @@ def load(path, merge=True):
     if merge:
         merge_contents(doc)
     return doc
+
+
+def fmt_dec(v, dec):
+    """A number rounded to dec decimals, written as short as it goes."""
+    r = round(v, dec)
+    if dec == 0 or abs(r - round(r)) < 10 ** -(dec + 2):
+        s = str(int(round(r)))
+    else:
+        s = f"{r:.{dec}f}".rstrip("0").rstrip(".")
+    return "0" if s in ("-0", "") else s

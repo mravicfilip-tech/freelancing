@@ -46,5 +46,11 @@ Task format
   - [x] Rewrite the tagged ActualText so copy and search read the new words
   - [x] Pixel diff against the source and a full file scan, no Diversify left
   - [ ] Milan's email, LinkedIn and website for the closing page
+- milan-peulic-3 Compress both portfolio decks without losing quality. General 12.4 MB to 10.2 MB,
+  iGaming 8.5 MB to 4.9 MB
+  - [x] Round outline coordinates to 0.005pt, keep transforms and text positions exact
+  - [x] Drop the 16 near opaque iGaming alpha masks
+  - [x] Rewrite JPEG tables losslessly, pixels checked identical
+  - [x] Render diff at 2x, text, tags, bookmarks and the Diversify scan all checked
 
 ## Done

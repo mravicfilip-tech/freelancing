@@ -30,7 +30,7 @@ Task format
   - [ ] Get the lesson 6 notes
   - [x] Pick the market
   - [ ] Score the market on Rob's five tests
-  - [ ] Competitor research
+  - [x] Competitor research
   - [ ] Community research
   - [ ] Pains from our own client history
   - [ ] One page pain doc, 8 to 10 pains

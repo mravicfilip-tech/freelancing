@@ -60,7 +60,8 @@ and reviews work within the agreed turnaround. The turnaround, Filip to add.
 ## Price
 
 - $15,000 fixed and published. We never sell hours. ACCEPTED.
-- The price comes with a case study clause. The client agrees to a written case study with the day 30 numbers. A client who cannot agree, for example under an NDA, pays a higher price. That price, Filip to add.
+- The price comes with a case study clause. The client agrees to a written case study with the day 30 numbers. A client who cannot agree, for example under an NDA, pays $20,000. ACCEPTED.
+- Clients we cannot show, such as a Web3 team without a public team, an audit or a working product, pay $20,000 in full up front, in stablecoin or fiat and never in their own token. They never take one of the first 2 to 3 slots, and the studio is not credited on their site. ACCEPTED.
 - The price holds for the first 2 to 3 deals and goes up after 3 case studies. ACCEPTED.
 - Payment terms. Half at signing and half at launch. ACCEPTED.
 - A Brand and Site package at $10,000, components 1, 2, 3, 5 and 6, is a fallback for a team whose product does not need work. It is never offered first. PROPOSED.
@@ -68,7 +69,8 @@ and reviews work within the agreed turnaround. The turnaround, Filip to add.
 ## The argument behind it
 
 The logic chain. Accepted by Filip, untested with buyers. It gets locked after 5 to 10 buyer conversations where
-it lands, and before any website copy is written.
+it lands, and before any website copy is written. For Web3 teams the pain line reads "Our TGE is in a few weeks
+and our brand and site look like every project that rugged". ACCEPTED.
 
 | Stage | The argument |
 |---|---|
@@ -90,7 +92,6 @@ developers. Case studies, Filip to add.
 - The case studies we show, and how concept work is labelled.
 - A client whose product is not built on React or Next.js.
 - The kickoff length, the timeline, the limits and the fallback package, all PROPOSED above.
-- The price without a case study.
 - The client review turnaround.
 - What counts as a small change during support.
 - Hosting and ownership after launch.

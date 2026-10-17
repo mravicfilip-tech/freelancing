@@ -1,6 +1,6 @@
 # Agency offer notes
 
-Running notes for the offer of Filip's new agency, a team of three in total. The offer md is composed from
+Running notes for the offer of Ahai Studio, Filip's new studio, a team of three in total. The offer md is composed from
 this file at the end. The source is Profitable Skills 3.0, module 2, read through the
 [module notes doc](https://claude.ai/code/artifact/98e5bb51-7063-4e12-bce1-2553f9093b01).
 
@@ -14,6 +14,21 @@ this file at the end. The source is Profitable Skills 3.0, module 2, read throug
 | 2026-10-16 | Filip's view. The work is worth more than $3k to $5k and only needs the right audience to be priced higher | SUPERSEDED by the row below | Funded buyers pick on proof, and no deal so far is in the market |
 | 2026-10-16 | First 2 to 3 deals in the market at $10k to $15k, fixed scope, published price, with a case study clause. Raise after 3 case studies | ACCEPTED | Filip said go with it. Matches the $10k floor at DesignMe, Eleken, Halo Lab and Phenomenon, and our own best deal |
 | 2026-10-16 | Sell a fixed result, never hours | ACCEPTED, part of the pricing call | Eleken, Halo Lab and Arounda list $25 to $49 an hour on Clutch, the same range as the Remittix rate, yet take nothing under $10k |
+| 2026-10-17 | The studio is called Ahai Studio. Folder renamed from `agency` to `ahai-studio` | ACCEPTED | From Filip |
+| 2026-10-17 | The first three pieces of proof come from teardowns | ACCEPTED | From Filip |
+| 2026-10-17 | Teardowns are shown as concept work and do not count toward the 3 client case studies that raise the price | PROPOSED by Claude | A concept has no client, budget or deadline, so calling it a case study would mislead |
+| 2026-10-17 | Review turnaround of 2 working days, late feedback moves the launch date day for day. A weekly sync and a client update every one to two days | ACCEPTED | From Filip |
+| 2026-10-17 | A small change during support takes under 2 hours and adds no page, screen or feature | ACCEPTED | From Filip |
+| 2026-10-17 | The client hosts on their own account, which we set up. All IP transfers when the second payment lands | ACCEPTED | From Filip |
+| 2026-10-17 | Retainer at $4,000 a month for up to 40 hours, cancelled with one month's notice | ACCEPTED | From Filip |
+| 2026-10-17 | Next.js by default. Other web stacks are adapted with AI coding tools rather than quoted separately | ACCEPTED | From Filip. Risk noted by Claude, the team then owns code in a stack it does not normally work in |
+| 2026-10-17 | The 30 test notes and the Remittix message are dropped. The chain is tested through the teardowns instead | ACCEPTED | From Filip. Risk noted by Claude, one teardown at a time makes 5 to 10 conversations slow |
+| 2026-10-17 | Brand in week 2 with 2 logo directions and 2 rounds of revisions. Launch kit is an X header and profile picture, a Telegram header and 3 announcement post templates | ACCEPTED | From Filip for Miloš |
+| 2026-10-17 | 2 rounds of revisions on the site and the product flow | ACCEPTED | From Filip |
+| 2026-10-17 | Kickoff of up to 60 minutes with the founder and one named approver, not 90 | ACCEPTED | Filip says clients will not sit through 90 minutes |
+| 2026-10-17 | Six weeks to launch, up to 8 pages, and the product flow raised to 15 screens | ACCEPTED | From Filip, who says AI covers the extra screens. Risk noted by Claude, more scope at the same price and approval time does not shrink |
+| 2026-10-17 | Smart contracts, backend and infrastructure out of scope. The $10k fallback kept and never offered first. The teardown success bar | ACCEPTED | From Filip |
+| 2026-10-17 | Offer draft 4 in `offer.md` with all of the above | ACCEPTED as the first draft | Filip asked for a first draft of the offer |
 | 2026-10-16 | The team is three people in total | ACCEPTED | From Filip. Serg's note names the other two as Serg and Miloš |
 | 2026-10-17 | Web3 teams before a launch or TGE are the first segment, inside the existing umbrella | ACCEPTED | Filip said yes. Serg's experience, the clearest trigger and the only proof in the market are there |
 | 2026-10-17 | The package is $15,000, not Serg's $5k to $10k | ACCEPTED | Filip said yes. At Serg's 90 hours a week, $15k over 6 weeks is about $28 an hour, the Remittix rate |
@@ -31,7 +46,7 @@ this file at the end. The source is Profitable Skills 3.0, module 2, read throug
 | 2026-10-17 | The website and product flow are built in Next.js | ACCEPTED | From Filip. Serg's past sites were Framer, so the website lead needs checking |
 | 2026-10-17 | The launch kit stays in the $15,000 | ACCEPTED | From Filip |
 | 2026-10-17 | Payment is half at signing and half at launch | ACCEPTED | From Filip |
-| 2026-10-17 | Offer draft 3 in `offer.md`, written for Web3. Kickoff length, launch kit, leads per part, payment terms and the Web3 page and flow examples | PROPOSED by Claude | Filip asked what the $15,000 buys |
+| 2026-10-17 | Offer draft 3 in `offer.md`, written for Web3. Kickoff length, launch kit, leads per part, payment terms and the Web3 page and flow examples | SUPERSEDED by draft 4 | Filip asked what the $15,000 buys |
 | 2026-10-16 | Offer draft 1 written to `offer.md`. Six week timeline, page and screen limits, backend out of scope, and two packages at $15k and $10k | SUPERSEDED by draft 2 | None of these were decided. A fixed scope with no limits invites the cost shock clients complain about most |
 | 2026-10-16 | Offer draft 2, hardened. One package at $15k, the $10k package only as a fallback, tracking on the current site in week 1, client access and review turnaround as conditions of the date, a way out of the case study clause, native mobile out of scope | PROPOSED by Claude | The $10k package broke the logic chain, and the day 30 read had no before number. Draft 1 is in commit fac8d06 |
 | 2026-10-16 | Brand identity is in scope | ACCEPTED | The team can do it. Turns pains 2 and 3 into strong matches |
@@ -213,7 +228,7 @@ Rob's diagnosis.
 ### Test plan
 
 The test needs real founders in the market, not clients. The test conversations and the first sales
-conversations are the same conversations. Timebox two weeks. PROPOSED.
+conversations are the same conversations. Timebox two weeks. SUPERSEDED on 2026-10-17, Filip dropped the notes and the Remittix message, and the chain is tested through the teardowns.
 
 | Source | How | Target |
 |---|---|---|
@@ -399,7 +414,6 @@ Rob's formula is who we help, the main pain, the outcome and our approach. DRAFT
 
 ## Open questions
 
-- Who of the three runs the test conversations. Serg names Filip on sales and himself on social media. Miloš's role is not named.
+- Who leads each part of a project. Proposed is Filip on discovery, product and tracking, Miloš on brand, Serg on the website.
 - Whether Serg can show Karrier One and the other AKKA work, and whether any non-solicit with AKKA covers its clients.
 - Who signs and pays on the client side, and how an investor's say on style is handled. Proposed is that discovery names one approver and all other input comes through them.
-- The agency's name. The folder id is `agency` until then.

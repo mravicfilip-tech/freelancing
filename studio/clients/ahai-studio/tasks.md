@@ -1,8 +1,8 @@
-# Tasks, agency
+# Tasks, ahai-studio
 
 Claude keeps this file current as a side effect of normal work and never asks first. A task is one
 thing Filip would say out loud in a status call, titled the way he would say it. Keys run
-`agency-1`, `agency-2` and so on, one higher than the highest key in this file.
+`ahai-studio-1`, `ahai-studio-2` and so on, one higher than the highest key in this file.
 
 Rules
 - New work goes under Backlog, or under In progress when it starts at once.
@@ -16,7 +16,7 @@ Rules
 Task format
 
 ```
-- agency-1 Pricing page prototype. Link https://example.com/preview
+- ahai-studio-1 Pricing page prototype. Link https://example.com/preview
   - [x] Capture the reference
   - [ ] Build the page
 ```
@@ -25,7 +25,7 @@ Task format
 
 ## In progress
 
-- agency-1 Agency offer from Profitable Skills module 2. Notes in `briefs/offer/notes.md`
+- ahai-studio-1 Ahai Studio offer from Profitable Skills module 2. Notes in `briefs/offer/notes.md`
   - [x] Read the module 2 notes, lessons 1 to 5
   - [x] Get the lesson 6 notes
   - [x] Pick the market
@@ -39,12 +39,12 @@ Task format
   - [x] Settle the price
   - [x] Draft the logic chain
   - [x] Write the test kit for the chain
-  - [ ] Test the chain in 5 to 10 buyer conversations
+  - [ ] Test the chain in 5 to 10 buyer conversations, through the teardowns
   - [x] Pick 3 Web3 projects for teardowns
   - [ ] Check each pick's TGE timing on its own X account
   - [ ] Run the first teardown as a one week team sprint
   - [x] Compose the offer md, draft 1 in `briefs/offer/offer.md`
-  - [ ] Settle the timeline, limits and package split in the offer
+  - [x] Settle the timeline, limits and package split in the offer
 
 ## Review
 

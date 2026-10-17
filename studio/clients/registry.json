@@ -30,8 +30,12 @@
     },
     {
       "id": "ahai-studio",
-      "repos": [],
-      "previewProjects": []
+      "repos": [
+        "ahai-offer"
+      ],
+      "previewProjects": [
+        "ahai-offer"
+      ]
     }
   ]
 }

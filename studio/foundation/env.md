@@ -33,6 +33,12 @@ so the lesson outlives the context window.
 - A git deploy of a commit an agent authored is refused. Deploy with
   `node studio/scripts/deploy.mjs --dir <project>`, which uploads a copy with no git history.
 - Turn off git deploys for agent branches in each project's `vercel.json`.
+- The first deploy of a brand new project with no git connection went straight to production and took the
+  `<project>.vercel.app` alias, even without `--prod` (Vercel CLI 64, ahai-offer, 2026-10-17). Create the project
+  with one throwaway deploy or check the target through the API right after the first deploy.
+- Vercel CLI 64 prints the deployment URL after a "Production" or "Preview" label, so `deploy.mjs` misses the bare
+  URL line and reports a failure on a deploy that worked. Check the deployment state through the API before
+  calling it failed.
 
 ```json
 { "git": { "deploymentEnabled": { "claude/*": false } } }

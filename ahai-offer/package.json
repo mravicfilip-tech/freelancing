@@ -1,0 +1,8 @@
+{
+  "name": "ahai-offer",
+  "private": true,
+  "version": "0.1.0",
+  "dependencies": {
+    "@vercel/edge": "1.2.1"
+  }
+}

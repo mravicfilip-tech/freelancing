@@ -1,6 +1,6 @@
 # [Agency name] offer
 
-Draft 3, 2026-10-17. An internal clarity document, not a sales page. Every line traces back to `notes.md` in
+Draft 3, 2026-10-17, updated the same day with the stack, the launch kit and payment terms. An internal clarity document, not a sales page. Every line traces back to `notes.md` in
 this folder. Lines marked PROPOSED are not decided yet. The logic chain is untested with buyers.
 
 ## Who it is for
@@ -26,9 +26,9 @@ In delivery order. Who leads each part is PROPOSED.
 | # | Component | What they get | Lead |
 |---|---|---|---|
 | 1 | Discovery and Scope | A 90 minute kickoff with the founder and one named approver, PROPOSED. A written scope with the fixed price and the launch date. A requirements log we keep. A flag if the core message is weak. Tracking on the current site if there is one | Filip |
-| 2 | Brand Identity | Logo, colour, type and a short brand guide. A launch kit with an X header, Telegram assets and an announcement template, PROPOSED | Miloš |
-| 3 | Coded Website | Up to 8 pages, such as home, product, tokenomics, team and roadmap, built on the new brand and live on the client's domain | Serg |
-| 4 | Product Flow, Designed and Coded | One core flow, such as wallet connect and the dashboard, token claim or staking. Up to 10 screens, shipped as front end code that the client's developers wire to their contracts and backend | Filip |
+| 2 | Brand Identity | Logo, colour, type and a short brand guide. A launch kit with an X header, Telegram assets and an announcement template | Miloš |
+| 3 | Coded Website | Up to 8 pages, such as home, product, tokenomics, team and roadmap, built in Next.js on the new brand and live on the client's domain | Serg |
+| 4 | Product Flow, Designed and Coded | One core flow, such as wallet connect and the dashboard, token claim or staking. Up to 10 screens, shipped as Next.js front end code that the client's developers wire to their contracts and backend | Filip |
 | 5 | Conversion Tracking | Analytics live at launch. A day 30 read against the old site, or against targets set in discovery when there was no site | Filip |
 | 6 | 30 Day Support | Fixes, questions and small changes for 30 days after launch. What counts as a small change, Filip to add | All three |
 
@@ -62,7 +62,7 @@ and reviews work within the agreed turnaround. The turnaround, Filip to add.
 - $15,000 fixed and published. We never sell hours. ACCEPTED.
 - The price comes with a case study clause. The client agrees to a written case study with the day 30 numbers. A client who cannot agree, for example under an NDA, pays a higher price. That price, Filip to add.
 - The price holds for the first 2 to 3 deals and goes up after 3 case studies. ACCEPTED.
-- Payment terms. Half at signing and half at launch, PROPOSED.
+- Payment terms. Half at signing and half at launch. ACCEPTED.
 - A Brand and Site package at $10,000, components 1, 2, 3, 5 and 6, is a fallback for a team whose product does not need work. It is never offered first. PROPOSED.
 
 ## The argument behind it
@@ -88,8 +88,8 @@ developers. Case studies, Filip to add.
 
 - The agency's name.
 - The case studies we show, and how concept work is labelled.
-- The stack the website and product flow are built in.
-- The kickoff length, the launch kit, the timeline, the limits, payment terms and the fallback package, all PROPOSED above.
+- A client whose product is not built on React or Next.js.
+- The kickoff length, the timeline, the limits and the fallback package, all PROPOSED above.
 - The price without a case study.
 - The client review turnaround.
 - What counts as a small change during support.

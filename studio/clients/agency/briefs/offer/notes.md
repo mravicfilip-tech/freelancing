@@ -19,6 +19,9 @@ this file at the end. The source is Profitable Skills 3.0, module 2, read throug
 | 2026-10-17 | The package is $15,000, not Serg's $5k to $10k | ACCEPTED | Filip said yes. At Serg's 90 hours a week, $15k over 6 weeks is about $28 an hour, the Remittix rate |
 | 2026-10-17 | Miloš is a co-founder and the brand identity designer | ACCEPTED | From Filip |
 | 2026-10-17 | The team will make case studies to show, and past work is not a worry | OPEN | From Filip. Concept work has to be labelled as concept work. Invented clients or numbers would be caught fast in Web3, where buyers already screen for scams |
+| 2026-10-17 | The website and product flow are built in Next.js | ACCEPTED | From Filip. Serg's past sites were Framer, so the website lead needs checking |
+| 2026-10-17 | The launch kit stays in the $15,000 | ACCEPTED | From Filip |
+| 2026-10-17 | Payment is half at signing and half at launch | ACCEPTED | From Filip |
 | 2026-10-17 | Offer draft 3 in `offer.md`, written for Web3. Kickoff length, launch kit, leads per part, payment terms and the Web3 page and flow examples | PROPOSED by Claude | Filip asked what the $15,000 buys |
 | 2026-10-16 | Offer draft 1 written to `offer.md`. Six week timeline, page and screen limits, backend out of scope, and two packages at $15k and $10k | SUPERSEDED by draft 2 | None of these were decided. A fixed scope with no limits invites the cost shock clients complain about most |
 | 2026-10-16 | Offer draft 2, hardened. One package at $15k, the $10k package only as a fallback, tracking on the current site in week 1, client access and review turnaround as conditions of the date, a way out of the case study clause, native mobile out of scope | PROPOSED by Claude | The $10k package broke the logic chain, and the day 30 read had no before number. Draft 1 is in commit fac8d06 |

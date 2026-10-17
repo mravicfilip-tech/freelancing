@@ -29,6 +29,8 @@ this file at the end. The source is Profitable Skills 3.0, module 2, read throug
 | 2026-10-17 | Six weeks to launch, up to 8 pages, and the product flow raised to 15 screens | ACCEPTED | From Filip, who says AI covers the extra screens. Risk noted by Claude, more scope at the same price and approval time does not shrink |
 | 2026-10-17 | Smart contracts, backend and infrastructure out of scope. The $10k fallback kept and never offered first. The teardown success bar | ACCEPTED | From Filip |
 | 2026-10-17 | Each part has one lead and all three help on every part. Filip on discovery, product and tracking, Miloš on brand, Serg on the website | ACCEPTED | From Filip, "we'll most likely be involved in all to help each other out" |
+| 2026-10-17 | The lead of each part owns its deadline and answers the client's questions on it | ACCEPTED | Filip said yes |
+| 2026-10-17 | A presentable offer page in `ahai-studio-offer.html`, in the visual language of Filip's portfolio, branded Ahai Studio, with no personal names and no mono font | ACCEPTED as asked | Internal items are left out of it on purpose, meaning the decision statuses, the hourly maths, competitor names, the teardown targets, the $10k fallback and the launch pricing rule. `offer.md` keeps all of them |
 | 2026-10-17 | Offer draft 4 in `offer.md` with all of the above | ACCEPTED as the first draft | Filip asked for a first draft of the offer |
 | 2026-10-16 | The team is three people in total | ACCEPTED | From Filip. Serg's note names the other two as Serg and Miloš |
 | 2026-10-17 | Web3 teams before a launch or TGE are the first segment, inside the existing umbrella | ACCEPTED | Filip said yes. Serg's experience, the clearest trigger and the only proof in the market are there |

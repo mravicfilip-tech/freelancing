@@ -1,0 +1,490 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Ahai Studio Launch Offer</title>
+<meta name="description" content="Brand, site and product for Web3 teams with a launch ahead. Designed and coded by one team, live in six weeks, for a fixed $15,000.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preconnect" href="https://api.fontshare.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&family=Inter:wght@400;500;600&display=swap">
+<link rel="stylesheet" href="https://api.fontshare.com/v2/css?f%5B%5D=clash-grotesk@400,500,600&display=swap">
+<style>
+/* Layout. One wide reading column on a warm ground, service rows like a studio site, a six week strip, one price block */
+:root {
+  --bg: #f4f2ee;
+  --surface: #ffffff;
+  --ink: #14120f;
+  --ink-soft: #55524c;
+  --line: #d8d4cc;
+  --hairline: rgb(0 0 0 / 0.08);
+  --accent: #ff4213;
+  --accent-ink: #121212;
+  --chip: #eae7e0;
+  --shadow-border: 0 0 0 1px rgb(0 0 0 / 0.06), 0 1px 2px -1px rgb(0 0 0 / 0.06), 0 2px 4px 0 rgb(0 0 0 / 0.04);
+  --font-display: "Clash Grotesk", "Inter", system-ui, sans-serif;
+  --font-body: "Inter", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-ui: "Geist", "Inter", system-ui, sans-serif;
+  --step--1: clamp(0.8rem, 0.78rem + 0.12vw, 0.89rem);
+  --step-0: clamp(1rem, 0.96rem + 0.2vw, 1.15rem);
+  --step-1: clamp(1.25rem, 1.12rem + 0.6vw, 1.7rem);
+  --step-2: clamp(1.7rem, 1.35rem + 1.6vw, 2.9rem);
+  --step-3: clamp(2.4rem, 1.65rem + 3.4vw, 5rem);
+  --pad: clamp(1.25rem, 4vw, 4rem);
+  --radius: 14px;
+  --ease: cubic-bezier(0.76, 0, 0.24, 1);
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #090909; --surface: #1c1a18; --ink: #f2efe9; --ink-soft: #a39e94; --line: #34312c;
+    --hairline: rgb(255 255 255 / 0.08); --chip: #262421;
+    --shadow-border: 0 0 0 1px rgb(255 255 255 / 0.08);
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #090909; --surface: #1c1a18; --ink: #f2efe9; --ink-soft: #a39e94; --line: #34312c;
+  --hairline: rgb(255 255 255 / 0.08); --chip: #262421;
+  --shadow-border: 0 0 0 1px rgb(255 255 255 / 0.08);
+  color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--font-body);
+  font-size: var(--step-0);
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  padding-top: env(safe-area-inset-top, 0px);
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+}
+.shell {
+  max-width: 1180px;
+  margin: 0 auto;
+  padding-left: max(var(--pad), env(safe-area-inset-left, 0px));
+  padding-right: max(var(--pad), env(safe-area-inset-right, 0px));
+}
+h1, h2, h3 { font-family: var(--font-display); font-weight: 500; margin: 0; text-wrap: balance; letter-spacing: -0.02em; line-height: 1; }
+p { margin: 0; }
+a { color: inherit; }
+.label {
+  font-family: var(--font-ui); font-size: var(--step--1); font-weight: 500;
+  text-transform: uppercase; letter-spacing: 0.08em; color: var(--ink-soft);
+}
+.soft { color: var(--ink-soft); }
+.num { font-variant-numeric: tabular-nums; }
+
+/* Top bar */
+.bar { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding-block: 22px; border-bottom: 1px solid var(--hairline); }
+.mark { font-family: var(--font-display); font-weight: 600; font-size: 1.35rem; letter-spacing: -0.01em; display: inline-flex; align-items: baseline; gap: 2px; text-decoration: none; }
+.mark i { width: 0.42em; height: 0.42em; border-radius: 50%; background: var(--accent); display: inline-block; margin-left: 3px; }
+.bar-right { display: flex; align-items: center; gap: 16px; }
+.toggle {
+  font-family: var(--font-ui); font-size: var(--step--1); font-weight: 500; color: var(--ink);
+  background: var(--chip); border: 0; border-radius: 999px; padding: 8px 14px; cursor: pointer;
+  transition: background-color .3s var(--ease);
+}
+.toggle:hover { background: var(--line); }
+.toggle:focus-visible, .btn:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+
+/* Hero */
+.hero { padding-block: clamp(56px, 10vw, 120px) clamp(40px, 6vw, 72px); display: flex; flex-direction: column; gap: 28px; }
+.hero h1 { font-size: var(--step-3); max-width: 14ch; }
+.hero h1 em { font-style: normal; color: var(--accent); }
+.lede { font-size: var(--step-1); line-height: 1.4; max-width: 34ch; color: var(--ink); font-family: var(--font-body); font-weight: 400; }
+.facts { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 200px), 1fr)); border-top: 1px solid var(--line); margin-top: 12px; }
+.fact { padding: 18px 20px 18px 0; display: flex; flex-direction: column; gap: 6px; border-bottom: 1px solid var(--line); min-width: 0; }
+.fact strong { font-family: var(--font-display); font-weight: 500; font-size: var(--step-1); letter-spacing: -0.01em; }
+
+/* Sections */
+section { padding-block: clamp(56px, 8vw, 104px); border-top: 1px solid var(--hairline); }
+.sec-head { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.6fr); gap: clamp(24px, 4vw, 64px); align-items: start; margin-bottom: clamp(32px, 5vw, 56px); }
+.sec-head h2 { font-size: var(--step-2); }
+.sec-head p { max-width: 58ch; color: var(--ink-soft); }
+.sec-head .label { margin-bottom: 14px; display: block; }
+
+/* Who */
+.who { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.6fr); gap: clamp(24px, 4vw, 64px); align-items: start; }
+.who p { max-width: 52ch; }
+.promise {
+  margin: 0; background: var(--surface); box-shadow: var(--shadow-border); border-radius: var(--radius);
+  padding: clamp(24px, 3vw, 40px); font-family: var(--font-display); font-weight: 500;
+  font-size: var(--step-1); line-height: 1.25; letter-spacing: -0.01em;
+}
+.promise span { color: var(--accent); }
+
+/* Problem chain */
+.chain { list-style: none; margin: 0; padding: 0; border-top: 1px solid var(--line); }
+.chain li { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.6fr); gap: clamp(16px, 4vw, 64px); padding-block: 26px; border-bottom: 1px solid var(--line); }
+.chain h3 { font-size: var(--step-1); letter-spacing: -0.01em; line-height: 1.15; }
+.chain p { max-width: 56ch; color: var(--ink-soft); }
+.chain li.last h3 { color: var(--accent); }
+.chain li.last p { color: var(--ink); }
+.opener { margin-top: 28px; padding: 20px 24px; border-left: 3px solid var(--accent); background: var(--surface); border-radius: 0 var(--radius) var(--radius) 0; box-shadow: var(--shadow-border); max-width: 70ch; }
+.opener .label { display: block; margin-bottom: 6px; }
+
+/* Included */
+.rows { list-style: none; margin: 0; padding: 0; border-top: 1px solid var(--line); }
+.row { display: grid; grid-template-columns: 56px minmax(0, 1.1fr) minmax(0, 1.6fr) minmax(0, 0.7fr); gap: clamp(12px, 3vw, 40px); padding-block: 30px; border-bottom: 1px solid var(--line); align-items: start; transition: background-color .4s var(--ease); }
+.row:hover { background: var(--surface); }
+.idx { font-family: var(--font-display); font-weight: 500; font-size: var(--step-1); color: var(--accent); line-height: 1; padding-top: 2px; }
+.row h3 { font-size: var(--step-1); letter-spacing: -0.01em; line-height: 1.1; }
+.row ul { margin: 0; padding-left: 18px; display: flex; flex-direction: column; gap: 6px; color: var(--ink-soft); }
+.row ul li::marker { color: var(--accent); }
+.lead { font-family: var(--font-ui); font-size: var(--step--1); font-weight: 500; color: var(--ink); background: var(--chip); border-radius: 999px; padding: 5px 12px; justify-self: start; white-space: nowrap; }
+.note-line { margin-top: 24px; color: var(--ink-soft); max-width: 70ch; }
+
+/* How we work */
+.cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 250px), 1fr)); gap: 16px; }
+.card { background: var(--surface); box-shadow: var(--shadow-border); border-radius: var(--radius); padding: 24px; display: flex; flex-direction: column; gap: 10px; min-width: 0; }
+.card strong { font-family: var(--font-display); font-weight: 500; font-size: var(--step-1); letter-spacing: -0.01em; line-height: 1.1; }
+.card p { color: var(--ink-soft); }
+
+/* Timeline */
+.scroll { overflow-x: auto; }
+.weeks { min-width: 720px; display: grid; grid-template-columns: 210px repeat(10, minmax(44px, 1fr)); row-gap: 0; border-top: 1px solid var(--line); }
+.wk { font-family: var(--font-ui); font-size: var(--step--1); font-weight: 500; color: var(--ink-soft); text-align: center; padding-block: 12px; border-bottom: 1px solid var(--line); }
+.wk.blank { border-bottom: 1px solid var(--line); }
+.tl-label { grid-column: 1; padding: 14px 16px 14px 0; border-bottom: 1px solid var(--line); font-weight: 500; }
+.tl-label small { display: block; font-weight: 400; color: var(--ink-soft); font-size: var(--step--1); }
+.tl-cell { border-bottom: 1px solid var(--line); display: flex; align-items: center; padding-block: 14px; }
+.pill { height: 30px; width: 100%; margin: 0 3px; border-radius: 999px; background: var(--ink); color: var(--bg); font-family: var(--font-ui); font-size: var(--step--1); font-weight: 500; display: flex; align-items: center; padding: 0 12px; white-space: nowrap; overflow: hidden; }
+.pill.hot { background: var(--accent); color: var(--accent-ink); }
+.pill.quiet { background: var(--chip); color: var(--ink); }
+.dot { margin: 0 auto; font-family: var(--font-ui); font-size: var(--step--1); font-weight: 600; color: var(--accent-ink); background: var(--accent); border-radius: 999px; padding: 4px 10px; white-space: nowrap; }
+.dot.ink { background: var(--chip); color: var(--ink); }
+.tl-foot { margin-top: 20px; color: var(--ink-soft); max-width: 70ch; }
+
+/* Price */
+.price-wrap { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.2fr); gap: 16px; align-items: stretch; }
+.price-card { background: var(--ink); color: var(--bg); border-radius: var(--radius); padding: clamp(28px, 4vw, 48px); display: flex; flex-direction: column; gap: 22px; min-width: 0; }
+.price-card .label { color: color-mix(in srgb, var(--bg) 70%, transparent); }
+.big { font-family: var(--font-display); font-weight: 500; font-size: var(--step-3); letter-spacing: -0.03em; line-height: 0.9; }
+.big span { color: var(--accent); }
+.split { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.split div { border: 1px solid color-mix(in srgb, var(--bg) 22%, transparent); border-radius: 12px; padding: 14px 16px; display: flex; flex-direction: column; gap: 2px; }
+.split strong { font-family: var(--font-display); font-weight: 500; font-size: var(--step-1); }
+.split span { font-size: var(--step--1); color: color-mix(in srgb, var(--bg) 70%, transparent); }
+.btn { display: inline-flex; align-items: center; gap: 10px; align-self: flex-start; background: var(--accent); color: var(--accent-ink); font-family: var(--font-ui); font-weight: 600; font-size: var(--step--1); border-radius: 999px; padding: 12px 20px; text-decoration: none; transition: transform .4s var(--ease); }
+.btn:hover { transform: translateY(-2px); }
+.terms { background: var(--surface); box-shadow: var(--shadow-border); border-radius: var(--radius); padding: clamp(24px, 3vw, 36px); display: flex; flex-direction: column; min-width: 0; }
+.terms dl { margin: 0; display: flex; flex-direction: column; }
+.terms div { display: grid; grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.6fr); gap: 16px; padding-block: 14px; border-bottom: 1px solid var(--line); }
+.terms div:last-child { border-bottom: 0; }
+.terms dt { font-weight: 600; }
+.terms dd { margin: 0; color: var(--ink-soft); }
+
+/* Lists */
+.two { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 340px), 1fr)); gap: 16px; }
+.box { background: var(--surface); box-shadow: var(--shadow-border); border-radius: var(--radius); padding: clamp(22px, 3vw, 32px); display: flex; flex-direction: column; gap: 16px; min-width: 0; }
+.box h3 { font-size: var(--step-1); letter-spacing: -0.01em; }
+.box ul { margin: 0; padding-left: 18px; display: flex; flex-direction: column; gap: 10px; color: var(--ink-soft); }
+.box ul li::marker { color: var(--accent); }
+
+/* Trust */
+.trust { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 260px), 1fr)); border-top: 1px solid var(--line); }
+.trust div { padding: 26px 24px 26px 0; border-bottom: 1px solid var(--line); display: flex; flex-direction: column; gap: 10px; min-width: 0; }
+.trust strong { font-family: var(--font-display); font-weight: 500; font-size: var(--step-1); letter-spacing: -0.01em; line-height: 1.1; }
+.trust p { color: var(--ink-soft); max-width: 40ch; }
+
+/* Footer */
+footer { border-top: 1px solid var(--hairline); padding-block: 36px 48px; display: flex; flex-wrap: wrap; justify-content: space-between; gap: 12px; color: var(--ink-soft); font-size: var(--step--1); }
+
+@media (max-width: 860px) {
+  .sec-head, .who, .chain li, .price-wrap { grid-template-columns: 1fr; }
+  .row { grid-template-columns: 40px minmax(0, 1fr); }
+  .row ul, .row .lead { grid-column: 2; }
+  .terms div { grid-template-columns: 1fr; gap: 4px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  * { transition: none !important; }
+}
+</style>
+</head>
+<body>
+<div class="shell">
+
+  <header class="bar">
+    <a class="mark" href="#top" id="top">Ahai Studio<i aria-hidden="true"></i></a>
+    <div class="bar-right">
+      <span class="label">Launch offer, 2026</span>
+      <button class="toggle" id="theme-toggle" type="button" aria-label="Switch colour theme">Dark</button>
+    </div>
+  </header>
+
+  <div class="hero">
+    <span class="label">For Web3 teams with a launch or TGE ahead</span>
+    <h1>Brand, site and product. <em>Live in six weeks.</em></h1>
+    <p class="lede">One team designs and codes your brand, your website and the core flow of your product, and ships it before your launch, for a fixed price.</p>
+    <div class="facts">
+      <div class="fact"><span class="label">Price</span><strong class="num">$15,000 fixed</strong></div>
+      <div class="fact"><span class="label">To launch</span><strong>6 weeks</strong></div>
+      <div class="fact"><span class="label">After launch</span><strong>30 days of support</strong></div>
+      <div class="fact"><span class="label">Built in</span><strong>Next.js</strong></div>
+    </div>
+  </div>
+
+  <section>
+    <div class="who">
+      <div>
+        <span class="label">Who it is for</span>
+        <h2 style="font-size: var(--step-2); margin-top: 14px;">Teams with a date coming</h2>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:24px">
+        <p>Web3 teams with a launch or TGE one to three months away, whose brand is weak or missing, and whose site and product still look like the first version their developers built. We also work with funded tech teams from seed to Series B in SaaS, AI and fintech.</p>
+        <blockquote class="promise">We help funded teams whose product still looks like the first version their developers built walk into their raise or launch looking like the company they have <span>become</span>.</blockquote>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="sec-head">
+      <div><span class="label">The problem</span><h2>Why patching never fixes it</h2></div>
+      <p>Most teams try to fix the first impression one screen at a time. Here is why that fails, and what works instead.</p>
+    </div>
+    <ol class="chain">
+      <li><h3>Where you are</h3><p>You raised, but your product and site still look like the MVP your developers built, and the next raise or launch is when people judge it.</p></li>
+      <li><h3>Why patching fails</h3><p>A first version is built to prove the product works, not to earn trust. Patching it one screen at a time never changes the impression the whole thing makes.</p></li>
+      <li><h3>What you need</h3><p>One consistent version of the company, the brand, the site and the product together, that looks like where you are now and is live before the date that matters.</p></li>
+      <li><h3>How to get it</h3><p>Your developers belong on the roadmap, not rebuilding mockups. So the redesign has to arrive as working code, built by the people who designed it, on a fixed scope and date.</p></li>
+      <li class="last"><h3>What we do</h3><p>One team designs and codes your brand, site and product for a fixed published price, live before your raise or launch, with tracking that shows what changed.</p></li>
+    </ol>
+    <div class="opener">
+      <span class="label">In one line</span>
+      <p>Your TGE is in a few weeks, and your brand and site look like every project that came before you.</p>
+    </div>
+  </section>
+
+  <section>
+    <div class="sec-head">
+      <div><span class="label">What is included</span><h2>Six parts, one team</h2></div>
+      <p>Everything below is in the $15,000, in the order we deliver it.</p>
+    </div>
+    <ol class="rows">
+      <li class="row">
+        <span class="idx">01</span>
+        <h3>Discovery and scope</h3>
+        <ul>
+          <li>A kickoff of up to 60 minutes with the founder and one named approver</li>
+          <li>A written scope with the fixed price and the launch date</li>
+          <li>A requirements log we keep, so you never repeat yourself</li>
+          <li>A flag if the core message needs work before design starts</li>
+          <li>Tracking on your current site, if you have one</li>
+        </ul>
+        <span class="lead">Product lead</span>
+      </li>
+      <li class="row">
+        <span class="idx">02</span>
+        <h3>Brand identity</h3>
+        <ul>
+          <li>Logo, colour, type and a short brand guide</li>
+          <li>Two logo directions and two rounds of revisions</li>
+          <li>A launch kit with an X header and profile picture, a Telegram header and three announcement post templates</li>
+        </ul>
+        <span class="lead">Brand lead</span>
+      </li>
+      <li class="row">
+        <span class="idx">03</span>
+        <h3>Coded website</h3>
+        <ul>
+          <li>Up to eight pages, such as home, product, tokenomics, team and roadmap</li>
+          <li>Built in Next.js on the new brand and live on your domain</li>
+          <li>Two rounds of revisions</li>
+        </ul>
+        <span class="lead">Web lead</span>
+      </li>
+      <li class="row">
+        <span class="idx">04</span>
+        <h3>Product flow, designed and coded</h3>
+        <ul>
+          <li>One core flow, such as wallet connect and the dashboard, token claim or staking</li>
+          <li>Up to fifteen screens with two rounds of revisions</li>
+          <li>Front end code your developers wire to your contracts and backend, built in Next.js or adapted to your own web stack</li>
+        </ul>
+        <span class="lead">Product lead</span>
+      </li>
+      <li class="row">
+        <span class="idx">05</span>
+        <h3>Conversion tracking</h3>
+        <ul>
+          <li>Analytics live at launch</li>
+          <li>A day 30 report against your old site, or against targets we set together when there was no site</li>
+        </ul>
+        <span class="lead">Product lead</span>
+      </li>
+      <li class="row">
+        <span class="idx">06</span>
+        <h3>30 days of support</h3>
+        <ul>
+          <li>Fixes, questions and small changes for 30 days after launch</li>
+          <li>A small change takes under two hours and adds no page, screen or feature. Anything bigger is quoted first</li>
+        </ul>
+        <span class="lead">Whole team</span>
+      </li>
+    </ol>
+    <p class="note-line">Each part has one lead who owns its deadline and answers your questions on it. The whole team works on every part.</p>
+  </section>
+
+  <section>
+    <div class="sec-head">
+      <div><span class="label">How we work</span><h2>No guessing where things stand</h2></div>
+      <p>Fixed price projects go wrong in the gaps between check ins. These are the rules that close them.</p>
+    </div>
+    <div class="cards">
+      <div class="card"><strong>Weekly sync</strong><p>One call a week with you and your approver, plus a written update every one to two days.</p></div>
+      <div class="card"><strong>One approver</strong><p>Named at kickoff. Every other voice, investors included, comes through that person.</p></div>
+      <div class="card"><strong>Two day reviews</strong><p>You review each round within two working days. Late feedback moves the launch date by the same number of days.</p></div>
+      <div class="card"><strong>Two rounds</strong><p>Every part has two rounds of revisions, sized to fit inside the six weeks.</p></div>
+    </div>
+  </section>
+
+  <section>
+    <div class="sec-head">
+      <div><span class="label">Timeline</span><h2>Six weeks, start to launch</h2></div>
+      <p>From a signed scope to a live launch, then 30 days of support.</p>
+    </div>
+    <div class="scroll" role="region" aria-label="Project timeline in weeks" tabindex="0">
+      <div class="weeks">
+        <span class="wk blank"></span>
+        <span class="wk">W1</span><span class="wk">W2</span><span class="wk">W3</span><span class="wk">W4</span><span class="wk">W5</span><span class="wk">W6</span><span class="wk">W7</span><span class="wk">W8</span><span class="wk">W9</span><span class="wk">W10</span>
+
+        <span class="tl-label">Discovery and scope<small>Kickoff, scope signed</small></span>
+        <span class="tl-cell" style="grid-column: 2 / 3"><span class="pill">Week 1</span></span>
+        <span class="tl-cell" style="grid-column: 3 / 12"></span>
+
+        <span class="tl-label">Brand and launch kit<small>Two directions</small></span>
+        <span class="tl-cell" style="grid-column: 2 / 3"></span>
+        <span class="tl-cell" style="grid-column: 3 / 4"><span class="pill">Week 2</span></span>
+        <span class="tl-cell" style="grid-column: 4 / 12"></span>
+
+        <span class="tl-label">Website<small>Up to eight pages</small></span>
+        <span class="tl-cell" style="grid-column: 2 / 4"></span>
+        <span class="tl-cell" style="grid-column: 4 / 7"><span class="pill">Weeks 3 to 5</span></span>
+        <span class="tl-cell" style="grid-column: 7 / 12"></span>
+
+        <span class="tl-label">Product flow<small>Up to fifteen screens</small></span>
+        <span class="tl-cell" style="grid-column: 2 / 4"></span>
+        <span class="tl-cell" style="grid-column: 4 / 7"><span class="pill">Side by side</span></span>
+        <span class="tl-cell" style="grid-column: 7 / 12"></span>
+
+        <span class="tl-label">Launch<small>Tracking goes live</small></span>
+        <span class="tl-cell" style="grid-column: 2 / 7"></span>
+        <span class="tl-cell" style="grid-column: 7 / 8"><span class="pill hot">Launch</span></span>
+        <span class="tl-cell" style="grid-column: 8 / 12"></span>
+
+        <span class="tl-label">Support<small>30 days</small></span>
+        <span class="tl-cell" style="grid-column: 2 / 8"></span>
+        <span class="tl-cell" style="grid-column: 8 / 12"><span class="pill quiet">Fixes and small changes</span></span>
+
+        <span class="tl-label">Payments<small>Half and half</small></span>
+        <span class="tl-cell" style="grid-column: 2 / 3"><span class="dot num">$7,500</span></span>
+        <span class="tl-cell" style="grid-column: 3 / 7"></span>
+        <span class="tl-cell" style="grid-column: 7 / 8"><span class="dot num">$7,500</span></span>
+        <span class="tl-cell" style="grid-column: 8 / 11"></span>
+        <span class="tl-cell" style="grid-column: 11 / 12"><span class="dot ink">Day 30</span></span>
+      </div>
+    </div>
+    <p class="tl-foot">The date holds when we have access in week 1 and reviews come back within two working days.</p>
+  </section>
+
+  <section>
+    <div class="sec-head">
+      <div><span class="label">Price</span><h2>One fixed price, never hours</h2></div>
+      <p>You know the full cost before we start. No hourly billing, no surprise invoices.</p>
+    </div>
+    <div class="price-wrap">
+      <div class="price-card">
+        <span class="label">Brand, site and product</span>
+        <div class="big num">$15,000<span>.</span></div>
+        <div class="split num">
+          <div><strong>$7,500</strong><span>at signing</span></div>
+          <div><strong>$7,500</strong><span>at launch</span></div>
+        </div>
+        <a class="btn" href="#top">Ask about a start date</a>
+      </div>
+      <div class="terms">
+        <dl>
+          <div><dt>Ownership</dt><dd>All code, design files and brand files are yours once the second payment lands.</dd></div>
+          <div><dt>Hosting</dt><dd>The site runs on your own hosting account, which we set up.</dd></div>
+          <div><dt>Case study</dt><dd>We write a short case study with your day 30 numbers, with your sign off on the text.</dd></div>
+          <div><dt>Private projects</dt><dd>If we cannot feature the work, the price is $20,000, paid in full up front in stablecoin or fiat.</dd></div>
+          <div><dt>After support</dt><dd>An optional retainer at $4,000 a month for up to 40 hours, cancelled with one month's notice.</dd></div>
+        </dl>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="sec-head">
+      <div><span class="label">Boundaries</span><h2>What is in and what is not</h2></div>
+      <p>Clear edges keep the price fixed and the date real.</p>
+    </div>
+    <div class="two">
+      <div class="box">
+        <h3>Not in the $15,000</h3>
+        <ul>
+          <li>Copy and positioning. We flag a weak message early, and you bring the words.</li>
+          <li>Smart contracts, backend and infrastructure.</li>
+          <li>Native mobile apps. We build websites and web applications.</li>
+          <li>Pages or screens past the limits, quoted before any work starts.</li>
+        </ul>
+      </div>
+      <div class="box">
+        <h3>What a small change means</h3>
+        <ul>
+          <li>Under two hours of work.</li>
+          <li>No new page, screen or feature.</li>
+          <li>Covered for 30 days after launch.</li>
+          <li>Anything larger is quoted first, or covered by the retainer.</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="sec-head">
+      <div><span class="label">Why work with us</span><h2>Everything is written down first</h2></div>
+      <p>Trust in this industry is earned with specifics, so we lead with them.</p>
+    </div>
+    <div class="trust">
+      <div><strong>Fixed before we start</strong><p>The price, the scope and the launch date are agreed in writing before any work begins.</p></div>
+      <div><strong>Measured after</strong><p>Your day 30 report shows what changed once the new brand, site and product went live.</p></div>
+      <div><strong>One team, end to end</strong><p>The people who design it also build it, so nothing gets lost between a designer and your developers.</p></div>
+      <div><strong>Honest about our work</strong><p>Concept work is always shown as concept work, never passed off as a client project.</p></div>
+    </div>
+  </section>
+
+  <footer>
+    <span>Ahai Studio</span>
+    <span>Launch offer, draft, October 2026</span>
+  </footer>
+
+</div>
+<script>
+  (function () {
+    var root = document.documentElement;
+    var btn = document.getElementById("theme-toggle");
+    function current() {
+      var t = root.getAttribute("data-theme");
+      if (t) return t;
+      return window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+    }
+    function label() { btn.textContent = current() === "dark" ? "Light" : "Dark"; }
+    try { var saved = localStorage.getItem("ahai-theme"); if (saved) root.setAttribute("data-theme", saved); } catch (e) {}
+    label();
+    btn.addEventListener("click", function () {
+      var next = current() === "dark" ? "light" : "dark";
+      root.setAttribute("data-theme", next);
+      try { localStorage.setItem("ahai-theme", next); } catch (e) {}
+      label();
+    });
+  })();
+</script>
+</body>
+</html>

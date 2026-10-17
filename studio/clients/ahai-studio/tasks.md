@@ -25,6 +25,8 @@ Task format
 
 ## In progress
 
+## Review
+
 - ahai-studio-1 Ahai Studio offer from Profitable Skills module 2. Notes in `briefs/offer/notes.md`
   - [x] Read the module 2 notes, lessons 1 to 5
   - [x] Get the lesson 6 notes
@@ -45,7 +47,6 @@ Task format
   - [ ] Run the first teardown as a one week team sprint
   - [x] Compose the offer md, draft 1 in `briefs/offer/offer.md`
   - [x] Settle the timeline, limits and package split in the offer
-
-## Review
+  - [x] Presentable offer page in `briefs/offer/ahai-studio-offer.html`
 
 ## Done

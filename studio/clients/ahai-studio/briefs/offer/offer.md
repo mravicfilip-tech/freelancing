@@ -21,7 +21,8 @@ Brand, site and one core product flow, designed and coded by one team, live in s
 
 ## What they get for $15,000
 
-In delivery order. Each part has one lead, and all three of us help on every part.
+In delivery order. Each part has one lead who owns its deadline and answers the client's questions on it, and all
+three of us help on every part.
 
 | # | Component | What they get | Lead |
 |---|---|---|---|

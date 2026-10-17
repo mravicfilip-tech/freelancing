@@ -21,7 +21,11 @@ this file at the end. The source is Profitable Skills 3.0, module 2, read throug
 | 2026-10-17 | The team will make case studies to show, and past work is not a worry | OPEN | From Filip. Concept work has to be labelled as concept work. Invented clients or numbers would be caught fast in Web3, where buyers already screen for scams |
 | 2026-10-17 | Filip's idea. Position the agency as bridging the trust gap between Web3 founders and their audience, since Web3 carries a scam reputation | OPEN, challenged by Claude | LimeChain, RNO1 and Clay already sell Web3 design on trust. Design alone cannot make a project trustworthy. The positioning attracts the projects that most need to look legit. No Web3 founder has said it in their own words yet |
 | 2026-10-17 | Trust as the stake in the chain, not the promise. Candidate Web3 pain line "Our TGE is in a few weeks and our brand and site look like every project that rugged" | PROPOSED by Claude, untested | Specific, dated and fixable by design. Answers Serg's open item on what a client loses |
-| 2026-10-17 | A client filter before taking Web3 work, such as a public team, an audit and a working product | PROPOSED by Claude | One rugged project in the portfolio would sink a studio that sells on credibility |
+| 2026-10-17 | The 3 test posts try both framings, trust against "looks like every project that rugged" | ACCEPTED | Filip said that's fine. Real reactions settle it |
+| 2026-10-17 | A client filter before taking Web3 work, such as a public team, an audit and a working product | REJECTED by Filip | "We won't turn them down, but they won't be case study friendly. Work is work." |
+| 2026-10-17 | Take Web3 clients that fail the filter, but never show them as case studies | ACCEPTED | From Filip |
+| 2026-10-17 | Terms for clients we cannot show. The no case study price, full payment up front, paid in stablecoin or fiat and never in their own token, never one of the first 2 to 3 slots, no studio credit on their site | PROPOSED by Claude | The entry price exists to buy case studies, so an unshowable client should not get it. The second half at launch is the payment most at risk if a project rugs |
+| 2026-10-17 | The no case study price at $20,000 | PROPOSED by Claude, a guess | The case study is the discount. About a third above the entry price |
 | 2026-10-17 | The website and product flow are built in Next.js | ACCEPTED | From Filip. Serg's past sites were Framer, so the website lead needs checking |
 | 2026-10-17 | The launch kit stays in the $15,000 | ACCEPTED | From Filip |
 | 2026-10-17 | Payment is half at signing and half at launch | ACCEPTED | From Filip |
@@ -326,6 +330,26 @@ Lesson 4, step 2. Strong means what we deliver today answers it fully.
 | 8 | Messaging unclear | Out of scope. Discovery flags a weak message before design starts | Out of scope |
 
 The "nothing after launch" complaint is answered by the 30 days of support.
+
+## Web3 pain to offer map, draft
+
+For the first segment. None of these pains is in a Web3 founder's own words yet. Status DRAFT until the
+test conversations.
+
+| # | Pain | Evidence | What answers it | Fit |
+|---|---|---|---|---|
+| 1 | A launch or TGE date is fixed and nothing is ready | Serg, plus launch triggers in the research | Six week timeline, scope signed in week 1, site and product built side by side | Strong on paper. Untested as a team |
+| 2 | The brand is weak or missing | Serg, plus about 10 reviews on outdated brands | Brand identity and the launch kit | Strong |
+| 3 | The site is bad, missing, or looks like every other project | Serg, plus about 5 founder sources on template looks | Coded website, up to 8 pages | Strong |
+| 4 | The product was built by developers and users get lost, often at wallet connect | About 16 reviews, none Web3. A 70% onboarding drop off figure, unverified | One product flow, up to 10 screens, as code | Partial. One flow only, no contracts or backend |
+| 5 | Past agencies were slow, generic and never learned the product | Serg, plus passive designer complaints in reviews | Discovery, the requirements log, one team that designs and codes | Partial. A claim until proven |
+| 6 | Investors override the founder and feedback drags | Serg | One named approver, an agreed review turnaround | Proposed only |
+| 7 | Cost surprise and scope creep | Lowest scoring category in competitor reviews | Fixed published price, page and screen limits | Strong |
+| 8 | No idea whether the new site works | About 8 reviews on conversion | Tracking and the day 30 read | Partial. Measures, does not promise a lift |
+| 9 | Nothing after launch | Competitor complaints | 30 days of support, optional retainer | Strong |
+
+Not solved by the offer. Explaining the protocol and the token in words, since copy is out of scope. Real trust,
+which comes from audits, a public team and backers. Community and KOL marketing.
 
 ## Offer components, draft
 

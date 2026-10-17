@@ -39,7 +39,7 @@ version. Tracking answers visitors who do not convert. Support answers nothing a
 ## Not in the $15,000
 
 - Copy and positioning. Discovery flags a weak message, and the client brings the words.
-- Smart contracts, backend and infrastructure.
+- Smart contracts, backend and infrastructure. PROPOSED.
 - Native mobile apps. We deliver websites and web applications.
 - Pages or screens past the limits, quoted before work starts.
 - The monthly retainer, priced on its own. Price not set.

@@ -14,7 +14,9 @@ this file at the end. The source is Profitable Skills 3.0, module 2, read throug
 | 2026-10-16 | Filip's view. The work is worth more than $3k to $5k and only needs the right audience to be priced higher | SUPERSEDED by the row below | Funded buyers pick on proof, and no deal so far is in the market |
 | 2026-10-16 | First 2 to 3 deals in the market at $10k to $15k, fixed scope, published price, with a case study clause. Raise after 3 case studies | ACCEPTED | Filip said go with it. Matches the $10k floor at DesignMe, Eleken, Halo Lab and Phenomenon, and our own best deal |
 | 2026-10-16 | Sell a fixed result, never hours | ACCEPTED, part of the pricing call | Eleken, Halo Lab and Arounda list $25 to $49 an hour on Clutch, the same range as the Remittix rate, yet take nothing under $10k |
-| 2026-10-16 | The team is three people in total | ACCEPTED | From Filip |
+| 2026-10-16 | The team is three people in total | ACCEPTED | From Filip. Serg's note names the other two as Serg and Miloš |
+| 2026-10-17 | Run the first buyer tests with Web3 teams before a launch or TGE, inside the existing umbrella | PROPOSED by Claude | Serg's experience, the clearest trigger and the only proof in the market are there |
+| 2026-10-17 | Hold the accepted $10k to $15k, not Serg's $5k to $10k | PROPOSED by Claude | At Serg's 90 hours a week, $15k over 6 weeks is about $28 an hour, the Remittix rate. $5k to $10k would be about $9 to $19 an hour |
 | 2026-10-16 | Offer draft 1 written to `offer.md`. Six week timeline, page and screen limits, backend out of scope, and two packages at $15k and $10k | SUPERSEDED by draft 2 | None of these were decided. A fixed scope with no limits invites the cost shock clients complain about most |
 | 2026-10-16 | Offer draft 2, hardened. One package at $15k, the $10k package only as a fallback, tracking on the current site in week 1, client access and review turnaround as conditions of the date, a way out of the case study clause, native mobile out of scope | PROPOSED by Claude | The $10k package broke the logic chain, and the day 30 read had no before number. Draft 1 is in commit fac8d06 |
 | 2026-10-16 | Brand identity is in scope | ACCEPTED | The team can do it. Turns pains 2 and 3 into strong matches |
@@ -163,6 +165,7 @@ conversation tries them.
 |---|---|---|
 | "Our developers can restyle it with AI" | "vibecode the style" in founder threads | That is still patching one screen at a time, which is step 1 again |
 | "We'll hire a designer" | "why shouldn't a company just hire the designer directly" | A hire takes months and still hands files to the developers, so the date slips |
+| "We'll use another agency" | Serg's clients, and the past agency complaints in the reviews | The usual agency is slow, makes a generic look and never learns the product. A fixed date and one team that designs and codes answers all three |
 | "A design subscription at $5k a month" | Designjoy named as the model to beat | A subscription works a queue of requests. Nobody owns one finished version by the date |
 
 Where to test, best first.
@@ -205,6 +208,13 @@ conversations are the same conversations. Timebox two weeks. PROPOSED.
 
 Proposed split is 10 notes per partner.
 
+Changes after Serg's note, PROPOSED.
+
+- Run the first tests with Web3 teams before a launch or TGE, where Serg's experience and the clearest trigger are. The umbrella and the offer stay as they are.
+- For Web3, reach founders through Telegram groups, X and conferences as well as LinkedIn.
+- Ask Serg's past clients and the four testimonial givers the past client question. Their answers give the before state the testimonials lack.
+- Ask every test conversation who signs, and who else approves the design.
+
 Draft note to a recently funded founder, in Filip's voice. DRAFT.
 
 > Hi [name], congrats on the [round]. I had a look at [product] and the site. It looks like your engineers
@@ -246,11 +256,41 @@ From Filip, 2026-10-16.
 | Typical past client, big scope | Mixed | $3k to $5k | No |
 | Remittix landing page hero, WebGL globe, in this repo | Crypto payments | $30 an hour, freelance | In the market, but no case study rights |
 | Ekotehnika hero rebuild, Linde dealer, in this repo | Industrial | Not known | No |
+| Serg's Web3 work through AKKA Studio, about two years. Karrier One brand, site, dashboard and app, TOKEN2049 Singapore, Alpha Neural, CONF3RENCE, Blockus, BRRR, 1WalletWins, Powerblocks | Web3 | Not known | In the market, and Karrier One matches our full scope. Rights to show it, and any non-solicit with AKKA, not known |
+| Serg's direct clients. Boring Safety and One Brand One Planet with Filip, Lyrie, Kenny Stevens Team, Luminovo now | Mixed | Serg's biggest invoice €4k | No |
+| Serg's four testimonials. Mike Shields TBSC, Srdjan Niksic Diversify, David Prodanovic Amply, Hristijan Burdzic AKKA | Mixed | | Strongest line "saved us a full design round and kept the project on budget". None describes the client's state before the project |
+
+Risk from Serg's note. The three of us have never run a client end to end as a team. The six week fixed date
+in the offer is untested as a team.
 
 No usable proof in the market yet. The first clients buy a promise, so the offer has to make that promise
 easy to check and has to produce proof as it goes. Rob's lesson 1 is the course's answer to that. Cold buyers
 are sold the idea before they care who you are, so the logic chain carries more weight for us than for an
 established agency.
+
+## Partner input, Serg
+
+From Serg's PDF "Serg iskustvo i razmisljanje", shared 2026-10-17 and addressed to Filip and Miloš. These are
+Serg's own observations, not client words, as he says himself.
+
+| Topic | Serg's view | Against our work |
+|---|---|---|
+| Trigger | A launch or TGE with a fixed date. Clients arrive 1 to 3 months ahead | Matches triggers 1 and 2. First hand evidence for the urgency test |
+| State before | Brand weak or missing, site bad or missing | Matches pains 2 and 3 |
+| Tried before | Templates and other agencies. The agencies were slow, made a generic Web3 look and did not understand the product | Matches the failed solutions. Adds another agency as a step 3 alternative |
+| Project length | 1 to 3 months, sometimes dragged out by feedback and approvals | Supports the review turnaround condition in offer draft 2 |
+| Who slows it | The founder, or an investor who overrides the founder on style | New. Not in our research |
+| Who signs | Probably the owner, to confirm | Open |
+| Market | Web3 teams before a launch or TGE, as a working hypothesis | Narrower than ours. Web3 sits inside our umbrella |
+| Offer | Brand, site design and build, product dashboard and app | Matches components 2, 3 and 4 |
+| Price | $5k to $10k per project to start | Lower than the accepted $10k to $15k |
+| Capacity | About 6 hours a day each, about 90 hours a week in total | At 90 hours a week, 6 weeks is 540 hours, so $15k is about $28 an hour |
+| Roles | Filip sales, Serg social media | Miloš not named |
+| Channels | Telegram groups, LinkedIn, conferences, X | His LinkedIn outreach drew recruiters and sellers, not buyer words |
+
+Serg's open item on stakes, what a client loses by launching with a weak brand and site. The research has a
+first answer in founders' words, "If it looks like a scam and works like a scam, people will assume it's a
+scam". It applies to Web3 above all.
 
 ## What we deliver
 
@@ -302,5 +342,7 @@ Rob's formula is who we help, the main pain, the outcome and our approach. DRAFT
 
 ## Open questions
 
-- Who of the three runs the test conversations. Proposed split is 10 notes each.
+- Who of the three runs the test conversations. Serg names Filip on sales and himself on social media. Miloš's role is not named.
+- Whether Serg can show Karrier One and the other AKKA work, and whether any non-solicit with AKKA covers its clients.
+- Who signs and pays on the client side, and how an investor's say on style is handled. Proposed is that discovery names one approver and all other input comes through them.
 - The agency's name. The folder id is `agency` until then.

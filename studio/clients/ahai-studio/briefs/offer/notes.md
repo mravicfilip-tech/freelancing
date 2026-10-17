@@ -16,7 +16,7 @@ this file at the end. The source is Profitable Skills 3.0, module 2, read throug
 | 2026-10-16 | Sell a fixed result, never hours | ACCEPTED, part of the pricing call | Eleken, Halo Lab and Arounda list $25 to $49 an hour on Clutch, the same range as the Remittix rate, yet take nothing under $10k |
 | 2026-10-17 | The studio is called Ahai Studio. Folder renamed from `agency` to `ahai-studio` | ACCEPTED | From Filip |
 | 2026-10-17 | The first three pieces of proof come from teardowns | ACCEPTED | From Filip |
-| 2026-10-17 | Teardowns are shown as concept work and do not count toward the 3 client case studies that raise the price | PROPOSED by Claude | A concept has no client, budget or deadline, so calling it a case study would mislead |
+| 2026-10-17 | Teardowns are shown as concept work and do not count toward the 3 client case studies that raise the price | ACCEPTED | A concept has no client, budget or deadline, so calling it a case study would mislead |
 | 2026-10-17 | Review turnaround of 2 working days, late feedback moves the launch date day for day. A weekly sync and a client update every one to two days | ACCEPTED | From Filip |
 | 2026-10-17 | A small change during support takes under 2 hours and adds no page, screen or feature | ACCEPTED | From Filip |
 | 2026-10-17 | The client hosts on their own account, which we set up. All IP transfers when the second payment lands | ACCEPTED | From Filip |
@@ -28,6 +28,7 @@ this file at the end. The source is Profitable Skills 3.0, module 2, read throug
 | 2026-10-17 | Kickoff of up to 60 minutes with the founder and one named approver, not 90 | ACCEPTED | Filip says clients will not sit through 90 minutes |
 | 2026-10-17 | Six weeks to launch, up to 8 pages, and the product flow raised to 15 screens | ACCEPTED | From Filip, who says AI covers the extra screens. Risk noted by Claude, more scope at the same price and approval time does not shrink |
 | 2026-10-17 | Smart contracts, backend and infrastructure out of scope. The $10k fallback kept and never offered first. The teardown success bar | ACCEPTED | From Filip |
+| 2026-10-17 | Each part has one lead and all three help on every part. Filip on discovery, product and tracking, Miloš on brand, Serg on the website | ACCEPTED | From Filip, "we'll most likely be involved in all to help each other out" |
 | 2026-10-17 | Offer draft 4 in `offer.md` with all of the above | ACCEPTED as the first draft | Filip asked for a first draft of the offer |
 | 2026-10-16 | The team is three people in total | ACCEPTED | From Filip. Serg's note names the other two as Serg and Miloš |
 | 2026-10-17 | Web3 teams before a launch or TGE are the first segment, inside the existing umbrella | ACCEPTED | Filip said yes. Serg's experience, the clearest trigger and the only proof in the market are there |
@@ -414,6 +415,5 @@ Rob's formula is who we help, the main pain, the outcome and our approach. DRAFT
 
 ## Open questions
 
-- Who leads each part of a project. Proposed is Filip on discovery, product and tracking, Miloš on brand, Serg on the website.
 - Whether Serg can show Karrier One and the other AKKA work, and whether any non-solicit with AKKA covers its clients.
 - Who signs and pays on the client side, and how an investor's say on style is handled. Proposed is that discovery names one approver and all other input comes through them.

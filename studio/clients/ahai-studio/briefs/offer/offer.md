@@ -1,7 +1,7 @@
 # Ahai Studio offer
 
 Draft 4, 2026-10-17. An internal clarity document, not a sales page. Every line traces back to `notes.md` in
-this folder. Lines marked PROPOSED are not decided yet. The logic chain is untested with buyers.
+this folder. Every line in this draft is decided. The logic chain is untested with buyers.
 
 ## Who it is for
 
@@ -21,7 +21,7 @@ Brand, site and one core product flow, designed and coded by one team, live in s
 
 ## What they get for $15,000
 
-In delivery order. Who leads each part is PROPOSED.
+In delivery order. Each part has one lead, and all three of us help on every part.
 
 | # | Component | What they get | Lead |
 |---|---|---|---|
@@ -97,10 +97,9 @@ developers.
 The first three pieces of proof come from teardowns, public redesign concepts of real Web3 sites. Teneo
 Protocol goes first, and Strata and Ekiden stay on record. A teardown counts as a success when one founder
 replies, or the post brings at least 3 DMs or comments from founders. Teardowns are shown as concept work and do
-not count toward the 3 client case studies that raise the price. PROPOSED.
+not count toward the 3 client case studies that raise the price.
 
 ## Still open
 
-- Who leads each part, PROPOSED above.
-- How teardowns are labelled on the site, PROPOSED above.
 - Each teardown project's TGE timing, checked on its own X account before publishing.
+- Serg leading a Next.js build when his past sites were built in Framer.

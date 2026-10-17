@@ -285,7 +285,9 @@ established agency.
 
 ## Teardown picks
 
-PROPOSED by Claude on 2026-10-17. Candidate list in `research-web3-candidates.md`, homepage shots at 1440 in
+Teneo is the first teardown, Strata and Ekiden stay on record. ACCEPTED by Filip on 2026-10-17. The success bar
+of one founder reply, or at least 3 founder DMs or comments, is PROPOSED. Picks first PROPOSED by Claude on
+2026-10-17. Candidate list in `research-web3-candidates.md`, homepage shots at 1440 in
 `teardowns/`. Sites were judged from screenshots taken in this container. None of the three has a TGE date
 confirmed by the project itself, so check each project's own X account before any outreach. Every teardown is
 labelled as an unsolicited concept.

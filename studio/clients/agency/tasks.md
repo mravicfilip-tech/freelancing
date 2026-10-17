@@ -40,6 +40,9 @@ Task format
   - [x] Draft the logic chain
   - [x] Write the test kit for the chain
   - [ ] Test the chain in 5 to 10 buyer conversations
+  - [x] Pick 3 Web3 projects for teardowns
+  - [ ] Check each pick's TGE timing on its own X account
+  - [ ] Run the first teardown as a one week team sprint
   - [x] Compose the offer md, draft 1 in `briefs/offer/offer.md`
   - [ ] Settle the timeline, limits and package split in the offer
 

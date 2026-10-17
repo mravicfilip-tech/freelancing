@@ -283,6 +283,26 @@ easy to check and has to produce proof as it goes. Rob's lesson 1 is the course'
 are sold the idea before they care who you are, so the logic chain carries more weight for us than for an
 established agency.
 
+## Teardown picks
+
+PROPOSED by Claude on 2026-10-17. Candidate list in `research-web3-candidates.md`, homepage shots at 1440 in
+`teardowns/`. Sites were judged from screenshots taken in this container. None of the three has a TGE date
+confirmed by the project itself, so check each project's own X account before any outreach. Every teardown is
+labelled as an unsolicited concept.
+
+| # | Project | Why it fits | Teardown angle | Lead | Caveats |
+|---|---|---|---|---|---|
+| 1 | Teneo Protocol, AI data DePIN | TGE targeted for Q4 2026 in a recent source. $3M seed from RockawayX, Borderless Capital and Generative Ventures. Live network and app | The generic Web3 look, black with neon lime and a crystal render, a hero carousel, and one homepage talking to node runners, builders, partners and enterprises at once | Miloš, brand | Founder not named in any source read. Sources disagree on dates and node counts |
+| 2 | Strata, DeFi yield tranching | Mainnet with a reported $160M to $250M TVL. Small team scale, about $3M raised per a calendar | "Democratizing on-chain yields" could be any DeFi project. The real job is helping a user choose between a senior and a junior tranche, which is a product flow problem | Filip, product | Funding from a calendar only, team unknown, April TGE target missed with no new date. Its APY cards stayed empty from this container after 16 seconds, which may be our network, so check in a normal browser |
+| 3 | Ekiden, perp DEX on Aptos | $2M seed in May 2026 from GSR, Pyth, Aptos, LayerZero and others. Exactly the size of buyer a $15k offer fits | The whole site is one screen, a slogan and a Trade button. Nowhere to send anyone before mainnet | Serg, website | TGE date unknown. CEO name unconfirmed |
+
+Alternates. STRATO, whose homepage hero sells Devcon tickets instead of the product, Series B $41M in 2022, but
+its token sale already ran in June 2026. infiniFi, the best sourced candidate with a Q4 2026 TGE, Electric
+Capital and a named founder, but its site blocked this container's capture, so Filip opens it in his own browser.
+
+Dropped after the screenshots. MagicBlock and Extended, whose sites are already strong. Dawn, polished, with a
+TGE that looks like 2027 and funding near the top of the band.
+
 ## Partner input, Serg
 
 From Serg's PDF "Serg iskustvo i razmisljanje", shared 2026-10-17 and addressed to Filip and Miloš. These are

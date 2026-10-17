@@ -19,6 +19,9 @@ this file at the end. The source is Profitable Skills 3.0, module 2, read throug
 | 2026-10-17 | The package is $15,000, not Serg's $5k to $10k | ACCEPTED | Filip said yes. At Serg's 90 hours a week, $15k over 6 weeks is about $28 an hour, the Remittix rate |
 | 2026-10-17 | Miloš is a co-founder and the brand identity designer | ACCEPTED | From Filip |
 | 2026-10-17 | The team will make case studies to show, and past work is not a worry | OPEN | From Filip. Concept work has to be labelled as concept work. Invented clients or numbers would be caught fast in Web3, where buyers already screen for scams |
+| 2026-10-17 | Filip's idea. Position the agency as bridging the trust gap between Web3 founders and their audience, since Web3 carries a scam reputation | OPEN, challenged by Claude | LimeChain, RNO1 and Clay already sell Web3 design on trust. Design alone cannot make a project trustworthy. The positioning attracts the projects that most need to look legit. No Web3 founder has said it in their own words yet |
+| 2026-10-17 | Trust as the stake in the chain, not the promise. Candidate Web3 pain line "Our TGE is in a few weeks and our brand and site look like every project that rugged" | PROPOSED by Claude, untested | Specific, dated and fixable by design. Answers Serg's open item on what a client loses |
+| 2026-10-17 | A client filter before taking Web3 work, such as a public team, an audit and a working product | PROPOSED by Claude | One rugged project in the portfolio would sink a studio that sells on credibility |
 | 2026-10-17 | The website and product flow are built in Next.js | ACCEPTED | From Filip. Serg's past sites were Framer, so the website lead needs checking |
 | 2026-10-17 | The launch kit stays in the $15,000 | ACCEPTED | From Filip |
 | 2026-10-17 | Payment is half at signing and half at launch | ACCEPTED | From Filip |

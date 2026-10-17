@@ -1,14 +1,17 @@
 # [Agency name] offer
 
-Draft 2, 2026-10-16, hardened from draft 1. An internal clarity document, not a sales page. Every line traces
-back to `notes.md` in this folder. Lines marked PROPOSED are not decided yet. The logic chain is untested with
-buyers.
+Draft 3, 2026-10-17. An internal clarity document, not a sales page. Every line traces back to `notes.md` in
+this folder. Lines marked PROPOSED are not decided yet. The logic chain is untested with buyers.
 
 ## Who it is for
 
-Funded tech teams from seed to Series B, in SaaS, AI, fintech and web3, whose web product and site still look
-like the first version their developers built, with a raise or a launch coming. The buyer tests will show
-whether the pain holds at Series B as well as at seed and Series A.
+Web3 teams with a launch or TGE date 1 to 3 months away, whose brand is weak or missing and whose site and
+product still look like the first version their developers built. This is our first segment. The wider market
+stays funded tech teams from seed to Series B in SaaS, AI, fintech and web3.
+
+## The offer in one line
+
+Brand, site and one core product flow, designed and coded by one team, live in six weeks, for $15,000 fixed.
 
 ## Transformation summary
 
@@ -16,17 +19,30 @@ whether the pain holds at Series B as well as at seed and Series A.
 > their raise or launch looking like the company they have become, through one team that designs and codes the
 > brand, the site and the product.
 
-## What they get, in delivery order
+## What they get for $15,000
 
-| # | Component | Pain it solves | What they get |
+In delivery order. Who leads each part is PROPOSED.
+
+| # | Component | What they get | Lead |
 |---|---|---|---|
-| 1 | Discovery and Scope | Cost surprise, repeating requirements | A written scope with a fixed price and a launch date, a requirements log we keep, a flag if the core message is weak, and tracking installed on the current site so there is a before number |
-| 2 | Brand Identity | Less credible than competitors, a brand that no longer fits | Logo, type, colour and a short brand guide |
-| 3 | Coded Website | Less credible, out of date, a launch date at risk | A fully coded marketing site on the new brand. Up to 8 pages, PROPOSED |
-| 4 | Product Flow, Designed and Coded | A developer built first version, users who get lost | One core flow, such as onboarding or the main dashboard, redesigned and shipped as front end code in the client's web stack, if it is one we work in. Up to 10 screens, PROPOSED. Stacks we work in, Filip to add |
-| 5 | Conversion Tracking | Visitors who do not convert | The same tracking on the new site at launch, and a before and after read at day 30. If traffic is too low for the numbers to mean anything, the read says so |
-| 6 | 30 Day Support | Nothing after launch | 30 days of fixes, questions and small changes. What counts as a small change, Filip to add |
-| 7 | Monthly Retainer, optional | No design capacity in house | Ongoing design and code capacity after the 30 days |
+| 1 | Discovery and Scope | A 90 minute kickoff with the founder and one named approver, PROPOSED. A written scope with the fixed price and the launch date. A requirements log we keep. A flag if the core message is weak. Tracking on the current site if there is one | Filip |
+| 2 | Brand Identity | Logo, colour, type and a short brand guide. A launch kit with an X header, Telegram assets and an announcement template, PROPOSED | Miloš |
+| 3 | Coded Website | Up to 8 pages, such as home, product, tokenomics, team and roadmap, built on the new brand and live on the client's domain | Serg |
+| 4 | Product Flow, Designed and Coded | One core flow, such as wallet connect and the dashboard, token claim or staking. Up to 10 screens, shipped as front end code that the client's developers wire to their contracts and backend | Filip |
+| 5 | Conversion Tracking | Analytics live at launch. A day 30 read against the old site, or against targets set in discovery when there was no site | Filip |
+| 6 | 30 Day Support | Fixes, questions and small changes for 30 days after launch. What counts as a small change, Filip to add | All three |
+
+Pains each part answers, from `notes.md`. Discovery answers cost surprise and repeated requirements. Brand and
+site answer weak credibility and a brand that no longer fits. The product flow answers the developer built first
+version. Tracking answers visitors who do not convert. Support answers nothing after launch.
+
+## Not in the $15,000
+
+- Copy and positioning. Discovery flags a weak message, and the client brings the words.
+- Smart contracts, backend and infrastructure.
+- Native mobile apps. We deliver websites and web applications.
+- Pages or screens past the limits, quoted before work starts.
+- The monthly retainer, priced on its own. Price not set.
 
 ## Timeline
 
@@ -36,40 +52,18 @@ and reviews work within the agreed turnaround. The turnaround, Filip to add.
 | When | What happens |
 |---|---|
 | Week 1 | Discovery, tracking on the current site, then the scope is signed |
-| Week 2 | Brand identity |
+| Week 2 | Brand identity and the launch kit |
 | Weeks 3 to 5 | Website and product flow, designed and coded side by side, with a review every week |
 | Week 6 | Final review, fixes and launch. Tracking goes live on the new site |
-| Weeks 7 to 10 | Support, with the before and after read at day 30 |
+| Weeks 7 to 10 | Support, with the day 30 read |
 
 ## Price
 
-The offer is one package, because the logic chain leads to brand, site and product together.
-
-| Package | Components | Price |
-|---|---|---|
-| Brand, Site and Product | 1 to 6 | $15,000 fixed, PROPOSED |
-| Retainer | 7 | Not set |
-
-A Brand and Site package at $10,000, with components 1, 2, 3, 5 and 6, is a fallback for a team whose product
-does not need work. It is never offered first. PROPOSED.
-
-Accepted rules for the price.
-
-- The price is published and fixed. We never sell hours.
-- The entry price comes with a case study clause. The client agrees to a written case study with the day 30 numbers. A client who cannot agree to it, for example under an NDA, pays a higher price. That price, Filip to add.
-- These prices hold for the first 2 to 3 deals. They go up after 3 case studies.
-- Payment terms, Filip to add.
-
-## Out of scope
-
-- Copy and positioning. Discovery flags a weak message before design starts, and the client brings the words.
-- Backend and infrastructure work. We ship the front end of the product flow. PROPOSED.
-- Native mobile apps. We deliver websites and web applications.
-- Anything past the page and screen limits, quoted separately before work starts.
-
-## After launch
-
-Who hosts the site, and who owns the code, the design files and the brand files at the end, Filip to add.
+- $15,000 fixed and published. We never sell hours. ACCEPTED.
+- The price comes with a case study clause. The client agrees to a written case study with the day 30 numbers. A client who cannot agree, for example under an NDA, pays a higher price. That price, Filip to add.
+- The price holds for the first 2 to 3 deals and goes up after 3 case studies. ACCEPTED.
+- Payment terms. Half at signing and half at launch, PROPOSED.
+- A Brand and Site package at $10,000, components 1, 2, 3, 5 and 6, is a fallback for a team whose product does not need work. It is never offered first. PROPOSED.
 
 ## The argument behind it
 
@@ -86,19 +80,19 @@ it lands, and before any website copy is written.
 
 ## Why a buyer should believe us
 
-We have no case study in this market yet, and the offer is built to make that easy to check. The price, the
-scope and the launch date are fixed and written down before work starts. The day 30 numbers show what changed.
-The same team designs and codes, so nothing is lost between a designer and the client's developers.
+The price, the scope and the launch date are fixed and written down before work starts. The day 30 numbers show
+what changed. The same team designs and codes, so nothing is lost between a designer and the client's
+developers. Case studies, Filip to add.
 
 ## Still open
 
 - The agency's name.
-- The timeline, the page and screen limits, the backend line and the package prices, all PROPOSED above.
-- Payment terms.
-- The retainer price.
+- The case studies we show, and how concept work is labelled.
+- The stack the website and product flow are built in.
+- The kickoff length, the launch kit, the timeline, the limits, payment terms and the fallback package, all PROPOSED above.
 - The price without a case study.
 - The client review turnaround.
-- The stacks we work in.
 - What counts as a small change during support.
 - Hosting and ownership after launch.
-- Who of the three sends which test notes.
+- The retainer price.
+- Who sends which test notes.

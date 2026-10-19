@@ -20,11 +20,11 @@ export const PROGRESS = (POINTS - RANKS[RANK_INDEX].from) / (NEXT.from - RANKS[R
 
 /** One pillar cut-out per rank, and the hue each rank glows in. */
 export const RANK_ART: Record<string, { pillar: string; hue: string; ink: string; height: number }> = {
-  Bronze: { pillar: '/art/landing/pillar-flowers-left.webp', hue: '#E8590C', ink: '#FFB27A', height: 160 },
-  Silver: { pillar: '/art/landing/pillar-gems-a.webp', hue: '#7C93D6', ink: '#B9C7F0', height: 176 },
-  Gold: { pillar: '/art/landing/pillar-gems-b.webp', hue: '#F5B800', ink: '#FFD861', height: 192 },
-  Platinum: { pillar: '/art/landing/pillar-flowers-right.webp', hue: '#15AABF', ink: '#7BE3F0', height: 208 },
-  Diamond: { pillar: '/art/landing/pillar-girl.webp', hue: '#F06595', ink: '#FFA3C4', height: 224 },
+  Bronze: { pillar: '/art/landing/pillar-flowers-left.webp', hue: '#E8590C', ink: '#FFB27A', height: 256 },
+  Silver: { pillar: '/art/landing/pillar-gems-a.webp', hue: '#7C93D6', ink: '#B9C7F0', height: 272 },
+  Gold: { pillar: '/art/landing/pillar-gems-b.webp', hue: '#F5B800', ink: '#FFD861', height: 240 },
+  Platinum: { pillar: '/art/landing/pillar-flowers-right.webp', hue: '#15AABF', ink: '#7BE3F0', height: 256 },
+  Diamond: { pillar: '/art/landing/pillar-girl.webp', hue: '#F06595', ink: '#FFA3C4', height: 272 },
 };
 
 /** Short reward names for the ladder cards, read from RANKS. */

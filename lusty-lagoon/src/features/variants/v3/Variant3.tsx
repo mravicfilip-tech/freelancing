@@ -14,8 +14,9 @@ import { Race } from './Race';
 import { ContinuePlaying, HotGrid, TopWins } from './Games';
 import type { Filter } from './games-data';
 
-// Dashboard variant 3, Rank road, rebuilt on the reference kit. Reasons to come back first, games
-// after. Cybet's shell, chest hero, level card and unlock schedule, Krush's race block, and the
+// Dashboard variant 3, Rank road, rebuilt on the reference kit. Round 4 order, D3. The hero and the
+// rank card always on top, then pick up where you left off with top wins, hot right now, the weekly
+// race, the rank road, and last the unlock schedule and the bets. Cybet's shell, chest hero, level card and unlock schedule, Krush's race block, and the
 // rank road as the signature, five pillar cut-outs on one road filled to John's points.
 // ?state=loading|empty|error and ?still are read as the brief says.
 
@@ -36,7 +37,7 @@ export default function Variant3() {
   };
 
   return (
-    <div className="min-h-screen bg-page">
+    <div className="k-page min-h-screen">
       <TopBar query={query} onQuery={setQuery} onSearch={() => jump('hot')} onDeposit={() => navigate('/wallet/deposit')} />
       <div className="flex gap-4 px-4 pb-8">
         <Sidebar filter={filter} onFilter={pick} onJump={jump} />
@@ -45,14 +46,14 @@ export default function Variant3() {
             <ChestHero onHow={() => setHow(true)} />
             <LevelCard onRoad={() => jump('rank')} />
           </div>
-          <RankRoad />
-          <Schedule />
-          <Race onBoard={() => setBoard(true)} />
           <div className="flex gap-6">
             <ContinuePlaying onPlay={setOpen} />
             <TopWins onPlay={setOpen} loading={state === 'loading'} />
           </div>
           <HotGrid filter={filter} onFilter={pick} query={query} onQuery={setQuery} state={state} failed={failed} onRetry={() => setFailed(false)} onPlay={setOpen} />
+          <Race onBoard={() => setBoard(true)} />
+          <RankRoad />
+          <Schedule />
           <BetsBoard onPlay={setOpen} state={state} rows={6} />
         </main>
       </div>

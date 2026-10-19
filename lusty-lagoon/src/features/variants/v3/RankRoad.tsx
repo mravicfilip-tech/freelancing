@@ -1,3 +1,4 @@
+import type { CSSProperties } from 'react';
 import { Check, LockSimple, Trophy } from '@phosphor-icons/react';
 import { RANKS, shortPoints } from '../../../data/ranks';
 import { formatPoints } from '../../../lib/format';
@@ -5,10 +6,10 @@ import { cn } from '../../../lib/cn';
 import { SectionHead } from '../kit/parts';
 import { POINTS, PROGRESS, RANK_ART, RANK_INDEX, REWARD_SHORT, TO_NEXT } from './games-data';
 
-// The signature. Five pillar cut-outs stand on one road, each taller than the last, and break out
-// of the panel's top edge. The road is a flat fill to John's 550,000 points with his marker on it.
-// Under the road each rank is a card in Cybet's level card execution, with its reward. Ranks ahead
-// are dimmed, never hidden.
+// The signature. Five pillar cut-outs stand on one road, each taller than the last, each whole
+// inside its own rank card. The road is a flat fill to John's 550,000 points with his marker on it.
+// Under the road each rank shows its points and its reward on the chrome edge. The current rank is
+// the one lit card. Ranks ahead are dimmed, never hidden.
 
 const GAP = 12;
 /** The x of a point on the road, as a CSS length, where 0 is Bronze's centre and 4 Diamond's. */
@@ -19,21 +20,17 @@ export function RankRoad() {
   return (
     <section id="rank" aria-labelledby="v3-rank-title" className="flex scroll-mt-[100px] flex-col gap-4">
       <SectionHead id="v3-rank-title" icon={<Trophy weight="fill" className="text-[#F5B800]" />} title="Rank road" sub="One point for every cent you play. Each rank pays from the day you reach it." />
-      <div className="relative mt-6">
-        {/* One card per rank behind the stage, road and details. The pillars rise out of its top edge. */}
+      <div className="relative">
+        {/* One chrome card per rank behind the stage, road and details. The current rank carries the light. */}
         <div aria-hidden className="absolute inset-0 grid grid-cols-5" style={{ columnGap: GAP }}>
           {RANKS.map((r, i) => {
             const art = RANK_ART[r.name];
             const current = i === RANK_INDEX;
-            const ahead = i > RANK_INDEX;
             return (
               <span
                 key={r.name}
-                className="mt-[56px] rounded-[20px] border"
-                style={{
-                  borderColor: current ? `${art.hue}AA` : 'rgb(255 255 255 / 0.05)',
-                  background: `radial-gradient(90% 55% at 50% 22%, ${art.hue}${ahead ? '30' : '5C'}, transparent 70%), linear-gradient(180deg, rgb(var(--k-item)) 0%, rgb(var(--k-panel)) 100%)`,
-                }}
+                className={cn('k-surface rounded-[20px]', current && 'k-lit')}
+                style={current ? ({ '--lx': '50%', '--ly': '0%', '--k-light': '232 89 12', borderColor: `${art.hue}99` } as CSSProperties) : undefined}
               />
             );
           })}
@@ -44,12 +41,12 @@ export function RankRoad() {
             const art = RANK_ART[r.name];
             const ahead = i > RANK_INDEX;
             return (
-              <div key={r.name} className="relative flex h-[172px] items-end justify-center">
-                <span aria-hidden className="absolute -bottom-[10px] left-1/2 h-[24px] w-[120px] -translate-x-1/2 rounded-[50%]" style={{ background: `radial-gradient(closest-side, ${art.hue}${ahead ? '40' : '80'}, transparent)` }} />
+              <div key={r.name} className="relative flex h-[292px] items-end justify-center">
+                <span aria-hidden className="absolute -bottom-[12px] left-1/2 h-[24px] w-[120px] -translate-x-1/2 rounded-[50%]" style={{ background: `radial-gradient(closest-side, ${art.hue}${ahead ? '40' : '80'}, transparent)` }} />
                 <img
                   src={art.pillar}
                   alt=""
-                  className={cn('relative -mb-[6px] w-auto', ahead && 'opacity-60 saturate-[0.6]')}
+                  className={cn('relative w-auto', ahead && 'opacity-60 saturate-[0.6]')}
                   style={{ height: art.height }}
                 />
               </div>
@@ -97,10 +94,10 @@ export function RankRoad() {
               <li
                 key={r.name}
                 aria-current={current ? 'step' : undefined}
-                className="relative flex flex-col gap-2 px-4 pb-4"
+                className="relative flex flex-col gap-2 px-4 pb-6"
               >
                 <div className="flex items-center justify-between gap-2">
-                  <h3 className="font-display text-24 font-bold uppercase leading-[26px]" style={{ color: ahead ? 'rgb(var(--k-muted))' : art.ink }}>
+                  <h3 className="text-20 font-extrabold uppercase leading-[24px] tracking-[-0.01em]" style={{ color: ahead ? 'rgb(var(--k-muted))' : art.ink }}>
                     {r.name}
                   </h3>
                   {current ? (
@@ -108,13 +105,13 @@ export function RankRoad() {
                   ) : next ? (
                     <span className="num flex h-6 items-center rounded-[8px] bg-[#8D3BF0]/30 px-2 text-12 font-bold text-[#D9C4FF]">{shortPoints(TO_NEXT)} to go</span>
                   ) : (
-                    <span className="flex h-6 w-6 items-center justify-center rounded-[8px] bg-black/25 text-[rgb(var(--k-dim))]">
+                    <span className="flex h-6 w-6 items-center justify-center rounded-[8px] bg-white/[0.05] text-[rgb(var(--k-dim))]">
                       <LockSimple weight="fill" className="h-[14px] w-[14px]" aria-label="Locked" />
                     </span>
                   )}
                 </div>
                 <p className="num text-14 font-semibold text-[rgb(var(--k-muted))]">{r.from === 0 ? 'From your first spin' : `${formatPoints(r.from)} points`}</p>
-                <p className={cn('mt-1 flex h-10 items-center rounded-[10px] px-3 text-14 font-bold', ahead ? 'bg-black/20 text-[rgb(var(--k-muted))]' : 'bg-black/25 text-ink')} title={r.reward}>
+                <p className={cn('k-well mt-2 flex h-11 items-center rounded-[12px] px-3 text-14 font-bold', ahead ? 'text-[rgb(var(--k-muted))]' : 'text-ink')} title={r.reward}>
                   <span className="truncate">{REWARD_SHORT[r.name]}</span>
                 </p>
               </li>

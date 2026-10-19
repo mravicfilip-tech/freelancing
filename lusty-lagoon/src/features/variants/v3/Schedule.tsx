@@ -5,8 +5,9 @@ import { cn } from '../../../lib/cn';
 import { DAILY_CHEST, useCountdown } from '../shared/data';
 import { SectionHead } from '../kit/parts';
 
-// Cybet's unlock schedule on DAILY_CHEST. The claimed days share one card, today's card has the
-// green header, every later day its own card. Each row is an icon box, a timer and an amount.
+// Cybet's unlock schedule on DAILY_CHEST, on the chrome edge. The claimed days share one card with a
+// small green check, today is the one lit card with an accent edge, pending days carry gold.
+// Each row is a tinted icon, a timer and an amount, split by a faint rule.
 // Each chest opens 24 hours after the last one and keeps for 24 hours, at the time today's opens.
 
 const FULL: Record<string, string> = { Mon: 'Monday', Tue: 'Tuesday', Wed: 'Wednesday', Thu: 'Thursday', Fri: 'Friday', Sat: 'Saturday', Sun: 'Sunday' };
@@ -20,38 +21,46 @@ function span(sec: number) {
   return d > 0 ? `${d}d ${h}h ${m}m` : `${h}h ${m}m ${s}s`;
 }
 
-type Tone = 'green' | 'purple' | 'red' | 'dim';
-const BOX: Record<Tone, string> = {
-  green: 'bg-[#2FB344] text-ink',
-  purple: 'bg-[#7B3FF2] text-ink',
-  red: 'bg-[#E03131] text-ink',
-  dim: 'bg-[rgb(var(--k-item-hover))] text-[rgb(var(--k-muted))]',
+type Tone = 'done' | 'today' | 'pending' | 'late';
+const ICON: Record<Tone, string> = {
+  done: 'text-[#3DDC84]',
+  today: 'text-[#C9A2FF]',
+  pending: 'text-gold',
+  late: 'text-[#FF6B6B]',
 };
 
+/** One fact in a day card. A tinted icon, a line and the quiet line under it, rows split by a faint rule. */
 function Row({ tone, icon, top, bottom, clock }: { tone: Tone; icon: ReactNode; top: ReactNode; bottom: ReactNode; clock?: boolean }) {
   return (
-    <li className="flex items-center gap-3 rounded-[12px] bg-[rgb(var(--k-item))] p-[10px]">
-      <span className={cn('flex h-9 w-9 shrink-0 items-center justify-center rounded-[10px] [&>svg]:h-5 [&>svg]:w-5', BOX[tone])}>{icon}</span>
+    <li className="k-rule flex items-center gap-3 border-t px-2 py-3 first:border-t-0">
+      <span className={cn('flex h-5 w-5 shrink-0 items-center justify-center [&>svg]:h-5 [&>svg]:w-5', ICON[tone])}>{icon}</span>
       <span className="flex min-w-0 flex-col leading-tight">
         <span className="flex items-center gap-1 text-14 font-bold text-ink">
-          {clock && <Clock weight="fill" className={cn('h-4 w-4', tone === 'green' || tone === 'purple' ? 'text-[#3DDC84]' : 'text-[rgb(var(--k-muted))]')} aria-hidden />}
+          {clock && <Clock weight="fill" className="h-4 w-4 text-[rgb(var(--k-dim))]" aria-hidden />}
           {top}
         </span>
-        <span className="truncate text-14 text-[rgb(var(--k-muted))] [&>b]:font-bold [&>b]:text-ink">{bottom}</span>
+        <span className="truncate text-12 text-[rgb(var(--k-muted))] [&>b]:font-bold [&>b]:text-ink">{bottom}</span>
       </span>
     </li>
   );
 }
 
-function Head({ today, title, chip, status }: { today?: boolean; title: string; chip: string; status: string }) {
+function Head({ state, title, amount, status }: { state: 'done' | 'today' | 'pending'; title: string; amount: string; status: string }) {
   return (
-    <div className={cn('flex items-center gap-3 rounded-[14px] p-3', today ? 'bg-[linear-gradient(135deg,#1F7A4D,#145A3A)]' : 'bg-[rgb(var(--k-item))]')}>
-      <img src="/art/lobby/giveaway-chest.webp" alt="" className={cn('h-11 w-11 shrink-0 object-contain', !today && 'opacity-70 saturate-50')} />
-      <span className="flex flex-col gap-1">
-        <span className="text-16 font-bold text-ink">{title}</span>
-        <span className="flex items-center gap-2 text-12 font-semibold text-ink/80">
-          <span className={cn('num rounded-[6px] px-[6px] py-0.5 font-bold', today ? 'bg-black/30 text-ink' : 'bg-[#8D3BF0]/40 text-[#E4D0FF]')}>{chip}</span>
-          {status}
+    <div className="flex items-center gap-3 p-2">
+      <img src="/art/lobby/giveaway-chest.webp" alt="" className={cn('h-[48px] w-[48px] shrink-0 object-contain', state === 'pending' && 'opacity-60 saturate-50')} />
+      <span className="flex min-w-0 flex-col gap-1">
+        <span className="truncate text-16 font-bold text-ink">{title}</span>
+        <span className="flex items-center gap-2 text-12 font-bold uppercase tracking-[0.08em]">
+          <span className="num text-[rgb(var(--k-muted))] normal-case tracking-normal">{amount}</span>
+          {state === 'done' && (
+            <span className="flex items-center gap-1 text-[#3DDC84]">
+              <CheckFat weight="fill" className="h-[12px] w-3" aria-hidden />
+              {status}
+            </span>
+          )}
+          {state === 'today' && <span className="rounded-full bg-[#8D3BF0]/30 px-2 py-0.5 text-[#E4D0FF]">{status}</span>}
+          {state === 'pending' && <span className="text-gold">{status}</span>}
         </span>
       </span>
     </div>
@@ -66,12 +75,12 @@ export function Schedule() {
   return (
     <section id="chest" aria-labelledby="v3-sched-title" className="flex scroll-mt-[100px] flex-col gap-4">
       <SectionHead id="v3-sched-title" icon={<LockSimpleOpen weight="fill" className="text-[#F06595]" />} title="Unlock schedule" sub={`Day ${DAILY_CHEST.streak + 1} of your streak. Open one chest a day and the next one pays more.`} />
-      <ol aria-label="This week's chests" className="grid grid-cols-5 gap-3">
-        <li className="flex flex-col gap-2 rounded-[18px] bg-[rgb(var(--k-panel))] p-2">
-          <Head title={`${claimed[0].day} to ${claimed[claimed.length - 1].day}`} chip={`${claimed.length}/${claimed.length}`} status="Claimed" />
-          <ul className="flex flex-col gap-2">
+      <ol aria-label="This week's chests" className="grid grid-cols-5 gap-4">
+        <li className="k-surface flex flex-col rounded-[20px] p-2">
+          <Head state="done" title={`${claimed[0].day} to ${claimed[claimed.length - 1].day}`} amount={`${claimed.length}/${claimed.length}`} status="Claimed" />
+          <ul className="k-rule mt-2 flex flex-col border-t">
             {claimed.map((d, i) => (
-              <Row key={d.day} tone="green" icon={<CheckFat weight="fill" />} top={`${FULL[d.day]}, day ${i + 1}`} bottom={<><b>{formatAmount(d.amount, 0)} {cur}</b> claimed</>} />
+              <Row key={d.day} tone="done" icon={<CheckFat weight="fill" />} top={`${FULL[d.day]}, day ${i + 1}`} bottom={<><b>{formatAmount(d.amount, 0)} {cur}</b> claimed</>} />
             ))}
           </ul>
         </li>
@@ -79,19 +88,20 @@ export function Schedule() {
           const today = d.status === 'today';
           const opensIn = left + i * 86400;
           const next = DAILY_CHEST.days[DAILY_CHEST.days.indexOf(d) + 1];
+          const tone: Tone = today ? 'today' : 'pending';
           return (
-            <li key={d.day} className={cn('flex flex-col gap-2 rounded-[18px] p-2', today ? 'bg-[#123B2B] ring-2 ring-[#2FB344]/60' : 'bg-[rgb(var(--k-panel))]')} aria-current={today ? 'date' : undefined}>
-              <Head today={today} title={FULL[d.day]} chip={`${formatAmount(d.amount, 0)} ${cur}`} status={today ? 'Today' : 'Pending'} />
-              <ul className="flex flex-col gap-2">
+            <li key={d.day} className={cn('k-surface flex flex-col rounded-[20px] p-2', today && 'k-lit border-[#B47CFF]/70 [--lx:50%]')} aria-current={today ? 'date' : undefined}>
+              <Head state={today ? 'today' : 'pending'} title={FULL[d.day]} amount={`${formatAmount(d.amount, 0)} ${cur}`} status={today ? 'Today' : 'Pending'} />
+              <ul className="k-rule mt-2 flex flex-col border-t">
                 <Row
-                  tone={today ? 'purple' : 'dim'}
+                  tone={tone}
                   icon={today ? <LockSimpleOpen weight="fill" /> : <LockSimple weight="fill" />}
                   clock
                   top={<span className="num">{span(opensIn)}</span>}
                   bottom={<><b>{formatAmount(d.amount, 0)} {cur}</b> unlocks in</>}
                 />
-                <Row tone={today ? 'purple' : 'dim'} icon={<Fire weight="fill" />} top={`Day ${DAILY_CHEST.streak + 1 + i} of 7`} bottom={today ? 'Keeps your streak' : 'Streak day'} />
-                <Row tone={today ? 'red' : 'dim'} icon={<Alarm weight="fill" />} top="Expires" bottom={`${next ? next.day : 'Mon'} at ${OPENS_AT}`} />
+                <Row tone={tone} icon={<Fire weight="fill" />} top={`Day ${DAILY_CHEST.streak + 1 + i} of 7`} bottom={today ? 'Keeps your streak' : 'Streak day'} />
+                <Row tone={today ? 'late' : tone} icon={<Alarm weight="fill" />} top="Expires" bottom={`${next ? next.day : 'Mon'} at ${OPENS_AT}`} />
               </ul>
             </li>
           );

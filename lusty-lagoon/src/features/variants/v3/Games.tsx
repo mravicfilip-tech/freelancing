@@ -19,7 +19,7 @@ export function ContinuePlaying({ onPlay }: { onPlay: (g: CatalogueGame) => void
   return (
     <section aria-labelledby="v3-continue-title" className="flex min-w-0 flex-1 flex-col gap-4">
       <SectionHead id="v3-continue-title" icon={<ClockCounterClockwise weight="bold" className="text-[#2FB4F0]" />} title="Pick up where you left off" />
-      <ul className="grid grid-cols-2 gap-3">
+      <ul className="grid flex-1 auto-rows-fr grid-cols-2 gap-3">
         {CONTINUE_PLAYING.map((c) => {
           const g = gameById(c.gameId)!;
           const up = c.session >= 0;
@@ -29,13 +29,13 @@ export function ContinuePlaying({ onPlay }: { onPlay: (g: CatalogueGame) => void
                 type="button"
                 onClick={() => onPlay(g)}
                 aria-label={`Play ${g.name}, last played ${c.lastPlayed}, session ${up ? 'up' : 'down'} ${formatAmount(Math.abs(c.session))} USDT`}
-                className="group flex w-full items-center gap-4 rounded-[18px] bg-[rgb(var(--k-panel))] p-3 text-left ring-2 ring-transparent transition hover:ring-[#B47CFF]/60"
+                className="k-surface group flex w-full items-center gap-4 rounded-[20px] p-4 text-left outline-none transition-[border-color] duration-200 hover:border-[color:var(--k-edge-hi)] focus-visible:ring-2 focus-visible:ring-[#B47CFF]"
               >
-                <img src={g.image} alt="" className="h-[84px] w-[84px] shrink-0 rounded-[14px] object-cover object-top" />
+                <img src={g.image} alt="" className="h-[88px] w-[88px] shrink-0 rounded-[16px] object-cover object-top" />
                 <span className="flex min-w-0 flex-1 flex-col gap-1">
                   <span className="truncate text-16 font-bold text-ink">{g.name}</span>
                   <span className="truncate text-14 text-[rgb(var(--k-muted))]">{c.lastPlayed}</span>
-                  <span className={cn('num mt-1 inline-flex h-8 w-fit items-center rounded-[8px] px-2 text-14 font-bold', up ? 'bg-[#3DDC84]/10 text-[#5FF0A0]' : 'bg-black/25 text-[rgb(var(--k-muted))]')}>
+                  <span className={cn('num mt-1 inline-flex h-8 w-fit items-center rounded-[8px] px-2 text-14 font-bold', up ? 'bg-[#3DDC84]/10 text-[#5FF0A0]' : 'bg-white/[0.06] text-[rgb(var(--k-muted))]')}>
                     {up ? '+' : '-'}
                     {formatAmount(Math.abs(c.session))} USDT
                   </span>
@@ -56,15 +56,15 @@ export function TopWins({ onPlay, loading }: { onPlay: (g: CatalogueGame) => voi
   return (
     <section aria-labelledby="v3-wins-title" className="flex w-[400px] shrink-0 flex-col gap-4 w1920:w-[480px]">
       <SectionHead id="v3-wins-title" icon={<Crown weight="fill" className="text-[#F5B800]" />} title="Top wins today" />
-      <ol className="flex flex-1 flex-col gap-2 rounded-[20px] bg-[rgb(var(--k-panel))] p-3">
+      <ol className="k-surface flex flex-1 flex-col gap-2 rounded-[20px] p-3">
         {loading
           ? Array.from({ length: 4 }, (_, i) => <Skeleton key={i} className="h-[52px] w-full rounded-[12px]" />)
           : TOP_WINNERS.map((w, i) => {
               const g = gameById(w.gameId)!;
               return (
                 <li key={w.gameId}>
-                  <button type="button" onClick={() => onPlay(g)} aria-label={`${w.player} won on ${g.name}, play it`} className="flex w-full items-center gap-3 rounded-[12px] bg-[rgb(var(--k-item))] p-2 pr-3 text-left hover:bg-[rgb(var(--k-item-hover))]">
-                    <span className={cn('num flex h-8 w-8 shrink-0 items-center justify-center rounded-[8px] text-14 font-bold', i === 0 ? 'bg-[#F5B800] text-[#2A1500]' : 'bg-black/25 text-[rgb(var(--k-muted))]')}>{i + 1}</span>
+                  <button type="button" onClick={() => onPlay(g)} aria-label={`${w.player} won on ${g.name}, play it`} className="flex w-full items-center gap-3 rounded-[12px] p-2 pr-3 text-left outline-none transition-colors hover:bg-white/[0.05] focus-visible:ring-2 focus-visible:ring-[#B47CFF]">
+                    <span className={cn('num flex h-8 w-8 shrink-0 items-center justify-center rounded-[8px] text-14 font-bold', i === 0 ? 'bg-gold text-on-gold' : 'bg-white/[0.06] text-[rgb(var(--k-muted))]')}>{i + 1}</span>
                     <img src={g.image} alt="" className="h-10 w-10 shrink-0 rounded-[10px] object-cover" />
                     <span className="flex min-w-0 flex-1 flex-col leading-tight">
                       <span className="truncate text-14 font-bold text-ink">{g.short ?? g.name}</span>
@@ -126,7 +126,7 @@ export function HotGrid({
           ))}
         </div>
       ) : failed ? (
-        <div className="rounded-[20px] bg-[rgb(var(--k-panel))]">
+        <div className="k-surface rounded-[20px]">
           <Message
             icon={<WarningCircle weight="fill" className="h-10 w-10 text-danger" aria-hidden />}
             title="We could not load the games"
@@ -139,7 +139,7 @@ export function HotGrid({
           />
         </div>
       ) : list.length === 0 ? (
-        <div className="rounded-[20px] bg-[rgb(var(--k-panel))]">
+        <div className="k-surface rounded-[20px]">
           <Message
             icon={<MagnifyingGlass weight="bold" className="h-10 w-10 text-[rgb(var(--k-dim))]" aria-hidden />}
             title={`No games match "${query.trim()}"`}

@@ -11,7 +11,6 @@ import {
   Headset,
   InstagramLogo,
   Lightning,
-  List,
   Question,
   Sparkle,
   SquaresFour,
@@ -26,7 +25,7 @@ import { useWallet } from '../../wallet/store';
 import { ACCOUNT } from '../../../data/wallet';
 import { formatAmount } from '../../../lib/format';
 import { cn } from '../../../lib/cn';
-import { BalancePill, IconSquare, NavItem } from '../kit/parts';
+import { BalancePill, NavItem } from '../kit/parts';
 import { BellSquare, SearchBox, UserBox } from '../kit/TopParts';
 import { countOf, type Filter } from './games-data';
 
@@ -45,11 +44,8 @@ export const NAV_GAMES: { value: Filter; label: string; icon: ReactNode }[] = [
 export function TopBar({ query, onQuery, onSearch, onDeposit }: { query: string; onQuery: (q: string) => void; onSearch: () => void; onDeposit: () => void }) {
   const { balance } = useWallet();
   return (
-    <header className="sticky top-0 z-20 flex h-[84px] items-center gap-4 bg-page px-4">
+    <header className="k-glass sticky top-0 z-20 flex h-[84px] items-center gap-4 px-4">
       <div className="flex w-[248px] shrink-0 items-center gap-4">
-        <IconSquare label="Menu">
-          <List weight="bold" className="h-6 w-6" aria-hidden />
-        </IconSquare>
         <Link to="/variants/3" aria-label="Lusty Lagoon, lobby" className="rounded-lg">
           <Logo className="text-[20px] leading-[22px]" />
         </Link>
@@ -68,7 +64,7 @@ function Group({ icon, label, children, defaultOpen = true }: { icon: ReactNode;
   const [open, setOpen] = useState(defaultOpen);
   const id = `v3-group-${label.toLowerCase().replace(/\s/g, '-')}`;
   return (
-    <div className="rounded-[18px] bg-[rgb(var(--k-panel))] p-2">
+    <div className="k-surface rounded-[20px] p-2">
       <button
         type="button"
         aria-expanded={open}
@@ -125,7 +121,7 @@ export function Sidebar({ filter, onFilter, onJump }: { filter: Filter; onFilter
         <NavItem to="/agent" icon={<Headset weight="fill" />} label="Send to agent" />
         <NavItem to="/refer" icon={<UserPlus weight="fill" />} label="Refer a friend" />
       </Group>
-      <Link to="/faq" className="flex h-[60px] shrink-0 items-center gap-3 rounded-[18px] bg-[rgb(var(--k-panel))] px-4 text-16 font-bold text-ink hover:bg-[rgb(var(--k-item))]">
+      <Link to="/faq" className="k-surface flex h-[60px] shrink-0 items-center gap-3 rounded-[20px] px-4 text-16 font-bold text-ink transition-colors hover:border-[color:var(--k-edge-hi)]">
         <Question weight="fill" className="h-5 w-5 text-[#2FB4F0]" aria-hidden />
         Help and FAQ
       </Link>
@@ -136,7 +132,7 @@ export function Sidebar({ filter, onFilter, onJump }: { filter: Filter; onFilter
           { l: 'Telegram', i: <TelegramLogo weight="bold" className="h-5 w-5" /> },
           { l: 'Discord', i: <DiscordLogo weight="bold" className="h-5 w-5" /> },
         ].map((x) => (
-          <a key={x.l} href="#" aria-label={`Lusty Lagoon on ${x.l}`} className="flex h-11 items-center justify-center rounded-[12px] bg-[rgb(var(--k-panel))] text-[rgb(var(--k-muted))] hover:text-ink">
+          <a key={x.l} href="#" aria-label={`Lusty Lagoon on ${x.l}`} className="flex h-11 items-center justify-center rounded-[12px] border border-white/[0.08] bg-[rgb(var(--k-panel))] text-[rgb(var(--k-muted))] hover:text-ink">
             {x.i}
           </a>
         ))}

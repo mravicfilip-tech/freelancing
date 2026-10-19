@@ -14,7 +14,7 @@ Your worktree starts on the wrong branch. Put it on the session commit before an
 
 ```
 git checkout -B variants-v<N> <SESSION_SHA>
-ln -s /home/user/freelancing/lusty-lagoon/node_modules lusty-lagoon/node_modules
+ln -s <main checkout>/lusty-lagoon/node_modules lusty-lagoon/node_modules
 cd lusty-lagoon && npm run build
 ```
 

@@ -1,4 +1,4 @@
-import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom';
+import { BrowserRouter, Navigate, Route, Routes, useLocation, useNavigate } from 'react-router-dom';
 import { AppShell } from './components/shell/AppShell';
 import { TooltipProvider } from './components/ui/Tooltip';
 import { WalletProvider } from './features/wallet/store';
@@ -12,10 +12,17 @@ import { AccountPage, NotificationsPage } from './features/account';
 import { AgentPage, ReferPage } from './features/money';
 import { NotFound } from './pages/NotFound';
 import { VariantsIndex } from './features/variants/VariantsIndex';
+import { DASHBOARD_VARIANTS } from './features/variants/variants';
+import { VariantSwitcher } from './components/dev/VariantSwitcher';
 import { lazy, Suspense } from 'react';
 
 // Each dashboard variant brings its own shell, so it sits outside AppShell.
 const VARIANT_PAGES = [1, 2, 3, 4, 5].map((n) => lazy(() => import(`./features/variants/v${n}/Variant${n}.tsx`)));
+
+// One switcher for every variant set, per the studio doctrine. It shows only on a route in the list.
+function Switcher() {
+  return <VariantSwitcher variants={DASHBOARD_VARIANTS} location={useLocation()} navigate={useNavigate()} indexHref="/variants" title="Dashboard" />;
+}
 
 
 export function App() {
@@ -52,6 +59,7 @@ export function App() {
               <Route path="*" element={<NotFound />} />
             </Route>
           </Routes>
+          <Switcher />
         </TooltipProvider>
       </WalletProvider>
     </BrowserRouter>

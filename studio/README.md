@@ -25,6 +25,9 @@ lives in this repo too, each in its own folder, with Remittix at the root for no
   design board, the deploy script for Vercel Hobby, the token report and the client registry.
 - `studio/foundation/env.md`, the traps the cloud container and Vercel have set, read before the
   first shot, server restart or deploy.
+- `studio/foundation/variant-switcher.tsx`, the floating bar every set of variants carries, copied
+  into the app and mounted once at the root. Base and numbered variants, `[` and `]` to step, a
+  digit to jump, hidden for automated browsers.
 - `studio/clients/` with a template, `registry.json` and one folder per client. The template holds
   `glossary.md`, `base-override.json`, `flows/` and empty `kit/` and `golden/` folders.
 

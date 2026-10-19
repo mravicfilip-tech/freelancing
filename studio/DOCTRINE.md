@@ -34,6 +34,13 @@ Each trigger fires on its own event and no other. None fires every turn or every
 - Variant board. Micro detail variants (motion, icons, states, loaders) go on one board with
   `node studio/scripts/variants.mjs --urls "1=<url>,2=<url>" --out <png>`. Filip
   answers with a number, then `/taste` logs it.
+- Variant switcher, always. Whenever the app holds two or more versions of a page, a layout or a
+  direction, each gets its own route and all of them, plus the baseline they compete with, carry the
+  switcher from `foundation/variant-switcher.tsx`. Copy it into the app, mount it once at the root,
+  and keep the list in one file that the variants index reads too. Baseline first as Base, then the
+  variants by number with a one line note each. It ships with the first variant, never on request,
+  and leaves with the variant routes once a pick is merged. It hides for automated browsers so shots
+  and boards stay clean, and `?switcher` shows it in a shot.
 - Acceptance criteria. When the brief has the client's acceptance criteria, pull them into the plan
   and into the `/uireview` pack.
 - Every UI build covers all states, empty, loading, error, long text and no access. Keep
@@ -193,6 +200,7 @@ freelancing repo, so the nearest registered folder above the work wins.
 | What good looks like | `foundation/principles.md` |
 | Base layout values | `foundation/base-layout.css`, `clients/<client>/base-override.json` |
 | Environment traps and deploys | `foundation/env.md` |
+| Variant switcher to copy into an app | `foundation/variant-switcher.tsx` |
 | A client's rules and taste log | `clients/<client>/README.md`, `taste.md` |
 | A client's tasks | `clients/<client>/tasks.md` |
 | A job's brief | `clients/<client>/briefs/` |

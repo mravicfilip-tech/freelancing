@@ -7,6 +7,7 @@ import { KitPage } from './pages/KitPage';
 import { LandingPage } from './features/landing/LandingPage';
 import { FaqPage } from './features/faq/FaqPage';
 import { LobbyPage } from './features/lobby/LobbyPage';
+import { LoginPage, RegisterPage } from './features/auth';
 import { NotFound } from './pages/NotFound';
 
 const PLACEHOLDERS = [
@@ -24,6 +25,8 @@ export function App() {
           <Routes>
             <Route path="/kit" element={<KitPage />} />
             <Route path="/" element={<LandingPage />} />
+            <Route path="/login" element={<LoginPage />} />
+            <Route path="/register" element={<RegisterPage />} />
             <Route element={<AppShell />}>
               <Route path="faq" element={<FaqPage />} />
               <Route path="lobby" element={<LobbyPage />} />

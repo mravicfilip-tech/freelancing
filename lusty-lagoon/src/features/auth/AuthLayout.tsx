@@ -28,7 +28,7 @@ export function AuthLayout({ art, children }: { art: keyof typeof ART; children:
           <img src={a.back} alt="" className="absolute inset-0 h-full w-full object-cover" />
           <div aria-hidden className="absolute inset-0 bg-gradient-to-t from-page/80 via-page/10 to-transparent" />
           <img src={a.player} alt={a.alt} className="absolute bottom-0 left-1/2 h-[78%] max-w-none -translate-x-1/2" />
-          <div className="absolute bottom-6 left-6 right-6 flex flex-col gap-1 rounded-xl bg-page/80 p-4">
+          <div className="absolute bottom-6 left-6 right-6 flex flex-col gap-1 rounded-xl border border-line bg-page p-4">
             <p className="font-display text-24 font-semibold text-ink">Lust and play</p>
             <p className="text-14 text-ink2">Crypto, fun and games on the lagoon.</p>
           </div>
@@ -49,10 +49,10 @@ export function AuthHeading({ id = 'step-title', title, lead }: { id?: string; t
   );
 }
 
-// A form level error. Danger colour, an icon and words. Callout has no danger tone, so this lives here.
+// A form level error on the flat warning surface. The danger icon and the bold lead carry it, never a coloured edge.
 export function FormAlert({ title, children }: { title: string; children: ReactNode }) {
   return (
-    <div role="alert" className="flex items-start gap-3 rounded-lg border border-danger bg-sunken p-4 text-14">
+    <div role="alert" className="flex items-start gap-3 rounded-lg border border-line bg-raised p-4 text-14">
       <WarningCircle weight="bold" className="mt-0.5 h-5 w-5 shrink-0 text-danger" aria-hidden />
       <div className="flex flex-col gap-1">
         <p className="font-semibold text-ink">{title}</p>

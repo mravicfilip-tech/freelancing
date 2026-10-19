@@ -6,6 +6,7 @@ import { Checkbox } from '../../components/ui/Checkbox';
 import { Field } from '../../components/ui/Field';
 import { PasswordField } from '../../components/ui/PasswordField';
 import { Stepper } from '../../components/ui/Stepper';
+import { Dialog, DialogContent, DialogTrigger } from '../../components/ui/Dialog';
 import { AuthHeading, AuthLayout } from './AuthLayout';
 import {
   SIGN_IN_DELAY,
@@ -24,6 +25,44 @@ const TERMS_ERROR = 'Confirm you are 18 or older and agree to the terms, then cr
 
 const linkClass = 'inline-block rounded py-1 font-semibold text-accent underline underline-offset-4 hover:text-ink';
 const legalLink = 'rounded text-accent underline underline-offset-2 hover:text-ink';
+
+const LEGAL = {
+  terms: {
+    label: 'Terms of service',
+    points: [
+      'You must be 18 or older and play from a place where sweepstakes games are allowed.',
+      'One account per person. Bonuses and cash drops cannot be moved between accounts.',
+      'We verify your identity once, before your first withdrawal.',
+      'Games run on partner platforms, which set their own rules and payouts.',
+    ],
+  },
+  privacy: {
+    label: 'Privacy policy',
+    points: [
+      'We keep your email, username and payment history to run your account.',
+      'Identity documents are used for verification only and never shared for marketing.',
+      'Partner platforms receive only what they need to load your credit.',
+      'You can ask for a copy of your data, or for it to be deleted, at any time.',
+    ],
+  },
+} as const;
+
+// Opens the summary in a dialog, so the link never leaves the form half filled.
+function Legal({ kind }: { kind: keyof typeof LEGAL }) {
+  const doc = LEGAL[kind];
+  return (
+    <Dialog>
+      <DialogTrigger className={legalLink}>{doc.label}</DialogTrigger>
+      <DialogContent title={doc.label} description="The short version. The full text is part of the live product.">
+        <ul className="flex list-disc flex-col gap-2 pl-6 text-16 text-ink2">
+          {doc.points.map((p) => (
+            <li key={p}>{p}</li>
+          ))}
+        </ul>
+      </DialogContent>
+    </Dialog>
+  );
+}
 
 export function RegisterPage() {
   const navigate = useNavigate();
@@ -211,13 +250,8 @@ export function RegisterPage() {
               label={
                 <>
                   I am 18 or older and I agree to the{' '}
-                  <a href="/terms" target="_blank" rel="noreferrer" className={legalLink}>
-                    Terms of service
-                  </a>{' '}
-                  and the{' '}
-                  <a href="/privacy" target="_blank" rel="noreferrer" className={legalLink}>
-                    Privacy policy
-                  </a>
+                  <Legal kind="terms" />{' '}
+                  and the <Legal kind="privacy" />
                   .
                 </>
               }

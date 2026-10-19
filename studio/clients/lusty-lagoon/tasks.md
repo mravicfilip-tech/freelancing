@@ -37,8 +37,15 @@ Task format
   - [x] Build the first screen in React, the wallet payment flow
   - [x] /uireview on the wallet flow, 0 open sev 1 after the re-check
   - [ ] Filip accepts the wallet flow, then kit and golden
-  - [ ] Screen two, the lobby
-  - [ ] Screen three, the landing page
+  - [ ] Filip picks how the rest is built, on the new flat system or as a faithful port first
+  - [ ] Unblock Figma assets, file in the Pro team or exported by hand
+  - [ ] Landing page
+  - [ ] Lobby
+  - [ ] Login and Register, both steps
+  - [ ] Wallet Tip and Gift card tabs
+  - [ ] Gift cards, Notifications, Refer a friend, Send to agent
+  - [ ] Account settings, all 4 states
+  - [ ] Mods across the whole product
 
 ## Review
 

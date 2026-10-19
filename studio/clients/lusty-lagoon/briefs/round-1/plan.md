@@ -39,6 +39,12 @@ are rebuilt on it.
 
 ## Case study scope
 
+SUPERSEDED 2026-10-19 by Filip. "My goal was to build the whole Figma file on a React app and to do
+mods on the whole product from landing page and all flows." Every desktop screen in the Figma gets
+built, nothing stays a placeholder. Note 8 said what stays out of the case study needs no polish,
+not that it stays unbuilt, and this plan misread it.
+
+
 Note 8 says polish only what the case study shows. Proposed list, decision 1 below.
 
 - In. The wallet payment flow end to end, the lobby, and the landing page.
@@ -99,7 +105,7 @@ amount step with a fee, no review step and no result. To show the flow whole, th
 
 ## Decisions for Filip, one answer each
 
-1. Case study list. Default is the wallet payment flow, the lobby and the landing page, with the
+1. SUPERSEDED, see Case study scope. Case study list. Default was the wallet payment flow, the lobby and the landing page, with the
    other screens as placeholders.
 2. Layout. The character art leaves the wallet panel, where it takes about 460px above the
    actions, and stays on the lobby and the landing page. Default yes.

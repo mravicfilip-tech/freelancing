@@ -37,7 +37,8 @@ Task format
   - [x] Build the first screen in React, the wallet payment flow
   - [x] /uireview on the wallet flow, 0 open sev 1 after the re-check
   - [ ] Filip accepts the wallet flow, then kit and golden
-  - [ ] Filip picks how the rest is built, on the new flat system or as a faithful port first
+  - [x] Built every screen on the flat system, rejected by Filip as a step back from the Figma
+  - [ ] Agree the 1:1 approach, Figma frames as the bar, only the review notes change
   - [x] Unblock Figma assets, the Pro team copy fGqIuwR8pailgKcy4UFfNg works
   - [ ] Pull every image and icon from the copy
   - [ ] Landing page

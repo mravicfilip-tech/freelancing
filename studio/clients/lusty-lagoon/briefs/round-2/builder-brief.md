@@ -1,5 +1,8 @@
 # Builder brief, round 2, lusty-lagoon
 
+SUPERSEDED 2026-10-19 14:05. Filip rejected the flat redesign this brief describes. "I wanted more of 1:1
+as my Figma." Do not build from this brief. See the taste entry of the same time.
+
 Filip, 2026-10-19. "Build everything, no interruptions." Every desktop screen in the Figma file gets
 built in React on the flat system the wallet already uses. This brief is what each builder reads
 before touching code. The main thread owns the shell, the routes, the landing page and the lobby.

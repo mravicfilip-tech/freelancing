@@ -48,7 +48,7 @@ function RedeemCode() {
   }, []);
 
   async function check() {
-    const value = code.trim().toUpperCase();
+    const value = code.replace(/\s+/g, '').toUpperCase();
     setResult(null);
     if (!value) return setError('Enter the code first. It is on your gift card or in the email we sent.');
     if (!/^[A-Z0-9-]{6,20}$/.test(value)) return setError('A code is 6 to 20 letters and numbers. Copy it again, all of it.');
@@ -99,7 +99,7 @@ function RedeemCode() {
             setResult(null);
           }}
           error={error}
-          hint={!error ? 'Prototype codes. LAGOON25 and WELCOME10 work, SUMMER50 is already used.' : undefined}
+          hint={!error ? 'Codes are not case sensitive. Spaces are ignored.' : undefined}
           className="max-w-md flex-1 [&_input]:font-mono [&_input]:uppercase [&_input]:placeholder:normal-case"
         />
         <Button size="lg" type="submit" loading={busy} className="mt-[calc(var(--bl-sp-24)+var(--bl-sp-4))]">

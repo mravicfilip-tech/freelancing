@@ -16,9 +16,9 @@ import { DASHBOARD_VARIANTS } from './features/variants/variants';
 import { VariantSwitcher } from './components/dev/VariantSwitcher';
 import { lazy, Suspense } from 'react';
 
-// Each dashboard variant brings its own shell, so it sits outside AppShell. Round 5 has five design
-// directions, and variant 2 returns as a new one, Mascot stage.
-const VARIANT_PAGES = [1, 2, 3, 4, 5].map((n) => ({ n, Page: lazy(() => import(`./features/variants/v${n}/Variant${n}.tsx`)) }));
+// Each dashboard variant brings its own shell, so it sits outside AppShell. Round 6 keeps three
+// directions, 1, 2 and 5. Variants 3 and 4 were dropped and the rest keep their numbers.
+const VARIANT_PAGES = [1, 2, 5].map((n) => ({ n, Page: lazy(() => import(`./features/variants/v${n}/Variant${n}.tsx`)) }));
 
 // One switcher for every variant set, per the studio doctrine. It shows only on a route in the list.
 function Switcher() {

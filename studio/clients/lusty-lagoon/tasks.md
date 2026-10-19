@@ -51,7 +51,7 @@ Task format
   - [ ] Account settings, all 4 states
   - [ ] Mods across the whole product
 
-- lusty-lagoon-2 Five dashboard variants, one page each, from the ten references. Brief briefs/round-3/variants-brief.md. Live https://lusty-lagoon.vercel.app/variants, commit f8ced30. Round 5 on the branch, plan briefs/round-5/plan.md
+- lusty-lagoon-2 Five dashboard variants, one page each, from the ten references. Brief briefs/round-3/variants-brief.md. Live https://lusty-lagoon.vercel.app/variants, commit f8ced30. Round 6 on the branch, notes briefs/round-6/notes.md
   - [x] Save the ten references with a status
   - [x] Shared data, routes and the builder brief
   - [x] Build the five variants, rejected on execution, layouts kept
@@ -78,6 +78,9 @@ Task format
   - [x] Five directions built from zero, Neon arcade, Mascot stage, Tournament arena, Angular floor, Glass vault
   - [x] Review pass on each direction against its references
   - [x] Checks, after shots and a board of the five
+  - [x] Loom 4 feedback, 23 notes, briefs/round-6/notes.md
+  - [x] Drop variants 3 and 4
+  - [ ] Rework variants 1, 2 and 5 per the round 6 notes
   - [ ] Filip picks a variant
 
 ## Review

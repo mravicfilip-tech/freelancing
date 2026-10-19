@@ -52,6 +52,7 @@ Task format
   - [x] Production at bd50d8a with the phone hero, the scroll work, the copy fixes and Dusan's photos, on Filip's "deploy"
   - [x] Production at 7ff0efa with the phone hero band canvas and the stepping ratio, on Filip's "deploy"
   - [x] Production at 80b8ba0 with the phone hero fix and 18 second pace, Slovenia and the projects back arrow, on Filip's "deploy"
+  - [x] Production at 845348c with round 7, the six routes and no crew portraits, on Filip's "deploy"
 - bullhill-1 BullHill company website, one page, Foundry direction at /?v=1. Plan in briefs/website/plan.md, branch claude/hopeful-maxwell-bwuy3c. Link https://bullhill-site.vercel.app
   - [x] Put the logo files and brand colours on file
   - [x] Propose the page sections
@@ -122,7 +123,7 @@ Task format
   - [x] Filip's go, the portraits leave Foundry and Daylight both
   - [x] Built, 3f15369, six cards, the place as title, no For row, Haus im Ennstal on a new photo of the client's taken there
   - [ ] The client confirms Hohenfeld and Oberhaus, the photo on each card, and 5 or 6 towns in the stats box
-  - [ ] Filip sees it on his localhost or says deploy
+  - [x] Live at 845348c on Filip's "deploy", 19 October 2026
 
 - bullhill-14 Projects row will not scroll back. Note 16 in briefs/website/round6-notes.md
   - [x] Reproduced at 1366 wide, five clicks on the back arrow at the end of the row stay on 05 / 05

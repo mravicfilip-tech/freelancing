@@ -1,14 +1,56 @@
-import { Logo } from '../../../components/ui/Logo';
+import { useState } from 'react';
+import { GameDialog } from '../../lobby/LobbyPage';
+import { gameById, type CatalogueGame } from '../../../data/games';
+import { cn } from '../../../lib/cn';
+import { useVariantState } from '../shared/data';
 import '../kit/kit.css';
+import './v2.css';
+import { TopBar } from './TopBar';
+import { Sidebar } from './Sidebar';
+import { Hero } from './Hero';
+import { Originals } from './Originals';
+import { HotGames } from './HotGames';
+import { Bets } from './Bets';
+import { StageDialogs, type DialogKey } from './Dialogs';
+import { useStill } from './ui';
+import type { Filter } from './data';
 
-// Variant 2, Mascot stage, round 5. A placeholder so the route and the switcher hold its slot while
-// the direction is built. The brief is studio/clients/lusty-lagoon/briefs/round-5/consolidated.md.
+// Variant 2, Mascot stage, round 5. After Betsera, with Player 145's lit edges and Gamdom's originals.
+// A full labelled sidebar, live wins along the top bar, a cinematic hero with the character breaking
+// out above its frame, then tall originals tiles, hot games as whole rows of covers and a compact
+// bets list. Eye order, the character and headline, the originals, the covers.
+
 export default function Variant2() {
+  const state = useVariantState();
+  const still = useStill();
+  const [game, setGame] = useState<CatalogueGame | null>(null);
+  const [filter, setFilter] = useState<Filter>('all');
+  const [query, setQuery] = useState(state === 'empty' ? 'Starburst' : '');
+  const [dialog, setDialog] = useState<DialogKey>(null);
+  const [joined, setJoined] = useState(false);
+  const jump = (id: string) => document.getElementById(id)?.scrollIntoView({ behavior: still ? 'auto' : 'smooth', block: 'start' });
+  const pick = (f: Filter) => {
+    setFilter(f);
+    jump('m2-games');
+  };
+  const search = (q: string) => {
+    setQuery(q);
+    jump('m2-games');
+  };
   return (
-    <main className="k-page flex min-h-screen flex-col items-start gap-4 p-12">
-      <Logo />
-      <h1 className="font-display text-40 font-bold text-ink">Mascot stage</h1>
-      <p className="text-16 text-ink2">This direction is being built.</p>
-    </main>
+    <div className={cn('m2', still && 'm2-still')}>
+      <TopBar onPlay={setGame} state={state} />
+      <div className="flex gap-6 pb-16 pl-4 pr-6 pt-6">
+        <Sidebar filter={filter} onFilter={pick} onSearch={search} onOpen={setDialog} />
+        <main className="flex min-w-0 flex-1 flex-col gap-12">
+          <Hero joined={joined} onJoin={() => setJoined(true)} onPlay={() => setGame(gameById('sugar-rush')!)} onRules={() => setDialog('giveaway')} />
+          <Originals onPick={pick} onAll={() => pick('all')} onLive={() => jump('m2-bets')} loading={state === 'loading'} />
+          <HotGames filter={filter} onFilter={setFilter} query={query} onQuery={setQuery} state={state} onPlay={setGame} />
+          <Bets onPlay={setGame} state={state} />
+        </main>
+      </div>
+      <GameDialog game={game} onClose={() => setGame(null)} />
+      <StageDialogs open={dialog} onClose={() => setDialog(null)} joined={joined} onJoin={() => setJoined(true)} />
+    </div>
   );
 }

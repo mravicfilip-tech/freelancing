@@ -1,0 +1,153 @@
+/* Variant 2, Mascot stage, round 5. Its own visual language, after Betsera (giant mascot breaking out
+ * of a cinematic hero, heavy capitals on vivid originals tiles, live wins along the top) with Player
+ * 145's lit edges and Gamdom's tile numbers. Near black ground, one purple to ember light, full
+ * pills for every control. The direction sheet is in studio/.state/r5-v2-report.md. */
+
+/* The tokens sit on the root, so menus and dialogs that portal out of the page still read them.
+ * Every name is prefixed m2, so nothing else on the site picks them up. */
+:root {
+  --m2-ground: 10 9 16; /* #0A0910 */
+  --m2-surface: 21 18 29; /* #15121D */
+  --m2-raised: 30 26 41; /* #1E1A29 */
+  --m2-sunken: 15 13 22; /* #0F0D16 */
+  --m2-ink2: 183 175 201; /* #B7AFC9, 8.8 to 1 on surface */
+  --m2-ink3: 148 140 170; /* #948CAA, 5.9 to 1 on surface */
+  --m2-edge: rgb(255 255 255 / 0.07);
+  --m2-edge-hi: rgb(255 255 255 / 0.14);
+  --m2-ease: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.m2 {
+  position: relative;
+  isolation: isolate;
+  min-height: 100vh;
+  background: rgb(var(--m2-ground));
+  color: #fff;
+}
+
+/* ---------- Surfaces ---------- */
+
+/* A box on the ground. A 1px edge and a 1px inner top light, no fill gradient. */
+.m2-box {
+  background: rgb(var(--m2-surface));
+  border: 1px solid var(--m2-edge);
+  box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.05);
+}
+.m2-hover { transition: background-color 0.18s var(--m2-ease), border-color 0.18s var(--m2-ease), color 0.18s var(--m2-ease); }
+.m2-hover:hover { background-color: rgb(var(--m2-raised)); border-color: var(--m2-edge-hi); }
+
+/* The top bar, frosted over the page as it scrolls under. */
+.m2-bar {
+  background: rgb(10 9 16 / 0.86);
+  -webkit-backdrop-filter: blur(18px) saturate(1.3);
+  backdrop-filter: blur(18px) saturate(1.3);
+  border-bottom: 1px solid rgb(255 255 255 / 0.06);
+}
+
+/* The active nav row. A solid lit purple pill after Betsera's red Casino row. */
+.m2-nav-on {
+  color: #fff;
+  background: linear-gradient(180deg, #7b2ff0 0%, #6a22d8 100%);
+  box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.22);
+}
+
+/* A quiet pill key on the surface, the hero's secondary. */
+.m2-quiet {
+  color: #fff;
+  font-weight: 800;
+  background: rgb(255 255 255 / 0.06);
+  border: 1px solid rgb(255 255 255 / 0.14);
+  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(12px);
+  transition: background-color 0.15s var(--m2-ease), border-color 0.15s var(--m2-ease), transform 0.1s var(--m2-ease);
+}
+.m2-quiet:hover { background: rgb(255 255 255 / 0.1); border-color: rgb(255 255 255 / 0.24); }
+.m2-quiet:active { transform: translateY(1px); }
+
+/* ---------- Hero ---------- */
+
+.m2-hero {
+  background: #0c0912;
+  border: 1px solid rgb(255 255 255 / 0.08);
+  box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.06);
+}
+/* The one light, purple from the top left into an ember glow behind the character, Betsera's red
+ * glow behind the cat moved onto the brand. A hot core at her waist, a wider red to magenta halo. */
+.m2-hero-light {
+  background:
+    radial-gradient(24% 44% at var(--m2-cx, 66%) 60%, rgb(255 112 40 / 0.85) 0%, rgb(255 72 32 / 0.45) 45%, transparent 100%),
+    radial-gradient(46% 82% at var(--m2-cx, 66%) 72%, rgb(226 44 64 / 0.5) 0%, rgb(170 30 130 / 0.22) 55%, transparent 100%),
+    radial-gradient(55% 95% at 10% -10%, rgb(141 38 231 / 0.55) 0%, rgb(141 38 231 / 0.12) 55%, transparent 80%);
+  animation: m2-breathe 6s ease-in-out infinite alternate;
+}
+@keyframes m2-breathe { from { opacity: 0.86; } to { opacity: 1; } }
+/* The scene behind the light, dim, fading out at the edges, Betsera's dark pagoda behind the cat. */
+.m2-hero-scene {
+  opacity: 0.32;
+  -webkit-mask-image: radial-gradient(46% 90% at var(--m2-cx, 66%) 40%, #000 0%, transparent 100%);
+  mask-image: radial-gradient(46% 90% at var(--m2-cx, 66%) 40%, #000 0%, transparent 100%);
+}
+/* The left side stays dark under the headline. */
+.m2-hero-shade { background: linear-gradient(90deg, rgb(12 9 18 / 0.92) 0%, rgb(12 9 18 / 0.6) 32%, transparent 52%); }
+
+/* ---------- Art tiles, one hue each ---------- */
+
+.m2-tile {
+  position: relative;
+  isolation: isolate;
+  border: 1px solid rgb(255 255 255 / 0.16);
+  box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.28);
+  transition: border-color 0.24s var(--m2-ease);
+}
+.m2-tile:hover, .m2-tile:focus-visible { border-color: rgb(255 255 255 / 0.4); }
+/* The object inside a tile. It scales and rises inside the clip, the tile never moves. */
+.m2-obj { transition: transform 0.5s var(--m2-ease); transform-origin: 50% 100%; }
+.m2-tile:hover .m2-obj, .m2-tile:focus-visible .m2-obj { transform: translateY(-6px) scale(1.06); }
+
+/* Fills. Two close stops of one hue, deep enough at the top that the white capitals hold AA, and
+ * one light behind the object so the tile reads vivid, the way Betsera lights its tiles from inside.
+ * Place the light with --lx and --ly. */
+.m2-hue {
+  background:
+    radial-gradient(70% 46% at var(--lx, 50%) var(--ly, 66%), rgb(var(--m2-l) / 0.75) 0%, rgb(var(--m2-l) / 0.22) 55%, transparent 100%),
+    linear-gradient(180deg, var(--m2-a) 0%, var(--m2-b) 100%);
+}
+.m2-hue-pink { --m2-a: #c2185b; --m2-b: #6e0f45; --m2-l: 255 110 185; }
+.m2-hue-blue { --m2-a: #2a55e0; --m2-b: #13237a; --m2-l: 100 170 255; }
+.m2-hue-amber { --m2-a: #b45309; --m2-b: #6b2604; --m2-l: 255 186 60; }
+.m2-hue-teal { --m2-a: #0b7a8a; --m2-b: #053f4b; --m2-l: 60 225 240; }
+.m2-hue-violet { --m2-a: #7b2fe0; --m2-b: #350c78; --m2-l: 196 140 255; }
+.m2-hue-green { --m2-a: #15803d; --m2-b: #0a4521; --m2-l: 120 235 130; }
+.m2-hue-ember { --m2-a: #c0362a; --m2-b: #6f1222; --m2-l: 255 130 80; }
+.m2-hue-vip { --m2-a: #6a24d6; --m2-b: #2c0c63; --m2-l: 200 150 255; }
+
+/* A cover in a fan, standing on the tile like Betsera's poker cards. */
+.m2-card { border: 2px solid rgb(255 255 255 / 0.85); box-shadow: 0 12px 24px rgb(0 0 0 / 0.35); }
+
+/* ---------- Covers ---------- */
+
+.m2-cover-ring { box-shadow: inset 0 0 0 1px rgb(255 255 255 / 0.08); transition: box-shadow 0.2s var(--m2-ease); }
+.group:hover .m2-cover-ring, .group:focus-visible .m2-cover-ring { box-shadow: inset 0 0 0 2px #b47cff; }
+
+/* ---------- Live ---------- */
+
+.m2-run { display: flex; width: max-content; animation: m2-run var(--m2-run, 70s) linear infinite; }
+.m2-runwrap:hover .m2-run, .m2-runwrap:focus-within .m2-run, .m2-runwrap[data-paused='true'] .m2-run { animation-play-state: paused; }
+@keyframes m2-run { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+
+.m2-shimmer {
+  background: linear-gradient(90deg, rgb(var(--m2-surface)) 0%, rgb(var(--m2-raised)) 50%, rgb(var(--m2-surface)) 100%);
+  background-size: 200% 100%;
+  animation: m2-shimmer 1.4s linear infinite;
+}
+@keyframes m2-shimmer { from { background-position: 100% 0; } to { background-position: -100% 0; } }
+
+.m2-still .m2-run, .m2-still .m2-hero-light, .m2-still .m2-shimmer { animation-play-state: paused; }
+
+@media (prefers-reduced-motion: reduce) {
+  .m2-run, .m2-hero-light, .m2-shimmer { animation: none; }
+  .m2-obj, .m2-tile, .m2-hover, .m2-quiet { transition: none; }
+}
+
+.m2-noscroll { scrollbar-width: none; }
+.m2-noscroll::-webkit-scrollbar { display: none; }

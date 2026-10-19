@@ -4,6 +4,50 @@ Screens Filip sent as references. Each set has a status. A reference is not a ru
 `/uireview` critic follow `taste.md`, and nothing here overrides it or the Figma 1 to 1 bar until Filip
 says what to take from a set. Where a reference uses a treatment the taste log rejects, the taste log wins.
 
+## 2026-10-19, four casino screens, round 5
+
+Status. ACCEPTED as the direction, in Filip's words "You see how these casinos feel better executed
+UI wise, I believe this is a step in the right direction". Saved in `2026-10-19-round-5/`. Each one
+seeds one of the five round 5 directions, as `briefs/round-5/consolidated.md` assigns them.
+
+### snegbet-tournaments-desktop.webp, Snegbet tournaments
+
+- Indigo black ground (about #0C0A33), panels one step lighter, the app framed at 24 radius.
+- Primary buttons fully saturated, purple from about #9531FA at the top to #8306FF below, with a thin
+  inner top light. Buy and Play more in saturated yellow with a dark label. Every button reads pressable.
+- Sidebar. A row of five in-house game icon tiles with NEW and fire badges, a Casino and Sports
+  segment with a vivid active pill, a quiet nav list, then a grouped panel (NFT, Lootboxes,
+  Marketplace, Loyal Program) with colour icons and chevrons, and a Buy crypto button.
+- Winners live feed. Compact cards in a row, game thumb, avatar, handle, amount and a currency chip.
+- Tournament cards with big 3D mascot art on a purple burst, a PREMIUM badge, a players chip, PRIZE
+  POOL in small caps over the amount at about 40, a "You can win" row of item thumbs, requirement
+  lines with icons and a full width Participate button.
+- Your position bar and a leaderboard whose ranks carry gold, silver and bronze badges.
+- Chat rail with MODER tags, reply quotes and a shared win card embedded in a message.
+
+### player145-mobile-blue.webp, Player 145 mobile casino
+
+- Electric blue on near black, glassy cards with a lit edge, a character breaking out of the hero card.
+- Game tiles for originals (Mines, Wheel, Crash, Flip, Keno), each one hue with a 3D object and a heavy
+  italic title on the art.
+- Balance pill with a square plus, a green wallet square, and a 3D podium for the leaderboard.
+
+### betsera-mascot-lobby.webp, Betsera lobby
+
+- Black ground with one red. A huge 3D mascot breaks out above the frame of the hero.
+- Headline in heavy display type, a small red Register button and social sign in squares.
+- Live wins strip of avatar cards across the top. Promo tiles (Bonus, VIP club, Promo) at the top of
+  the sidebar.
+- Originals as tall vivid tiles with very heavy condensed capitals (CRASH, MINES, POKER, DICE, KENO,
+  WHEEL) and a 3D object each.
+
+### cs2-upgrade-angular.webp, CS2 upgrade page
+
+- Slate grounds (about #1E2029 to #262833), angled and skewed shapes everywhere. Parallelogram
+  multiplier buttons, a trapezoid red Upgrade with a chevron icon, a red Deposit.
+- Live upgrades strip, each item with a colour line under it by rarity.
+- Small grey labels over bold values, a centre dial as the one hero element, inventory tinted by rarity.
+
 ## 2026-10-19, two dark UI shots from Dribbble, shown in the round 4 Loom
 
 Status. ACCEPTED as what better UI means, in Filip's words "to me this is better UI. By UI I mean how

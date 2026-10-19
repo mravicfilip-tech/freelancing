@@ -151,62 +151,33 @@
 .k-btn-purple { background: linear-gradient(180deg, #8f5cf2 0%, #7240e0 100%); }
 .k-btn-gold { background: linear-gradient(180deg, #ffd84d 0%, #f5a623 100%); }
 
-/* The orange primary, in five systems for the round 4 board. KitButton adds k-cta and k-cta-N. */
-.k-cta {
+/* The tactile key, round 5 (taste log 18:10). Orange is the primary, purple the secondary. */
+.k-key {
   position: relative;
+  font-weight: 800;
+  letter-spacing: -0.005em;
   color: rgb(var(--k-on-orange));
-  transition: background-color 0.18s var(--k-ease), filter 0.18s var(--k-ease), transform 0.12s var(--k-ease), border-color 0.18s var(--k-ease);
-}
-.k-cta:active:not(:disabled) { transform: scale(0.98); }
-
-/* 1 Flat. Solid orange, 12 radius, sentence case. */
-.k-cta-1 { background-color: rgb(var(--k-orange)); border-radius: 12px; }
-.k-cta-1:hover:not(:disabled) { background-color: rgb(var(--k-orange-hi)); }
-.k-cta-1:active:not(:disabled) { background-color: rgb(var(--k-orange-lo)); }
-
-/* 2 Pill. A two stop fill close in value, a full pill. */
-.k-cta-2 { background: linear-gradient(180deg, #ff9a3d 0%, #ff6a00 100%); border-radius: 999px; }
-.k-cta-2:hover:not(:disabled) { filter: brightness(1.07); }
-.k-cta-2:active:not(:disabled) { filter: brightness(0.95); }
-
-/* 3 Caps. Solid orange, 8 radius, a lighter 1px edge, display capitals with wide tracking. */
-.k-cta-3 {
-  background-color: rgb(var(--k-orange));
-  border: 1px solid #ffb273;
-  border-radius: 8px;
-  font-family: 'Bai Jamjuree', system-ui, sans-serif;
-  font-size: 14px;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-}
-.k-cta-3:hover:not(:disabled) { background-color: rgb(var(--k-orange-hi)); border-color: #ffd0a6; }
-
-/* 4 Icon tile. Solid orange, a darker orange square with an arrow at the trailing end. */
-.k-cta-4 { background-color: rgb(var(--k-orange)); border-radius: 14px; padding-right: 6px !important; }
-.k-cta-4::after {
-  content: '';
-  flex: none;
-  width: 32px;
-  height: 32px;
-  margin-left: 6px;
-  border-radius: 10px;
-  background: rgb(var(--k-orange-dark)) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 256 256'%3E%3Cpath fill='%231A0F2B' d='M224.5 136.5l-72 72a12 12 0 0 1-17-17L187 140H40a12 12 0 0 1 0-24h147l-51.5-51.5a12 12 0 0 1 17-17l72 72a12 12 0 0 1 0 17z'/%3E%3C/svg%3E") center / 16px no-repeat;
-  transition: transform 0.2s var(--k-ease);
-}
-.k-cta-4:hover:not(:disabled) { background-color: rgb(var(--k-orange-hi)); }
-.k-cta-4:hover:not(:disabled)::after { transform: translateX(2px); }
-.k-cta-4.k-cta-sm::after { width: 26px; height: 26px; border-radius: 8px; background-size: 13px; }
-.k-cta-4.k-cta-icon { padding-right: 0 !important; }
-.k-cta-4.k-cta-icon::after { display: none; }
-
-/* 5 Ember. A deep burnt orange with a white label and a warm 1px edge, the quiet luxury one. */
-.k-cta-5 {
-  background: linear-gradient(135deg, #d9480f 0%, #9a3412 100%);
-  border: 1px solid rgb(251 140 60 / 0.55);
   border-radius: 12px;
-  color: #fff;
+  background: linear-gradient(180deg, #ff9a40 0%, #ff6b0f 100%);
+  box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.45), inset 0 -2px 0 rgb(150 45 0 / 0.55), 0 1px 2px rgb(0 0 0 / 0.4);
+  transition: filter 0.15s var(--k-ease), transform 0.1s var(--k-ease), box-shadow 0.1s var(--k-ease);
 }
-.k-cta-5:hover:not(:disabled) { filter: brightness(1.1); border-color: rgb(251 160 90 / 0.8); }
+.k-key:hover:not(:disabled) { filter: brightness(1.06) saturate(1.05); }
+.k-key:active:not(:disabled) {
+  transform: translateY(1px);
+  box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.3), 0 0 0 rgb(0 0 0 / 0);
+}
+.k-key-purple {
+  color: #fff;
+  background: linear-gradient(180deg, #9a4bff 0%, #7a1ff2 100%);
+  box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.35), inset 0 -2px 0 rgb(60 10 140 / 0.6), 0 1px 2px rgb(0 0 0 / 0.4);
+}
+.k-key-pill { border-radius: 999px; }
+.k-key-angled {
+  border-radius: 3px;
+  padding-inline: 28px;
+  clip-path: polygon(12px 0, 100% 0, calc(100% - 12px) 100%, 0 100%);
+}
 
 /* ---------- Sidebar active row, four treatments for the round 4 board ---------- */
 
@@ -280,7 +251,7 @@
 
 @media (prefers-reduced-motion: reduce) {
   .k-live::after, .k-marquee, .k-skeleton { animation: none; }
-  .k-cta, .k-cta-4::after, .k-promo { transition: none; }
+  .k-key, .k-promo { transition: none; }
 }
 
 .k-no-scrollbar { scrollbar-width: none; }

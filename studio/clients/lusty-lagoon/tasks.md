@@ -51,7 +51,7 @@ Task format
   - [ ] Account settings, all 4 states
   - [ ] Mods across the whole product
 
-- lusty-lagoon-2 Five dashboard variants, one page each, from the ten references. Brief briefs/round-3/variants-brief.md. Live https://lusty-lagoon.vercel.app/variants, commit f8ced30. Round 4 on the branch, plan briefs/round-4/plan.md
+- lusty-lagoon-2 Five dashboard variants, one page each, from the ten references. Brief briefs/round-3/variants-brief.md. Live https://lusty-lagoon.vercel.app/variants, commit f8ced30. Round 5 on the branch, plan briefs/round-5/plan.md
   - [x] Save the ten references with a status
   - [x] Shared data, routes and the builder brief
   - [x] Build the five variants, rejected on execution, layouts kept
@@ -66,13 +66,18 @@ Task format
   - [x] Plan round 4, briefs/round-4/plan.md
   - [x] Filip answers D1 to D5 and says go
   - [x] Research, six live casino lobbies and premium dark UI craft, saved with notes
-  - [ ] Button board, Filip picks a number
-  - [ ] Sidebar board, Filip picks a number
+  - [x] Button board, all five rejected, button direction delegated to Claude
+  - [x] Sidebar board, dropped unanswered with the button board
   - [x] Switchers on both boards, Base first
   - [x] Shared kit lines, type ramp, hover, balance menu, orange primary
   - [x] Variant 2 leaves the routes and the switcher
   - [x] Variants 1, 3, 4 and 5 reworked per the plan
-  - [ ] Shots, checks and /uireview on the round
+  - [ ] Shots, checks and /uireview on the round, blocked by the lusty-lagoon-1 card
+  - [x] Round 5 consolidated brief, every note and reference, briefs/round-5/consolidated.md
+  - [x] Tactile orange key in the kit, boards out, variant 2 slot back
+  - [ ] Five directions built from zero, Neon arcade, Mascot stage, Tournament arena, Angular floor, Glass vault
+  - [ ] Review pass on each direction against its references
+  - [ ] Checks, after shots and a board of the five
   - [ ] Filip picks a variant
 
 ## Review

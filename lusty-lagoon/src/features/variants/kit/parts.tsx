@@ -5,7 +5,6 @@ import { ArrowCircleDown, ArrowCircleUp, CaretDown, CaretLeft, CaretRight, Check
 import { coinById, type CoinId } from '../../../data/wallet';
 import { formatAmount } from '../../../lib/format';
 import { cn } from '../../../lib/cn';
-import { kitPick } from './pick';
 import './kit.css';
 
 // The kit every dashboard variant composes. Round 4 splits it per D1 in the taste log. Chrome parts
@@ -28,33 +27,35 @@ const still = () => typeof window !== 'undefined' && new URLSearchParams(window.
 // ---------- Buttons ----------
 
 type KitButtonProps = ButtonHTMLAttributes<HTMLButtonElement> & {
-  /** primary is the orange action, one per section. gold is an old name for it. purple is secondary. */
+  /** primary is the orange key, one per section. gold is an old name for it. purple is the secondary key. */
   tone?: 'primary' | 'purple' | 'gold' | 'white' | 'dark';
   size?: 'sm' | 'md' | 'lg';
+  /** The key's outline. A direction picks one, rounded 12, a full pill, or angled ends. */
+  shape?: 'rounded' | 'pill' | 'angled';
   loading?: boolean;
 };
 
-export const KitButton = forwardRef<HTMLButtonElement, KitButtonProps>(function KitButton({ tone = 'purple', size = 'md', loading, disabled, className, children, ...rest }, ref) {
-  // System 0 is the Base on the board, the round 3 purple primary and gold Checkout.
-  const system = tone === 'primary' || tone === 'gold' ? kitPick('btn') : -1;
-  const primary = system > 0;
-  const base = system === 0;
+/**
+ * The tactile key, the round 5 button direction (taste log 18:10). Two close stops lighter at the
+ * top, a 1px inner top light, a 2px darker inner bottom edge, so it reads pressable. Pressed moves
+ * down 1px and drops the edge. No gloss sheen, sunburst or glow.
+ */
+export const KitButton = forwardRef<HTMLButtonElement, KitButtonProps>(function KitButton({ tone = 'purple', size = 'md', shape = 'rounded', loading, disabled, className, children, ...rest }, ref) {
+  const key = tone === 'primary' || tone === 'gold' ? 'k-key' : tone === 'purple' ? 'k-key k-key-purple' : null;
   return (
     <button
       ref={ref}
       disabled={disabled || loading}
       aria-busy={loading || undefined}
       className={cn(
-        'inline-flex select-none items-center justify-center gap-2 whitespace-nowrap font-bold outline-none focus-visible:ring-2 focus-visible:ring-[#B47CFF] focus-visible:ring-offset-2 focus-visible:ring-offset-[rgb(var(--ll-page))] disabled:cursor-not-allowed disabled:opacity-45',
-        primary && ['k-cta', `k-cta-${system}`, size === 'sm' && 'k-cta-sm'],
-        !primary && 'rounded-[12px] transition-[filter,background-color] duration-150',
-        (tone === 'purple' || (base && tone === 'primary')) && 'k-btn-purple text-ink hover:brightness-110',
-        base && tone === 'gold' && 'k-btn-gold text-[#2A1500] hover:brightness-105',
+        'inline-flex select-none items-center justify-center gap-2 whitespace-nowrap outline-none focus-visible:ring-2 focus-visible:ring-[#B47CFF] focus-visible:ring-offset-2 focus-visible:ring-offset-[rgb(var(--ll-page))] disabled:cursor-not-allowed disabled:opacity-45',
+        key && [key, shape === 'pill' && 'k-key-pill', shape === 'angled' && 'k-key-angled'],
+        !key && 'rounded-[12px] font-bold transition-[filter,background-color] duration-150',
         tone === 'white' && 'bg-ink text-page hover:bg-ink/90',
         tone === 'dark' && 'border border-white/[0.07] bg-[rgb(var(--k-item))] text-ink hover:bg-[rgb(var(--k-item-hover))]',
         size === 'sm' && 'h-9 px-4 text-14',
-        size === 'md' && 'h-11 px-6 text-16',
-        size === 'lg' && 'h-[52px] px-8 text-16',
+        size === 'md' && 'h-12 px-6 text-16',
+        size === 'lg' && 'h-[56px] px-8 text-16',
         className,
       )}
       {...rest}
@@ -103,7 +104,7 @@ export function IconSquare({ label, children, onClick, className, size = 52 }: {
 export function NavItem({ to, icon, label, active, badge, onClick }: { to?: string; icon: ReactNode; label: string; active?: boolean; badge?: ReactNode; onClick?: () => void }) {
   const cls = cn(
     'group relative flex h-[52px] w-full items-center gap-3 rounded-[14px] border px-4 text-16 font-semibold transition-colors duration-150',
-    active ? cn(kitPick('nav') === 0 ? 'k-nav-active' : `k-nav-on-${kitPick('nav')}`, 'text-ink') : 'border-transparent bg-[rgb(var(--k-item))] text-[rgb(var(--k-muted))] hover:bg-[rgb(var(--k-item-hover))] hover:text-ink',
+    active ? 'k-nav-on-1 text-ink' : 'border-transparent bg-[rgb(var(--k-item))] text-[rgb(var(--k-muted))] hover:bg-[rgb(var(--k-item-hover))] hover:text-ink',
   );
   const inner = (
     <>
@@ -512,7 +513,7 @@ export function BalancePill({ amount, balance, currency, onDeposit, depositLabel
           {depositLabel}
         </KitButton>
       ) : (
-        <KitButton tone="primary" size="lg" onClick={onDeposit} aria-label="Deposit" className="k-cta-icon h-[52px] w-[52px] px-0">
+        <KitButton tone="primary" size="lg" onClick={onDeposit} aria-label="Deposit" className="h-[52px] w-[52px] px-0">
           <Plus weight="bold" className="h-6 w-6" aria-hidden />
         </KitButton>
       )}

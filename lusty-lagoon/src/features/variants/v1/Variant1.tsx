@@ -14,15 +14,18 @@ import { Games } from './Games';
 import { Bets } from './Bets';
 import { GiveawayDialog, RaceDialog, RankDialog, RulesDialog } from './Dialogs';
 import type { Filter } from './nav';
+import { useStill } from './ui';
 import './neon.css';
 
-// Variant 1, Social lagoon, round 5 direction Neon arcade. Snegbet's tournaments screen translated to
-// Lusty Lagoon. Three columns, the sidebar, the centre and the rail with the Daily chest over the
-// chat. The winners feed runs across the top of the centre, then the hero on its purple burst, the
-// four category tiles, All games and Latest bets. Eye order, the hero, the Daily chest, the tiles.
+// Variant 1, Social lagoon, direction Neon arcade, reworked in round 6. Snegbet's tournaments screen
+// translated to Lusty Lagoon. Three columns, the sidebar, the centre and the rail with the Daily chest
+// over the chat. The winners feed runs across the top of the centre, then the hero with its one lit
+// area, the four category tiles, All games and Latest bets. Eye order, the hero, the Daily chest, the
+// tiles.
 
 export default function Variant1() {
   const state = useVariantState();
+  const still = useStill();
   const navigate = useNavigate();
   const [open, setOpen] = useState<CatalogueGame | null>(null);
   const [filter, setFilter] = useState<Filter>('all');
@@ -42,7 +45,7 @@ export default function Variant1() {
   const sugarRush = () => setOpen(gameById('sugar-rush')!);
 
   return (
-    <div className="n1 n1-page">
+    <div className={still ? 'n1 n1-page n1-still' : 'n1 n1-page'}>
       <TopBar
         onDeposit={() => navigate('/wallet/deposit')}
         onRace={() => setRace(true)}

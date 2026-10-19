@@ -1,7 +1,8 @@
 /* Neon arcade, variant 1. The page's own visual language, after Snegbet's tournaments screen.
  * An indigo violet ground, panels that separate by fill steps with a faint edge, vivid art tiles,
- * pill segments with a vivid purple active pill, and one burst on the page, the hero. Every value is
- * traced in the round 5 direction sheet. Class names start with n1 so nothing leaks to the others. */
+ * pill segments, and one lit area on the page, the burst behind the woman in the hero. Round 6 calms
+ * the purple to a deeper, less saturated tone (taste log 20:40) and drops yellow text. Class names
+ * start with n1 so nothing leaks to the others. */
 
 .n1 {
   --n-ground: 13 10 38; /* #0D0A26 */
@@ -15,11 +16,13 @@
   --n-edge: rgb(255 255 255 / 0.06);
   --n-edge-hi: rgb(255 255 255 / 0.1);
   --n-edge-on: rgb(255 255 255 / 0.16);
-  --n-purple: 154 75 255; /* #9A4BFF, the vivid pill top */
-  --n-gold: 244 213 67; /* #F4D543 */
+  --n-purple: 132 97 238; /* #8461EE, the calmer purple of round 6 */
+  --n-lilac: 190 166 255; /* #BEA6FF, purple text and icons, 8.1 to 1 on panel */
   --n-silver: 169 198 211; /* #A9C6D3 */
   --n-bronze: 211 139 111; /* #D38B6F */
   --n-green: 61 220 132; /* #3DDC84 */
+  --n-win: 56 238 89; /* #38EE59, payouts, after variant 5 */
+  --n-ember: 255 122 40; /* #FF7A28 */
   --n-ease: cubic-bezier(0.22, 1, 0.36, 1);
   color: #fff;
 }
@@ -40,63 +43,164 @@
 .n1-hoverable:hover { background: rgb(var(--n-hover)); border-color: var(--n-edge-on); }
 .n1-muted { color: rgb(var(--n-muted)); }
 .n1-dim { color: rgb(var(--n-dim)); }
-.n1-gold { color: rgb(var(--n-gold)); }
 .n1-label { font-size: 12px; line-height: 16px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: rgb(var(--n-dim)); }
 
-/* The grouped sidebar panel, Snegbet's NFT group. One indigo light from the left edge. */
-.n1-group {
-  background:
-    linear-gradient(90deg, rgb(52 72 168 / 0.42) 0%, rgb(52 72 168 / 0.1) 55%, transparent 85%),
-    rgb(var(--n-panel));
-  border: 1px solid rgb(120 140 255 / 0.14);
+/* A panel's top highlight line, fading at both ends. */
+.n1-top { position: relative; }
+.n1-top::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 14%;
+  right: 14%;
+  height: 1px;
+  pointer-events: none;
+  background: linear-gradient(90deg, transparent, rgb(255 255 255 / 0.16), transparent);
 }
 
-/* ---------- Vivid pills and keys ---------- */
+/* ---------- Keys, round 6 ---------- */
 
-/* The active segment, Snegbet's SnegBet originals pill. The purple key recipe at pill size. */
+/* The key after the sleek kit key (taste log 20:40). Two close stops lighter at the top, a 1px inner
+ * top light, a 1px inner ring so the edge reads crisp, a neutral two layer shadow. No bottom edge, no
+ * gloss, no glow. Orange carries a dark label for AA. */
+.n1-key {
+  position: relative;
+  isolation: isolate;
+  font-weight: 700;
+  letter-spacing: -0.005em;
+  outline: none;
+  transition: filter 0.15s var(--n-ease), transform 0.1s var(--n-ease), box-shadow 0.15s var(--n-ease);
+}
+.n1-key:focus-visible { outline: 2px solid #b47cff; outline-offset: 2px; }
+.n1-key:hover:not(:disabled) { filter: brightness(1.06); }
+.n1-key:active:not(:disabled) { transform: translateY(1px); filter: brightness(0.97); }
+.n1-key:disabled { cursor: not-allowed; opacity: 0.45; }
+
+.n1-key-orange {
+  color: #1a0f2b; /* 7.0 to 1 on #FF7A1F */
+  background: linear-gradient(180deg, #ffa04c 0%, #ff8030 48%, #f86c14 100%);
+  box-shadow:
+    inset 0 1px 0 rgb(255 255 255 / 0.45),
+    inset 0 0 0 1px rgb(255 255 255 / 0.1),
+    0 1px 2px rgb(0 0 0 / 0.35),
+    0 10px 24px -12px rgb(0 0 0 / 0.75);
+}
+.n1-key-orange:active:not(:disabled) { box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.3), inset 0 0 0 1px rgb(255 255 255 / 0.08), 0 1px 1px rgb(0 0 0 / 0.3); }
+
+.n1-key-purple {
+  color: #fff; /* 5.6 to 1 on #6A43D8 */
+  background: linear-gradient(180deg, #8461ee 0%, #7350e2 50%, #6a43d8 100%);
+  box-shadow:
+    inset 0 1px 0 rgb(255 255 255 / 0.3),
+    inset 0 0 0 1px rgb(255 255 255 / 0.08),
+    0 1px 2px rgb(0 0 0 / 0.35),
+    0 10px 24px -12px rgb(0 0 0 / 0.75);
+}
+.n1-key-purple:active:not(:disabled) { box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.2), inset 0 0 0 1px rgb(255 255 255 / 0.06), 0 1px 1px rgb(0 0 0 / 0.3); }
+
+.n1-key-quiet {
+  color: #fff;
+  background: linear-gradient(180deg, rgb(255 255 255 / 0.08), rgb(255 255 255 / 0.04));
+  box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.1), inset 0 0 0 1px rgb(255 255 255 / 0.1);
+}
+.n1-key-quiet:hover:not(:disabled) { filter: none; background: linear-gradient(180deg, rgb(255 255 255 / 0.12), rgb(255 255 255 / 0.07)); }
+
+/* The mark inside a key, a darker circle the icon sits in. */
+.n1-key-mark { display: flex; align-items: center; justify-content: center; border-radius: 999px; background: rgb(0 0 0 / 0.14); }
+.n1-key-purple .n1-key-mark { background: rgb(0 0 0 / 0.18); }
+
+/* ---------- Pills ---------- */
+
+/* The active segment, the purple key at pill size. */
 .n1-pill-on {
   color: #fff;
-  background: linear-gradient(180deg, #9a4bff 0%, #7a1ff2 100%);
-  box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.3), inset 0 -2px 0 rgb(60 10 140 / 0.55);
+  background: linear-gradient(180deg, #8461ee 0%, #6a43d8 100%);
+  box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.28), inset 0 0 0 1px rgb(255 255 255 / 0.08);
 }
 .n1-pill-off { color: rgb(var(--n-muted)); background: rgb(var(--n-raised)); }
 .n1-pill-off:hover { color: #fff; background: rgb(var(--n-hover)); }
 
-/* A small purple key square, the active nav icon and the chat send. */
+/* A small purple key square, the chat send and the race chip mark. */
 .n1-keysq {
-  background: linear-gradient(180deg, #9a4bff 0%, #7a1ff2 100%);
-  box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.35), inset 0 -2px 0 rgb(60 10 140 / 0.6);
+  background: linear-gradient(180deg, #8461ee 0%, #6a43d8 100%);
+  box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.3), inset 0 0 0 1px rgb(255 255 255 / 0.08);
 }
 
-/* ---------- Rank badges, Snegbet's leaderboard squares ---------- */
+/* ---------- Tabs and the table, after variant 5's Live wagers ---------- */
 
-.n1-rank-1 { background: linear-gradient(180deg, #ffe066 0%, #f4c430 100%); color: #2a1a00; box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.5), inset 0 -2px 0 rgb(150 100 0 / 0.45); }
-.n1-rank-2 { background: linear-gradient(180deg, #c9e0ea 0%, #9fbccb 100%); color: #13202a; box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.5), inset 0 -2px 0 rgb(60 90 110 / 0.45); }
-.n1-rank-3 { background: linear-gradient(180deg, #e6a387 0%, #c97b5c 100%); color: #2a1208; box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.4), inset 0 -2px 0 rgb(110 50 25 / 0.45); }
+/* Tabs sit in one sunken well, a full pill. The picked tab is a lit pill, no colour wash. */
+.n1-tabs { background: rgb(var(--n-well)); box-shadow: inset 0 0 0 1px rgb(255 255 255 / 0.06); }
+.n1-tab-on {
+  background: rgb(255 255 255 / 0.08);
+  box-shadow: inset 0 0 0 1px rgb(255 255 255 / 0.12), inset 0 1px 0 rgb(255 255 255 / 0.18), 0 6px 16px -8px rgb(0 0 0 / 0.6);
+}
+/* The column labels in one sunken bar, a full pill. */
+.n1-thead { background: rgb(255 255 255 / 0.04); box-shadow: inset 0 0 0 1px rgb(255 255 255 / 0.06), inset 0 1px 0 rgb(255 255 255 / 0.04); }
+.n1-rule { border-color: rgb(255 255 255 / 0.05); }
+
+/* A new bet slides in at the top of the table. */
+.n1-enter { animation: n1-enter 0.5s var(--n-ease) both; }
+@keyframes n1-enter { from { opacity: 0; transform: translateY(-8px); } to { opacity: 1; transform: none; } }
+
+/* ---------- Rank badges, Snegbet's leaderboard squares, for the race dialog ---------- */
+
+.n1-rank-1 { background: linear-gradient(180deg, #ffe066 0%, #f4c430 100%); color: #2a1a00; box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.5); }
+.n1-rank-2 { background: linear-gradient(180deg, #c9e0ea 0%, #9fbccb 100%); color: #13202a; box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.5); }
+.n1-rank-3 { background: linear-gradient(180deg, #e6a387 0%, #c97b5c 100%); color: #2a1208; box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.4); }
+
+/* ---------- Sidebar ---------- */
+
+/* Promo tiles after Turbo Bet. A dark panel under the label that turns into one vivid hue under the
+ * art, a 1px edge and a top highlight. The hue is the art layer, not a glow. */
+.n1-promo {
+  position: relative;
+  isolation: isolate;
+  background:
+    radial-gradient(90% 120% at 96% 78%, rgb(var(--hue-hi)) 0%, rgb(var(--hue) / 0.92) 36%, rgb(var(--hue) / 0.3) 68%, rgb(var(--hue) / 0) 100%),
+    linear-gradient(180deg, #221c52 0%, #1a1545 100%);
+  box-shadow: inset 0 0 0 1px rgb(255 255 255 / 0.08), inset 0 1px 0 rgb(255 255 255 / 0.12);
+  transition: box-shadow 0.2s var(--n-ease);
+}
+.n1-promo:hover { box-shadow: inset 0 0 0 1px rgb(255 255 255 / 0.22), inset 0 1px 0 rgb(255 255 255 / 0.22); }
+.n1-hue-ember { --hue: 232 98 24; --hue-hi: 255 168 84; }
+.n1-hue-blue { --hue: 36 98 214; --hue-hi: 96 170 255; }
+.n1-hue-purple { --hue: 104 64 214; --hue-hi: 168 134 255; }
+.n1-hue-green { --hue: 30 140 70; --hue-hi: 100 214 120; }
+
+/* A nav row, Turbo Bet's list. Every row its own faint pill. */
+.n1-row { background: rgb(255 255 255 / 0.025); box-shadow: inset 0 0 0 1px rgb(255 255 255 / 0.03); transition: background-color 0.15s var(--n-ease), color 0.15s var(--n-ease); }
+.n1-row:hover { background: rgb(255 255 255 / 0.055); }
+/* The active row. A soft purple light from the left edge, a faint purple ring, no wash. */
+.n1-row-on {
+  background: linear-gradient(90deg, rgb(132 97 238 / 0.26) 0%, rgb(132 97 238 / 0.08) 60%, rgb(132 97 238 / 0.04) 100%);
+  box-shadow: inset 0 0 0 1px rgb(170 140 255 / 0.2), inset 0 1px 0 rgb(255 255 255 / 0.06);
+}
+.n1-row-on:hover { background: linear-gradient(90deg, rgb(132 97 238 / 0.3) 0%, rgb(132 97 238 / 0.1) 60%, rgb(132 97 238 / 0.05) 100%); }
+
+/* The grouped panel, Snegbet's NFT group. One indigo light from the left edge. */
+.n1-group {
+  background:
+    linear-gradient(90deg, rgb(56 74 170 / 0.36) 0%, rgb(56 74 170 / 0.1) 55%, transparent 85%),
+    rgb(var(--n-panel));
+  box-shadow: inset 0 0 0 1px rgb(130 150 255 / 0.12), inset 0 1px 0 rgb(255 255 255 / 0.06);
+}
+
+/* The bottom promo card, Turbo Bet's deposit card in the deeper purple. One light behind the art. */
+.n1-card-promo {
+  position: relative;
+  isolation: isolate;
+  background:
+    radial-gradient(80% 70% at 88% 12%, rgb(150 104 255 / 0.55) 0%, rgb(120 80 230 / 0.2) 50%, transparent 80%),
+    linear-gradient(160deg, #3a2580 0%, #261758 55%, #1b1245 100%);
+  box-shadow: inset 0 0 0 1px rgb(200 180 255 / 0.14), inset 0 1px 0 rgb(255 255 255 / 0.16);
+}
 
 /* ---------- Art ---------- */
 
-/* Promo tiles in the sidebar, a hue light from the art corner and a soft hue edge. */
-.n1-promo {
-  background:
-    radial-gradient(120% 130% at 100% 100%, rgb(var(--hue) / 0.62) 0%, rgb(var(--hue) / 0.2) 48%, transparent 78%),
-    linear-gradient(180deg, rgb(var(--hue) / 0.12), rgb(var(--hue) / 0.04)),
-    rgb(var(--n-panel));
-  border: 1px solid rgb(var(--hue) / 0.42);
-  box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.08);
-  transition: border-color 0.2s var(--n-ease);
-}
-.n1-promo:hover { border-color: rgb(var(--hue) / 0.75); }
-.n1-hue-purple { --hue: 154 75 255; }
-.n1-hue-gold { --hue: 255 170 40; }
-.n1-hue-blue { --hue: 60 140 255; }
-.n1-hue-pink { --hue: 255 90 160; }
-.n1-hue-green { --hue: 70 205 110; }
-
 /* Category tiles, Turbo Bet's vivid singles. Two close stops of one hue, a lighter burst behind the
  * art, a 1px white edge and a top highlight. */
-.n1-tile { position: relative; isolation: isolate; border: 1px solid rgb(255 255 255 / 0.18); transition: border-color 0.2s var(--n-ease); }
-.n1-tile:hover { border-color: rgb(255 255 255 / 0.42); }
+.n1-tile { position: relative; isolation: isolate; border: 1px solid rgb(255 255 255 / 0.16); transition: border-color 0.2s var(--n-ease); }
+.n1-tile:hover { border-color: rgb(255 255 255 / 0.4); }
 .n1-tile::before {
   content: '';
   position: absolute;
@@ -106,7 +210,7 @@
   height: 1px;
   z-index: 3;
   pointer-events: none;
-  background: linear-gradient(90deg, transparent, rgb(255 255 255 / 0.6), transparent);
+  background: linear-gradient(90deg, transparent, rgb(255 255 255 / 0.55), transparent);
 }
 .n1-tile::after {
   content: '';
@@ -114,9 +218,10 @@
   inset: 0;
   z-index: -1;
   pointer-events: none;
-  background: radial-gradient(70% 70% at 74% 70%, rgb(255 255 255 / 0.26), transparent 70%);
+  background: radial-gradient(70% 70% at 74% 70%, rgb(255 255 255 / 0.22), transparent 70%);
 }
-.n1-tile-purple { background: linear-gradient(160deg, #8f3dff 0%, #5d17d6 100%); }
+/* Purple calms from #8F3DFF (round 5) to a deeper, less saturated pair (note 10). */
+.n1-tile-purple { background: linear-gradient(160deg, #7a4be6 0%, #4c23a6 100%); }
 .n1-tile-blue { background: linear-gradient(160deg, #3d8bff 0%, #1d4fd8 100%); }
 /* Orange and green sit darker than Turbo Bet's, so the white title keeps 3 to 1 as large text. */
 .n1-tile-orange { background: linear-gradient(160deg, #ee5f12 0%, #b93a08 100%); }
@@ -132,28 +237,71 @@
   mask-image: linear-gradient(215deg, #000 0%, transparent 55%);
 }
 
-/* The hero, the one burst on the page. Indigo under the text, a vivid purple core behind the woman. */
+/* ---------- The hero ---------- */
+
+/* A deep, less saturated purple (note 10). The only lit area is the burst behind the woman, placed
+ * with --bx (her centre) and --by (her shoulders). */
 .n1-hero {
   background:
-    radial-gradient(38% 70% at var(--bx, 70%) 42%, #a45cff 0%, rgb(140 60 250 / 0.78) 30%, rgb(104 32 226 / 0.34) 62%, transparent 82%),
-    radial-gradient(70% 70% at 22% -12%, rgb(146 66 255 / 0.5), transparent 70%),
-    linear-gradient(180deg, #3b1394 0%, #270a68 58%, #170640 100%);
-  border: 1px solid rgb(255 255 255 / 0.12);
+    radial-gradient(60% 80% at 0% 0%, rgb(70 46 150 / 0.32), transparent 70%),
+    linear-gradient(180deg, #1b1240 0%, #160e36 55%, #110a2a 100%);
+  box-shadow: inset 0 0 0 1px rgb(255 255 255 / 0.08), inset 0 1px 0 rgb(255 255 255 / 0.12);
 }
-/* Soft rays from behind the woman, masked to a circle so they fade before the edges. */
+/* The lagoon night scene, toned into the hero's purple by its own light, faded away from the text. */
+.n1-scene {
+  mix-blend-mode: luminosity;
+  opacity: 0.4;
+  -webkit-mask-image: linear-gradient(90deg, transparent 0%, transparent 34%, rgb(0 0 0 / 0.7) 56%, #000 75%), linear-gradient(180deg, #000 50%, rgb(0 0 0 / 0.35) 100%);
+  -webkit-mask-composite: source-in;
+  mask-image: linear-gradient(90deg, transparent 0%, transparent 34%, rgb(0 0 0 / 0.7) 56%, #000 75%), linear-gradient(180deg, #000 50%, rgb(0 0 0 / 0.35) 100%);
+  mask-composite: intersect;
+}
+/* The lit core, screened over the scene so it reads as light. A lavender heart behind her head and
+ * shoulders, calm purple round it, nothing by the edge of its circle. */
+.n1-core {
+  mix-blend-mode: screen;
+  background:
+    radial-gradient(closest-side, rgb(236 224 255 / 0.62) 0%, rgb(214 192 255 / 0.3) 14%, rgb(214 192 255 / 0) 30%),
+    radial-gradient(closest-side, rgb(132 92 230 / 0.9) 0%, rgb(122 82 214 / 0.62) 26%, rgb(106 64 200 / 0.24) 54%, rgb(96 56 190 / 0.06) 78%, rgb(96 56 190 / 0) 100%);
+}
+/* Soft edged rays in two layers, strongest at the core, masked to a circle. */
 .n1-rays {
-  background: repeating-conic-gradient(from 0deg at 50% 50%, rgb(255 255 255 / 0.1) 0deg 7deg, transparent 7deg 18deg);
-  -webkit-mask-image: radial-gradient(closest-side, #000 18%, rgb(0 0 0 / 0.5) 52%, transparent 100%);
-  mask-image: radial-gradient(closest-side, #000 18%, rgb(0 0 0 / 0.5) 52%, transparent 100%);
+  mix-blend-mode: screen;
+  background:
+    repeating-conic-gradient(from 0deg at 50% 50%, rgb(226 210 255 / 0) 0deg, rgb(226 210 255 / 0.22) 2.5deg, rgb(226 210 255 / 0) 5deg, rgb(226 210 255 / 0) 15deg),
+    repeating-conic-gradient(from 7.5deg at 50% 50%, rgb(226 210 255 / 0) 0deg, rgb(226 210 255 / 0.1) 5deg, rgb(226 210 255 / 0) 10deg, rgb(226 210 255 / 0) 25.714deg);
+  -webkit-mask-image: radial-gradient(closest-side, #000 4%, rgb(0 0 0 / 0.7) 30%, rgb(0 0 0 / 0.25) 60%, transparent 92%);
+  mask-image: radial-gradient(closest-side, #000 4%, rgb(0 0 0 / 0.7) 30%, rgb(0 0 0 / 0.25) 60%, transparent 92%);
+  transform: translate(-50%, -50%);
+  animation: n1-turn 240s linear infinite;
+}
+@keyframes n1-turn { from { transform: translate(-50%, -50%) rotate(0deg); } to { transform: translate(-50%, -50%) rotate(360deg); } }
+/* The orange floor light where she stands. */
+.n1-floor { background: radial-gradient(closest-side, rgb(255 122 40 / 0.3) 0%, rgb(255 122 40 / 0.1) 50%, rgb(255 122 40 / 0) 100%); }
+/* Her crown touches the top of the source, so the top 14px are feathered. */
+.n1-woman {
+  -webkit-mask-image: linear-gradient(180deg, transparent 0, #000 14px);
+  mask-image: linear-gradient(180deg, transparent 0, #000 14px);
+  filter: drop-shadow(0 12px 32px rgb(10 4 30 / 0.5));
+}
+/* The flower pillars, a step back from her. */
+.n1-pillar { filter: brightness(0.66) saturate(0.85); }
+
+/* Glass on the burst, the top win card and the online pill. */
+.n1-glass {
+  background: linear-gradient(180deg, rgb(28 18 64 / 0.72) 0%, rgb(18 11 44 / 0.78) 100%);
+  -webkit-backdrop-filter: blur(14px) saturate(1.2);
+  backdrop-filter: blur(14px) saturate(1.2);
+  box-shadow: inset 0 0 0 1px rgb(255 255 255 / 0.12), inset 0 1px 0 rgb(255 255 255 / 0.16), 0 18px 40px -18px rgb(0 0 0 / 0.7);
 }
 
-/* The chest card's one light, gold to ember behind the chest. */
-.n1-chest-light { background: radial-gradient(closest-side, rgb(255 190 70 / 0.55), rgb(255 120 30 / 0.2) 55%, transparent 100%); }
+/* The chest card's one light, ember behind the chest. */
+.n1-chest-light { background: radial-gradient(closest-side, rgb(255 140 60 / 0.42), rgb(255 110 30 / 0.14) 55%, transparent 100%); }
 
-/* The win card inside a chat message, Snegbet's Zeus vs Hades card. */
+/* The win card inside a chat message, Snegbet's Zeus vs Hades card, in the calmer purple. */
 .n1-wincard {
-  background: linear-gradient(100deg, #6a24e0 0%, #3a1590 60%, #23106a 100%);
-  border: 1px solid rgb(190 150 255 / 0.3);
+  background: linear-gradient(100deg, rgb(116 82 222 / 0.55) 0%, rgb(76 50 170 / 0.4) 60%, rgb(50 32 120 / 0.35) 100%);
+  box-shadow: inset 0 0 0 1px rgb(190 166 255 / 0.22), inset 0 1px 0 rgb(255 255 255 / 0.1);
 }
 
 /* ---------- Live and motion ---------- */
@@ -175,7 +323,10 @@
 .n1-noscroll { scrollbar-width: none; }
 .n1-noscroll::-webkit-scrollbar { display: none; }
 
+/* ?still holds every loop, for shots. */
+.n1-still .n1-rays, .n1-still .n1-live::after, .n1-still .n1-enter, .n1-still .n1-skel { animation: none; }
+
 @media (prefers-reduced-motion: reduce) {
-  .n1-live::after, .n1-skel { animation: none; }
-  .n1-zoom, .n1-promo, .n1-tile, .n1-hoverable { transition: none; }
+  .n1-live::after, .n1-skel, .n1-rays, .n1-enter { animation: none; }
+  .n1-zoom, .n1-promo, .n1-tile, .n1-hoverable, .n1-key, .n1-row { transition: none; }
 }

@@ -1,15 +1,73 @@
-import type { ReactNode } from 'react';
+import { forwardRef, useMemo, type ButtonHTMLAttributes, type ReactNode } from 'react';
 import * as D from '@radix-ui/react-dialog';
-import { X } from '@phosphor-icons/react';
+import { CircleNotch, X } from '@phosphor-icons/react';
 import { coinById, type CoinId } from '../../../data/wallet';
 import { formatAmount } from '../../../lib/format';
 import { cn } from '../../../lib/cn';
 import './neon.css';
 
 // Small parts the Neon arcade page composes. Everything sits on the seven size ramp, 12, 14, 16,
-// 20, 28, 40 and 56, with tabular numbers.
+// 20, 28, 40 and 56, with tabular numbers. Round 6 adds the page's own key and the variant 5 tabs.
 
 export const handle = (name: string) => `@${name.replace(/\s|\./g, '').toLowerCase()}`;
+
+/** True when the page is asked for a still frame with ?still, for shots. */
+export function useStill() {
+  return useMemo(() => new URLSearchParams(window.location.search).has('still'), []);
+}
+
+type KeyProps = ButtonHTMLAttributes<HTMLButtonElement> & { tone?: 'orange' | 'purple' | 'quiet'; size?: 36 | 48 | 56; loading?: boolean };
+
+/**
+ * The page's key, round 6. The sleek kit key built in the folder (taste log 20:40). Orange is the one
+ * primary per section with a dark label, purple the secondary, quiet sits on the surface with an edge.
+ */
+export const Key = forwardRef<HTMLButtonElement, KeyProps>(function Key({ tone = 'purple', size = 48, loading, disabled, className, children, type = 'button', ...rest }, ref) {
+  return (
+    <button
+      ref={ref}
+      type={type}
+      disabled={disabled || loading}
+      aria-busy={loading || undefined}
+      className={cn(
+        'n1-key inline-flex select-none items-center justify-center gap-2 whitespace-nowrap',
+        `n1-key-${tone}`,
+        size === 36 && 'h-9 rounded-[10px] px-4 text-14',
+        size === 48 && 'h-[48px] rounded-[12px] px-6 text-16',
+        size === 56 && 'h-[56px] rounded-[14px] px-8 text-16',
+        className,
+      )}
+      {...rest}
+    >
+      {loading && <CircleNotch weight="bold" className="h-5 w-5 animate-spin" aria-hidden />}
+      {children}
+    </button>
+  );
+});
+
+/** Tabs in one sunken well with a lit pill on, after variant 5's Live wagers. */
+export function Tabs<T extends string>({ items, value, onChange, label, controls, className }: { items: { value: T; label: string }[]; value: T; onChange: (v: T) => void; label: string; controls?: string; className?: string }) {
+  return (
+    <div role="tablist" aria-label={label} className={cn('n1-tabs flex h-11 items-center gap-1 rounded-full p-[3px]', className)}>
+      {items.map((t) => {
+        const on = value === t.value;
+        return (
+          <button
+            key={t.value}
+            type="button"
+            role="tab"
+            aria-selected={on}
+            aria-controls={controls}
+            onClick={() => onChange(t.value)}
+            className={cn('n1-ring flex h-[38px] items-center whitespace-nowrap rounded-full px-4 text-14 font-semibold transition-colors duration-200', on ? 'n1-tab-on text-ink' : 'text-[rgb(var(--n-muted))] hover:text-ink')}
+          >
+            {t.label}
+          </button>
+        );
+      })}
+    </div>
+  );
+}
 
 export function Live({ className }: { className?: string }) {
   return <span aria-hidden className={cn('n1-live', className)} />;
@@ -140,7 +198,7 @@ export function Avatar({ src, initials, level, size = 36, className }: { src?: s
           aria-hidden
           className={cn(
             'num absolute -bottom-[6px] -right-[6px] flex h-[18px] min-w-[22px] items-center justify-center rounded-full border-2 border-[rgb(var(--n-panel))] px-1 text-12 font-extrabold leading-none text-ink',
-            high ? 'bg-[#F0641E]' : typeof level === 'string' ? 'bg-[#7A1FF2]' : 'bg-[#2F7BFF]',
+            high ? 'bg-[#E8590C]' : typeof level === 'string' ? 'bg-[#6A43D8]' : 'bg-[#2F6FE8]',
           )}
         >
           {level}

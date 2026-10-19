@@ -9,9 +9,9 @@ import { useWallet } from '../../wallet/store';
 import { ACCOUNT, coinById, type CoinId } from '../../../data/wallet';
 import { formatAmount } from '../../../lib/format';
 import { cn } from '../../../lib/cn';
-import { AnimatedNumber, KitButton } from '../kit/parts';
+import { AnimatedNumber } from '../kit/parts';
 import { RACE, useCountdown } from '../shared/data';
-import { CoinIcon, IconSquare } from './ui';
+import { CoinIcon, IconSquare, Key } from './ui';
 
 // The top bar after Snegbet. The wordmark over the sidebar, the weekly race chip in a raised box with
 // a purple key, the balance menu with the orange Deposit key, icon squares with edges, the account box.
@@ -68,7 +68,7 @@ function BalanceMenu({ onDeposit }: { onDeposit: () => void }) {
                   <span className="num text-[rgb(var(--n-muted))]">{inCoin(balance, id)}</span>
                   <span className="flex w-4 justify-center">
                     <M.ItemIndicator>
-                      <Check weight="bold" className="h-4 w-4 text-[#C9A2FF]" aria-hidden />
+                      <Check weight="bold" className="h-4 w-4 text-[rgb(var(--n-lilac))]" aria-hidden />
                     </M.ItemIndicator>
                   </span>
                 </M.RadioItem>
@@ -88,10 +88,10 @@ function BalanceMenu({ onDeposit }: { onDeposit: () => void }) {
           </M.Content>
         </M.Portal>
       </M.Root>
-      <KitButton tone="primary" size="md" onClick={onDeposit} className="h-[48px] px-[20px]">
+      <Key tone="orange" size={48} onClick={onDeposit} className="pl-4 pr-[20px]">
         <Plus weight="bold" className="h-5 w-5" aria-hidden />
         Deposit
-      </KitButton>
+      </Key>
     </div>
   );
 }
@@ -178,12 +178,12 @@ export function TopBar({ onDeposit, onRace, onSearch }: { onDeposit: () => void;
         <span className="flex flex-col leading-none">
           <span className="text-14 font-extrabold text-ink">Weekly race</span>
           <span className="num mt-1 text-12 font-bold text-[rgb(var(--n-muted))]">
-            <span className="n1-gold">{formatAmount(RACE.pool, 0)} USDT</span> · {race.d}d {race.pad(race.h)}h {race.pad(race.m)}m
+            <span className="text-ink">{formatAmount(RACE.pool, 0)} USDT</span> · {race.d}d {race.pad(race.h)}h {race.pad(race.m)}m
           </span>
         </span>
-        <KitButton tone="purple" size="sm" onClick={onRace} className="ml-1 h-9 px-4">
+        <Key tone="purple" size={36} onClick={onRace} className="ml-1">
           Join
-        </KitButton>
+        </Key>
       </div>
       <div className="mx-auto">
         <BalanceMenu onDeposit={onDeposit} />

@@ -3,8 +3,7 @@ import * as M from '@radix-ui/react-dropdown-menu';
 import { CaretDown, Check, Fire, MagnifyingGlass, Play, SortAscending, WarningCircle, X } from '@phosphor-icons/react';
 import type { CatalogueGame } from '../../../data/games';
 import { cn } from '../../../lib/cn';
-import { KitButton } from '../kit/parts';
-import { NMessage, Segments, Skel } from './ui';
+import { Key, NMessage, Segments, Skel } from './ui';
 import { NAV, ORDERED, type Filter } from './nav';
 
 // All games after Snegbet's finder. A title with the count, a wide search, a sort menu, pill segments
@@ -29,7 +28,7 @@ function useColumns() {
   return wide ? 7 : 5;
 }
 
-const TAG: Record<string, string> = { Hot: 'bg-[linear-gradient(180deg,#FF7A3D,#E8430F)] text-ink', New: 'bg-[#2F7BFF] text-ink', Exclusive: 'bg-[linear-gradient(180deg,#FFE066,#F4C430)] text-[#2A1A00]' };
+const TAG: Record<string, string> = { Hot: 'bg-[linear-gradient(180deg,#FF7A3D,#E8430F)] text-ink', New: 'bg-[#2F6FE8] text-ink', Exclusive: 'n1-pill-on text-ink' };
 
 function Cover({ g, onPlay }: { g: CatalogueGame; onPlay: () => void }) {
   return (
@@ -37,7 +36,7 @@ function Cover({ g, onPlay }: { g: CatalogueGame; onPlay: () => void }) {
       <img src={g.image} alt="" loading="lazy" className="n1-zoom h-full w-full object-cover" />
       {g.tag && <span className={cn('absolute left-2 top-2 rounded-[6px] px-[6px] text-12 font-extrabold uppercase leading-5 tracking-[0.04em]', TAG[g.tag])}>{g.tag}</span>}
       <span aria-hidden className="pointer-events-none absolute inset-0 bg-gradient-to-t from-[#0D0A26]/90 via-[#0D0A26]/10 to-transparent opacity-0 transition-opacity duration-200 group-hover:opacity-100 group-focus-visible:opacity-100" />
-      <span aria-hidden className="k-key pointer-events-none absolute left-1/2 top-1/2 flex h-[48px] w-12 -translate-x-1/2 -translate-y-1/2 scale-90 items-center justify-center rounded-full opacity-0 transition duration-200 group-hover:scale-100 group-hover:opacity-100 group-focus-visible:scale-100 group-focus-visible:opacity-100">
+      <span aria-hidden className="n1-key-orange pointer-events-none absolute left-1/2 top-1/2 flex h-[48px] w-12 -translate-x-1/2 -translate-y-1/2 scale-90 items-center justify-center rounded-full opacity-0 transition duration-200 group-hover:scale-100 group-hover:opacity-100 group-focus-visible:scale-100 group-focus-visible:opacity-100">
         <Play weight="fill" className="h-5 w-5 translate-x-px" />
       </span>
       <span aria-hidden className="pointer-events-none absolute inset-x-3 bottom-3 flex translate-y-1 flex-col text-left opacity-0 transition duration-200 group-hover:translate-y-0 group-hover:opacity-100">
@@ -76,7 +75,7 @@ export const Games = forwardRef<HTMLInputElement, { filter: Filter; onFilter: (f
           All games
           <span className="num rounded-[8px] bg-white/[0.08] px-2 text-12 font-extrabold leading-6 text-[rgb(var(--n-muted))]">{list.length}</span>
         </h2>
-        <form role="search" onSubmit={(e) => e.preventDefault()} className="n1-raised ml-auto flex h-11 w-[300px] items-center gap-3 rounded-[12px] px-4 focus-within:border-[#9A4BFF]/70 w1920:w-[380px]">
+        <form role="search" onSubmit={(e) => e.preventDefault()} className="n1-raised ml-auto flex h-11 w-[300px] items-center gap-3 rounded-[12px] px-4 focus-within:border-[rgb(var(--n-purple)/0.7)] w1920:w-[380px]">
           <MagnifyingGlass weight="bold" className="h-[18px] w-[18px] shrink-0 text-[rgb(var(--n-dim))]" aria-hidden />
           <label htmlFor="n1-search" className="sr-only">
             Search for games
@@ -101,7 +100,7 @@ export const Games = forwardRef<HTMLInputElement, { filter: Filter; onFilter: (f
                   <M.RadioItem key={s.value} value={s.value} className="flex h-10 cursor-pointer select-none items-center gap-3 rounded-[10px] px-3 text-14 font-semibold text-ink outline-none data-[highlighted]:bg-white/[0.06]">
                     <span className="flex-1">{s.label}</span>
                     <M.ItemIndicator>
-                      <Check weight="bold" className="h-4 w-4 text-[#C9A2FF]" aria-hidden />
+                      <Check weight="bold" className="h-4 w-4 text-[rgb(var(--n-lilac))]" aria-hidden />
                     </M.ItemIndicator>
                   </M.RadioItem>
                 ))}
@@ -126,9 +125,9 @@ export const Games = forwardRef<HTMLInputElement, { filter: Filter; onFilter: (f
             title="We could not load the games"
             body="Your balance and bets are safe. Try again in a moment."
             action={
-              <KitButton tone="purple" onClick={() => setFailed(false)} className="h-[48px]">
+              <Key tone="purple" size={48} onClick={() => setFailed(false)}>
                 Try again
-              </KitButton>
+              </Key>
             }
           />
         </div>
@@ -139,9 +138,9 @@ export const Games = forwardRef<HTMLInputElement, { filter: Filter; onFilter: (f
             title={`No games match "${query.trim()}"`}
             body="Check the spelling, or search by provider, such as Pragmatic Play."
             action={
-              <KitButton tone="purple" onClick={() => setQuery('')} className="h-[48px]">
+              <Key tone="purple" size={48} onClick={() => setQuery('')}>
                 Clear the search
-              </KitButton>
+              </Key>
             }
           />
         </div>

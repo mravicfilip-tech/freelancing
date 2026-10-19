@@ -2,10 +2,9 @@ import { Lightning } from '@phosphor-icons/react';
 import { ACCOUNT } from '../../../data/wallet';
 import { formatAmount, formatPoints } from '../../../lib/format';
 import { GIVEAWAY } from '../../lobby/data';
-import { KitButton } from '../kit/parts';
 import { RACE, useCountdown } from '../shared/data';
 import { CHAT_RULES } from './data';
-import { CoinIcon, Label, NDialog, RankBadge, handle } from './ui';
+import { CoinIcon, Key, Label, NDialog, RankBadge, handle } from './ui';
 
 // The page's dialogs. The weekly race as Snegbet's leaderboard with your position pinned, the hot
 // streak draw, the rank road and the chat rules.
@@ -23,34 +22,33 @@ export function RaceDialog({ open, onOpenChange, onPlay }: { open: boolean; onOp
               <img src={l.avatar} alt="" className="h-[28px] w-[28px] rounded-full object-cover" />
               <span className="flex-1 truncate text-14 font-bold text-ink">{handle(l.player)}</span>
               <span className="num flex items-center gap-1 text-12 font-bold text-[rgb(var(--n-muted))]">
-                <Lightning weight="fill" className="h-4 w-4 text-[#B47CFF]" aria-hidden />
+                <Lightning weight="fill" className="h-4 w-4 text-[rgb(var(--n-lilac))]" aria-hidden />
                 {formatAmount(l.wagered, 0)} played
               </span>
-              <span className="num w-[110px] text-right text-14 font-extrabold text-gold">{formatAmount(l.prize, 0)} USDT</span>
+              <span className="num w-[110px] text-right text-14 font-extrabold text-ink">{formatAmount(l.prize, 0)} USDT</span>
             </li>
           ))}
         </ol>
       </div>
       <div className="flex flex-col gap-2">
         <Label>Your position</Label>
-        <div className="flex h-[64px] items-center gap-3 rounded-[16px] border border-[#9A4BFF]/40 bg-[#7A1FF2]/20 pl-[10px] pr-2">
+        <div className="flex h-[64px] items-center gap-3 rounded-[16px] border border-[rgb(var(--n-purple)/0.4)] bg-[rgb(var(--n-purple)/0.16)] pl-[10px] pr-2">
           <RankBadge place={RACE.you.place} />
           <img src="/art/avatars/john-sm.webp" alt="" className="h-[28px] w-[28px] rounded-full object-cover" />
           <span className="flex min-w-0 flex-1 flex-col">
             <span className="truncate text-14 font-extrabold text-ink">{handle(ACCOUNT.name)}</span>
             <span className="num text-12 font-semibold text-[rgb(var(--n-muted))]">{formatAmount(RACE.you.toTen, 0)} USDT more reaches the top ten</span>
           </span>
-          <KitButton
-            tone="primary"
-            size="md"
-            className="h-[48px]"
+          <Key
+            tone="orange"
+            size={48}
             onClick={() => {
               onOpenChange(false);
               onPlay();
             }}
           >
             Play more
-          </KitButton>
+          </Key>
         </div>
       </div>
     </NDialog>
@@ -63,7 +61,7 @@ export function GiveawayDialog({ open, onOpenChange, joined, onJoin }: { open: b
       <div className="n1-panel flex items-center justify-between rounded-[16px] p-4">
         <span className="flex flex-col gap-1">
           <Label>Prize pool</Label>
-          <span className="num flex items-center gap-2 text-28 font-extrabold text-gold">
+          <span className="num flex items-center gap-2 text-28 font-extrabold text-ink">
             <CoinIcon id="btc" size={24} />
             {GIVEAWAY.pool} BTC
           </span>
@@ -83,9 +81,9 @@ export function GiveawayDialog({ open, onOpenChange, joined, onJoin }: { open: b
           You are in. Good luck for {GIVEAWAY.ends}.
         </p>
       ) : (
-        <KitButton tone="primary" onClick={onJoin} className="h-[48px] self-start">
+        <Key tone="orange" size={48} onClick={onJoin} className="self-start">
           Join the giveaway
-        </KitButton>
+        </Key>
       )}
     </NDialog>
   );
@@ -106,7 +104,7 @@ export function RankDialog({ open, onOpenChange }: { open: boolean; onOpenChange
             </span>
           </div>
           <span role="progressbar" aria-valuenow={pct} aria-valuemin={0} aria-valuemax={100} aria-label={`Progress to ${r.next}`} className="block h-[8px] w-full overflow-hidden rounded-full bg-white/[0.1]">
-            <span className="block h-full rounded-full bg-[#B47CFF]" style={{ width: `${pct}%` }} />
+            <span className="block h-full rounded-full bg-[rgb(var(--n-purple))]" style={{ width: `${pct}%` }} />
           </span>
           <span className="text-12 font-semibold text-[rgb(var(--n-dim))]">
             Next, <span className="text-[rgb(var(--n-silver))]">{r.next}</span>. Higher weekly cashback and a bigger daily chest.

@@ -17,7 +17,7 @@ const EMOJI = ['🔥', '🎰', '💰', '🍀', '😂', '🙌', '💜', '🌴'];
 function Quote({ of }: { of: V1Message }) {
   return (
     <span className="n1-well relative flex flex-col rounded-[8px] py-[6px] pl-3 pr-2">
-      <span aria-hidden className="absolute bottom-[6px] left-[6px] top-[6px] w-[2px] rounded-full bg-[#9A4BFF]" />
+      <span aria-hidden className="absolute bottom-[6px] left-[6px] top-[6px] w-[2px] rounded-full bg-[rgb(var(--n-purple))]" />
       <span className="truncate text-12 font-bold text-ink">{of.player}</span>
       <span className="truncate text-12 text-[rgb(var(--n-muted))]">{of.text}</span>
     </span>
@@ -56,10 +56,13 @@ export function Chat({ onPlay, onRules, state, className }: { onPlay: (g: Catalo
   const list = useRef<HTMLOListElement>(null);
   const input = useRef<HTMLInputElement>(null);
 
-  // The rail opens on whole messages only. The newest that fit stay, the earlier ones fold behind a
-  // "Show earlier messages" pill, so no half message is ever cut by the header. Opening the pill
-  // shows every message and scrolls as a normal chat.
+  // The rail is always full. Messages sit on the bottom edge, newest last, and the oldest one in view
+  // fades out under the top edge, where a "Show earlier messages" pill floats over the fade (note on
+  // the empty area, round 6). Messages that are wholly above the edge are hidden from focus and from
+  // assistive tech. The count is read from the layout on every pass, and again when the list changes
+  // height and when the fonts land. Opening the pill shows every message and scrolls as a chat.
   const [earlier, setEarlier] = useState(0);
+  const [gone, setGone] = useState(0);
   const [all, setAll] = useState(false);
   const [fit, setFit] = useState(0);
   const listed = state !== 'loading' && messages.length > 0;
@@ -70,35 +73,28 @@ export function Chat({ onPlay, onRules, state, className }: { onPlay: (g: Catalo
     const ro = new ResizeObserver(() => {
       if (el.clientHeight === h) return;
       h = el.clientHeight;
-      setEarlier(0);
       setFit((f) => f + 1);
     });
     ro.observe(el);
-    return () => ro.disconnect();
+    let live = true;
+    document.fonts?.ready.then(() => live && setFit((f) => f + 1));
+    return () => {
+      live = false;
+      ro.disconnect();
+    };
   }, [listed, all]);
   useLayoutEffect(() => {
     const el = list.current;
-    if (!el) return;
-    if (all) {
-      el.scrollTo({ top: el.scrollHeight });
-      return;
-    }
-    const shown = [...el.querySelectorAll<HTMLElement>(':scope > li[data-msg]:not([data-folded])')];
-    const cs = getComputedStyle(el);
-    const room = el.clientHeight - parseFloat(cs.paddingTop) - parseFloat(cs.paddingBottom) - 38;
-    let used = 0;
-    let fits = 0;
-    for (let i = shown.length - 1; i >= 0; i--) {
-      const hgt = shown[i].offsetHeight + (fits ? 6 : 0);
-      if (used + hgt > room) break;
-      used += hgt;
-      fits++;
-    }
-    if (shown.length - fits > 0) setEarlier((e) => e + shown.length - fits);
+    if (!el || all) return;
+    const edge = el.getBoundingClientRect().top + parseFloat(getComputedStyle(el).paddingTop);
+    const tops = [...el.querySelectorAll<HTMLElement>(':scope > li[data-msg]')].map((li) => li.getBoundingClientRect());
+    setEarlier(tops.filter((r) => r.top < edge - 1).length);
+    setGone(tops.filter((r) => r.bottom <= edge + 24).length);
   }, [messages.length, fit, all, listed]);
   const openAll = () => {
     setAll(true);
     setEarlier(0);
+    setGone(0);
     requestAnimationFrame(() => list.current?.scrollTo({ top: 0 }));
   };
 
@@ -115,7 +111,7 @@ export function Chat({ onPlay, onRules, state, className }: { onPlay: (g: Catalo
   return (
     <section aria-labelledby="n1-chat-title" className={cn('n1-panel flex min-h-[0px] flex-col rounded-[20px]', className)}>
       <header className="flex h-[60px] shrink-0 items-center gap-2 border-b border-white/[0.06] px-4">
-        <ChatCircleDots weight="fill" className="h-5 w-5 text-[#C9A2FF]" aria-hidden />
+        <ChatCircleDots weight="fill" className="h-5 w-5 text-[rgb(var(--n-lilac))]" aria-hidden />
         <h2 id="n1-chat-title" className="text-16 font-extrabold text-ink">
           Chat
         </h2>
@@ -124,7 +120,7 @@ export function Chat({ onPlay, onRules, state, className }: { onPlay: (g: Catalo
           <span className="num">{ONLINE_NOW.toLocaleString('en-US')}</span>
           <span className="sr-only">players online</span>
         </span>
-        <button type="button" onClick={onRules} className="n1-ring h-8 rounded-[10px] bg-[#3A1F7A] px-3 text-12 font-extrabold text-[#D9C2FF] transition-colors hover:bg-[#4A2896]">
+        <button type="button" onClick={onRules} className="n1-ring h-8 rounded-[10px] bg-[rgb(var(--n-purple)/0.18)] px-3 text-12 font-extrabold text-[rgb(var(--n-lilac))] shadow-[inset_0_0_0_1px_rgb(190_166_255/0.16)] transition-colors hover:bg-[rgb(var(--n-purple)/0.28)]">
           Rules
         </button>
       </header>
@@ -140,32 +136,41 @@ export function Chat({ onPlay, onRules, state, className }: { onPlay: (g: Catalo
         </div>
       ) : messages.length === 0 ? (
         <div className="flex flex-1 items-center">
-          <NMessage icon={<ChatCircleDots weight="fill" className="text-[#C9A2FF]" />} title="The chat is quiet" body="Say hi to the lagoon. Messages show here the moment they land." />
+          <NMessage icon={<ChatCircleDots weight="fill" className="text-[rgb(var(--n-lilac))]" />} title="The chat is quiet" body="Say hi to the lagoon. Messages show here the moment they land." />
         </div>
       ) : (
-        <ol ref={list} aria-label="Messages" className={cn('n1-noscroll flex min-h-[0px] flex-1 flex-col gap-[6px] overflow-y-auto px-3 pb-2 pt-3', all ? '[mask-image:linear-gradient(180deg,transparent_0,#000_24px)]' : 'overflow-hidden')}>
+        <div className="relative flex min-h-[0px] flex-1 flex-col">
           {earlier > 0 && !all && (
-            <li className="mb-auto flex justify-center">
-              <button type="button" onClick={openAll} className="n1-raised n1-hoverable n1-ring flex h-8 items-center gap-2 rounded-full px-4 text-12 font-bold text-[rgb(var(--n-muted))] hover:text-ink">
+            <div className="pointer-events-none absolute inset-x-0 top-3 z-10 flex justify-center">
+              <button type="button" onClick={openAll} className="n1-raised n1-hoverable n1-ring pointer-events-auto flex h-8 items-center gap-2 rounded-full px-4 text-12 font-bold text-[rgb(var(--n-muted))] shadow-[0_8px_20px_-8px_rgb(0_0_0/0.6)] hover:text-ink">
                 <ArrowUp weight="bold" className="h-[12px] w-[12px]" aria-hidden />
                 <span>
                   Show <span className="num">{earlier}</span> earlier messages
                 </span>
               </button>
-            </li>
+            </div>
           )}
+          <ol
+            ref={list}
+            aria-label="Messages"
+            className={cn(
+              'n1-noscroll flex min-h-[0px] flex-1 flex-col gap-[6px] px-3 pb-2 pt-3',
+              all ? 'overflow-y-auto [mask-image:linear-gradient(180deg,transparent_0,#000_24px)]' : 'justify-end overflow-hidden',
+              !all && earlier > 0 && '[mask-image:linear-gradient(180deg,transparent_0,transparent_28px,#000_120px)]',
+            )}
+          >
           {messages.map((m, idx) => {
             const quoted = m.replyTo ? byId(m.replyTo) : undefined;
             return (
-              <li key={m.id} data-msg data-folded={!all && idx < earlier ? '' : undefined} className={cn('group/msg flex gap-3', !all && idx < earlier && 'hidden')}>
+              <li key={m.id} data-msg aria-hidden={!all && idx < gone ? true : undefined} className={cn('group/msg flex shrink-0 gap-3', !all && idx < gone && 'invisible')}>
                 <Avatar src={m.avatar} initials={m.initials} level={m.level} className="mt-1" />
-                <div className={cn('relative flex min-w-0 flex-1 flex-col gap-1 rounded-[12px] px-3 py-2', m.mine ? 'border border-[#9A4BFF]/35 bg-[#7A1FF2]/15' : 'bg-white/[0.035]')}>
+                <div className={cn('relative flex min-w-0 flex-1 flex-col gap-1 rounded-[12px] px-3 py-2', m.mine ? 'bg-[rgb(var(--n-purple)/0.14)] shadow-[inset_0_0_0_1px_rgb(190_166_255/0.2)]' : 'bg-white/[0.035]')}>
                   <p className="flex items-center gap-2">
-                    <span className={cn('truncate text-12 font-bold', m.mine ? 'text-[#D9C2FF]' : 'text-[rgb(var(--n-muted))]')}>{m.player}</span>
+                    <span className={cn('truncate text-12 font-bold', m.mine ? 'text-[rgb(var(--n-lilac))]' : 'text-[rgb(var(--n-muted))]')}>{m.player}</span>
                     {m.role === 'mod' && <span className="rounded-[6px] bg-[#1C4A36] px-[6px] text-12 font-extrabold uppercase leading-[18px] tracking-[0.04em] text-[#8CF0B8]">Mod</span>}
                     {m.role === 'admin' && (
                       <span className="flex shrink-0 items-center" title="Lagoon team">
-                        <SealCheck weight="fill" className="h-4 w-4 text-[#B47CFF]" aria-hidden />
+                        <SealCheck weight="fill" className="h-4 w-4 text-[rgb(var(--n-lilac))]" aria-hidden />
                         <span className="sr-only">Lagoon team</span>
                       </span>
                     )}
@@ -184,7 +189,7 @@ export function Chat({ onPlay, onRules, state, className }: { onPlay: (g: Catalo
                   </p>
                   {quoted && <Quote of={quoted} />}
                   <p className="break-words pr-6 text-14 font-medium leading-5 text-ink">
-                    {m.text.split(/(@\w+)/).map((part, i) => (part.startsWith('@') ? <span key={i} className="font-bold text-[#C9A2FF]">{part}</span> : part))}
+                    {m.text.split(/(@\w+)/).map((part, i) => (part.startsWith('@') ? <span key={i} className="font-bold text-[rgb(var(--n-lilac))]">{part}</span> : part))}
                   </p>
                   {m.winId && <WinCard id={m.winId} onPlay={onPlay} />}
                   <button
@@ -200,7 +205,8 @@ export function Chat({ onPlay, onRules, state, className }: { onPlay: (g: Catalo
               </li>
             );
           })}
-        </ol>
+          </ol>
+        </div>
       )}
 
       <form onSubmit={send} className="shrink-0 p-3 pt-1">
@@ -214,7 +220,7 @@ export function Chat({ onPlay, onRules, state, className }: { onPlay: (g: Catalo
             </button>
           </div>
         )}
-        <div className="n1-well flex items-center gap-2 rounded-[12px] p-[6px] pl-4 focus-within:border-[#9A4BFF]/60">
+        <div className="n1-well flex items-center gap-2 rounded-[12px] p-[6px] pl-4 focus-within:border-[rgb(var(--n-purple)/0.6)]">
           <label htmlFor="n1-chat-input" className="sr-only">
             Message
           </label>

@@ -878,6 +878,9 @@ async function main() {
         }
 
         const file = join(out, `${r.name}_${w}.png`);
+        // The Tab presses above scroll the page, and a full page capture keeps sticky and fixed
+        // layers at that scroll offset, so they would land mid-page. Back to the top first.
+        await page.evaluate(() => { document.activeElement && document.activeElement.blur(); window.scrollTo(0, 0); });
         await page.screenshot({ path: file, fullPage: true });
         let component = null;
         if (a.selector) {

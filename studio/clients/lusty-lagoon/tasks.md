@@ -27,13 +27,18 @@ Task format
 
 - lusty-lagoon-1 Lusty Lagoon refurb, landing page and product. Design https://www.figma.com/design/MjPhupcafS4TyCyssMHTjU/Lusty-Lagoon-Casino?node-id=83-53
   - [x] Read the Figma file and list the screens
-  - [ ] Kickoff answers from Filip
+  - [x] Kickoff answers from Filip
   - [x] Queue round 1 review notes, briefs/round-1/notes.md
   - [x] Plan round 1 from the notes in one pass, briefs/round-1/plan.md
-  - [ ] Filip answers plan decisions 1 to 6
-  - [ ] Sample brand tokens into the client README
-  - [ ] References and one argued direction
-  - [ ] Build the first screen in React
+  - [x] Filip answers plan decisions 1 to 6
+  - [x] Sample brand tokens into the client README
+  - [x] References and one argued direction
+  - [x] Foundation, tokens, parts and the /kit route
+  - [x] Build the first screen in React, the wallet payment flow
+  - [ ] /uireview on the wallet flow
+  - [ ] Filip accepts the wallet flow, then kit and golden
+  - [ ] Screen two, the lobby
+  - [ ] Screen three, the landing page
 
 ## Review
 

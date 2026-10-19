@@ -37,3 +37,10 @@ so the lesson outlives the context window.
 ```json
 { "git": { "deploymentEnabled": { "claude/*": false } } }
 ```
+
+## Figma
+
+- The Figma MCP on the Starter plan stops answering after a few dozen calls in a session, with a
+  rate limit error that blocks every Figma tool. Read the frame list once with `get_metadata`, then
+  ask `get_design_context` only for the few small nodes that hold tokens and assets, download every
+  asset URL the same turn, and never request a whole screen frame, which comes back sparse anyway.

@@ -1,0 +1,143 @@
+/* Base layout, accepted by Filip 12 Oct 2026.
+ *
+ * One scale for every client repo. Nothing here is a brand colour. A repo maps its own brand
+ * tokens onto these names, or points its tokens at them, in one small file loaded after this one.
+ *
+ *   :root { --bl-fs-14: var(--brand-font-sm); --bl-r-8: var(--brand-radius-md); }
+ *   :root { --brand-space-md: var(--bl-sp-16); }
+ *
+ * A brand that sets a value differently keeps it in clients/<client>/base-override.json, and the
+ * repo remaps the same name (--bl-r-4 becomes 3px for one client). The client README always wins.
+ * scripts/baselint.mjs reads these numbers and warns on added lines that fall off them.
+ * Desktop first. 1440 is the default width, 1280 is allowed. No phone breakpoints unless the client brief names them.
+ */
+
+:root {
+  /* Type size, px. Working text 14 and up (15 where a brand sets it, see its override). 12 is for badges, legal
+     lines and captions that are not needed to act. Nothing under 12. No 13, 15, 17, 19 or fractions. */
+  --bl-fs-12: 12px;
+  --bl-fs-14: 14px;
+  --bl-fs-16: 16px;
+  --bl-fs-18: 18px;
+  --bl-fs-20: 20px;
+  --bl-fs-24: 24px;
+  --bl-fs-28: 28px;
+  --bl-fs-32: 32px;
+  --bl-fs-40: 40px;
+  --bl-fs-48: 48px;
+
+  /* Line height, px, on a 4 grid, named for the size it pairs with. */
+  --bl-lh-12: 16px;
+  --bl-lh-14: 20px;
+  --bl-lh-16: 24px;
+  --bl-lh-18: 28px;
+  --bl-lh-20: 28px;
+  --bl-lh-24: 32px;
+  --bl-lh-28: 36px;
+  --bl-lh-32: 40px;
+  --bl-lh-40: 48px;
+  --bl-lh-48: 56px;
+
+  /* Weight. Display is light, never bold. */
+  --bl-fw-light: 300;
+  --bl-fw-regular: 400;
+  --bl-fw-medium: 500;
+  --bl-fw-strong: 600;
+
+  /* Letter spacing. Uppercase labels only get tracking. Display never goes below minus 0.01em. */
+  --bl-ls-0: 0;
+  --bl-ls-label: 0.04em;
+  --bl-ls-display: -0.01em;
+
+  /* Spacing, px. 2 is for hairline nudges only. */
+  --bl-sp-2: 2px;
+  --bl-sp-4: 4px;
+  --bl-sp-8: 8px;
+  --bl-sp-12: 12px;
+  --bl-sp-16: 16px;
+  --bl-sp-24: 24px;
+  --bl-sp-32: 32px;
+  --bl-sp-48: 48px;
+  --bl-sp-64: 64px;
+  --bl-sp-96: 96px;
+  /* Defaults. Control gap 8, card padding 24 (dense 16), text to button 24, group heading to
+     cards 24, section gap 48. */
+  --bl-gap-control: var(--bl-sp-8);
+  --bl-pad-card: var(--bl-sp-24);
+  --bl-pad-card-dense: var(--bl-sp-16);
+  --bl-gap-card-action: var(--bl-sp-24);
+  --bl-gap-group-heading: var(--bl-sp-24);
+  --bl-gap-section: var(--bl-sp-48);
+
+  /* Radius, px. One radius per control family. */
+  --bl-r-0: 0;
+  --bl-r-4: 4px;
+  --bl-r-8: 8px;
+  --bl-r-12: 12px;
+  --bl-r-16: 16px;
+  --bl-r-24: 24px;
+  --bl-r-full: 9999px;
+
+  /* Control height, px. Controls in one row share one tier. 24 by 24 is the hard minimum target. */
+  --bl-h-32: 32px;
+  --bl-h-36: 36px;
+  --bl-h-40: 40px;
+  --bl-h-44: 44px;
+  --bl-target-min: 24px;
+
+  /* Icons. Box is a multiple of 4, stroke is 1.5. */
+  --bl-icon-16: 16px;
+  --bl-icon-20: 20px;
+  --bl-icon-24: 24px;
+  --bl-icon-32: 32px;
+  --bl-icon-stroke: 1.5;
+
+  /* Borders. Colour comes from the brand border token, 3 to 1 on field edges. */
+  --bl-border-1: 1px;
+  --bl-border-2: 2px;
+
+  /* Shadow levels. 0 none, 1 card, 2 menu (add a 1px border), 3 modal. No coloured shadows
+     unless the brand uses them. */
+  --bl-shadow-0: none;
+  --bl-shadow-1: 0 1px 2px rgba(0, 0, 0, 0.08);
+  --bl-shadow-2: 0 2px 6px rgba(0, 0, 0, 0.15);
+  --bl-shadow-3: 0 8px 24px rgba(0, 0, 0, 0.16);
+
+  /* Z scale. */
+  --bl-z-0: 0;
+  --bl-z-10: 10; /* sticky */
+  --bl-z-20: 20; /* dropdown */
+  --bl-z-30: 30; /* drawer */
+  --bl-z-40: 40; /* modal */
+  --bl-z-50: 50; /* toast */
+  --bl-z-60: 60; /* tooltip */
+
+  /* Focus ring. Shown on real Tab only, 3 to 1 against what is around it. The repo sets the
+     colour from its brand README. */
+  --bl-focus-color: currentColor;
+  --bl-focus-width: 2px;
+  --bl-focus-offset: 2px;
+  --bl-focus: var(--bl-focus-width) solid var(--bl-focus-color);
+
+  /* Canvas and desktop widths. Full width layouts, never a narrow centred column. */
+  --bl-w-1280: 1280px;
+  --bl-w-1440: 1440px;
+  --bl-w-1600: 1600px;
+  --bl-w-1920: 1920px;
+  --bl-canvas-max: 1600px;
+  --bl-cols: 12;
+  --bl-gutter: 24px;
+
+  /* Shell. */
+  --bl-sidebar-open: 240px;
+  --bl-sidebar-collapsed: 72px;
+  --bl-topbar: 64px;
+  --bl-page-pad: 24px;
+}
+
+/* Page padding is 24 at 1280 and 32 at 1440 and up. */
+@media (min-width: 1440px) {
+  :root {
+    --bl-page-pad: 32px;
+  }
+}

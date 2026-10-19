@@ -1,9 +1,8 @@
 import { Link } from 'react-router-dom';
-import { BrandText } from '../../../components/ui/BrandText';
 import { useWallet } from '../../wallet/store';
 import { cn } from '../../../lib/cn';
 
-// The 80 wide icon rail. The mark sits on top, the full wordmark lives in the stage. The active item
+// The 80 wide icon rail. The wordmark lives in the floating top bar, so the rail starts with the menu. The active item
 // takes the accent well, as in the sidebar's menu.
 const ITEMS = [
   { to: '/lobby', label: 'Lobby', icon: 'nav-lobby', active: true },
@@ -19,12 +18,7 @@ export function Rail() {
   return (
     <aside className="relative z-20 w-[80px] shrink-0 self-stretch border-r border-side-line bg-sunken">
       <div className="sticky top-0 flex h-screen flex-col items-center pt-4">
-      <Link to="/lobby" aria-label="Lusty Lagoon, go to the lobby" className="flex h-[48px] w-[48px] items-center justify-center rounded-xl">
-        <BrandText drop={2} rim={1} className="text-[28px] leading-none">
-          LL
-        </BrandText>
-      </Link>
-      <nav aria-label="Main" className="mt-8 w-full">
+      <nav aria-label="Main" className="mt-[84px] w-full">
         <ul className="flex flex-col items-center gap-3">
           {ITEMS.map((it) => (
             <li key={it.to} className="w-full px-2">

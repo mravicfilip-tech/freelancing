@@ -68,7 +68,7 @@ export function ChatPanel({ onClose, className }: { onClose?: () => void; classN
         )}
       </header>
 
-      <ol ref={list} aria-label="Messages" className="k-no-scrollbar mt-3 flex min-h-0 flex-1 flex-col gap-4 overflow-y-auto px-1 pb-2">
+      <ol ref={list} aria-label="Messages" className="k-no-scrollbar mt-1 flex min-h-0 flex-1 flex-col gap-4 overflow-y-auto px-1 pb-2 pt-4 [mask-image:linear-gradient(180deg,transparent_0,#000_32px)]">
         {messages.map((m) => (
           <li key={m.id} className="flex gap-3">
             <Avatar m={m} />

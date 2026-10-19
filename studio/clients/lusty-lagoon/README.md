@@ -21,11 +21,15 @@ Sampled from the Figma file on 2026-10-19, since it defines no variables or styl
 | ink-3 | `#9D86C2` | Muted text, 5.58 to 1, replaces the Figma `#8A6FB1` at 4.20 |
 | brand | `#8D26E7` | The wordmark's purple copy only |
 | accent | `#B47CFF` | Selection, focus ring, active tab, progress fill, 6.12 to 1 |
-| gold | `#F4D543` | Primary action, once per view, dark text `#1A0F2B` at 12.59 to 1 |
+| gold | `#F4D543` | Prizes, money amounts, count badges, dark text `#1A0F2B` at 12.59 to 1. No longer the primary action, see the orange line below |
 | tonal | `#3B2366` | Secondary action, edge `#5E4785` |
 | pending | `#F19920` | Pending, from the Figma chip |
 | success | `#3DD68C` | Completed, money in |
 | danger | `#FF7A88` | Declined, errors |
+
+Primary action. Orange on every route, at most one per section, per the taste log entry of
+2026-10-19 16:45. The token is set by Filip's pick on the round 4 button board and is not on file
+yet. Until it lands in code, the gold buttons in the build are the old rule, not the brand.
 
 Type. Bai Jamjuree 600 and 700 for display and the wordmark. Switzer 400 to 700 for UI text. Both
 self-hosted in `lusty-lagoon/public/fonts`. Exo 2 appears in a few Figma labels and is not carried.

@@ -61,7 +61,16 @@ Task format
   - [x] Board of the five for Filip's pick
   - [x] Variant switcher on every variant and the baseline
   - [x] Public link on Vercel, production on the lusty-lagoon project
-  - [ ] Filip's feedback on the live link
+  - [x] Filip's feedback on the live link, two Looms and a Dribbble image
+  - [x] Queue round 4 notes, briefs/round-4/notes.md, 31 notes
+  - [x] Plan round 4, briefs/round-4/plan.md
+  - [ ] Filip answers D1 to D5 and says go
+  - [ ] Button board, Filip picks a number
+  - [ ] Sidebar board, Filip picks a number
+  - [ ] Shared kit lines, type ramp, hover, balance menu, orange primary
+  - [ ] Variant 2 leaves the routes and the switcher
+  - [ ] Variants 1, 3, 4 and 5 reworked per the plan
+  - [ ] Shots, checks and /uireview on the round
   - [ ] Filip picks a variant
 
 ## Review

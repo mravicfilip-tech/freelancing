@@ -4,6 +4,32 @@ Screens Filip sent as references. Each set has a status. A reference is not a ru
 `/uireview` critic follow `taste.md`, and nothing here overrides it or the Figma 1 to 1 bar until Filip
 says what to take from a set. Where a reference uses a treatment the taste log rejects, the taste log wins.
 
+## 2026-10-19, two dark UI shots from Dribbble, shown in the round 4 Loom
+
+Status. ACCEPTED as what better UI means, in Filip's words "to me this is better UI. By UI I mean how
+the layouts and elements are going ... way better, way cleaner". Saved in `2026-10-19-round-4/`.
+Which layer they govern, chrome only or everything, is decision D1 in `briefs/round-4/plan.md`,
+open until Filip answers.
+
+### dribbble-task-manager-card-dark.webp, Task Manager Card Dark UI by Mitesh Samal
+
+- One card on a near black ground, 24px radius, a 1px light edge and one soft light at the top.
+- Title row with an icon square, then a green progress bar with "60% Completed" and "3 Days left" in
+  small muted type, avatars and start and end dates.
+- Accordion rows, each a dark pill with its title, a status ring and a task count. The open row shows
+  checkbox items with a purple check, an "In progress" chip in indigo, and avatars at the right.
+- Colour only for status. Everything else is white, grey and space.
+
+### dribbble-crypto-trading-dashboard-dark.webp, Modern Crypto Trading Dashboard Dark UI by Mr Abadul
+
+- Top bar of pill tabs with the active one outlined, a round search, round icon buttons and an account
+  pill.
+- Total Balance panel with one purple lit bar in a chart of dark glass bars, a big 0.87% figure and a
+  muted line under it.
+- A quotes table in its own panel, small rows, red and green only on the numbers that move.
+- A trades table with its header row inside one rounded sunken bar.
+- Every panel carries a 1px light edge and a faint inner light. No card has a gradient fill.
+
 ## 2026-10-19, ten casino products, saved on Filip's "Memorize these screenshots" and "Ok these too"
 
 Status. SAVED, NO DECISION. Filip has not said what these are for. Ask before any of it shapes a screen.

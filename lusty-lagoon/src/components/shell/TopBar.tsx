@@ -1,7 +1,10 @@
-import { Link, useNavigate } from 'react-router-dom';
+import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Bell, CaretDown, Gear, MagnifyingGlass, SignOut, UserPlus, Wallet } from '@phosphor-icons/react';
 import { Avatar } from '../ui/Avatar';
 import { Menu, MenuContent, MenuItem, MenuSeparator, MenuTrigger } from '../ui/Menu';
+import { Popover, PopoverContent, PopoverTrigger } from '../ui/Popover';
+import { NotificationsPanel, useUnreadCount } from '../../features/account';
 import usdt from 'cryptocurrency-icons/svg/color/usdt.svg';
 import { ACCOUNT } from '../../data/wallet';
 import { formatAmount } from '../../lib/format';
@@ -10,6 +13,8 @@ import { useWallet } from '../../features/wallet/store';
 export function TopBar() {
   const { balance } = useWallet();
   const navigate = useNavigate();
+  const unread = useUnreadCount();
+  const [bellOpen, setBellOpen] = useState(false);
   return (
     <header className="sticky top-0 z-10 flex h-16 shrink-0 items-center gap-6 border-b border-line bg-page px-[var(--bl-page-pad)]">
       <form role="search" className="flex h-10 w-full max-w-sm items-center gap-2 rounded-lg border border-line bg-sunken px-3 focus-within:border-accent" onSubmit={(e) => e.preventDefault()}>
@@ -31,10 +36,23 @@ export function TopBar() {
       </div>
 
       <div className="ml-auto flex items-center gap-2">
-        <Link to="/notifications" aria-label="Notifications, 1 new" className="relative flex h-10 w-10 items-center justify-center rounded-lg text-ink2 hover:bg-raised hover:text-ink">
-          <Bell className="h-6 w-6" aria-hidden />
-          <span aria-hidden className="absolute right-2 top-2 h-[var(--bl-sp-8)] w-2 rounded-full bg-gold" />
-        </Link>
+        <Popover open={bellOpen} onOpenChange={setBellOpen}>
+          <PopoverTrigger
+            aria-label={unread ? `Notifications, ${unread} unread` : 'Notifications'}
+            className="relative flex h-10 w-10 items-center justify-center rounded-lg text-ink2 hover:bg-raised hover:text-ink data-[state=open]:bg-raised data-[state=open]:text-ink"
+          >
+            <Bell className="h-6 w-6" aria-hidden />
+            {unread > 0 && <span aria-hidden className="absolute right-2 top-2 h-[var(--bl-sp-8)] w-2 rounded-full bg-accent" />}
+          </PopoverTrigger>
+          <PopoverContent>
+            <NotificationsPanel
+              onNavigate={(to) => {
+                setBellOpen(false);
+                navigate(to);
+              }}
+            />
+          </PopoverContent>
+        </Popover>
         <Menu>
           <MenuTrigger className="flex h-10 items-center gap-2 rounded-lg pl-1 pr-2 hover:bg-raised data-[state=open]:bg-raised" aria-label={`Account menu, ${ACCOUNT.name}`}>
             <Avatar initials={ACCOUNT.initials} size="sm" />

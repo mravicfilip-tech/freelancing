@@ -111,7 +111,7 @@ export function LockedWithdraw() {
         lead="It takes about 2 minutes with a photo ID. Deposits and play are open while you wait."
       />
       <Button asChild size="lg">
-        <Link to="/account">Verify identity</Link>
+        <Link to="/account?section=account">Verify identity</Link>
       </Button>
     </div>
   );

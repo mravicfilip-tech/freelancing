@@ -44,3 +44,10 @@ so the lesson outlives the context window.
   rate limit error that blocks every Figma tool. Read the frame list once with `get_metadata`, then
   ask `get_design_context` only for the few small nodes that hold tokens and assets, download every
   asset URL the same turn, and never request a whole screen frame, which comes back sparse anyway.
+
+## Builder worktrees
+
+- A helper started with worktree isolation gets a branch off the repo's default branch, not off the
+  session branch. Telling it to merge the session branch in drags every newer default branch commit
+  into its branch. Take a builder's work with `git cherry-pick <its commits>`, never `git merge` of
+  its branch, and read `git show --stat` first so only its own folders come across.

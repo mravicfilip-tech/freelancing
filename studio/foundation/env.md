@@ -23,8 +23,10 @@ so the lesson outlives the context window.
 
 ## Network
 
-- The agent proxy blocks `vercel.app`, so a preview cannot be opened from inside the container. Check
-  a deployment through the Vercel API, as `studio/scripts/deploy.mjs` does, and send Filip the link to click.
+- The agent proxy has blocked `vercel.app` in some sessions, so a preview could not be opened from
+  inside the container. Check a deployment through the Vercel API, as `studio/scripts/deploy.mjs`
+  does, and send Filip the link to click. On 19 Oct 2026 it was open, and curl and a shot of the
+  live link both worked, so try a curl first.
 
 ## Vercel Hobby
 
@@ -32,6 +34,14 @@ so the lesson outlives the context window.
   cap returns a 402 that blocks production too.
 - A git deploy of a commit an agent authored is refused. Deploy with
   `node studio/scripts/deploy.mjs --dir <project>`, which uploads a copy with no git history.
+- `deploy.mjs` printed "vercel deploy failed" on 19 Oct 2026 for a deployment that was READY and
+  aliased. The CLI writes its Production line to stderr, which the script does not read. Check the
+  state with the API, `GET /v13/deployments/<host>`, before deploying again.
+- Auto mode refuses a production deploy and any change to Deployment Protection, whatever Filip
+  types in chat. He switches the mode dropdown to Accept edits, then the deploy asks and he approves.
+- An app that imports from `studio/` at build time, such as a tailwind config that reads the
+  preset, cannot build on Vercel from its own folder. Build locally and deploy `dist`, with a
+  `vercel.json` holding the SPA rewrite inside `public/` so it lands in `dist`.
 - Turn off git deploys for agent branches in each project's `vercel.json`.
 
 ```json

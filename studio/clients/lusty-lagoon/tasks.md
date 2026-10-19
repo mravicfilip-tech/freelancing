@@ -51,7 +51,7 @@ Task format
   - [ ] Account settings, all 4 states
   - [ ] Mods across the whole product
 
-- lusty-lagoon-2 Five dashboard variants, one page each, from the ten references. Brief briefs/round-3/variants-brief.md, routes /variants/1 to /variants/5
+- lusty-lagoon-2 Five dashboard variants, one page each, from the ten references. Brief briefs/round-3/variants-brief.md. Live https://lusty-lagoon.vercel.app/variants, commit f8ced30
   - [x] Save the ten references with a status
   - [x] Shared data, routes and the builder brief
   - [x] Build the five variants, rejected on execution, layouts kept
@@ -59,6 +59,9 @@ Task format
   - [x] Rebuild variants 2 to 5 on the kit
   - [x] Review and polish each against the others
   - [x] Board of the five for Filip's pick
+  - [x] Variant switcher on every variant and the baseline
+  - [x] Public link on Vercel, production on the lusty-lagoon project
+  - [ ] Filip's feedback on the live link
   - [ ] Filip picks a variant
 
 ## Review

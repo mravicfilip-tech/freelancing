@@ -33,7 +33,9 @@
       "repos": [
         "lusty-lagoon"
       ],
-      "previewProjects": []
+      "previewProjects": [
+        "lusty-lagoon"
+      ]
     }
   ]
 }

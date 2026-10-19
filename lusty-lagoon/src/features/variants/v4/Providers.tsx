@@ -1,11 +1,10 @@
-import { useRef } from 'react';
 import { Buildings, Check } from '@phosphor-icons/react';
 import { cn } from '../../../lib/cn';
-import { RailControls, SectionHead } from '../kit/parts';
 import { PROVIDER_LIST } from './data';
 import { WRAP } from './icons';
+import { SectionTab } from './ui';
 
-// Each studio set as its own wordmark, so the tiles read like HugeWin's logo row and not a list.
+// Each studio set as its own wordmark, so the cells read like a logo row and not a list.
 const MARK: Record<string, string> = {
   'Pragmatic Play': 'text-16 font-extrabold uppercase tracking-[0.04em]',
   Rotativka: 'text-20 font-bold italic tracking-[0.02em]',
@@ -18,43 +17,45 @@ const MARK: Record<string, string> = {
 };
 const markOf = (name: string) => MARK[name] ?? 'text-16 font-extrabold uppercase tracking-[0.06em]';
 
-// HugeWin's providers row, edged wordmark tiles on one scrolling line, in the sans face since the
-// display face is kept for the 40 and 64 headlines. Picking a studio sets the
-// provider filter and scrolls to the grid, picking it again lifts the filter.
+// The providers, under an angled tab head, as two whole rows of six sunken cells with nothing cut
+// off at either width. Picking a studio sets the provider filter and scrolls to the grid, picking it
+// again lifts the filter. The picked cell takes the accent line along its floor, the way a live cell
+// carries its rarity line.
 export function Providers({ provider, onPick }: { provider: string; onPick: (name: string) => void }) {
-  const ref = useRef<HTMLUListElement>(null);
-  const move = (d: 1 | -1) => ref.current?.scrollBy({ left: d * 432, behavior: 'smooth' });
   return (
-    <section aria-labelledby="providers-title" className={cn(WRAP, 'flex flex-col gap-4 pb-12 pt-16')}>
-      <SectionHead id="providers-title" icon={<Buildings weight="fill" className="text-[#C9A2FF]" />} title="Providers" sub={`${PROVIDER_LIST.length} studios on the floor`}>
-        <RailControls label="Providers" onPrev={() => move(-1)} onNext={() => move(1)} />
-      </SectionHead>
-      <ul ref={ref} className="k-no-scrollbar flex gap-3 overflow-x-auto [mask-image:linear-gradient(90deg,#000_calc(100%-48px),transparent)]">
+    <section aria-labelledby="providers-title" className={cn(WRAP, 'pb-12 pt-16')}>
+      <SectionTab
+        id="providers-title"
+        icon={<Buildings weight="fill" />}
+        title="Providers"
+        meta={
+          <p className="ml-2 text-14 font-medium text-[rgb(var(--v4-muted))]">
+            <span className="num font-bold text-ink">{PROVIDER_LIST.length}</span> studios on the floor
+          </p>
+        }
+      />
+      <ul className="mt-6 grid grid-cols-6 gap-[1px] overflow-hidden rounded-[4px] border border-white/[0.05] bg-white/[0.05]">
         {PROVIDER_LIST.map((p) => {
           const on = provider === p.name;
           return (
-            <li key={p.name} className="shrink-0">
+            <li key={p.name}>
               <button
                 type="button"
                 aria-pressed={on}
                 aria-label={`${p.name}, ${p.count} ${p.count === 1 ? 'game' : 'games'}`}
                 onClick={() => onPick(p.name)}
                 className={cn(
-                  'relative flex h-[84px] w-[200px] flex-col items-center justify-center gap-1 rounded-[16px] border outline-none transition-colors duration-200 focus-visible:ring-2 focus-visible:ring-[#B47CFF]',
-                  on ? 'border-[#B47CFF]/70 bg-[#8D3BF0]/20' : 'border-white/[0.07] bg-[rgb(var(--k-item))] hover:border-white/[0.16] hover:bg-[rgb(var(--k-item-hover))]',
+                  'v4-cell group flex h-[88px] w-full flex-col items-center justify-center gap-1 outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-[#B47CFF]',
+                  on ? 'v4-r-purple' : '[--hue:150_147_171] after:opacity-0 hover:after:opacity-60',
                 )}
               >
-                <span aria-hidden className={cn('max-w-[176px] truncate font-sans leading-6 text-ink', markOf(p.name))}>
+                <span aria-hidden className={cn('max-w-[90%] truncate font-sans leading-6', on ? 'text-ink' : 'text-[rgb(var(--v4-soft))] group-hover:text-ink', markOf(p.name))}>
                   {p.name}
                 </span>
-                <span aria-hidden className="num text-12 font-semibold text-[rgb(var(--k-dim))]">
+                <span aria-hidden className="num flex items-center gap-1 text-12 font-bold uppercase tracking-[0.08em] text-[rgb(var(--v4-label))]">
+                  {on && <Check weight="bold" className="h-[12px] w-[12px] text-[#C9A2FF]" />}
                   {p.count} {p.count === 1 ? 'game' : 'games'}
                 </span>
-                {on && (
-                  <span aria-hidden className="absolute right-2 top-2 flex h-6 w-6 items-center justify-center rounded-full bg-[#B47CFF] text-page">
-                    <Check weight="bold" className="h-4 w-4" />
-                  </span>
-                )}
               </button>
             </li>
           );

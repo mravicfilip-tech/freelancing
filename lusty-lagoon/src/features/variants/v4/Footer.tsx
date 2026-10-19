@@ -20,27 +20,37 @@ const SOCIAL = [
   { l: 'Discord', i: <DiscordLogo weight="bold" className="h-5 w-5" aria-hidden /> },
 ];
 
-// The floor's footer, one panel with the wordmark, the money and help links, the socials and the
-// age line.
+// The floor's footer, CS2's utility bar turned into one panel with a clipped corner. The wordmark,
+// the money and help links as quiet grey text, the socials in slate squares and the age mark.
 export function Footer() {
   return (
     <footer className={cn(WRAP, 'pb-6')}>
-      <div className="k-surface flex items-center gap-8 rounded-[20px] px-8 py-6">
+      <div className="v4-cut flex h-[88px] items-center gap-8 bg-[rgb(var(--v4-top))] px-8 [--cut:16px]">
         <Logo className="text-[20px] leading-[22px]" />
-        <nav aria-label="Footer" className="flex flex-wrap items-center gap-2">
+        <span aria-hidden className="h-8 w-[1px] bg-white/[0.08]" />
+        <nav aria-label="Footer" className="flex items-center gap-1">
           {LINKS.map((l) => (
-            <Link key={l.to} to={l.to} className="flex h-11 items-center rounded-[12px] px-4 text-14 font-semibold text-[rgb(var(--k-muted))] outline-none transition-colors hover:bg-[rgb(var(--k-item))] hover:text-ink focus-visible:ring-2 focus-visible:ring-[#B47CFF]">
+            <Link key={l.to + l.label} to={l.to} className="flex h-10 items-center rounded-[4px] px-3 text-14 font-semibold text-[rgb(var(--v4-muted))] outline-none transition-colors hover:text-ink focus-visible:ring-2 focus-visible:ring-[#B47CFF]">
               {l.label}
             </Link>
           ))}
         </nav>
         <div className="ml-auto flex items-center gap-2">
           {SOCIAL.map((x) => (
-            <a key={x.l} href="#" aria-label={`Lusty Lagoon on ${x.l}`} className="flex h-11 w-11 items-center justify-center rounded-[12px] border border-white/[0.07] text-[rgb(var(--k-muted))] outline-none transition-colors hover:border-white/[0.14] hover:bg-[rgb(var(--k-item))] hover:text-ink focus-visible:ring-2 focus-visible:ring-[#B47CFF]">
+            <a
+              key={x.l}
+              href="#"
+              onClick={(e) => e.preventDefault()}
+              aria-label={`Lusty Lagoon on ${x.l}`}
+              className="v4-toplight flex h-10 w-10 items-center justify-center rounded-[4px] border border-white/[0.07] bg-[rgb(var(--v4-raised))] text-[rgb(var(--v4-muted))] outline-none transition-colors hover:border-white/[0.14] hover:text-ink focus-visible:ring-2 focus-visible:ring-[#B47CFF]"
+            >
               {x.i}
             </a>
           ))}
-          <span className="ml-2 flex h-11 items-center rounded-[12px] border border-white/[0.12] px-3 text-14 font-bold text-[rgb(var(--k-muted))]">18+</span>
+          <span className="ml-3 flex h-10 items-center gap-2 border-l border-white/[0.08] pl-[20px] text-12 font-bold uppercase tracking-[0.08em] text-[rgb(var(--v4-label))]">
+            <span className="flex h-[28px] items-center rounded-[3px] border border-white/[0.2] px-2 text-14 font-extrabold tracking-normal text-ink">18+</span>
+            Play responsibly
+          </span>
         </div>
       </div>
     </footer>

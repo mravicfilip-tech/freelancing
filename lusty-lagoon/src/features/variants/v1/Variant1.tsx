@@ -1,4 +1,4 @@
-import { useMemo, useState, type ReactNode } from 'react';
+import { useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import {
   CaretRight,
@@ -10,7 +10,6 @@ import {
   Headset,
   InstagramLogo,
   Lightning,
-  List,
   MagnifyingGlass,
   Question,
   Sparkle,
@@ -33,7 +32,7 @@ import { formatAmount } from '../../../lib/format';
 import { cn } from '../../../lib/cn';
 import { EXPLORE_ORDER, GIVEAWAY } from '../../lobby/data';
 import { DAILY_CHEST, RACE, ROOMS, useCountdown, useVariantState } from '../shared/data';
-import { BalancePill, ChipRow, CountdownDigits, CoverCard, IconSquare, KitButton, NavItem, PromoMini, RailControls, SectionHead, SectionLabel, VividTile } from '../kit/parts';
+import { BalancePill, ChipRow, CountdownLine, CoverCard, KitButton, LiveDot, NavItem, Panel, PromoMini, RailControls, SectionHead, SectionLabel, SegmentBar, VividTile } from '../kit/parts';
 import { BellSquare, SearchBox, UserBox } from '../kit/TopParts';
 import { ChatPanel } from '../kit/ChatPanel';
 import { BetsBoard, WinsStrip } from '../kit/Boards';
@@ -56,16 +55,26 @@ const ORDERED = [...EXPLORE_ORDER.map((id) => gameById(id)!), ...GAMES.filter((g
 const countOf = (c: Filter) => (c === 'all' ? ORDERED.length : ORDERED.filter((g) => g.category === c).length);
 const players = (c: Category) => ROOMS.find((r) => r.id === c)?.players ?? 0;
 
+/** Columns of the cover grid, 5 below 1920 and 7 from 1920, the same break the grid classes use. */
+function useCoverColumns() {
+  const q = '(min-width: 1920px)';
+  const [wide, setWide] = useState(() => window.matchMedia(q).matches);
+  useEffect(() => {
+    const m = window.matchMedia(q);
+    const on = () => setWide(m.matches);
+    m.addEventListener('change', on);
+    return () => m.removeEventListener('change', on);
+  }, []);
+  return wide ? 7 : 5;
+}
+
 function TopBar({ onDeposit, onRace }: { onDeposit: () => void; onRace: () => void }) {
   const { balance } = useWallet();
   const race = useCountdown(RACE.endsInSeconds);
   return (
-    <header className="sticky top-0 z-10 flex h-[84px] items-center gap-4 bg-page px-4">
-      <div className="flex w-[240px] shrink-0 items-center gap-4">
-        <IconSquare label="Menu">
-          <List weight="bold" className="h-6 w-6" aria-hidden />
-        </IconSquare>
-        <Link to="/variants/1" aria-label="Lusty Lagoon, lobby" className="rounded-lg">
+    <header className="k-glass sticky top-0 z-10 flex h-[84px] items-center gap-4 px-4">
+      <div className="flex w-[240px] shrink-0 items-center px-3">
+        <Link to="/variants/1" aria-label="Lusty Lagoon, lobby" className="rounded-lg outline-none focus-visible:ring-2 focus-visible:ring-[#B47CFF]">
           <Logo className="text-[20px] leading-[22px]" />
         </Link>
       </div>
@@ -93,15 +102,32 @@ function TopBar({ onDeposit, onRace }: { onDeposit: () => void; onRace: () => vo
 function Sidebar({ filter, onFilter, onGiveaway }: { filter: Filter; onFilter: (f: Filter) => void; onGiveaway: () => void }) {
   const { transactions } = useWallet();
   const pending = transactions.filter((t) => t.status === 'pending').length;
+  // The sidebar never clips and never scrolls inside itself. It sticks under the top bar, and when
+  // it is taller than the window it sticks by its bottom edge so every row can be reached.
+  const ref = useRef<HTMLElement>(null);
+  const [top, setTop] = useState(100);
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    const fit = () => setTop(Math.min(100, Math.round(window.innerHeight - el.offsetHeight - 16)));
+    fit();
+    const ro = new ResizeObserver(fit);
+    ro.observe(el);
+    window.addEventListener('resize', fit);
+    return () => {
+      ro.disconnect();
+      window.removeEventListener('resize', fit);
+    };
+  }, []);
   return (
-    <aside className="sticky top-[84px] flex h-[calc(100vh-100px)] w-[240px] shrink-0 flex-col gap-4 overflow-y-auto rounded-[20px] bg-[rgb(var(--k-panel))] p-3 k-no-scrollbar">
+    <aside ref={ref} style={{ top }} className="k-surface sticky flex w-[240px] shrink-0 flex-col gap-4 self-start rounded-[20px] p-3">
       <div className="grid grid-cols-2 gap-2">
         <PromoMini hue="purple" label={['Daily', 'chest']} art="/art/lobby/giveaway-chest.webp" to="#chest" />
         <PromoMini hue="blue" label={['Rank', 'road']} art="/brand/rank-bronze.png" artClass="h-[44px]" to="/variants/3" />
         <PromoMini hue="gold" label={['Hot', 'streak']} art="/art/landing/pillar-gems-b.webp" artClass="h-[60px]" onClick={onGiveaway} />
         <PromoMini hue="green" label={['Refer', 'friends']} art="/art/money/refer-megaphone.webp" artClass="h-[64px] top-[60%]" to="/refer" />
       </div>
-      <nav aria-label="Games" className="flex flex-col gap-2">
+      <nav aria-label="Games" className="flex flex-col gap-1 [&>a]:h-11 [&>button]:h-11">
         <SectionLabel>Games</SectionLabel>
         {NAV_GAMES.map((n) => (
           <NavItem
@@ -114,7 +140,7 @@ function Sidebar({ filter, onFilter, onGiveaway }: { filter: Filter; onFilter: (
           />
         ))}
       </nav>
-      <nav aria-label="Account" className="flex flex-col gap-2">
+      <nav aria-label="Account" className="flex flex-col gap-1 [&>a]:h-11 [&>button]:h-11">
         <SectionLabel>Others</SectionLabel>
         <NavItem
           to="/wallet/deposit"
@@ -133,15 +159,15 @@ function Sidebar({ filter, onFilter, onGiveaway }: { filter: Filter; onFilter: (
         <NavItem to="/refer" icon={<UserPlus weight="fill" />} label="Refer a friend" />
         <NavItem to="/faq" icon={<Question weight="fill" />} label="FAQ" />
       </nav>
-      <div className="relative mt-auto shrink-0 overflow-hidden rounded-[18px] k-hue-gold p-4 pb-[20px]">
-        <p className="relative z-10 w-[130px] font-display text-[22px] font-bold uppercase leading-[24px] text-ink">Hot streak giveaway</p>
+      <div className="relative shrink-0 overflow-hidden rounded-[18px] k-hue-gold p-4 pb-6">
+        <p className="relative z-10 w-[130px] text-20 font-extrabold uppercase leading-[24px] tracking-[-0.01em] text-ink">Hot streak giveaway</p>
         <p className="relative z-10 mt-1 w-[150px] text-14 font-semibold text-ink/90">
           Win a share of {GIVEAWAY.pool} BTC
         </p>
         <KitButton tone="white" size="sm" onClick={onGiveaway} className="relative z-10 mt-4 h-10 px-[20px]">
           Join now
         </KitButton>
-        <img src="/art/lobby/giveaway-chest.webp" alt="" className="pointer-events-none absolute -bottom-4 -right-8 w-[112px] rotate-[8deg]" />
+        <img src="/art/lobby/giveaway-chest.webp" alt="" className="pointer-events-none absolute bottom-3 right-3 w-[80px]" />
       </div>
       <div className="grid shrink-0 grid-cols-4 gap-2">
         {[
@@ -160,25 +186,29 @@ function Sidebar({ filter, onFilter, onGiveaway }: { filter: Filter; onFilter: (
 }
 
 function Hero({ onPlay }: { onPlay: () => void }) {
+  const today = DAILY_CHEST.days.find((d) => d.status === 'today')!;
   return (
-    <section aria-labelledby="v1-title" className="k-hero-purple relative isolate h-[364px] overflow-hidden rounded-[24px]">
+    <section aria-labelledby="v1-title" className="k-hero-purple relative isolate h-[400px] overflow-hidden rounded-[24px] border border-white/[0.12] w1920:h-[440px]">
       <span aria-hidden className="k-mark absolute inset-0 -z-10" />
-      <img src="/art/landing/pillar-flowers-right.webp" alt="" className="pointer-events-none absolute bottom-[-24px] right-[150px] -z-10 h-[330px] opacity-80" />
-      <img src="/art/landing/girl-lei.webp" alt="" className="pointer-events-none absolute bottom-[-56px] right-[-8px] h-[430px] w-auto max-w-none" />
-      <div className="relative flex h-full w-[62%] flex-col justify-between p-8">
+      <span aria-hidden className="pointer-events-none absolute -bottom-[120px] right-[-60px] -z-10 h-[520px] w-[520px] rounded-full bg-[radial-gradient(closest-side,rgb(206_150_255/0.55),rgb(160_90_255/0.22)_55%,transparent)] w1920:right-[40px]" />
+      <img src="/art/landing/girl-lei.webp" alt="" className="pointer-events-none absolute bottom-0 right-[12px] h-[calc(100%-32px)] w-auto max-w-none w1920:right-[48px]" />
+      <div className="relative flex h-full w-[60%] flex-col justify-between p-8 w1920:w-[72%]">
         <div className="flex flex-col gap-4">
-          <h1 id="v1-title" className="font-display text-[40px] font-bold uppercase leading-[40px] text-ink">
+          <h1 id="v1-title" className="font-display text-[40px] font-bold uppercase leading-[44px] tracking-[-0.02em] text-ink w1920:text-[64px] w1920:leading-[68px]">
             Where luck
             <br />
-            meets
-            <br />
-            lust.
+            meets lust.
           </h1>
-          <p className="max-w-[240px] text-16 font-semibold leading-6 text-ink/90">Spin, win and open a free chest every single day.</p>
+          <p className="max-w-[210px] text-14 font-semibold leading-5 text-ink/90">Spin, win and open a free chest every single day.</p>
         </div>
-        <div className="flex w-fit items-center gap-2 rounded-[16px] bg-black/30 p-[6px] pl-4">
-          <span className="text-16 font-bold text-ink">@{ACCOUNT.name.replace(/\s|\./g, '').toLowerCase()}</span>
-          <KitButton tone="purple" size="md" onClick={onPlay} className="ml-2 h-11 rounded-[12px]">
+        <div className="flex flex-col items-start gap-3">
+          <p className="flex items-center gap-2 whitespace-nowrap text-14 font-semibold text-ink">
+            <LiveDot />
+            <span>
+              <span className="num">{DAILY_CHEST.streak}</span> day streak, <span className="num text-gold">{today.amount} {DAILY_CHEST.currency}</span> today
+            </span>
+          </p>
+          <KitButton tone="primary" size="md" onClick={onPlay}>
             Play Sugar Rush
           </KitButton>
         </div>
@@ -188,43 +218,44 @@ function Hero({ onPlay }: { onPlay: () => void }) {
 }
 
 function ChestCard({ id }: { id?: string }) {
-  const { h, m, s, pad, left } = useCountdown(DAILY_CHEST.readyInSeconds);
+  const { h, m, s, left } = useCountdown(DAILY_CHEST.readyInSeconds);
   const [remind, setRemind] = useState(false);
   const today = DAILY_CHEST.days.find((d) => d.status === 'today')!;
+  const todayIndex = DAILY_CHEST.days.indexOf(today);
+  const last = DAILY_CHEST.days[DAILY_CHEST.days.length - 1];
   return (
-    <section id={id} aria-labelledby="chest-title" className="k-hue-purple relative isolate shrink-0 overflow-hidden rounded-[20px] p-[20px]">
-      <span aria-hidden className="k-mark absolute inset-0 -z-10" />
-      <img src="/art/lobby/giveaway-chest.webp" alt="" className="pointer-events-none absolute -right-6 -top-4 w-[140px] rotate-[10deg]" />
-      <h2 id="chest-title" className="w-[150px] font-display text-[28px] font-bold uppercase leading-[28px] text-ink">
+    <Panel lit id={id} aria-labelledby="chest-title" className="shrink-0 overflow-hidden p-6">
+      <img src="/art/lobby/giveaway-chest.webp" alt="" className="pointer-events-none absolute right-[12px] top-[12px] w-[112px]" />
+      <h2 id="chest-title" className="text-12 font-semibold uppercase tracking-[0.08em] text-[rgb(var(--k-dim))]">
         Daily chest
       </h2>
-      <p className="mt-2 w-[150px] text-14 font-semibold leading-5 text-ink/90">
-        Today pays {today.amount} {DAILY_CHEST.currency}. Day {DAILY_CHEST.streak + 1} of your streak.
+      <p className="num mt-2 text-28 font-extrabold leading-8 tracking-[-0.01em] text-gold">
+        {today.amount} <span className="text-14 font-semibold tracking-normal text-[rgb(var(--k-muted))]">{DAILY_CHEST.currency}</span>
       </p>
-      <p className="mt-4 text-12 font-semibold uppercase tracking-[0.06em] text-ink/80">Opens in</p>
-      <div className="mt-2">
-        <CountdownDigits h={h} m={m} s={s} pad={pad} />
+      <p className="mt-1 w-[120px] text-14 leading-5 text-[rgb(var(--k-muted))]">Today's chest, day {DAILY_CHEST.streak + 1} of your streak.</p>
+      <p className="mt-6 text-12 font-semibold uppercase tracking-[0.08em] text-[rgb(var(--k-dim))]">Opens in</p>
+      <CountdownLine
+        className="mt-2"
+        parts={[
+          { value: h, unit: 'hrs' },
+          { value: m, unit: 'min' },
+          { value: s, unit: 'sec' },
+        ]}
+      />
+      <div className="mt-6 flex items-baseline justify-between">
+        <p className="text-12 font-semibold uppercase tracking-[0.08em] text-[rgb(var(--k-dim))]">Streak</p>
+        <p className="num text-12 font-semibold text-[rgb(var(--k-muted))]">
+          Day {todayIndex + 1} of {DAILY_CHEST.days.length}
+        </p>
       </div>
-      <ol aria-label="This week's chests" className="mt-4 grid grid-cols-7 gap-1">
-        {DAILY_CHEST.days.map((d) => (
-          <li
-            key={d.day}
-            className={cn(
-              'flex h-11 flex-col items-center justify-center rounded-[8px] text-12 font-bold leading-4',
-              d.status === 'claimed' && 'bg-black/25 text-ink/80',
-              d.status === 'today' && 'bg-ink text-[#3B1A7A]',
-              d.status === 'locked' && 'bg-black/10 text-ink/70',
-            )}
-          >
-            <span>{d.day}</span>
-            <span className="num">{d.status === 'claimed' ? '✓' : d.amount}</span>
-          </li>
-        ))}
-      </ol>
-      <KitButton tone="white" size="md" aria-pressed={remind} onClick={() => setRemind((r) => !r)} className="mt-4 h-11 w-full">
-        {left > 0 ? (remind ? 'Reminder on, we will ping you' : 'Remind me when it opens') : 'Open the chest'}
+      <SegmentBar className="mt-2" total={DAILY_CHEST.days.length} done={todayIndex} current={todayIndex} label={`Day ${todayIndex + 1} of ${DAILY_CHEST.days.length} of this week's chests`} />
+      <p className="mt-2 text-12 text-[rgb(var(--k-dim))]">
+        Day {DAILY_CHEST.days.length} pays <span className="num font-semibold text-gold">{last.amount} {DAILY_CHEST.currency}</span>
+      </p>
+      <KitButton tone={left > 0 ? 'dark' : 'primary'} size="md" aria-pressed={left > 0 ? remind : undefined} onClick={() => setRemind((r) => !r)} className="mt-6 w-full">
+        {left > 0 ? (remind ? 'Reminder on' : 'Remind me when it opens') : 'Open the chest'}
       </KitButton>
-    </section>
+    </Panel>
   );
 }
 
@@ -236,11 +267,15 @@ function Games({ filter, onFilter, state, onPlay }: { filter: Filter; onFilter: 
     const q = query.trim().toLowerCase();
     return ORDERED.filter((g) => (filter === 'all' || g.category === filter) && (!q || g.name.toLowerCase().includes(q) || g.provider.toLowerCase().includes(q)));
   }, [filter, query]);
-  const shown = all ? list : list.slice(0, 10);
+  const cols = useCoverColumns();
+  // Whole rows only. Two rows closed, every whole row open. A short list shows as it is.
+  const whole = list.length < cols ? list.length : Math.floor(list.length / cols) * cols;
+  const shown = list.slice(0, all ? whole : Math.min(whole, cols * 2));
+  const more = whole > cols * 2;
   return (
-    <section id="games" aria-labelledby="games-title" className="flex scroll-mt-[100px] flex-col gap-4">
+    <section id="games" aria-labelledby="games-title" className="flex scroll-mt-[116px] flex-col gap-4">
       <SectionHead id="games-title" icon={<Fire weight="fill" className="text-[#FF8A3D]" />} title="All games">
-        <RailControls label="All games" onAll={() => setAll((a) => !a)} onPrev={() => onFilter(NAV_GAMES[(NAV_GAMES.findIndex((n) => n.value === filter) + NAV_GAMES.length - 1) % NAV_GAMES.length].value)} onNext={() => onFilter(NAV_GAMES[(NAV_GAMES.findIndex((n) => n.value === filter) + 1) % NAV_GAMES.length].value)} />
+        <RailControls label="All games" onAll={more || all ? () => setAll((a) => !a) : undefined} onPrev={() => onFilter(NAV_GAMES[(NAV_GAMES.findIndex((n) => n.value === filter) + NAV_GAMES.length - 1) % NAV_GAMES.length].value)} onNext={() => onFilter(NAV_GAMES[(NAV_GAMES.findIndex((n) => n.value === filter) + 1) % NAV_GAMES.length].value)} />
       </SectionHead>
       <div className="flex items-center gap-3">
         <div className="min-w-0 flex-1 overflow-x-auto k-no-scrollbar">
@@ -255,13 +290,13 @@ function Games({ filter, onFilter, state, onPlay }: { filter: Filter; onFilter: 
         <SearchBox id="v1-search" value={query} onChange={setQuery} className="h-11 w-[220px] shrink-0 rounded-[12px]" />
       </div>
       {state === 'loading' ? (
-        <div className="grid grid-cols-5 gap-3">
-          {Array.from({ length: 10 }, (_, i) => (
-            <Skeleton key={i} className="aspect-[3/4] w-full rounded-[16px]" />
+        <div className="grid grid-cols-5 gap-3 w1920:grid-cols-7">
+          {Array.from({ length: 14 }, (_, i) => (
+            <Skeleton key={i} className={cn('aspect-[3/4] w-full rounded-[16px]', i >= 10 && 'hidden w1920:block')} />
           ))}
         </div>
       ) : failed ? (
-        <div className="rounded-[20px] bg-[rgb(var(--k-panel))]">
+        <div className="k-surface rounded-[20px]">
           <Message
             icon={<WarningCircle weight="fill" className="h-10 w-10 text-danger" aria-hidden />}
             title="We could not load the games"
@@ -274,7 +309,7 @@ function Games({ filter, onFilter, state, onPlay }: { filter: Filter; onFilter: 
           />
         </div>
       ) : list.length === 0 ? (
-        <div className="rounded-[20px] bg-[rgb(var(--k-panel))]">
+        <div className="k-surface rounded-[20px]">
           <Message
             icon={<MagnifyingGlass weight="bold" className="h-10 w-10 text-[rgb(var(--k-dim))]" aria-hidden />}
             title={`No games match "${query.trim()}"`}
@@ -312,25 +347,25 @@ export default function Variant1() {
     document.getElementById('games')?.scrollIntoView({ behavior: 'smooth' });
   };
   return (
-    <div className="min-h-screen bg-page">
+    <div className="k-page min-h-screen">
       <TopBar onDeposit={() => navigate('/wallet/deposit')} onRace={() => setRace(true)} />
-      <div className="flex gap-4 px-4 pb-4">
+      <div className="flex gap-4 px-4 pb-4 pt-4">
         <Sidebar filter={filter} onFilter={pick} onGiveaway={() => setGive(true)} />
         <main className="flex min-w-0 flex-1 flex-col gap-8">
-          <div className="grid grid-cols-[1.3fr_1fr] gap-4">
+          <div className="grid grid-cols-[1.04fr_1fr] w1920:grid-cols-[1.1fr_1fr] gap-4">
             <Hero onPlay={() => setOpen(gameById('sugar-rush')!)} />
             <div className="grid grid-cols-2 grid-rows-2 gap-4">
-              <VividTile hue="purple" title="Slots" count={players('slots')} art="/art/landing/slot-machine.webp" artClass="h-[92%] -right-3" onClick={() => pick('slots')} />
-              <VividTile hue="blue" title="Megaways" count={players('megaways')} art="/art/kit/neon-reels.webp" artClass="h-[78%] -bottom-4 -right-6 mix-blend-screen" onClick={() => pick('megaways')} />
-              <VividTile hue="gold" title="Hold & win" count={players('hold-and-win')} art="/art/lobby/giveaway-chest.webp" artClass="h-[80%] right-[-20px]" onClick={() => pick('hold-and-win')} />
-              <VividTile hue="pink" title="Refer" count={12} countLabel="friends joined" art="/art/money/refer-megaphone.webp" artClass="h-[100%] -bottom-6 right-0" to="/refer" />
+              <VividTile hue="purple" title="Slots" count={players('slots')} art="/art/landing/slot-machine.webp" artClass="bottom-3 right-3 h-[80%] w1920:h-[88%]" onClick={() => pick('slots')} />
+              <VividTile hue="blue" title="Megaways" count={players('megaways')} art="/art/kit/neon-reels.webp" artClass="bottom-3 right-3 h-[72%] w1920:h-[84%] mix-blend-screen" onClick={() => pick('megaways')} />
+              <VividTile hue="gold" title="Hold & win" count={players('hold-and-win')} art="/art/lobby/giveaway-chest.webp" artClass="bottom-3 right-3 h-[62%] w1920:h-[74%]" onClick={() => pick('hold-and-win')} />
+              <VividTile hue="pink" title="Refer" count={12} countLabel="friends joined" art="/art/money/refer-megaphone.webp" artClass="bottom-0 right-3 h-[72%] w1920:h-[94%]" to="/refer" />
             </div>
           </div>
           <WinsStrip onPlay={setOpen} loading={state === 'loading'} />
           <Games filter={filter} onFilter={pick} state={state} onPlay={setOpen} />
           <BetsBoard onPlay={setOpen} state={state} />
         </main>
-        <aside aria-label="Chest and chat" className="sticky top-[84px] flex h-[calc(100vh-100px)] w-[300px] shrink-0 flex-col gap-4">
+        <aside aria-label="Chest and chat" className="sticky top-[100px] flex h-[calc(100vh-116px)] min-h-[640px] w-[300px] shrink-0 flex-col gap-4">
           <ChestCard id="chest" />
           <ChatPanel className="min-h-0 flex-1" />
         </aside>
@@ -365,7 +400,7 @@ export default function Variant1() {
             </p>
           ) : (
             <div>
-              <KitButton tone="purple" onClick={() => setJoined(true)}>
+              <KitButton tone="primary" onClick={() => setJoined(true)}>
                 Join the giveaway
               </KitButton>
             </div>

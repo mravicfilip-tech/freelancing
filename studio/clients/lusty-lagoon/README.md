@@ -58,6 +58,8 @@ Use this copy. The original, MjPhupcafS4TyCyssMHTjU, sits on a Starter plan that
 - Section Components holds the shared parts.
 - The page Wireframes is an older pass and not the reference.
 - No live site on file.
+- Outside references Filip sent live in `references/`, each set with a status. They are not rules until he
+  says what to take from them.
 
 ## Widths
 

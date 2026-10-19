@@ -1,64 +1,51 @@
-import { WarningCircle } from '@phosphor-icons/react';
-import { BrandText } from '../../../components/ui/BrandText';
-import { Button } from '../../../components/ui/Button';
-import { Skeleton } from '../../../components/ui/Skeleton';
-import { formatPoints } from '../../../lib/format';
+import { Play } from '@phosphor-icons/react';
+import { KitButton } from '../kit/parts';
 import { ONLINE_NOW } from '../shared/data';
 
-// The stage. The sunset scene runs edge to edge, flipped so the sun sits behind the girl and the
-// headline lands on the dark rocks. The girl and her two pillars stand on one baseline that falls
-// past the stage's bottom edge, level with the bottom of the dock.
-function LiveLine({ state }: { state: string | null }) {
-  if (state === 'loading') return <Skeleton className="h-8 w-[260px] rounded-full" />;
-  if (state === 'error') {
-    return (
-      <p role="status" className="flex h-8 items-center gap-2 rounded-full bg-page/70 px-3 text-14 text-ink backdrop-blur-md">
-        <WarningCircle weight="fill" className="h-5 w-5 text-danger" aria-hidden />
-        Live activity is paused, it reconnects on its own
-      </p>
-    );
-  }
-  return (
-    <p className="flex h-8 items-center gap-2 rounded-full bg-page/70 px-3 text-14 text-ink backdrop-blur-md">
-      <span aria-hidden className="h-[8px] w-[8px] shrink-0 rounded-full bg-success" />
-      <span className="num font-semibold">{formatPoints(ONLINE_NOW)}</span> players in the lagoon now
-    </p>
-  );
-}
+// The stage, Grimdrop's wide hero across the full content width, built from our sunset. A heavy
+// two line headline with the second line in gold, one purple Play now, and the girl cut out large
+// on the right, framed by two pillars, her head breaking past the stage's top edge.
 
-export function Stage({ state, onPlay, onBrowse }: { state: string | null; onPlay: () => void; onBrowse: () => void }) {
+const FACES = ['peki', 'alice', 'ficko', 'goodie'];
+
+export function Stage({ onPlay }: { onPlay: () => void }) {
   return (
-    <section aria-labelledby="stage-title" className="relative h-[560px]">
-      <div aria-hidden className="absolute inset-0 overflow-hidden bg-sunken">
-        <img src="/art/lobby/hero-sunset.webp" alt="" className="h-full w-full -scale-x-100 object-cover object-[50%_0%]" />
-        <div className="absolute inset-0 bg-[linear-gradient(90deg,rgb(var(--ll-page)/0.72)_0,rgb(var(--ll-page)/0.4)_40%,transparent_66%)]" />
-        <div className="absolute inset-x-0 bottom-0 h-[140px] bg-[linear-gradient(180deg,transparent,rgb(var(--ll-page)))]" />
+    <section aria-labelledby="stage-title" className="relative h-[312px]">
+      <div aria-hidden className="absolute inset-0 overflow-hidden rounded-[24px] bg-sunken ring-1 ring-inset ring-ink/10">
+        <img src="/art/lobby/hero-sunset.webp" alt="" className="h-full w-full -scale-x-100 object-cover object-[50%_40%]" />
+        <div className="absolute inset-0 bg-[linear-gradient(90deg,rgb(20_12_35/0.85)_0%,rgb(20_12_35/0.55)_36%,rgb(20_12_35/0)_60%)]" />
+        <div className="absolute inset-x-0 bottom-0 h-[120px] bg-[linear-gradient(180deg,transparent,rgb(20_12_35/0.55))]" />
+        <img src="/art/landing/pillar-flowers-left.webp" alt="" className="absolute bottom-[-40px] right-[300px] h-[310px] w-auto max-w-none" />
+        <img src="/art/landing/pillar-flowers-right.webp" alt="" className="absolute bottom-[-40px] right-[-12px] h-[310px] w-auto max-w-none" />
       </div>
 
-      <div className="relative mx-auto h-full w-full max-w-[1600px] px-12">
-        <div aria-hidden className="pointer-events-none absolute inset-0">
-          <img src="/art/landing/pillar-flowers-left.webp" alt="" className="absolute bottom-0 right-[249px] h-[440px] w-auto max-w-none" />
-          <img src="/art/landing/pillar-gems-b.webp" alt="" className="absolute bottom-0 right-[4px] h-[440px] w-auto max-w-none" />
-          <img src="/art/landing/girl-lei.webp" alt="" className="absolute bottom-[-56px] right-[72px] h-[520px] w-auto max-w-none [mask-image:linear-gradient(180deg,#000_78%,transparent)]" />
-        </div>
+      {/* The girl stands in her own layer, clipped at the stage's bottom edge only, so her head breaks out above. */}
+      <div aria-hidden className="pointer-events-none absolute inset-x-0 bottom-0 top-[-40px] [clip-path:inset(0_0_0_0_round_0_0_24px_24px)]">
+        <img src="/art/landing/girl-lei.webp" alt="" className="absolute right-[96px] top-0 h-[520px] w-auto max-w-none" />
+      </div>
 
-        <div className="relative flex h-full flex-col items-start justify-center pb-[80px] pt-[80px]">
-          <LiveLine state={state} />
-          <h1 id="stage-title" className="mt-4 text-[72px] leading-[76px] tracking-[-0.01em]">
-            <BrandText drop={5} rim={2}>
-              <span className="block">Where luck</span>
-              <span className="block">meets lust</span>
-            </BrandText>
-          </h1>
-          <p className="mt-4 max-w-[420px] text-18 text-ink">Pick up Sugar Rush where you left it, or find something new below.</p>
-          <div className="mt-6 flex items-center gap-3">
-            <Button size="cta" onClick={onPlay}>
-              Play Sugar Rush
-            </Button>
-            <Button size="cta" variant="secondary" onClick={onBrowse}>
-              Browse all games
-            </Button>
-          </div>
+      <div className="relative flex h-full max-w-[560px] flex-col justify-center gap-4 pl-12">
+        <h1 id="stage-title" className="font-display text-[64px] font-bold uppercase leading-[60px] tracking-[-0.01em] text-ink">
+          <span className="block">Where luck</span>
+          <span className="block text-gold">meets lust</span>
+        </h1>
+        <p className="max-w-[400px] text-18 font-semibold leading-[26px] text-ink/90">Spin, win and open a free chest every day. The streak pays more each day.</p>
+        <div className="flex items-center gap-6">
+          <KitButton tone="purple" size="lg" onClick={onPlay} className="h-[56px] rounded-[14px] px-12 font-display text-18 uppercase">
+            <Play weight="fill" className="h-5 w-5" aria-hidden />
+            Play now
+          </KitButton>
+          <span className="flex items-center gap-3">
+            <span aria-hidden className="flex -space-x-2">
+              {FACES.map((f) => (
+                <img key={f} src={`/art/avatars/${f}.webp`} alt="" className="h-9 w-9 rounded-[10px] border-2 border-[#1d1233] object-cover" />
+              ))}
+            </span>
+            <span className="flex flex-col leading-tight">
+              <span className="num text-16 font-bold text-ink">{ONLINE_NOW.toLocaleString('en-US')}</span>
+              <span className="text-14 font-semibold text-ink/80">players online</span>
+            </span>
+          </span>
         </div>
       </div>
     </section>

@@ -48,6 +48,8 @@ export default function Variant5() {
         <span className="gv-blob gv-blob-purple" />
         <span className="gv-blob gv-blob-ember" />
         <span className="gv-blob gv-blob-violet" />
+        <span className="gv-blob gv-blob-low" />
+        <span className="gv-wash" />
       </div>
       <TopBar query={query} onQuery={setQuery} onSearch={() => games.current?.scrollIntoView({ behavior: 'smooth', block: 'start' })} showBalance={past} />
       <div className="flex gap-6 px-6 pb-12 pt-2">
@@ -86,7 +88,7 @@ export default function Variant5() {
                 <img src={l.avatar} alt="" className="h-8 w-8 rounded-full object-cover" />
                 <span className="flex-1 text-16 font-medium text-white">{l.player}</span>
                 <span className="num text-14 text-[rgb(var(--gv-ink-2))]">{formatAmount(l.wagered, 0)} played</span>
-                <span className="num w-[96px] text-right text-16 font-semibold text-[#F4D543]">{formatAmount(l.prize, 0)}</span>
+                <span className="num w-[96px] text-right text-16 font-semibold text-white">{formatAmount(l.prize, 0)}</span>
               </li>
             ))}
           </ol>

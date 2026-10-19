@@ -58,7 +58,7 @@ function Row({ b, onPlay }: { b: Live; onPlay: (g: CatalogueGame) => void }) {
   return (
     <li className={cn(COLS, 'gv-rule h-[56px] border-t px-6 text-14 first:border-t-0', b.fresh && 'gv-enter')}>
       <button type="button" onClick={() => onPlay(g)} aria-label={`Play ${g.name}`} className="group flex min-w-0 items-center gap-3 rounded-[12px] text-left outline-none focus-visible:ring-2 focus-visible:ring-[#B47CFF]">
-        <span className="relative h-10 w-10 shrink-0 overflow-hidden rounded-[12px] shadow-[inset_0_0_0_1px_rgb(255_255_255/0.1)]">
+        <span className="relative h-10 w-10 shrink-0 overflow-hidden rounded-[12px] shadow-[inset_0_0_0_1px_rgb(255_255_255/0.06)]">
           <img src={g.image} alt="" className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-[1.08]" />
         </span>
         <span className="flex min-w-0 flex-col">
@@ -81,7 +81,7 @@ function Row({ b, onPlay }: { b: Live; onPlay: (g: CatalogueGame) => void }) {
         {formatAmount(b.wager)}
         <span className="sr-only"> {sym}</span>
       </span>
-      <span className={cn('num font-medium', b.multiplier >= 5 ? 'text-[#F4D543]' : b.multiplier > 0 ? 'text-white' : 'text-[rgb(var(--gv-ink-3))]')}>{b.multiplier.toFixed(2)}x</span>
+      <span className={cn('num font-medium', b.multiplier >= 5 ? 'text-[rgb(var(--gv-violet))]' : b.multiplier > 0 ? 'text-white' : 'text-[rgb(var(--gv-ink-3))]')}>{b.multiplier.toFixed(2)}x</span>
       <span className="flex justify-end">
         {p > 0 ? (
           <span className="num inline-flex items-center gap-2 font-semibold text-[#38EE59]">

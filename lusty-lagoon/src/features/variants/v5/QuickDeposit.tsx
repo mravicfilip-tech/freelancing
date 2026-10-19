@@ -5,14 +5,13 @@ import { siPaypal, siVisa } from 'simple-icons';
 import { coinById } from '../../../data/wallet';
 import { formatAmount } from '../../../lib/format';
 import { cn } from '../../../lib/cn';
-import { KitButton } from '../kit/parts';
 import { PRESETS, QUICK_METHODS, checkoutUrl, quoteFor, type QuickMethod } from './quote';
-import { Title } from './ui';
+import { Key, Title } from './ui';
 
 // The second thing the eye lands on. A glass card in the vault beside the balance. The methods as
 // quiet glass chips, the picked one lit from its top edge with a check. The amount in one well with
 // the presets inside it, a summary well with You pay as the one strong number, the promo code, and
-// Checkout, the orange pill key and the only orange in the money row. Every behaviour of round 4
+// Checkout, the vault's orange key and the only orange in the money row, its amount in a capsule. Every behaviour of round 4
 // stays, the arrow keys, the presets, the checks, the promo states and the deep link in quote.ts.
 
 const FOCUS = 'outline-none focus-visible:ring-2 focus-visible:ring-[#B47CFF] focus-visible:ring-offset-2 focus-visible:ring-offset-[#0E0C13]';
@@ -110,7 +109,7 @@ export function QuickDeposit() {
       <div className="flex items-center justify-between gap-4">
         <Title id="qd-title">Quick deposit</Title>
         <p className="flex items-center gap-1 text-12 font-medium text-[rgb(var(--gv-ink-3))]">
-          <Lightning weight="fill" className="h-4 w-4 text-[#F4D543]" aria-hidden />
+          <Lightning weight="fill" className="h-4 w-4 text-[rgb(var(--gv-violet))]" aria-hidden />
           Cards land instantly, coins in minutes
         </p>
       </div>
@@ -214,21 +213,23 @@ export function QuickDeposit() {
               Added
             </span>
           )}
-          <button type="submit" className={cn('k-key k-key-purple k-key-pill inline-flex h-9 shrink-0 items-center px-4 text-14', FOCUS)}>
+          <Key type="submit" tone="purple" className={cn('h-9 shrink-0 px-4 text-14', FOCUS)}>
             Apply
-          </button>
+          </Key>
         </div>
         <p role="status" className="sr-only">
           {promoState === 'added' ? `Code ${promo.trim()} added. It is checked at checkout.` : promoState === 'blank' ? 'Type a promo code first.' : ''}
         </p>
       </form>
 
-      <KitButton tone="primary" shape="pill" size="lg" onClick={checkout} className="mt-auto h-[56px] w-full text-16 focus-visible:ring-offset-[#0E0C13]">
+      <Key onClick={checkout} className="mt-auto h-[56px] w-full gap-3 px-8 text-16 focus-visible:ring-offset-[#0E0C13]">
         Checkout
-        <span aria-hidden className="num font-semibold opacity-70">
-          {q.problem ? '' : `${formatAmount(q.pay, q.payDigits)} ${q.payUnit}`}
-        </span>
-      </KitButton>
+        {!q.problem && (
+          <span aria-hidden className="gv-key-amount num text-14">
+            {formatAmount(q.pay, q.payDigits)} {q.payUnit}
+          </span>
+        )}
+      </Key>
     </section>
   );
 }

@@ -7,7 +7,7 @@ import { cn } from '../../../lib/cn';
 import { useWallet } from '../../wallet/store';
 import { AnimatedNumber } from '../kit/parts';
 import { BalanceMenu, coinAmount, useBalanceCoin } from './BalanceMenu';
-import { Caps, Light, Skel } from './ui';
+import { Caps, Key, Light, Skel } from './ui';
 import { TODAY, WEEK } from './week';
 
 // The hero and the first thing the eye lands on. The balance at 88, Switzer 600, tight and tabular,
@@ -59,7 +59,7 @@ function WeekBars({ today }: { today: number }) {
             <span
               aria-hidden
               className={cn(
-                'num pointer-events-none absolute left-1/2 z-10 -translate-x-1/2 whitespace-nowrap rounded-full border border-white/15 bg-[#1B1824]/90 px-[10px] py-0.5 text-12 font-semibold text-white shadow-[0_8px_20px_rgb(0_0_0/0.5)] backdrop-blur-[8px] transition-opacity duration-150',
+                'num pointer-events-none absolute left-1/2 z-10 -translate-x-1/2 whitespace-nowrap rounded-full border border-white/[0.06] bg-[#1F1730]/90 px-[10px] py-0.5 text-12 font-semibold text-white shadow-[0_8px_20px_rgb(0_0_0/0.5)] backdrop-blur-[8px] transition-opacity duration-150',
                 show ? 'opacity-100' : 'opacity-0',
               )}
               style={{ bottom: h + 10 }}
@@ -88,8 +88,12 @@ export function BalanceCard({ loading }: { loading?: boolean }) {
   const pct = (change / yesterday) * 100;
   const up = change >= 0;
   return (
-    <section aria-labelledby="bal-title" className="gv-glass gv-edge relative flex min-h-[540px] flex-col overflow-hidden rounded-3xl p-3">
+    <section aria-labelledby="bal-title" className="gv-glass gv-edge gv-bal relative flex min-h-[540px] flex-col overflow-hidden rounded-3xl p-3">
       <Light hue="purple" x="78%" y="0%" size="62% 88%" strength={0.56} segment="50%" segAt="76%" />
+      {/* The brand mark pattern and the flower pillar in the purple beside her (round 6, note 8). The
+          pillar stands behind her and its foot reads softly through the pane, placed in glass.css. */}
+      <span aria-hidden className="gv-mark left-[372px] right-0 top-0 h-[352px]" />
+      <img aria-hidden src="/art/landing/pillar-flowers-right.webp" alt="" width={282} height={854} className="gv-pillar pointer-events-none z-0 select-none" />
       {/* Whole inside the glass. Her head clears the top by 28, her lower half sits behind the frosted well. */}
       <img aria-hidden src="/art/landing/girl-wrap.webp" alt="" className="pointer-events-none absolute right-[14px] top-[28px] z-0 h-[452px] w-auto max-w-none select-none [mask-image:linear-gradient(180deg,#000_78%,transparent_100%)]" />
 
@@ -127,7 +131,7 @@ export function BalanceCard({ loading }: { loading?: boolean }) {
               ) : coin === 'usdt' ? (
                 <>
                   <AnimatedNumber value={whole} format={(n) => Math.round(n).toLocaleString('en-US')} />
-                  <AnimatedNumber value={cents} format={(n) => `.${String(Math.round(n)).padStart(2, '0')}`} className="text-white/[0.36]" />
+                  <AnimatedNumber value={cents} format={(n) => `.${String(Math.round(n)).padStart(2, '0')}`} className="text-white/[0.4]" />
                 </>
               ) : (
                 <span>{coinAmount(balance, coin)}</span>
@@ -153,10 +157,10 @@ export function BalanceCard({ loading }: { loading?: boolean }) {
         )}
 
         <div className="mt-6 flex items-center gap-3">
-          <button type="button" onClick={() => navigate('/wallet/withdraw')} className={cn('k-key k-key-purple k-key-pill inline-flex h-[48px] items-center justify-center gap-2 px-6 text-16', FOCUS)}>
+          <Key tone="purple" onClick={() => navigate('/wallet/withdraw')} className={cn('h-[48px] px-6 text-16', FOCUS)}>
             <ArrowUpRight weight="bold" className="h-4 w-4" aria-hidden />
             Withdraw
-          </button>
+          </Key>
           <button type="button" onClick={() => navigate('/agent')} className={cn('gv-pill inline-flex h-[48px] items-center gap-2 whitespace-nowrap rounded-full px-6 text-16 font-semibold text-white', FOCUS)}>
             <Headset weight="regular" className="h-5 w-5 text-[rgb(var(--gv-ink-2))]" aria-hidden />
             Send to agent
@@ -165,10 +169,10 @@ export function BalanceCard({ loading }: { loading?: boolean }) {
       </div>
 
       {/* The frosted pane across the foot. */}
-      <div className="relative z-10 mt-auto rounded-2xl border border-white/[0.08] bg-[#0E0C14]/40 px-[20px] pb-4 pt-4 shadow-[inset_0_1px_0_rgb(255_255_255/0.08)] [-webkit-backdrop-filter:blur(20px)_saturate(1.2)] [backdrop-filter:blur(20px)_saturate(1.2)]">
+      <div className="relative z-10 mt-auto rounded-2xl border border-white/[0.05] bg-[#0E0C14]/40 px-[20px] pb-4 pt-4 [-webkit-backdrop-filter:blur(20px)_saturate(1.2)] [backdrop-filter:blur(20px)_saturate(1.2)]">
         <div className="mb-2 flex items-center justify-between">
           <Caps>This week</Caps>
-          <Link to="/wallet/deposit" className={cn('group inline-flex items-center gap-1 rounded-full text-12 font-semibold text-[rgb(var(--gv-ink-2))] hover:text-white', FOCUS)}>
+          <Link to="/wallet/deposit" className={cn('group inline-flex items-center gap-1 rounded-full text-12 font-semibold text-white/[0.86] hover:text-white', FOCUS)}>
             All transactions
             <ArrowRight weight="bold" className="h-[12px] w-[12px] transition-transform duration-200 group-hover:translate-x-[2px]" aria-hidden />
           </Link>

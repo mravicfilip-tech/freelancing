@@ -5,13 +5,13 @@ import { formatAmount } from '../../../lib/format';
 import { cn } from '../../../lib/cn';
 import { EXPLORE_ORDER } from '../../lobby/data';
 import { CONTINUE_PLAYING } from '../shared/data';
-import { Note, Skel, Title } from './ui';
+import { Key, Note, Skel, Title } from './ui';
 
 // Jump back in, four glass cards with the session result signed. All games, covers seven across in
 // whole rows at both widths, so a cover never draws past its smallest source width of 152. Glass
 // filter pills, and a frosted name bar that rises on hover while the edge lights.
 
-const FOCUS = 'outline-none focus-visible:ring-2 focus-visible:ring-[#B47CFF] focus-visible:ring-offset-2 focus-visible:ring-offset-[#07060B]';
+const FOCUS = 'outline-none focus-visible:ring-2 focus-visible:ring-[#B47CFF] focus-visible:ring-offset-2 focus-visible:ring-offset-[#0E091A]';
 
 export function JumpBackIn({ state, onPlay, className }: { state: string | null; onPlay: (g: CatalogueGame) => void; className?: string }) {
   return (
@@ -46,10 +46,10 @@ export function JumpBackIn({ state, onPlay, className }: { state: string | null;
                       aria-label={`Play ${g.name}, last played ${c.lastPlayed}, session ${up ? 'up' : 'down'} ${formatAmount(Math.abs(c.session))} USDT`}
                       className={cn('gv-glass gv-edge gv-hover group flex h-[88px] w-full items-center gap-4 rounded-[22px] p-3 text-left', FOCUS)}
                     >
-                      <span className="relative h-[64px] w-[64px] shrink-0 overflow-hidden rounded-[14px] shadow-[inset_0_0_0_1px_rgb(255_255_255/0.1)]">
+                      <span className="relative h-[64px] w-[64px] shrink-0 overflow-hidden rounded-[14px] shadow-[inset_0_0_0_1px_rgb(255_255_255/0.06)]">
                         <img src={g.image} alt="" className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-[1.06]" />
-                        <span aria-hidden className="absolute inset-0 flex items-center justify-center bg-[#07060B]/40 opacity-0 backdrop-blur-[2px] transition-opacity duration-200 group-hover:opacity-100 group-focus-visible:opacity-100">
-                          <span className="flex h-8 w-8 items-center justify-center rounded-full bg-white text-[#07060B]">
+                        <span aria-hidden className="absolute inset-0 flex items-center justify-center bg-[#0E091A]/40 opacity-0 backdrop-blur-[2px] transition-opacity duration-200 group-hover:opacity-100 group-focus-visible:opacity-100">
+                          <span className="flex h-8 w-8 items-center justify-center rounded-full bg-white text-[#0E091A]">
                             <Play weight="fill" className="h-[14px] w-[14px] translate-x-[1px]" />
                           </span>
                         </span>
@@ -86,13 +86,13 @@ const ROW = 7;
 
 function Cover({ g, onPlay }: { g: CatalogueGame; onPlay: () => void }) {
   return (
-    <button type="button" onClick={onPlay} aria-label={`Play ${g.name}, ${g.provider}`} className="gv-cover group aspect-[3/4] w-full focus-visible:ring-2 focus-visible:ring-[#B47CFF] focus-visible:ring-offset-2 focus-visible:ring-offset-[#07060B]">
+    <button type="button" onClick={onPlay} aria-label={`Play ${g.name}, ${g.provider}`} className="gv-cover group aspect-[3/4] w-full focus-visible:ring-2 focus-visible:ring-[#B47CFF] focus-visible:ring-offset-2 focus-visible:ring-offset-[#0E091A]">
       <img src={g.image} alt="" loading="lazy" className="h-full w-full object-cover" />
-      <span aria-hidden className="pointer-events-none absolute inset-0 bg-gradient-to-t from-[#07060B]/70 via-transparent to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100 group-focus-visible:opacity-100" />
-      <span aria-hidden className="pointer-events-none absolute left-1/2 top-[42%] flex h-11 w-11 -translate-x-1/2 -translate-y-1/2 scale-90 items-center justify-center rounded-full border border-white/30 bg-white/[0.16] text-white opacity-0 backdrop-blur-[12px] transition duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-100 group-hover:opacity-100 group-focus-visible:scale-100 group-focus-visible:opacity-100">
+      <span aria-hidden className="pointer-events-none absolute inset-0 bg-gradient-to-t from-[#0E091A]/70 via-transparent to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100 group-focus-visible:opacity-100" />
+      <span aria-hidden className="pointer-events-none absolute left-1/2 top-[42%] flex h-11 w-11 -translate-x-1/2 -translate-y-1/2 scale-90 items-center justify-center rounded-full border border-white/20 bg-white/[0.16] text-white opacity-0 backdrop-blur-[12px] transition duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-100 group-hover:opacity-100 group-focus-visible:scale-100 group-focus-visible:opacity-100">
         <Play weight="fill" className="h-4 w-4 translate-x-[1px]" />
       </span>
-      <span aria-hidden className="pointer-events-none absolute inset-x-[6px] bottom-[6px] flex translate-y-2 flex-col rounded-[12px] border border-white/15 bg-[#07060B]/55 px-3 py-2 text-left opacity-0 backdrop-blur-[16px] transition duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:translate-y-0 group-hover:opacity-100 group-focus-visible:translate-y-0 group-focus-visible:opacity-100">
+      <span aria-hidden className="pointer-events-none absolute inset-x-[6px] bottom-[6px] flex translate-y-2 flex-col rounded-[12px] border border-white/[0.06] bg-[#0E091A]/60 px-3 py-2 text-left opacity-0 backdrop-blur-[16px] transition duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:translate-y-0 group-hover:opacity-100 group-focus-visible:translate-y-0 group-focus-visible:opacity-100">
         <span className="line-clamp-2 text-12 font-semibold leading-4 text-white">{g.short ?? g.name}</span>
         <span className="truncate text-12 leading-4 text-white/70">{g.provider}</span>
       </span>
@@ -153,9 +153,9 @@ export const AllGames = forwardRef<HTMLElement, { state: string | null; query: s
             title="We could not load the games"
             body="Your balance and wagers are safe. Try again in a moment."
             action={
-              <button type="button" onClick={() => setFailed(false)} className={cn('k-key k-key-purple k-key-pill mt-2 inline-flex h-11 items-center px-6 text-14', FOCUS)}>
+              <Key tone="purple" onClick={() => setFailed(false)} className={cn('mt-2 h-11 px-6 text-14', FOCUS)}>
                 Try again
-              </button>
+              </Key>
             }
           />
         </div>
@@ -166,16 +166,16 @@ export const AllGames = forwardRef<HTMLElement, { state: string | null; query: s
             title={query.trim() ? `No games match "${query.trim()}"` : 'No games in this group yet'}
             body="Check the spelling, or search by provider, such as Pragmatic Play."
             action={
-              <button
-                type="button"
+              <Key
+                tone="purple"
                 onClick={() => {
                   clearQuery();
                   setFilter('all');
                 }}
-                className={cn('k-key k-key-purple k-key-pill mt-2 inline-flex h-11 items-center px-6 text-14', FOCUS)}
+                className={cn('mt-2 h-11 px-6 text-14', FOCUS)}
               >
                 Clear the search
-              </button>
+              </Key>
             }
           />
         </div>

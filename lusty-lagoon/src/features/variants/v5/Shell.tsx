@@ -12,12 +12,13 @@ import { cn } from '../../../lib/cn';
 import { useWallet } from '../../wallet/store';
 import { ONLINE_NOW } from '../shared/data';
 import { BalanceMenu } from './BalanceMenu';
+import { Key } from './ui';
 
 // The shell. A top bar with no fill of its own, frosted only where the page slides under it, the
 // trading shot's right cluster of the online count, a bell circle and the account pill. A full
 // labelled glass sidebar, four promo tiles, three nav groups and the rank card.
 
-const FOCUS = 'outline-none focus-visible:ring-2 focus-visible:ring-[#B47CFF] focus-visible:ring-offset-2 focus-visible:ring-offset-[#07060B]';
+const FOCUS = 'outline-none focus-visible:ring-2 focus-visible:ring-[#B47CFF] focus-visible:ring-offset-2 focus-visible:ring-offset-[#0E091A]';
 
 function SearchPill({ value, onChange, onSubmit }: { value: string; onChange: (v: string) => void; onSubmit: () => void }) {
   const input = useRef<HTMLInputElement>(null);
@@ -64,10 +65,10 @@ function BellCircle() {
     <P.Root open={open} onOpenChange={setOpen}>
       <P.Trigger aria-label={unread ? `Notifications, ${unread} unread` : 'Notifications'} className={cn('gv-pill relative flex h-[48px] w-[48px] items-center justify-center rounded-full text-[rgb(var(--gv-ink-2))] hover:text-white data-[state=open]:text-white', FOCUS)}>
         <Bell weight="regular" className="h-5 w-5" aria-hidden />
-        {unread > 0 && <span aria-hidden className="absolute right-[12px] top-[11px] h-[8px] w-[8px] rounded-full bg-[#FF7A1A] ring-2 ring-[#07060B]" />}
+        {unread > 0 && <span aria-hidden className="absolute right-[12px] top-[11px] h-[8px] w-[8px] rounded-full bg-[#FF7A1A] ring-2 ring-[#0E091A]" />}
       </P.Trigger>
       <P.Portal>
-        <P.Content align="end" sideOffset={10} className="z-30 overflow-hidden rounded-[22px] border border-white/10 bg-[#15131C] shadow-[0_24px_64px_rgb(0_0_0/0.6)] outline-none">
+        <P.Content align="end" sideOffset={10} className="z-30 overflow-hidden rounded-[22px] border border-white/[0.06] bg-[#1A1328] shadow-[0_24px_64px_rgb(0_0_0/0.6)] outline-none">
           <NotificationsPanel
             onNavigate={(to) => {
               setOpen(false);
@@ -80,7 +81,7 @@ function BellCircle() {
   );
 }
 
-const MENU = 'z-30 min-w-[240px] rounded-[20px] border border-white/10 bg-[#15131C]/95 p-2 shadow-[0_24px_64px_rgb(0_0_0/0.6)] backdrop-blur-[24px]';
+const MENU = 'z-30 min-w-[240px] rounded-[20px] border border-white/[0.06] bg-[#1A1328]/95 p-2 shadow-[0_24px_64px_rgb(0_0_0/0.6)] backdrop-blur-[24px]';
 const ITEM = 'flex h-11 cursor-pointer select-none items-center gap-3 rounded-full px-4 text-14 font-medium text-white outline-none data-[highlighted]:bg-white/[0.07] [&>svg]:h-5 [&>svg]:w-5 [&>svg]:text-[rgb(var(--gv-ink-2))]';
 
 function AccountPill() {
@@ -109,7 +110,7 @@ function AccountPill() {
             <UserPlus aria-hidden />
             Refer a friend
           </M.Item>
-          <M.Separator className="mx-3 my-2 h-px bg-white/[0.08]" />
+          <M.Separator className="mx-3 my-2 h-px bg-white/[0.06]" />
           <M.Item onSelect={() => navigate('/login')} className={ITEM}>
             <SignOut aria-hidden />
             Log out
@@ -124,7 +125,7 @@ function AccountPill() {
 export function TopBar({ query, onQuery, onSearch, showBalance }: { query: string; onQuery: (q: string) => void; onSearch: () => void; showBalance: boolean }) {
   const navigate = useNavigate();
   return (
-    <header className="sticky top-0 z-20 flex h-[80px] items-center gap-6 px-6 [-webkit-backdrop-filter:blur(24px)] [backdrop-filter:blur(24px)] [background:linear-gradient(180deg,rgb(7_6_11/0.92),rgb(7_6_11/0.7))]">
+    <header className="sticky top-0 z-20 flex h-[80px] items-center gap-6 px-6 [-webkit-backdrop-filter:blur(24px)] [backdrop-filter:blur(24px)] [background:linear-gradient(180deg,rgb(14_9_26/0.92),rgb(14_9_26/0.7))]">
       <div className="flex w-[248px] shrink-0 items-center pl-4">
         <Link to="/variants/5" aria-label="Lusty Lagoon, lobby" className={cn('rounded-[8px]', FOCUS)}>
           <Logo className="text-[20px] leading-[22px]" />
@@ -135,10 +136,10 @@ export function TopBar({ query, onQuery, onSearch, showBalance }: { query: strin
         {showBalance && (
           <div className="gv-fade flex items-center gap-3">
             <BalanceMenu variant="pill" />
-            <button type="button" onClick={() => navigate('/wallet/deposit')} className={cn('k-key k-key-pill inline-flex h-[48px] items-center justify-center px-6 text-16', FOCUS)}>
+            <Key onClick={() => navigate('/wallet/deposit')} className={cn('h-[48px] px-6 text-16', FOCUS)}>
               Deposit
-            </button>
-            <span aria-hidden className="mx-1 h-6 w-px bg-white/10" />
+            </Key>
+            <span aria-hidden className="mx-1 h-6 w-px bg-white/[0.06]" />
           </div>
         )}
         <div className="gv-pill flex h-[48px] items-center gap-2 rounded-full px-4">
@@ -160,7 +161,7 @@ function PromoTile({ t }: { t: Tile }) {
   const inner = (
     <>
       <span aria-hidden className="gv-light" style={{ backgroundImage: `radial-gradient(90% 120% at 100% 100%, rgb(${t.hue} / 0.32), rgb(${t.hue} / 0.08) 55%, rgb(${t.hue} / 0) 80%)` }} />
-      <span aria-hidden className="gv-seg" style={{ bottom: 0, left: '35%', width: '60%', background: `linear-gradient(90deg, rgb(${t.hue} / 0), rgb(${t.hue} / 0.8), rgb(${t.hue} / 0))` }} />
+      <span aria-hidden className="gv-seg" style={{ bottom: 0, left: '35%', width: '60%', background: `linear-gradient(90deg, rgb(${t.hue} / 0), rgb(${t.hue} / 0.35), rgb(${t.hue} / 0))` }} />
       <span className="relative z-10 flex flex-col justify-center pl-3 text-14 font-semibold leading-[17px] text-white">
         <span>{t.label[0]}</span>
         <span>{t.label[1]}</span>
@@ -185,7 +186,7 @@ function NavRow({ to, icon, iconOn, label, active, badge, onClick }: { to?: stri
   const cls = cn(
     'flex h-11 w-full items-center gap-3 rounded-full px-4 text-16 font-medium transition-colors duration-200',
     FOCUS,
-    active ? 'gv-on text-white' : 'text-[rgb(var(--gv-ink-2))] hover:bg-white/[0.04] hover:text-white',
+    active ? 'gv-nav-on text-white' : 'text-[rgb(var(--gv-ink-2))] hover:bg-white/[0.04] hover:text-white',
   );
   const inner = (
     <>
@@ -247,9 +248,9 @@ export function Sidebar({ onJump, onRace, onGiveaway }: { onJump: (id: string) =
   const pending = transactions.filter((t) => t.status === 'pending').length;
   const tiles: Tile[] = [
     { label: ['Weekly', 'race'], art: '/art/landing/slot-machine.webp', artClass: 'right-[6px] top-1/2 h-[58px] -translate-y-1/2', hue: '141 38 231', onClick: onRace },
-    { label: ['Hot', 'streak'], art: '/art/lobby/giveaway-chest.webp', artClass: 'right-[2px] top-1/2 h-[56px] -translate-y-1/2', hue: '245 166 35', onClick: onGiveaway },
-    { label: ['Refer', 'friends'], art: '/art/money/refer-megaphone.webp', artClass: 'right-[2px] top-[6px] h-[60px]', hue: '56 238 89', to: '/refer' },
-    { label: ['Gift', 'cards'], art: '/art/landing/pillar-gems-b.webp', artClass: 'right-[14px] top-1/2 h-[58px] -translate-y-1/2', hue: '59 130 246', to: '/wallet/gift-card' },
+    { label: ['Hot', 'streak'], art: '/art/lobby/giveaway-chest.webp', artClass: 'right-[2px] top-1/2 h-[56px] -translate-y-1/2', hue: '255 106 26', onClick: onGiveaway },
+    { label: ['Refer', 'friends'], art: '/art/money/refer-megaphone.webp', artClass: 'right-[2px] top-[6px] h-[60px]', hue: '255 106 26', to: '/refer' },
+    { label: ['Gift', 'cards'], art: '/art/landing/pillar-gems-b.webp', artClass: 'right-[14px] top-1/2 h-[58px] -translate-y-1/2', hue: '141 38 231', to: '/wallet/gift-card' },
   ];
   return (
     <aside className="gv-glass gv-edge gv-noscroll sticky top-[88px] flex h-[calc(100vh-112px)] w-[248px] shrink-0 flex-col gap-4 overflow-y-auto rounded-3xl p-3">
@@ -270,7 +271,7 @@ export function Sidebar({ onJump, onRace, onGiveaway }: { onJump: (id: string) =
           label="Wallet"
           badge={
             pending > 0 ? (
-              <span className="num flex h-6 min-w-[24px] items-center justify-center rounded-full bg-[#F4D543] px-[7px] text-12 font-bold text-[#1A0F2B]">
+              <span className="num flex h-6 min-w-[24px] items-center justify-center rounded-full bg-[#B47CFF] px-[7px] text-12 font-bold text-[#1A0F2B]">
                 {pending}
                 <span className="sr-only"> pending</span>
               </span>

@@ -38,7 +38,7 @@ function Row({ tx }: { tx: Transaction }) {
           {formatAmount(tx.value)}
         </span>
         {tx.status === 'pending' ? (
-          <span className="text-12 font-semibold text-[#F4D543]">Pending</span>
+          <span className="text-12 font-semibold text-[rgb(var(--gv-violet))]">Pending</span>
         ) : declined ? (
           <span className="text-12 font-semibold text-[#FF8FA3]">Declined</span>
         ) : (

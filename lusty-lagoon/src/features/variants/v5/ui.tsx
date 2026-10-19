@@ -1,8 +1,8 @@
-import { useMemo, type CSSProperties, type ReactNode } from 'react';
+import { forwardRef, useMemo, type ButtonHTMLAttributes, type CSSProperties, type ReactNode } from 'react';
 import { cn } from '../../../lib/cn';
 
-// Small parts only the Glass vault uses. Panel titles in sentence case at 20, the glass segmented
-// tabs, the one light a panel may carry, and the skeleton block.
+// Small parts only the Glass vault uses. Panel titles in sentence case at 20, the vault's key, the
+// glass segmented tabs, the one light a panel may carry, and the skeleton block.
 
 /** True when a shot or a board asked the page to hold still. */
 export function useStill() {
@@ -17,6 +17,27 @@ export function Title({ id, children, className, as: Tag = 'h2' }: { id?: string
     </Tag>
   );
 }
+
+/**
+ * The vault's key (round 6, note 3). Orange is the primary with a dark label, purple the secondary
+ * with a white one. Height, width and type size come from the call site, as with the kit key.
+ */
+export const Key = forwardRef<HTMLButtonElement, ButtonHTMLAttributes<HTMLButtonElement> & { tone?: 'primary' | 'purple' }>(function Key({ tone = 'primary', type = 'button', className, children, ...rest }, ref) {
+  return (
+    <button
+      ref={ref}
+      type={type}
+      className={cn(
+        'gv-key inline-flex select-none items-center justify-center gap-2 whitespace-nowrap outline-none focus-visible:ring-2 focus-visible:ring-[#B47CFF] focus-visible:ring-offset-2 focus-visible:ring-offset-[rgb(var(--gv-ground))]',
+        tone === 'purple' && 'gv-key-purple',
+        className,
+      )}
+      {...rest}
+    >
+      {children}
+    </button>
+  );
+});
 
 /** The small caps label over a value. */
 export function Caps({ children, className, id }: { children: ReactNode; className?: string; id?: string }) {
@@ -69,18 +90,17 @@ export function Tabs<T extends string>({
   );
 }
 
+// Lights are purple or orange only, never gold (taste log 2026-10-19 20:40).
 const HUES = {
   purple: '141 38 231',
-  gold: '255 190 60',
-  green: '56 238 89',
-  blue: '59 130 246',
   ember: '255 106 26',
 } as const;
 export type LightHue = keyof typeof HUES;
 
 /**
  * The one light a panel may carry. A soft radial just inside one edge and a short lit segment of the
- * edge where it enters, after the task card's green row light and Cloudbet's card foot.
+ * edge where it enters, after the task card's green row light and Cloudbet's card foot. The segment
+ * peaks at 35 percent, so it reads as light on the edge and not as a line (round 6, note 1).
  */
 export function Light({ hue, x = '50%', y = '0%', size = '60% 90%', strength = 0.3, edge = 'top', segment = '40%', segAt = '50%' }: { hue: LightHue; x?: string; y?: string; size?: string; strength?: number; edge?: 'top' | 'bottom' | 'none'; segment?: string; segAt?: string }) {
   const c = HUES[hue];
@@ -89,7 +109,7 @@ export function Light({ hue, x = '50%', y = '0%', size = '60% 90%', strength = 0
     width: segment,
     left: `calc(${segAt} - ${segment} / 2)`,
     [edge === 'bottom' ? 'bottom' : 'top']: 0,
-    background: `linear-gradient(90deg, rgb(${c} / 0), rgb(${c} / 0.9), rgb(${c} / 0))`,
+    background: `linear-gradient(90deg, rgb(${c} / 0), rgb(${c} / 0.35), rgb(${c} / 0))`,
   };
   return (
     <>

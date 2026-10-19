@@ -3,23 +3,23 @@ import * as D from '@radix-ui/react-dialog';
 import { Play, X } from '@phosphor-icons/react';
 import { CATEGORIES, type CatalogueGame } from '../../../data/games';
 import { cn } from '../../../lib/cn';
-import { KitButton } from '../kit/parts';
+import { Key } from './ui';
 
 // The vault's dialogs. The shared Dialog's behaviour, Escape and the close button close it and focus
 // goes back to what opened it, on a black scrim with a frosted glass sheet, so opening one keeps the
 // page black. The game sheet is the lobby GameDialog rebuilt in glass, the same rows and the same
 // Play and Try the demo outcomes.
 
-const FOCUS = 'outline-none focus-visible:ring-2 focus-visible:ring-[#B47CFF] focus-visible:ring-offset-2 focus-visible:ring-offset-[#15131C]';
+const FOCUS = 'outline-none focus-visible:ring-2 focus-visible:ring-[#B47CFF] focus-visible:ring-offset-2 focus-visible:ring-offset-[#1A1328]';
 
 export function GlassDialog({ open, onOpenChange, title, description, children, className }: { open: boolean; onOpenChange: (o: boolean) => void; title: string; description?: string; children: ReactNode; className?: string }) {
   return (
     <D.Root open={open} onOpenChange={onOpenChange}>
       <D.Portal>
-        <D.Overlay className="gv-show fixed inset-0 z-40 bg-[#07060B]/75 backdrop-blur-[6px]" />
+        <D.Overlay className="gv-show fixed inset-0 z-40 bg-[#0E091A]/75 backdrop-blur-[6px]" />
         <D.Content
           className={cn(
-            'gv-show fixed left-1/2 top-1/2 z-40 flex w-full max-w-[560px] -translate-x-1/2 -translate-y-1/2 flex-col gap-6 rounded-3xl border border-white/10 bg-[#15131C]/95 p-6 shadow-[0_32px_80px_rgb(0_0_0/0.7),inset_0_1px_0_rgb(255_255_255/0.08)] outline-none backdrop-blur-[24px]',
+            'gv-show fixed left-1/2 top-1/2 z-40 flex w-full max-w-[560px] -translate-x-1/2 -translate-y-1/2 flex-col gap-6 rounded-3xl border border-white/[0.06] bg-[#1A1328]/95 p-6 shadow-[0_32px_80px_rgb(0_0_0/0.7)] outline-none backdrop-blur-[24px]',
             className,
           )}
         >
@@ -57,7 +57,7 @@ export function GameSheet({ game, onClose }: { game: CatalogueGame | null; onClo
       {game && (
         <>
           <div className="flex gap-6">
-            <span className={cn('relative shrink-0 overflow-hidden rounded-2xl shadow-[inset_0_0_0_1px_rgb(255_255_255/0.12)]', game.wideOnly ? 'aspect-[3/2] w-1/2' : 'aspect-[3/4] w-[152px]')}>
+            <span className={cn('relative shrink-0 overflow-hidden rounded-2xl shadow-[inset_0_0_0_1px_rgb(255_255_255/0.06)]', game.wideOnly ? 'aspect-[3/2] w-1/2' : 'aspect-[3/4] w-[152px]')}>
               <img src={game.image} alt="" className="h-full w-full object-cover" />
             </span>
             <dl className="flex flex-1 flex-col">
@@ -79,10 +79,10 @@ export function GameSheet({ game, onClose }: { game: CatalogueGame | null; onClo
             </p>
           )}
           <div className="flex gap-3">
-            <KitButton tone="primary" shape="pill" onClick={() => setOpened('play')} className="h-[48px] px-8 text-16 focus-visible:ring-offset-[#15131C]">
+            <Key onClick={() => setOpened('play')} className="h-[48px] px-8 text-16 focus-visible:ring-offset-[#1A1328]">
               <Play weight="fill" className="h-4 w-4" aria-hidden />
               Play
-            </KitButton>
+            </Key>
             <button type="button" onClick={() => setOpened('demo')} className={cn('gv-pill inline-flex h-[48px] items-center rounded-full px-6 text-16 font-semibold text-white', FOCUS)}>
               Try the demo
             </button>

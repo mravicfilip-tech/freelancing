@@ -82,7 +82,7 @@ export function BalanceMenu({ variant }: { variant: 'chip' | 'pill' }) {
         <CaretDown weight="bold" className="h-4 w-4 text-[rgb(var(--gv-ink-2))] transition-transform duration-200 group-data-[state=open]:rotate-180" aria-hidden />
       </M.Trigger>
       <M.Portal>
-        <M.Content align={variant === 'chip' ? 'start' : 'end'} sideOffset={10} className="z-30 w-[300px] rounded-[22px] border border-white/10 bg-[#15131C]/95 p-2 shadow-[0_24px_64px_rgb(0_0_0/0.6)] backdrop-blur-[24px]">
+        <M.Content align={variant === 'chip' ? 'start' : 'end'} sideOffset={10} className="z-30 w-[300px] rounded-[22px] border border-white/[0.06] bg-[#1A1328]/95 p-2 shadow-[0_24px_64px_rgb(0_0_0/0.6)] backdrop-blur-[24px]">
           <M.Label className="px-4 pb-2 pt-3 text-12 font-semibold uppercase tracking-[0.08em] text-[rgb(var(--gv-ink-3))]">Show balance in</M.Label>
           <M.RadioGroup value={coin} onValueChange={(v) => pick(v as CoinId)}>
             {BALANCE_COINS.map((id) => (
@@ -98,7 +98,7 @@ export function BalanceMenu({ variant }: { variant: 'chip' | 'pill' }) {
               </M.RadioItem>
             ))}
           </M.RadioGroup>
-          <M.Separator className="mx-3 my-2 h-px bg-white/[0.08]" />
+          <M.Separator className="mx-3 my-2 h-px bg-white/[0.06]" />
           {[
             { label: 'Deposit', icon: <ArrowCircleDown weight="regular" className="h-5 w-5 text-[rgb(var(--gv-ink-2))]" aria-hidden />, to: '/wallet/deposit' },
             { label: 'Withdraw', icon: <ArrowCircleUp weight="regular" className="h-5 w-5 text-[rgb(var(--gv-ink-2))]" aria-hidden />, to: '/wallet/withdraw' },

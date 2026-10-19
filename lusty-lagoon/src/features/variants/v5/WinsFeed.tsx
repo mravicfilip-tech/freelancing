@@ -51,7 +51,7 @@ function WinRow({ w, onPlay }: { w: Item; onPlay: (g: CatalogueGame) => void }) 
         aria-label={`${w.player} won ${formatAmount(w.amount, digits)} ${c.symbol} on ${g.name}. Play ${g.name}`}
         className="group flex h-[64px] w-full items-center gap-3 rounded-[16px] px-3 text-left outline-none transition-colors hover:bg-white/[0.03] focus-visible:ring-2 focus-visible:ring-[#B47CFF]"
       >
-        <span className="relative h-11 w-11 shrink-0 overflow-hidden rounded-[12px] shadow-[inset_0_0_0_1px_rgb(255_255_255/0.1)]">
+        <span className="relative h-11 w-11 shrink-0 overflow-hidden rounded-[12px] shadow-[inset_0_0_0_1px_rgb(255_255_255/0.06)]">
           <img src={g.image} alt="" className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-[1.08]" />
         </span>
         <span className="flex min-w-0 flex-1 flex-col">
@@ -68,7 +68,7 @@ function WinRow({ w, onPlay }: { w: Item; onPlay: (g: CatalogueGame) => void }) 
             +{formatAmount(w.amount, digits)}
             <Coin id={w.coin} size={16} />
           </span>
-          {w.mult && <span className="num text-12 font-medium text-[#F4D543]">{w.mult.toFixed(2)}x</span>}
+          {w.mult && <span className="num text-12 font-medium text-[rgb(var(--gv-violet))]">{w.mult.toFixed(2)}x</span>}
         </span>
       </button>
     </li>
@@ -82,7 +82,7 @@ export function WinsFeed({ state, onPlay, className }: { state: string | null; o
     <section aria-labelledby="wins-title" className={cn('gv-glass gv-edge flex min-h-0 flex-col gap-4 overflow-hidden rounded-3xl p-4', className)}>
       <div className="flex h-11 items-center justify-between gap-3 pl-2">
         <Title id="wins-title">
-          <Trophy weight="fill" className="h-5 w-5 text-[#F4D543]" aria-hidden />
+          <Trophy weight="fill" className="h-5 w-5 text-[rgb(var(--gv-violet))]" aria-hidden />
           Biggest wins
         </Title>
         <span className="pr-2 text-14 font-medium text-[rgb(var(--gv-ink-3))]">Last 24 hours</span>

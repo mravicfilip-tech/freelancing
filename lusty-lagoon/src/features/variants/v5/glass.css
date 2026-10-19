@@ -1,7 +1,8 @@
-/* Glass vault, variant 5. True black, three soft lights fixed behind the page, frosted glass panels
- * with a 1px edge that is brightest at the top and a 1px inner top light. After the Dribbble trading
- * dashboard and task card, Player 145's glass cards and Cloudbet's edge light. One light per panel,
- * entering from one edge. Everything here is prefixed gv, so nothing leaks into the other variants. */
+/* Glass vault, variant 5. A deep aubergine ground, four soft purple and ember lights behind the page,
+ * frosted glass panels with a 1px edge at 6 percent white or less (round 6, notes 1 and 5). After the
+ * Dribbble trading dashboard and task card, Player 145's glass cards and Cloudbet's edge light. One
+ * light per panel, entering from one edge. Everything here is prefixed gv, so nothing leaks into the
+ * other variants. */
 
 @property --gv-e {
   syntax: '<number>';
@@ -11,9 +12,9 @@
 
 /* On the root, so menus and dialogs that portal out of the page read the same values. */
 :root {
-  --gv-ground: 7 6 11; /* #07060B */
+  --gv-ground: 14 9 26; /* #0E091A, deep aubergine, the purple reads before any light (note 5) */
   --gv-ink-2: 180 175 196; /* #B4AFC4, labels, 7.3 to 1 on the brightest glass */
-  --gv-ink-3: 142 137 159; /* #8E899F, meta, 4.6 to 1 on the brightest glass */
+  --gv-ink-3: 162 154 188; /* #A29ABC, meta, 4.6 to 1 where the purple light peaks behind the glass */
   --gv-violet: 201 162 255; /* #C9A2FF, the picked icon and the purple text */
   --gv-ease: cubic-bezier(0.22, 1, 0.36, 1);
 }
@@ -39,9 +40,10 @@
 
 /* ---------- The lights behind the page ---------- */
 
-/* Three soft lights pinned to the page, not to the viewport, so a full page shot shows what a scroll
+/* Four soft lights pinned to the page, not to the viewport, so a full page shot shows what a scroll
  * shows. Purple behind the vault, ember behind the giveaway and the wagers, violet behind the wins
- * and the covers. Radial fills that fade to nothing, no blur filter. */
+ * and the covers, and a low purple behind the sidebar and the games, so no band of the page goes
+ * black (note 5). Radial fills that fade to nothing, no blur filter. */
 .gv-blobs { position: absolute; inset: 0; z-index: -2; pointer-events: none; overflow: hidden; }
 .gv-blob { position: absolute; border-radius: 9999px; }
 .gv-blob-purple {
@@ -49,7 +51,7 @@
   height: 820px;
   right: -320px;
   top: -440px;
-  background: radial-gradient(closest-side, rgb(141 38 231 / 0.34), rgb(141 38 231 / 0.12) 55%, rgb(141 38 231 / 0) 100%);
+  background: radial-gradient(closest-side, rgb(141 38 231 / 0.38), rgb(141 38 231 / 0.15) 55%, rgb(141 38 231 / 0) 100%);
 }
 .gv-blob-ember {
   width: 1100px;
@@ -63,23 +65,37 @@
   height: 900px;
   right: -320px;
   top: 1300px;
-  background: radial-gradient(closest-side, rgb(110 40 220 / 0.28), rgb(110 40 220 / 0.09) 55%, rgb(110 40 220 / 0) 100%);
+  background: radial-gradient(closest-side, rgb(120 44 226 / 0.36), rgb(120 44 226 / 0.13) 55%, rgb(120 44 226 / 0) 100%);
+}
+.gv-blob-low {
+  width: 1300px;
+  height: 1000px;
+  left: -360px;
+  top: 1500px;
+  background: radial-gradient(closest-side, rgb(112 36 214 / 0.3), rgb(112 36 214 / 0.1) 55%, rgb(112 36 214 / 0) 100%);
+}
+/* A faint purple wash over the whole ground, strongest at the top. */
+.gv-wash {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgb(92 30 170 / 0.16) 0%, rgb(92 30 170 / 0.06) 45%, rgb(92 30 170 / 0.1) 100%);
 }
 
 /* ---------- Glass ---------- */
 
-/* A frosted panel. White 4.5 to 2.5 percent, blur 24, a 1px inner top light and a black shadow. */
+/* A frosted panel. Violet tinted white 5 to 3 percent, blur 24 and a black shadow. The edge alone
+ * carries the top light, so no top row stacks two lights (note 1). */
 .gv-glass {
   isolation: isolate;
-  background: linear-gradient(180deg, rgb(255 255 255 / 0.045) 0%, rgb(255 255 255 / 0.025) 100%);
+  background: linear-gradient(180deg, rgb(232 220 255 / 0.05) 0%, rgb(232 220 255 / 0.028) 100%);
   -webkit-backdrop-filter: blur(24px) saturate(1.3);
   backdrop-filter: blur(24px) saturate(1.3);
-  box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.07), 0 24px 48px -24px rgb(0 0 0 / 0.5);
+  box-shadow: 0 24px 48px -24px rgb(0 0 0 / 0.5);
 }
 .gv-glass:not(.sticky):not(.fixed):not(.absolute) { position: relative; }
 
-/* The edge. A 1px ring cut out of a gradient, white 16 percent at the top to 5 at the foot. --gv-e
- * scales it, so a hover can light the edge without a second layer. */
+/* The edge. A 1px ring cut out of a gradient, white 6 percent at the top to 3 at the foot (note 1).
+ * --gv-e scales it, so a hover can light the edge without a second layer. */
 .gv-edge::before {
   content: '';
   position: absolute;
@@ -90,9 +106,9 @@
   pointer-events: none;
   background: linear-gradient(
     180deg,
-    rgb(255 255 255 / calc(0.16 * var(--gv-e))) 0%,
-    rgb(255 255 255 / calc(0.07 * var(--gv-e))) 42%,
-    rgb(255 255 255 / calc(0.05 * var(--gv-e))) 100%
+    rgb(255 255 255 / calc(0.06 * var(--gv-e))) 0%,
+    rgb(255 255 255 / calc(0.04 * var(--gv-e))) 42%,
+    rgb(255 255 255 / calc(0.03 * var(--gv-e))) 100%
   );
   -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
   -webkit-mask-composite: xor;
@@ -103,24 +119,23 @@
 /* A card that answers the pointer. The edge brightens, the card never moves. */
 .gv-hover { transition: --gv-e 0.2s var(--gv-ease), background-color 0.2s var(--gv-ease); }
 .gv-hover:hover,
-.gv-hover:focus-visible { --gv-e: 2.2; }
+.gv-hover:focus-visible { --gv-e: 2; }
 
 /* The vault frame round the money row, after the trading shot's outer frame. Barely there. */
 .gv-frame {
-  background: linear-gradient(180deg, rgb(255 255 255 / 0.03) 0%, rgb(255 255 255 / 0.01) 100%);
-  box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.05);
+  background: linear-gradient(180deg, rgb(232 220 255 / 0.03) 0%, rgb(232 220 255 / 0.012) 100%);
 }
 
 /* A well inside glass. No blur, the panel already frosts what is behind. */
 .gv-well {
   background: rgb(255 255 255 / 0.03);
-  box-shadow: inset 0 0 0 1px rgb(255 255 255 / 0.06);
+  box-shadow: inset 0 0 0 1px rgb(255 255 255 / 0.05);
 }
 
 /* The sunken header bar of a table, a full pill, after the trading shot. */
 .gv-thead {
   background: rgb(255 255 255 / 0.05);
-  box-shadow: inset 0 0 0 1px rgb(255 255 255 / 0.08), inset 0 1px 0 rgb(255 255 255 / 0.06);
+  box-shadow: inset 0 0 0 1px rgb(255 255 255 / 0.05);
 }
 
 /* A row rule, faint. */
@@ -131,25 +146,108 @@
 /* A quiet glass pill, the resting control. */
 .gv-pill {
   background: rgb(255 255 255 / 0.04);
-  box-shadow: inset 0 0 0 1px rgb(255 255 255 / 0.08), inset 0 1px 0 rgb(255 255 255 / 0.05);
+  box-shadow: inset 0 0 0 1px rgb(255 255 255 / 0.05);
   transition: background-color 0.2s var(--gv-ease), box-shadow 0.2s var(--gv-ease), color 0.2s var(--gv-ease);
 }
-.gv-pill:hover { background: rgb(255 255 255 / 0.07); box-shadow: inset 0 0 0 1px rgb(255 255 255 / 0.14), inset 0 1px 0 rgb(255 255 255 / 0.08); }
+.gv-pill:hover { background: rgb(255 255 255 / 0.07); box-shadow: inset 0 0 0 1px rgb(255 255 255 / 0.08); }
 
-/* The picked tab and the active nav row, the trading shot's Trading Overview. A lit 1px edge, a
- * faint fill, no colour wash. */
+/* The picked tab, chip and preset. A faint fill that lifts on a soft shadow, the edge at 5 percent
+ * (note 1). */
 .gv-on {
-  background: rgb(255 255 255 / 0.07);
-  box-shadow: inset 0 0 0 1px rgb(255 255 255 / 0.14), inset 0 1px 0 rgb(255 255 255 / 0.22), 0 6px 16px -8px rgb(0 0 0 / 0.6);
+  background: rgb(255 255 255 / 0.08);
+  box-shadow: inset 0 0 0 1px rgb(255 255 255 / 0.05), 0 6px 16px -8px rgb(0 0 0 / 0.5);
 }
 
-/* A picked selection card. The purple light enters from the top edge, the ring goes to 30 percent
- * white, and a check marks it, so the pick never rests on a tint alone. */
+/* The active nav row, a quiet purple tint with no edge, no top light and no shadow (note 2). */
+.gv-nav-on { background: rgb(157 92 255 / 0.12); }
+
+/* A picked selection card. The purple light enters from the top edge, a 12 percent violet ring that
+ * reads no brighter than the white edges (note 1), and a check marks it, so the pick never rests on
+ * a tint alone. */
 .gv-picked {
   background:
     radial-gradient(90% 120% at 50% 0%, rgb(141 38 231 / 0.26), rgb(141 38 231 / 0) 70%),
     rgb(255 255 255 / 0.06);
-  box-shadow: inset 0 0 0 1px rgb(201 162 255 / 0.55), inset 0 1px 0 rgb(255 255 255 / 0.18);
+  box-shadow: inset 0 0 0 1px rgb(201 162 255 / 0.12);
+}
+
+/* ---------- Keys ---------- */
+
+/* The vault's own key (note 3), sleeker than the kit's. Orange in two close stops with the light at
+ * the top, a 1px inner top light, no lower edge, a short contact shadow and a soft neutral lift, so
+ * it sits on the glass without a coloured glow. The label is #1A0F2B at weight 700, 7.0 to 1 at the
+ * key's middle. Hover lifts the light through a white layer, press sinks 1px and drops the lift. */
+.gv-key {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  border-radius: 9999px;
+  font-weight: 700;
+  letter-spacing: -0.005em;
+  color: #1a0f2b;
+  background: linear-gradient(180deg, #ff9142 0%, #ff7a1a 56%, #f9700f 100%);
+  box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.34), 0 1px 2px rgb(0 0 0 / 0.3), 0 12px 28px -14px rgb(0 0 0 / 0.75);
+  transition: transform 0.12s var(--gv-ease), box-shadow 0.2s var(--gv-ease);
+}
+.gv-key::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  border-radius: inherit;
+  pointer-events: none;
+  background: linear-gradient(180deg, rgb(255 255 255 / 0.14), rgb(255 255 255 / 0.04));
+  opacity: 0;
+  transition: opacity 0.2s var(--gv-ease);
+}
+.gv-key:hover:not(:disabled)::after { opacity: 1; }
+.gv-key:active:not(:disabled) {
+  transform: translateY(1px);
+  box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.22), 0 1px 1px rgb(0 0 0 / 0.3);
+}
+.gv-key:disabled { cursor: not-allowed; opacity: 0.45; }
+/* The secondary key in brand purple, a white label at 5.9 to 1 where it sits, 4.8 at the very top. */
+.gv-key-purple {
+  color: #fff;
+  background: linear-gradient(180deg, #8a4bf2 0%, #7a38e8 56%, #7130df 100%);
+  box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.24), 0 1px 2px rgb(0 0 0 / 0.3), 0 12px 28px -14px rgb(0 0 0 / 0.75);
+}
+/* What a key spends, in a dark tinted capsule at full ink, never a faded label. */
+.gv-key-amount {
+  display: inline-flex;
+  align-items: center;
+  height: 28px;
+  padding-inline: 12px;
+  border-radius: 9999px;
+  background: rgb(26 15 43 / 0.1);
+  font-weight: 600;
+}
+
+/* ---------- Balance card art ---------- */
+
+/* The brand mark pattern in the purple beside the woman (note 8). The Lusty Lagoon spiral at 22,
+ * spaced evenly, white at 9 percent. It starts clear of the text column, is fullest beside her and
+ * dissolves toward the text and toward the frosted pane, so no line of text sits on it. */
+.gv-mark {
+  position: absolute;
+  pointer-events: none;
+  background-image: url('/art/kit/spiral-white.svg');
+  background-size: 22px 22px;
+  background-repeat: space;
+  opacity: 0.09;
+  -webkit-mask-image: linear-gradient(90deg, transparent 0, rgb(0 0 0 / 0.6) 45%, #000 85%), linear-gradient(180deg, #000 50%, transparent 100%);
+  -webkit-mask-composite: source-in;
+  mask-image: linear-gradient(90deg, transparent 0, rgb(0 0 0 / 0.6) 45%, #000 85%), linear-gradient(180deg, #000 50%, transparent 100%);
+  mask-composite: intersect;
+}
+
+/* The flower pillar beside her, 300 to 320 of its 854. In a card under 640 wide (1440) there is no
+ * purple left of her, so it stands behind her right shoulder, the crown clear above her hair. From
+ * 640 (1920 and wider) it stands at her left, in the purple Filip pointed at, overlapped by her arm. */
+.gv-bal { container-type: inline-size; }
+.gv-pillar { position: absolute; top: 28px; right: 10px; height: 296px; width: auto; max-width: none; }
+@container (min-width: 640px) {
+  .gv-pillar { top: 64px; right: auto; left: max(400px, calc(100% - 280px)); height: 320px; }
 }
 
 /* ---------- Lights ---------- */
@@ -172,11 +270,11 @@
   inset: 0;
   border-radius: inherit;
   pointer-events: none;
-  box-shadow: inset 0 0 0 1px rgb(255 255 255 / 0.1), inset 0 1px 0 rgb(255 255 255 / 0.12);
+  box-shadow: inset 0 0 0 1px rgb(255 255 255 / 0.06);
   transition: box-shadow 0.2s var(--gv-ease);
 }
 .gv-cover:hover::after,
-.gv-cover:focus-visible::after { box-shadow: inset 0 0 0 1px rgb(255 255 255 / 0.4), inset 0 1px 0 rgb(255 255 255 / 0.5); }
+.gv-cover:focus-visible::after { box-shadow: inset 0 0 0 1px rgb(255 255 255 / 0.22); }
 
 /* ---------- Week bars ---------- */
 
@@ -186,7 +284,7 @@
   position: relative;
   border-radius: 18px 18px 6px 6px;
   background: linear-gradient(180deg, rgb(255 255 255 / 0.11) 0%, rgb(255 255 255 / 0.04) 55%, rgb(255 255 255 / 0) 100%);
-  box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.2);
+  box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.06);
   transition: filter 0.2s var(--gv-ease);
 }
 .gv-bar::before {
@@ -196,7 +294,7 @@
   border-radius: inherit;
   padding: 1px;
   pointer-events: none;
-  background: linear-gradient(180deg, rgb(255 255 255 / 0.14) 0%, rgb(255 255 255 / 0.05) 45%, rgb(255 255 255 / 0) 90%);
+  background: linear-gradient(180deg, rgb(255 255 255 / 0.06) 0%, rgb(255 255 255 / 0.03) 45%, rgb(255 255 255 / 0) 90%);
   -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
   -webkit-mask-composite: xor;
   mask: linear-gradient(#000 0 0) content-box exclude, linear-gradient(#000 0 0);
@@ -209,7 +307,7 @@
     linear-gradient(180deg, #a865ff 0%, #8a2cf5 45%, rgb(122 31 242 / 0.18) 100%);
   box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.7);
 }
-.gv-bar-today::before { background: linear-gradient(180deg, rgb(225 200 255 / 0.6) 0%, rgb(201 162 255 / 0.2) 50%, rgb(201 162 255 / 0) 90%); }
+.gv-bar-today::before { background: linear-gradient(180deg, rgb(225 200 255 / 0.24) 0%, rgb(201 162 255 / 0.1) 50%, rgb(201 162 255 / 0) 90%); }
 /* The light catching the top of today's bar, white, inside the chart, not a glow on a control. */
 .gv-bar-today::after {
   content: '';

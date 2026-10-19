@@ -53,7 +53,6 @@
 /* Every panel, card, table and widget. A 1px light edge and a highlight line along the top that
  * fades at both ends. */
 .k-surface {
-  position: relative;
   isolation: isolate;
   background-color: rgb(var(--k-panel));
   border: 1px solid var(--k-edge);
@@ -68,6 +67,9 @@
   pointer-events: none;
   background: linear-gradient(90deg, transparent, rgb(255 255 255 / 0.22), transparent);
 }
+
+/* A panel holds its highlight line, unless it is pinned or placed, which Tailwind sets. */
+.k-surface:not(.sticky):not(.fixed):not(.absolute) { position: relative; }
 
 /* The one soft light a panel may carry. Place it with --lx and --ly, default top right. */
 .k-lit {
@@ -91,7 +93,8 @@
 .k-hue-teal { background: linear-gradient(135deg, #0b7285 0%, #15aabf 70%, #3bc9db 100%); }
 
 /* Round 4 category tiles. One calm two stop fill per hue, close in value, plus a light edge. */
-.k-tile { position: relative; isolation: isolate; border: 1px solid rgb(255 255 255 / 0.14); }
+.k-tile { isolation: isolate; border: 1px solid rgb(255 255 255 / 0.14); }
+.k-tile:not(.sticky):not(.fixed):not(.absolute) { position: relative; }
 .k-tile::before {
   content: '';
   position: absolute;

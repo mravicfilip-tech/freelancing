@@ -1,0 +1,44 @@
+/* The reference kit for the dashboard variants, built to the execution of the ten reference
+ * screens Filip sent (Turbo Bet, NewBettie, Grimdrop, Wizard Casino, HugeWin and the rest).
+ * Explore mode for this ask, logged in taste.md at 15:20 on 19 Oct. Hues stay inside the Figma's
+ * own palette, purple, gold to orange, the lagoon blue, palm green and the hibiscus pink. */
+
+:root {
+  --k-panel: 26 17 48; /* #1A1130, sidebar and chat panels */
+  --k-item: 34 24 58; /* #22183A, boxes, nav rows, chips */
+  --k-item-hover: 43 31 72; /* #2B1F48 */
+  --k-muted: 156 143 191; /* #9C8FBF, nav and chip labels, 5.6 to 1 on item */
+  --k-dim: 138 126 173; /* #8A7EAD, section labels, 4.8 to 1 on panel */
+}
+
+/* Vivid single hue tiles. The darker end sits under the title, so white type keeps 3 to 1 or better. */
+.k-hue-purple { background: linear-gradient(135deg, #7a3af0 0%, #b07cff 100%); }
+.k-hue-gold { background: linear-gradient(135deg, #d9480f 0%, #f59f0b 70%, #fcc419 100%); }
+.k-hue-blue { background: linear-gradient(135deg, #1d5fd8 0%, #2fb4f0 100%); }
+.k-hue-green { background: linear-gradient(135deg, #2b8a3e 0%, #74b816 70%, #a9e34b 100%); }
+.k-hue-pink { background: linear-gradient(135deg, #c2255c 0%, #f06595 100%); }
+.k-hue-teal { background: linear-gradient(135deg, #0b7285 0%, #15aabf 70%, #3bc9db 100%); }
+
+/* The faint brand mark pattern in the tile's upper right, as on the Turbo Bet tiles. */
+.k-mark {
+  background-image: url('/art/kit/spiral-white.svg');
+  background-size: 30px 30px;
+  background-repeat: space;
+  opacity: 0.12;
+  -webkit-mask-image: linear-gradient(225deg, #000 0%, transparent 60%);
+  mask-image: linear-gradient(225deg, #000 0%, transparent 60%);
+}
+
+.k-btn-purple { background: linear-gradient(180deg, #a06bff 0%, #7b3ff2 100%); }
+.k-btn-gold { background: linear-gradient(180deg, #ffd84d 0%, #f5a623 100%); }
+.k-nav-active {
+  background: linear-gradient(90deg, rgb(141 59 240 / 0.55) 0%, rgb(141 59 240 / 0.14) 100%);
+  border-color: rgb(180 124 255 / 0.35);
+}
+.k-hero-purple {
+  background:
+    radial-gradient(120% 140% at 85% 30%, #7c3aed 0%, rgb(124 58 237 / 0) 55%),
+    linear-gradient(135deg, #24104a 0%, #3b1a7a 55%, #5b2bc4 100%);
+}
+.k-no-scrollbar { scrollbar-width: none; }
+.k-no-scrollbar::-webkit-scrollbar { display: none; }

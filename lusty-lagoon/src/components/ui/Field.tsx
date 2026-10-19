@@ -2,7 +2,7 @@ import { forwardRef, useId, type InputHTMLAttributes, type ReactNode } from 'rea
 import { WarningCircle } from '@phosphor-icons/react';
 import { cn } from '../../lib/cn';
 
-type FieldProps = InputHTMLAttributes<HTMLInputElement> & {
+type FieldProps = Omit<InputHTMLAttributes<HTMLInputElement>, 'prefix'> & {
   label: string;
   hint?: ReactNode;
   error?: string;

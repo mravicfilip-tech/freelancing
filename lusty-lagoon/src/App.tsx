@@ -4,13 +4,14 @@ import { TooltipProvider } from './components/ui/Tooltip';
 import { WalletProvider } from './features/wallet/store';
 import { WalletPage } from './features/wallet/WalletPage';
 import { KitPage } from './pages/KitPage';
+import { LandingPage } from './features/landing/LandingPage';
+import { FaqPage } from './features/faq/FaqPage';
+import { LobbyPage } from './features/lobby/LobbyPage';
 import { Placeholder } from './pages/Placeholder';
 
 const PLACEHOLDERS = [
-  ['lobby', 'Lobby'],
   ['agent', 'Send to agent'],
   ['refer', 'Refer a friend'],
-  ['faq', 'FAQ'],
   ['account', 'Account'],
   ['notifications', 'Notifications'],
 ] as const;
@@ -22,8 +23,10 @@ export function App() {
         <TooltipProvider>
           <Routes>
             <Route path="/kit" element={<KitPage />} />
+            <Route path="/" element={<LandingPage />} />
             <Route element={<AppShell />}>
-              <Route index element={<Navigate to="/wallet/deposit" replace />} />
+              <Route path="faq" element={<FaqPage />} />
+              <Route path="lobby" element={<LobbyPage />} />
               <Route path="wallet" element={<Navigate to="/wallet/deposit" replace />} />
               <Route path="wallet/:tab" element={<WalletPage />} />
               {PLACEHOLDERS.map(([path, title]) => (

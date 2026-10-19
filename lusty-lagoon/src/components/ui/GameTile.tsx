@@ -5,7 +5,7 @@ export type Game = { id: string; name: string; provider: string; image: string; 
 
 // A game cover with its name under it. Hover and focus show a play mark on the art, never gold,
 // because gold is the one primary action per view.
-export function GameTile({ game, onPlay, className }: { game: Game; onPlay?: (g: Game) => void; className?: string }) {
+export function GameTile({ game, onPlay, shape = 'tall', className }: { game: Game; onPlay?: (g: Game) => void; shape?: 'tall' | 'wide'; className?: string }) {
   return (
     <button
       type="button"
@@ -13,8 +13,8 @@ export function GameTile({ game, onPlay, className }: { game: Game; onPlay?: (g:
       aria-label={`Play ${game.name}, ${game.provider}`}
       className={cn('group flex w-full flex-col gap-2 rounded-xl text-left', className)}
     >
-      <span className="relative block aspect-[3/4] w-full overflow-hidden rounded-xl border border-line bg-panel">
-        <img src={game.image} alt="" loading="lazy" className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105" />
+      <span className={cn('relative block w-full overflow-hidden rounded-xl border border-line bg-panel', shape === 'wide' ? 'aspect-[3/2]' : 'aspect-[3/4]')}>
+        <img src={game.image} alt="" className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105" />
         {game.tag && (
           <span className="absolute left-2 top-2 rounded-lg bg-page px-2 py-1 text-12 font-semibold uppercase tracking-[var(--bl-ls-label)] text-ink">{game.tag}</span>
         )}

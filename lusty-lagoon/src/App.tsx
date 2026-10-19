@@ -7,7 +7,7 @@ import { KitPage } from './pages/KitPage';
 import { LandingPage } from './features/landing/LandingPage';
 import { FaqPage } from './features/faq/FaqPage';
 import { LobbyPage } from './features/lobby/LobbyPage';
-import { Placeholder } from './pages/Placeholder';
+import { NotFound } from './pages/NotFound';
 
 const PLACEHOLDERS = [
   ['agent', 'Send to agent'],
@@ -29,10 +29,10 @@ export function App() {
               <Route path="lobby" element={<LobbyPage />} />
               <Route path="wallet" element={<Navigate to="/wallet/deposit" replace />} />
               <Route path="wallet/:tab" element={<WalletPage />} />
-              {PLACEHOLDERS.map(([path, title]) => (
-                <Route key={path} path={path} element={<Placeholder title={title} />} />
+              {PLACEHOLDERS.map(([path]) => (
+                <Route key={path} path={path} element={<NotFound />} />
               ))}
-              <Route path="*" element={<Placeholder title="Page not found" />} />
+              <Route path="*" element={<NotFound />} />
             </Route>
           </Routes>
         </TooltipProvider>

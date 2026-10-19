@@ -1,0 +1,12 @@
+{
+  "name": "Show the balance in Bitcoin",
+  "job": "A player opens the balance in the top bar, picks Bitcoin and reads the balance in BTC",
+  "start": "/variants/1",
+  "maxClicks": 3,
+  "steps": [
+    { "click": "change the coin shown" },
+    { "expect": "Show balance in" },
+    { "click": "0.025312" },
+    { "expect": "0.025312" }
+  ]
+}

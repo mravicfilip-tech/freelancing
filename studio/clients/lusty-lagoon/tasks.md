@@ -51,7 +51,7 @@ Task format
   - [ ] Account settings, all 4 states
   - [ ] Mods across the whole product
 
-- lusty-lagoon-2 Five dashboard variants, one page each, from the ten references. Brief briefs/round-3/variants-brief.md. Live https://lusty-lagoon.vercel.app/variants, commit f8ced30
+- lusty-lagoon-2 Five dashboard variants, one page each, from the ten references. Brief briefs/round-3/variants-brief.md. Live https://lusty-lagoon.vercel.app/variants, commit f8ced30. Round 4 on the branch, plan briefs/round-4/plan.md
   - [x] Save the ten references with a status
   - [x] Shared data, routes and the builder brief
   - [x] Build the five variants, rejected on execution, layouts kept
@@ -64,12 +64,14 @@ Task format
   - [x] Filip's feedback on the live link, two Looms and a Dribbble image
   - [x] Queue round 4 notes, briefs/round-4/notes.md, 31 notes
   - [x] Plan round 4, briefs/round-4/plan.md
-  - [ ] Filip answers D1 to D5 and says go
+  - [x] Filip answers D1 to D5 and says go
+  - [x] Research, six live casino lobbies and premium dark UI craft, saved with notes
   - [ ] Button board, Filip picks a number
   - [ ] Sidebar board, Filip picks a number
-  - [ ] Shared kit lines, type ramp, hover, balance menu, orange primary
-  - [ ] Variant 2 leaves the routes and the switcher
-  - [ ] Variants 1, 3, 4 and 5 reworked per the plan
+  - [x] Switchers on both boards, Base first
+  - [x] Shared kit lines, type ramp, hover, balance menu, orange primary
+  - [x] Variant 2 leaves the routes and the switcher
+  - [x] Variants 1, 3, 4 and 5 reworked per the plan
   - [ ] Shots, checks and /uireview on the round
   - [ ] Filip picks a variant
 

@@ -88,13 +88,13 @@ function locate(kind, wanted) {
   };
   let pool, names;
   if (kind === 'click') {
-    pool = [...document.querySelectorAll('a[href],button,summary,label,[role=button],[role=link],[role=tab],[role=menuitem],[role=option],[role=checkbox],[role=radio],[role=switch],input[type=submit],input[type=button],input[type=checkbox],input[type=radio],[onclick],[tabindex]:not([tabindex="-1"])')];
+    pool = [...document.querySelectorAll('a[href],button,summary,label,[role=button],[role=link],[role=tab],[role=menuitem],[role=menuitemradio],[role=menuitemcheckbox],[role=option],[role=checkbox],[role=radio],[role=switch],input[type=submit],input[type=button],input[type=checkbox],input[type=radio],[onclick],[tabindex]:not([tabindex="-1"])')];
     names = (el) => [text(el), norm(el.getAttribute('aria-label')), norm(el.getAttribute('title')), norm(el.value && el.tagName === 'INPUT' ? el.value : ''), ...[...el.querySelectorAll('img[alt]')].map((i) => norm(i.alt))].filter(Boolean);
   } else if (kind === 'field') {
     pool = [...document.querySelectorAll('input:not([type=hidden]):not([type=submit]):not([type=button]),textarea,select,[role=combobox],[role=textbox],[contenteditable=true]')];
     names = labelsOf;
   } else {
-    pool = [...document.querySelectorAll('[role=option],option,li,[role=menuitem],button,a')];
+    pool = [...document.querySelectorAll('[role=option],option,li,[role=menuitem],[role=menuitemradio],[role=menuitemcheckbox],button,a')];
     names = (el) => [text(el), norm(el.value)].filter(Boolean);
   }
   pool = pool.filter((e) => kind === 'option' && e.tagName === 'OPTION' ? true : visible(e));

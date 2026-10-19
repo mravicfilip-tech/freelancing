@@ -1,0 +1,11 @@
+{
+  "name": "Quick deposit 25 dollars by Visa",
+  "job": "A player lands on the vault, checks out the default 25 dollar Visa deposit and reaches the review step with the saved card",
+  "start": "/variants/5",
+  "maxClicks": 2,
+  "steps": [
+    { "expect": "Quick deposit" },
+    { "click": "Checkout" },
+    { "expect": "Visa ending 4821" }
+  ]
+}

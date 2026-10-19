@@ -50,8 +50,9 @@ Note 8 says polish only what the case study shows. Proposed list, decision 1 bel
 1. Foundation. App scaffold in `lusty-lagoon/`, Vite, React, TypeScript, Tailwind and shadcn on
    Radix. Tokens, the parts above, the `/kit` route.
 2. Screen one, the wallet payment flow. It is the hardest screen because it holds the most states
-   and the user's money, and because 5 of the 8 notes land on it, tabs, selection cards, buttons,
-   the rank card and the text glow. Its sidebar and top bar then carry over to the lobby.
+   and the user's money, and because 5 of the 8 notes land on it, notes 1, 2, 3, 7 and 8, the
+   selection cards, the glowing tabs, the rank card, the buttons and the missing flow screens. Its
+   sidebar and top bar then carry over to the lobby.
 3. Screen two, the lobby, built from the kit.
 4. Screen three, the landing page, built from the kit.
 

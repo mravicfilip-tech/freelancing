@@ -75,9 +75,9 @@ Task format
   - [ ] Shots, checks and /uireview on the round, blocked by the lusty-lagoon-1 card
   - [x] Round 5 consolidated brief, every note and reference, briefs/round-5/consolidated.md
   - [x] Tactile orange key in the kit, boards out, variant 2 slot back
-  - [ ] Five directions built from zero, Neon arcade, Mascot stage, Tournament arena, Angular floor, Glass vault
-  - [ ] Review pass on each direction against its references
-  - [ ] Checks, after shots and a board of the five
+  - [x] Five directions built from zero, Neon arcade, Mascot stage, Tournament arena, Angular floor, Glass vault
+  - [x] Review pass on each direction against its references
+  - [x] Checks, after shots and a board of the five
   - [ ] Filip picks a variant
 
 ## Review

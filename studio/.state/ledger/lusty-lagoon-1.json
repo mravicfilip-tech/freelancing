@@ -16,6 +16,12 @@
       "tree": "78221e784a15b81507712486ad1caeb0e16e1a2e",
       "at": "2026-10-19T11:09:08.765Z",
       "score": 7.8
+    },
+    {
+      "n": 3,
+      "tree": "c1e84b3af849b2c75764243ecbc42c3f6ca11105",
+      "at": "2026-10-19T11:17:28.635Z",
+      "score": 8.3
     }
   ],
   "findings": [
@@ -88,7 +94,7 @@
       "sev": 3,
       "where": "lusty-lagoon/src/components/shell/Sidebar.tsx RewardCard Gift icon text-gold",
       "what": "gold is reserved for the one primary action per view, but a decorative gift icon uses it on every screen. Expected accent or ink-2.",
-      "status": "open",
+      "status": "fixed",
       "round": 1
     },
     {
@@ -96,7 +102,7 @@
       "sev": 3,
       "where": "lusty-lagoon/src/components/ui/Logo.tsx and Sidebar.tsx at 1440 and 1920",
       "what": "the two line wordmark is about 50px tall in a 64px row and starts about 4px from the top edge. Expected at least 8px clear space above.",
-      "status": "open",
+      "status": "fixed",
       "round": 1
     },
     {
@@ -108,6 +114,18 @@
       "round": 1
     }
   ],
-  "cards": [],
+  "cards": [
+    {
+      "after": 2,
+      "kind": "fix",
+      "choice": "fix lusty-lagoon-1 F9 F10",
+      "at": "2026-10-19T11:16:05.378Z",
+      "proof": "42dfd46d-fde0-4987-ad5e-00157e8fa308",
+      "ids": [
+        "F9",
+        "F10"
+      ]
+    }
+  ],
   "cardAt": "2026-10-19T11:09:08.837Z"
 }

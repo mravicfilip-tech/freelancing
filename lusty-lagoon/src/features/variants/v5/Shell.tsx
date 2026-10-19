@@ -14,7 +14,7 @@ import { BellSquare, SearchBox, UserBox } from '../kit/TopParts';
 
 export function TopBar({ query, onQuery, onSearch }: { query: string; onQuery: (q: string) => void; onSearch: () => void }) {
   return (
-    <header className="sticky top-0 z-20 flex h-[84px] items-center gap-4 bg-page px-4">
+    <header className="k-glass sticky top-0 z-20 flex h-[84px] items-center gap-4 px-4">
       <div className="flex w-[232px] shrink-0 items-center pl-3">
         <Link to="/variants/5" aria-label="Lusty Lagoon, lobby" className="rounded-lg">
           <Logo className="text-[20px] leading-[22px]" />
@@ -43,7 +43,7 @@ function RankCard() {
       <span className="flex items-center gap-3">
         <img src="/brand/rank-bronze.png" alt="" className="h-10 w-10 object-contain" />
         <span className="flex flex-col">
-          <span className="font-display text-18 font-bold uppercase leading-5 text-ink">{r.name}</span>
+          <span className="text-16 font-extrabold uppercase leading-5 tracking-[-0.01em] text-ink">{r.name}</span>
           <span className="num text-12 font-semibold text-[rgb(var(--k-muted))]">
             {shortPoints(r.points)} of {shortPoints(r.nextAt)} points
           </span>
@@ -63,7 +63,7 @@ export function Sidebar({ onJump }: { onJump: (id: string) => void }) {
   const { transactions } = useWallet();
   const pending = transactions.filter((t) => t.status === 'pending').length;
   return (
-    <aside className="k-no-scrollbar sticky top-[84px] flex h-[calc(100vh-100px)] w-[232px] shrink-0 flex-col gap-4 overflow-y-auto rounded-[20px] bg-[rgb(var(--k-panel))] p-3">
+    <aside className="k-no-scrollbar sticky top-[84px] flex h-[calc(100vh-100px)] w-[232px] shrink-0 flex-col gap-4 overflow-y-auto rounded-[20px] border border-white/[0.08] bg-[rgb(var(--k-panel))] p-3">
       <nav aria-label="Play" className="flex flex-col gap-2">
         <SectionLabel>Play</SectionLabel>
         <NavItem to="/variants/5" active icon={<House weight="fill" />} label="Lobby" />

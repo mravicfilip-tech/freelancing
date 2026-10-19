@@ -69,8 +69,8 @@ export function WinsFeed({ state, onPlay, className }: { state: string | null; o
   const [tab, setTab] = useState<'high' | 'lucky'>('high');
   const list = tab === 'high' ? HIGHEST : LUCKIEST;
   return (
-    <section aria-labelledby="wins-title" className={cn('flex min-h-0 flex-col overflow-hidden rounded-[20px] bg-[rgb(var(--k-panel))]', className)}>
-      <div className="flex flex-col gap-4 border-b border-ink/5 p-[20px] pb-4">
+    <section aria-labelledby="wins-title" className={cn('k-surface flex min-h-0 flex-col overflow-hidden rounded-[20px]', className)}>
+      <div className="flex flex-col gap-4 k-rule border-b p-6 pb-4">
         <CardTitle id="wins-title">
           <Trophy weight="fill" className="h-6 w-6 text-gold" aria-hidden />
           Biggest wins
@@ -95,7 +95,7 @@ export function WinsFeed({ state, onPlay, className }: { state: string | null; o
           ))}
         </div>
       </div>
-      <div id="wins-panel" role="tabpanel" className="k-no-scrollbar relative min-h-0 flex-1 overflow-y-auto [mask-image:linear-gradient(180deg,#000_80%,transparent)] p-[20px] pb-12">
+      <div id="wins-panel" role="tabpanel" className="k-no-scrollbar relative min-h-0 flex-1 overflow-y-auto [mask-image:linear-gradient(180deg,#000_80%,transparent)] p-6 pb-12">
         {state === 'loading' ? (
           <div className="flex flex-col gap-4">
             {Array.from({ length: 6 }, (_, i) => (

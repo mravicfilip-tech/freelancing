@@ -29,7 +29,7 @@ function Row({ b, onPlay }: { b: Bet; onPlay: (g: CatalogueGame) => void }) {
   const p = payout(b);
   const sym = coinById(b.coin).symbol;
   return (
-    <li className={cn(COLS, 'h-[56px] border-t border-ink/5 px-[20px] text-14 font-semibold')}>
+    <li className={cn(COLS, 'k-rule h-[56px] border-t px-[16px] text-14 font-semibold first:border-t-0')}>
       <button type="button" onClick={() => onPlay(g)} aria-label={`Play ${g.name}`} className="group flex min-w-0 items-center gap-3 rounded-[10px] text-left">
         <img src={g.image} alt="" className="h-10 w-10 shrink-0 rounded-[10px] object-cover ring-2 ring-transparent transition group-hover:ring-accent" />
         <span className="flex min-w-0 flex-col">
@@ -82,8 +82,8 @@ export function LiveWagers({ state, onPlay }: { state: string | null; onPlay: (g
         </div>
         <Segmented label="Wagers" items={TABS} value={tab} onChange={setTab} controls="wagers-panel" />
       </div>
-      <div id="wagers-panel" role="tabpanel" aria-labelledby="wagers-title" className="min-h-[724px] rounded-[20px] bg-[rgb(var(--k-panel))] pb-2">
-        <div aria-hidden className={cn(COLS, 'sticky top-[84px] z-10 h-11 rounded-t-[20px] border-b border-ink/5 bg-[rgb(var(--k-panel))] px-[20px] text-12 font-bold uppercase tracking-[0.06em] text-[rgb(var(--k-dim))]')}>
+      <div id="wagers-panel" role="tabpanel" aria-labelledby="wagers-title" className="k-surface min-h-[724px] rounded-[20px] p-3">
+        <div aria-hidden className={cn(COLS, 'k-well sticky top-[96px] z-10 h-11 rounded-[12px] px-[16px] text-12 font-bold uppercase tracking-[0.08em] text-[rgb(var(--k-dim))]')}>
           <span>Game</span>
           <span>Player</span>
           <span>Time</span>

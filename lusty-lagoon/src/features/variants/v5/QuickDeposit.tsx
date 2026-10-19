@@ -7,11 +7,10 @@ import { formatAmount } from '../../../lib/format';
 import { cn } from '../../../lib/cn';
 import { KitButton } from '../kit/parts';
 import { PRESETS, QUICK_METHODS, checkoutUrl, quoteFor, type QuickMethod } from './quote';
-import { CardTitle } from './ui';
 
-// Skinify's payment modal, set flat into the dashboard. Method cards with a type tag, the picked one
-// with an accent outline and a check, amount presets in boxes, You pay, You get and the commission
-// on dotted leaders, a gold Checkout and a promo code field with Apply.
+// Skinify's payment modal, set flat into the dashboard, the second thing the eye lands on. Method
+// cards with a type tag, the picked one with an accent outline and a check, the amount with presets,
+// a sunken well with You pay as the one strong number, and the row's orange Checkout across the foot.
 
 function Glyph({ path, fill, className, viewBox = '0 0 24 24' }: { path: string; fill: string; className?: string; viewBox?: string }) {
   return (
@@ -28,7 +27,7 @@ function MethodMark({ m }: { m: QuickMethod }): ReactNode {
       return (
         <span className="flex items-center gap-2">
           <img src="/brand/mastercard.svg" alt="" className="h-[30px] w-auto" />
-          <span className="text-18 font-bold tracking-[-0.01em] text-ink">mastercard</span>
+          <span className="text-16 font-bold tracking-[-0.01em] text-ink">mastercard</span>
         </span>
       );
     return (
@@ -58,8 +57,8 @@ function MethodCard({ m, on, onPick, tabIndex, refCb }: { m: QuickMethod; on: bo
       tabIndex={tabIndex}
       onClick={onPick}
       className={cn(
-        'relative flex h-[88px] w-full items-center justify-center rounded-[14px] border-2 transition-colors duration-150',
-        on ? 'border-accent bg-[#2A1D4D]' : 'border-transparent bg-[rgb(var(--k-item))] hover:bg-[rgb(var(--k-item-hover))]',
+        'relative flex h-[72px] w-full items-center justify-center rounded-[16px] border outline-none transition-colors duration-200 focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-[rgb(var(--k-panel))]',
+        on ? 'border-accent bg-[#2A1D4D] shadow-[0_0_0_1px_rgb(180_124_255)]' : 'border-white/[0.08] bg-[rgb(var(--k-item))] hover:border-white/[0.16] hover:bg-[rgb(var(--k-item-hover))]',
       )}
     >
       <span className={cn('absolute left-2 top-2 rounded-[6px] px-[6px] py-0.5 text-12 font-bold uppercase leading-4 tracking-[0.02em]', on ? 'bg-accent text-[#1A0F2B]' : 'bg-[#3A2A63] text-[#D9C6FF]')}>{m.tag}</span>
@@ -68,19 +67,18 @@ function MethodCard({ m, on, onPick, tabIndex, refCb }: { m: QuickMethod; on: bo
           <Check weight="bold" className="h-[12px] w-[12px]" />
         </span>
       )}
-      <span className="mt-3">
+      <span className="mt-4">
         <MethodMark m={m} />
       </span>
     </button>
   );
 }
 
-function Leader({ label, value, strong }: { label: string; value: ReactNode; strong?: boolean }) {
+function Leader({ label, value }: { label: string; value: ReactNode }) {
   return (
-    <div className="flex items-baseline gap-2">
-      <dt className={cn('shrink-0', strong ? 'text-18 font-bold text-ink' : 'text-14 font-semibold text-[rgb(var(--k-muted))]')}>{label}</dt>
-      <span aria-hidden className="mb-1 min-w-[16px] flex-1 border-b-2 border-dotted border-ink/15" />
-      <dd className={cn('num shrink-0', strong ? 'text-18 font-bold text-win' : 'text-14 font-semibold text-ink')}>{value}</dd>
+    <div className="flex items-baseline justify-between gap-2">
+      <dt className="text-14 font-semibold text-[rgb(var(--k-muted))]">{label}</dt>
+      <dd className="num text-14 font-bold text-ink">{value}</dd>
     </div>
   );
 }
@@ -119,12 +117,12 @@ export function QuickDeposit() {
   };
 
   return (
-    <section aria-labelledby="qd-title" className="flex flex-col gap-4 rounded-[24px] bg-[rgb(var(--k-panel))] p-[20px]">
-      <div className="flex items-start justify-between gap-4">
-        <CardTitle id="qd-title" dot>
+    <section aria-labelledby="qd-title" className="k-surface flex flex-col gap-4 rounded-[20px] p-[24px]">
+      <div className="flex items-center justify-between gap-4">
+        <h2 id="qd-title" className="text-12 font-bold uppercase tracking-[0.08em] text-[rgb(var(--k-dim))]">
           Quick deposit
-        </CardTitle>
-        <p className="flex items-center gap-1 pt-1 text-14 font-semibold text-[rgb(var(--k-muted))]">
+        </h2>
+        <p className="flex items-center gap-1 text-12 font-semibold text-[rgb(var(--k-muted))]">
           <Lightning weight="fill" className="h-4 w-4 text-gold" aria-hidden />
           Cards land instantly, coins in minutes
         </p>
@@ -138,34 +136,34 @@ export function QuickDeposit() {
         ))}
       </div>
 
-      <div className="grid grid-cols-[minmax(0,1.1fr)_minmax(0,1fr)] gap-6">
+      <div className="grid grid-cols-2 gap-6">
         <div className="flex flex-col gap-2">
           <div className="flex items-baseline justify-between">
-            <label htmlFor={ids.amount} className="text-16 font-bold text-ink">
+            <label htmlFor={ids.amount} className="text-14 font-bold text-ink">
               Amount
             </label>
             <span className="text-12 font-semibold text-[rgb(var(--k-dim))]">
               Minimum <span className="num text-win">{formatAmount(q.min)} USD</span>
             </span>
           </div>
-          <div className="flex gap-2">
-            <div className={cn('flex h-[48px] min-w-0 flex-1 items-center gap-2 rounded-[12px] border-2 bg-[rgb(var(--k-item))] pl-3 pr-3 focus-within:border-accent', showProblem ? 'border-danger/70' : 'border-transparent')}>
-              <span aria-hidden className="text-16 font-bold text-[rgb(var(--k-muted))]">
-                $
-              </span>
-              <input
-                ref={amountRef}
-                id={ids.amount}
-                inputMode="decimal"
-                autoComplete="off"
-                value={raw}
-                onChange={(e) => setRaw(e.target.value.replace(/[^\d.,]/g, ''))}
-                aria-invalid={!!showProblem}
-                aria-describedby={ids.help}
-                placeholder="Amount"
-                className="num h-full min-w-0 flex-1 bg-transparent text-16 font-bold text-ink outline-none placeholder:font-semibold placeholder:text-[rgb(var(--k-dim))]"
-              />
-            </div>
+          <div className={cn('flex h-11 min-w-0 items-center gap-2 rounded-[12px] border bg-[rgb(var(--k-item))] px-3 transition-colors focus-within:border-accent focus-within:ring-1 focus-within:ring-accent', showProblem ? 'border-danger/70' : 'border-white/[0.08]')}>
+            <span aria-hidden className="text-16 font-bold text-[rgb(var(--k-muted))]">
+              $
+            </span>
+            <input
+              ref={amountRef}
+              id={ids.amount}
+              inputMode="decimal"
+              autoComplete="off"
+              value={raw}
+              onChange={(e) => setRaw(e.target.value.replace(/[^\d.,]/g, ''))}
+              aria-invalid={!!showProblem}
+              aria-describedby={ids.help}
+              placeholder="Amount"
+              className="num h-full min-w-0 flex-1 bg-transparent text-16 font-bold text-ink outline-none placeholder:font-semibold placeholder:text-[rgb(var(--k-dim))]"
+            />
+          </div>
+          <div className="grid grid-cols-3 gap-2">
             {PRESETS.map((p) => (
               <button
                 key={p}
@@ -173,15 +171,15 @@ export function QuickDeposit() {
                 aria-pressed={amount === p}
                 onClick={() => setRaw(String(p))}
                 className={cn(
-                  'num h-[48px] w-[52px] shrink-0 rounded-[12px] border-2 text-14 font-bold transition-colors',
-                  amount === p ? 'border-accent bg-[#2A1D4D] text-ink' : 'border-transparent bg-[rgb(var(--k-item))] text-[rgb(var(--k-muted))] hover:bg-[rgb(var(--k-item-hover))] hover:text-ink',
+                  'num h-9 rounded-[12px] border text-14 font-bold outline-none transition-colors focus-visible:ring-2 focus-visible:ring-accent',
+                  amount === p ? 'border-accent bg-[#2A1D4D] text-ink' : 'border-white/[0.08] bg-[rgb(var(--k-item))] text-[rgb(var(--k-muted))] hover:border-white/[0.16] hover:text-ink',
                 )}
               >
                 ${p}
               </button>
             ))}
           </div>
-          <p id={ids.help} aria-live="polite" className={cn('flex min-h-[20px] items-center gap-1 text-12 font-semibold', showProblem ? 'text-[#FF8FA3]' : 'text-[rgb(var(--k-dim))]')}>
+          <p id={ids.help} aria-live="polite" className={cn('flex min-h-[16px] items-center gap-1 text-12 font-semibold', showProblem ? 'text-[#FF8FA3]' : 'text-[rgb(var(--k-dim))]')}>
             {showProblem ? (
               <>
                 <WarningCircle weight="fill" className="h-4 w-4 shrink-0" aria-hidden />
@@ -198,8 +196,8 @@ export function QuickDeposit() {
               setPromoState(promo.trim() ? 'added' : 'blank');
             }}
           >
-            <div className="flex h-11 min-w-0 flex-1 items-center gap-2 rounded-[12px] bg-[rgb(var(--k-item))] px-3 focus-within:ring-2 focus-within:ring-accent">
-              <Ticket weight="fill" className="h-5 w-5 shrink-0 text-[rgb(var(--k-dim))]" aria-hidden />
+            <div className="flex h-11 min-w-0 flex-1 items-center gap-2 rounded-[12px] border border-white/[0.08] bg-[rgb(var(--k-item))] px-3 focus-within:border-accent focus-within:ring-1 focus-within:ring-accent">
+              <Ticket weight="fill" className="h-4 w-4 shrink-0 text-[rgb(var(--k-dim))]" aria-hidden />
               <label htmlFor={ids.promo} className="sr-only">
                 Promo code
               </label>
@@ -216,7 +214,7 @@ export function QuickDeposit() {
               />
               {promoState === 'added' && <CheckCircle weight="fill" className="h-5 w-5 shrink-0 text-win" aria-label="Code added" />}
             </div>
-            <KitButton type="submit" tone="purple" size="sm" className="h-11 px-[20px]">
+            <KitButton type="submit" tone="purple" size="sm" className="h-11 px-4">
               Apply
             </KitButton>
           </form>
@@ -225,18 +223,24 @@ export function QuickDeposit() {
           </p>
         </div>
 
-        <div className="flex flex-col justify-between gap-3 border-l border-ink/10 pl-6">
-          <dl className="flex flex-col gap-2">
-            <Leader strong label="You pay" value={q.problem && !(amount > 0) ? '0.00' : `${formatAmount(q.pay, q.payDigits)} ${q.payUnit}`} />
-            <Leader label="You get" value={`${formatAmount(amount > 0 ? q.get : 0)} USDT`} />
-            <Leader label={q.feeLabel} value={`${formatAmount(q.fee)} USD`} />
+        <div className="k-well flex flex-col justify-between gap-4 rounded-[16px] p-4">
+          <dl className="flex h-full flex-col justify-between gap-4">
+            <div className="flex flex-col gap-1">
+              <dt className="text-12 font-bold uppercase tracking-[0.08em] text-[rgb(var(--k-dim))]">You pay</dt>
+              <dd className="num text-28 font-bold leading-8 text-ink">{q.problem && !(amount > 0) ? '0.00' : `${formatAmount(q.pay, q.payDigits)} ${q.payUnit}`}</dd>
+            </div>
+            <div className="k-rule flex flex-col gap-2 border-t pt-3">
+              <Leader label="You get" value={`${formatAmount(amount > 0 ? q.get : 0)} USDT`} />
+              <Leader label={q.feeLabel} value={`${formatAmount(q.fee)} USD`} />
+            </div>
           </dl>
-          <KitButton tone="gold" size="lg" onClick={checkout} className="h-[48px] w-full rounded-[12px]">
-            <CheckCircle weight="fill" className="h-5 w-5" aria-hidden />
-            Checkout
-          </KitButton>
         </div>
       </div>
+
+      <KitButton tone="primary" size="lg" onClick={checkout} className="w-full">
+        <CheckCircle weight="fill" className="h-5 w-5" aria-hidden />
+        Checkout
+      </KitButton>
     </section>
   );
 }

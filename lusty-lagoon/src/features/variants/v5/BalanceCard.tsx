@@ -7,11 +7,12 @@ import { ACCOUNT, methodLabel, type Transaction } from '../../../data/wallet';
 import { formatAmount, formatDate } from '../../../lib/format';
 import { cn } from '../../../lib/cn';
 import { useWallet } from '../../wallet/store';
-import { Coin, KitButton } from '../kit/parts';
+import { AnimatedNumber, Coin, KitButton } from '../kit/parts';
 
-// The signature. The balance set as type, Bai Jamjuree Bold at 64px, tabular, the cents a step
-// quieter and the currency small beside it, the day's result under it. One cut-out, girl-wrap,
-// stands at the card's right edge, her head past its top, her legs behind the transactions box.
+// The signature, and the first thing the eye lands on. The largest card in the money row and the
+// only one with the purple light. The balance set as type, Bai Jamjuree Bold at 64px, tabular, the
+// cents a step quieter, rolling on change, the day's result under it. One cut-out, girl-wrap, stands
+// at the card's right edge inside it, her legs behind the transactions well.
 
 /** The day's result so far, the Sugar Rush session of 12 minutes ago. */
 const TODAY = 60;
@@ -27,10 +28,10 @@ function TxRow({ tx }: { tx: Transaction }) {
   const d = formatDate(tx.date);
   const st = STATUS[tx.status];
   return (
-    <li className="flex h-[52px] items-center gap-3 border-t border-ink/5 first:border-t-0">
+    <li className="flex h-[52px] items-center gap-3 k-rule border-t first:border-t-0">
       <span className="relative flex w-12 shrink-0 justify-center">
         <MethodLogo selection={tx.method} size="md" />
-        <span aria-hidden className={cn('absolute -bottom-1 right-0 flex h-4 w-4 items-center justify-center rounded-full border-2 border-[rgb(var(--k-item))]', dep ? 'bg-win text-[#0B2A14]' : 'bg-[#B47CFF] text-[#1A0F2B]')}>
+        <span aria-hidden className={cn('absolute -bottom-1 right-0 flex h-4 w-4 items-center justify-center rounded-full border-2 border-[rgb(var(--k-panel-2))]', dep ? 'bg-win text-[#0B2A14]' : 'bg-[#B47CFF] text-[#1A0F2B]')}>
           {dep ? <ArrowDownLeft weight="bold" className="h-[10px] w-[10px]" /> : <ArrowUpRight weight="bold" className="h-[10px] w-[10px]" />}
         </span>
       </span>
@@ -53,9 +54,9 @@ function Recent() {
   const { transactions, historyState, retryHistory } = useWallet();
   const last = transactions.slice(0, 3);
   return (
-    <div className="relative z-10 rounded-[16px] bg-[rgb(var(--k-item))] px-4 pb-1 pt-3">
+    <div className="k-well relative z-10 rounded-[16px] px-4 pb-1 pt-3">
       <div className="flex items-center justify-between pb-1">
-        <h3 className="text-14 font-bold text-ink">Last transactions</h3>
+        <h3 className="text-12 font-bold uppercase tracking-[0.08em] text-[rgb(var(--k-dim))]">Last transactions</h3>
         <Link to="/wallet/deposit" className="rounded-[6px] text-14 font-bold text-accent hover:text-ink">
           All transactions
         </Link>
@@ -91,53 +92,54 @@ export function BalanceCard() {
   const navigate = useNavigate();
   const { balance } = useWallet();
   const [hidden, setHidden] = useState(false);
-  const [whole, cents] = formatAmount(balance).split('.');
+  const whole = Math.trunc(balance);
+  const cents = Math.round((balance - whole) * 100);
   return (
-    <section aria-labelledby="bal-title" className="relative flex flex-col justify-between gap-4 rounded-[24px] bg-[rgb(var(--k-panel))] p-[20px]">
-      {/* The cut-out. Its frame reaches past the card's top so her head breaks out, and is clipped at the card's bottom. */}
-      <div aria-hidden className="pointer-events-none absolute -top-6 bottom-0 right-0 w-[300px] overflow-hidden rounded-br-[24px]">
-        <span className="absolute right-[-72px] top-[64px] h-[320px] w-[320px] rounded-full bg-[rgb(var(--k-item))]/70" />
-        <img src="/art/landing/girl-wrap.webp" alt="" className="absolute right-[-60px] top-0 h-[520px] w-auto max-w-none" />
+    <section aria-labelledby="bal-title" className="k-surface k-lit relative flex flex-col justify-between gap-6 rounded-[24px] p-8 [--lx:76%] [--ly:0%]">
+      {/* The cut-out stays inside the card. Her head clears the top edge, the card edge clips her at the bottom. */}
+      <div aria-hidden className="pointer-events-none absolute inset-0 overflow-hidden rounded-[24px]">
+        <img src="/art/landing/girl-wrap.webp" alt="" className="absolute right-[-44px] top-[24px] h-[560px] w-auto max-w-none" />
       </div>
 
-      <div className="relative flex flex-col gap-3">
-        <div className="flex items-center gap-2">
-          <h2 id="bal-title" className="text-16 font-bold text-[rgb(var(--k-muted))]">
+      <div className="relative flex flex-col gap-4">
+        <div className="flex items-center gap-3">
+          <h2 id="bal-title" className="text-12 font-bold uppercase tracking-[0.08em] text-[rgb(var(--k-dim))]">
             Balance
           </h2>
+          <span aria-hidden className="h-4 w-px bg-ink/15" />
+          <span className="flex items-center gap-2 text-14 font-bold text-[rgb(var(--k-muted))]">
+            <Coin id="usdt" size={20} />
+            {ACCOUNT.currency}
+          </span>
           <button
             type="button"
             aria-pressed={hidden}
             aria-label={hidden ? 'Show balance' : 'Hide balance'}
             onClick={() => setHidden((h) => !h)}
-            className="flex h-8 w-8 items-center justify-center rounded-[8px] text-[rgb(var(--k-muted))] hover:bg-[rgb(var(--k-item))] hover:text-ink"
+            className="flex h-8 w-8 items-center justify-center rounded-[8px] text-[rgb(var(--k-muted))] outline-none hover:bg-ink/5 hover:text-ink focus-visible:ring-2 focus-visible:ring-accent"
           >
             {hidden ? <EyeSlash weight="bold" className="h-4 w-4" aria-hidden /> : <Eye weight="bold" className="h-4 w-4" aria-hidden />}
           </button>
         </div>
-        <p className="flex items-end gap-3">
-          <span className="num font-display text-[64px] font-bold leading-[60px] tracking-[-0.02em] text-ink">
-            {hidden ? (
-              '••••••'
-            ) : (
-              <>
-                {whole}
-                <span className="text-[rgb(var(--k-muted))]">.{cents}</span>
-              </>
-            )}
-          </span>
-          <span className="mb-1 flex items-center gap-2">
-            <Coin id="usdt" size={24} />
-            <span className="font-display text-20 font-bold text-[rgb(var(--k-muted))]">{ACCOUNT.currency}</span>
-          </span>
+        <p className="font-display text-[64px] font-bold leading-[64px] tracking-[-0.02em] text-ink">
+          {hidden ? (
+            <span className="num" aria-label="Balance hidden">
+              ••••••
+            </span>
+          ) : (
+            <>
+              <AnimatedNumber value={whole} format={(n) => Math.round(n).toLocaleString('en-US')} />
+              <AnimatedNumber value={cents} format={(n) => `.${String(Math.round(n)).padStart(2, '0')}`} className="text-[rgb(var(--k-muted))]" />
+            </>
+          )}
         </p>
-        <p className="flex items-center gap-2">
+        <p className="flex items-center gap-3">
           <span className="num inline-flex h-8 items-center gap-1 rounded-[8px] bg-win/10 px-2 text-14 font-bold text-win">
             <TrendUp weight="bold" className="h-4 w-4" aria-hidden />+{formatAmount(TODAY)}
           </span>
           <span className="text-14 font-semibold text-[rgb(var(--k-muted))]">today, from Sugar Rush</span>
         </p>
-        <div className="mt-1 flex gap-2">
+        <div className="mt-2 flex gap-2">
           <KitButton tone="purple" size="md" onClick={() => navigate('/wallet/withdraw')} className="h-11 w-[132px]">
             Withdraw
           </KitButton>

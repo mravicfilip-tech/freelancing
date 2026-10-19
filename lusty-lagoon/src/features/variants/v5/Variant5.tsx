@@ -23,14 +23,14 @@ export default function Variant5() {
   const jump = (id: string) => document.getElementById(id)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
 
   return (
-    <div className="min-h-screen bg-page text-ink">
+    <div className="k-page min-h-screen bg-page text-ink">
       <TopBar query={query} onQuery={setQuery} onSearch={() => games.current?.scrollIntoView({ behavior: 'smooth', block: 'start' })} />
       <div className="flex gap-4 px-4 pb-4">
         <Sidebar onJump={jump} />
         <main className="flex min-w-0 flex-1 flex-col gap-8 pt-6">
           <h1 className="sr-only">Lobby</h1>
-          <div className="flex flex-col gap-4">
-            <div className="grid grid-cols-[minmax(0,1fr)_minmax(0,1.08fr)] gap-4">
+          <div className="flex flex-col gap-12">
+            <div className="grid grid-cols-[minmax(0,1fr)_minmax(0,1fr)] gap-4 w1920:grid-cols-[minmax(0,1.12fr)_minmax(0,1fr)]">
               <BalanceCard />
               <QuickDeposit />
             </div>
@@ -38,7 +38,7 @@ export default function Variant5() {
           </div>
           <div className="grid grid-cols-[minmax(0,1fr)_340px] items-start gap-4 w1920:grid-cols-[minmax(0,1fr)_400px]">
             <LiveWagers state={state} onPlay={setOpen} />
-            <WinsFeed state={state} onPlay={setOpen} className="mt-[60px] h-[724px]" />
+            <WinsFeed state={state} onPlay={setOpen} className="h-[784px]" />
           </div>
           <JumpBackIn loading={state === 'loading'} onPlay={setOpen} />
           <AllGames ref={games} state={state} query={query} clearQuery={() => setQuery('')} onPlay={setOpen} />

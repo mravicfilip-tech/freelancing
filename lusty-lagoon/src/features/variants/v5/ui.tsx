@@ -6,7 +6,7 @@ import { cn } from '../../../lib/cn';
 /** A card title in heavy display capitals, with the live dot when the content moves. */
 export function CardTitle({ id, children, dot, as: Tag = 'h2', className }: { id?: string; children: ReactNode; dot?: boolean; as?: 'h1' | 'h2'; className?: string }) {
   return (
-    <Tag id={id} className={cn('flex items-center gap-3 font-display text-20 font-bold uppercase leading-6 tracking-[0.01em] text-ink', className)}>
+    <Tag id={id} className={cn('flex items-center gap-3 text-20 font-extrabold uppercase leading-6 tracking-[-0.01em] text-ink', className)}>
       {dot && <span aria-hidden className="h-[10px] w-[10px] shrink-0 rounded-full bg-win ring-4 ring-win/15" />}
       {children}
     </Tag>

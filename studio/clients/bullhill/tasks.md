@@ -23,11 +23,6 @@ Task format
 
 ## Backlog
 
-- bullhill-15 The real projects, six places in Styria, and no crew portraits. Notes in briefs/website/round7-notes.md
-  - [x] Eight notes queued from the client chat, round plan written
-  - [ ] Filip's go on the plan and the crew layout line
-  - [ ] The client says whether the stats box stays at 5 towns
-
 ## In progress
 
 - bullhill-2 Hero scroll smooth, frame rate on phones and desktop
@@ -121,6 +116,13 @@ Task format
   - [x] Production at bullhill-site.vercel.app moved to ced40a6 on Filip's "Sent to production"
 
 ## Review
+
+- bullhill-15 The real projects, six places in Styria, and no crew portraits. Notes in briefs/website/round7-notes.md
+  - [x] Eight notes queued from the client chat, round plan written and hardened
+  - [x] Filip's go, the portraits leave Foundry and Daylight both
+  - [x] Built, 3f15369, six cards, the place as title, no For row, Haus im Ennstal on a new photo of the client's taken there
+  - [ ] The client confirms Hohenfeld and Oberhaus, the photo on each card, and 5 or 6 towns in the stats box
+  - [ ] Filip sees it on his localhost or says deploy
 
 - bullhill-14 Projects row will not scroll back. Note 16 in briefs/website/round6-notes.md
   - [x] Reproduced at 1366 wide, five clicks on the back arrow at the end of the row stay on 05 / 05

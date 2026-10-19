@@ -1,7 +1,9 @@
 # BullHill website, round 7 notes, the real projects and no crew portraits
 
-Status. Production is at 80b8ba0 since 15 October 2026. These notes were forwarded by Filip on 19 October
-2026 as screenshots of the client chat, with no words of his own, so they are queued and wait for his go.
+Status. Built in 3f15369 on Filip's "go, both for the portraits", 19 October 2026, not deployed. Production
+is at 80b8ba0. The GPS stamps on the client's mailed photos place Admont, Ardning, Gröbming and Haus im
+Ennstal in Styria, and a Höhenfeldweg in Haus im Ennstal, so Hohenfeld is likely there. The Haus im Ennstal
+card carries IMG_8605 from that mail, stamped Haus im Ennstal, now `street-barriers`.
 Foundry at `/?v=1`, the Projects row in `bullhill-site/src/p1/Projects.tsx`, the data in
 `bullhill-site/src/shared/content.ts` from line 262 (English) and 466 (German). Daylight and Underground
 read the same data.

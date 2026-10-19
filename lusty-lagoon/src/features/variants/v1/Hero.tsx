@@ -81,12 +81,17 @@ export function Hero({ onPlay }: { onPlay: () => void }) {
           <KitButton tone="primary" size="lg" onClick={onPlay} className="h-[56px] px-8">
             Play {game.short ?? game.name}
           </KitButton>
-          <span className="flex flex-col gap-1 whitespace-nowrap w1920:hidden">
-            <span className="text-12 font-bold uppercase tracking-[0.08em] text-ink/70">Top win today</span>
-            <span className="flex items-center gap-2">
-              <CoinIcon id={TOP.coin} size={20} />
-              <span className="num text-20 font-extrabold text-gold">{amountText(TOP.coin, TOP.amount)} BTC</span>
-              <span className="text-14 font-semibold text-ink/70">{handle(TOP.player)}</span>
+          <span className="flex h-[56px] items-center gap-3 whitespace-nowrap rounded-[12px] border border-white/[0.14] bg-[#12063A]/45 pl-2 pr-4 backdrop-blur-[6px] w1920:hidden">
+            <span className="h-10 w-[30px] shrink-0 overflow-hidden rounded-[6px] ring-1 ring-white/20">
+              <img src={game.image} alt="" className="h-full w-full object-cover" />
+            </span>
+            <span className="flex flex-col">
+              <span className="text-12 font-bold uppercase tracking-[0.08em] text-ink/70">Top win today</span>
+              <span className="flex items-center gap-2">
+                <CoinIcon id={TOP.coin} size={16} />
+                <span className="num text-16 font-extrabold text-gold">{amountText(TOP.coin, TOP.amount)} BTC</span>
+                <span className="text-12 font-semibold text-ink/70">{handle(TOP.player)}</span>
+              </span>
             </span>
           </span>
         </div>

@@ -182,7 +182,7 @@ export function NDialog({ open, onOpenChange, title, description, children, wide
 export function NMessage({ icon, title, body, action, className }: { icon: ReactNode; title: string; body: string; action?: ReactNode; className?: string }) {
   return (
     <div className={cn('flex flex-col items-center gap-3 px-6 py-12 text-center', className)}>
-      <span className="n1-raised flex h-[48px] w-12 items-center justify-center rounded-[14px] [&>svg]:h-6 [&>svg]:w-6">{icon}</span>
+      <span className="n1-raised flex h-[48px] w-12 items-center justify-center rounded-[12px] [&>svg]:h-6 [&>svg]:w-6">{icon}</span>
       <p className="text-16 font-extrabold text-ink">{title}</p>
       <p className="max-w-[380px] text-14 text-[rgb(var(--n-muted))]">{body}</p>
       {action && <div className="mt-2">{action}</div>}

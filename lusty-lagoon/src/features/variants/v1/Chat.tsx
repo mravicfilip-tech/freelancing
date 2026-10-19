@@ -71,7 +71,7 @@ export function Chat({ onPlay, onRules, state, className }: { onPlay: (g: Catalo
   const byId = (id: string) => messages.find((m) => m.id === id) ?? V1_CHAT.find((m) => m.id === id);
 
   return (
-    <section aria-labelledby="n1-chat-title" className={cn('n1-panel flex min-h-0 flex-col rounded-[20px]', className)}>
+    <section aria-labelledby="n1-chat-title" className={cn('n1-panel flex min-h-[0px] flex-col rounded-[20px]', className)}>
       <header className="flex h-[60px] shrink-0 items-center gap-2 border-b border-white/[0.06] px-4">
         <ChatCircleDots weight="fill" className="h-5 w-5 text-[#C9A2FF]" aria-hidden />
         <h2 id="n1-chat-title" className="text-16 font-extrabold text-ink">
@@ -101,13 +101,13 @@ export function Chat({ onPlay, onRules, state, className }: { onPlay: (g: Catalo
           <NMessage icon={<ChatCircleDots weight="fill" className="text-[#C9A2FF]" />} title="The chat is quiet" body="Say hi to the lagoon. Messages show here the moment they land." />
         </div>
       ) : (
-        <ol ref={list} aria-label="Messages" className="n1-noscroll flex min-h-0 flex-1 flex-col gap-2 overflow-y-auto px-3 pb-2 pt-3 [mask-image:linear-gradient(180deg,transparent_0,#000_28px)]">
+        <ol ref={list} aria-label="Messages" className="n1-noscroll flex min-h-[0px] flex-1 flex-col gap-[6px] overflow-y-auto px-3 pb-2 pt-3 [mask-image:linear-gradient(180deg,transparent_0,#000_28px)]">
           {messages.map((m) => {
             const quoted = m.replyTo ? byId(m.replyTo) : undefined;
             return (
               <li key={m.id} className="group/msg flex gap-3">
                 <Avatar src={m.avatar} initials={m.initials} level={m.level} className="mt-1" />
-                <div className={cn('relative flex min-w-0 flex-1 flex-col gap-[6px] rounded-[12px] px-3 pb-[10px] pt-2', m.mine ? 'border border-[#9A4BFF]/35 bg-[#7A1FF2]/15' : 'bg-white/[0.035]')}>
+                <div className={cn('relative flex min-w-0 flex-1 flex-col gap-1 rounded-[12px] px-3 py-2', m.mine ? 'border border-[#9A4BFF]/35 bg-[#7A1FF2]/15' : 'bg-white/[0.035]')}>
                   <p className="flex items-center gap-2">
                     <span className={cn('truncate text-12 font-bold', m.mine ? 'text-[#D9C2FF]' : 'text-[rgb(var(--n-muted))]')}>{m.player}</span>
                     {m.role === 'mod' && <span className="rounded-[6px] bg-[#1C4A36] px-[6px] text-12 font-extrabold uppercase leading-[18px] tracking-[0.04em] text-[#8CF0B8]">Mod</span>}
@@ -140,7 +140,7 @@ export function Chat({ onPlay, onRules, state, className }: { onPlay: (g: Catalo
                     aria-pressed={!!liked[m.id]}
                     aria-label={`Like ${m.player}'s message`}
                     onClick={() => setLiked((l) => ({ ...l, [m.id]: !l[m.id] }))}
-                    className={cn('n1-ring absolute right-[6px] flex h-6 w-6 items-center justify-center rounded-[6px] hover:bg-white/[0.06] hover:text-ink', m.winId ? 'top-[38px]' : 'bottom-[6px]', liked[m.id] ? 'text-[#FF6FA8]' : 'text-[rgb(var(--n-dim))] opacity-0 focus-visible:opacity-100 group-hover/msg:opacity-100')}
+                    className={cn('n1-ring absolute right-[6px] flex h-6 w-6 items-center justify-center rounded-[6px] hover:bg-white/[0.06] hover:text-ink', m.winId ? 'top-[34px]' : 'bottom-[6px]', liked[m.id] ? 'text-[#FF6FA8]' : 'text-[rgb(var(--n-dim))] opacity-0 focus-visible:opacity-100 group-hover/msg:opacity-100')}
                   >
                     <Heart weight={liked[m.id] ? 'fill' : 'bold'} className="h-[14px] w-[14px]" aria-hidden />
                   </button>
@@ -162,7 +162,7 @@ export function Chat({ onPlay, onRules, state, className }: { onPlay: (g: Catalo
             </button>
           </div>
         )}
-        <div className="n1-well flex items-center gap-2 rounded-[14px] p-[6px] pl-4 focus-within:border-[#9A4BFF]/60">
+        <div className="n1-well flex items-center gap-2 rounded-[12px] p-[6px] pl-4 focus-within:border-[#9A4BFF]/60">
           <label htmlFor="n1-chat-input" className="sr-only">
             Message
           </label>
@@ -180,7 +180,7 @@ export function Chat({ onPlay, onRules, state, className }: { onPlay: (g: Catalo
               <Smiley weight="fill" className="h-5 w-5" aria-hidden />
             </P.Trigger>
             <P.Portal>
-              <P.Content side="top" align="end" sideOffset={8} className="n1 n1-panel z-30 grid grid-cols-4 gap-1 rounded-[14px] p-2 shadow-[0_16px_40px_rgb(0_0_0/0.5)] outline-none">
+              <P.Content side="top" align="end" sideOffset={8} className="n1 n1-panel z-30 grid grid-cols-4 gap-1 rounded-[12px] p-2 shadow-[0_16px_40px_rgb(0_0_0/0.5)] outline-none">
                 {EMOJI.map((e) => (
                   <button
                     key={e}

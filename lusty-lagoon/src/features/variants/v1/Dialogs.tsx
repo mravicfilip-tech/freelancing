@@ -18,7 +18,7 @@ export function RaceDialog({ open, onOpenChange, onPlay }: { open: boolean; onOp
         <Label>Leaderboard</Label>
         <ol className="flex flex-col gap-[6px]">
           {RACE.leaders.map((l) => (
-            <li key={l.place} className="n1-panel flex h-[56px] items-center gap-3 rounded-[14px] pl-[10px] pr-4">
+            <li key={l.place} className="n1-panel flex h-[56px] items-center gap-3 rounded-[16px] pl-[10px] pr-4">
               <RankBadge place={l.place} />
               <img src={l.avatar} alt="" className="h-[28px] w-[28px] rounded-full object-cover" />
               <span className="flex-1 truncate text-14 font-bold text-ink">{handle(l.player)}</span>
@@ -33,7 +33,7 @@ export function RaceDialog({ open, onOpenChange, onPlay }: { open: boolean; onOp
       </div>
       <div className="flex flex-col gap-2">
         <Label>Your position</Label>
-        <div className="flex h-[64px] items-center gap-3 rounded-[14px] border border-[#9A4BFF]/40 bg-[#7A1FF2]/20 pl-[10px] pr-2">
+        <div className="flex h-[64px] items-center gap-3 rounded-[16px] border border-[#9A4BFF]/40 bg-[#7A1FF2]/20 pl-[10px] pr-2">
           <RankBadge place={RACE.you.place} />
           <img src="/art/avatars/john-sm.webp" alt="" className="h-[28px] w-[28px] rounded-full object-cover" />
           <span className="flex min-w-0 flex-1 flex-col">
@@ -60,7 +60,7 @@ export function RaceDialog({ open, onOpenChange, onPlay }: { open: boolean; onOp
 export function GiveawayDialog({ open, onOpenChange, joined, onJoin }: { open: boolean; onOpenChange: (o: boolean) => void; joined: boolean; onJoin: () => void }) {
   return (
     <NDialog open={open} onOpenChange={onOpenChange} title="Hot streak giveaway" description={`Win a share of ${GIVEAWAY.pool} BTC. The draw is ${GIVEAWAY.ends}.`}>
-      <div className="n1-panel flex items-center justify-between rounded-[14px] p-4">
+      <div className="n1-panel flex items-center justify-between rounded-[16px] p-4">
         <span className="flex flex-col gap-1">
           <Label>Prize pool</Label>
           <span className="num flex items-center gap-2 text-28 font-extrabold text-gold">
@@ -79,7 +79,7 @@ export function GiveawayDialog({ open, onOpenChange, joined, onJoin }: { open: b
         <li>Ten winners share the pool, paid to your wallet in BTC.</li>
       </ul>
       {joined ? (
-        <p role="status" className="rounded-[14px] border border-[#3DDC84]/40 bg-[#3DDC84]/10 p-4 text-14 font-semibold text-ink">
+        <p role="status" className="rounded-[16px] border border-[#3DDC84]/40 bg-[#3DDC84]/10 p-4 text-14 font-semibold text-ink">
           You are in. Good luck for {GIVEAWAY.ends}.
         </p>
       ) : (
@@ -96,7 +96,7 @@ export function RankDialog({ open, onOpenChange }: { open: boolean; onOpenChange
   const pct = Math.round((r.points / r.nextAt) * 100);
   return (
     <NDialog open={open} onOpenChange={onOpenChange} title="Rank road" description={`You are ${r.name}. ${formatPoints(r.nextAt - r.points)} points more reaches ${r.next}.`}>
-      <div className="n1-panel flex items-center gap-4 rounded-[14px] p-4">
+      <div className="n1-panel flex items-center gap-4 rounded-[16px] p-4">
         <img src="/brand/rank-bronze.png" alt="" className="h-[64px] w-[64px]" />
         <div className="flex flex-1 flex-col gap-2">
           <div className="flex items-baseline justify-between">

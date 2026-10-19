@@ -36,6 +36,10 @@ function FeedCard({ w, width, onPlay, off }: { w: (typeof LIVE_WINS)[number]; wi
             <CoinIcon id={w.coin} size={16} />
             <span className="num truncate text-14 font-extrabold text-ink">{amountText(w.coin, w.amount)}</span>
             <span className="sr-only">{coinById(w.coin).symbol}</span>
+            <span className="num ml-auto shrink-0 text-12 font-semibold text-[rgb(var(--n-dim))]">
+              {w.ago}
+              <span className="sr-only"> ago</span>
+            </span>
           </span>
         </span>
       </button>

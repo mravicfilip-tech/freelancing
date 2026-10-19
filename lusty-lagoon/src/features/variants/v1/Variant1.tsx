@@ -64,7 +64,7 @@ export default function Variant1() {
         </main>
         <aside aria-label="Daily chest and chat" className="sticky top-[88px] flex h-[calc(100vh-104px)] min-h-[640px] w-[288px] shrink-0 flex-col gap-4 self-start w1920:w-[320px]">
           <Chest ref={chest} loading={state === 'loading'} />
-          <Chat onPlay={setOpen} onRules={() => setRules(true)} state={state} className="min-h-0 flex-1" />
+          <Chat onPlay={setOpen} onRules={() => setRules(true)} state={state} className="min-h-[0px] flex-1" />
         </aside>
       </div>
       <GameDialog game={open} onClose={() => setOpen(null)} />

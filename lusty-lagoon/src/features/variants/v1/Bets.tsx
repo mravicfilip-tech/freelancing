@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { GameController, WarningCircle } from '@phosphor-icons/react';
+import { Coins, GameController, WarningCircle } from '@phosphor-icons/react';
 import { gameById, type CatalogueGame } from '../../../data/games';
 import { formatAmount } from '../../../lib/format';
 import { cn } from '../../../lib/cn';
@@ -33,6 +33,7 @@ export function Bets({ onPlay, state }: { onPlay: (g: CatalogueGame) => void; st
     <section aria-labelledby="n1-bets-title" className="flex flex-col gap-4">
       <div className="flex items-center justify-between gap-4">
         <h2 id="n1-bets-title" className="flex items-center gap-3 text-20 font-extrabold tracking-[-0.01em] text-ink">
+          <Coins weight="fill" className="h-6 w-6 text-gold" aria-hidden />
           Latest bets
           <Live />
         </h2>
@@ -49,7 +50,7 @@ export function Bets({ onPlay, state }: { onPlay: (g: CatalogueGame) => void; st
           <span className="text-right">Profit</span>
         </div>
         {state === 'loading' ? (
-          Array.from({ length: 6 }, (_, i) => <Skel key={i} className="h-[56px] w-full rounded-[14px]" />)
+          Array.from({ length: 6 }, (_, i) => <Skel key={i} className="h-[56px] w-full rounded-[16px]" />)
         ) : state === 'error' ? (
           <div className="n1-panel rounded-[20px]">
             <NMessage icon={<WarningCircle weight="fill" className="text-danger" />} title="Live bets are paused" body="The feed lost its connection. It reconnects on its own, or reload the page." />
@@ -64,7 +65,7 @@ export function Bets({ onPlay, state }: { onPlay: (g: CatalogueGame) => void; st
               const g = gameById(b.gameId)!;
               const p = payout(b);
               return (
-                <li key={b.id} className={cn(cols, 'n1-panel h-[56px] rounded-[14px] px-4 text-14 font-semibold transition-colors hover:bg-[rgb(var(--n-raised))]', b.mine && 'border-[#9A4BFF]/30')}>
+                <li key={b.id} className={cn(cols, 'n1-panel h-[56px] rounded-[16px] px-4 text-14 font-semibold transition-colors hover:bg-[rgb(var(--n-raised))]', b.mine && 'border-[#9A4BFF]/30')}>
                   {ranked && <RankBadge place={i + 1} size={28} />}
                   <button type="button" onClick={() => onPlay(g)} className="n1-ring group flex min-w-0 items-center gap-3 rounded-[10px] text-left" aria-label={`Play ${g.name}`}>
                     <span className="h-10 w-10 shrink-0 overflow-hidden rounded-[10px]">

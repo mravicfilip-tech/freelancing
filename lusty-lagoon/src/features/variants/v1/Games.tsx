@@ -33,7 +33,7 @@ const TAG: Record<string, string> = { Hot: 'bg-[linear-gradient(180deg,#FF7A3D,#
 
 function Cover({ g, onPlay }: { g: CatalogueGame; onPlay: () => void }) {
   return (
-    <button type="button" onClick={onPlay} aria-label={`Play ${g.name}, ${g.provider}${g.tag ? `, ${g.tag}` : ''}`} className="n1-ring group relative block aspect-[3/4] w-full overflow-hidden rounded-[14px] bg-[rgb(var(--n-raised))]">
+    <button type="button" onClick={onPlay} aria-label={`Play ${g.name}, ${g.provider}${g.tag ? `, ${g.tag}` : ''}`} className="n1-ring group relative block aspect-[3/4] w-full overflow-hidden rounded-[16px] bg-[rgb(var(--n-raised))]">
       <img src={g.image} alt="" loading="lazy" className="n1-zoom h-full w-full object-cover" />
       {g.tag && <span className={cn('absolute left-2 top-2 rounded-[6px] px-[6px] text-12 font-extrabold uppercase leading-5 tracking-[0.04em]', TAG[g.tag])}>{g.tag}</span>}
       <span aria-hidden className="pointer-events-none absolute inset-0 bg-gradient-to-t from-[#0D0A26]/90 via-[#0D0A26]/10 to-transparent opacity-0 transition-opacity duration-200 group-hover:opacity-100 group-focus-visible:opacity-100" />
@@ -44,7 +44,7 @@ function Cover({ g, onPlay }: { g: CatalogueGame; onPlay: () => void }) {
         <span className="truncate text-14 font-extrabold text-ink">{g.short ?? g.name}</span>
         <span className="truncate text-12 font-semibold text-[rgb(var(--n-muted))]">{g.provider}</span>
       </span>
-      <span aria-hidden className="pointer-events-none absolute inset-0 rounded-[14px] ring-1 ring-inset ring-white/[0.08] transition-[box-shadow] duration-200 group-hover:ring-2 group-hover:ring-[#B47CFF]" />
+      <span aria-hidden className="pointer-events-none absolute inset-0 rounded-[16px] ring-1 ring-inset ring-white/[0.08] transition-[box-shadow] duration-200 group-hover:ring-2 group-hover:ring-[#B47CFF]" />
     </button>
   );
 }
@@ -95,7 +95,7 @@ export const Games = forwardRef<HTMLInputElement, { filter: Filter; onFilter: (f
             <CaretDown weight="bold" className="h-4 w-4 transition-transform group-data-[state=open]:rotate-180" aria-hidden />
           </M.Trigger>
           <M.Portal>
-            <M.Content align="end" sideOffset={8} className="n1 n1-panel z-30 w-[200px] rounded-[14px] p-2 shadow-[0_24px_48px_rgb(0_0_0/0.5)]">
+            <M.Content align="end" sideOffset={8} className="n1 n1-panel z-30 w-[200px] rounded-[16px] p-2 shadow-[0_24px_48px_rgb(0_0_0/0.5)]">
               <M.RadioGroup value={sort} onValueChange={(v) => setSort(v as Sort)}>
                 {SORTS.map((s) => (
                   <M.RadioItem key={s.value} value={s.value} className="flex h-10 cursor-pointer select-none items-center gap-3 rounded-[10px] px-3 text-14 font-semibold text-ink outline-none data-[highlighted]:bg-white/[0.06]">
@@ -116,7 +116,7 @@ export const Games = forwardRef<HTMLInputElement, { filter: Filter; onFilter: (f
       {state === 'loading' ? (
         <div className="grid grid-cols-5 gap-3 w1920:grid-cols-7">
           {Array.from({ length: 14 }, (_, i) => (
-            <Skel key={i} className={cn('aspect-[3/4] w-full rounded-[14px]', i >= 10 && 'hidden w1920:block')} />
+            <Skel key={i} className={cn('aspect-[3/4] w-full rounded-[16px]', i >= 10 && 'hidden w1920:block')} />
           ))}
         </div>
       ) : failed ? (

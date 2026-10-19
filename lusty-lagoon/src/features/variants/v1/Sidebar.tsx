@@ -17,7 +17,7 @@ import { NAV, countOf, type Filter } from './nav';
 type Hue = 'gold' | 'blue' | 'pink' | 'green';
 
 function Promo({ hue, label, art, artClass, onClick, to }: { hue: Hue; label: [string, string]; art: string; artClass?: string; onClick?: () => void; to?: string }) {
-  const cls = cn('n1-promo n1-ring group relative flex h-[64px] overflow-hidden rounded-[14px] text-left w1920:h-[72px]', `n1-hue-${hue}`);
+  const cls = cn('n1-promo n1-ring group relative flex h-[64px] overflow-hidden rounded-[16px] text-left w1920:h-[72px]', `n1-hue-${hue}`);
   const inner = (
     <>
       <span className="relative z-10 flex flex-col justify-center pl-3 text-14 font-extrabold leading-[17px] text-ink">

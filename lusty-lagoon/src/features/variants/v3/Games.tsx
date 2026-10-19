@@ -1,233 +1,165 @@
 import { useMemo, useState } from 'react';
-import { Link } from 'react-router-dom';
-import { MagnifyingGlass, WarningCircle } from '@phosphor-icons/react';
-import { Button } from '../../../components/ui/Button';
-import { GameTile } from '../../../components/ui/GameTile';
-import { Message } from '../../../components/ui/Message';
+import { ClockCounterClockwise, Crown, Fire, MagnifyingGlass, Play, WarningCircle } from '@phosphor-icons/react';
 import { Skeleton } from '../../../components/ui/Skeleton';
-import { GAMES, gameById, type CatalogueGame } from '../../../data/games';
-import { coinById } from '../../../data/wallet';
-import { formatAmount, formatUsd } from '../../../lib/format';
+import { Message } from '../../../components/ui/Message';
+import { gameById, type CatalogueGame } from '../../../data/games';
+import { formatAmount } from '../../../lib/format';
 import { cn } from '../../../lib/cn';
-import { CONTINUE_PLAYING, LIVE_WINS } from '../shared/data';
+import { TOP_WINNERS } from '../../lobby/data';
+import { CONTINUE_PLAYING } from '../shared/data';
+import { ChipRow, CoinAmount, CoverCard, KitButton, RailControls, SectionHead } from '../kit/parts';
+import { SearchBox } from '../kit/TopParts';
+import { NAV_GAMES } from './Shell';
+import { ORDERED, type Filter } from './games-data';
 
-export type Play = (g: CatalogueGame) => void;
+// The games, after the reasons to come back. Pick up where you left off as four wide cards, top
+// wins today beside it, then the hot right now grid with Turbo Bet's boxed chips and search.
 
-export function FailedGames({ onRetry }: { onRetry: () => void }) {
+export function ContinuePlaying({ onPlay }: { onPlay: (g: CatalogueGame) => void }) {
   return (
-    <div className="rounded-2xl border border-line bg-panel">
-      <Message
-        icon={<WarningCircle weight="fill" className="h-10 w-10 text-danger" aria-hidden />}
-        title="We could not load the games"
-        body="Your balance and wagers are safe. Try again in a moment."
-        action={
-          <Button variant="secondary" onClick={onRetry}>
-            Try again
-          </Button>
-        }
-      />
-    </div>
+    <section aria-labelledby="v3-continue-title" className="flex min-w-0 flex-1 flex-col gap-4">
+      <SectionHead id="v3-continue-title" icon={<ClockCounterClockwise weight="bold" className="text-[#2FB4F0]" />} title="Pick up where you left off" />
+      <ul className="grid grid-cols-2 gap-3">
+        {CONTINUE_PLAYING.map((c) => {
+          const g = gameById(c.gameId)!;
+          const up = c.session >= 0;
+          return (
+            <li key={c.gameId}>
+              <button
+                type="button"
+                onClick={() => onPlay(g)}
+                aria-label={`Play ${g.name}, last played ${c.lastPlayed}, session ${up ? 'up' : 'down'} ${formatAmount(Math.abs(c.session))} USDT`}
+                className="group flex w-full items-center gap-4 rounded-[18px] bg-[rgb(var(--k-panel))] p-3 text-left ring-2 ring-transparent transition hover:ring-[#B47CFF]/60"
+              >
+                <img src={g.image} alt="" className="h-[84px] w-[84px] shrink-0 rounded-[14px] object-cover object-top" />
+                <span className="flex min-w-0 flex-1 flex-col gap-1">
+                  <span className="truncate text-16 font-bold text-ink">{g.name}</span>
+                  <span className="truncate text-14 text-[rgb(var(--k-muted))]">{c.lastPlayed}</span>
+                  <span className={cn('num mt-1 inline-flex h-8 w-fit items-center rounded-[8px] px-2 text-14 font-bold', up ? 'bg-[#3DDC84]/10 text-[#5FF0A0]' : 'bg-black/25 text-[rgb(var(--k-muted))]')}>
+                    {up ? '+' : '-'}
+                    {formatAmount(Math.abs(c.session))} USDT
+                  </span>
+                </span>
+                <span aria-hidden className="k-btn-purple flex h-11 w-11 shrink-0 items-center justify-center rounded-[12px] text-ink group-hover:brightness-110">
+                  <Play weight="fill" className="h-5 w-5" />
+                </span>
+              </button>
+            </li>
+          );
+        })}
+      </ul>
+    </section>
   );
 }
 
-function Heading({ id, children, aside }: { id: string; children: React.ReactNode; aside?: React.ReactNode }) {
+export function TopWins({ onPlay, loading }: { onPlay: (g: CatalogueGame) => void; loading?: boolean }) {
   return (
-    <div className="flex items-center justify-between gap-4">
-      <h2 id={id} className="ll-heading">
-        {children}
-      </h2>
-      {aside}
-    </div>
-  );
-}
-
-// Pick up where you left off. A cover that bleeds to the card's left edge, the name, when you
-// played and what the session came to, signed and coloured.
-export function ContinueRow({ loading, failed, onRetry, onPlay }: { loading: boolean; failed: boolean; onRetry: () => void; onPlay: Play }) {
-  return (
-    <section aria-labelledby="continue-title" className="min-w-0">
-      <Heading id="continue-title">Pick up where you left off</Heading>
-      <div className="mt-4">
-        {failed ? (
-          <div className="flex items-center gap-3 rounded-xl border border-line bg-panel px-4 py-3" role="alert">
-            <WarningCircle weight="fill" className="h-6 w-6 shrink-0 text-danger" aria-hidden />
-            <p className="flex-1 text-14 text-ink">Your recent games did not load.</p>
-            <Button variant="secondary" size="sm" onClick={onRetry}>
-              Try again
-            </Button>
-          </div>
-        ) : (
-          <ul className="grid grid-cols-2 gap-3">
-            {CONTINUE_PLAYING.map((c) => {
-              const g = gameById(c.gameId)!;
-              if (loading) return <Skeleton key={c.gameId} className="h-[112px] rounded-xl" />;
-              const won = c.session > 0;
+    <section aria-labelledby="v3-wins-title" className="flex w-[400px] shrink-0 flex-col gap-4 w1920:w-[480px]">
+      <SectionHead id="v3-wins-title" icon={<Crown weight="fill" className="text-[#F5B800]" />} title="Top wins today" />
+      <ol className="flex flex-1 flex-col gap-2 rounded-[20px] bg-[rgb(var(--k-panel))] p-3">
+        {loading
+          ? Array.from({ length: 4 }, (_, i) => <Skeleton key={i} className="h-[52px] w-full rounded-[12px]" />)
+          : TOP_WINNERS.map((w, i) => {
+              const g = gameById(w.gameId)!;
               return (
-                <li key={c.gameId} className="group relative flex h-[112px] overflow-hidden rounded-xl border border-line bg-panel transition-colors hover:border-field">
-                  <img src={g.image} alt="" className="h-full w-[84px] shrink-0 object-cover" />
-                  <div className="flex min-w-0 flex-1 flex-col justify-between px-4 py-3">
-                    <div className="min-w-0">
-                      <p className="truncate text-16 font-semibold text-ink">{g.name}</p>
-                      <p className="text-14 text-ink3">{c.lastPlayed}</p>
-                    </div>
-                    <div className="flex items-end justify-between gap-2">
-                      <p className="flex flex-col">
-                        <span className={cn('num font-display text-20 font-bold leading-6', won ? 'text-win' : 'text-ink3')}>
-                          {won ? '+' : '-'}
-                          {formatUsd(Math.abs(c.session))}
-                        </span>
-                        <span className="text-12 text-ink3">last session</span>
-                      </p>
-                      <span className="rounded-lg px-2 py-1 text-14 font-semibold text-accent group-hover:bg-raised">Play</span>
-                    </div>
-                  </div>
-                  <button type="button" onClick={() => onPlay(g)} aria-label={`Play ${g.name}, last session ${won ? 'won' : 'lost'} ${formatUsd(Math.abs(c.session))}`} className="absolute inset-0 rounded-xl" />
+                <li key={w.gameId}>
+                  <button type="button" onClick={() => onPlay(g)} aria-label={`${w.player} won on ${g.name}, play it`} className="flex w-full items-center gap-3 rounded-[12px] bg-[rgb(var(--k-item))] p-2 pr-3 text-left hover:bg-[rgb(var(--k-item-hover))]">
+                    <span className={cn('num flex h-8 w-8 shrink-0 items-center justify-center rounded-[8px] text-14 font-bold', i === 0 ? 'bg-[#F5B800] text-[#2A1500]' : 'bg-black/25 text-[rgb(var(--k-muted))]')}>{i + 1}</span>
+                    <img src={g.image} alt="" className="h-10 w-10 shrink-0 rounded-[10px] object-cover" />
+                    <span className="flex min-w-0 flex-1 flex-col leading-tight">
+                      <span className="truncate text-14 font-bold text-ink">{g.short ?? g.name}</span>
+                      <span className="flex items-center gap-1 truncate text-12 text-[rgb(var(--k-muted))]">
+                        <img src={w.avatar} alt="" className="h-4 w-4 rounded-full" />@{w.player.toLowerCase()}
+                      </span>
+                    </span>
+                    <CoinAmount coin={w.coin} amount={w.amount} className="text-14 text-[#5FF0A0]" />
+                  </button>
                 </li>
               );
             })}
-          </ul>
-        )}
-      </div>
+      </ol>
     </section>
   );
 }
-
-// The five biggest live wins by value in USDT, so a bitcoin win and a tether win sort fairly.
-const TOP = LIVE_WINS.map((w) => ({ ...w, usd: w.amount * coinById(w.coin).rate }))
-  .sort((a, b) => b.usd - a.usd)
-  .slice(0, 5);
-
-export function TopWins({ loading, paused, onPlay }: { loading: boolean; paused: boolean; onPlay: Play }) {
-  return (
-    <section aria-labelledby="wins-title" className="min-w-0">
-      <Heading id="wins-title">Top wins today</Heading>
-      <div className="mt-4">
-        {paused ? (
-          <Message
-            className="rounded-2xl border border-line bg-panel py-8"
-            icon={<WarningCircle weight="fill" className="h-10 w-10 text-danger" aria-hidden />}
-            title="Live wins are paused"
-            body="The feed lost its connection. It reconnects on its own."
-          />
-        ) : (
-          <ul className="flex flex-col divide-y divide-line">
-            {loading
-              ? Array.from({ length: 5 }, (_, i) => (
-                  <li key={i} className="py-[6px]">
-                    <Skeleton className="h-[44px]" />
-                  </li>
-                ))
-              : TOP.map((w) => {
-                  const g = gameById(w.gameId)!;
-                  const coin = coinById(w.coin);
-                  return (
-                    <li key={w.id} className="relative flex h-[56px] items-center gap-3 hover:bg-panel">
-                      <img src={g.image} alt="" className="h-10 w-[30px] shrink-0 rounded object-cover" />
-                      <div className="min-w-0 flex-1">
-                        <p className="truncate text-14 font-semibold text-ink">{g.short ?? g.name}</p>
-                        <p className="flex items-center gap-1 text-14 text-ink3">
-                          {w.avatar ? <img src={w.avatar} alt="" width={16} height={16} className="rounded-full" /> : null}
-                          <span className="truncate">{w.player}</span>
-                        </p>
-                      </div>
-                      <div className="flex flex-col items-end">
-                        <span className="num text-16 font-bold text-win">{formatUsd(Math.round(w.usd))}</span>
-                        <span className="num flex items-center gap-1 text-14 text-ink3">
-                          <img src={coin.icon} alt="" width={14} height={14} />
-                          {formatAmount(w.amount, w.amount < 10 ? 2 : 0)} {coin.symbol}
-                        </span>
-                      </div>
-                      <button type="button" onClick={() => onPlay(g)} aria-label={`Play ${g.name}`} className="absolute inset-0 rounded" />
-                    </li>
-                  );
-                })}
-          </ul>
-        )}
-      </div>
-    </section>
-  );
-}
-
-const ORDER = [...GAMES.filter((g) => !g.wideOnly && g.tag === 'Hot'), ...GAMES.filter((g) => !g.wideOnly && g.tag !== 'Hot')];
 
 export function HotGrid({
+  filter,
+  onFilter,
   query,
-  onClear,
-  loading,
+  onQuery,
+  state,
   failed,
   onRetry,
   onPlay,
 }: {
+  filter: Filter;
+  onFilter: (f: Filter) => void;
   query: string;
-  onClear: () => void;
-  loading: boolean;
+  onQuery: (q: string) => void;
+  state: string | null;
   failed: boolean;
   onRetry: () => void;
-  onPlay: Play;
+  onPlay: (g: CatalogueGame) => void;
 }) {
-  const [more, setMore] = useState(false);
-  const q = query.trim().toLowerCase();
-  const list = useMemo(() => (q ? ORDER.filter((g) => g.name.toLowerCase().includes(q) || g.provider.toLowerCase().includes(q)) : ORDER), [q]);
-  const shown = q || more ? list : list.slice(0, 20);
+  const [all, setAll] = useState(false);
+  const list = useMemo(() => {
+    const q = query.trim().toLowerCase();
+    return ORDERED.filter((g) => (filter === 'all' || g.category === filter) && (!q || g.name.toLowerCase().includes(q) || g.provider.toLowerCase().includes(q)));
+  }, [filter, query]);
+  const shown = all ? list : list.slice(0, 12);
+  const step = (d: 1 | -1) => onFilter(NAV_GAMES[(NAV_GAMES.findIndex((n) => n.value === filter) + NAV_GAMES.length + d) % NAV_GAMES.length].value);
   return (
-    <section id="hot" aria-labelledby="hot-title" className="scroll-mt-[88px]">
-      <Heading
-        id="hot-title"
-        aside={
-          q ? (
-            <Button variant="tertiary" onClick={onClear}>
-              Clear the search
-            </Button>
-          ) : (
-            <Link to="/lobby#explore" className="rounded text-14 font-semibold text-accent hover:text-ink">
-              Browse the whole lobby
-            </Link>
-          )
-        }
-      >
-        {q ? `Results for "${query.trim()}"` : 'Hot right now'}
-      </Heading>
-      <div className="mt-4">
-        {loading ? (
-          <div className="grid grid-cols-8 gap-2 min-[1700px]:grid-cols-10">
-            {Array.from({ length: 16 }, (_, i) => (
-              <Skeleton key={i} className="aspect-[134/200] w-full" />
-            ))}
-          </div>
-        ) : failed ? (
-          <FailedGames onRetry={onRetry} />
-        ) : list.length === 0 ? (
-          <div className="rounded-2xl border border-line bg-panel">
-            <Message
-              icon={<MagnifyingGlass weight="bold" className="h-10 w-10 text-ink3" aria-hidden />}
-              title={`No games match "${query.trim()}"`}
-              body="Check the spelling, or search by provider, such as Pragmatic Play."
-              action={
-                <Button variant="secondary" onClick={onClear}>
-                  Clear the search
-                </Button>
-              }
-            />
-          </div>
-        ) : (
-          <>
-            <ul className="grid grid-cols-8 gap-2 min-[1700px]:grid-cols-10">
-              {shown.map((g, i) => (
-                <li key={g.id} className={cn(i >= 16 && 'hidden min-[1700px]:block', more && 'block')}>
-                  <GameTile game={g} onPlay={() => onPlay(g)} />
-                </li>
-              ))}
-            </ul>
-            {!q && !more && list.length > 16 && (
-              <div className="mt-6 flex justify-center">
-                <Button variant="secondary" onClick={() => setMore(true)}>
-                  Show more games
-                </Button>
-              </div>
-            )}
-          </>
-        )}
+    <section id="hot" aria-labelledby="v3-hot-title" className="flex scroll-mt-[100px] flex-col gap-4">
+      <SectionHead id="v3-hot-title" icon={<Fire weight="fill" className="text-[#FF8A3D]" />} title="Hot right now">
+        <RailControls label="Hot right now" onAll={() => setAll((a) => !a)} onPrev={() => step(-1)} onNext={() => step(1)} />
+      </SectionHead>
+      <div className="flex items-center gap-3">
+        <div className="k-no-scrollbar min-w-0 flex-1 overflow-x-auto">
+          <ChipRow wrap={false} label="Category" value={filter} onChange={onFilter} items={NAV_GAMES.map((n) => ({ value: n.value, label: n.value === 'all' ? 'All' : n.label, icon: n.icon }))} />
+        </div>
+        <SearchBox id="v3-grid-search" value={query} onChange={onQuery} className="h-11 w-[240px] shrink-0 rounded-[12px]" />
       </div>
+      {state === 'loading' ? (
+        <div className="grid grid-cols-6 gap-3 w1920:grid-cols-8">
+          {Array.from({ length: 12 }, (_, i) => (
+            <Skeleton key={i} className="aspect-[3/4] w-full rounded-[16px]" />
+          ))}
+        </div>
+      ) : failed ? (
+        <div className="rounded-[20px] bg-[rgb(var(--k-panel))]">
+          <Message
+            icon={<WarningCircle weight="fill" className="h-10 w-10 text-danger" aria-hidden />}
+            title="We could not load the games"
+            body="Your balance and bets are safe. Try again in a moment."
+            action={
+              <KitButton tone="purple" onClick={onRetry}>
+                Try again
+              </KitButton>
+            }
+          />
+        </div>
+      ) : list.length === 0 ? (
+        <div className="rounded-[20px] bg-[rgb(var(--k-panel))]">
+          <Message
+            icon={<MagnifyingGlass weight="bold" className="h-10 w-10 text-[rgb(var(--k-dim))]" aria-hidden />}
+            title={`No games match "${query.trim()}"`}
+            body="Check the spelling, or search by provider, such as Pragmatic Play."
+            action={
+              <KitButton tone="purple" onClick={() => onQuery('')}>
+                Clear the search
+              </KitButton>
+            }
+          />
+        </div>
+      ) : (
+        <ul className="grid grid-cols-6 gap-3 w1920:grid-cols-8">
+          {shown.map((g) => (
+            <li key={g.id}>
+              <CoverCard image={g.image} name={g.name} provider={g.provider} onPlay={() => onPlay(g)} />
+            </li>
+          ))}
+        </ul>
+      )}
     </section>
   );
 }

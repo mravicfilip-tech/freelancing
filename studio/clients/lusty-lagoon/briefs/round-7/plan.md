@@ -1,8 +1,8 @@
 # Round 7 plan, lusty-lagoon
 
 From `notes.md` in this folder, 20 notes on commit d46bb64. Variants touched are named per line.
-Lines A to F are built now on Filip's "build". Lines G and H redraw rejected art and a rejected
-section, so per the doctrine they are proposed in words with one reference and built only after
+Lines A to F are built now on Filip's "build". Lines G, H and J redraw rejected art, a rejected
+section and rejected cards, so per the doctrine they are proposed in words with one reference and built only after
 Filip's yes. Line I is a width question.
 
 ## Built now
@@ -64,10 +64,20 @@ H. Variant 2 hero and cards redrawn, notes 5 to 9.
    - Left, the eyebrow, the headline and one line. Under them one glass bar holds Prize pool, the
      live Draw in countdown and Entries, with Join the giveaway at its right end. How it works
      becomes a text link.
-   - Lagoon originals cards share one title size and style (SLOTS no longer larger), titles in the
-     variant's heading style, the art breaks out of the top, the count chip sits in one place, the art
-     lifts on hover.
    - Everything below the cards stays.
+J. Category cards redrawn, note 21 (widens note 8). Variant 1's four tiles and variant 2's six
+   Lagoon originals.
+   Reference, Betsera's Originals row (accepted 18:10), read for what ours lack. Portrait cards, the
+   art fills about 70 percent of the card and is lit from below, the hue darkens toward the bottom.
+   - Today's fault. A flat single hue slab with a small sticker of art and a large empty middle.
+   - The face goes dark purple. The category hue comes in as light, a glow behind and under the art,
+     a tint at the top, so six hues sit together without shouting.
+   - The art is the card. It stands about 120 percent of the card height, breaks out of the top edge,
+     sits on a lit floor with a contact shadow and a hue rim light.
+   - The title in the variant's heading style, all the same size, with the live count under it as
+     one line ("642 playing"), not a floating chip.
+   - Hover, the art lifts 6px and grows 4 percent, the glow brightens, an arrow slides in.
+   - Variant 1 keeps four cards in one row, variant 2 six, both portrait at 3 to 4.
 
 ## Question
 

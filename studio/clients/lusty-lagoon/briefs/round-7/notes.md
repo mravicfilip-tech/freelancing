@@ -74,3 +74,10 @@ variants 2 and 5 at 2560, which match his frames, the third column in variant 5 
     pattern, the flower pillar and the woman). "I want this box to be more attractive, to not be just
     taped on graphics/assets, to have a lusty lagoon look / feel, if you're going to remove the
     pattern, make sure to use it then somewhere else on the page". Same fault as notes 1 and 6.
+
+## Sent after the Loom, variants 1 and 2
+
+21. The category cards, two screenshots boxed in red, variant 1's Slots, Megaways, Hold & win and Refer
+    tiles, and variant 2's Lagoon originals row (Slots, Megaways, Hold & win, Fish, New, Live). "make
+    sure these cards are way better designed/executed right now its just bad". Widens note 8 to
+    variant 1. A redraw, so it is proposed in words first.

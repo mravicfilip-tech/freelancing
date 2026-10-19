@@ -54,7 +54,7 @@ export const KitButton = forwardRef<HTMLButtonElement, KitButtonProps>(function 
         tone === 'white' && 'bg-ink text-page hover:bg-ink/90',
         tone === 'dark' && 'border border-white/[0.07] bg-[rgb(var(--k-item))] text-ink hover:bg-[rgb(var(--k-item-hover))]',
         size === 'sm' && 'h-9 px-4 text-14',
-        size === 'md' && 'h-12 px-6 text-16',
+        size === 'md' && 'h-[48px] px-6 text-16',
         size === 'lg' && 'h-[56px] px-8 text-16',
         className,
       )}

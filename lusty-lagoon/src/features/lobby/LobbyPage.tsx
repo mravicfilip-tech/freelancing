@@ -41,7 +41,7 @@ function GameDialog({ game, onClose }: { game: CatalogueGame | null; onClose: ()
       {game && (
         <DialogContent title={game.name} description={game.provider}>
           <div className="flex gap-6">
-            <img src={game.image} alt="" className="aspect-[3/4] w-1/3 shrink-0 rounded-xl border border-line object-cover" />
+            <img src={game.image} alt="" className={cn('shrink-0 rounded-xl border border-line object-cover', game.wideOnly ? 'aspect-[3/2] w-1/2' : 'aspect-[3/4] w-1/3')} />
             <dl className="flex flex-1 flex-col gap-3">
               {[
                 ['Return to player', `${game.rtp}%`],
@@ -297,7 +297,7 @@ function Explore({ state, onPlay }: { state: string | null; onPlay: (g: Catalogu
   const [category, setCategory] = useState<string>('all');
   const [shown, setShown] = useState(PAGE);
   const [failed, setFailed] = useState(state === 'error');
-  const list = GAMES.filter((g) => (category === 'all' || g.category === category) && g.name.toLowerCase().includes(query.trim().toLowerCase()));
+  const list = GAMES.filter((g) => !g.wideOnly && (category === 'all' || g.category === category) && g.name.toLowerCase().includes(query.trim().toLowerCase()));
 
   return (
     <section aria-labelledby="explore-title" className="flex flex-col gap-6">
@@ -396,7 +396,7 @@ function Explore({ state, onPlay }: { state: string | null; onPlay: (g: Catalogu
 export function LobbyPage() {
   const state = useLobbyState();
   const [open, setOpen] = useState<CatalogueGame | null>(null);
-  const recommended = GAMES.filter((g) => g.image).slice(0, 10);
+  const recommended = GAMES.filter((g) => !g.wideOnly).slice(0, 10);
   return (
     <div className="flex flex-col gap-12">
       <div className="grid grid-cols-12 gap-6">

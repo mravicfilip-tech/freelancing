@@ -74,7 +74,7 @@ function PayStrip() {
 }
 
 function Hero() {
-  const popular = GAMES.filter((g) => g.wide).slice(0, 5);
+  const popular = ['chilli-madness', 'sweet-bonanza', 'running-sushi', 'sugar-rush', 'billy-bob-boom'].map((id) => GAMES.find((g) => g.id === id)!);
   return (
     <section aria-labelledby="hero-title" className="mx-auto flex max-w-canvas flex-col gap-12 px-[var(--bl-page-pad)] pt-16">
       <div className="mx-auto flex max-w-3xl flex-col items-center gap-6 text-center">
@@ -143,8 +143,8 @@ function RightPlace() {
       </div>
       <div className="relative col-span-7 aspect-[4/3] overflow-hidden rounded-3xl border border-line">
         <img src={art('casino-hall.webp')} alt="" className="absolute inset-0 h-full w-full object-cover" />
-        <img src={art('pillar-girl.webp')} alt="" className="absolute bottom-0 left-[8%] h-[82%] w-auto" />
-        <img src={art('girl-white.webp')} alt="" className="absolute bottom-0 right-[10%] h-[94%] w-auto" />
+        <img src={art('pillar-girl.webp')} alt="" className="absolute bottom-0 left-[10%] h-[80%] w-auto" />
+        <img src={art('girl-floral.webp')} alt="" className="absolute bottom-0 right-[8%] h-[96%] w-auto" />
       </div>
     </section>
   );
@@ -160,7 +160,12 @@ function HowItWorks() {
   return (
     <section id="how" aria-labelledby="how-title" className="mx-auto grid max-w-canvas scroll-mt-24 grid-cols-12 items-center gap-12 px-[var(--bl-page-pad)]">
       <div className="relative col-span-6 aspect-[4/3] overflow-hidden rounded-3xl border border-line">
-        <img src={art('casino-courtyard.webp')} alt="" className="absolute inset-0 h-full w-full object-cover" />
+        <img src={art('casino-arcade.webp')} alt="" className="absolute inset-0 h-full w-full object-cover" />
+        <div className="absolute bottom-0 left-1/2 flex h-[84%] -translate-x-1/2 items-end">
+          <img src={art('pillar-gems-a.webp')} alt="" className="h-[86%] w-auto" />
+          <img src={art('slot-machine.webp')} alt="" className="relative z-[1] -mx-8 h-full w-auto" />
+          <img src={art('pillar-gems-b.webp')} alt="" className="h-[86%] w-auto" />
+        </div>
       </div>
       <div className="col-span-6 flex flex-col gap-8">
         <h2 id="how-title" className="font-display text-40 font-semibold text-ink">
@@ -199,8 +204,9 @@ function Partners() {
         </ul>
       </div>
       <div className="relative col-span-6 aspect-[4/3] overflow-hidden rounded-3xl border border-line">
-        <img src={art('beach-cove.webp')} alt="" className="absolute inset-0 h-full w-full object-cover" />
-        <img src={art('girl-offshoulder.webp')} alt="" className="absolute bottom-0 left-1/2 h-[92%] w-auto -translate-x-1/2" />
+        <img src={art('casino-courtyard.webp')} alt="" className="absolute inset-0 h-full w-full object-cover" />
+        <img src={art('girl-lei.webp')} alt="" className="absolute bottom-0 left-[12%] h-[94%] w-auto" />
+        <img src={art('pillar-flowers-right.webp')} alt="" className="absolute bottom-0 right-[14%] h-[78%] w-auto" />
       </div>
     </section>
   );
@@ -312,7 +318,7 @@ function Games() {
           </Button>
         }
       >
-        {GAMES.filter((g) => g.wide).map((g) => (
+        {['wolf-howl', 'donny-dough', 'coin-volcano', 'cash-of-gods', 'lucky-bass', 'book-of-ra', 'scarab-wheel'].map((id) => GAMES.find((g) => g.id === id)!).map((g) => (
           <Link key={g.id} to="/register" className="w-1/4 shrink-0 snap-start rounded-xl" aria-label={`${g.name}, create an account to play`}>
             <GameTile game={{ ...g, image: g.wide! }} shape="wide" />
           </Link>

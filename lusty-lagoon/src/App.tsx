@@ -13,7 +13,7 @@ import { AgentPage, ReferPage } from './features/money';
 import { NotFound } from './pages/NotFound';
 import { VariantsIndex } from './features/variants/VariantsIndex';
 import { ButtonBoard, SidebarBoard } from './features/variants/boards/Boards';
-import { DASHBOARD_VARIANTS } from './features/variants/variants';
+import { BUTTON_VARIANTS, DASHBOARD_VARIANTS, SIDEBAR_VARIANTS } from './features/variants/variants';
 import { VariantSwitcher } from './components/dev/VariantSwitcher';
 import { lazy, Suspense } from 'react';
 
@@ -21,9 +21,18 @@ import { lazy, Suspense } from 'react';
 // round 4 and the others keep their numbers, so Filip's notes keep their meaning.
 const VARIANT_PAGES = [1, 3, 4, 5].map((n) => ({ n, Page: lazy(() => import(`./features/variants/v${n}/Variant${n}.tsx`)) }));
 
-// One switcher for every variant set, per the studio doctrine. It shows only on a route in the list.
+// One switcher for every variant set, per the studio doctrine. Each shows only on a route in its own
+// list, so one bar is on screen at a time.
 function Switcher() {
-  return <VariantSwitcher variants={DASHBOARD_VARIANTS} location={useLocation()} navigate={useNavigate()} indexHref="/variants" title="Dashboard" />;
+  const location = useLocation();
+  const navigate = useNavigate();
+  return (
+    <>
+      <VariantSwitcher variants={DASHBOARD_VARIANTS} location={location} navigate={navigate} indexHref="/variants" title="Dashboard" />
+      <VariantSwitcher variants={BUTTON_VARIANTS} location={location} navigate={navigate} indexHref="/variants" title="Buttons" />
+      <VariantSwitcher variants={SIDEBAR_VARIANTS} location={location} navigate={navigate} indexHref="/variants" title="Sidebar row" />
+    </>
+  );
 }
 
 

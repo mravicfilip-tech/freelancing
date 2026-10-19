@@ -35,8 +35,10 @@ type KitButtonProps = ButtonHTMLAttributes<HTMLButtonElement> & {
 };
 
 export const KitButton = forwardRef<HTMLButtonElement, KitButtonProps>(function KitButton({ tone = 'purple', size = 'md', loading, disabled, className, children, ...rest }, ref) {
-  const primary = tone === 'primary' || tone === 'gold';
-  const system = primary ? kitPick('btn') : 0;
+  // System 0 is the Base on the board, the round 3 purple primary and gold Checkout.
+  const system = tone === 'primary' || tone === 'gold' ? kitPick('btn') : -1;
+  const primary = system > 0;
+  const base = system === 0;
   return (
     <button
       ref={ref}
@@ -46,7 +48,8 @@ export const KitButton = forwardRef<HTMLButtonElement, KitButtonProps>(function 
         'inline-flex select-none items-center justify-center gap-2 whitespace-nowrap font-bold outline-none focus-visible:ring-2 focus-visible:ring-[#B47CFF] focus-visible:ring-offset-2 focus-visible:ring-offset-[rgb(var(--ll-page))] disabled:cursor-not-allowed disabled:opacity-45',
         primary && ['k-cta', `k-cta-${system}`, size === 'sm' && 'k-cta-sm'],
         !primary && 'rounded-[12px] transition-[filter,background-color] duration-150',
-        tone === 'purple' && 'k-btn-purple text-ink hover:brightness-110',
+        (tone === 'purple' || (base && tone === 'primary')) && 'k-btn-purple text-ink hover:brightness-110',
+        base && tone === 'gold' && 'k-btn-gold text-[#2A1500] hover:brightness-105',
         tone === 'white' && 'bg-ink text-page hover:bg-ink/90',
         tone === 'dark' && 'border border-white/[0.07] bg-[rgb(var(--k-item))] text-ink hover:bg-[rgb(var(--k-item-hover))]',
         size === 'sm' && 'h-9 px-4 text-14',
@@ -100,7 +103,7 @@ export function IconSquare({ label, children, onClick, className, size = 52 }: {
 export function NavItem({ to, icon, label, active, badge, onClick }: { to?: string; icon: ReactNode; label: string; active?: boolean; badge?: ReactNode; onClick?: () => void }) {
   const cls = cn(
     'group relative flex h-[52px] w-full items-center gap-3 rounded-[14px] border px-4 text-16 font-semibold transition-colors duration-150',
-    active ? cn(`k-nav-on-${kitPick('nav')}`, 'text-ink') : 'border-transparent bg-[rgb(var(--k-item))] text-[rgb(var(--k-muted))] hover:bg-[rgb(var(--k-item-hover))] hover:text-ink',
+    active ? cn(kitPick('nav') === 0 ? 'k-nav-active' : `k-nav-on-${kitPick('nav')}`, 'text-ink') : 'border-transparent bg-[rgb(var(--k-item))] text-[rgb(var(--k-muted))] hover:bg-[rgb(var(--k-item-hover))] hover:text-ink',
   );
   const inner = (
     <>

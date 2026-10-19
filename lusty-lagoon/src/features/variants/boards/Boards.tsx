@@ -1,5 +1,5 @@
 import { Coins, Crown, FishSimple, Headset, Lightning, Plus, Question, SquaresFour, UserPlus, Wallet } from '@phosphor-icons/react';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { formatAmount } from '../../../lib/format';
 import { BalancePill, KitButton, NavItem, Panel, PromoMini, SectionLabel } from '../kit/parts';
 import { kitPick } from '../kit/pick';
@@ -8,6 +8,7 @@ import { kitPick } from '../kit/pick';
 // /variants/buttons?btn=N and /variants/sidebar?nav=N, and variants.mjs lays them on one board by
 // the #board element. Filip answers with a number. These pages leave once both picks are in.
 
+const BASE_BUTTON = { name: 'Base', note: 'Round 3, the purple primary and the gold Checkout, what the options replace', contrast: 'white on purple' };
 const SYSTEMS = [
   { name: 'Flat', note: 'Solid orange, 12 radius, sentence case, dark label', contrast: '7.0 to 1' },
   { name: 'Pill', note: 'Two close orange stops, a full pill, dark label', contrast: '6.4 to 1 at the darkest stop' },
@@ -17,14 +18,15 @@ const SYSTEMS = [
 ];
 
 export function ButtonBoard() {
+  useLocation(); // re-render when the switcher changes ?btn
   const n = kitPick('btn');
-  const s = SYSTEMS[n - 1];
+  const s = n === 0 ? BASE_BUTTON : SYSTEMS[n - 1];
   return (
-    <main className="k-page min-h-screen p-12">
+    <main className="k-page min-h-screen p-12 pb-[120px]">
       <div id="board" className="mx-auto flex w-[1264px] flex-col gap-6 p-8">
         <header className="flex items-baseline justify-between">
           <h1 className="text-28 font-extrabold tracking-[-0.01em] text-ink">
-            {n}. {s.name}
+            {n === 0 ? s.name : `${n}. ${s.name}`}
           </h1>
           <p className="text-14 text-[rgb(var(--k-muted))]">
             {s.note}. Label {s.contrast}.
@@ -104,7 +106,7 @@ export function ButtonBoard() {
                 <dd className="num font-semibold text-ink">0.63 USD</dd>
               </div>
             </dl>
-            <KitButton tone="primary" size="lg" className="mt-auto w-full">
+            <KitButton tone="gold" size="lg" className="mt-auto w-full">
               Checkout 25.00 USD
             </KitButton>
           </Panel>
@@ -114,6 +116,7 @@ export function ButtonBoard() {
   );
 }
 
+const BASE_ROW = { name: 'Base', note: 'Round 3, the purple wash with a faint edge, the one Filip said needs more work' };
 const TREATMENTS = [
   { name: 'Raised with a light edge', note: 'The row lifts one step and takes a 1px white edge' },
   { name: 'Accent bar', note: 'The row lifts one step and a 3px accent bar marks its left end' },
@@ -122,10 +125,11 @@ const TREATMENTS = [
 ];
 
 export function SidebarBoard() {
+  useLocation(); // re-render when the switcher changes ?nav
   const n = kitPick('nav');
-  const t = TREATMENTS[n - 1];
+  const t = n === 0 ? BASE_ROW : TREATMENTS[n - 1];
   return (
-    <main className="k-page min-h-screen p-12">
+    <main className="k-page min-h-screen p-12 pb-[120px]">
       <div id="board" className="flex w-[624px] gap-6 p-8">
         <aside className="flex w-[240px] shrink-0 flex-col gap-4 rounded-[20px] border border-white/[0.06] bg-[rgb(var(--k-panel))] p-3">
           <div className="grid grid-cols-2 gap-2">
@@ -152,7 +156,7 @@ export function SidebarBoard() {
         </aside>
         <div className="flex flex-col gap-2 pt-2">
           <h1 className="text-28 font-extrabold tracking-[-0.01em] text-ink">
-            {n}. {t.name}
+            {n === 0 ? t.name : `${n}. ${t.name}`}
           </h1>
           <p className="text-14 text-[rgb(var(--k-muted))]">{t.note}.</p>
           <p className="mt-4 text-14 text-[rgb(var(--k-muted))]">Promo tiles, the same on every option. A soft hue edge, one hue light from the right, the art scales on hover.</p>

@@ -12,8 +12,9 @@
 //     indexHref="/variants"
 //   />
 //
-// An entry matches when the path is the same and every query key in its href is present, so a
-// baseline at /lobby?compare shows the bar only when reached from the switcher.
+// An entry matches when the path is the same and every query key in its href is present, with the
+// same value when the href gives one. A baseline at /lobby?compare shows the bar only when reached
+// from the switcher, and options of one page such as ?btn=1 to ?btn=5 are entries of their own.
 // Keys, when no field has focus and no modifier is held. [ and ] step, a digit jumps to that entry.
 // It hides itself for automated browsers, so shots and variant boards stay clean. Add ?switcher to
 // the URL to show it in a shot. React only, no Tailwind, no router import, its own scoped styles.
@@ -68,7 +69,8 @@ function matches(v: SwitcherVariant, loc: { pathname: string; search: string }) 
   const url = new URL(v.href, 'http://x');
   if (url.pathname !== loc.pathname) return false;
   const have = new URLSearchParams(loc.search);
-  for (const k of url.searchParams.keys()) if (!have.has(k)) return false;
+  // A key with a value must match it, so ?btn=1 and ?btn=2 are two entries. A bare key only has to be there.
+  for (const [k, v] of url.searchParams) if (!have.has(k) || (v !== '' && have.get(k) !== v)) return false;
   return true;
 }
 

@@ -17,6 +17,8 @@ export type CatalogueGame = {
   tag?: string;
   /** True when the Figma only has a landscape cover, so portrait grids leave it out. */
   wideOnly?: boolean;
+  /** A shorter name for narrow cards, as the Figma writes it. */
+  short?: string;
 };
 
 const tall = (id: string) => `/art/games/${id}.webp`;
@@ -30,7 +32,7 @@ export const GAMES: CatalogueGame[] = [
   { id: 'billy-bob-boom', name: 'Billy Bob Boom', provider: 'Fugaso', image: tall('billy-bob-boom'), wide: wide('billy-bob-boom'), category: 'hold-and-win', rtp: 96.0, volatility: 'High' },
   { id: 'gates-of-olympus', name: 'Gates of Olympus', provider: 'Pragmatic Play', image: tall('gates-of-olympus'), category: 'slots', rtp: 96.5, volatility: 'High', tag: 'Hot' },
   { id: 'aztec-fire', name: 'Aztec Fire', provider: '3 Oaks Gaming', image: tall('aztec-fire'), category: 'hold-and-win', rtp: 95.6, volatility: 'Medium' },
-  { id: 'book-of-ra', name: 'Book of Ra 6 Deluxe', provider: 'Novomatic', image: tall('book-of-ra'), wide: wide('book-of-ra'), category: 'slots', rtp: 95.1, volatility: 'High' },
+  { id: 'book-of-ra', name: 'Book of Ra 6 Deluxe', provider: 'Novomatic', image: tall('book-of-ra'), wide: wide('book-of-ra'), category: 'slots', rtp: 95.1, volatility: 'High', short: 'Book of Ra' },
   { id: 'big-bass-splash', name: 'Big Bass Splash', provider: 'Pragmatic Play', image: tall('big-bass-splash'), category: 'fish', rtp: 96.7, volatility: 'High', tag: 'Hot' },
   { id: 'dog-house-multihold', name: 'The Dog House Multihold', provider: 'Pragmatic Play', image: tall('dog-house-multihold'), category: 'hold-and-win', rtp: 96.0, volatility: 'High' },
   { id: 'wolf-gold', name: 'Wolf Gold', provider: 'Pragmatic Play', image: tall('wolf-gold'), category: 'slots', rtp: 96.0, volatility: 'Medium' },
@@ -62,6 +64,8 @@ export const GAMES: CatalogueGame[] = [
   { id: 'take-the-bank', name: 'Take the Bank', provider: 'Betsoft', image: tall('take-the-bank'), category: 'slots', rtp: 96.0, volatility: 'Medium', tag: 'New' },
   { id: 'laughing-buddha', name: 'Laughing Buddha', provider: 'Habanero', image: tall('laughing-buddha'), category: 'slots', rtp: 96.7, volatility: 'Medium' },
   { id: 'chicken-rush', name: 'Chicken Rush', provider: 'Gamzix', image: tall('chicken-rush'), category: 'new', rtp: 96.0, volatility: 'Medium', tag: 'New' },
+  { id: 'starlight-princess', name: 'Starlight Princess 1000', provider: 'Pragmatic Play', image: tall('starlight-princess'), category: 'slots', rtp: 96.5, volatility: 'High', tag: 'Hot' },
+  { id: 'capypark', name: 'Capypark', provider: 'Gamzix', image: tall('capypark'), category: 'new', rtp: 96.0, volatility: 'Medium', tag: 'New' },
   { id: '888-dragons', name: '888 Dragons', provider: 'Pragmatic Play', image: tall('888-dragons'), category: 'slots', rtp: 96.8, volatility: 'Low' },
   { id: 'chilli-madness', name: 'Chilli Madness', provider: 'EGT', image: wide('chilli-madness'), wide: wide('chilli-madness'), category: 'slots', rtp: 95.9, volatility: 'Medium', wideOnly: true },
   { id: 'running-sushi', name: 'Running Sushi', provider: 'Habanero', image: wide('running-sushi'), wide: wide('running-sushi'), category: 'slots', rtp: 96.2, volatility: 'Medium', wideOnly: true },

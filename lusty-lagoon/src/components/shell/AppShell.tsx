@@ -6,9 +6,9 @@ export function AppShell() {
   return (
     <div className="flex min-h-screen">
       <Sidebar />
-      <div className="flex min-w-0 flex-1 flex-col">
+      <div className="flex min-w-0 flex-1 flex-col overflow-x-clip">
         <TopBar />
-        <main id="main" className="flex-1 px-[var(--bl-page-pad)] pb-16 pt-8">
+        <main id="main" className="flex-1 pb-[20px] pl-8 pr-[30px] pt-6">
           <div className="mx-auto w-full max-w-canvas">
             <Outlet />
           </div>

@@ -38,7 +38,8 @@ Task format
   - [x] /uireview on the wallet flow, 0 open sev 1 after the re-check
   - [ ] Filip accepts the wallet flow, then kit and golden
   - [x] Built every screen on the flat system, rejected by Filip as a step back from the Figma
-  - [ ] Agree the 1:1 approach, Figma frames as the bar, only the review notes change
+  - [x] Agree the 1:1 approach, Figma frames as the bar, only the review notes change
+  - [ ] Lobby, sidebar and top bar 1:1, side-by-side board, Filip confirms the bar
   - [x] Unblock Figma assets, the Pro team copy fGqIuwR8pailgKcy4UFfNg works
   - [ ] Pull every image and icon from the copy
   - [ ] Landing page

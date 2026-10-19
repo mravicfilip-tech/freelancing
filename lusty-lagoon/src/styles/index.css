@@ -26,6 +26,30 @@
   font-display: swap;
 }
 @font-face {
+  font-family: 'Switzer';
+  src: url('/fonts/switzer-800.woff2') format('woff2');
+  font-weight: 800;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Switzer';
+  src: url('/fonts/switzer-900.woff2') format('woff2');
+  font-weight: 900;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Bai Jamjuree';
+  src: url('/fonts/bai-jamjuree-latin-400-normal.woff2') format('woff2');
+  font-weight: 400;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Bai Jamjuree';
+  src: url('/fonts/bai-jamjuree-latin-500-normal.woff2') format('woff2');
+  font-weight: 500;
+  font-display: swap;
+}
+@font-face {
   font-family: 'Bai Jamjuree';
   src: url('/fonts/bai-jamjuree-latin-600-normal.woff2') format('woff2');
   font-weight: 600;
@@ -56,6 +80,36 @@
   }
   ::selection {
     background: rgb(var(--ll-accent) / 0.35);
+  }
+}
+
+@layer components {
+  /* The Figma card surface. The Figma's gradient and inner shadow are halved to one soft tone (note 1). */
+  .ll-card {
+    border: 1px solid rgb(var(--ll-card-line) / 0.12);
+    border-radius: 8px;
+    background: linear-gradient(180deg, rgb(var(--ll-card-top)), rgb(var(--ll-card-bottom)));
+  }
+  /* The same surface where the Figma sets it at a third of the strength, on the sidebar and the bets table. */
+  .ll-card-quiet {
+    border: 1px solid rgb(var(--ll-card-line) / 0.12);
+    border-radius: 8px;
+    background: linear-gradient(180deg, rgb(var(--ll-card-top) / 0.4), rgb(var(--ll-card-bottom) / 0.4));
+  }
+  /* Section headings. The Figma's gradient fill and drop shadows are dropped (notes 1 and 2). */
+  .ll-heading {
+    font-family: Switzer, system-ui, sans-serif;
+    font-size: 24px;
+    font-weight: 700;
+    line-height: 1.2;
+    letter-spacing: 0.02em;
+    color: rgb(var(--ll-ink));
+  }
+  /* Game cover frame, from the Figma tiles. No inner shadow. */
+  .ll-tile {
+    border: 1px solid rgb(var(--ll-tile-line) / 0.8);
+    border-radius: 8px;
+    background: rgb(var(--ll-tile));
   }
 }
 

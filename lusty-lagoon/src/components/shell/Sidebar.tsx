@@ -1,60 +1,122 @@
+import { useState } from 'react';
 import { Link, NavLink } from 'react-router-dom';
-import { Gift, Headset, Question, Spiral, UserPlus, Wallet } from '@phosphor-icons/react';
 import { Logo } from '../ui/Logo';
-import { Progress } from '../ui/Progress';
+import { Dialog, DialogContent } from '../ui/Dialog';
+import { Button } from '../ui/Button';
 import { ACCOUNT } from '../../data/wallet';
+import { RANKS, shortPoints } from '../../data/ranks';
 import { formatPoints } from '../../lib/format';
 import { useWallet } from '../../features/wallet/store';
 import { cn } from '../../lib/cn';
 
+// The Figma sidebar (Dashboard 339:1463), 248 wide. Menu items are 228 by 48 with a 48 icon well.
+// Changed from the Figma only where a review note names it: no text glow (note 2), a flat rank bar
+// with no sparkles or cast shadow (note 3), and the sign-up card shows the next rank reward to a
+// signed-in player (decision 4).
+
 const NAV = [
-  { to: '/lobby', label: 'Lobby', Icon: Spiral },
-  { to: '/agent', label: 'Send to agent', Icon: Headset },
-  { to: '/wallet', label: 'Wallet', Icon: Wallet },
-  { to: '/refer', label: 'Refer a friend', Icon: UserPlus },
-  { to: '/faq', label: 'FAQ', Icon: Question },
+  { to: '/lobby', label: 'Lobby', icon: 'nav-lobby' },
+  { to: '/agent', label: 'Send to agent', icon: 'nav-agent', caret: true },
+  { to: '/wallet', label: 'Wallet', icon: 'nav-wallet' },
+  { to: '/refer', label: 'Refer a friend', icon: 'nav-refer' },
+  { to: '/faq', label: 'FAQ', icon: 'nav-faq' },
 ];
 
-function RankCard() {
+function RanksDialog({ open, onOpenChange }: { open: boolean; onOpenChange: (o: boolean) => void }) {
+  const { rank } = ACCOUNT;
+  return (
+    <Dialog open={open} onOpenChange={onOpenChange}>
+      <DialogContent title="Ranks and rewards" description="You earn one point for every cent you play. Rewards start the day you reach a rank.">
+        <ol className="flex flex-col divide-y divide-line rounded-xl border border-line">
+          {RANKS.map((r) => {
+            const current = r.name === rank.name;
+            return (
+              <li key={r.name} className={cn('flex items-start justify-between gap-6 px-4 py-3', current && 'bg-raised')}>
+                <span className="flex flex-col gap-1">
+                  <span className="text-16 font-semibold text-ink">
+                    {r.name}
+                    {current && <span className="ml-2 text-14 font-normal text-accent">Your rank</span>}
+                  </span>
+                  <span className="text-14 text-ink2">{r.reward}</span>
+                </span>
+                <span className="num shrink-0 text-14 text-ink3">{r.from ? `${formatPoints(r.from)} points` : 'From the start'}</span>
+              </li>
+            );
+          })}
+        </ol>
+      </DialogContent>
+    </Dialog>
+  );
+}
+
+function RankCard({ onLevels }: { onLevels: () => void }) {
   const { rank } = ACCOUNT;
   const pct = (rank.points / rank.nextAt) * 100;
   const left = rank.nextAt - rank.points;
   return (
-    <section aria-labelledby="rank-title" className="flex flex-col gap-4 rounded-xl border border-line bg-panel p-4">
-      <div className="flex items-center gap-3">
-        <img src="/brand/rank-bronze.png" alt="" width={32} height={31} className="shrink-0" />
-        <div className="min-w-0 flex-1">
-          <h2 id="rank-title" className="text-16 font-semibold text-ink">
-            {rank.name} rank
-          </h2>
-          <p className="text-14 text-ink2">Next is {rank.next}</p>
-        </div>
-      </div>
-      <div className="flex flex-col gap-2">
-        <div className="flex items-baseline justify-between text-14">
+    <section aria-labelledby="rank-title" className="ll-card-quiet relative h-[180px] w-full">
+      <img src="/brand/rank-bronze.png" alt="" width={45} height={42} className="absolute left-4 top-[14px]" />
+      <h2 id="rank-title" className="absolute left-[75px] top-[14px] font-display text-16 font-bold leading-5 text-ink">
+        {rank.name} Rank
+      </h2>
+      <p className="absolute left-[75px] top-[36px] font-display text-14 leading-5 text-ink2">Next: {rank.next}</p>
+      <button
+        type="button"
+        onClick={onLevels}
+        aria-label="How ranks work"
+        className="absolute right-[25px] top-3 flex h-6 w-6 items-center justify-center rounded hover:bg-raised"
+      >
+        <img src="/art/shell/rank-info.svg" alt="" width={24} height={24} />
+      </button>
+      <div className="absolute left-[7px] top-[72px] h-[70px] w-[215px] rounded-lg border border-rank-box-line bg-rank-box">
+        <p className="absolute inset-x-[18px] top-[9px] flex items-baseline justify-between text-14 font-semibold uppercase leading-5 tracking-[-0.02em]">
           <span className="num text-ink">
-            {formatPoints(rank.points)} <span className="text-ink3">of {formatPoints(rank.nextAt)}</span>
+            {shortPoints(rank.points)} <span className="font-normal text-ink2">/ {shortPoints(rank.nextAt)}</span>
           </span>
-          <span className="num font-semibold text-ink">{Math.floor(pct)}%</span>
+          <span className="num text-gold">
+            {shortPoints(left)} to {rank.next}
+          </span>
+        </p>
+        <div
+          role="progressbar"
+          aria-label={`${Math.floor(pct)}% of the way to ${rank.next}, ${formatPoints(left)} points to go`}
+          aria-valuemin={0}
+          aria-valuemax={100}
+          aria-valuenow={Math.floor(pct)}
+          className="absolute left-3 top-[44px] h-[14px] w-[196px] overflow-hidden rounded-full bg-rank-track"
+        >
+          <div className="h-full rounded-full bg-rank-fill" style={{ width: `${pct}%` }} />
         </div>
-        <Progress value={pct} label={`${Math.floor(pct)}% of the way to ${rank.next}`} />
-        <p className="num text-14 text-ink2">{formatPoints(left)} points to {rank.next}</p>
       </div>
+      <button type="button" onClick={onLevels} className="absolute bottom-[10px] left-[13px] rounded px-2 py-0.5 font-display text-14 leading-5 text-ink2 hover:text-ink">
+        Check All Levels
+      </button>
     </section>
   );
 }
 
-// Decision 4. Signed in players see the next rank reward here, never a sign-up offer.
-function RewardCard() {
+// Decision 4. The Figma's sign-up offer slot, same art and shape, telling a signed-in player what
+// the next rank brings instead.
+function RewardCard({ onRewards }: { onRewards: () => void }) {
+  const first = ACCOUNT.name.split(' ')[0];
   return (
-    <section aria-labelledby="reward-title" className="flex gap-3 rounded-xl border border-line bg-panel p-4">
-      <Gift weight="fill" className="h-6 w-6 shrink-0 text-accent" aria-hidden />
-      <div className="flex flex-col gap-1">
-        <h2 id="reward-title" className="text-14 font-semibold text-ink">
-          Silver reward
-        </h2>
-        <p className="text-14 text-ink2">Your first cash drop. Drops grow up to $1,000 at the top rank.</p>
+    <section aria-labelledby="reward-title" className="relative h-[276px] w-full">
+      <div className="absolute inset-0 overflow-hidden rounded-lg border border-card-line/50">
+        <img src="/art/shell/reward-room.webp" alt="" className="h-full w-full object-cover" />
       </div>
+      <img src="/art/shell/reward-pillar.webp" alt="" width={288} height={288} className="pointer-events-none absolute left-[56px] top-1 max-w-none" />
+      <div className="absolute left-[15px] top-[18px] h-[120px] w-[167px]">
+        <img src="/art/shell/promo-bubble.svg" alt="" width={167} height={120} className="absolute inset-0 -scale-x-100" />
+        <h2 id="reward-title" className="absolute left-[17px] top-[13px] font-display text-16 font-bold leading-5 text-ink">
+          Hey {first}...
+        </h2>
+        <p className="absolute left-[17px] top-[44px] w-[130px] font-display text-14 font-bold uppercase leading-[1.4] tracking-[-0.02em] text-gold">
+          {RANKS[1].name} unlocks weekly cash drops
+        </p>
+      </div>
+      <Button size="cta-sm" onClick={onRewards} className="absolute left-[13px] top-[205px] w-[197px]">
+        See rewards
+      </Button>
     </section>
   );
 }
@@ -62,34 +124,43 @@ function RewardCard() {
 export function Sidebar() {
   const { transactions } = useWallet();
   const pending = transactions.filter((t) => t.status === 'pending').length;
+  const [levels, setLevels] = useState(false);
   return (
-    <aside className="sticky top-0 flex h-screen w-sidebar shrink-0 flex-col gap-6 overflow-y-auto border-r border-line bg-page px-4 pb-6">
-      <Link to="/lobby" className="flex shrink-0 items-center rounded-lg px-2 py-4" aria-label="Lusty Lagoon, go to the lobby">
+    <aside className="sticky top-0 flex h-screen w-sidebar shrink-0 flex-col overflow-y-auto overflow-x-hidden border-r border-side-line bg-[linear-gradient(180deg,rgb(var(--ll-side-top))_0,rgb(var(--ll-side))_140px)] px-[10px] pb-6 [scrollbar-width:thin]">
+      <Link to="/lobby" className="ml-[14px] mt-[18px] flex w-fit shrink-0 items-center rounded-lg" aria-label="Lusty Lagoon, go to the lobby">
         <Logo />
       </Link>
-      <nav aria-label="Main">
-        <ul className="flex flex-col gap-1">
-          {NAV.map(({ to, label, Icon }) => (
+      <nav aria-label="Main" className="mt-[43px]">
+        <ul className="flex flex-col gap-[6px]">
+          {NAV.map(({ to, label, icon, caret }) => (
             <li key={to}>
               <NavLink
                 to={to}
                 className={({ isActive }) =>
                   cn(
-                    'flex h-11 items-center gap-3 rounded-lg px-3 text-14 font-medium transition-colors duration-150',
-                    isActive ? 'bg-raised text-ink' : 'text-ink2 hover:bg-panel hover:text-ink',
+                    'group flex h-[48px] items-center rounded-lg border text-14 uppercase leading-5 transition-colors duration-150',
+                    isActive ? 'border-menu-active-line bg-menu-active text-ink' : 'border-transparent bg-panel text-label hover:bg-menu-active/60 hover:text-ink',
                   )
                 }
               >
                 {({ isActive }) => (
                   <>
-                    <Icon weight={isActive ? 'fill' : 'regular'} className={cn('h-5 w-5', isActive && 'text-accent')} aria-hidden />
-                    <span className="flex-1">{label}</span>
+                    <span
+                      className={cn(
+                        'flex h-[48px] w-12 shrink-0 items-center justify-center rounded-lg',
+                        isActive ? '-ml-px border border-ink/40 bg-menu-active-well' : '-ml-px bg-menu-well',
+                      )}
+                    >
+                      <img src={`/art/shell/${icon}.svg`} alt="" className="h-5 w-5 object-contain" />
+                    </span>
+                    <span className="ml-[21px] flex-1 truncate">{label}</span>
                     {to === '/wallet' && pending > 0 && (
-                      <span className="num flex h-5 min-w-5 items-center justify-center rounded-full bg-pending px-1 text-12 font-semibold text-on-gold">
+                      <span className="num mr-[10px] flex h-[22px] min-w-[22px] items-center justify-center rounded-full bg-gold px-1 text-14 font-extrabold leading-none text-on-gold">
                         {pending}
                         <span className="sr-only"> pending</span>
                       </span>
                     )}
+                    {caret && <img src="/art/shell/nav-caret.svg" alt="" width={20} height={20} className="mr-[13px] -rotate-90" />}
                   </>
                 )}
               </NavLink>
@@ -97,11 +168,14 @@ export function Sidebar() {
           ))}
         </ul>
       </nav>
-      <div className="mt-auto flex flex-col gap-3">
-        <RankCard />
-        <RewardCard />
-        <p className="px-2 text-12 text-ink3">All rights reserved, Lusty Lagoon</p>
+      <div className="mt-[74px] flex shrink-0 flex-col">
+        <RankCard onLevels={() => setLevels(true)} />
+        <div className="mt-[34px]">
+          <RewardCard onRewards={() => setLevels(true)} />
+        </div>
+        <p className="mt-[34px] w-[126px] pl-[13px] text-12 leading-[14px] text-ink3">All Rights Reserved, Lusty Lagoon</p>
       </div>
+      <RanksDialog open={levels} onOpenChange={setLevels} />
     </aside>
   );
 }

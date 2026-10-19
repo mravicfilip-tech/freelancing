@@ -39,7 +39,39 @@
   --ll-success: 61 214 140; /* #3DD68C */
   --ll-danger: 255 122 136; /* #FF7A88 */
 
-  /* Base layout hooks. */
+  /* Figma shell and lobby surfaces, sampled from the Dashboard frame (339:1463). Gradients are
+   * one soft tone at most, per the taste log. */
+  --ll-topbar: 34 25 52; /* #221934 */
+  --ll-topbar-line: 58 44 85; /* #3A2C55 */
+  --ll-side-top: 59 36 104; /* #3B2468, the sidebar's purple band, softened from #502F8A */
+  --ll-side: 20 10 37; /* #140A25 */
+  --ll-side-line: 56 44 76; /* #382C4C */
+  --ll-menu-well: 44 28 67; /* #2C1C43 */
+  --ll-menu-active: 50 34 80; /* #322250 */
+  --ll-menu-active-line: 67 49 97; /* #433161 */
+  --ll-menu-active-well: 84 24 136; /* #541888 */
+  --ll-label: 204 172 255; /* #CCACFF, menu and table labels, 9.4 to 1 on panel */
+  --ll-card-line: 164 92 229; /* #A45CE5, used at 12% */
+  --ll-card-top: 27 18 41; /* #1B1229 */
+  --ll-card-bottom: 47 35 66; /* #2F2342 */
+  --ll-tile: 57 37 96; /* #392560 */
+  --ll-tile-line: 181 56 181; /* #B538B5 */
+  --ll-thead: 52 8 82; /* #340852, used at 57% */
+  --ll-rank-box: 56 40 83; /* #382853 */
+  --ll-rank-box-line: 74 56 104; /* #4A3868 */
+  --ll-rank-track: 74 35 104; /* #4A2368, flat in place of the gradient track (note 3) */
+  --ll-rank-fill: 170 57 240; /* #AA39F0, flat in place of the bevelled fill (note 3) */
+  --ll-win: 56 238 89; /* #38EE59, payouts, from the Figma */
+  --ll-cta-gold-top: 245 196 67; /* #F5C443 */
+  --ll-cta-gold-bottom: 232 152 28; /* #E8981C */
+  --ll-cta-gold-line: 194 153 38; /* #C29926 */
+  --ll-cta-purple-top: 155 91 219; /* #9B5BDB */
+  --ll-cta-purple-bottom: 125 43 197; /* #7D2BC5 */
+  --ll-giveaway-a: 255 189 20; /* #FFBD14 */
+  --ll-giveaway-b: 195 123 11; /* #C37B0B */
+
+  /* Base layout hooks. The Figma shell is 248 wide with an 86 tall top bar. */
   --bl-focus-color: rgb(var(--ll-accent));
-  --bl-sidebar-open: 240px;
+  --bl-sidebar-open: 248px;
+  --ll-topbar-h: 86px;
 }

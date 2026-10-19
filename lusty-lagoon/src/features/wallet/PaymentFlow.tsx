@@ -236,7 +236,7 @@ function Summary({ s, balance, locked }: { s: FlowState; balance: number; locked
       <>
         <Row label="Network">{coin.networks.length > 1 ? `${net.name} (${net.short})` : net.name}</Row>
         <Row label="Amount">{valid ? `${formatAmount(q!.amount)} USDT` : UNSET}</Row>
-        <Row label="Rate">1 {coin.symbol} = {formatAmount(coin.rate)} USDT</Row>
+        {coin.symbol !== 'USDT' && <Row label="Rate">1 {coin.symbol} = {formatAmount(coin.rate)} USDT</Row>}
         <Row label="Network fee">{formatToken(net.withdrawFee, coin.symbol, coin.decimals)}</Row>
         <Row label="You receive" strong>
           {valid && q!.receive > 0 ? formatToken(q!.receive, coin.symbol, coin.decimals) : UNSET}
@@ -258,7 +258,7 @@ function Summary({ s, balance, locked }: { s: FlowState; balance: number; locked
   }
 
   return (
-    <aside aria-labelledby="summary-title" className="sticky top-24 col-span-5 flex flex-col gap-6 rounded-2xl border border-line bg-panel p-6">
+    <aside aria-labelledby="summary-title" className="col-span-5 flex flex-col gap-6 rounded-2xl border border-line bg-panel p-6">
       <div className="flex items-center justify-between gap-3">
         <h2 id="summary-title" className="font-display text-20 font-semibold text-ink">
           {receipt ? 'Receipt' : 'Summary'}

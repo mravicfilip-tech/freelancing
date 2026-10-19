@@ -310,8 +310,10 @@ export function DetailsStep(props: StepProps) {
   const { s, dispatch, errors, balance } = props;
   if (!s.selection) return null;
   const err = s.touched ? errors : {};
+  // Max fills what this method can actually take, the balance or the method's limit, whichever is lower.
+  const maxAmount = s.selection.kind === 'cash' ? Math.min(balance, cashById(s.selection.methodId).max) : balance;
   const max = (
-    <Button variant="tertiary" size="sm" onClick={() => dispatch({ type: 'field', key: 'amount', value: String(balance) })}>
+    <Button variant="tertiary" size="sm" onClick={() => dispatch({ type: 'field', key: 'amount', value: String(maxAmount) })}>
       Max
     </Button>
   );
@@ -341,6 +343,13 @@ export function DetailsStep(props: StepProps) {
       <div className="flex flex-col gap-6">
         <StepHeading id="step-title" title={`Where should we send your ${coin.symbol}?`} />
         <NetworkPicker {...props} withFee />
+        <Callout tone="warning">
+          <p className="font-semibold">
+            Your wallet must accept {coin.symbol} on {net.name}
+            {coin.networks.length > 1 ? ` (${net.short})` : ''}.
+          </p>
+          <p className="text-ink2">Coins sent to an address on another network are lost and cannot be returned.</p>
+        </Callout>
         <Field
           label={`${net.name} address`}
           autoComplete="off"

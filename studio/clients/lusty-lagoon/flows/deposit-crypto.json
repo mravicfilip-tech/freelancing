@@ -1,0 +1,15 @@
+{
+  "name": "Deposit USDT on Tron",
+  "job": "A player gets the right USDT address and network, copies it and tells us it is sent",
+  "start": "/wallet/deposit",
+  "maxClicks": 5,
+  "steps": [
+    { "click": "USDT" },
+    { "click": "Continue" },
+    { "expect": "Send only USDT on Tron (TRC20)" },
+    { "expect": "TQm4h8Xz2Rk9Vn5bL7wC3pE6sJ1aG8dY2u" },
+    { "click": "Copy your usdt address" },
+    { "click": "I've sent it" },
+    { "expect": "Waiting for your transfer" }
+  ]
+}

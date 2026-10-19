@@ -1,0 +1,17 @@
+{
+  "name": "Withdraw to a Bitcoin address",
+  "job": "A player sends 1000 USDT worth of BTC to their own wallet and sees what arrives before confirming",
+  "start": "/wallet/withdraw",
+  "maxClicks": 6,
+  "steps": [
+    { "click": "BTC" },
+    { "click": "Continue" },
+    { "fill": { "label": "Bitcoin address", "value": "bc1qar0srrr7xfkvy5l643lydnw9re59gtzzwf5mdq" } },
+    { "fill": { "label": "Amount", "value": "1000" } },
+    { "expect": "0.01013744 BTC" },
+    { "click": "Continue" },
+    { "expect": "Sending to this Bitcoin address" },
+    { "click": "Confirm withdrawal" },
+    { "expect": "Request received" }
+  ]
+}

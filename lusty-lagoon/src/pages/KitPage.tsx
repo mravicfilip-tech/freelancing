@@ -48,7 +48,7 @@ function Section({ title, note, children }: { title: string; note?: string; chil
 }
 
 function Label({ children }: { children: string }) {
-  return <span className="text-12 font-semibold uppercase tracking-[var(--bl-ls-label)] text-ink3">{children}</span>;
+  return <span className="text-14 font-semibold uppercase tracking-[var(--bl-ls-label)] text-ink3">{children}</span>;
 }
 
 export function KitPage() {

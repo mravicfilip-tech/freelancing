@@ -1,0 +1,16 @@
+{
+  "name": "Deposit with a saved Visa card",
+  "job": "A signed in player tops up 100 dollars with their saved Visa and sees it in the balance and history",
+  "start": "/wallet/deposit",
+  "maxClicks": 6,
+  "steps": [
+    { "click": "Visa" },
+    { "click": "Continue" },
+    { "click": "$100" },
+    { "expect": "97.50 USDT" },
+    { "click": "Continue" },
+    { "expect": "Visa ending 4821" },
+    { "click": "Confirm and pay" },
+    { "expect": "Payment sent" }
+  ]
+}

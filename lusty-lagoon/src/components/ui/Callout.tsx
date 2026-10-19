@@ -9,7 +9,7 @@ export function Callout({ tone = 'info', children, className }: { tone?: 'info' 
     <div
       className={cn(
         'flex items-start gap-3 rounded-lg border p-4 text-14',
-        tone === 'warning' ? 'border-pending/40 bg-pending/10 text-ink' : 'border-line bg-sunken text-ink2',
+        tone === 'warning' ? 'border-line bg-raised text-ink' : 'border-line bg-sunken text-ink2',
         className,
       )}
     >

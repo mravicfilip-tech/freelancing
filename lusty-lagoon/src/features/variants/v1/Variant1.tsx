@@ -133,17 +133,17 @@ function Sidebar({ filter, onFilter, onGiveaway }: { filter: Filter; onFilter: (
         <NavItem to="/refer" icon={<UserPlus weight="fill" />} label="Refer a friend" />
         <NavItem to="/faq" icon={<Question weight="fill" />} label="FAQ" />
       </nav>
-      <div className="relative mt-auto overflow-hidden rounded-[18px] k-hue-gold p-4 pb-[20px]">
+      <div className="relative mt-auto shrink-0 overflow-hidden rounded-[18px] k-hue-gold p-4 pb-[20px]">
         <p className="relative z-10 w-[130px] font-display text-[22px] font-bold uppercase leading-[24px] text-ink">Hot streak giveaway</p>
-        <p className="relative z-10 mt-1 text-14 font-semibold text-ink/90">
+        <p className="relative z-10 mt-1 w-[150px] text-14 font-semibold text-ink/90">
           Win a share of {GIVEAWAY.pool} BTC
         </p>
         <KitButton tone="white" size="sm" onClick={onGiveaway} className="relative z-10 mt-4 h-10 px-[20px]">
           Join now
         </KitButton>
-        <img src="/art/lobby/giveaway-chest.webp" alt="" className="pointer-events-none absolute -bottom-3 -right-6 w-[132px] rotate-[8deg]" />
+        <img src="/art/lobby/giveaway-chest.webp" alt="" className="pointer-events-none absolute -bottom-4 -right-8 w-[112px] rotate-[8deg]" />
       </div>
-      <div className="grid grid-cols-4 gap-2">
+      <div className="grid shrink-0 grid-cols-4 gap-2">
         {[
           { l: 'X', i: <XLogo weight="bold" className="h-5 w-5" /> },
           { l: 'Instagram', i: <InstagramLogo weight="bold" className="h-5 w-5" /> },

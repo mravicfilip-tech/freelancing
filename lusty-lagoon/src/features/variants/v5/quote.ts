@@ -1,7 +1,7 @@
 import { CASH_METHODS, cashFee, coinById, type CashMethodId, type CoinId } from '../../../data/wallet';
 
 // The quick deposit methods and the quote behind You pay, You get and the commission. Cash methods
-// take their fee from cashFee in data/wallet.ts. Coins carry no deposit fee here, so You pay is the
+// take their fee from cashFee in data/wallet.ts, out of the amount, as the wallet does. Coins carry no deposit fee here, so You pay is the
 // amount converted at the coin's rate. Amounts are in USD, which credits 1 to 1 as USDT.
 
 export type QuickMethod =
@@ -45,7 +45,8 @@ export function quoteFor(m: QuickMethod, amount: number): Quote {
     if (!(amount > 0)) problem = 'Type an amount, or pick one of the presets.';
     else if (amount < cash.min) problem = `${cash.name} takes ${cash.min} USD or more.`;
     else if (amount > cash.max) problem = `${cash.name} takes up to ${cash.max.toLocaleString('en-US')} USD at a time.`;
-    return { pay: round(amount + fee, 2), payUnit: 'USD', payDigits: 2, get: amount, fee, feeLabel, min: cash.min, max: cash.max, problem };
+    // The wallet takes the fee out of the amount, so the same deposit reads the same in both places.
+    return { pay: round(amount, 2), payUnit: 'USD', payDigits: 2, get: round(Math.max(0, amount - fee), 2), fee, feeLabel, min: cash.min, max: cash.max, problem };
   }
   const coin = coinById(m.coinId);
   const min = Math.ceil(coin.minDeposit * coin.rate * 100) / 100;
@@ -56,15 +57,19 @@ export function quoteFor(m: QuickMethod, amount: number): Quote {
   return { pay: round(amount / coin.rate, digits), payUnit: coin.symbol, payDigits: digits, get: amount, fee: 0, feeLabel: 'Commission, none on coins', min, max: Infinity, problem };
 }
 
-/** The deposit route with the pick in its query, so the wallet can open on the same method and amount. */
+/** The deposit route in the wallet's own deep link form, so it opens on the same method. A card or
+ * PayPal opens on the review step with the amount, a coin opens on its deposit address. */
 export function checkoutUrl(m: QuickMethod, amount: number, promo: string) {
   const q = new URLSearchParams();
-  if (m.kind === 'cash') q.set('method', m.methodId);
-  else {
-    q.set('coin', m.coinId);
+  if (m.kind === 'cash') {
+    q.set('pick', m.methodId);
+    q.set('amount', String(amount));
+    q.set('step', 'review');
+  } else {
+    q.set('pick', m.coinId);
     q.set('network', m.networkId);
+    q.set('step', 'send');
   }
-  q.set('amount', String(amount));
   if (promo) q.set('promo', promo);
   return `/wallet/deposit?${q.toString()}`;
 }

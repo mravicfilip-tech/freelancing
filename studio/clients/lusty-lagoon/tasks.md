@@ -54,9 +54,12 @@ Task format
 - lusty-lagoon-2 Five dashboard variants, one page each, from the ten references. Brief briefs/round-3/variants-brief.md, routes /variants/1 to /variants/5
   - [x] Save the ten references with a status
   - [x] Shared data, routes and the builder brief
-  - [ ] Build the five variants
-  - [ ] Review and polish each against the others
-  - [ ] Board of the five for Filip's pick
+  - [x] Build the five variants, rejected on execution, layouts kept
+  - [x] Reference kit, variant 1 rebuilt as the bar
+  - [x] Rebuild variants 2 to 5 on the kit
+  - [x] Review and polish each against the others
+  - [x] Board of the five for Filip's pick
+  - [ ] Filip picks a variant
 
 ## Review
 

@@ -9,9 +9,9 @@ import { Coin } from '../kit/parts';
 import { Avatar, Head, Live, RankBadge, Skel } from './parts';
 import { handle } from './games-data';
 
-// Latest bets in the arena's rows. A segmented tab bar with the purple key on the picked tab, the
-// header in one sunken bar, each bet its own navy row as on Snegbet's leaderboard. Highest wins ranks
-// the rows with gold, silver and bronze badges.
+// Latest bets as one quiet table in one panel. A segmented tab bar with the purple key on the picked
+// tab, the header in one sunken bar, rows split by space with a faint tint on hover, your own handle
+// in lilac. Highest wins ranks the rows with gold, silver and bronze badges.
 
 const TABS = [
   { value: 'all', label: 'All bets', pick: (_: Bet) => true },
@@ -61,7 +61,7 @@ export function Bets({ onPlay, state, rows = 8 }: { onPlay: (g: CatalogueGame) =
           ))}
         </div>
       </Head>
-      <div role="tabpanel" aria-label={TABS.find((t) => t.value === tab)!.label} className="flex flex-col gap-2">
+      <div role="tabpanel" aria-label={TABS.find((t) => t.value === tab)!.label} className="a-panel flex flex-col gap-1 rounded-[16px] p-2">
         <div aria-hidden className={cn(COLS, 'a-well a-caps h-10 rounded-[12px] px-4')}>
           <span>Game</span>
           <span>Player</span>
@@ -71,22 +71,22 @@ export function Bets({ onPlay, state, rows = 8 }: { onPlay: (g: CatalogueGame) =
           <span className="text-right">Payout</span>
         </div>
         {state === 'loading' ? (
-          Array.from({ length: 6 }, (_, i) => <Skel key={i} className="h-[56px]" />)
+          Array.from({ length: 6 }, (_, i) => <Skel key={i} className="h-[56px] rounded-[12px]" />)
         ) : state === 'error' ? (
-          <div className="a-panel rounded-[16px]">
+          <div>
             <Message className="py-12" icon={<WarningCircle weight="fill" className="h-10 w-10 text-danger" aria-hidden />} title="Live bets are paused" body="The feed lost its connection. It reconnects on its own, or reload the page." />
           </div>
         ) : list.length === 0 ? (
-          <div className="a-panel rounded-[16px]">
+          <div>
             <Message className="py-12" icon={<GameController weight="fill" className="a-muted h-10 w-10" aria-hidden />} title="No bets here yet" body="Bets that match this tab show up the moment they land." />
           </div>
         ) : (
-          <ul aria-label="Latest bets" className="flex flex-col gap-2">
+          <ul aria-label="Latest bets" className="flex flex-col gap-1">
             {list.map((b, i) => {
               const g = gameById(b.gameId)!;
               const p = payout(b);
               return (
-                <li key={b.id} className={cn(COLS, 'a-panel a-hover h-[56px] rounded-[12px] px-4', b.mine && 'border-[#B47CFF]/30')}>
+                <li key={b.id} className={cn(COLS, 'h-[56px] rounded-[12px] px-4 transition-colors duration-150 hover:bg-white/[0.04]')}>
                   <button type="button" onClick={() => onPlay(g)} className="flex min-w-0 items-center gap-3 rounded-[8px] text-left outline-none focus-visible:ring-2 focus-visible:ring-[#B47CFF]" aria-label={`Play ${g.name}`}>
                     {tab === 'high' && <RankBadge place={i + 1} size={28} />}
                     <img src={g.image} alt="" className="h-9 w-9 shrink-0 rounded-[8px] object-cover" />

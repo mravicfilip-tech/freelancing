@@ -34,12 +34,12 @@ export function PrizeHero({ onHow }: { onHow: () => void }) {
         <img
           src="/art/landing/girl-floral.webp"
           alt=""
-          className="pointer-events-none absolute bottom-0 right-[calc(50%+140px)] hidden h-[296px] w-auto max-w-none select-none w1920:block"
+          className="pointer-events-none absolute bottom-0 right-[calc(50%+140px)] hidden h-[288px] w-auto max-w-none select-none w1920:block"
         />
         <img
           src="/art/landing/girl-lei.webp"
           alt=""
-          className="pointer-events-none absolute bottom-0 left-[calc(50%+20px)] h-[268px] w-auto max-w-none select-none w1920:left-[calc(50%+96px)] w1920:h-[296px]"
+          className="pointer-events-none absolute bottom-0 left-[calc(50%+20px)] h-[248px] w-auto max-w-none select-none w1920:left-[calc(50%+96px)] w1920:h-[288px]"
         />
         <img
           src="/art/lobby/giveaway-chest.webp"

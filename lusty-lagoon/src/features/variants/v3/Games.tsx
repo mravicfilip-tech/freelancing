@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { ClockCounterClockwise, Crown, Fire, GameController, MagnifyingGlass, Play, WarningCircle } from '@phosphor-icons/react';
 import { Message } from '../../../components/ui/Message';
 import { gameById, type CatalogueGame } from '../../../data/games';
@@ -132,6 +132,21 @@ export function TopWins({ onPlay, state }: { onPlay: (g: CatalogueGame) => void;
   );
 }
 
+const NOUN: Record<Filter, string> = { all: 'games', slots: 'slots', megaways: 'Megaways games', 'hold-and-win': 'hold and win games', fish: 'fish games', new: 'new games' };
+
+/** True at 1920 and wider, where the cover grid runs seven a row. */
+function useWide() {
+  const query = '(min-width: 1920px)';
+  const [wide, setWide] = useState(() => window.matchMedia(query).matches);
+  useEffect(() => {
+    const m = window.matchMedia(query);
+    const on = () => setWide(m.matches);
+    m.addEventListener('change', on);
+    return () => m.removeEventListener('change', on);
+  }, []);
+  return wide;
+}
+
 export function HotGrid({
   filter,
   onFilter,
@@ -152,17 +167,27 @@ export function HotGrid({
   onPlay: (g: CatalogueGame) => void;
 }) {
   const [all, setAll] = useState(false);
+  const wide = useWide();
+  // A new category starts folded.
+  useEffect(() => setAll(false), [filter]);
   const list = useMemo(() => {
     const q = query.trim().toLowerCase();
     return ORDERED.filter((g) => (filter === 'all' || g.category === filter) && (!q || g.name.toLowerCase().includes(q) || g.provider.toLowerCase().includes(q)));
   }, [filter, query]);
-  // Two whole rows, six covers a row at 1440 and seven at 1920. The full list of 42 is whole at both.
-  const shown = all ? list : list.slice(0, 14);
+  // Whole rows in every view. Six covers a row at 1440 and seven at 1920. Folded, the grid clamps to
+  // one or two full rows and View all carries the rest. Open, or when fewer games match than a row
+  // holds, an end card spans the columns left over, so the last row still ends whole.
+  const cols = wide ? 7 : 6;
+  const n = list.length;
+  const folded = n >= cols ? cols * Math.min(2, Math.floor(n / cols)) : n;
+  const shown = all ? list : list.slice(0, folded);
+  const fill = shown.length % cols ? cols - (shown.length % cols) : 0;
+  const label = NAV_GAMES.find((x) => x.value === filter)!;
   const ranked = filter === 'all' && !query.trim();
   return (
     <section id="hot" aria-labelledby="v3-hot-title" className="flex scroll-mt-[96px] flex-col gap-4">
       <Head id="v3-hot-title" icon={<Fire weight="fill" />} tint="#FF8A3D" title="Hot right now" sub="The most played games in the lagoon this hour">
-        {list.length > 12 && (
+        {n > folded && (
           <button type="button" onClick={() => setAll((a) => !a)} aria-expanded={all} className={cn('a-row a-hover flex h-11 items-center rounded-[12px] px-4 text-14 font-semibold text-ink hover:bg-[rgb(var(--a-raised))]', FOCUS)}>
             {all ? 'Show less' : `View all ${list.length}`}
           </button>
@@ -230,10 +255,26 @@ export function HotGrid({
       ) : (
         <ul className="grid grid-cols-6 gap-3 w1920:grid-cols-7">
           {shown.map((g, i) => (
-            <li key={g.id} className={cn(!all && i >= 12 && 'hidden w1920:block')}>
+            <li key={g.id}>
               <Cover game={g} onPlay={() => onPlay(g)} rank={ranked && i < 3 ? i + 1 : undefined} />
             </li>
           ))}
+          {fill > 0 && (
+            <li style={{ gridColumn: `span ${fill} / span ${fill}` }} className="flex flex-col items-center justify-center gap-3 rounded-[16px] border border-dashed border-white/[0.14] bg-[rgb(var(--a-panel))]/60 px-4 text-center">
+              <span className="flex h-10 w-10 items-center justify-center rounded-[12px] bg-[#B47CFF]/15 text-[#C9A2FF] [&>svg]:h-5 [&>svg]:w-5">{query.trim() ? <MagnifyingGlass weight="bold" /> : label.icon}</span>
+              <span className="flex flex-col gap-1">
+                <span className="text-16 font-bold text-ink">{query.trim() ? `${n} ${n === 1 ? 'match' : 'matches'}` : 'You have seen them all'}</span>
+                <span className="num a-muted text-14">{query.trim() ? `for "${query.trim()}"` : `${n} ${NOUN[filter]}`}</span>
+              </span>
+              <button
+                type="button"
+                onClick={() => (query.trim() ? onQuery('') : onFilter('all'))}
+                className={cn('a-row a-hover flex h-9 items-center rounded-[8px] px-4 text-14 font-semibold text-ink hover:bg-[rgb(var(--a-raised))]', FOCUS)}
+              >
+                {query.trim() ? 'Clear the search' : 'Show all games'}
+              </button>
+            </li>
+          )}
         </ul>
       )}
     </section>

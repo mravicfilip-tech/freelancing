@@ -22,13 +22,8 @@ const en = {
   logos: { line: 'Built for network operators and main contractors across Austria and southern Germany.', slot: 'Client logo', region: 'Client logos' },
   projects: {
     group: 'Project slider',
-    headlines: {
-      marchtrenk: 'A backbone route to Marchtrenk, ready for cable',
-      amstetten: 'A town centre opened and closed again in Amstetten',
-      leibnitz: 'Almost ten kilometres through vineyard country',
-      seekirchen: 'A night time road crossing for Seekirchen',
-      passau: 'A cross border link, finished at Passau',
-    } as Record<string, string>,
+    // a longer headline per project id, none for the client's own routes, so the slider shows the place
+    headlines: {} as Record<string, string>,
     goTo: 'Go to project',
   },
   gauge: { label: 'Trench depth', value: '80', unit: 'cm', cover: 'Cover', coverV: '60 cm', width: 'Width', widthV: '40 cm', plan: 'Plan depth' },
@@ -107,13 +102,7 @@ const de: Copy = {
   logos: { line: 'Gebaut für Netzbetreiber und Generalunternehmer in Österreich und Süddeutschland.', slot: 'Kundenlogo', region: 'Kundenlogos' },
   projects: {
     group: 'Projektslider',
-    headlines: {
-      marchtrenk: 'Eine Backbone-Trasse nach Marchtrenk, bereit für das Kabel',
-      amstetten: 'Ein Ortszentrum in Amstetten geöffnet und wieder geschlossen',
-      leibnitz: 'Fast zehn Kilometer durch Weinbaugebiet',
-      seekirchen: 'Eine nächtliche Straßenquerung für Seekirchen',
-      passau: 'Eine grenzüberschreitende Verbindung bis Passau',
-    },
+    headlines: {},
     goTo: 'Zum Projekt',
   },
   gauge: { label: 'Grabentiefe', value: '80', unit: 'cm', cover: 'Überdeckung', coverV: '60 cm', width: 'Breite', widthV: '40 cm', plan: 'Plantiefe' },

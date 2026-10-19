@@ -3,15 +3,7 @@
  * automated shots see the settled page. Scroll variables carry their settled value as the fallback.
  * Transform, opacity and clip-path only. Timing comes from the --m-* tokens in motion.css. */
 
-/* ---------- crew, the portrait strip drifts 48px against the scroll, the matrix reveals once ---------- */
-.p1 .crew__strip { --drift: 24px; }
-@media (max-width: 767px) {
-  .p1 .crew__strip { --drift: 12px; } /* the phone grid has 16px side padding, so the travel is 24px there */
-}
-.p1[data-motion='on'] .crew__p {
-  transform: translateX(calc((var(--cs, 0.5) - 0.5) * -2 * var(--drift)));
-  will-change: transform;
-}
+/* ---------- crew, the matrix reveals once ---------- */
 .p1[data-motion='on'] .mx__cell {
   transition: opacity 400ms var(--m-ease) calc(var(--c, 0) * 40ms), transform 500ms var(--m-ease) calc(var(--c, 0) * 40ms);
 }

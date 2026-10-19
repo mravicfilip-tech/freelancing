@@ -463,7 +463,7 @@
   .p3-projects { padding: 128px 24px 64px; }
   .p3-projects__line { max-width: 20em; }
   .p3-tabs__wrap { margin: 64px 0 24px; padding: 4px 0 0; overflow: visible; }
-  .p3-tabs { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 24px; min-width: 0; }
+  .p3-tabs { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 24px; min-width: 0; }
   .p3 .p3-tab { flex: none; }
   .p3-tab__t, .p3-tab__r { font-size: 16px; line-height: 24px; }
   .p3-ppanel { gap: 96px; padding: 16px 96px 16px 16px; }

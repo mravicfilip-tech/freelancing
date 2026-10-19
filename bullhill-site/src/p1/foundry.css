@@ -627,22 +627,16 @@
 .p1 .crew__main { padding-top: 96px; text-align: center; }
 .p1 .crew__intro { max-width: 56ch; margin: 0 auto 48px; color: var(--bh-grey-300); }
 .p1 .crew__title { max-width: 18em; margin-inline: auto; font-size: 40px; line-height: 40px; color: var(--bh-grey-200); }
-.p1 .crew__strip { display: grid; grid-template-columns: minmax(0, 1fr); gap: 32px; margin: 64px 0; }
-.p1 .crew__p { --ph-bg: var(--bh-grey-850); --ph-fg: var(--bh-grey-300); --ph-mono: var(--f-mono); --ph-pad: 12px; --ph-mark: #fff; --ph-mark-opacity: 0.08; }
-.p1 .crew__ph { aspect-ratio: 3 / 1; width: 100%; }
-.p1 .crew__name { margin-top: 16px; color: var(--bh-grey-200); }
-.p1 .crew__role { margin-top: 4px; color: var(--bh-grey-400); }
-.p1 .crew__title--2 { margin-top: 0; }
+/* the second line sits where the portrait strip's margin was, the strip is gone, round 7 note 8 */
+.p1 .crew__title--2 { margin-top: 64px; }
 
 @media (min-width: 768px) {
   .p1 .crew__bar span:nth-child(2) { display: inline; }
-  .p1 .crew__strip { grid-template-columns: repeat(3, 1fr); gap: 0; text-align: center; }
-  .p1 .crew__ph { aspect-ratio: 5 / 1; }
 }
 @media (min-width: 1200px) {
   .p1 .crew__main { padding-top: 128px; }
   .p1 .crew__title { font-size: 48px; line-height: 48px; }
-  .p1 .crew__strip { margin: 96px 0 96px; }
+  .p1 .crew__title--2 { margin-top: 96px; }
 }
 
 /* ---------- audiences ---------- */

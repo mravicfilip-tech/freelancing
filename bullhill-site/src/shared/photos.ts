@@ -21,7 +21,8 @@ export type PhotoId =
   | 'restored-path'
   | 'restored-fence'
   | 'dumper-dusk'
-  | 'site-setup';
+  | 'site-setup'
+  | 'street-barriers';
 
 type PhotoMeta = { w: number; h: number; widths: number[]; focal: string; alt: Record<Lang, string> };
 
@@ -61,6 +62,10 @@ export const PHOTOS: Record<PhotoId, PhotoMeta> = {
   'crew-dusk': {
     w: 3024, h: 4032, widths: [640, 1280, 1920, 2560], focal: '50% 58%',
     alt: { en: 'Crew, a flatbed truck and a dumper at work along a village road under an orange evening sky', de: 'Mannschaft, Pritschenwagen und Dumper bei der Arbeit an einer Ortsstraße unter orangem Abendhimmel' },
+  },
+  'street-barriers': {
+    w: 2721, h: 2580, widths: [640, 1280, 1920, 2560], focal: '50% 80%',
+    alt: { en: 'Red and white barriers with warning lights along a village road in the Enns valley, houses and wooded hills behind', de: 'Rot-weiße Absperrungen mit Warnleuchten entlang einer Ortsstraße im Ennstal, dahinter Häuser und bewaldete Hügel' },
   },
   'road-crew': {
     w: 2721, h: 2580, widths: [640, 1280, 1920, 2560], focal: '45% 55%',

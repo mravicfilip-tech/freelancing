@@ -52,11 +52,13 @@ export const WORK_FOCAL: Record<PhotoId, string> = {
   'restored-fence': '45% 62%',
   'dumper-dusk': '45% 62%',
   'site-setup': '45% 60%',
+  'street-barriers': '50% 70%',
 };
 export const PROJECT_FOCAL: Partial<Record<PhotoId, string>> = {
   'route-trench-village': '50% 36%',
   'excavator-street': '50% 42%',
   'ducts-fence': '50% 58%',
+  'street-barriers': '50% 80%',
 };
 
 // Soft hyphens for the long German compounds, so a 24px title can break at 390 without

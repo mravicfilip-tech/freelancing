@@ -134,10 +134,6 @@
 .p2 .p2-crew__head { display: flex; flex-direction: column; gap: 24px; }
 .p2 .p2-crew__body { max-width: 30em; font-size: 18px; line-height: 28px; color: var(--bh-grey-700); }
 .p2 .p2-crew__grid { display: flex; flex-direction: column; gap: 32px; margin-top: 48px; }
-.p2 .p2-people { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; align-content: start; }
-.p2 .p2-people__ph { width: 100%; aspect-ratio: 3 / 4; }
-.p2 .p2-people__name { margin-top: 12px; font-size: 14px; line-height: 20px; }
-.p2 .p2-people__role { margin-top: 2px; color: var(--bh-grey-600); font-size: 12px; line-height: 16px; text-transform: uppercase; letter-spacing: 0.04em; }
 .p2 .p2-crew__side { display: flex; flex-direction: column; gap: 24px; }
 .p2 .p2-fleet { padding: 24px 16px; }
 .p2 .p2-fleet__title { margin-bottom: 12px; color: var(--bh-grey-300); text-transform: uppercase; letter-spacing: 0.04em; font-size: 12px; line-height: 16px; }
@@ -149,14 +145,10 @@
 @media (min-width: 768px) {
   .p2 .p2-crew { padding: 96px 0; }
   .p2 .p2-crew__grid { margin-top: 64px; }
-  .p2 .p2-people__name { font-size: 16px; line-height: 24px; }
 }
 @media (min-width: 1200px) {
   .p2 .p2-crew { padding: 128px 0; }
   .p2 .p2-crew__head { flex-direction: row; justify-content: space-between; align-items: flex-start; }
   .p2 .p2-crew__title { width: 50%; }
   .p2 .p2-crew__body { width: calc(25% - 12px); margin-right: calc(25% - 12px); font-size: 16px; line-height: 24px; max-width: none; }
-  .p2 .p2-crew__grid { flex-direction: row; gap: 24px; align-items: flex-start; }
-  .p2 .p2-people { width: calc(75% - 6px); gap: 24px; }
-  .p2 .p2-crew__side { width: calc(25% - 18px); }
 }

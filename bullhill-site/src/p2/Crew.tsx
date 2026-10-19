@@ -1,5 +1,4 @@
 import type { Content } from '../shared/content';
-import { Placeholder } from '../shared/Placeholder';
 import { Guides } from './icons';
 import { pick } from './copy';
 
@@ -14,15 +13,6 @@ export function Crew({ c }: { c: Content }) {
           <p className="p2-crew__body">{c.crew.body}</p>
         </div>
         <div className="p2-crew__grid">
-          <ul className="p2-people">
-            {c.crew.people.map((p, i) => (
-              <li key={p.shot.id}>
-                <Placeholder shot={p.shot} label={c.ui.photo} index={i + 1} brief={false} className="p2-ph p2-people__ph" />
-                <p className="p2-people__name">{p.name}</p>
-                <p className="p2-mono p2-people__role">{p.role}</p>
-              </li>
-            ))}
-          </ul>
           <div className="p2-crew__side">
             {c.crew.machines.length ? (
               <div className="p2-w p2-w--black p2-fleet">

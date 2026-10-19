@@ -22,6 +22,7 @@ const CARD: Record<PhotoId, { r: number; focal: string }> = {
   'restored-fence': { r: 0.75, focal: '45% 62%' },
   'dumper-dusk': { r: 0.75, focal: '45% 62%' },
   'site-setup': { r: 0.95, focal: '45% 60%' },
+  'street-barriers': { r: 0.95, focal: '50% 70%' },
 };
 
 // The work section, straight after the hero. Seven photos in a row that bleeds off the right edge.

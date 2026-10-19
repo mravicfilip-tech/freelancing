@@ -1,10 +1,9 @@
 import { useRef, type CSSProperties, type ReactNode } from 'react';
 import type { Content } from '../shared/content';
-import { Placeholder } from '../shared/Placeholder';
 import { Bracket } from './Bracket';
 import { sh, t } from './copy';
 import { Rise } from './motion/Rise';
-import { useInView, useScrollVar } from './motion/motion';
+import { useInView } from './motion/motion';
 import './r3-crew.css';
 import './motion/sections-b.css';
 
@@ -69,10 +68,8 @@ function MachineIcon({ index }: { index: number }) {
 
 export function Crew({ c }: { c: Content }) {
   const x = t(c);
-  const stripRef = useRef<HTMLUListElement>(null);
   const gridRef = useRef<HTMLDivElement>(null);
-  // the strip drifts on the scroll, the matrix cells reveal once, 40ms apart
-  useScrollVar(stripRef, '--cs', 1, -0.1);
+  // the matrix cells reveal once, 40ms apart
   useInView(gridRef);
   const cell = (n: number) => ({ '--c': n }) as CSSProperties;
   return (
@@ -93,16 +90,8 @@ export function Crew({ c }: { c: Content }) {
           {sh(c, c.crew.title)}
         </Rise>
 
-        <ul className="crew__strip" ref={stripRef}>
-          {c.crew.people.map((p, i) => (
-            <li key={i} className="crew__p">
-              <Placeholder shot={p.shot} label={c.ui.photo} index={i + 1} className="crew__ph" brief={false} />
-              <p className="crew__name mono">{p.name}</p>
-              <p className="crew__role mono">{p.role}</p>
-            </li>
-          ))}
-        </ul>
-
+        {/* no portraits, the client 19 October 2026, "skloni ono polje gde treba nase slike". The people stay in
+            content.ts for when real portraits come. */}
         <Rise as="p" className="crew__title crew__title--2 display">
           {sh(c, x.crewLine)}
         </Rise>

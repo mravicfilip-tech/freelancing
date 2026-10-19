@@ -23,7 +23,6 @@ export type Project = {
   region: string;
   length: string;
   year: string;
-  client: string;
   scope: string;
   connections?: string;
   shot: Shot;
@@ -75,7 +74,7 @@ export type Content = {
     note: string;
   };
   stats: { kicker: string; items: Stat[] };
-  projects: { kicker: string; title: string; lede: string; items: Project[]; labels: { length: string; year: string; client: string; scope: string; connections: string } };
+  projects: { kicker: string; title: string; lede: string; items: Project[]; labels: { length: string; year: string; scope: string; connections: string } };
   audiences: { operators: Audience; contractors: Audience };
   crew: {
     kicker: string;
@@ -262,15 +261,16 @@ const en: Content = {
   projects: {
     kicker: 'Projects',
     title: 'Routes we have built.',
-    lede: 'A few of the routes from the last three years, from village backbones to town centre rollouts.',
-    labels: { length: 'Route', year: 'Year', client: 'For', scope: 'Scope', connections: 'Connections' },
+    lede: 'Our routes from 2025 and 2026, trench, ducts and house connections.',
+    labels: { length: 'Route', year: 'Year', scope: 'Scope', connections: 'Connections' },
     items: [
-      // STAND-IN projects, names and figures to be replaced with BullHill's own
-      { id: 'marchtrenk', title: 'Backbone route', place: 'Marchtrenk', region: 'Upper Austria', length: '6.4 km', year: '2025', client: 'Regional network operator', scope: 'Trench, 4 ducts, 6 chambers', shot: { id: 'p1', photo: 'ducts-fence', brief: 'Long straight trench along a country road, machine in the distance' } },
-      { id: 'amstetten', title: 'Town centre rollout', place: 'Amstetten', region: 'Lower Austria', length: '3.1 km', year: '2025', client: 'Main contractor', scope: 'Trench, ducts, house connections', connections: '412', shot: { id: 'p2', photo: 'excavator-street', brief: 'Narrow town street with paving lifted, crew at work' } },
-      { id: 'leibnitz', title: 'Village connection', place: 'Leibnitz', region: 'Styria', length: '9.8 km', year: '2024', client: 'Municipality', scope: 'Trench, ducts, restoration', connections: '186', shot: { id: 'p3', photo: 'route-trench-village', brief: 'Trench through vineyard country, drone view' } },
-      { id: 'seekirchen', title: 'Business park access', place: 'Seekirchen', region: 'Salzburg', length: '2.2 km', year: '2024', client: 'Regional network operator', scope: 'Trench, road crossing, chambers', shot: { id: 'p4', photo: 'restored-wall', brief: 'Road crossing at night with lights and barriers' } },
-      { id: 'passau', title: 'Cross border link', place: 'Passau', region: 'Bavaria', length: '5.5 km', year: '2023', client: 'Main contractor', scope: 'Trench, 2 ducts, restoration', shot: { id: 'p5', photo: 'restored-lane', brief: 'Finished route, restored verge, marker posts in a row' } },
+      // the client's routes, 19 October 2026, round 7 notes. Each place keeps the photo the client put it on.
+      { id: 'admont', title: 'Admont', place: 'Admont', region: 'Styria, Austria', length: '1909 m', year: '2025', scope: 'Trench, ducts, house connections', connections: '70', shot: { id: 'p1', photo: 'ducts-fence', brief: 'Green and orange ducts in a trench along a garden fence' } },
+      { id: 'groebming', title: 'Gröbming', place: 'Gröbming', region: 'Styria, Austria', length: '1330 m', year: '2026', scope: 'Trench, ducts, house connections', connections: '44', shot: { id: 'p2', photo: 'excavator-street', brief: 'Excavator on a village street, the trench open beside it' } },
+      { id: 'hohenfeld', title: 'Hohenfeld', place: 'Hohenfeld', region: 'Styria, Austria', length: '755 m', year: '2026', scope: 'Trench, ducts, house connections', connections: '25', shot: { id: 'p3', photo: 'route-trench-village', brief: 'Open trench with ducts along a village road' } },
+      { id: 'ardning', title: 'Ardning', place: 'Ardning', region: 'Styria, Austria', length: '2197 m', year: '2025', scope: 'Trench, ducts, house connections', connections: '73', shot: { id: 'p4', photo: 'restored-wall', brief: 'Restored strip along the kerb' } },
+      { id: 'oberhaus', title: 'Oberhaus', place: 'Oberhaus', region: 'Styria, Austria', length: '957 m', year: '2026', scope: 'Trench, ducts, house connections', connections: '32', shot: { id: 'p5', photo: 'restored-lane', brief: 'Finished route, restored verge' } },
+      { id: 'haus', title: 'Haus im Ennstal', place: 'Haus im Ennstal', region: 'Styria, Austria', length: '791 m', year: '2026', scope: 'Trench, ducts, house connections', connections: '26', shot: { id: 'p6', photo: 'street-barriers', brief: 'Barriers along a village road during the works' } },
     ],
   },
   audiences: {
@@ -302,7 +302,7 @@ const en: Content = {
     title: 'A small crew that knows the work.',
     body: 'BullHill started with one route. Today the crew works every season, from the first frost-free week to the last.',
     people: [
-      // STAND-IN people
+      // STAND-IN people, not shown since round 7 note 8, kept for when the client sends real portraits
       { name: 'Name to follow', role: 'Founder and site lead', shot: { id: 'c1', brief: 'Portrait, site lead next to the excavator, eye level' } },
       { name: 'Name to follow', role: 'Machine operator', shot: { id: 'c2', brief: 'Portrait in the cab, door open' } },
       { name: 'Name to follow', role: 'Ducts and connections', shot: { id: 'c3', brief: 'Portrait in the trench, holding a duct' } },
@@ -466,14 +466,15 @@ const de: Content = {
   projects: {
     kicker: 'Projekte',
     title: 'Trassen, die wir gebaut haben.',
-    lede: 'Einige Trassen aus den letzten drei Jahren, vom Dorf-Backbone bis zum Ausbau im Ortszentrum.',
-    labels: { length: 'Trasse', year: 'Jahr', client: 'Für', scope: 'Umfang', connections: 'Anschlüsse' },
+    lede: 'Unsere Trassen aus 2025 und 2026, Graben, Rohre und Hausanschlüsse.',
+    labels: { length: 'Trasse', year: 'Jahr', scope: 'Umfang', connections: 'Anschlüsse' },
     items: [
-      { id: 'marchtrenk', title: 'Backbone-Trasse', place: 'Marchtrenk', region: 'Oberösterreich', length: '6,4 km', year: '2025', client: 'Regionaler Netzbetreiber', scope: 'Graben, 4 Rohre, 6 Schächte', shot: { id: 'p1', photo: 'ducts-fence', brief: 'Langer gerader Graben entlang einer Landstraße, Maschine im Hintergrund' } },
-      { id: 'amstetten', title: 'Ausbau Ortszentrum', place: 'Amstetten', region: 'Niederösterreich', length: '3,1 km', year: '2025', client: 'Generalunternehmer', scope: 'Graben, Rohre, Hausanschlüsse', connections: '412', shot: { id: 'p2', photo: 'excavator-street', brief: 'Enge Ortsstraße mit aufgenommenem Pflaster, Mannschaft bei der Arbeit' } },
-      { id: 'leibnitz', title: 'Anbindung Ortschaft', place: 'Leibnitz', region: 'Steiermark', length: '9,8 km', year: '2024', client: 'Gemeinde', scope: 'Graben, Rohre, Wiederherstellung', connections: '186', shot: { id: 'p3', photo: 'route-trench-village', brief: 'Graben durch Weinbaugebiet, Drohnenansicht' } },
-      { id: 'seekirchen', title: 'Anbindung Gewerbepark', place: 'Seekirchen', region: 'Salzburg', length: '2,2 km', year: '2024', client: 'Regionaler Netzbetreiber', scope: 'Graben, Straßenquerung, Schächte', shot: { id: 'p4', photo: 'restored-wall', brief: 'Straßenquerung bei Nacht mit Licht und Absperrung' } },
-      { id: 'passau', title: 'Grenzüberschreitende Verbindung', place: 'Passau', region: 'Bayern', length: '5,5 km', year: '2023', client: 'Generalunternehmer', scope: 'Graben, 2 Rohre, Wiederherstellung', shot: { id: 'p5', photo: 'restored-lane', brief: 'Fertige Trasse, wiederhergestelltes Bankett, Markierungspfosten in einer Reihe' } },
+      { id: 'admont', title: 'Admont', place: 'Admont', region: 'Steiermark, Österreich', length: '1909 m', year: '2025', scope: 'Graben, Rohre, Hausanschlüsse', connections: '70', shot: { id: 'p1', photo: 'ducts-fence', brief: 'Grüne und orange Rohre in einem Graben entlang eines Gartenzauns' } },
+      { id: 'groebming', title: 'Gröbming', place: 'Gröbming', region: 'Steiermark, Österreich', length: '1330 m', year: '2026', scope: 'Graben, Rohre, Hausanschlüsse', connections: '44', shot: { id: 'p2', photo: 'excavator-street', brief: 'Bagger auf einer Ortsstraße, daneben der offene Graben' } },
+      { id: 'hohenfeld', title: 'Hohenfeld', place: 'Hohenfeld', region: 'Steiermark, Österreich', length: '755 m', year: '2026', scope: 'Graben, Rohre, Hausanschlüsse', connections: '25', shot: { id: 'p3', photo: 'route-trench-village', brief: 'Offener Graben mit Rohren entlang einer Ortsstraße' } },
+      { id: 'ardning', title: 'Ardning', place: 'Ardning', region: 'Steiermark, Österreich', length: '2197 m', year: '2025', scope: 'Graben, Rohre, Hausanschlüsse', connections: '73', shot: { id: 'p4', photo: 'restored-wall', brief: 'Wiederhergestellter Streifen entlang der Bordsteinkante' } },
+      { id: 'oberhaus', title: 'Oberhaus', place: 'Oberhaus', region: 'Steiermark, Österreich', length: '957 m', year: '2026', scope: 'Graben, Rohre, Hausanschlüsse', connections: '32', shot: { id: 'p5', photo: 'restored-lane', brief: 'Fertige Trasse, wiederhergestelltes Bankett' } },
+      { id: 'haus', title: 'Haus im Ennstal', place: 'Haus im Ennstal', region: 'Steiermark, Österreich', length: '791 m', year: '2026', scope: 'Graben, Rohre, Hausanschlüsse', connections: '26', shot: { id: 'p6', photo: 'street-barriers', brief: 'Absperrungen entlang einer Ortsstraße während der Arbeiten' } },
     ],
   },
   audiences: {

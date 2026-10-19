@@ -97,7 +97,7 @@ export function Projects({ c }: { c: Content }) {
             <div className="p3-ppanel__text">
               <p className="p3-mono p3-ppanel__count">{`${t(c, 'projectWord')} ${num(i)}/${num(n - 1)}`}</p>
               <h3 className="p3-ppanel__title">{p.title}</h3>
-              <p className="p3-mono p3-ppanel__place">{`${p.place}, ${p.region}`}</p>
+              <p className="p3-mono p3-ppanel__place">{p.region}</p>
               <dl className="p3-rows">
                 <div>
                   <dt>{c.projects.labels.length}</dt>
@@ -106,10 +106,6 @@ export function Projects({ c }: { c: Content }) {
                 <div>
                   <dt>{c.projects.labels.year}</dt>
                   <dd>{p.year}</dd>
-                </div>
-                <div>
-                  <dt>{c.projects.labels.client}</dt>
-                  <dd>{p.client}</dd>
                 </div>
                 <div>
                   <dt>{c.projects.labels.scope}</dt>

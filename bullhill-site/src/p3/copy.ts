@@ -38,7 +38,7 @@ const copy = {
       'Rüttelplatte schließt den Graben, dahinter die frische Oberfläche',
     ],
   } as Pair<string[]>,
-  projectsLine: { en: 'Five routes, one way of working.', de: 'Fünf Trassen, eine Arbeitsweise.' },
+  projectsLine: { en: 'Six routes, one way of working.', de: 'Sechs Trassen, eine Arbeitsweise.' },
   projectWord: { en: 'Project', de: 'Projekt' },
   speak: { en: 'Speak with BullHill', de: 'Sprechen Sie mit BullHill' },
   faqCta: { en: 'Ask us directly', de: 'Direkt anfragen' },

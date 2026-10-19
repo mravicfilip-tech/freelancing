@@ -115,9 +115,7 @@ export function Projects({ c }: { c: Content }) {
               focal={p.shot.photo ? PROJECT_FOCAL[p.shot.photo] : undefined}
             />
             <h3 className="pc__title display">{sh(c, p.title)}</h3>
-            <p className="pc__place mono">
-              {p.place}, {p.region}
-            </p>
+            <p className="pc__place mono">{p.region}</p>
             <dl className="pc__rows">
               <div>
                 <dt className="mono">{L.length}</dt>
@@ -126,10 +124,6 @@ export function Projects({ c }: { c: Content }) {
               <div>
                 <dt className="mono">{L.year}</dt>
                 <dd className="mono">{p.year}</dd>
-              </div>
-              <div>
-                <dt className="mono">{L.client}</dt>
-                <dd className="mono">{p.client}</dd>
               </div>
               <div>
                 <dt className="mono">{L.scope}</dt>

@@ -52,9 +52,7 @@ export function Projects({ c }: { c: Content }) {
                 <p className="p2-mono p2-slider__meta">
                   <span>{p.length}</span>
                   <i className="p2-sq" aria-hidden="true" />
-                  <span>
-                    {p.place}, {p.region}
-                  </span>
+                  <span>{p.region}</span>
                 </p>
               </Tabs.Content>
             ))}

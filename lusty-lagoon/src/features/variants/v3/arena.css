@@ -1,0 +1,152 @@
+/* Variant 3, Tournament arena. Its own visual language, after Snegbet's tournaments screen, Krush's
+ * weekly race and Cybet's unlock schedule. Navy purple ground, navy panels with a 1px light edge,
+ * tactile rank badges and tier colours. Every value is traced in studio/.state/r5-v3-report.md. */
+
+.a-page {
+  --a-ground: 14 11 44; /* #0E0B2C */
+  --a-panel: 26 23 69; /* #1A1745, ground plus 12 to 25, Snegbet's rows lift 16 */
+  --a-row: 32 29 79; /* #201D4F */
+  --a-raised: 41 36 94; /* #29245E */
+  --a-well: 17 14 51; /* #110E33 */
+  --a-ink2: 185 179 224; /* #B9B3E0 */
+  --a-muted: 154 147 201; /* #9A93C9, 4.8 to 1 or better on every surface */
+  --a-edge: rgb(255 255 255 / 0.06);
+  --a-edge-hi: rgb(255 255 255 / 0.12);
+  --a-ease: cubic-bezier(0.22, 1, 0.36, 1);
+  background: rgb(var(--a-ground));
+  color: #fff;
+}
+
+/* ---------- Surfaces ---------- */
+
+.a-panel { background: rgb(var(--a-panel)); border: 1px solid var(--a-edge); }
+.a-row { background: rgb(var(--a-row)); border: 1px solid var(--a-edge); }
+.a-well { background: rgb(var(--a-well)); border: 1px solid rgb(255 255 255 / 0.05); }
+.a-raised { background: rgb(var(--a-raised)); }
+.a-ink2 { color: rgb(var(--a-ink2)); }
+.a-muted { color: rgb(var(--a-muted)); }
+.a-hover { transition: border-color 0.2s var(--a-ease), background-color 0.2s var(--a-ease); }
+.a-hover:hover { border-color: var(--a-edge-hi); }
+
+/* The pinned bar a page slides under. */
+.a-bar {
+  background: rgb(14 11 44 / 0.86);
+  -webkit-backdrop-filter: blur(16px) saturate(1.3);
+  backdrop-filter: blur(16px) saturate(1.3);
+  border-bottom: 1px solid var(--a-edge);
+}
+
+/* Caps label, the quiet line over a strong number. */
+.a-caps { font-size: 12px; line-height: 16px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: rgb(var(--a-muted)); }
+
+/* ---------- Selection, the purple key fill ---------- */
+
+.a-on {
+  color: #fff;
+  background: linear-gradient(180deg, #9a4bff 0%, #7a1ff2 100%);
+  box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.3), inset 0 -2px 0 rgb(60 10 140 / 0.6);
+  border-color: transparent !important;
+}
+
+/* ---------- Rank badges, the key recipe in gold, silver and bronze ---------- */
+
+.a-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  border-radius: 8px;
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
+  color: #1a0f2b;
+}
+.a-badge-1 { background: linear-gradient(180deg, #fbe36a 0%, #e8c21e 100%); box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.55), inset 0 -2px 0 rgb(150 110 0 / 0.65); }
+.a-badge-2 { background: linear-gradient(180deg, #d6e8f2 0%, #a3c2d4 100%); box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.6), inset 0 -2px 0 rgb(80 110 130 / 0.6); }
+.a-badge-3 { background: linear-gradient(180deg, #eaa98a 0%, #c9785a 100%); box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.45), inset 0 -2px 0 rgb(130 60 35 / 0.6); }
+.a-badge-n { color: rgb(var(--a-muted)); background: rgb(var(--a-raised)); box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.06); }
+.a-badge-you { color: #fff; background: linear-gradient(180deg, #9a4bff 0%, #7a1ff2 100%); box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.3), inset 0 -2px 0 rgb(60 10 140 / 0.6); }
+
+/* ---------- The hero burst ---------- */
+
+/* The prize card. Navy, a purple edge, and a faint purple light where the window meets the body. */
+.a-hero {
+  background:
+    radial-gradient(70% 34% at 50% 54%, rgb(141 38 231 / 0.34) 0%, rgb(141 38 231 / 0.1) 60%, transparent 100%),
+    rgb(var(--a-panel));
+  border: 1px solid rgb(180 124 255 / 0.3);
+}
+/* The art window, Snegbet's purple burst. A bright core behind the chest, a vivid purple falling
+ * darker to the foot, and corners that fall away so the light reads as a spotlight. */
+.a-window {
+  background:
+    radial-gradient(120% 110% at 50% 38%, transparent 50%, rgb(20 8 60 / 0.6) 100%),
+    radial-gradient(34% 50% at 50% 46%, rgb(214 150 255 / 0.85) 0%, rgb(160 70 250 / 0.45) 45%, transparent 100%),
+    linear-gradient(180deg, #8a35f0 0%, #6d26d8 50%, #4a189f 100%);
+  box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.18);
+}
+.a-rays {
+  background: repeating-conic-gradient(from 0deg at 50% 50%, rgb(255 255 255 / 0.13) 0deg 6deg, transparent 6deg 15deg);
+  -webkit-mask-image: radial-gradient(closest-side, #000 10%, rgb(0 0 0 / 0.55) 40%, transparent 80%);
+  mask-image: radial-gradient(closest-side, #000 10%, rgb(0 0 0 / 0.55) 40%, transparent 80%);
+  animation: a-turn 90s linear infinite;
+}
+@keyframes a-turn { to { transform: rotate(360deg); } }
+.a-float { animation: a-float 5s ease-in-out infinite; }
+@keyframes a-float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-4px); } }
+.a-still .a-rays, .a-still .a-float { animation: none; }
+
+/* The pinned row of your own place, the one row with a wash. */
+.a-you {
+  background: linear-gradient(90deg, rgb(60 38 118) 0%, rgb(42 28 100) 40%, rgb(var(--a-panel)) 100%);
+  border: 1px solid rgb(180 124 255 / 0.4);
+}
+
+/* ---------- Tier colours ---------- */
+
+.a-tier { --t: 255 255 255; --tl: 255 255 255; }
+/* --t is the tier colour for names, chips and edges. --tl is its light, the same hue unless the
+ * colour turns muddy on navy, as gold does, which takes a warmer amber. */
+.a-tier-bronze { --t: 217 130 91; --tl: 217 110 70; }
+.a-tier-silver { --t: 168 199 218; --tl: 140 180 230; }
+.a-tier-gold { --t: 244 213 67; --tl: 255 170 20; }
+.a-tier-platinum { --t: 79 209 224; --tl: 40 190 215; }
+.a-tier-diamond { --t: 240 106 176; --tl: 235 80 170; }
+.a-tier-card {
+  background:
+    radial-gradient(90% 60% at 50% 0%, rgb(var(--tl) / 0.3) 0%, rgb(var(--tl) / 0.08) 55%, transparent 80%),
+    rgb(var(--a-panel));
+  border: 1px solid rgb(var(--t) / 0.28);
+  transition: border-color 0.2s var(--a-ease);
+}
+.a-tier-card:hover { border-color: rgb(var(--t) / 0.55); }
+.a-tier-card[aria-current] { border-color: rgb(var(--t) / 0.75); }
+.a-tier-ink { color: rgb(var(--t)); }
+.a-tier-chip { color: rgb(var(--t)); background: rgb(var(--t) / 0.14); border: 1px solid rgb(var(--t) / 0.3); }
+.a-tier-floor { background: radial-gradient(closest-side, rgb(var(--tl) / 0.55), transparent); }
+
+/* ---------- Covers ---------- */
+
+.a-cover-ring { box-shadow: inset 0 0 0 1px rgb(255 255 255 / 0.08); transition: box-shadow 0.2s var(--a-ease); }
+.group:hover .a-cover-ring,
+.group:focus-visible .a-cover-ring { box-shadow: inset 0 0 0 2px #b47cff; }
+
+/* ---------- Live and loading ---------- */
+
+.a-live { position: relative; display: inline-flex; width: 8px; height: 8px; flex-shrink: 0; border-radius: 999px; background: #3dd68c; }
+.a-live::after { content: ''; position: absolute; inset: 0; border-radius: inherit; background: inherit; animation: a-ping 1.8s var(--a-ease) infinite; }
+@keyframes a-ping { 0% { transform: scale(1); opacity: 0.6; } 80%, 100% { transform: scale(2.6); opacity: 0; } }
+.a-still .a-live::after { animation: none; }
+
+.a-skel {
+  background: linear-gradient(90deg, rgb(var(--a-row)) 0%, rgb(var(--a-raised)) 50%, rgb(var(--a-row)) 100%);
+  background-size: 200% 100%;
+  animation: a-shimmer 1.4s linear infinite;
+}
+@keyframes a-shimmer { from { background-position: 100% 0; } to { background-position: -100% 0; } }
+
+@media (prefers-reduced-motion: reduce) {
+  .a-rays, .a-float, .a-live::after, .a-skel { animation: none; }
+}
+
+.a-no-scrollbar { scrollbar-width: none; }
+.a-no-scrollbar::-webkit-scrollbar { display: none; }

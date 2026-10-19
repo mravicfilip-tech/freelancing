@@ -5,15 +5,15 @@ import { gameById, type CatalogueGame } from '../../../data/games';
 import { coinById } from '../../../data/wallet';
 import { formatAmount } from '../../../lib/format';
 import { cn } from '../../../lib/cn';
-import { IconSquare } from '../kit/parts';
+import { IconSquare, LiveDot } from '../kit/parts';
 import { LIVE_WINS, ONLINE_NOW } from '../shared/data';
 import { WRAP } from './icons';
 
 const handle = (name: string) => name.replace(/\s|\./g, '').toLowerCase();
 const digits = (n: number) => (Number.isInteger(n) ? 0 : n < 10 ? 2 : 2);
 
-// HugeWin's live wins chips across the top. Each win is a dark box with the cover, the player and the
-// amount with its coin. The strip drifts slowly, stops under the pointer or keyboard focus, and the
+// HugeWin's live wins across the top, drawn as one panel with one edge. Each win is a quiet chip with
+// the cover, the player and the amount with its coin, and an edge that lights on hover. The strip drifts slowly, stops under the pointer or keyboard focus, and the
 // two squares move it a few wins at a time. ?still and reduced motion keep it parked.
 export function WinsRow({ state, onPlay }: { state: string | null; onPlay: (g: CatalogueGame) => void }) {
   const wins = useMemo(() => LIVE_WINS.map((w) => ({ ...w, game: gameById(w.gameId)! })), []);
@@ -68,14 +68,16 @@ export function WinsRow({ state, onPlay }: { state: string | null; onPlay: (g: C
             aria-hidden={copy ? true : undefined}
             onClick={() => onPlay(w.game)}
             aria-label={`${w.player} won ${amt} ${coin.symbol} on ${w.game.name}, ${w.ago} ago. Open the game`}
-            className="group flex h-[60px] items-center gap-3 rounded-[14px] bg-[rgb(var(--k-item))] py-2 pl-2 pr-4 text-left transition-colors hover:bg-[rgb(var(--k-item-hover))]"
+            className="group flex h-11 items-center gap-3 rounded-[12px] border border-transparent py-[3px] pl-[3px] pr-3 text-left outline-none transition-colors duration-200 hover:border-white/[0.14] hover:bg-white/[0.04] focus-visible:ring-2 focus-visible:ring-[#B47CFF]"
           >
-            <img src={w.game.image} alt="" className="h-11 w-11 rounded-[10px] object-cover object-top" />
+            <span className="h-[36px] w-[36px] shrink-0 overflow-hidden rounded-[9px]">
+              <img src={w.game.image} alt="" className="h-full w-full object-cover object-top transition-transform duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-[1.08]" />
+            </span>
             <span className="flex flex-col">
-              <span className="max-w-[112px] truncate text-14 font-semibold leading-5 text-[rgb(var(--k-muted))]">{handle(w.player)}</span>
+              <span className="max-w-[112px] truncate text-12 font-semibold leading-4 text-[rgb(var(--k-dim))]">{handle(w.player)}</span>
               <span className="flex items-center gap-[6px]">
                 <img src={coin.icon} alt="" width={16} height={16} className="rounded-full" />
-                <span className="num text-16 font-bold leading-5 text-ink">{amt}</span>
+                <span className="num text-14 font-bold leading-5 text-ink">{amt}</span>
               </span>
             </span>
           </button>
@@ -84,20 +86,18 @@ export function WinsRow({ state, onPlay }: { state: string | null; onPlay: (g: C
     });
 
   return (
-    <section aria-label="Live wins" className={cn(WRAP, 'flex items-center gap-2 pb-4')}>
-      <div className="flex h-[60px] shrink-0 flex-col justify-center rounded-[14px] bg-[linear-gradient(90deg,#3B1F7A,rgb(var(--k-item)))] px-4">
-        <h2 className="flex items-center gap-2 text-16 font-bold leading-5 text-ink">
-          <span aria-hidden className="relative flex h-[8px] w-2">
-            {!paused && !still && <span className="absolute inset-0 animate-ping rounded-full bg-[#3DDC84] opacity-60" />}
-            <span className={cn('relative h-[8px] w-2 rounded-full', paused ? 'bg-pending' : 'bg-[#3DDC84]')} />
-          </span>
+    <section className={cn(WRAP, 'pb-4')} aria-label="Live wins">
+    <div className="k-surface flex h-[60px] items-center gap-3 rounded-[16px] p-2">
+      <div className="flex h-11 shrink-0 flex-col justify-center border-r border-white/[0.08] pl-2 pr-4">
+        <h2 className="flex items-center gap-2 text-14 font-bold leading-5 text-ink">
+          {paused ? <span aria-hidden className="h-[8px] w-2 rounded-full bg-pending" /> : <LiveDot />}
           Live wins
         </h2>
-        <p className="num pl-4 text-12 font-semibold leading-4 text-[rgb(var(--k-muted))]">{ONLINE_NOW.toLocaleString('en-US')} playing</p>
+        <p className="num pl-4 text-12 font-semibold leading-4 text-[rgb(var(--k-dim))]">{ONLINE_NOW.toLocaleString('en-US')} playing</p>
       </div>
 
       {paused ? (
-        <p role="status" className="flex h-[60px] min-w-0 flex-1 items-center gap-3 rounded-[14px] bg-[rgb(var(--k-panel))] px-4 text-14 text-[rgb(var(--k-muted))]">
+        <p role="status" className="flex h-11 min-w-0 flex-1 items-center gap-3 text-14 text-[rgb(var(--k-muted))]">
           <WarningCircle weight="fill" className="h-5 w-5 shrink-0 text-pending" aria-hidden />
           <span className="font-bold text-ink">Live wins are paused.</span>
           <span>The feed reconnects on its own, your play is not affected.</span>
@@ -113,7 +113,7 @@ export function WinsRow({ state, onPlay }: { state: string | null; onPlay: (g: C
           {loading ? (
             <div className="flex gap-2 overflow-hidden" aria-busy>
               {Array.from({ length: 9 }, (_, i) => (
-                <Skeleton key={i} className="h-[60px] w-[176px] shrink-0 rounded-[14px]" />
+                <Skeleton key={i} className="h-11 w-[164px] shrink-0 rounded-[12px]" />
               ))}
             </div>
           ) : (
@@ -128,13 +128,14 @@ export function WinsRow({ state, onPlay }: { state: string | null; onPlay: (g: C
       )}
 
       <div className="flex shrink-0 gap-2">
-        <IconSquare size={44} label="Earlier wins" onClick={() => !loading && !paused && move(-1)} className={cn('h-[60px]', (loading || paused) && 'opacity-50')}>
+        <IconSquare size={44} label="Earlier wins" onClick={() => !loading && !paused && move(-1)} className={cn('rounded-[12px]', (loading || paused) && 'opacity-50')}>
           <CaretLeft weight="bold" className="h-4 w-4" aria-hidden />
         </IconSquare>
-        <IconSquare size={44} label="Later wins" onClick={() => !loading && !paused && move(1)} className={cn('h-[60px]', (loading || paused) && 'opacity-50')}>
+        <IconSquare size={44} label="Later wins" onClick={() => !loading && !paused && move(1)} className={cn('rounded-[12px]', (loading || paused) && 'opacity-50')}>
           <CaretRight weight="bold" className="h-4 w-4" aria-hidden />
         </IconSquare>
       </div>
+    </div>
     </section>
   );
 }

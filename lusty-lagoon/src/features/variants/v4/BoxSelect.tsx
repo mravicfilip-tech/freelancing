@@ -4,14 +4,14 @@ import { CaretDown, Check } from '@phosphor-icons/react';
 import { cn } from '../../../lib/cn';
 
 // The Select part in the kit's boxed style, for the finder bar. The same Radix select underneath,
-// a dark box with a leading icon on the outside and a deep panel menu with a check on the pick.
+// an edged box with a leading icon and a menu on the kit's panel surface with a check on the pick.
 export function BoxSelect({ label, icon, options, value, onValueChange, className }: { label: string; icon: ReactNode; options: { value: string; label: string; hint?: string }[]; value: string; onValueChange: (v: string) => void; className?: string }) {
   return (
     <S.Root value={value} onValueChange={onValueChange}>
       <S.Trigger
         aria-label={label}
         className={cn(
-          'flex h-11 items-center gap-2 rounded-[12px] bg-[rgb(var(--k-item))] pl-3 pr-3 text-left text-14 font-bold text-ink outline-none transition-colors hover:bg-[rgb(var(--k-item-hover))] focus-visible:ring-2 focus-visible:ring-[#B47CFF] data-[state=open]:bg-[rgb(var(--k-item-hover))] [&>svg]:shrink-0',
+          'flex h-11 items-center gap-2 rounded-[12px] border border-white/[0.07] bg-[rgb(var(--k-item))] pl-3 pr-3 text-left text-14 font-semibold text-ink outline-none transition-colors duration-200 hover:border-white/[0.14] hover:bg-[rgb(var(--k-item-hover))] focus-visible:ring-2 focus-visible:ring-[#B47CFF] data-[state=open]:border-white/[0.14] data-[state=open]:bg-[rgb(var(--k-item-hover))] [&>svg]:shrink-0',
           className,
         )}
       >
@@ -26,7 +26,7 @@ export function BoxSelect({ label, icon, options, value, onValueChange, classNam
         </S.Icon>
       </S.Trigger>
       <S.Portal>
-        <S.Content position="popper" sideOffset={8} align="end" className="z-30 min-w-[var(--radix-select-trigger-width)] overflow-hidden rounded-[16px] border border-white/5 bg-[rgb(var(--k-panel))] p-2 shadow-2">
+        <S.Content position="popper" sideOffset={8} align="end" className="k-surface z-30 min-w-[var(--radix-select-trigger-width)] overflow-hidden rounded-[16px] p-2 shadow-[0_24px_48px_rgb(0_0_0/0.45)]">
           <S.Viewport className="max-h-[360px]">
             {options.map((o) => (
               <S.Item

@@ -35,7 +35,7 @@ export default function Variant4() {
   };
 
   return (
-    <div id="top" className="min-h-screen bg-page text-ink">
+    <div id="top" className="k-page min-h-screen text-ink">
       <TopBar query={filters.query} onQuery={(query) => patch({ query })} onSubmit={toGrid} onHome={home} />
       <NavRow cat={filters.cat} onPick={(cat) => pick({ cat })} onHome={home} />
       <main>

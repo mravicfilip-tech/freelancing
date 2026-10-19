@@ -9,7 +9,8 @@ import { PRESETS, QUICK_METHODS, checkoutUrl, quoteFor, type QuickMethod } from 
 import { Key, Title } from './ui';
 
 // The second thing the eye lands on. A glass card in the vault beside the balance. The methods as
-// quiet glass chips, the picked one lit from its top edge with a check. The amount in one well with
+// quiet glass chips, the picked one lit from its top edge, ringed in violet, with a check on the
+// corner of its icon. The amount in one well with
 // the presets inside it, a summary well with You pay as the one strong number, the promo code, and
 // Checkout, the vault's orange key and the only orange in the money row, its amount in a capsule. Every behaviour of round 4
 // stays, the arrow keys, the presets, the checks, the promo states and the deep link in quote.ts.
@@ -45,18 +46,19 @@ function MethodChip({ m, on, onPick, tabIndex, refCb }: { m: QuickMethod; on: bo
       onClick={onPick}
       className={cn('relative flex h-[52px] w-full items-center gap-3 rounded-2xl pl-2 pr-2 text-left transition-[background-color,box-shadow] duration-200', FOCUS, on ? 'gv-picked' : 'gv-pill')}
     >
-      <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-white/[0.06]">
+      <span className="relative flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-white/[0.06]">
         <MethodIcon m={m} />
+        {/* The check sits on the icon's corner, where the label never runs, at any width (round 7, note 17). */}
+        {on && (
+          <span aria-hidden data-check className="absolute -bottom-[3px] -right-[3px] flex h-4 w-4 items-center justify-center rounded-full bg-[#B47CFF] text-[#1A0F2B] ring-2 ring-[#1D1230]">
+            <Check weight="bold" className="h-[10px] w-[10px]" />
+          </span>
+        )}
       </span>
       <span className="flex min-w-0 flex-col">
         <span className="truncate text-14 font-semibold leading-5 text-white">{m.name}</span>
         <span className={cn('truncate text-12 font-medium leading-4', on ? 'text-[rgb(var(--gv-violet))]' : 'text-[rgb(var(--gv-ink-3))]')}>{m.tag}</span>
       </span>
-      {on && (
-        <span aria-hidden className="absolute right-2 top-2 flex h-[18px] w-[18px] items-center justify-center rounded-full bg-[#B47CFF] text-[#1A0F2B]">
-          <Check weight="bold" className="h-[11px] w-[11px]" />
-        </span>
-      )}
     </button>
   );
 }

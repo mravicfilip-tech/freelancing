@@ -59,7 +59,7 @@ function WeekBars({ today }: { today: number }) {
             <span
               aria-hidden
               className={cn(
-                'num pointer-events-none absolute left-1/2 z-10 -translate-x-1/2 whitespace-nowrap rounded-full border border-white/[0.06] bg-[#1F1730]/90 px-[10px] py-0.5 text-12 font-semibold text-white shadow-[0_8px_20px_rgb(0_0_0/0.5)] backdrop-blur-[8px] transition-opacity duration-150',
+                'num pointer-events-none absolute left-1/2 z-10 -translate-x-1/2 whitespace-nowrap rounded-full border border-white/[0.06] bg-[#1F1730]/90 px-[10px] py-0.5 text-12 font-semibold text-white shadow-[0_8px_32px_rgb(0_0_0/0.3)] backdrop-blur-[8px] transition-opacity duration-150',
                 show ? 'opacity-100' : 'opacity-0',
               )}
               style={{ bottom: h + 10 }}
@@ -111,7 +111,8 @@ export function BalanceCard({ loading }: { loading?: boolean }) {
             aria-pressed={hidden}
             aria-label={hidden ? 'Show balance' : 'Hide balance'}
             onClick={() => setHidden((h) => !h)}
-            className={cn('flex h-10 w-10 items-center justify-center rounded-full text-[rgb(var(--gv-ink-2))] transition-colors hover:bg-white/[0.06] hover:text-white', FOCUS)}
+            data-icon="pop"
+            className={cn('k-hov-icon flex h-10 w-10 items-center justify-center rounded-full text-[rgb(var(--gv-ink-2))] transition-colors hover:bg-white/[0.06] hover:text-white', FOCUS)}
           >
             {hidden ? <EyeSlash weight="regular" className="h-5 w-5" aria-hidden /> : <Eye weight="regular" className="h-5 w-5" aria-hidden />}
           </button>
@@ -172,9 +173,9 @@ export function BalanceCard({ loading }: { loading?: boolean }) {
       <div className="relative z-10 mt-auto rounded-2xl border border-white/[0.05] bg-[#0E0C14]/40 px-[20px] pb-4 pt-4 [-webkit-backdrop-filter:blur(20px)_saturate(1.2)] [backdrop-filter:blur(20px)_saturate(1.2)]">
         <div className="mb-2 flex items-center justify-between">
           <Caps>This week</Caps>
-          <Link to="/wallet/deposit" className={cn('group inline-flex items-center gap-1 rounded-full text-12 font-semibold text-white/[0.86] hover:text-white', FOCUS)}>
+          <Link to="/wallet/deposit" data-icon="arrow" className={cn('k-hov-icon inline-flex items-center gap-1 rounded-full text-12 font-semibold text-white/[0.86] hover:text-white', FOCUS)}>
             All transactions
-            <ArrowRight weight="bold" className="h-[12px] w-[12px] transition-transform duration-200 group-hover:translate-x-[2px]" aria-hidden />
+            <ArrowRight weight="bold" className="h-[12px] w-[12px]" aria-hidden />
           </Link>
         </div>
         {loading ? <Skel className="h-[132px] w-full rounded-[14px]" /> : <WeekBars today={balance} />}

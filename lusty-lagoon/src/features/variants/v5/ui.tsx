@@ -1,5 +1,6 @@
 import { forwardRef, useMemo, type ButtonHTMLAttributes, type CSSProperties, type ReactNode } from 'react';
 import { cn } from '../../../lib/cn';
+import { HoverFx } from '../kit/hover';
 
 // Small parts only the Glass vault uses. Panel titles in sentence case at 20, the vault's key, the
 // glass segmented tabs, the one light a panel may carry, and the skeleton block.
@@ -20,7 +21,8 @@ export function Title({ id, children, className, as: Tag = 'h2' }: { id?: string
 
 /**
  * The vault's key (round 6, note 3). Orange is the primary with a dark label, purple the secondary
- * with a white one. Height, width and type size come from the call site, as with the kit key.
+ * with a white one. Height, width and type size come from the call site, as with the kit key. The
+ * orange key opts into the round 7 hover board, ?hover=1 to 4 (notes 10 and 16).
  */
 export const Key = forwardRef<HTMLButtonElement, ButtonHTMLAttributes<HTMLButtonElement> & { tone?: 'primary' | 'purple' }>(function Key({ tone = 'primary', type = 'button', className, children, ...rest }, ref) {
   return (
@@ -29,11 +31,12 @@ export const Key = forwardRef<HTMLButtonElement, ButtonHTMLAttributes<HTMLButton
       type={type}
       className={cn(
         'gv-key inline-flex select-none items-center justify-center gap-2 whitespace-nowrap outline-none focus-visible:ring-2 focus-visible:ring-[#B47CFF] focus-visible:ring-offset-2 focus-visible:ring-offset-[rgb(var(--gv-ground))]',
-        tone === 'purple' && 'gv-key-purple',
+        tone === 'purple' ? 'gv-key-purple' : 'k-hov',
         className,
       )}
       {...rest}
     >
+      {tone === 'primary' && <HoverFx />}
       {children}
     </button>
   );

@@ -12,7 +12,7 @@ import { Note, Skel, Tabs, Title } from './ui';
 // The trading shot's right hand table, beside Live wagers and starting on the same line. The title
 // and tabs inside the glass, the labels in one sunken pill bar, then a row per win, the game cover,
 // the handle with the game and time, and the amount in green with its coin. The list fades at the
-// foot and scrolls inside the panel.
+// foot and scrolls inside the panel on the styled bar.
 
 type Item = { id: string; player: string; avatar?: string; initials: string; gameId: string; amount: number; coin: CoinId; line: string; mult?: number };
 
@@ -88,7 +88,10 @@ export function WinsFeed({ state, onPlay, className }: { state: string | null; o
         <span className="pr-2 text-14 font-medium text-[rgb(var(--gv-ink-3))]">Last 24 hours</span>
       </div>
       <Tabs label="Biggest wins" items={TABS} value={tab} onChange={setTab} controls="wins-panel" className="shrink-0 [&>button]:flex-1 [&>button]:justify-center" />
-      <div id="wins-panel" role="tabpanel" aria-labelledby="wins-title" className="gv-noscroll relative -mx-1 min-h-0 flex-1 overflow-y-auto px-1 [mask-image:linear-gradient(180deg,#000_84%,transparent)]">
+      {/* The list scrolls with the kit's styled bar (round 7, note 19). The scroller reaches 14 into the
+          panel's right padding, so the 10 wide bar sits there and the rows keep their width, with
+          the gutter held for a short list too. */}
+      <div id="wins-panel" role="tabpanel" aria-labelledby="wins-title" className="relative -ml-1 -mr-[14px] min-h-0 flex-1 overflow-y-auto px-1 [scrollbar-gutter:stable] [mask-image:linear-gradient(180deg,#000_84%,transparent)]">
         {state === 'loading' ? (
           <div className="flex flex-col" role="status" aria-label="Loading biggest wins">
             {Array.from({ length: 9 }, (_, i) => (

@@ -1,4 +1,5 @@
-import { useState } from 'react';
+import { useMemo, useState, type CSSProperties } from 'react';
+import { useLocation } from 'react-router-dom';
 import { CheckCircle, Info } from '@phosphor-icons/react';
 import { coinById } from '../../../data/wallet';
 import { formatAmount } from '../../../lib/format';
@@ -6,19 +7,68 @@ import { cn } from '../../../lib/cn';
 import { GIVEAWAY } from '../../lobby/data';
 import { RACE, useCountdown } from '../shared/data';
 import { Coin } from '../kit/parts';
-import { Caps, Key, Light } from './ui';
+import { Caps, Key } from './ui';
 import { GlassDialog } from './Dialogs';
 
-// The third thing the eye lands on. A wide glass band lit purple from the left behind the chest, with
-// an ember light rising under it and a purple to orange segment along its foot after Cloudbet's card
-// light, never gold (round 6, notes 4 and 7). The chest breaks 28 above the band and shows whole. The
-// prize at 40 in white, Bai Jamjuree 600, the band's one orange key, and How it works as a quiet pill
-// that opens the rules. Every line of text over the light is measured at AA (note 6).
+// The third thing the eye lands on. A wide glass band with one soft light inside it, orange behind
+// the chest's lid fading to purple, held inside the band so nothing spills under it, and no drop
+// shadow (round 7, notes 13 and 15). Never gold. The chest breaks 28 above the band, shows whole and
+// moves, four motions by ?chest=1 to 4 (note 18). The prize at 40 in white, Bai Jamjuree 600, the
+// band's one orange key, and How it works as a quiet pill that opens the rules. Every line of text
+// over the light is measured at AA (round 6, note 6).
 
 /** Seconds from Monday 19 Oct, 15:52, to the draw at Sunday midnight. */
 const DRAW_IN = 6 * 86400 + 8 * 3600 + 8 * 60;
 
 const FOCUS = 'outline-none focus-visible:ring-2 focus-visible:ring-[#B47CFF] focus-visible:ring-offset-2 focus-visible:ring-offset-[#0E0C13]';
+
+/** The band's one light, in px from the chest so it sits behind the lid at every width. */
+const BAND_LIGHT = 'radial-gradient(520px 112px at 120px 38%, rgb(255 112 34 / 0.48) 0%, rgb(212 70 132 / 0.26) 24%, rgb(141 38 231 / 0.22) 50%, rgb(141 38 231 / 0) 100%)';
+
+/** The chest motions on the round 7 board. 1 Float, 2 Rattle, 3 Sparks, 4 Rays. 2 when the param is absent. */
+const CHESTS = ['1', '2', '3', '4'] as const;
+function useChestPick() {
+  const { search } = useLocation();
+  return useMemo(() => {
+    const asked = new URLSearchParams(search).get('chest');
+    return asked && (CHESTS as readonly string[]).includes(asked) ? asked : '2';
+  }, [search]);
+}
+
+/** Sparks off the lid, each with its own start, drift, size, hue and timing. */
+const SPARKS = [
+  { x: 30, y: 24, dx: -14, s: 5, c: '#FF9B48', t: 2.6, d: 0 },
+  { x: 44, y: 16, dx: 6, s: 4, c: '#C89BFF', t: 2.2, d: 0.5 },
+  { x: 56, y: 14, dx: -4, s: 6, c: '#FFB070', t: 2.9, d: 1.1 },
+  { x: 66, y: 18, dx: 12, s: 4, c: '#B47CFF', t: 2.4, d: 0.2 },
+  { x: 74, y: 26, dx: 16, s: 5, c: '#FF9B48', t: 2.7, d: 1.6 },
+  { x: 38, y: 20, dx: -8, s: 4, c: '#B47CFF', t: 2.3, d: 1.9 },
+  { x: 60, y: 22, dx: 4, s: 5, c: '#FF8A3D', t: 2.5, d: 0.9 },
+  { x: 50, y: 18, dx: -2, s: 4, c: '#C89BFF', t: 2.8, d: 2.2 },
+  { x: 34, y: 18, dx: -18, s: 3, c: '#FFB070', t: 3.1, d: 1.4 },
+  { x: 70, y: 16, dx: 20, s: 3, c: '#C89BFF', t: 3.0, d: 2.6 },
+];
+
+function Chest() {
+  const pick = useChestPick();
+  return (
+    <div aria-hidden data-chest={pick} className="gv-chest pointer-events-none absolute left-[24px] top-0 h-[176px] w-[176px] select-none">
+      {pick === '4' && <span className="gv-chest-rays" />}
+      {pick === '1' && <span className="gv-chest-pool" />}
+      <span className="gv-chest-body">
+        <img src="/art/lobby/giveaway-chest.webp" alt="" width={176} height={176} className="h-[176px] w-[176px]" />
+        {pick === '2' && <span className="gv-chest-seam" />}
+      </span>
+      {pick === '3' && (
+        <span className="gv-chest-sparks">
+          {SPARKS.map((p, i) => (
+            <span key={i} style={{ '--x': `${p.x}%`, '--y': `${p.y}%`, '--dx': `${p.dx}px`, '--s': `${p.s}px`, '--c': p.c, '--t': `${p.t}s`, '--d': `${p.d}s` } as CSSProperties} />
+          ))}
+        </span>
+      )}
+    </div>
+  );
+}
 
 export function Giveaway({ open, onOpen }: { open: boolean; onOpen: (o: boolean) => void }) {
   const [joined, setJoined] = useState(false);
@@ -27,10 +77,8 @@ export function Giveaway({ open, onOpen }: { open: boolean; onOpen: (o: boolean)
   const usd = GIVEAWAY.pool * coinById(GIVEAWAY.coin).rate;
   return (
     <section aria-labelledby="give-title" className="relative pt-[28px]">
-      <div className="gv-glass gv-edge flex h-[148px] items-center gap-8 rounded-3xl pl-[216px] pr-6">
-        <Light hue="purple" x="10%" y="40%" size="34% 140%" strength={0.62} edge="none" />
-        <span aria-hidden className="gv-light" style={{ backgroundImage: 'radial-gradient(17% 85% at 9% 88%, rgb(255 106 26 / 0.4), rgb(255 106 26 / 0.12) 50%, rgb(255 106 26 / 0) 100%)' }} />
-        <span aria-hidden className="gv-seg bottom-0 left-0 w-[40%]" style={{ background: 'linear-gradient(90deg, rgb(255 106 26 / 0), rgb(255 106 26 / 0.35) 25%, rgb(157 92 255 / 0.3) 60%, rgb(157 92 255 / 0))' }} />
+      <div className="gv-glass gv-flat gv-edge flex h-[148px] items-center gap-8 rounded-3xl pl-[216px] pr-6">
+        <span aria-hidden className="gv-light" style={{ backgroundImage: BAND_LIGHT }} />
         <div className="flex min-w-0 flex-1 flex-col gap-1">
           <p className="flex items-center gap-2 text-12 font-semibold uppercase tracking-[0.08em] text-[rgb(var(--gv-ink-2))]">
             <span className="w1920:hidden">Draw in</span>
@@ -85,12 +133,12 @@ export function Giveaway({ open, onOpen }: { open: boolean; onOpen: (o: boolean)
               Join the giveaway
             </Key>
           )}
-          <button type="button" onClick={() => onOpen(true)} aria-label="How the giveaway works" className={cn('gv-pill flex h-[48px] w-[48px] items-center justify-center rounded-full text-[rgb(var(--gv-ink-2))] hover:text-white', FOCUS)}>
+          <button type="button" onClick={() => onOpen(true)} aria-label="How the giveaway works" data-icon="pop" className={cn('gv-pill k-hov-icon flex h-[48px] w-[48px] items-center justify-center rounded-full text-[rgb(var(--gv-ink-2))] hover:text-white', FOCUS)}>
             <Info weight="regular" className="h-5 w-5" aria-hidden />
           </button>
         </div>
       </div>
-      <img src="/art/lobby/giveaway-chest.webp" alt="" width={176} height={176} className="pointer-events-none absolute left-[24px] top-0 h-[176px] w-[176px] select-none" />
+      <Chest />
 
       <GlassDialog open={open} onOpenChange={onOpen} title="Hot streak giveaway" description={`Win a share of ${GIVEAWAY.pool} BTC. The draw is ${GIVEAWAY.ends}.`}>
           <ul className="flex list-disc flex-col gap-2 pl-[20px] text-14 text-[rgb(var(--gv-ink-2))]">

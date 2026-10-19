@@ -18,7 +18,7 @@ import { Key } from './ui';
 // trading shot's right cluster of the online count, a bell circle and the account pill. A full
 // labelled glass sidebar, four promo tiles, three nav groups and the rank card.
 
-const FOCUS = 'outline-none focus-visible:ring-2 focus-visible:ring-[#B47CFF] focus-visible:ring-offset-2 focus-visible:ring-offset-[#0E091A]';
+const FOCUS = 'outline-none focus-visible:ring-2 focus-visible:ring-[#B47CFF] focus-visible:ring-offset-2 focus-visible:ring-offset-[#07060B]';
 
 function SearchPill({ value, onChange, onSubmit }: { value: string; onChange: (v: string) => void; onSubmit: () => void }) {
   const input = useRef<HTMLInputElement>(null);
@@ -63,12 +63,12 @@ function BellCircle() {
   const [open, setOpen] = useState(false);
   return (
     <P.Root open={open} onOpenChange={setOpen}>
-      <P.Trigger aria-label={unread ? `Notifications, ${unread} unread` : 'Notifications'} className={cn('gv-pill relative flex h-[48px] w-[48px] items-center justify-center rounded-full text-[rgb(var(--gv-ink-2))] hover:text-white data-[state=open]:text-white', FOCUS)}>
+      <P.Trigger aria-label={unread ? `Notifications, ${unread} unread` : 'Notifications'} data-icon="bell" className={cn('gv-pill k-hov-icon relative flex h-[48px] w-[48px] items-center justify-center rounded-full text-[rgb(var(--gv-ink-2))] hover:text-white data-[state=open]:text-white', FOCUS)}>
         <Bell weight="regular" className="h-5 w-5" aria-hidden />
-        {unread > 0 && <span aria-hidden className="absolute right-[12px] top-[11px] h-[8px] w-[8px] rounded-full bg-[#FF7A1A] ring-2 ring-[#0E091A]" />}
+        {unread > 0 && <span aria-hidden className="absolute right-[12px] top-[11px] h-[8px] w-[8px] rounded-full bg-[#FF7A1A] ring-2 ring-[#07060B]" />}
       </P.Trigger>
       <P.Portal>
-        <P.Content align="end" sideOffset={10} className="z-30 overflow-hidden rounded-[22px] border border-white/[0.06] bg-[#1A1328] shadow-[0_24px_64px_rgb(0_0_0/0.6)] outline-none">
+        <P.Content align="end" sideOffset={10} className="z-30 overflow-hidden rounded-[22px] border border-white/[0.06] bg-[#1A1328] shadow-[0_24px_64px_rgb(0_0_0/0.3)] outline-none">
           <NotificationsPanel
             onNavigate={(to) => {
               setOpen(false);
@@ -81,7 +81,7 @@ function BellCircle() {
   );
 }
 
-const MENU = 'z-30 min-w-[240px] rounded-[20px] border border-white/[0.06] bg-[#1A1328]/95 p-2 shadow-[0_24px_64px_rgb(0_0_0/0.6)] backdrop-blur-[24px]';
+const MENU = 'z-30 min-w-[240px] rounded-[20px] border border-white/[0.06] bg-[#1A1328]/95 p-2 shadow-[0_24px_64px_rgb(0_0_0/0.3)] backdrop-blur-[24px]';
 const ITEM = 'flex h-11 cursor-pointer select-none items-center gap-3 rounded-full px-4 text-14 font-medium text-white outline-none data-[highlighted]:bg-white/[0.07] [&>svg]:h-5 [&>svg]:w-5 [&>svg]:text-[rgb(var(--gv-ink-2))]';
 
 function AccountPill() {
@@ -125,7 +125,7 @@ function AccountPill() {
 export function TopBar({ query, onQuery, onSearch, showBalance }: { query: string; onQuery: (q: string) => void; onSearch: () => void; showBalance: boolean }) {
   const navigate = useNavigate();
   return (
-    <header className="sticky top-0 z-20 flex h-[80px] items-center gap-6 px-6 [-webkit-backdrop-filter:blur(24px)] [backdrop-filter:blur(24px)] [background:linear-gradient(180deg,rgb(14_9_26/0.92),rgb(14_9_26/0.7))]">
+    <header className="sticky top-0 z-20 flex h-[80px] items-center gap-6 px-6 [-webkit-backdrop-filter:blur(24px)] [backdrop-filter:blur(24px)] [background:linear-gradient(180deg,rgb(7_6_11/0.92),rgb(7_6_11/0.7))]">
       <div className="flex w-[248px] shrink-0 items-center pl-4">
         <Link to="/variants/5" aria-label="Lusty Lagoon, lobby" className={cn('rounded-[8px]', FOCUS)}>
           <Logo className="text-[20px] leading-[22px]" />
@@ -157,7 +157,7 @@ export function TopBar({ query, onQuery, onSearch, showBalance }: { query: strin
 type Tile = { label: [string, string]; art: string; artClass: string; hue: string; to?: string; onClick?: () => void };
 
 function PromoTile({ t }: { t: Tile }) {
-  const cls = cn('gv-glass gv-edge gv-hover group relative flex h-[68px] overflow-hidden rounded-2xl text-left', FOCUS);
+  const cls = cn('gv-glass gv-flat gv-edge gv-hover group relative flex h-[68px] overflow-hidden rounded-2xl text-left', FOCUS);
   const inner = (
     <>
       <span aria-hidden className="gv-light" style={{ backgroundImage: `radial-gradient(90% 120% at 100% 100%, rgb(${t.hue} / 0.32), rgb(${t.hue} / 0.08) 55%, rgb(${t.hue} / 0) 80%)` }} />
@@ -222,7 +222,7 @@ function RankCard() {
   const pct = Math.round((r.points / r.nextAt) * 100);
   const next = RANKS.find((x) => x.name === r.next)!;
   return (
-    <Link to="/account" className={cn('gv-well group flex flex-col gap-3 rounded-2xl p-4 transition-colors hover:bg-white/[0.05]', FOCUS)}>
+    <Link to="/account" data-icon="trophy" className={cn('gv-well k-hov-icon group flex flex-col gap-3 rounded-2xl p-4 transition-colors hover:bg-white/[0.05]', FOCUS)}>
       <span className="flex items-center gap-3">
         <img src="/brand/rank-bronze.png" alt="" className="h-10 w-10 object-contain" />
         <span className="flex min-w-0 flex-col">

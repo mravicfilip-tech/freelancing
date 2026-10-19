@@ -16,10 +16,10 @@ export function GlassDialog({ open, onOpenChange, title, description, children, 
   return (
     <D.Root open={open} onOpenChange={onOpenChange}>
       <D.Portal>
-        <D.Overlay className="gv-show fixed inset-0 z-40 bg-[#0E091A]/75 backdrop-blur-[6px]" />
+        <D.Overlay className="gv-show fixed inset-0 z-40 bg-[#07060B]/75 backdrop-blur-[6px]" />
         <D.Content
           className={cn(
-            'gv-show fixed left-1/2 top-1/2 z-40 flex w-full max-w-[560px] -translate-x-1/2 -translate-y-1/2 flex-col gap-6 rounded-3xl border border-white/[0.06] bg-[#1A1328]/95 p-6 shadow-[0_32px_80px_rgb(0_0_0/0.7)] outline-none backdrop-blur-[24px]',
+            'gv-show fixed left-1/2 top-1/2 z-40 flex w-full max-w-[560px] -translate-x-1/2 -translate-y-1/2 flex-col gap-6 rounded-3xl border border-white/[0.06] bg-[#1A1328]/95 p-6 shadow-[0_32px_80px_rgb(0_0_0/0.3)] outline-none backdrop-blur-[24px]',
             className,
           )}
         >
@@ -28,7 +28,7 @@ export function GlassDialog({ open, onOpenChange, title, description, children, 
               <D.Title className="text-28 font-semibold tracking-[-0.02em] text-white">{title}</D.Title>
               {description ? <D.Description className="text-14 text-[rgb(var(--gv-ink-2))]">{description}</D.Description> : <D.Description className="sr-only">{title}</D.Description>}
             </div>
-            <D.Close aria-label="Close" className={cn('gv-pill flex h-10 w-10 shrink-0 items-center justify-center rounded-full text-[rgb(var(--gv-ink-2))] hover:text-white', FOCUS)}>
+            <D.Close aria-label="Close" data-icon="pop" className={cn('gv-pill k-hov-icon flex h-10 w-10 shrink-0 items-center justify-center rounded-full text-[rgb(var(--gv-ink-2))] hover:text-white', FOCUS)}>
               <X weight="bold" className="h-4 w-4" aria-hidden />
             </D.Close>
           </div>

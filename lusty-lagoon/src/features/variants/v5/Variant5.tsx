@@ -49,7 +49,6 @@ export default function Variant5() {
         <span className="gv-blob gv-blob-ember" />
         <span className="gv-blob gv-blob-violet" />
         <span className="gv-blob gv-blob-low" />
-        <span className="gv-wash" />
       </div>
       <TopBar query={query} onQuery={setQuery} onSearch={() => games.current?.scrollIntoView({ behavior: 'smooth', block: 'start' })} showBalance={past} />
       <div className="flex gap-6 px-6 pb-12 pt-2">

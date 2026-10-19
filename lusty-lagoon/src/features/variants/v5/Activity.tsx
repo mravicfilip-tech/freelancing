@@ -56,9 +56,9 @@ export function Activity({ className }: { className?: string }) {
     <section aria-labelledby="act-title" className={cn('gv-glass gv-edge flex-col gap-4 overflow-hidden rounded-3xl p-4', className)}>
       <div className="flex h-10 items-center justify-between pl-2">
         <Title id="act-title">Recent activity</Title>
-        <Link to="/wallet/deposit" className={cn('group inline-flex items-center gap-1 rounded-full px-2 text-14 font-semibold text-[rgb(var(--gv-ink-2))] hover:text-white', FOCUS)}>
+        <Link to="/wallet/deposit" data-icon="arrow" className={cn('k-hov-icon inline-flex items-center gap-1 rounded-full px-2 text-14 font-semibold text-[rgb(var(--gv-ink-2))] hover:text-white', FOCUS)}>
           All
-          <ArrowRight weight="bold" className="h-4 w-4 transition-transform duration-200 group-hover:translate-x-[2px]" aria-hidden />
+          <ArrowRight weight="bold" className="h-4 w-4" aria-hidden />
         </Link>
       </div>
       <div aria-hidden className="gv-thead flex h-11 shrink-0 items-center justify-between rounded-full px-6 text-14 font-medium text-[rgb(var(--gv-ink-2))]">

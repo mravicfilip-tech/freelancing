@@ -1,8 +1,9 @@
-/* Glass vault, variant 5. A deep aubergine ground, four soft purple and ember lights behind the page,
- * frosted glass panels with a 1px edge at 6 percent white or less (round 6, notes 1 and 5). After the
- * Dribbble trading dashboard and task card, Player 145's glass cards and Cloudbet's edge light. One
- * light per panel, entering from one edge. Everything here is prefixed gv, so nothing leaks into the
- * other variants. */
+/* Glass vault, variant 5. The round 5 near black ground with soft purple lights behind the page and
+ * glass panels filled with purple, so the boxes read purple on the dark (round 7, note 12). A 1px edge
+ * at 6 percent white or less (round 6, note 1), one soft shadow per panel at most (round 7, note 15).
+ * After the Dribbble trading dashboard and task card, Player 145's glass cards and Cloudbet's edge
+ * light. One light per panel, entering from one edge. Everything here is prefixed gv, so nothing leaks
+ * into the other variants. */
 
 @property --gv-e {
   syntax: '<number>';
@@ -12,7 +13,9 @@
 
 /* On the root, so menus and dialogs that portal out of the page read the same values. */
 :root {
-  --gv-ground: 14 9 26; /* #0E091A, deep aubergine, the purple reads before any light (note 5) */
+  --gv-ground: 7 6 11; /* #07060B, the round 5 dark, back by round 7 note 12 */
+  /* The purple a panel is filled with. At 20 percent on the bare ground it lands on the brand panel #1E1232. */
+  --gv-fill: 122 66 211;
   --gv-ink-2: 180 175 196; /* #B4AFC4, labels, 7.3 to 1 on the brightest glass */
   --gv-ink-3: 162 154 188; /* #A29ABC, meta, 4.6 to 1 where the purple light peaks behind the glass */
   --gv-violet: 201 162 255; /* #C9A2FF, the picked icon and the purple text */
@@ -42,8 +45,10 @@
 
 /* Four soft lights pinned to the page, not to the viewport, so a full page shot shows what a scroll
  * shows. Purple behind the vault, ember behind the giveaway and the wagers, violet behind the wins
- * and the covers, and a low purple behind the sidebar and the games, so no band of the page goes
- * black (note 5). Radial fills that fade to nothing, no blur filter. */
+ * and the covers, and a low purple behind the sidebar and the games. The purple and violet are back
+ * at their round 5 strength and the round 6 wash over the whole ground is gone, so the ground reads
+ * dark again (note 12). The ember sits 25 percent under its round 6 strength (note 14). Radial fills
+ * that fade to nothing, no blur filter. */
 .gv-blobs { position: absolute; inset: 0; z-index: -2; pointer-events: none; overflow: hidden; }
 .gv-blob { position: absolute; border-radius: 9999px; }
 .gv-blob-purple {
@@ -51,48 +56,46 @@
   height: 820px;
   right: -320px;
   top: -440px;
-  background: radial-gradient(closest-side, rgb(141 38 231 / 0.38), rgb(141 38 231 / 0.15) 55%, rgb(141 38 231 / 0) 100%);
+  background: radial-gradient(closest-side, rgb(141 38 231 / 0.34), rgb(141 38 231 / 0.12) 55%, rgb(141 38 231 / 0) 100%);
 }
 .gv-blob-ember {
   width: 1100px;
   height: 860px;
   left: -300px;
   top: 560px;
-  background: radial-gradient(closest-side, rgb(255 90 31 / 0.2), rgb(255 90 31 / 0.07) 55%, rgb(255 90 31 / 0) 100%);
+  background: radial-gradient(closest-side, rgb(255 90 31 / 0.15), rgb(255 90 31 / 0.0525) 55%, rgb(255 90 31 / 0) 100%);
 }
 .gv-blob-violet {
   width: 1100px;
   height: 900px;
   right: -320px;
   top: 1300px;
-  background: radial-gradient(closest-side, rgb(120 44 226 / 0.36), rgb(120 44 226 / 0.13) 55%, rgb(120 44 226 / 0) 100%);
+  background: radial-gradient(closest-side, rgb(110 40 220 / 0.28), rgb(110 40 220 / 0.09) 55%, rgb(110 40 220 / 0) 100%);
 }
 .gv-blob-low {
   width: 1300px;
   height: 1000px;
   left: -360px;
   top: 1500px;
-  background: radial-gradient(closest-side, rgb(112 36 214 / 0.3), rgb(112 36 214 / 0.1) 55%, rgb(112 36 214 / 0) 100%);
-}
-/* A faint purple wash over the whole ground, strongest at the top. */
-.gv-wash {
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(180deg, rgb(92 30 170 / 0.16) 0%, rgb(92 30 170 / 0.06) 45%, rgb(92 30 170 / 0.1) 100%);
+  background: radial-gradient(closest-side, rgb(112 36 214 / 0.16), rgb(112 36 214 / 0.05) 55%, rgb(112 36 214 / 0) 100%);
 }
 
 /* ---------- Glass ---------- */
 
-/* A frosted panel. Violet tinted white 5 to 3 percent, blur 24 and a black shadow. The edge alone
- * carries the top light, so no top row stacks two lights (note 1). */
+/* A frosted panel filled with purple, 24 percent at the top to 17 at the foot, so it reads as the
+ * brand panel on the dark ground (note 12). Blur 24 and one soft shadow, blur 40 at 28 percent black
+ * (note 15). The edge alone carries the top light, so no top row stacks two lights (round 6, note 1). */
 .gv-glass {
   isolation: isolate;
-  background: linear-gradient(180deg, rgb(232 220 255 / 0.05) 0%, rgb(232 220 255 / 0.028) 100%);
+  background: linear-gradient(180deg, rgb(var(--gv-fill) / 0.24) 0%, rgb(var(--gv-fill) / 0.17) 100%);
   -webkit-backdrop-filter: blur(24px) saturate(1.3);
   backdrop-filter: blur(24px) saturate(1.3);
-  box-shadow: 0 24px 48px -24px rgb(0 0 0 / 0.5);
+  box-shadow: 0 16px 40px -16px rgb(0 0 0 / 0.28);
 }
 .gv-glass:not(.sticky):not(.fixed):not(.absolute) { position: relative; }
+/* Glass that sits inside another panel or carries a light of its own, the giveaway band, the sidebar
+ * tiles and the Jump back in cards, carries no shadow, so the page holds fewer of them (note 15). */
+.gv-flat { box-shadow: none; }
 
 /* The edge. A 1px ring cut out of a gradient, white 6 percent at the top to 3 at the foot (note 1).
  * --gv-e scales it, so a hover can light the edge without a second layer. */
@@ -151,45 +154,48 @@
 }
 .gv-pill:hover { background: rgb(255 255 255 / 0.07); box-shadow: inset 0 0 0 1px rgb(255 255 255 / 0.08); }
 
-/* The picked tab, chip and preset. A faint fill that lifts on a soft shadow, the edge at 5 percent
- * (note 1). */
+/* The picked tab, chip and preset. A faint fill, the edge at 5 percent (round 6, note 1) and no drop
+ * shadow, since chips carry none at rest (round 7, note 15). */
 .gv-on {
   background: rgb(255 255 255 / 0.08);
-  box-shadow: inset 0 0 0 1px rgb(255 255 255 / 0.05), 0 6px 16px -8px rgb(0 0 0 / 0.5);
+  box-shadow: inset 0 0 0 1px rgb(255 255 255 / 0.05);
 }
 
 /* The active nav row, a quiet purple tint with no edge, no top light and no shadow (note 2). */
 .gv-nav-on { background: rgb(157 92 255 / 0.12); }
 
-/* A picked selection card. The purple light enters from the top edge, a 12 percent violet ring that
- * reads no brighter than the white edges (note 1), and a check marks it, so the pick never rests on
- * a tint alone. */
+/* A picked selection card. The purple light enters from the top edge, a 1px violet ring at 45
+ * percent and a small check on the corner of its icon, where the label never runs (round 7, note
+ * 17), so the pick never rests on a tint alone and the check never covers a name. */
 .gv-picked {
   background:
     radial-gradient(90% 120% at 50% 0%, rgb(141 38 231 / 0.26), rgb(141 38 231 / 0) 70%),
     rgb(255 255 255 / 0.06);
-  box-shadow: inset 0 0 0 1px rgb(201 162 255 / 0.12);
+  box-shadow: inset 0 0 0 1px rgb(180 124 255 / 0.45);
 }
 
 /* ---------- Keys ---------- */
 
-/* The vault's own key (note 3), sleeker than the kit's. Orange in two close stops with the light at
- * the top, a 1px inner top light, no lower edge, a short contact shadow and a soft neutral lift, so
- * it sits on the glass without a coloured glow. The label is #1A0F2B at weight 700, 7.0 to 1 at the
- * key's middle. Hover lifts the light through a white layer, press sinks 1px and drops the lift. */
+/* The vault's own key (round 6, note 3), sleeker than the kit's. Orange in two close stops with the
+ * light at the top, a 1px inner top light, no lower edge and no drop shadow at rest (round 7, note
+ * 15). The label is #1A0F2B at weight 700, 7.0 to 1 at the key's middle. Press sinks 1px. No overflow
+ * clip, so the hover board's rings, bulbs and sparks can leave the key's edge. */
 .gv-key {
   position: relative;
   isolation: isolate;
-  overflow: hidden;
   border-radius: 9999px;
   font-weight: 700;
   letter-spacing: -0.005em;
   color: #1a0f2b;
   background: linear-gradient(180deg, #ff9142 0%, #ff7a1a 56%, #f9700f 100%);
-  box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.34), 0 1px 2px rgb(0 0 0 / 0.3), 0 12px 28px -14px rgb(0 0 0 / 0.75);
+  box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.34);
   transition: transform 0.12s var(--gv-ease), box-shadow 0.2s var(--gv-ease);
 }
-.gv-key::after {
+/* The orange key takes its hover from the shared board alone (kit/hover.css, notes 10 and 16), so the
+ * transition carries the board's lift and filter. */
+.gv-key.k-hov { transition: transform 0.2s var(--gv-ease), filter 0.2s var(--gv-ease); }
+/* The purple key keeps its own quiet hover, the light lifting through a white layer. */
+.gv-key-purple::after {
   content: '';
   position: absolute;
   inset: 0;
@@ -200,17 +206,17 @@
   opacity: 0;
   transition: opacity 0.2s var(--gv-ease);
 }
-.gv-key:hover:not(:disabled)::after { opacity: 1; }
+.gv-key-purple:hover:not(:disabled)::after { opacity: 1; }
 .gv-key:active:not(:disabled) {
   transform: translateY(1px);
-  box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.22), 0 1px 1px rgb(0 0 0 / 0.3);
+  box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.22);
 }
 .gv-key:disabled { cursor: not-allowed; opacity: 0.45; }
 /* The secondary key in brand purple, a white label at 5.9 to 1 where it sits, 4.8 at the very top. */
 .gv-key-purple {
   color: #fff;
   background: linear-gradient(180deg, #8a4bf2 0%, #7a38e8 56%, #7130df 100%);
-  box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.24), 0 1px 2px rgb(0 0 0 / 0.3), 0 12px 28px -14px rgb(0 0 0 / 0.75);
+  box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.24);
 }
 /* What a key spends, in a dark tinted capsule at full ink, never a faded label. */
 .gv-key-amount {
@@ -257,6 +263,98 @@
 
 /* A short lit segment of the edge, where the light enters. */
 .gv-seg { position: absolute; height: 1px; z-index: 4; pointer-events: none; }
+
+/* ---------- The giveaway chest ---------- */
+
+/* Four motions on the round 7 board, ?chest=1 to 4, 2 when the param is absent (note 18). The body
+ * holds the art and moves as one, so a light on the lid moves with it. Every motion holds still on
+ * ?still and under reduced motion, where the sparks and the seam flash rest unseen. */
+.gv-chest { isolation: isolate; }
+.gv-chest-body { position: absolute; inset: 0; z-index: 1; display: block; }
+.gv-chest-body img { display: block; max-width: none; }
+
+/* 1, Float. A slow bob, the light under it breathing with it, smaller and dimmer as the chest rises. */
+[data-chest='1'] .gv-chest-body { animation: gv-bob 4.2s ease-in-out infinite; }
+.gv-chest-pool {
+  position: absolute;
+  left: 16%;
+  right: 12%;
+  bottom: 4px;
+  height: 24px;
+  z-index: 0;
+  border-radius: 50%;
+  background: radial-gradient(closest-side, rgb(255 122 40 / 0.6), rgb(141 38 231 / 0.36) 55%, rgb(141 38 231 / 0));
+  animation: gv-breathe 4.2s ease-in-out infinite;
+}
+@keyframes gv-bob { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-8px); } }
+@keyframes gv-breathe { 0%, 100% { opacity: 1; transform: scaleX(1); } 50% { opacity: 0.5; transform: scaleX(0.8); } }
+
+/* 2, Rattle. A short shake every 3.6 seconds, and light flashes out of the lid seam with it. */
+[data-chest='2'] .gv-chest-body { transform-origin: 50% 92%; animation: gv-rattle 3.6s ease-in-out infinite; }
+.gv-chest-seam {
+  position: absolute;
+  left: 14%;
+  width: 72%;
+  top: 38%;
+  height: 16%;
+  border-radius: 50%;
+  opacity: 0;
+  mix-blend-mode: screen;
+  transform: rotate(-4deg);
+  background: radial-gradient(closest-side, rgb(255 238 214 / 0.95), rgb(255 146 56 / 0.6) 45%, rgb(255 106 26 / 0) 100%);
+  animation: gv-seam 3.6s ease-in-out infinite;
+}
+@keyframes gv-rattle {
+  0%, 62%, 100% { transform: none; }
+  65% { transform: translateX(-2px) rotate(-3deg); }
+  68% { transform: translateX(2px) rotate(3deg); }
+  71% { transform: translateX(-2px) rotate(-2.5deg); }
+  74% { transform: translateX(2px) rotate(2deg); }
+  77% { transform: translateX(-1px) rotate(-1deg); }
+  80% { transform: none; }
+}
+@keyframes gv-seam { 0%, 63% { opacity: 0; } 68% { opacity: 1; } 76% { opacity: 0.8; } 90%, 100% { opacity: 0; } }
+
+/* 3, Sparks. Small orange and purple sparks rise off the lid and fade. */
+.gv-chest-sparks { position: absolute; inset: 0; z-index: 2; }
+.gv-chest-sparks > span {
+  position: absolute;
+  left: var(--x);
+  top: var(--y);
+  width: var(--s);
+  height: var(--s);
+  border-radius: 50%;
+  opacity: 0;
+  background: var(--c);
+  box-shadow: 0 0 6px 1px var(--c);
+  animation: gv-spark var(--t) ease-out var(--d) infinite;
+}
+@keyframes gv-spark {
+  0% { opacity: 0; transform: translate(0, 0) scale(0.6); }
+  15% { opacity: 1; transform: translate(calc(var(--dx) * 0.15), -10px) scale(1); }
+  100% { opacity: 0; transform: translate(var(--dx), -68px) scale(0.3); }
+}
+
+/* 4, Rays. Soft orange and purple rays turn slowly behind the chest, fading out before the band's foot. */
+.gv-chest-rays {
+  position: absolute;
+  left: 50%;
+  top: 36%;
+  width: 240px;
+  height: 240px;
+  margin: -120px 0 0 -120px;
+  z-index: 0;
+  border-radius: 50%;
+  background: repeating-conic-gradient(from 0deg, rgb(255 140 60 / 0.34) 0deg 6deg, rgb(255 140 60 / 0) 6deg 22deg, rgb(168 92 255 / 0.32) 22deg 28deg, rgb(168 92 255 / 0) 28deg 45deg);
+  -webkit-mask: radial-gradient(closest-side, #000 20%, rgb(0 0 0 / 0.45) 55%, transparent 100%);
+  mask: radial-gradient(closest-side, #000 20%, rgb(0 0 0 / 0.45) 55%, transparent 100%);
+  animation: gv-turn 30s linear infinite;
+}
+@keyframes gv-turn { to { transform: rotate(360deg); } }
+
+.gv-still .gv-chest *,
+.gv-still .gv-chest *::before,
+.gv-still .gv-chest *::after { animation: none !important; }
 
 /* ---------- Covers ---------- */
 
@@ -358,6 +456,7 @@
 
 @media (prefers-reduced-motion: reduce) {
   .gv-live::after, .gv-enter, .gv-skel, .gv-fade, .gv-show { animation: none; }
+  .gv-chest * { animation: none !important; }
   .gv-hover, .gv-pill, .gv-cover img, .gv-bar { transition: none; }
 }
 

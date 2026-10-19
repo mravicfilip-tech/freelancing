@@ -23,6 +23,11 @@ Task format
 
 ## Backlog
 
+- bullhill-15 The real projects, six places in Styria, and no crew portraits. Notes in briefs/website/round7-notes.md
+  - [x] Eight notes queued from the client chat, round plan written
+  - [ ] Filip's go on the plan and the crew layout line
+  - [ ] The client says whether the stats box stays at 5 towns
+
 ## In progress
 
 - bullhill-2 Hero scroll smooth, frame rate on phones and desktop

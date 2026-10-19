@@ -15,7 +15,7 @@ export function UserBox({ compact }: { compact?: boolean }) {
     <Menu>
       <MenuTrigger
         aria-label={`Account menu, ${ACCOUNT.name}`}
-        className="flex h-[52px] items-center gap-3 rounded-[14px] bg-[rgb(var(--k-item))] pl-[6px] pr-4 hover:bg-[rgb(var(--k-item-hover))] data-[state=open]:bg-[rgb(var(--k-item-hover))]"
+        className="flex h-[52px] items-center gap-3 rounded-[14px] border border-white/[0.07] bg-[rgb(var(--k-item))] pl-[6px] pr-4 hover:bg-[rgb(var(--k-item-hover))] data-[state=open]:bg-[rgb(var(--k-item-hover))]"
       >
         <span className="relative">
           <img src="/art/avatars/john.webp" alt="" className="h-10 w-10 rounded-[10px] object-cover" />
@@ -57,7 +57,7 @@ export function BellSquare() {
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger
         aria-label={unread ? `Notifications, ${unread} unread` : 'Notifications'}
-        className="relative flex h-[52px] w-[52px] items-center justify-center rounded-[14px] bg-[rgb(var(--k-item))] text-[rgb(var(--k-muted))] hover:bg-[rgb(var(--k-item-hover))] hover:text-ink data-[state=open]:text-ink"
+        className="relative flex h-[52px] w-[52px] items-center justify-center rounded-[14px] border border-white/[0.07] bg-[rgb(var(--k-item))] text-[rgb(var(--k-muted))] hover:bg-[rgb(var(--k-item-hover))] hover:text-ink data-[state=open]:text-ink"
       >
         <Bell weight="fill" className="h-6 w-6" aria-hidden />
         {unread > 0 && (
@@ -85,7 +85,7 @@ export function SearchBox({ value, onChange, onSubmit, placeholder = 'Search for
     onSubmit?.();
   };
   return (
-    <form role="search" onSubmit={submit} className={cn('flex h-[52px] items-center gap-3 rounded-[14px] bg-[rgb(var(--k-item))] px-4 focus-within:ring-2 focus-within:ring-[#B47CFF]', className)}>
+    <form role="search" onSubmit={submit} className={cn('flex h-[52px] items-center gap-3 rounded-[14px] border border-white/[0.07] bg-[rgb(var(--k-item))] px-4 focus-within:ring-2 focus-within:ring-[#B47CFF]', className)}>
       <MagnifyingGlass weight="bold" className="h-5 w-5 shrink-0 text-[rgb(var(--k-muted))]" aria-hidden />
       <label htmlFor={id} className="sr-only">
         {placeholder}

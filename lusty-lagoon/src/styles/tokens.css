@@ -23,11 +23,21 @@
   --ll-brand: 141 38 231; /* #8D26E7 */
   --ll-accent: 180 124 255; /* #B47CFF, 6.12 to 1 */
 
-  /* Gold is the primary action, once per view. */
+  /* Gold is for prizes, money amounts, count badges and the pending status. It left buttons on
+   * 19 Oct 2026, when orange became the primary action app wide (taste log 16:45 and D5 at 17:00). */
   --ll-gold: 244 213 67; /* #F4D543 */
   --ll-gold-hover: 255 227 107; /* #FFE36B */
   --ll-gold-press: 226 194 48; /* #E2C230 */
   --ll-on-gold: 26 15 43; /* #1A0F2B, 12.59 to 1 on gold */
+
+  /* Orange is the primary action on every route, at most one per section. The dark label keeps
+   * AA, since white on a bright orange reads about 2.6 to 1. The exact orange is provisional until
+   * Filip's pick on the round 4 button board. */
+  --ll-orange: 255 122 26; /* #FF7A1A */
+  --ll-on-orange: 26 15 43; /* #1A0F2B, 7.0 to 1 on orange, 5.7 to 1 on cta-orange-bottom */
+  --ll-cta-orange-top: 255 150 64; /* #FF9640 */
+  --ll-cta-orange-bottom: 242 98 12; /* #F2620C */
+  --ll-cta-orange-line: 214 84 10; /* #D6540A */
 
   /* Tonal purple is the secondary action. */
   --ll-tonal: 59 35 102; /* #3B2366 */
@@ -35,7 +45,7 @@
   --ll-tonal-line: 94 71 133; /* #5E4785 */
 
   /* Status, always paired with an icon and a word. */
-  --ll-pending: 241 153 32; /* #F19920, from the Figma pending chip */
+  --ll-pending: 244 213 67; /* #F4D543, the brand gold, so orange means act here only (D5). Was #F19920 */
   --ll-success: 61 214 140; /* #3DD68C */
   --ll-danger: 255 122 136; /* #FF7A88 */
 

@@ -1,17 +1,88 @@
-/* The reference kit for the dashboard variants, built to the execution of the ten reference
- * screens Filip sent (Turbo Bet, NewBettie, Grimdrop, Wizard Casino, HugeWin and the rest).
- * Explore mode for this ask, logged in taste.md at 15:20 on 19 Oct. Hues stay inside the Figma's
- * own palette, purple, gold to orange, the lagoon blue, palm green and the hibiscus pink. */
+/* The kit for the dashboard variants. Round 4 splits it in two layers, per D1 in the taste log
+ * (19 Oct 2026, 17:00). The content art keeps the casino references' vivid hues, the k-hue and
+ * k-tile classes. The chrome follows the two dark UI shots, the k-surface family. A 1px light edge,
+ * at most one soft light per panel, quiet labels, one strong number, colour kept for status and for
+ * the one orange action in a section. */
 
 :root {
-  --k-panel: 26 17 48; /* #1A1130, sidebar and chat panels */
+  --k-panel: 26 17 48; /* #1A1130, sidebar, chat and every content panel */
+  --k-panel-2: 31 21 56; /* #1F1538, a well inside a panel */
   --k-item: 34 24 58; /* #22183A, boxes, nav rows, chips */
   --k-item-hover: 43 31 72; /* #2B1F48 */
   --k-muted: 156 143 191; /* #9C8FBF, nav and chip labels, 5.6 to 1 on item */
   --k-dim: 138 126 173; /* #8A7EAD, section labels, 4.8 to 1 on panel */
+  /* Edge ladder, after Linear's cards. 5 for flat rows, 8 for panels, 12 for raised and hover. */
+  --k-edge-lo: rgb(255 255 255 / 0.05);
+  --k-edge: rgb(255 255 255 / 0.08);
+  --k-edge-hi: rgb(255 255 255 / 0.12);
+  --k-light: 141 59 240; /* the one soft purple light a panel may carry */
+  --k-ease: cubic-bezier(0.22, 1, 0.36, 1);
+
+  /* Orange, provisional until the button board pick. Dark label for AA. */
+  --k-orange: 255 122 26; /* #FF7A1A */
+  --k-orange-hi: 255 145 61; /* #FF913D */
+  --k-orange-lo: 240 96 10; /* #F0600A */
+  --k-orange-dark: 214 74 0; /* #D64A00, the icon tile in system 4 */
+  --k-on-orange: 26 15 43; /* #1A0F2B, 7.0 to 1 on #FF7A1A */
 }
 
-/* Vivid single hue tiles. The darker end sits under the title, so white type keeps 3 to 1 or better. */
+/* ---------- Page ---------- */
+
+/* The variant page ground with a faint grain, painted under the content. */
+.k-page { position: relative; isolation: isolate; background: rgb(var(--ll-page)); }
+.k-page::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  opacity: 0.05;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 0.6 0'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+/* A pinned bar that the page slides under, frosted. */
+.k-glass {
+  background: rgb(20 12 35 / 0.78);
+  -webkit-backdrop-filter: blur(18px) saturate(1.4);
+  backdrop-filter: blur(18px) saturate(1.4);
+  border-bottom: 1px solid var(--k-edge);
+}
+
+/* ---------- Chrome surfaces ---------- */
+
+/* Every panel, card, table and widget. A 1px light edge and a highlight line along the top that
+ * fades at both ends. */
+.k-surface {
+  position: relative;
+  isolation: isolate;
+  background-color: rgb(var(--k-panel));
+  border: 1px solid var(--k-edge);
+}
+.k-surface::before {
+  content: '';
+  position: absolute;
+  top: -1px;
+  left: 14%;
+  right: 14%;
+  height: 1px;
+  pointer-events: none;
+  background: linear-gradient(90deg, transparent, rgb(255 255 255 / 0.22), transparent);
+}
+
+/* The one soft light a panel may carry. Place it with --lx and --ly, default top right. */
+.k-lit {
+  background-image: radial-gradient(70% 90% at var(--lx, 88%) var(--ly, 0%), rgb(var(--k-light) / 0.3), transparent 70%);
+}
+
+/* A well inside a panel, the sunken header bar of a table or a quiet stat box. */
+.k-well { background: rgb(var(--k-panel-2)); border: 1px solid rgb(255 255 255 / 0.05); }
+
+/* A thin rule between rows, faint. */
+.k-rule { border-color: rgb(255 255 255 / 0.06); }
+
+/* ---------- Content art, the casino layer ---------- */
+
+/* Vivid single hue fills for art tiles. The darker end sits under the title. */
 .k-hue-purple { background: linear-gradient(135deg, #7a3af0 0%, #b07cff 100%); }
 .k-hue-gold { background: linear-gradient(135deg, #d9480f 0%, #f59f0b 70%, #fcc419 100%); }
 .k-hue-blue { background: linear-gradient(135deg, #1d5fd8 0%, #2fb4f0 100%); }
@@ -19,7 +90,43 @@
 .k-hue-pink { background: linear-gradient(135deg, #c2255c 0%, #f06595 100%); }
 .k-hue-teal { background: linear-gradient(135deg, #0b7285 0%, #15aabf 70%, #3bc9db 100%); }
 
-/* The faint brand mark pattern in the tile's upper right, as on the Turbo Bet tiles. */
+/* Round 4 category tiles. One calm two stop fill per hue, close in value, plus a light edge. */
+.k-tile { position: relative; isolation: isolate; border: 1px solid rgb(255 255 255 / 0.14); }
+.k-tile::before {
+  content: '';
+  position: absolute;
+  top: -1px;
+  left: 10%;
+  right: 10%;
+  height: 1px;
+  z-index: 2;
+  pointer-events: none;
+  background: linear-gradient(90deg, transparent, rgb(255 255 255 / 0.45), transparent);
+}
+.k-tile-purple { background: linear-gradient(160deg, #6d32e0 0%, #4a1fa8 100%); }
+.k-tile-gold { background: linear-gradient(160deg, #e0761a 0%, #b4520c 100%); }
+.k-tile-blue { background: linear-gradient(160deg, #2a6fe0 0%, #1a48a8 100%); }
+.k-tile-green { background: linear-gradient(160deg, #2f9a4a 0%, #1d6e33 100%); }
+.k-tile-pink { background: linear-gradient(160deg, #d6336c 0%, #9c1f4c 100%); }
+.k-tile-teal { background: linear-gradient(160deg, #1592a8 0%, #0b6577 100%); }
+
+/* A hue as a soft light on the dark item surface, for the sidebar promo tiles. */
+.k-tint-purple { --hue: 141 59 240; }
+.k-tint-gold { --hue: 245 159 11; }
+.k-tint-blue { --hue: 47 140 240; }
+.k-tint-green { --hue: 64 192 87; }
+.k-tint-pink { --hue: 240 101 149; }
+.k-tint-teal { --hue: 21 170 191; }
+.k-promo {
+  background:
+    radial-gradient(110% 140% at 100% 60%, rgb(var(--hue) / 0.55) 0%, rgb(var(--hue) / 0.12) 55%, transparent 80%),
+    rgb(var(--k-item));
+  border: 1px solid rgb(var(--hue) / 0.32);
+  transition: border-color 0.2s var(--k-ease), background-color 0.2s var(--k-ease);
+}
+.k-promo:hover { border-color: rgb(var(--hue) / 0.6); }
+
+/* The faint brand mark pattern in a tile's upper right. */
 .k-mark {
   background-image: url('/art/kit/spiral-white.svg');
   background-size: 30px 30px;
@@ -29,16 +136,149 @@
   mask-image: linear-gradient(225deg, #000 0%, transparent 60%);
 }
 
-.k-btn-purple { background: linear-gradient(180deg, #a06bff 0%, #7b3ff2 100%); }
-.k-btn-gold { background: linear-gradient(180deg, #ffd84d 0%, #f5a623 100%); }
-.k-nav-active {
-  background: linear-gradient(90deg, rgb(141 59 240 / 0.55) 0%, rgb(141 59 240 / 0.14) 100%);
-  border-color: rgb(180 124 255 / 0.35);
-}
 .k-hero-purple {
   background:
     radial-gradient(120% 140% at 85% 30%, #7c3aed 0%, rgb(124 58 237 / 0) 55%),
     linear-gradient(135deg, #24104a 0%, #3b1a7a 55%, #5b2bc4 100%);
 }
+
+/* ---------- Buttons ---------- */
+
+/* Purple is the secondary action. Gold left buttons in round 4 and stays only for old call sites. */
+.k-btn-purple { background: linear-gradient(180deg, #8f5cf2 0%, #7240e0 100%); }
+.k-btn-gold { background: linear-gradient(180deg, #ffd84d 0%, #f5a623 100%); }
+
+/* The orange primary, in five systems for the round 4 board. KitButton adds k-cta and k-cta-N. */
+.k-cta {
+  position: relative;
+  color: rgb(var(--k-on-orange));
+  transition: background-color 0.18s var(--k-ease), filter 0.18s var(--k-ease), transform 0.12s var(--k-ease), border-color 0.18s var(--k-ease);
+}
+.k-cta:active:not(:disabled) { transform: scale(0.98); }
+
+/* 1 Flat. Solid orange, 12 radius, sentence case. */
+.k-cta-1 { background-color: rgb(var(--k-orange)); border-radius: 12px; }
+.k-cta-1:hover:not(:disabled) { background-color: rgb(var(--k-orange-hi)); }
+.k-cta-1:active:not(:disabled) { background-color: rgb(var(--k-orange-lo)); }
+
+/* 2 Pill. A two stop fill close in value, a full pill. */
+.k-cta-2 { background: linear-gradient(180deg, #ff9a3d 0%, #ff6a00 100%); border-radius: 999px; }
+.k-cta-2:hover:not(:disabled) { filter: brightness(1.07); }
+.k-cta-2:active:not(:disabled) { filter: brightness(0.95); }
+
+/* 3 Caps. Solid orange, 8 radius, a lighter 1px edge, display capitals with wide tracking. */
+.k-cta-3 {
+  background-color: rgb(var(--k-orange));
+  border: 1px solid #ffb273;
+  border-radius: 8px;
+  font-family: 'Bai Jamjuree', system-ui, sans-serif;
+  font-size: 14px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+.k-cta-3:hover:not(:disabled) { background-color: rgb(var(--k-orange-hi)); border-color: #ffd0a6; }
+
+/* 4 Icon tile. Solid orange, a darker orange square with an arrow at the trailing end. */
+.k-cta-4 { background-color: rgb(var(--k-orange)); border-radius: 14px; padding-right: 6px !important; }
+.k-cta-4::after {
+  content: '';
+  flex: none;
+  width: 32px;
+  height: 32px;
+  margin-left: 6px;
+  border-radius: 10px;
+  background: rgb(var(--k-orange-dark)) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 256 256'%3E%3Cpath fill='%231A0F2B' d='M224.5 136.5l-72 72a12 12 0 0 1-17-17L187 140H40a12 12 0 0 1 0-24h147l-51.5-51.5a12 12 0 0 1 17-17l72 72a12 12 0 0 1 0 17z'/%3E%3C/svg%3E") center / 16px no-repeat;
+  transition: transform 0.2s var(--k-ease);
+}
+.k-cta-4:hover:not(:disabled) { background-color: rgb(var(--k-orange-hi)); }
+.k-cta-4:hover:not(:disabled)::after { transform: translateX(2px); }
+.k-cta-4.k-cta-sm::after { width: 26px; height: 26px; border-radius: 8px; background-size: 13px; }
+.k-cta-4.k-cta-icon { padding-right: 0 !important; }
+.k-cta-4.k-cta-icon::after { display: none; }
+
+/* 5 Ember. A deep burnt orange with a white label and a warm 1px edge, the quiet luxury one. */
+.k-cta-5 {
+  background: linear-gradient(135deg, #d9480f 0%, #9a3412 100%);
+  border: 1px solid rgb(251 140 60 / 0.55);
+  border-radius: 12px;
+  color: #fff;
+}
+.k-cta-5:hover:not(:disabled) { filter: brightness(1.1); border-color: rgb(251 160 90 / 0.8); }
+
+/* ---------- Sidebar active row, four treatments for the round 4 board ---------- */
+
+.k-nav-on-1 { background-color: rgb(var(--k-item-hover)); border-color: var(--k-edge-hi) !important; }
+.k-nav-on-2 { position: relative; background-color: rgb(var(--k-item-hover)); border-color: transparent !important; }
+.k-nav-on-2::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 12px;
+  bottom: 12px;
+  width: 3px;
+  border-radius: 0 3px 3px 0;
+  background: rgb(var(--ll-accent));
+}
+.k-nav-on-3 { background-color: rgb(var(--k-item)); border-color: rgb(180 124 255 / 0.75) !important; }
+.k-nav-on-4 {
+  background:
+    radial-gradient(120% 180% at 0% 50%, rgb(141 59 240 / 0.5) 0%, rgb(141 59 240 / 0.12) 55%, transparent 80%),
+    rgb(var(--k-item));
+  background-clip: padding-box;
+  border-color: transparent !important;
+}
+/* The round 3 active row, kept for reference until the pick. */
+.k-nav-active {
+  background: linear-gradient(90deg, rgb(141 59 240 / 0.55) 0%, rgb(141 59 240 / 0.14) 100%);
+  border-color: rgb(180 124 255 / 0.35);
+}
+
+/* ---------- Live and motion ---------- */
+
+/* A live dot with a ring that breathes out. */
+.k-live { position: relative; display: inline-flex; width: 8px; height: 8px; border-radius: 999px; background: #3ddc84; }
+.k-live::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: inherit;
+  animation: k-ping 1.8s var(--k-ease) infinite;
+}
+@keyframes k-ping { 0% { transform: scale(1); opacity: 0.6; } 80%, 100% { transform: scale(2.6); opacity: 0; } }
+
+/* A strip that runs on its own, twice the content side by side, paused on hover or focus. */
+.k-marquee { display: flex; width: max-content; animation: k-run var(--k-run, 60s) linear infinite; }
+.k-marquee-wrap:hover .k-marquee,
+.k-marquee-wrap:focus-within .k-marquee { animation-play-state: paused; }
+@keyframes k-run { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+
+/* Loading placeholder. */
+.k-skeleton {
+  background: linear-gradient(90deg, rgb(var(--k-item)) 0%, rgb(var(--k-item-hover)) 50%, rgb(var(--k-item)) 100%);
+  background-size: 200% 100%;
+  animation: k-shimmer 1.4s linear infinite;
+}
+@keyframes k-shimmer { from { background-position: 100% 0; } to { background-position: -100% 0; } }
+
+/* A pointer light that follows the cursor inside a card, set by useSpotlight. */
+.k-spot::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  border-radius: inherit;
+  opacity: 0;
+  transition: opacity 0.25s var(--k-ease);
+  background: radial-gradient(260px circle at var(--mx, 50%) var(--my, 50%), rgb(255 255 255 / 0.1), transparent 60%);
+}
+.k-spot:hover::after { opacity: 1; }
+
+@media (prefers-reduced-motion: reduce) {
+  .k-live::after, .k-marquee, .k-skeleton { animation: none; }
+  .k-cta, .k-cta-4::after, .k-promo { transition: none; }
+}
+
 .k-no-scrollbar { scrollbar-width: none; }
 .k-no-scrollbar::-webkit-scrollbar { display: none; }

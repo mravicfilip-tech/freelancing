@@ -56,7 +56,7 @@ export function TopBar({ query, onQuery, onSearch, onDeposit }: { query: string;
       </div>
       <SearchBox id="v3-top-search" value={query} onChange={onQuery} onSubmit={onSearch} placeholder="Search for games" className="w-[300px] w1920:w-[400px]" />
       <div className="mx-auto">
-        <BalancePill amount={formatAmount(balance)} currency={ACCOUNT.currency} onDeposit={onDeposit} depositLabel="Deposit" />
+        <BalancePill amount={formatAmount(balance)} balance={balance} currency={ACCOUNT.currency} onDeposit={onDeposit} depositLabel="Deposit" />
       </div>
       <UserBox />
       <BellSquare />

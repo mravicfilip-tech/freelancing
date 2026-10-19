@@ -2,7 +2,7 @@ import { Link } from 'react-router-dom';
 import { Logo } from '../../components/ui/Logo';
 import { DASHBOARD_VARIANTS } from './variants';
 
-// The five dashboard variants side by side with the Figma 1 to 1 lobby they grew from.
+// The dashboard variants side by side with the Figma 1 to 1 lobby they grew from.
 export function VariantsIndex() {
   return (
     <main className="mx-auto flex max-w-3xl flex-col gap-8 px-8 py-12">

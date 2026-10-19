@@ -12,12 +12,14 @@ import { AccountPage, NotificationsPage } from './features/account';
 import { AgentPage, ReferPage } from './features/money';
 import { NotFound } from './pages/NotFound';
 import { VariantsIndex } from './features/variants/VariantsIndex';
+import { ButtonBoard, SidebarBoard } from './features/variants/boards/Boards';
 import { DASHBOARD_VARIANTS } from './features/variants/variants';
 import { VariantSwitcher } from './components/dev/VariantSwitcher';
 import { lazy, Suspense } from 'react';
 
-// Each dashboard variant brings its own shell, so it sits outside AppShell.
-const VARIANT_PAGES = [1, 2, 3, 4, 5].map((n) => lazy(() => import(`./features/variants/v${n}/Variant${n}.tsx`)));
+// Each dashboard variant brings its own shell, so it sits outside AppShell. Variant 2 was dropped in
+// round 4 and the others keep their numbers, so Filip's notes keep their meaning.
+const VARIANT_PAGES = [1, 3, 4, 5].map((n) => ({ n, Page: lazy(() => import(`./features/variants/v${n}/Variant${n}.tsx`)) }));
 
 // One switcher for every variant set, per the studio doctrine. It shows only on a route in the list.
 function Switcher() {
@@ -36,10 +38,12 @@ export function App() {
             <Route path="/login" element={<LoginPage />} />
             <Route path="/register" element={<RegisterPage />} />
             <Route path="/variants" element={<VariantsIndex />} />
-            {VARIANT_PAGES.map((Page, i) => (
+            <Route path="/variants/buttons" element={<ButtonBoard />} />
+            <Route path="/variants/sidebar" element={<SidebarBoard />} />
+            {VARIANT_PAGES.map(({ n, Page }) => (
               <Route
-                key={i}
-                path={`/variants/${i + 1}`}
+                key={n}
+                path={`/variants/${n}`}
                 element={
                   <Suspense fallback={null}>
                     <Page />

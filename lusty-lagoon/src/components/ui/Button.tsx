@@ -4,16 +4,16 @@ import { cva, type VariantProps } from 'class-variance-authority';
 import { CircleNotch } from '@phosphor-icons/react';
 import { cn } from '../../lib/cn';
 
-// One button for the landing page and the product, in the Figma's shapes. Gold is primary and purple
-// is secondary (note 7). Each keeps one soft tone; the Figma's sunburst, gloss and bevel are gone.
-// Hover lifts the fill one step, press takes it back.
+// One button for the landing page and the product, in the Figma's shapes. Orange is primary, app wide
+// since 19 Oct 2026, and purple is secondary. Each keeps one soft tone; the Figma's sunburst, gloss
+// and bevel are gone. Hover lifts the fill one step, press takes it back.
 const button = cva(
   'inline-flex select-none items-center justify-center gap-2 whitespace-nowrap rounded-lg font-sans font-semibold transition-[filter,background-color,color] duration-150 disabled:cursor-not-allowed disabled:opacity-50',
   {
     variants: {
       variant: {
         primary:
-          'border border-cta-gold-line bg-[linear-gradient(180deg,rgb(var(--ll-cta-gold-top)),rgb(var(--ll-cta-gold-bottom)))] text-on-gold hover:brightness-105 active:brightness-95',
+          'border border-cta-orange-line bg-[linear-gradient(180deg,rgb(var(--ll-cta-orange-top)),rgb(var(--ll-cta-orange-bottom)))] text-on-orange hover:brightness-105 active:brightness-95',
         secondary:
           'border border-ink/50 bg-[linear-gradient(180deg,rgb(var(--ll-cta-purple-top)),rgb(var(--ll-cta-purple-bottom)))] text-ink hover:brightness-110 active:brightness-95',
         tertiary: 'text-accent hover:bg-raised hover:text-ink active:bg-panel',

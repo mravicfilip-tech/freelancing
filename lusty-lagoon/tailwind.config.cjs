@@ -51,6 +51,9 @@ module.exports = {
         'rank-fill': token('rank-fill'),
         win: token('win'),
         'cta-gold-line': token('cta-gold-line'),
+        orange: token('orange'),
+        'on-orange': token('on-orange'),
+        'cta-orange-line': token('cta-orange-line'),
       },
       fontFamily: {
         display: ['"Bai Jamjuree"', 'system-ui', 'sans-serif'],

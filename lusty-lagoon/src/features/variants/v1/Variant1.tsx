@@ -82,7 +82,7 @@ function TopBar({ onDeposit, onRace }: { onDeposit: () => void; onRace: () => vo
         </span>
       </button>
       <div className="mx-auto">
-        <BalancePill amount={formatAmount(balance)} currency={ACCOUNT.currency} onDeposit={onDeposit} depositLabel="Deposit" />
+        <BalancePill amount={formatAmount(balance)} balance={balance} currency={ACCOUNT.currency} onDeposit={onDeposit} depositLabel="Deposit" />
       </div>
       <UserBox />
       <BellSquare />

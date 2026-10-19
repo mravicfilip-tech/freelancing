@@ -3,10 +3,11 @@ import { ChatCircleDots, Heart, PaperPlaneTilt, X } from '@phosphor-icons/react'
 import { ACCOUNT } from '../../../data/wallet';
 import { CHAT, ONLINE_NOW, type ChatMessage } from '../shared/data';
 import { cn } from '../../../lib/cn';
+import { LiveDot } from './parts';
 
-// The chat panel, built to Turbo Bet's rail. A purple header pill with the online count and a stack
-// of avatars, each message as a name line with its role tag and a dark bubble, a like button, and a
-// composer with a purple Send. Sending adds the message as John D.
+// The chat panel, built to Turbo Bet's rail and drawn under the round 4 chrome. A quiet header with a
+// live online count and a stack of avatars, each message as a name line with its role tag and a
+// dark bubble, a like button, and a composer with a purple Send. Sending adds the message as John D.
 
 const ROLE: Record<string, string> = { admin: 'bg-[#6D3BF0] text-ink', mod: 'bg-[#2B8A3E] text-ink' };
 
@@ -44,24 +45,24 @@ export function ChatPanel({ onClose, className }: { onClose?: () => void; classN
   };
 
   return (
-    <section aria-labelledby="chat-title" className={cn('flex min-h-0 flex-col rounded-[20px] bg-[rgb(var(--k-panel))] p-3', className)}>
-      <header className="flex h-[56px] shrink-0 items-center gap-3 rounded-[14px] bg-[linear-gradient(90deg,#4A2A9E,#2A1A5E)] pl-4 pr-2">
+    <section aria-labelledby="chat-title" className={cn('k-surface flex min-h-0 flex-col rounded-[20px] p-3', className)}>
+      <header className="flex h-[52px] shrink-0 items-center gap-3 border-b border-white/[0.06] pb-3 pl-2 pr-1">
         <ChatCircleDots weight="fill" className="h-6 w-6 text-[#C9A2FF]" aria-hidden />
-        <h2 id="chat-title" className="text-18 font-bold text-ink">
+        <h2 id="chat-title" className="text-16 font-bold text-ink">
           Chat
         </h2>
         <span className="ml-auto flex items-center gap-2 text-14 font-semibold text-ink">
-          <span aria-hidden className="h-[8px] w-2 rounded-full bg-[#3DDC84]" />
+          <LiveDot />
           <span className="num">{ONLINE_NOW.toLocaleString('en-US')}</span>
           <span className="sr-only">players online</span>
         </span>
         <span aria-hidden className="flex -space-x-2">
           {['peki', 'alice', 'ficko'].map((a) => (
-            <img key={a} src={`/art/avatars/${a}.webp`} alt="" className="h-[28px] w-[28px] rounded-[8px] border-2 border-[#3A2384] object-cover" />
+            <img key={a} src={`/art/avatars/${a}.webp`} alt="" className="h-[28px] w-[28px] rounded-full border-2 border-[rgb(var(--k-panel))] object-cover" />
           ))}
         </span>
         {onClose && (
-          <button type="button" onClick={onClose} aria-label="Hide the chat" className="k-btn-purple flex h-9 w-9 items-center justify-center rounded-[10px] text-ink">
+          <button type="button" onClick={onClose} aria-label="Hide the chat" className="flex h-9 w-9 items-center justify-center rounded-[10px] border border-white/[0.07] bg-[rgb(var(--k-item))] text-[rgb(var(--k-muted))] hover:text-ink">
             <X weight="bold" className="h-4 w-4" aria-hidden />
           </button>
         )}
@@ -86,7 +87,7 @@ export function ChatPanel({ onClose, className }: { onClose?: () => void; classN
                   <Heart weight={liked[m.id] ? 'fill' : 'regular'} className={cn('h-4 w-4', liked[m.id] && 'text-[#F06595]')} aria-hidden />
                 </button>
               </p>
-              <p className={cn('rounded-[12px] px-3 py-2 text-14 font-semibold leading-5 text-ink', m.mine ? 'bg-[#3B1F7A]' : 'bg-[rgb(var(--k-item))]')}>
+              <p className={cn('rounded-[12px] px-3 py-2 text-14 font-medium leading-5 text-ink', m.mine ? 'border border-[#B47CFF]/30 bg-[#8D3BF0]/20' : 'bg-white/[0.04]')}>
                 {m.text.split(/(@\w+)/).map((part, i) => (part.startsWith('@') ? <span key={i} className="text-[#C9A2FF]">{part}</span> : part))}
               </p>
             </div>
@@ -94,7 +95,7 @@ export function ChatPanel({ onClose, className }: { onClose?: () => void; classN
         ))}
       </ol>
 
-      <form onSubmit={send} className="mt-2 flex shrink-0 items-center gap-2 rounded-[14px] bg-[rgb(var(--k-item))] p-[6px] pl-4 focus-within:ring-2 focus-within:ring-[#B47CFF]">
+      <form onSubmit={send} className="mt-2 flex shrink-0 items-center gap-2 rounded-[14px] border border-white/[0.07] bg-[rgb(var(--k-item))] p-[6px] pl-4 focus-within:ring-2 focus-within:ring-[#B47CFF]">
         <label htmlFor="chat-input" className="sr-only">
           Send a message
         </label>

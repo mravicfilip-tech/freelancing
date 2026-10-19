@@ -38,9 +38,10 @@ const SWATCHES = [
   ['ink-3', '#9D86C2', 'Muted text, 5.58 to 1'],
   ['accent', '#B47CFF', 'Selection, focus, active tab'],
   ['brand', '#8D26E7', 'Wordmark only'],
-  ['gold', '#F4D543', 'Primary action, once per view'],
+  ['orange', '#FF7A1A', 'Primary action, one per section, dark label'],
+  ['gold', '#F4D543', 'Prizes, money amounts, badges, pending'],
   ['tonal', '#3B2366', 'Secondary action'],
-  ['pending', '#F19920', 'Pending'],
+  ['pending', '#F4D543', 'Pending'],
   ['success', '#3DD68C', 'Completed, money in'],
   ['danger', '#FF7A88', 'Declined, errors'],
 ] as const;
@@ -70,7 +71,7 @@ export function KitPage() {
           <Logo />
           <h1 className="font-display text-40 font-semibold text-ink">Lusty Lagoon kit</h1>
           <p className="max-w-2xl text-18 text-ink2">
-            Flat surfaces, three text colours, one gold action per view. Hierarchy and state come from size, weight, colour and a check mark,
+            Flat surfaces, three text colours, one orange action per section. Hierarchy and state come from size, weight, colour and a check mark,
             never from gradients, glow, bevels or inset shadows.
           </p>
         </div>

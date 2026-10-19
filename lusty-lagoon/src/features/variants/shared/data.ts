@@ -39,6 +39,18 @@ export const LIVE_WINS: LiveWin[] = [
   { id: 'w10', gameId: 'zeus-thunderbolt', player: 'Niksa S.', avatar: av('niksa-s'), amount: 3.1, coin: 'eth', ago: '8m' },
   { id: 'w11', gameId: 'sweet-bonanza', player: 'Tane M.', avatar: av('tane-m'), amount: 640, coin: 'usdt', ago: '9m' },
   { id: 'w12', gameId: 'five-lions', player: 'John D.', avatar: av('john-sm'), amount: 100, coin: 'usdt', ago: '11m' },
+  { id: 'w13', gameId: 'mad-max', player: 'Alice G.', avatar: av('alice'), amount: 1480, coin: 'usdt', ago: '12m' },
+  { id: 'w14', gameId: 'release-the-kraken', player: 'Ficko1', avatar: av('ficko'), amount: 0.064, coin: 'btc', ago: '13m' },
+  { id: 'w15', gameId: 'gold-fever', player: 'Goodie B.', avatar: av('goodie'), amount: 265, coin: 'usdt', ago: '14m' },
+  { id: 'w16', gameId: 'cash-n-riches', player: 'JJ Maybank', avatar: av('jj'), amount: 2.4, coin: 'eth', ago: '15m' },
+  { id: 'w17', gameId: 'sumo-supreme', player: 'Tane4', avatar: av('tane'), amount: 412, coin: 'usdt', ago: '16m' },
+  { id: 'w18', gameId: 'primate-king', player: 'Niksa', avatar: av('niksa'), amount: 7350, coin: 'usdt', ago: '18m' },
+  { id: 'w19', gameId: 'buffalo-king', player: 'Peki82', avatar: av('peki'), amount: 96.5, coin: 'ltc', ago: '19m' },
+  { id: 'w20', gameId: 'starlight-princess', player: 'Mila R.', initials: 'MR', amount: 0.21, coin: 'btc', ago: '21m' },
+  { id: 'w21', gameId: 'jokers-jewels', player: 'Peki M.', avatar: av('peki-m'), amount: 58, coin: 'usdt', ago: '23m' },
+  { id: 'w22', gameId: 'coin-volcano', player: 'Niksa S.', avatar: av('niksa-s'), amount: 1.75, coin: 'eth', ago: '25m' },
+  { id: 'w23', gameId: 'big-bass-splash', player: 'Tane M.', avatar: av('tane-m'), amount: 3120, coin: 'usdt', ago: '27m' },
+  { id: 'w24', gameId: 'wolf-howl', player: 'Alice G.', avatar: av('alice'), amount: 144, coin: 'xrp', ago: '30m' },
 ];
 
 /** The weekly race. Prize pool in USDT, split across the top ten by wagered amount. */

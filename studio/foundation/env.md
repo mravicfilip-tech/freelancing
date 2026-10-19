@@ -24,6 +24,9 @@ so the lesson outlives the context window.
   once, at round end.
 - Several 3D builders shooting at once pushed the load to 18 on 4 cores. A heavy 3D slice goes to its
   own cloud session on a `<branch>-<slice>` branch rather than a fourth builder in the same container.
+- Puppeteer's `fullPage` shot resizes the page mid capture, and a grid sized by viewport units or
+  container queries can redraw at the new size, such as one cover filling the whole grid. Set the
+  viewport to the page's full height first, wait two frames, then shoot without `fullPage`.
 
 ## Network
 

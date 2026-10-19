@@ -1,155 +1,180 @@
-import { useState } from 'react';
+import { useRef, useState, type KeyboardEvent } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { ArrowDownLeft, ArrowUpRight, Eye, EyeSlash, TrendUp, WarningCircle } from '@phosphor-icons/react';
-import { MethodLogo } from '../../../components/ui/MethodLogo';
-import { Skeleton } from '../../../components/ui/Skeleton';
-import { ACCOUNT, methodLabel, type Transaction } from '../../../data/wallet';
-import { formatAmount, formatDate } from '../../../lib/format';
+import { ArrowRight, ArrowUpRight, Eye, EyeSlash, Headset, TrendUp, Wallet } from '@phosphor-icons/react';
+import { coinById } from '../../../data/wallet';
+import { formatAmount } from '../../../lib/format';
 import { cn } from '../../../lib/cn';
 import { useWallet } from '../../wallet/store';
-import { AnimatedNumber, Coin, KitButton } from '../kit/parts';
+import { AnimatedNumber } from '../kit/parts';
+import { BalanceMenu, coinAmount, useBalanceCoin } from './BalanceMenu';
+import { Caps, Light, Skel } from './ui';
+import { TODAY, WEEK } from './week';
 
-// The signature, and the first thing the eye lands on. The largest card in the money row and the
-// only one with the purple light. The balance set as type, Bai Jamjuree Bold at 64px, tabular, the
-// cents a step quieter, rolling on change, the day's result under it. One cut-out, girl-wrap, stands
-// at the card's right edge inside it, her legs behind the transactions well.
+// The hero and the first thing the eye lands on. The balance at 88, Switzer 600, tight and tabular,
+// the cents a step quieter, the day's change under it. The money row's one light enters from the top
+// right behind the character, who stands whole inside the glass. Across the foot a frosted well holds
+// the week as glass bars after the trading shot's chart, today's bar in brand purple, and the
+// character's lower half reads softly through it, the vault's pane of glass.
 
-/** The day's result so far, the Sugar Rush session of 12 minutes ago. */
-const TODAY = 60;
+const FOCUS = 'outline-none focus-visible:ring-2 focus-visible:ring-[#B47CFF] focus-visible:ring-offset-2 focus-visible:ring-offset-[#0E0C13]';
 
-const STATUS = {
-  completed: { label: 'Completed', cls: 'text-win bg-win/10' },
-  pending: { label: 'Pending', cls: 'text-pending bg-pending/10' },
-  declined: { label: 'Declined', cls: 'text-[#FF8FA3] bg-danger/15' },
-} as const;
-
-function TxRow({ tx }: { tx: Transaction }) {
-  const dep = tx.direction === 'deposit';
-  const d = formatDate(tx.date);
-  const st = STATUS[tx.status];
+function WeekBars({ today }: { today: number }) {
+  const days = [...WEEK, { day: 'Today', date: TODAY.date, close: today }];
+  const max = Math.max(...days.map((d) => d.close));
+  const [hover, setHover] = useState<number | null>(null);
+  const [stop, setStop] = useState(days.length - 1);
+  const refs = useRef<(HTMLButtonElement | null)[]>([]);
+  const onKey = (e: KeyboardEvent) => {
+    const step = { ArrowRight: 1, ArrowLeft: -1, Home: -99, End: 99 }[e.key];
+    if (!step) return;
+    e.preventDefault();
+    const n = Math.min(days.length - 1, Math.max(0, stop + step));
+    setStop(n);
+    refs.current[n]?.focus();
+  };
   return (
-    <li className="flex h-[52px] items-center gap-3 k-rule border-t first:border-t-0">
-      <span className="relative flex w-12 shrink-0 justify-center">
-        <MethodLogo selection={tx.method} size="md" />
-        <span aria-hidden className={cn('absolute -bottom-1 right-0 flex h-4 w-4 items-center justify-center rounded-full border-2 border-[rgb(var(--k-panel-2))]', dep ? 'bg-win text-[#0B2A14]' : 'bg-[#B47CFF] text-[#1A0F2B]')}>
-          {dep ? <ArrowDownLeft weight="bold" className="h-[10px] w-[10px]" /> : <ArrowUpRight weight="bold" className="h-[10px] w-[10px]" />}
-        </span>
-      </span>
-      <span className="flex min-w-0 flex-1 flex-col">
-        <span className="truncate text-14 font-bold leading-5 text-ink">{dep ? 'Deposit' : 'Withdrawal'}</span>
-        <span className="num truncate text-12 font-semibold leading-4 text-[rgb(var(--k-muted))]">
-          {methodLabel(tx.method, tx.networkId)}, {d.day}, {d.time}
-        </span>
-      </span>
-      <span className={cn('rounded-[8px] px-2 py-0.5 text-12 font-bold leading-4', st.cls)}>{st.label}</span>
-      <span className={cn('num w-[84px] shrink-0 text-right text-16 font-bold', tx.status === 'declined' ? 'text-[rgb(var(--k-dim))] line-through decoration-1' : dep ? 'text-win' : 'text-ink')}>
-        {dep ? '+' : '−'}
-        {formatAmount(tx.value)}
-      </span>
-    </li>
-  );
-}
-
-function Recent() {
-  const { transactions, historyState, retryHistory } = useWallet();
-  const last = transactions.slice(0, 3);
-  return (
-    <div className="k-well relative z-10 rounded-[16px] px-4 pb-1 pt-3">
-      <div className="flex items-center justify-between pb-1">
-        <h3 className="text-12 font-bold uppercase tracking-[0.08em] text-[rgb(var(--k-dim))]">Last transactions</h3>
-        <Link to="/wallet/deposit" className="rounded-[6px] text-14 font-bold text-accent hover:text-ink">
-          All transactions
-        </Link>
-      </div>
-      {historyState === 'loading' ? (
-        <div className="flex flex-col gap-2 py-2">
-          {[0, 1, 2].map((i) => (
-            <Skeleton key={i} className="h-10 w-full rounded-[10px]" />
-          ))}
-        </div>
-      ) : historyState === 'error' ? (
-        <div className="flex h-[156px] flex-col items-center justify-center gap-2 text-center">
-          <WarningCircle weight="fill" className="h-6 w-6 text-danger" aria-hidden />
-          <p className="text-14 font-semibold text-ink">Transactions did not load</p>
-          <KitButton tone="dark" size="sm" onClick={retryHistory} className="bg-[rgb(var(--k-panel))]">
-            Try again
-          </KitButton>
-        </div>
-      ) : last.length === 0 ? (
-        <p className="flex h-[156px] items-center justify-center text-14 font-semibold text-[rgb(var(--k-muted))]">No deposits or withdrawals yet.</p>
-      ) : (
-        <ul aria-label="Last three transactions">
-          {last.map((t) => (
-            <TxRow key={t.id} tx={t} />
-          ))}
-        </ul>
-      )}
+    <div role="group" aria-label="Closing balance, the last seven days. Arrow keys move between days." onKeyDown={onKey} className="grid h-[132px] grid-cols-7 items-end gap-3">
+      {days.map((d, i) => {
+        const isToday = i === days.length - 1;
+        const h = Math.max(56, Math.round((d.close / max) * 124));
+        const show = hover === i;
+        return (
+          <button
+            key={d.day}
+            ref={(el) => {
+              refs.current[i] = el;
+            }}
+            type="button"
+            tabIndex={i === stop ? 0 : -1}
+            aria-label={`${d.day === 'Today' ? 'Today' : d.day} ${d.date}, closing balance ${formatAmount(d.close)} USDT`}
+            onPointerEnter={() => setHover(i)}
+            onPointerLeave={() => setHover((v) => (v === i ? null : v))}
+            onFocus={() => {
+              setHover(i);
+              setStop(i);
+            }}
+            onBlur={() => setHover((v) => (v === i ? null : v))}
+            className={cn('relative flex h-full items-end rounded-2xl', FOCUS)}
+          >
+            <span
+              aria-hidden
+              className={cn(
+                'num pointer-events-none absolute left-1/2 z-10 -translate-x-1/2 whitespace-nowrap rounded-full border border-white/15 bg-[#1B1824]/90 px-[10px] py-0.5 text-12 font-semibold text-white shadow-[0_8px_20px_rgb(0_0_0/0.5)] backdrop-blur-[8px] transition-opacity duration-150',
+                show ? 'opacity-100' : 'opacity-0',
+              )}
+              style={{ bottom: h + 10 }}
+            >
+              {formatAmount(d.close)}
+            </span>
+            <span aria-hidden className={cn('flex w-full items-end justify-center pb-2', isToday ? 'gv-bar gv-bar-today' : 'gv-bar', !isToday && show && 'brightness-150')} style={{ height: h }}>
+              <span className={cn('relative text-12 font-medium leading-4', isToday ? 'font-semibold text-white' : 'text-[rgb(var(--gv-ink-3))]')}>{d.day}</span>
+            </span>
+          </button>
+        );
+      })}
     </div>
   );
 }
 
-export function BalanceCard() {
+export function BalanceCard({ loading }: { loading?: boolean }) {
   const navigate = useNavigate();
   const { balance } = useWallet();
+  const [coin] = useBalanceCoin();
   const [hidden, setHidden] = useState(false);
   const whole = Math.trunc(balance);
   const cents = Math.round((balance - whole) * 100);
+  const yesterday = WEEK[WEEK.length - 1].close;
+  const change = Math.round((balance - yesterday) * 100) / 100;
+  const pct = (change / yesterday) * 100;
+  const up = change >= 0;
   return (
-    <section aria-labelledby="bal-title" className="k-surface k-lit relative flex flex-col justify-between gap-6 rounded-[24px] p-8 [--lx:76%] [--ly:0%]">
-      {/* The cut-out stays inside the card. Her head clears the top edge, the card edge clips her at the bottom. */}
-      <div aria-hidden className="pointer-events-none absolute inset-0 overflow-hidden rounded-[24px]">
-        <img src="/art/landing/girl-wrap.webp" alt="" className="absolute right-[-44px] top-[24px] h-[560px] w-auto max-w-none" />
-      </div>
+    <section aria-labelledby="bal-title" className="gv-glass gv-edge relative flex min-h-[540px] flex-col overflow-hidden rounded-3xl p-3">
+      <Light hue="purple" x="78%" y="0%" size="62% 88%" strength={0.56} segment="50%" segAt="76%" />
+      {/* Whole inside the glass. Her head clears the top by 28, her lower half sits behind the frosted well. */}
+      <img aria-hidden src="/art/landing/girl-wrap.webp" alt="" className="pointer-events-none absolute right-[14px] top-[28px] z-0 h-[452px] w-auto max-w-none select-none [mask-image:linear-gradient(180deg,#000_78%,transparent_100%)]" />
 
-      <div className="relative flex flex-col gap-4">
+      <div className="relative z-10 flex flex-col px-[20px] pt-[20px]">
         <div className="flex items-center gap-3">
-          <h2 id="bal-title" className="text-12 font-bold uppercase tracking-[0.08em] text-[rgb(var(--k-dim))]">
-            Balance
-          </h2>
-          <span aria-hidden className="h-4 w-px bg-ink/15" />
-          <span className="flex items-center gap-2 text-14 font-bold text-[rgb(var(--k-muted))]">
-            <Coin id="usdt" size={20} />
-            {ACCOUNT.currency}
+          <span aria-hidden className="gv-well flex h-10 w-10 items-center justify-center rounded-full text-[rgb(var(--gv-violet))]">
+            <Wallet weight="fill" className="h-5 w-5" />
           </span>
+          <h2 id="bal-title" className="text-16 font-medium text-[rgb(var(--gv-ink-2))]">
+            Total balance
+          </h2>
+          <BalanceMenu variant="chip" />
           <button
             type="button"
             aria-pressed={hidden}
             aria-label={hidden ? 'Show balance' : 'Hide balance'}
             onClick={() => setHidden((h) => !h)}
-            className="flex h-8 w-8 items-center justify-center rounded-[8px] text-[rgb(var(--k-muted))] outline-none hover:bg-ink/5 hover:text-ink focus-visible:ring-2 focus-visible:ring-accent"
+            className={cn('flex h-10 w-10 items-center justify-center rounded-full text-[rgb(var(--gv-ink-2))] transition-colors hover:bg-white/[0.06] hover:text-white', FOCUS)}
           >
-            {hidden ? <EyeSlash weight="bold" className="h-4 w-4" aria-hidden /> : <Eye weight="bold" className="h-4 w-4" aria-hidden />}
+            {hidden ? <EyeSlash weight="regular" className="h-5 w-5" aria-hidden /> : <Eye weight="regular" className="h-5 w-5" aria-hidden />}
           </button>
         </div>
-        <p className="font-display text-[64px] font-bold leading-[64px] tracking-[-0.02em] text-ink">
-          {hidden ? (
-            <span className="num" aria-label="Balance hidden">
-              ••••••
-            </span>
-          ) : (
-            <>
-              <AnimatedNumber value={whole} format={(n) => Math.round(n).toLocaleString('en-US')} />
-              <AnimatedNumber value={cents} format={(n) => `.${String(Math.round(n)).padStart(2, '0')}`} className="text-[rgb(var(--k-muted))]" />
-            </>
-          )}
-        </p>
-        <p className="flex items-center gap-3">
-          <span className="num inline-flex h-8 items-center gap-1 rounded-[8px] bg-win/10 px-2 text-14 font-bold text-win">
-            <TrendUp weight="bold" className="h-4 w-4" aria-hidden />+{formatAmount(TODAY)}
-          </span>
-          <span className="text-14 font-semibold text-[rgb(var(--k-muted))]">today, from Sugar Rush</span>
-        </p>
-        <div className="mt-2 flex gap-2">
-          <KitButton tone="purple" size="md" onClick={() => navigate('/wallet/withdraw')} className="h-11 w-[132px]">
+
+        {loading ? (
+          <div className="mt-6 flex flex-col gap-4" role="status" aria-label="Loading your balance">
+            <Skel className="h-[88px] w-[320px] rounded-[20px]" />
+            <Skel className="h-6 w-[240px] rounded-full" />
+            <Skel className="h-5 w-[200px] rounded-full" />
+          </div>
+        ) : (
+          <>
+            <p className="num mt-6 whitespace-nowrap text-[88px] font-semibold leading-[88px] tracking-[-0.045em] text-white">
+              {hidden ? (
+                <span aria-label="Balance hidden">••••••</span>
+              ) : coin === 'usdt' ? (
+                <>
+                  <AnimatedNumber value={whole} format={(n) => Math.round(n).toLocaleString('en-US')} />
+                  <AnimatedNumber value={cents} format={(n) => `.${String(Math.round(n)).padStart(2, '0')}`} className="text-white/[0.36]" />
+                </>
+              ) : (
+                <span>{coinAmount(balance, coin)}</span>
+              )}
+              <span className="sr-only"> {coinById(coin).symbol}</span>
+            </p>
+            <p className="mt-4 flex items-center gap-3">
+              <span className={cn('num flex items-center gap-1 text-16 font-semibold', up ? 'text-[#38EE59]' : 'text-[#FF8FA3]')}>
+                <TrendUp weight="bold" className={cn('h-4 w-4', !up && 'rotate-180')} aria-hidden />
+                {up ? '+' : '−'}
+                {formatAmount(Math.abs(change))} USDT
+              </span>
+              <span className={cn('num inline-flex h-6 items-center rounded-full px-2 text-12 font-semibold', up ? 'bg-[#38EE59]/[0.12] text-[#38EE59]' : 'bg-[#FF7A88]/[0.14] text-[#FF8FA3]')}>
+                {up ? '+' : '−'}
+                {Math.abs(pct).toFixed(2)}%
+              </span>
+              <span className="text-14 font-medium text-[rgb(var(--gv-ink-3))]">today</span>
+            </p>
+            <p className="num mt-1 text-14 text-[rgb(var(--gv-ink-3))]">
+              {formatAmount(TODAY.deposited)} deposited, {formatAmount(TODAY.won)} won on {TODAY.game}
+            </p>
+          </>
+        )}
+
+        <div className="mt-6 flex items-center gap-3">
+          <button type="button" onClick={() => navigate('/wallet/withdraw')} className={cn('k-key k-key-purple k-key-pill inline-flex h-[48px] items-center justify-center gap-2 px-6 text-16', FOCUS)}>
+            <ArrowUpRight weight="bold" className="h-4 w-4" aria-hidden />
             Withdraw
-          </KitButton>
-          <KitButton tone="dark" size="md" onClick={() => navigate('/agent')} className="h-11 px-[20px]">
+          </button>
+          <button type="button" onClick={() => navigate('/agent')} className={cn('gv-pill inline-flex h-[48px] items-center gap-2 whitespace-nowrap rounded-full px-6 text-16 font-semibold text-white', FOCUS)}>
+            <Headset weight="regular" className="h-5 w-5 text-[rgb(var(--gv-ink-2))]" aria-hidden />
             Send to agent
-          </KitButton>
+          </button>
         </div>
       </div>
 
-      <Recent />
+      {/* The frosted pane across the foot. */}
+      <div className="relative z-10 mt-auto rounded-2xl border border-white/[0.08] bg-[#0E0C14]/40 px-[20px] pb-4 pt-4 shadow-[inset_0_1px_0_rgb(255_255_255/0.08)] [-webkit-backdrop-filter:blur(20px)_saturate(1.2)] [backdrop-filter:blur(20px)_saturate(1.2)]">
+        <div className="mb-2 flex items-center justify-between">
+          <Caps>This week</Caps>
+          <Link to="/wallet/deposit" className={cn('group inline-flex items-center gap-1 rounded-full text-12 font-semibold text-[rgb(var(--gv-ink-2))] hover:text-white', FOCUS)}>
+            All transactions
+            <ArrowRight weight="bold" className="h-[12px] w-[12px] transition-transform duration-200 group-hover:translate-x-[2px]" aria-hidden />
+          </Link>
+        </div>
+        {loading ? <Skel className="h-[132px] w-full rounded-[14px]" /> : <WeekBars today={balance} />}
+      </div>
     </section>
   );
 }

@@ -7,10 +7,15 @@ import { formatAmount } from '../../../lib/format';
 import { cn } from '../../../lib/cn';
 import { KitButton } from '../kit/parts';
 import { PRESETS, QUICK_METHODS, checkoutUrl, quoteFor, type QuickMethod } from './quote';
+import { Title } from './ui';
 
-// Skinify's payment modal, set flat into the dashboard, the second thing the eye lands on. Method
-// cards with a type tag, the picked one with an accent outline and a check, the amount with presets,
-// a sunken well with You pay as the one strong number, and the row's orange Checkout across the foot.
+// The second thing the eye lands on. A glass card in the vault beside the balance. The methods as
+// quiet glass chips, the picked one lit from its top edge with a check. The amount in one well with
+// the presets inside it, a summary well with You pay as the one strong number, the promo code, and
+// Checkout, the orange pill key and the only orange in the money row. Every behaviour of round 4
+// stays, the arrow keys, the presets, the checks, the promo states and the deep link in quote.ts.
+
+const FOCUS = 'outline-none focus-visible:ring-2 focus-visible:ring-[#B47CFF] focus-visible:ring-offset-2 focus-visible:ring-offset-[#0E0C13]';
 
 function Glyph({ path, fill, className, viewBox = '0 0 24 24' }: { path: string; fill: string; className?: string; viewBox?: string }) {
   return (
@@ -20,33 +25,16 @@ function Glyph({ path, fill, className, viewBox = '0 0 24 24' }: { path: string;
   );
 }
 
-function MethodMark({ m }: { m: QuickMethod }): ReactNode {
+function MethodIcon({ m }: { m: QuickMethod }): ReactNode {
   if (m.kind === 'cash') {
-    if (m.methodId === 'visa') return <Glyph path={siVisa.path} fill="#FFFFFF" viewBox="0 7 24 10" className="h-[32px] w-[78px]" />;
-    if (m.methodId === 'mastercard')
-      return (
-        <span className="flex items-center gap-2">
-          <img src="/brand/mastercard.svg" alt="" className="h-[30px] w-auto" />
-          <span className="text-16 font-bold tracking-[-0.01em] text-ink">mastercard</span>
-        </span>
-      );
-    return (
-      <span className="flex items-center gap-2">
-        <Glyph path={siPaypal.path} fill="#3B9BEA" className="h-[26px] w-[26px]" />
-        <span className="text-20 font-bold italic tracking-[-0.02em] text-ink">PayPal</span>
-      </span>
-    );
+    if (m.methodId === 'visa') return <Glyph path={siVisa.path} fill="#FFFFFF" viewBox="0 7 24 10" className="h-[12px] w-[30px]" />;
+    if (m.methodId === 'mastercard') return <img src="/brand/mastercard.svg" alt="" className="h-[20px] w-auto" />;
+    return <Glyph path={siPaypal.path} fill="#3B9BEA" className="h-[20px] w-[20px]" />;
   }
-  const coin = coinById(m.coinId);
-  return (
-    <span className="flex items-center gap-2">
-      <img src={coin.icon} alt="" className="h-[30px] w-[30px] rounded-full" />
-      <span className="text-20 font-bold lowercase tracking-[-0.01em] text-ink">{m.name}</span>
-    </span>
-  );
+  return <img src={coinById(m.coinId).icon} alt="" className="h-[28px] w-[28px] rounded-full" />;
 }
 
-function MethodCard({ m, on, onPick, tabIndex, refCb }: { m: QuickMethod; on: boolean; onPick: () => void; tabIndex: number; refCb: (el: HTMLButtonElement | null) => void }) {
+function MethodChip({ m, on, onPick, tabIndex, refCb }: { m: QuickMethod; on: boolean; onPick: () => void; tabIndex: number; refCb: (el: HTMLButtonElement | null) => void }) {
   return (
     <button
       ref={refCb}
@@ -56,29 +44,29 @@ function MethodCard({ m, on, onPick, tabIndex, refCb }: { m: QuickMethod; on: bo
       aria-label={`${m.name}, ${m.tag}`}
       tabIndex={tabIndex}
       onClick={onPick}
-      className={cn(
-        'relative flex h-[72px] w-full items-center justify-center rounded-[16px] border outline-none transition-colors duration-200 focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-[rgb(var(--k-panel))]',
-        on ? 'border-accent bg-[#2A1D4D] shadow-[0_0_0_1px_rgb(180_124_255)]' : 'border-white/[0.08] bg-[rgb(var(--k-item))] hover:border-white/[0.16] hover:bg-[rgb(var(--k-item-hover))]',
-      )}
+      className={cn('relative flex h-[52px] w-full items-center gap-3 rounded-2xl pl-2 pr-2 text-left transition-[background-color,box-shadow] duration-200', FOCUS, on ? 'gv-picked' : 'gv-pill')}
     >
-      <span className={cn('absolute left-2 top-2 rounded-[6px] px-[6px] py-0.5 text-12 font-bold uppercase leading-4 tracking-[0.02em]', on ? 'bg-accent text-[#1A0F2B]' : 'bg-[#3A2A63] text-[#D9C6FF]')}>{m.tag}</span>
+      <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-white/[0.06]">
+        <MethodIcon m={m} />
+      </span>
+      <span className="flex min-w-0 flex-col">
+        <span className="truncate text-14 font-semibold leading-5 text-white">{m.name}</span>
+        <span className={cn('truncate text-12 font-medium leading-4', on ? 'text-[rgb(var(--gv-violet))]' : 'text-[rgb(var(--gv-ink-3))]')}>{m.tag}</span>
+      </span>
       {on && (
-        <span aria-hidden className="absolute right-2 top-2 flex h-5 w-5 items-center justify-center rounded-full bg-accent text-[#1A0F2B]">
-          <Check weight="bold" className="h-[12px] w-[12px]" />
+        <span aria-hidden className="absolute right-2 top-2 flex h-[18px] w-[18px] items-center justify-center rounded-full bg-[#B47CFF] text-[#1A0F2B]">
+          <Check weight="bold" className="h-[11px] w-[11px]" />
         </span>
       )}
-      <span className="mt-4">
-        <MethodMark m={m} />
-      </span>
     </button>
   );
 }
 
 function Leader({ label, value }: { label: string; value: ReactNode }) {
   return (
-    <div className="flex items-baseline justify-between gap-2">
-      <dt className="text-14 font-semibold text-[rgb(var(--k-muted))]">{label}</dt>
-      <dd className="num text-14 font-bold text-ink">{value}</dd>
+    <div className="flex min-w-[232px] items-baseline justify-between gap-4">
+      <dt className="truncate text-14 text-[rgb(var(--gv-ink-2))]">{label}</dt>
+      <dd className="num shrink-0 text-14 font-semibold text-white">{value}</dd>
     </div>
   );
 }
@@ -97,6 +85,7 @@ export function QuickDeposit() {
   const amount = Number(raw.replace(/,/g, ''));
   const q = useMemo(() => quoteFor(method, Number.isFinite(amount) ? amount : 0), [method, amount]);
   const showProblem = q.problem && (tried || raw !== '');
+  const payText = q.problem && !(amount > 0) ? '0.00' : formatAmount(q.pay, q.payDigits);
 
   const onKey = (e: KeyboardEvent, i: number) => {
     const step = { ArrowRight: 1, ArrowDown: 3, ArrowLeft: -1, ArrowUp: -3 }[e.key];
@@ -117,13 +106,11 @@ export function QuickDeposit() {
   };
 
   return (
-    <section aria-labelledby="qd-title" className="k-surface flex flex-col gap-4 rounded-[20px] p-[24px]">
+    <section aria-labelledby="qd-title" className="gv-glass gv-edge flex flex-col gap-4 rounded-3xl p-6">
       <div className="flex items-center justify-between gap-4">
-        <h2 id="qd-title" className="text-12 font-bold uppercase tracking-[0.08em] text-[rgb(var(--k-dim))]">
-          Quick deposit
-        </h2>
-        <p className="flex items-center gap-1 text-12 font-semibold text-[rgb(var(--k-muted))]">
-          <Lightning weight="fill" className="h-4 w-4 text-gold" aria-hidden />
+        <Title id="qd-title">Quick deposit</Title>
+        <p className="flex items-center gap-1 text-12 font-medium text-[rgb(var(--gv-ink-3))]">
+          <Lightning weight="fill" className="h-4 w-4 text-[#F4D543]" aria-hidden />
           Cards land instantly, coins in minutes
         </p>
       </div>
@@ -131,115 +118,116 @@ export function QuickDeposit() {
       <div role="radiogroup" aria-label="Payment method" className="grid grid-cols-3 gap-2">
         {QUICK_METHODS.map((m, i) => (
           <div key={m.key} onKeyDown={(e) => onKey(e, i)}>
-            <MethodCard m={m} on={m.key === key} onPick={() => setKey(m.key)} tabIndex={m.key === key ? 0 : -1} refCb={(el) => (refs.current[i] = el)} />
+            <MethodChip m={m} on={m.key === key} onPick={() => setKey(m.key)} tabIndex={m.key === key ? 0 : -1} refCb={(el) => (refs.current[i] = el)} />
           </div>
         ))}
       </div>
 
-      <div className="grid grid-cols-2 gap-6">
-        <div className="flex flex-col gap-2">
-          <div className="flex items-baseline justify-between">
-            <label htmlFor={ids.amount} className="text-14 font-bold text-ink">
-              Amount
-            </label>
-            <span className="text-12 font-semibold text-[rgb(var(--k-dim))]">
-              Minimum <span className="num text-win">{formatAmount(q.min)} USD</span>
-            </span>
-          </div>
-          <div className={cn('flex h-11 min-w-0 items-center gap-2 rounded-[12px] border bg-[rgb(var(--k-item))] px-3 transition-colors focus-within:border-accent focus-within:ring-1 focus-within:ring-accent', showProblem ? 'border-danger/70' : 'border-white/[0.08]')}>
-            <span aria-hidden className="text-16 font-bold text-[rgb(var(--k-muted))]">
-              $
-            </span>
-            <input
-              ref={amountRef}
-              id={ids.amount}
-              inputMode="decimal"
-              autoComplete="off"
-              value={raw}
-              onChange={(e) => setRaw(e.target.value.replace(/[^\d.,]/g, ''))}
-              aria-invalid={!!showProblem}
-              aria-describedby={ids.help}
-              placeholder="Amount"
-              className="num h-full min-w-0 flex-1 bg-transparent text-16 font-bold text-ink outline-none placeholder:font-semibold placeholder:text-[rgb(var(--k-dim))]"
-            />
-          </div>
-          <div className="grid grid-cols-3 gap-2">
+      <div className="flex flex-col gap-2">
+        <div className="flex items-baseline justify-between px-1">
+          <label htmlFor={ids.amount} className="text-14 font-medium text-[rgb(var(--gv-ink-2))]">
+            Amount
+          </label>
+          <span className="text-12 font-medium text-[rgb(var(--gv-ink-3))]">
+            Minimum <span className="num text-white">{formatAmount(q.min)} USD</span>
+          </span>
+        </div>
+        <div className={cn('gv-well flex h-[56px] min-w-0 items-center gap-2 rounded-2xl pl-4 pr-2 transition-shadow focus-within:shadow-[inset_0_0_0_1px_rgb(180_124_255)]', showProblem && 'shadow-[inset_0_0_0_1px_rgb(255_122_136/0.8)]')}>
+          <span aria-hidden className="text-20 font-semibold text-[rgb(var(--gv-ink-3))]">
+            $
+          </span>
+          <input
+            ref={amountRef}
+            id={ids.amount}
+            inputMode="decimal"
+            autoComplete="off"
+            value={raw}
+            onChange={(e) => setRaw(e.target.value.replace(/[^\d.,]/g, ''))}
+            aria-invalid={!!showProblem}
+            aria-describedby={ids.help}
+            placeholder="0.00"
+            className="num h-full min-w-0 flex-1 bg-transparent text-20 font-semibold text-white outline-none placeholder:text-[rgb(var(--gv-ink-3))]"
+          />
+          <div className="flex gap-1">
             {PRESETS.map((p) => (
               <button
                 key={p}
                 type="button"
                 aria-pressed={amount === p}
                 onClick={() => setRaw(String(p))}
-                className={cn(
-                  'num h-9 rounded-[12px] border text-14 font-bold outline-none transition-colors focus-visible:ring-2 focus-visible:ring-accent',
-                  amount === p ? 'border-accent bg-[#2A1D4D] text-ink' : 'border-white/[0.08] bg-[rgb(var(--k-item))] text-[rgb(var(--k-muted))] hover:border-white/[0.16] hover:text-ink',
-                )}
+                className={cn('num h-10 rounded-full px-4 text-14 font-semibold transition-colors', FOCUS, amount === p ? 'gv-on text-white' : 'text-[rgb(var(--gv-ink-2))] hover:bg-white/[0.06] hover:text-white')}
               >
                 ${p}
               </button>
             ))}
           </div>
-          <p id={ids.help} aria-live="polite" className={cn('flex min-h-[16px] items-center gap-1 text-12 font-semibold', showProblem ? 'text-[#FF8FA3]' : 'text-[rgb(var(--k-dim))]')}>
-            {showProblem ? (
-              <>
-                <WarningCircle weight="fill" className="h-4 w-4 shrink-0" aria-hidden />
-                {q.problem}
-              </>
-            ) : (
-              `Credited as USDT, 1 USD is 1 USDT`
-            )}
-          </p>
-          <form
-            className="flex gap-2"
-            onSubmit={(e) => {
-              e.preventDefault();
-              setPromoState(promo.trim() ? 'added' : 'blank');
-            }}
-          >
-            <div className="flex h-11 min-w-0 flex-1 items-center gap-2 rounded-[12px] border border-white/[0.08] bg-[rgb(var(--k-item))] px-3 focus-within:border-accent focus-within:ring-1 focus-within:ring-accent">
-              <Ticket weight="fill" className="h-4 w-4 shrink-0 text-[rgb(var(--k-dim))]" aria-hidden />
-              <label htmlFor={ids.promo} className="sr-only">
-                Promo code
-              </label>
-              <input
-                id={ids.promo}
-                value={promo}
-                onChange={(e) => {
-                  setPromo(e.target.value.toUpperCase());
-                  setPromoState('idle');
-                }}
-                placeholder="Promo code"
-                autoComplete="off"
-                className="h-full min-w-0 flex-1 bg-transparent text-14 font-bold uppercase tracking-[0.04em] text-ink outline-none placeholder:normal-case placeholder:tracking-normal placeholder:font-semibold placeholder:text-[rgb(var(--k-dim))]"
-              />
-              {promoState === 'added' && <CheckCircle weight="fill" className="h-5 w-5 shrink-0 text-win" aria-label="Code added" />}
-            </div>
-            <KitButton type="submit" tone="purple" size="sm" className="h-11 px-4">
-              Apply
-            </KitButton>
-          </form>
-          <p role="status" className="sr-only">
-            {promoState === 'added' ? `Code ${promo.trim()} added. It is checked at checkout.` : promoState === 'blank' ? 'Type a promo code first.' : ''}
-          </p>
         </div>
-
-        <div className="k-well flex flex-col justify-between gap-4 rounded-[16px] p-4">
-          <dl className="flex h-full flex-col justify-between gap-4">
-            <div className="flex flex-col gap-1">
-              <dt className="text-12 font-bold uppercase tracking-[0.08em] text-[rgb(var(--k-dim))]">You pay</dt>
-              <dd className="num text-28 font-bold leading-8 text-ink">{q.problem && !(amount > 0) ? '0.00' : `${formatAmount(q.pay, q.payDigits)} ${q.payUnit}`}</dd>
-            </div>
-            <div className="k-rule flex flex-col gap-2 border-t pt-3">
-              <Leader label="You get" value={`${formatAmount(amount > 0 ? q.get : 0)} USDT`} />
-              <Leader label={q.feeLabel} value={`${formatAmount(q.fee)} USD`} />
-            </div>
-          </dl>
-        </div>
+        <p id={ids.help} aria-live="polite" className={cn('flex min-h-[16px] items-center gap-1 px-1 text-12 font-medium', showProblem ? 'text-[#FF8FA3]' : 'text-[rgb(var(--gv-ink-3))]')}>
+          {showProblem ? (
+            <>
+              <WarningCircle weight="fill" className="h-4 w-4 shrink-0" aria-hidden />
+              {q.problem}
+            </>
+          ) : (
+            'Credited as USDT, 1 USD is 1 USDT'
+          )}
+        </p>
       </div>
 
-      <KitButton tone="primary" size="lg" onClick={checkout} className="w-full">
-        <CheckCircle weight="fill" className="h-5 w-5" aria-hidden />
+      <dl className="gv-well grid grid-cols-[minmax(0,1fr)_auto] items-center gap-x-6 rounded-2xl px-4 py-3">
+        <div className="row-span-2 flex flex-col gap-0.5">
+          <dt className="text-12 font-semibold uppercase tracking-[0.08em] text-[rgb(var(--gv-ink-3))]">You pay</dt>
+          <dd className={cn('num truncate font-semibold tracking-[-0.02em] text-white', payText.length > 7 ? 'text-20 leading-8' : 'text-28')}>
+            {payText} <span className="text-16 font-medium text-[rgb(var(--gv-ink-2))]">{q.payUnit}</span>
+          </dd>
+        </div>
+        <Leader label="You get" value={`${formatAmount(amount > 0 ? q.get : 0)} USDT`} />
+        <Leader label={q.feeLabel} value={`${formatAmount(q.fee)} USD`} />
+      </dl>
+
+      <form
+        className="flex min-w-0 flex-col"
+        onSubmit={(e) => {
+          e.preventDefault();
+          setPromoState(promo.trim() ? 'added' : 'blank');
+        }}
+      >
+        <div className="gv-well flex h-11 min-w-0 items-center gap-2 rounded-full pl-4 pr-[4px] focus-within:shadow-[inset_0_0_0_1px_rgb(180_124_255)]">
+          <Ticket weight="regular" className="h-4 w-4 shrink-0 text-[rgb(var(--gv-ink-3))]" aria-hidden />
+          <label htmlFor={ids.promo} className="sr-only">
+            Promo code
+          </label>
+          <input
+            id={ids.promo}
+            value={promo}
+            onChange={(e) => {
+              setPromo(e.target.value.toUpperCase());
+              setPromoState('idle');
+            }}
+            placeholder="Promo code"
+            autoComplete="off"
+            className="h-full min-w-0 flex-1 bg-transparent text-14 font-semibold uppercase tracking-[0.04em] text-white outline-none placeholder:font-medium placeholder:normal-case placeholder:tracking-normal placeholder:text-[rgb(var(--gv-ink-3))]"
+          />
+          {promoState === 'added' && (
+            <span className="flex shrink-0 items-center gap-1 text-12 font-semibold text-[#38EE59]">
+              <CheckCircle weight="fill" className="h-4 w-4" aria-hidden />
+              Added
+            </span>
+          )}
+          <button type="submit" className={cn('k-key k-key-purple k-key-pill inline-flex h-9 shrink-0 items-center px-4 text-14', FOCUS)}>
+            Apply
+          </button>
+        </div>
+        <p role="status" className="sr-only">
+          {promoState === 'added' ? `Code ${promo.trim()} added. It is checked at checkout.` : promoState === 'blank' ? 'Type a promo code first.' : ''}
+        </p>
+      </form>
+
+      <KitButton tone="primary" shape="pill" size="lg" onClick={checkout} className="mt-auto h-[56px] w-full text-16 focus-visible:ring-offset-[#0E0C13]">
         Checkout
+        <span aria-hidden className="num font-semibold opacity-70">
+          {q.problem ? '' : `${formatAmount(q.pay, q.payDigits)} ${q.payUnit}`}
+        </span>
       </KitButton>
     </section>
   );

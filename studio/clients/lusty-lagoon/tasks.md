@@ -38,7 +38,8 @@ Task format
   - [x] /uireview on the wallet flow, 0 open sev 1 after the re-check
   - [ ] Filip accepts the wallet flow, then kit and golden
   - [ ] Filip picks how the rest is built, on the new flat system or as a faithful port first
-  - [ ] Unblock Figma assets, file in the Pro team or exported by hand
+  - [x] Unblock Figma assets, the Pro team copy fGqIuwR8pailgKcy4UFfNg works
+  - [ ] Pull every image and icon from the copy
   - [ ] Landing page
   - [ ] Lobby
   - [ ] Login and Register, both steps

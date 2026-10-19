@@ -47,8 +47,9 @@ WCAG 2.2 AA, the studio default. Known failures in the source design, Filip to c
 
 ## Reference
 
-Figma file Lusty Lagoon Casino, page Design (node 83-53), read 2026-10-19.
-https://www.figma.com/design/MjPhupcafS4TyCyssMHTjU/Lusty-Lagoon-Casino?node-id=83-53
+Figma file Lusty Lagoon Casino (Copy), page Design (node 83-53), in Filip's Pro team, read 2026-10-19.
+https://www.figma.com/design/fGqIuwR8pailgKcy4UFfNg/Lusty-Lagoon-Casino--Copy-?node-id=83-53
+Use this copy. The original, MjPhupcafS4TyCyssMHTjU, sits on a Starter plan that caps Figma calls. Node ids match.
 
 - Section Dashboard Designs Desktop holds 22 frames at 1440. Landing page, Dashboard (the lobby),
   Login, Register steps 1 and 2, Wallet in 8 states across Deposit, Withdraw and Gift card, Tip,

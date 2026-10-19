@@ -1,0 +1,113 @@
+{
+  "task": "lusty-lagoon-1",
+  "repo": "/home/user/freelancing",
+  "client": "lusty-lagoon",
+  "trigger": "auto",
+  "openedAt": "2026-10-19T10:58:17.654Z",
+  "rounds": [
+    {
+      "n": 1,
+      "tree": "6ec050889166b47df0df995efdb2142b2a056322",
+      "at": "2026-10-19T11:04:55.505Z",
+      "score": 1
+    },
+    {
+      "n": 2,
+      "tree": "78221e784a15b81507712486ad1caeb0e16e1a2e",
+      "at": "2026-10-19T11:09:08.765Z",
+      "score": 7.8
+    }
+  ],
+  "findings": [
+    {
+      "id": "F1",
+      "sev": 1,
+      "where": "lusty-lagoon/src/features/wallet/PaymentFlow.tsx:261 Summary aside.sticky.top-24, routes deposit-send, deposit-amount, deposit-card-form, deposit-done, deposit-declined, withdraw-review, withdraw-l...",
+      "what": "the pinned Summary leaves its pin line at scroll 600. It sits in a grid only as tall as the left card, so sticky does nothing and a 600px scroll carries it off screen. Remove the sticky or give it room to stick.",
+      "status": "fixed",
+      "round": 1
+    },
+    {
+      "id": "F2",
+      "sev": 2,
+      "where": "lusty-lagoon/src/features/wallet/steps.tsx:313-317 DetailsStep Max button, withdraw by PayPal",
+      "what": "Max writes the full balance 2,492 into Amount, but PayPal max is 2,000, so one click on Max produces the error The maximum is 2,000 USDT. Max should fill min(balance, method max).",
+      "status": "fixed",
+      "round": 1
+    },
+    {
+      "id": "F3",
+      "sev": 2,
+      "where": "lusty-lagoon/src/features/wallet/steps.tsx:343 withdraw coin DetailsStep, NetworkPicker withFee",
+      "what": "criterion 8 asks for a network pick with a lost funds warning for coins. The withdraw details step has the network pick but no lost funds warning, and USDT on ERC20 vs BEP20 both pass the evm address check.",
+      "status": "fixed",
+      "round": 1
+    },
+    {
+      "id": "F4",
+      "sev": 2,
+      "where": "lusty-lagoon/src/features/wallet/steps.tsx:544 Go to the lobby and :114 Verify identity, WalletPage.tsx Tip and Gift card tabs, Sidebar nav Lobby, Send to agent, Refer a friend, FAQ",
+      "what": "primary CTAs after a completed deposit and on the locked withdraw state land on a Placeholder reading This screen is not part of the prototype yet, and the Tip and Gift card tabs show placeholder copy. Placeholder copy on a clickable primary path and four dead nav items.",
+      "status": "open",
+      "round": 1
+    },
+    {
+      "id": "F5",
+      "sev": 2,
+      "where": "lusty-lagoon/src/components/ui/Callout.tsx:12 warning tone, used in SendStep, ReviewDepositStep wire and ReviewWithdrawStep",
+      "what": "standing rejection of a coloured card edge or a translucent tint on a card. The lost funds callout is bg-pending/10 with a border-pending/40 edge. Expected a flat opaque surface with the warning carried by the icon and bold lead line.",
+      "status": "fixed",
+      "round": 1
+    },
+    {
+      "id": "F6",
+      "sev": 2,
+      "where": "lusty-lagoon/src/pages/KitPage.tsx span.text-12.font-semibold PRIMARY, SECONDARY labels at 1440 and 1920",
+      "what": "working labels on the kit page are 12px, under the 14px floor. Expected 14px or more.",
+      "status": "fixed",
+      "round": 1
+    },
+    {
+      "id": "F7",
+      "sev": 3,
+      "where": "lusty-lagoon/src/features/wallet/store.tsx ?outcome=declined, PaymentFlow.tsx",
+      "what": "the declined result is reachable only by a URL switch, and there is no declined path for withdrawals.",
+      "status": "open",
+      "round": 1
+    },
+    {
+      "id": "F8",
+      "sev": 3,
+      "where": "lusty-lagoon/src/features/wallet/TransactionHistory.tsx tr hover:bg-raised",
+      "what": "hover highlight on every history row, but the rows do nothing on click. Hover on the inert.",
+      "status": "open",
+      "round": 1
+    },
+    {
+      "id": "F9",
+      "sev": 3,
+      "where": "lusty-lagoon/src/components/shell/Sidebar.tsx RewardCard Gift icon text-gold",
+      "what": "gold is reserved for the one primary action per view, but a decorative gift icon uses it on every screen. Expected accent or ink-2.",
+      "status": "open",
+      "round": 1
+    },
+    {
+      "id": "F10",
+      "sev": 3,
+      "where": "lusty-lagoon/src/components/ui/Logo.tsx and Sidebar.tsx at 1440 and 1920",
+      "what": "the two line wordmark is about 50px tall in a 64px row and starts about 4px from the top edge. Expected at least 8px clear space above.",
+      "status": "open",
+      "round": 1
+    },
+    {
+      "id": "F11",
+      "sev": 3,
+      "where": "studio/.state/packs/lusty-lagoon-1/pack.md",
+      "what": "unverified. The pack has no walk, golden or kit results, so sections 9 and 11 were graded from code and the criteria only.",
+      "status": "open",
+      "round": 1
+    }
+  ],
+  "cards": [],
+  "cardAt": "2026-10-19T11:09:08.837Z"
+}

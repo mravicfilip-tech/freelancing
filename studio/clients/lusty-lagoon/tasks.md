@@ -25,7 +25,7 @@ Task format
 
 ## In progress
 
-- lusty-lagoon-1 Lusty Lagoon refurb, landing page and product. Design https://www.figma.com/design/MjPhupcafS4TyCyssMHTjU/Lusty-Lagoon-Casino?node-id=83-53
+- lusty-lagoon-1 Lusty Lagoon refurb, landing page and product. Design https://www.figma.com/design/MjPhupcafS4TyCyssMHTjU/Lusty-Lagoon-Casino?node-id=83-53. Wallet flow on branch claude/busy-edison-mmjwbn, review commit 1c4453d
   - [x] Read the Figma file and list the screens
   - [x] Kickoff answers from Filip
   - [x] Queue round 1 review notes, briefs/round-1/notes.md
@@ -35,7 +35,7 @@ Task format
   - [x] References and one argued direction
   - [x] Foundation, tokens, parts and the /kit route
   - [x] Build the first screen in React, the wallet payment flow
-  - [ ] /uireview on the wallet flow
+  - [x] /uireview on the wallet flow, 0 open sev 1 after the re-check
   - [ ] Filip accepts the wallet flow, then kit and golden
   - [ ] Screen two, the lobby
   - [ ] Screen three, the landing page

@@ -1,8 +1,28 @@
 import { Coins, Crown, FishSimple, Headset, Lightning, Plus, Question, SquaresFour, UserPlus, Wallet } from '@phosphor-icons/react';
-import { Link, useLocation } from 'react-router-dom';
+import { useEffect } from 'react';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { formatAmount } from '../../../lib/format';
 import { BalancePill, KitButton, NavItem, Panel, PromoMini, SectionLabel } from '../kit/parts';
-import { kitPick } from '../kit/pick';
+import { kitPick, type PickKey } from '../kit/pick';
+
+/**
+ * Re-renders the board when the switcher steps, and writes the option into a bare URL, so
+ * /variants/buttons becomes /variants/buttons?btn=1 and the switcher, which matches on the value,
+ * always shows.
+ */
+function useBoardOption(key: PickKey) {
+  const location = useLocation();
+  const navigate = useNavigate();
+  const n = kitPick(key);
+  const bare = !new URLSearchParams(location.search).has(key);
+  useEffect(() => {
+    if (!bare) return;
+    const q = new URLSearchParams(location.search);
+    q.set(key, String(n));
+    navigate(`${location.pathname}?${q.toString()}`, { replace: true });
+  }, [bare, key, n, location.pathname, location.search, navigate]);
+  return n;
+}
 
 // Round 4 boards for micro detail picks, per the studio doctrine. Each option has its own URL,
 // /variants/buttons?btn=N and /variants/sidebar?nav=N, and variants.mjs lays them on one board by
@@ -18,8 +38,7 @@ const SYSTEMS = [
 ];
 
 export function ButtonBoard() {
-  useLocation(); // re-render when the switcher changes ?btn
-  const n = kitPick('btn');
+  const n = useBoardOption('btn');
   const s = n === 0 ? BASE_BUTTON : SYSTEMS[n - 1];
   return (
     <main className="k-page min-h-screen p-12 pb-[120px]">
@@ -125,8 +144,7 @@ const TREATMENTS = [
 ];
 
 export function SidebarBoard() {
-  useLocation(); // re-render when the switcher changes ?nav
-  const n = kitPick('nav');
+  const n = useBoardOption('nav');
   const t = n === 0 ? BASE_ROW : TREATMENTS[n - 1];
   return (
     <main className="k-page min-h-screen p-12 pb-[120px]">

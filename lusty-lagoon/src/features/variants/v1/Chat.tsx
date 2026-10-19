@@ -1,6 +1,6 @@
-import { useEffect, useRef, useState, type FormEvent } from 'react';
+import { useEffect, useLayoutEffect, useRef, useState, type FormEvent } from 'react';
 import * as P from '@radix-ui/react-popover';
-import { ArrowBendUpLeft, CaretRight, ChatCircleDots, Heart, PaperPlaneRight, SealCheck, Smiley, X } from '@phosphor-icons/react';
+import { ArrowBendUpLeft, ArrowUp, CaretRight, ChatCircleDots, Heart, PaperPlaneRight, SealCheck, Smiley, X } from '@phosphor-icons/react';
 import { ACCOUNT } from '../../../data/wallet';
 import { gameById, type CatalogueGame } from '../../../data/games';
 import { cn } from '../../../lib/cn';
@@ -56,9 +56,51 @@ export function Chat({ onPlay, onRules, state, className }: { onPlay: (g: Catalo
   const list = useRef<HTMLOListElement>(null);
   const input = useRef<HTMLInputElement>(null);
 
+  // The rail opens on whole messages only. The newest that fit stay, the earlier ones fold behind a
+  // "Show earlier messages" pill, so no half message is ever cut by the header. Opening the pill
+  // shows every message and scrolls as a normal chat.
+  const [earlier, setEarlier] = useState(0);
+  const [all, setAll] = useState(false);
+  const [fit, setFit] = useState(0);
+  const listed = state !== 'loading' && messages.length > 0;
   useEffect(() => {
-    list.current?.scrollTo({ top: list.current.scrollHeight });
-  }, [messages.length]);
+    const el = list.current;
+    if (!el || all) return;
+    let h = el.clientHeight;
+    const ro = new ResizeObserver(() => {
+      if (el.clientHeight === h) return;
+      h = el.clientHeight;
+      setEarlier(0);
+      setFit((f) => f + 1);
+    });
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, [listed, all]);
+  useLayoutEffect(() => {
+    const el = list.current;
+    if (!el) return;
+    if (all) {
+      el.scrollTo({ top: el.scrollHeight });
+      return;
+    }
+    const shown = [...el.querySelectorAll<HTMLElement>(':scope > li[data-msg]:not([data-folded])')];
+    const cs = getComputedStyle(el);
+    const room = el.clientHeight - parseFloat(cs.paddingTop) - parseFloat(cs.paddingBottom) - 38;
+    let used = 0;
+    let fits = 0;
+    for (let i = shown.length - 1; i >= 0; i--) {
+      const hgt = shown[i].offsetHeight + (fits ? 6 : 0);
+      if (used + hgt > room) break;
+      used += hgt;
+      fits++;
+    }
+    if (shown.length - fits > 0) setEarlier((e) => e + shown.length - fits);
+  }, [messages.length, fit, all, listed]);
+  const openAll = () => {
+    setAll(true);
+    setEarlier(0);
+    requestAnimationFrame(() => list.current?.scrollTo({ top: 0 }));
+  };
 
   const send = (e: FormEvent) => {
     e.preventDefault();
@@ -101,11 +143,21 @@ export function Chat({ onPlay, onRules, state, className }: { onPlay: (g: Catalo
           <NMessage icon={<ChatCircleDots weight="fill" className="text-[#C9A2FF]" />} title="The chat is quiet" body="Say hi to the lagoon. Messages show here the moment they land." />
         </div>
       ) : (
-        <ol ref={list} aria-label="Messages" className="n1-noscroll flex min-h-[0px] flex-1 flex-col gap-[6px] overflow-y-auto px-3 pb-2 pt-3 [mask-image:linear-gradient(180deg,transparent_0,#000_28px)]">
-          {messages.map((m) => {
+        <ol ref={list} aria-label="Messages" className={cn('n1-noscroll flex min-h-[0px] flex-1 flex-col gap-[6px] overflow-y-auto px-3 pb-2 pt-3', all ? '[mask-image:linear-gradient(180deg,transparent_0,#000_24px)]' : 'overflow-hidden')}>
+          {earlier > 0 && !all && (
+            <li className="mb-auto flex justify-center">
+              <button type="button" onClick={openAll} className="n1-raised n1-hoverable n1-ring flex h-8 items-center gap-2 rounded-full px-4 text-12 font-bold text-[rgb(var(--n-muted))] hover:text-ink">
+                <ArrowUp weight="bold" className="h-[12px] w-[12px]" aria-hidden />
+                <span>
+                  Show <span className="num">{earlier}</span> earlier messages
+                </span>
+              </button>
+            </li>
+          )}
+          {messages.map((m, idx) => {
             const quoted = m.replyTo ? byId(m.replyTo) : undefined;
             return (
-              <li key={m.id} className="group/msg flex gap-3">
+              <li key={m.id} data-msg data-folded={!all && idx < earlier ? '' : undefined} className={cn('group/msg flex gap-3', !all && idx < earlier && 'hidden')}>
                 <Avatar src={m.avatar} initials={m.initials} level={m.level} className="mt-1" />
                 <div className={cn('relative flex min-w-0 flex-1 flex-col gap-1 rounded-[12px] px-3 py-2', m.mine ? 'border border-[#9A4BFF]/35 bg-[#7A1FF2]/15' : 'bg-white/[0.035]')}>
                   <p className="flex items-center gap-2">

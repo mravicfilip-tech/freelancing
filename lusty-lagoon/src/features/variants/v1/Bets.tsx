@@ -6,8 +6,9 @@ import { cn } from '../../../lib/cn';
 import { BETS, payout, type Bet } from '../../lobby/data';
 import { CoinIcon, Live, NMessage, RankBadge, Segments, Skel, handle } from './ui';
 
-// Latest bets. NewBettie's columns drawn as Snegbet's leaderboard rows, each row its own card with a
-// gap. The ranked tabs sort by the win and give the top three gold, silver and bronze badges.
+// Latest bets. NewBettie's columns as one quiet table inside one panel, rows split by space with a
+// hover tint only. The ranked tabs sort by the win and give the top three gold, silver and bronze
+// badges, Snegbet's leaderboard squares.
 
 type Tab = 'all' | 'high' | 'lucky' | 'mine';
 const TABS: { value: Tab; label: string }[] = [
@@ -39,8 +40,8 @@ export function Bets({ onPlay, state }: { onPlay: (g: CatalogueGame) => void; st
         </h2>
         <Segments as="tab" size={36} label="Bets" value={tab} onChange={setTab} items={TABS} />
       </div>
-      <div role="tabpanel" aria-label={TABS.find((t) => t.value === tab)!.label} className="flex flex-col gap-[6px]">
-        <div aria-hidden className={cn(cols, 'h-8 px-4 text-12 font-bold uppercase tracking-[0.08em] text-[rgb(var(--n-dim))]')}>
+      <div role="tabpanel" aria-label={TABS.find((t) => t.value === tab)!.label} className="n1-panel flex flex-col gap-1 rounded-[20px] p-2">
+        <div aria-hidden className={cn(cols, 'h-10 border-b border-white/[0.06] px-4 text-12 font-bold uppercase tracking-[0.08em] text-[rgb(var(--n-dim))]')}>
           {ranked && <span>#</span>}
           <span>Game</span>
           <span>Time</span>
@@ -50,22 +51,18 @@ export function Bets({ onPlay, state }: { onPlay: (g: CatalogueGame) => void; st
           <span className="text-right">Profit</span>
         </div>
         {state === 'loading' ? (
-          Array.from({ length: 6 }, (_, i) => <Skel key={i} className="h-[56px] w-full rounded-[16px]" />)
+          Array.from({ length: 6 }, (_, i) => <Skel key={i} className="h-[48px] w-full rounded-[12px]" />)
         ) : state === 'error' ? (
-          <div className="n1-panel rounded-[20px]">
-            <NMessage icon={<WarningCircle weight="fill" className="text-danger" />} title="Live bets are paused" body="The feed lost its connection. It reconnects on its own, or reload the page." />
-          </div>
+          <NMessage icon={<WarningCircle weight="fill" className="text-danger" />} title="Live bets are paused" body="The feed lost its connection. It reconnects on its own, or reload the page." />
         ) : list.length === 0 ? (
-          <div className="n1-panel rounded-[20px]">
-            <NMessage icon={<GameController weight="fill" className="text-[rgb(var(--n-muted))]" />} title="No bets here yet" body="Bets that match this tab show up the moment they land." />
-          </div>
+          <NMessage icon={<GameController weight="fill" className="text-[rgb(var(--n-muted))]" />} title="No bets here yet" body="Bets that match this tab show up the moment they land." />
         ) : (
-          <ul aria-label="Latest bets" className="flex flex-col gap-[6px]">
+          <ul aria-label="Latest bets" className="flex flex-col gap-1">
             {list.map((b, i) => {
               const g = gameById(b.gameId)!;
               const p = payout(b);
               return (
-                <li key={b.id} className={cn(cols, 'n1-panel h-[56px] rounded-[16px] px-4 text-14 font-semibold transition-colors hover:bg-[rgb(var(--n-raised))]', b.mine && 'border-[#9A4BFF]/30')}>
+                <li key={b.id} className={cn(cols, 'h-[56px] rounded-[12px] px-4 text-14 font-semibold transition-colors hover:bg-white/[0.035]')}>
                   {ranked && <RankBadge place={i + 1} size={28} />}
                   <button type="button" onClick={() => onPlay(g)} className="n1-ring group flex min-w-0 items-center gap-3 rounded-[10px] text-left" aria-label={`Play ${g.name}`}>
                     <span className="h-10 w-10 shrink-0 overflow-hidden rounded-[10px]">

@@ -116,15 +116,19 @@ export const Finder = forwardRef<HTMLElement, {
                 <>
                   <span className="num font-bold text-ink">{games.length}</span> {games.length === 1 ? 'game matches' : 'games match'} "{q}"
                 </>
-              ) : (
+              ) : filtered ? (
                 <>
                   <span className="num font-bold text-ink">{games.length}</span> of <span className="num">{FLOOR.length}</span>
+                </>
+              ) : (
+                <>
+                  <span className="num font-bold text-ink">{games.length}</span> games
                 </>
               )}
             </p>
           }
         >
-          {isFiltered(filters) && (
+          {filtered && (
             <Key tone="quiet" onClick={onClear} className="h-10 px-6 text-14">
               <X weight="bold" className="h-4 w-4" aria-hidden />
               Clear filters

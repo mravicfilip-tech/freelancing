@@ -71,19 +71,6 @@ export function Caps({ children, className, as: Tag = 'span' }: { children: Reac
   return <Tag className={cn('text-12 font-bold uppercase leading-4 tracking-[0.08em] text-[rgb(var(--v4-label))]', className)}>{children}</Tag>;
 }
 
-/** A label over a bold tabular value. */
-export function Stat({ label, value, sub, size = 20, tone, className }: { label: string; value: ReactNode; sub?: ReactNode; size?: 20 | 28 | 40; tone?: string; className?: string }) {
-  return (
-    <div className={cn('flex flex-col gap-1', className)}>
-      <Caps as="dt">{label}</Caps>
-      <dd className={cn('num flex items-baseline gap-2 font-bold tracking-[-0.01em]', size === 40 ? 'text-40 leading-[44px]' : size === 28 ? 'text-28 leading-8' : 'text-20 leading-6', tone ?? 'text-ink')}>
-        {value}
-        {sub}
-      </dd>
-    </div>
-  );
-}
-
 /**
  * A section head in an angled tab, CS2's Inventory head. The title strip slopes down at its right
  * end and sits on a rule that runs the full width, with the section's controls on the right.

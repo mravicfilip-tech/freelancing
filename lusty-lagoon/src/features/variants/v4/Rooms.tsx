@@ -144,7 +144,6 @@ export function Rooms({ cat, onPick, onPlay }: { cat: CategoryFilter; onPick: (c
               <p className="mt-1 text-16 font-medium leading-6 text-[rgb(var(--v4-soft))]">{slots.blurb}</p>
               <dl className="relative mt-4 flex w-fit gap-6 py-3 pl-4 pr-12 w1920:mt-6">
                 <span aria-hidden className="absolute inset-0 bg-[#0E0D14]/45 [clip-path:polygon(0_0,100%_0,calc(100%-24px)_100%,0_100%)]" />
-                <span aria-hidden className="absolute inset-y-0 left-0 w-[2px] bg-[#B47CFF]" />
                 <div className="relative flex flex-col gap-1">
                   <Caps as="dt" className="text-[rgb(var(--v4-soft))]">Games</Caps>
                   <dd className="num text-28 font-bold leading-8 text-ink">{nSlots}</dd>

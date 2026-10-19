@@ -31,11 +31,11 @@ export function Hero({ joined, onJoin, onPlay, onRules }: { joined: boolean; onJ
         <p className="flex items-center gap-2 text-14 font-semibold text-[rgb(var(--m2-ink2))]">
           <span aria-hidden className="k-live" />
           <span>
-            <span className="num">{formatAmount(ONLINE_NOW, 0)}</span> players online, the hot streak draw is {GIVEAWAY.ends}
+            <span className="num">{formatAmount(ONLINE_NOW, 0)}</span> players online, you are <span className="num">{formatAmount(ACCOUNT.rank.nextAt - ACCOUNT.rank.points, 0)}</span> points from {ACCOUNT.rank.next}
           </span>
         </p>
       </div>
-      <div className="relative mt-[20px] h-[480px] [--m2-cx:72.5%] w1920:h-[520px] w1920:[--m2-cx:64%]">
+      <div className="relative mt-6 h-[480px] [--m2-cx:72.5%] w1920:h-[520px] w1920:[--m2-cx:64%]">
         <div aria-hidden className="m2-hero absolute inset-0 overflow-hidden rounded-[28px]">
           <img src="/art/lobby/hero-sunset.webp" alt="" className="m2-hero-scene absolute inset-0 h-full w-full object-cover" />
           <span className="m2-hero-light absolute inset-0" />
@@ -46,14 +46,16 @@ export function Hero({ joined, onJoin, onPlay, onRules }: { joined: boolean; onJ
           alt=""
           width={644}
           height={1100}
-          className="pointer-events-none absolute bottom-[1px] left-[calc(var(--m2-cx)-166px)] z-10 h-[568px] w-auto max-w-none w1920:left-[calc(var(--m2-cx)-178px)] w1920:h-[608px]"
+          className="m2-rise pointer-events-none absolute bottom-[1px] left-[calc(var(--m2-cx)-166px)] z-10 h-[568px] w-auto max-w-none w1920:left-[calc(var(--m2-cx)-178px)] w1920:h-[608px]"
         />
+        {/* A soft contact shadow, so the chest stands on the floor of the stage instead of floating. */}
+        <span aria-hidden className="pointer-events-none absolute bottom-[10px] left-[calc(var(--m2-cx)+108px)] z-10 h-6 w-[160px] rounded-full bg-black/60 blur-[10px] w1920:left-[calc(var(--m2-cx)+126px)] w1920:w-[172px]" />
         <img
           src="/art/lobby/giveaway-chest.webp"
           alt=""
           width={420}
           height={420}
-          className="pointer-events-none absolute bottom-[12px] left-[calc(var(--m2-cx)+96px)] z-10 w-[184px] w1920:left-[calc(var(--m2-cx)+112px)] w1920:w-[200px]"
+          className="m2-rise m2-rise-late pointer-events-none absolute bottom-[12px] left-[calc(var(--m2-cx)+96px)] z-10 w-[184px] w1920:left-[calc(var(--m2-cx)+112px)] w1920:w-[200px]"
         />
         <div className="relative z-20 flex h-full w-[600px] flex-col justify-center pl-12 w1920:w-[720px] w1920:pl-16">
           <p className="flex items-center gap-2 text-12 font-bold uppercase tracking-[0.12em] text-[#FFB27A]">
@@ -81,7 +83,7 @@ export function Hero({ joined, onJoin, onPlay, onRules }: { joined: boolean; onJ
               How it works
             </button>
           </div>
-          <div className="mt-[40px] flex items-end gap-8">
+          <div className="mt-8 flex items-end gap-8">
             <Stat label="Prize pool">
               <span className="num text-28 font-bold leading-8 tracking-[-0.01em] text-gold">{GIVEAWAY.pool} BTC</span>
             </Stat>
@@ -92,7 +94,7 @@ export function Hero({ joined, onJoin, onPlay, onRules }: { joined: boolean; onJ
               </span>
             </Stat>
             <span aria-hidden className="h-10 w-[1px] bg-white/[0.1]" />
-            <Stat label="Your entries">
+            <Stat label={joined ? 'Your entries' : 'Entries waiting'}>
               <span className="flex items-center gap-2">
                 <span className="num text-28 font-bold leading-8 tracking-[-0.01em] text-ink">{ENTRIES}</span>
                 {joined && (

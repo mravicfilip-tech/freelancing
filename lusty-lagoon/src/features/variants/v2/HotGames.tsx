@@ -1,4 +1,4 @@
-import { useMemo, useState, type FormEvent } from 'react';
+import { useEffect, useMemo, useRef, useState, type FormEvent } from 'react';
 import { CaretDown, Fire, MagnifyingGlass, Play, WarningCircle, X } from '@phosphor-icons/react';
 import type { CatalogueGame } from '../../../data/games';
 import { KitButton } from '../kit/parts';
@@ -7,8 +7,8 @@ import { NAV } from './Sidebar';
 import { ORDERED, type Filter } from './data';
 import { SectionTitle, Skel, StateNote, useWide } from './ui';
 
-// Hot games as whole rows of covers. Seven a row at 1440 and ten at 1920, so no cover is drawn wider
-// than the smallest source cover (152). Two rows closed, every whole row open.
+// Hot games as whole rows of covers. The row holds as many covers as keep each at or under the
+// smallest source cover (152 wide), seven at 1440 and ten at 1920. Two rows closed, every whole row open.
 
 const TAG: Record<string, string> = {
   Hot: 'bg-[#FF6A2B] text-[#1A0F2B]',
@@ -19,7 +19,17 @@ const TAG: Record<string, string> = {
 function Cover({ g, onPlay }: { g: CatalogueGame; onPlay: () => void }) {
   return (
     <button type="button" onClick={onPlay} aria-label={`Play ${g.name}, ${g.provider}`} className="group relative block aspect-[3/4] w-full overflow-hidden rounded-[16px] bg-[rgb(var(--m2-surface))] outline-none focus-visible:ring-2 focus-visible:ring-[#B47CFF] focus-visible:ring-offset-2 focus-visible:ring-offset-[rgb(var(--m2-ground))]">
-      <img src={g.image} alt="" loading="lazy" className="h-full w-full object-cover transition-transform duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-[1.05]" />
+      <img
+        src={g.image}
+        alt=""
+        loading="lazy"
+        // The hover scale stays off for a cover whose source has no room for it, so art never draws past its source size.
+        onLoad={(e) => {
+          const img = e.currentTarget;
+          if (img.naturalWidth < img.offsetWidth * 1.06) img.dataset.tight = '';
+        }}
+        className="m2-cover-art h-full w-full object-cover transition-transform duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-[1.05]"
+      />
       {g.tag && <span className={cn('absolute left-2 top-2 rounded-full px-2 text-12 font-extrabold leading-5', TAG[g.tag])}>{g.tag}</span>}
       <span aria-hidden className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/85 via-black/20 to-transparent opacity-0 transition-opacity duration-200 group-hover:opacity-100 group-focus-visible:opacity-100" />
       <span aria-hidden className="pointer-events-none absolute left-1/2 top-[42%] flex h-[48px] w-[48px] -translate-x-1/2 -translate-y-1/2 scale-90 items-center justify-center rounded-full bg-ink text-[#1A0F2B] opacity-0 transition duration-200 group-hover:scale-100 group-hover:opacity-100 group-focus-visible:scale-100 group-focus-visible:opacity-100">
@@ -34,9 +44,28 @@ function Cover({ g, onPlay }: { g: CatalogueGame; onPlay: () => void }) {
   );
 }
 
-export function HotGames({ filter, onFilter, query, onQuery, state, onPlay }: { filter: Filter; onFilter: (f: Filter) => void; query: string; onQuery: (q: string) => void; state: string | null; onPlay: (g: CatalogueGame) => void }) {
+/** As many columns as keep every cover at or under 152 wide, the smallest source cover. 7 at 1440, 10 at 1920. */
+function useCoverColumns() {
   const wide = useWide();
-  const cols = wide ? 10 : 7;
+  const ref = useRef<HTMLElement>(null);
+  const [cols, setCols] = useState(wide ? 10 : 7);
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    const fit = () => setCols(Math.max(1, Math.ceil((el.clientWidth + GAP) / (MAX_COVER + GAP))));
+    fit();
+    const ro = new ResizeObserver(fit);
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, []);
+  return { ref, cols };
+}
+
+const MAX_COVER = 152;
+const GAP = 16;
+
+export function HotGames({ filter, onFilter, query, onQuery, state, onPlay }: { filter: Filter; onFilter: (f: Filter) => void; query: string; onQuery: (q: string) => void; state: string | null; onPlay: (g: CatalogueGame) => void }) {
+  const { ref, cols } = useCoverColumns();
   const [all, setAll] = useState(false);
   const [failed, setFailed] = useState(state === 'error');
   const [draft, setDraft] = useState(query);
@@ -57,9 +86,10 @@ export function HotGames({ filter, onFilter, query, onQuery, state, onPlay }: { 
     e.preventDefault();
     onQuery(draft);
   };
-  const grid = 'grid grid-cols-7 gap-4 w1920:grid-cols-10';
+  const grid = 'grid gap-4';
+  const gridStyle = { gridTemplateColumns: `repeat(${cols}, minmax(0, 1fr))` };
   return (
-    <section id="m2-games" aria-labelledby="m2-games-title" className="flex scroll-mt-[96px] flex-col gap-4">
+    <section ref={ref} id="m2-games" aria-labelledby="m2-games-title" className="flex scroll-mt-[96px] flex-col gap-4">
       <div className="flex items-center justify-between gap-4">
         <SectionTitle id="m2-games-title" icon={<Fire weight="fill" className="text-[#FF7A3D]" />} sub={`${list.length} games${filter === 'all' ? '' : `, ${NAV.find((n) => n.value === filter)!.label.toLowerCase()}`}`}>
           Hot right now
@@ -110,7 +140,7 @@ export function HotGames({ filter, onFilter, query, onQuery, state, onPlay }: { 
         </div>
       </div>
       {state === 'loading' ? (
-        <div className={grid}>
+        <div className={grid} style={gridStyle}>
           {Array.from({ length: cols * 2 }, (_, i) => (
             <Skel key={i} className="aspect-[3/4] w-full rounded-[16px]" />
           ))}
@@ -143,7 +173,7 @@ export function HotGames({ filter, onFilter, query, onQuery, state, onPlay }: { 
         </div>
       ) : (
         <>
-          <ul className={grid}>
+          <ul className={grid} style={gridStyle}>
             {shown.map((g) => (
               <li key={g.id}>
                 <Cover g={g} onPlay={() => onPlay(g)} />
@@ -157,7 +187,7 @@ export function HotGames({ filter, onFilter, query, onQuery, state, onPlay }: { 
                 type="button"
                 aria-expanded={all}
                 onClick={() => setAll((a) => !a)}
-                className="m2-box m2-hover flex h-10 items-center gap-2 rounded-full px-[20px] text-14 font-bold text-ink outline-none focus-visible:ring-2 focus-visible:ring-[#B47CFF]"
+                className="m2-box m2-hover flex h-10 items-center gap-2 rounded-full px-6 text-14 font-bold text-ink outline-none focus-visible:ring-2 focus-visible:ring-[#B47CFF]"
               >
                 {all ? 'Show fewer' : `Show all ${whole} games`}
                 <CaretDown weight="bold" className={cn('h-4 w-4 text-[rgb(var(--m2-ink3))] transition-transform', all && 'rotate-180')} aria-hidden />

@@ -12,6 +12,7 @@ import { Originals } from './Originals';
 import { HotGames } from './HotGames';
 import { Bets } from './Bets';
 import { StageDialogs, type DialogKey } from './Dialogs';
+import { Footer } from './Footer';
 import { useStill } from './ui';
 import type { Filter } from './data';
 
@@ -47,6 +48,7 @@ export default function Variant2() {
           <Originals onPick={pick} onAll={() => pick('all')} onLive={() => jump('m2-bets')} loading={state === 'loading'} />
           <HotGames filter={filter} onFilter={setFilter} query={query} onQuery={setQuery} state={state} onPlay={setGame} />
           <Bets onPlay={setGame} state={state} />
+          <Footer />
         </main>
       </div>
       <GameDialog game={game} onClose={() => setGame(null)} />

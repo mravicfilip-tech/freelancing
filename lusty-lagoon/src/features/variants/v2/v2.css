@@ -126,6 +126,7 @@
 
 /* ---------- Covers ---------- */
 
+.m2-cover-art[data-tight] { transform: none !important; }
 .m2-cover-ring { box-shadow: inset 0 0 0 1px rgb(255 255 255 / 0.08); transition: box-shadow 0.2s var(--m2-ease); }
 .group:hover .m2-cover-ring, .group:focus-visible .m2-cover-ring { box-shadow: inset 0 0 0 2px #b47cff; }
 
@@ -142,10 +143,16 @@
 }
 @keyframes m2-shimmer { from { background-position: 100% 0; } to { background-position: -100% 0; } }
 
+/* The character and the chest rise onto the stage once, on load. */
+@keyframes m2-rise { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: none; } }
+.m2-rise { animation: m2-rise 0.7s var(--m2-ease) both; }
+.m2-rise-late { animation-delay: 0.15s; }
+
 .m2-still .m2-run, .m2-still .m2-hero-light, .m2-still .m2-shimmer { animation-play-state: paused; }
+.m2-still .m2-rise { animation: none; }
 
 @media (prefers-reduced-motion: reduce) {
-  .m2-run, .m2-hero-light, .m2-shimmer { animation: none; }
+  .m2-run, .m2-hero-light, .m2-shimmer, .m2-rise { animation: none; }
   .m2-obj, .m2-tile, .m2-hover, .m2-quiet { transition: none; }
 }
 

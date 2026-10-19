@@ -123,9 +123,10 @@ function VipCard({ onOpen }: { onOpen: () => void }) {
       <button
         type="button"
         onClick={onOpen}
-        className="mt-3 flex h-9 w-full items-center justify-center gap-2 rounded-full bg-white text-14 font-extrabold text-[#2C0C63] outline-none transition-colors hover:bg-white/90 focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-[#2C0C63]"
+        className="m2-quiet mt-3 flex h-10 w-full items-center justify-center gap-2 rounded-full text-14 outline-none focus-visible:ring-2 focus-visible:ring-white"
       >
         See rewards
+        <CaretRight weight="bold" className="h-4 w-4 text-ink/70" aria-hidden />
       </button>
     </section>
   );
@@ -159,13 +160,13 @@ export function Sidebar({ filter, onFilter, onSearch, onOpen }: { filter: Filter
   }, []);
   const chest = useCountdown(DAILY_CHEST.readyInSeconds);
   const promos: Promo[] = [
-    { label: ['Hot', 'streak'], hue: 'm2-hue-ember', art: <img src="/art/auth/login-player.webp" alt="" className="absolute -right-2 top-[6px] h-[148px] w-auto max-w-none" />, run: () => onOpen('giveaway') },
+    { label: ['Hot', 'streak'], hue: 'm2-hue-ember', art: <img src="/art/auth/login-player.webp" alt="" className="absolute -right-[14px] top-[6px] h-[148px] w-auto max-w-none" />, run: () => onOpen('giveaway') },
     {
       label: ['Daily', 'chest'],
       hue: 'm2-hue-amber',
       // Betsera's Promo tile shows its 10% as the art. This one shows the chest's own countdown.
       art: (
-        <span className="absolute bottom-2 left-2 flex h-8 items-center gap-1 rounded-full bg-black/40 pl-2 pr-3 text-ink">
+        <span className="absolute bottom-[8px] left-2 flex h-[26px] items-center gap-1 rounded-full bg-black/40 pl-[6px] pr-[10px] text-ink">
           <Timer weight="fill" className="h-4 w-4 text-gold" />
           <span className="num text-14 font-black tracking-[-0.01em]">
             {chest.pad(chest.h)}:{chest.pad(chest.m)}:{chest.pad(chest.s)}
@@ -175,8 +176,8 @@ export function Sidebar({ filter, onFilter, onSearch, onOpen }: { filter: Filter
       run: () => onOpen('chest'),
       caret: false,
     },
-    { label: ['Weekly', 'race'], hue: 'm2-hue-blue', art: <img src="/art/landing/pillar-gems-b.webp" alt="" className="absolute right-2 top-[8px] h-[120px] w-auto rotate-[14deg]" />, run: () => onOpen('race') },
-    { label: ['Refer', 'friends'], hue: 'm2-hue-green', art: <img src="/art/money/refer-megaphone.webp" alt="" className="absolute -right-1 top-[6px] h-[104px] w-auto max-w-none" />, to: '/refer' },
+    { label: ['Weekly', 'race'], hue: 'm2-hue-blue', art: <img src="/art/landing/pillar-gems-b.webp" alt="" className="absolute right-0 top-[8px] h-[120px] w-auto rotate-[14deg]" />, run: () => onOpen('race') },
+    { label: ['Refer', 'friends'], hue: 'm2-hue-green', art: <img src="/art/money/refer-megaphone.webp" alt="" className="absolute -right-[16px] top-[8px] h-[96px] w-auto max-w-none" />, to: '/refer' },
   ];
   return (
     <aside ref={ref} aria-label="Site" style={{ top }} className="sticky flex w-[232px] shrink-0 flex-col gap-3 self-start">

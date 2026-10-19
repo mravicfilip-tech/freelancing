@@ -22,14 +22,18 @@ function CardFan({ ids }: { ids: string[] }) {
     : ['-rotate-[11deg] translate-x-[22px] translate-y-[6px] w1920:translate-x-[30px]', 'z-10 rotate-[7deg] -translate-x-[18px] w1920:-translate-x-[26px]'];
   return (
     <span className="m2-obj absolute inset-x-0 bottom-0 top-2 flex items-end justify-center">
-      {ids.map((id, i) => (
-        <img
-          key={id}
-          src={gameById(id)!.image}
-          alt=""
-          className={cn('m2-card aspect-[3/4] shrink-0 rounded-[12px] object-cover', three ? 'w-[70px] w1920:w-[104px]' : 'w-[92px] w1920:w-[120px]', turn[i])}
-        />
-      ))}
+      {ids.map((id, i) => {
+        const g = gameById(id)!;
+        return (
+          <img
+            key={id}
+            src={g.image}
+            alt=""
+            // A landscape cover stands up on its subject, the fish in Lucky Bass sits left of centre.
+            className={cn('m2-card aspect-[3/4] shrink-0 rounded-[12px] object-cover', g.wideOnly && 'object-[40%_50%]', three ? 'w-[70px] w1920:w-[104px]' : 'w-[92px] w1920:w-[120px]', turn[i])}
+          />
+        );
+      })}
     </span>
   );
 }
@@ -88,7 +92,7 @@ const TILES: Tile[] = [
     hue: 'm2-hue-teal',
     count: playersIn('fish'),
     countLabel: 'playing',
-    art: <CardFan ids={['big-bass-splash', 'beware-the-deep']} />,
+    art: <CardFan ids={['lucky-bass', 'beware-the-deep']} />,
   },
   {
     key: 'new',

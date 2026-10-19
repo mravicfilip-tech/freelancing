@@ -51,6 +51,13 @@ Task format
   - [ ] Account settings, all 4 states
   - [ ] Mods across the whole product
 
+- lusty-lagoon-2 Five dashboard variants, one page each, from the ten references. Brief briefs/round-3/variants-brief.md, routes /variants/1 to /variants/5
+  - [x] Save the ten references with a status
+  - [x] Shared data, routes and the builder brief
+  - [ ] Build the five variants
+  - [ ] Review and polish each against the others
+  - [ ] Board of the five for Filip's pick
+
 ## Review
 
 ## Done

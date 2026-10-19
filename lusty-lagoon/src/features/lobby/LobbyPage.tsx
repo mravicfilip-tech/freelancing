@@ -55,7 +55,7 @@ function RoundArrow({ dir, size, label, onClick, disabled, className }: { dir: '
   );
 }
 
-function GameDialog({ game, onClose }: { game: CatalogueGame | null; onClose: () => void }) {
+export function GameDialog({ game, onClose }: { game: CatalogueGame | null; onClose: () => void }) {
   const [opened, setOpened] = useState<'play' | 'demo' | null>(null);
   return (
     <Dialog

@@ -11,6 +11,11 @@ import { LoginPage, RegisterPage } from './features/auth';
 import { AccountPage, NotificationsPage } from './features/account';
 import { AgentPage, ReferPage } from './features/money';
 import { NotFound } from './pages/NotFound';
+import { VariantsIndex } from './features/variants/VariantsIndex';
+import { lazy, Suspense } from 'react';
+
+// Each dashboard variant brings its own shell, so it sits outside AppShell.
+const VARIANT_PAGES = [1, 2, 3, 4, 5].map((n) => lazy(() => import(`./features/variants/v${n}/Variant${n}.tsx`)));
 
 
 export function App() {
@@ -23,6 +28,18 @@ export function App() {
             <Route path="/" element={<LandingPage />} />
             <Route path="/login" element={<LoginPage />} />
             <Route path="/register" element={<RegisterPage />} />
+            <Route path="/variants" element={<VariantsIndex />} />
+            {VARIANT_PAGES.map((Page, i) => (
+              <Route
+                key={i}
+                path={`/variants/${i + 1}`}
+                element={
+                  <Suspense fallback={null}>
+                    <Page />
+                  </Suspense>
+                }
+              />
+            ))}
             <Route element={<AppShell />}>
               <Route path="faq" element={<FaqPage />} />
               <Route path="lobby" element={<LobbyPage />} />

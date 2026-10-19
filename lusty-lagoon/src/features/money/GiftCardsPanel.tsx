@@ -10,7 +10,7 @@ import { Skeleton } from '../../components/ui/Skeleton';
 import { formatAmount } from '../../lib/format';
 import { useWallet } from '../wallet/store';
 import { OFFERS, USED_CODES, VALID_CODES, largeOffers, type GiftFilter, type GiftOffer } from './giftData';
-import { moveBalance, readQuery, useViewSwitch, wait } from './shared';
+import { recordMove, readQuery, useViewSwitch, wait } from './shared';
 
 // Gift cards, Figma 373:802. A grid of partner offers with filters and a Redeem action that reveals
 // the code, and a field for a code the player already has. The wallet's Gift card tab mounts this.
@@ -61,7 +61,7 @@ function RedeemCode() {
     const worth = VALID_CODES[value];
     if (!worth) return setResult({ kind: 'invalid' });
     used.add(value);
-    moveBalance(wallet, worth);
+    recordMove(wallet, { id: `GC-${value}`, direction: 'deposit', label: 'Gift code', icon: 'gift', amount: worth, status: 'completed', reference: value });
     setResult({ kind: 'valid', value: worth, balanceAfter: Math.round((wallet.balance + worth) * 100) / 100 });
   }
 

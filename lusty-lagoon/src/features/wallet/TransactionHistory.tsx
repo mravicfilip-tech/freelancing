@@ -24,7 +24,11 @@ const FILTERS: { value: Filter; label: string }[] = [
 function Amount({ tx }: { tx: Transaction }) {
   const sign = tx.direction === 'deposit' ? '+' : '−';
   const coin = tx.method.kind === 'coin' ? coinById(tx.method.coinId) : null;
-  const main = coin ? `${sign}${formatAmount(tx.amount, coin.decimals)} ${coin.symbol}` : `${sign}${formatUsd(tx.amount)}`;
+  const main = coin
+    ? `${sign}${formatAmount(tx.amount, coin.decimals)} ${coin.symbol}`
+    : tx.method.kind === 'move'
+      ? `${sign}${formatAmount(tx.amount)} USDT`
+      : `${sign}${formatUsd(tx.amount)}`;
   const tone = tx.status === 'declined' ? 'text-ink3' : tx.direction === 'deposit' && tx.status === 'completed' ? 'text-success' : 'text-ink';
   return (
     <div className="flex flex-col items-end">

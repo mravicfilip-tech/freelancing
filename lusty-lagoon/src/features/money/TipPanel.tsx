@@ -14,7 +14,7 @@ import { formatAmount, formatToken } from '../../lib/format';
 import { cn } from '../../lib/cn';
 import { useWallet } from '../wallet/store';
 import { RECENT_RECIPIENTS, TIP, findPlayer, largeRecipients } from './tipData';
-import { Panel, StepHeading, SummaryCard, SummaryRow, initialsOf, moveBalance, readQuery, useViewSwitch, wait } from './shared';
+import { Panel, StepHeading, SummaryCard, SummaryRow, initialsOf, recordMove, readQuery, useViewSwitch, wait } from './shared';
 
 // Tip, Figma 370:24. Tip another player by username, coin and amount. The wallet's Tip tab mounts
 // this. The tip comes out of the balance in USDT, and the player gets it in the coin picked.
@@ -376,7 +376,7 @@ export function TipPanel() {
       set({ outcome: 'failed' });
       return;
     }
-    moveBalance(wallet, -amount);
+    recordMove(wallet, { id, direction: 'withdraw', label: `Tip to ${nameOf(f)}`, icon: 'tip', amount, status: 'completed', reference: id });
     set({ outcome: 'completed' });
   }
 

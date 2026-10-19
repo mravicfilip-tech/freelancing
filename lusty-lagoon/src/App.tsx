@@ -9,12 +9,9 @@ import { FaqPage } from './features/faq/FaqPage';
 import { LobbyPage } from './features/lobby/LobbyPage';
 import { LoginPage, RegisterPage } from './features/auth';
 import { AccountPage, NotificationsPage } from './features/account';
+import { AgentPage, ReferPage } from './features/money';
 import { NotFound } from './pages/NotFound';
 
-const PLACEHOLDERS = [
-  ['agent', 'Send to agent'],
-  ['refer', 'Refer a friend'],
-] as const;
 
 export function App() {
   return (
@@ -31,11 +28,10 @@ export function App() {
               <Route path="lobby" element={<LobbyPage />} />
               <Route path="account" element={<AccountPage />} />
               <Route path="notifications" element={<NotificationsPage />} />
+              <Route path="agent" element={<AgentPage />} />
+              <Route path="refer" element={<ReferPage />} />
               <Route path="wallet" element={<Navigate to="/wallet/deposit" replace />} />
               <Route path="wallet/:tab" element={<WalletPage />} />
-              {PLACEHOLDERS.map(([path]) => (
-                <Route key={path} path={path} element={<NotFound />} />
-              ))}
               <Route path="*" element={<NotFound />} />
             </Route>
           </Routes>

@@ -2,6 +2,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '../../components/ui/Tabs';
 import { PaymentFlow } from './PaymentFlow';
 import { TransactionHistory } from './TransactionHistory';
+import { GiftCardsPanel, TipPanel } from '../money';
 
 const TABS = [
   { value: 'deposit', label: 'Deposit' },
@@ -9,14 +10,6 @@ const TABS = [
   { value: 'tip', label: 'Tip' },
   { value: 'gift-card', label: 'Gift card' },
 ];
-
-function NotInPrototype({ what }: { what: string }) {
-  return (
-    <div className="rounded-2xl border border-line bg-panel p-6">
-      <p className="text-16 text-ink2">{what} are not part of this prototype yet.</p>
-    </div>
-  );
-}
 
 export function WalletPage() {
   const { tab = 'deposit' } = useParams();
@@ -41,10 +34,10 @@ export function WalletPage() {
             <PaymentFlow key="withdraw" direction="withdraw" />
           </TabsContent>
           <TabsContent value="tip" className="pt-6 outline-none">
-            <NotInPrototype what="Tips" />
+            <TipPanel />
           </TabsContent>
           <TabsContent value="gift-card" className="pt-6 outline-none">
-            <NotInPrototype what="Gift cards" />
+            <GiftCardsPanel />
           </TabsContent>
         </Tabs>
       </div>

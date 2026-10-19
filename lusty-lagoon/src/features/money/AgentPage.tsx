@@ -27,7 +27,7 @@ import {
   type PlatformId,
 } from './agentData';
 import { addSend, nextSendId, updateSend, useAgentSends } from './agentStore';
-import { FieldNote, Panel, StepHeading, SummaryCard, SummaryRow, initialsOf, moveBalance, readQuery, useViewSwitch, wait } from './shared';
+import { FieldNote, Panel, StepHeading, SummaryCard, SummaryRow, initialsOf, recordMove, readQuery, useViewSwitch, wait } from './shared';
 
 // Send to agent, Figma 419:992. The player moves credit from their balance to an agent, who loads
 // it onto a partner platform account. Same Method, Details, Review, Status pattern as the wallet.
@@ -559,7 +559,8 @@ export function AgentPage() {
     const tick = (ms: number) => (fast ? Promise.resolve() : wait(ms));
     const name = agent?.name ?? 'Agent';
     // Credit leaves the balance at once, as a withdrawal does, and returns if the agent declines.
-    moveBalance(wallet, -amount);
+    const reference = `${platformId.slice(0, 2).toUpperCase()}-${id.slice(-6)}`;
+    recordMove(wallet, { id, direction: 'withdraw', label: `Agent ${name}, ${platformById(platformId).name}`, icon: 'agent', amount, status: 'pending', reference });
     addSend({ id, platformId, agentId: f.agentId, agentName: name, amount, status: 'pending', date: new Date().toISOString().slice(0, 19), reference: `${platformId.slice(0, 2).toUpperCase()}-${id.slice(-6)}` });
     set({ step: 'status', txId: id, outcome: 'processing', stage: 0 });
     await tick(900);
@@ -569,10 +570,11 @@ export function AgentPage() {
     if (!alive.current) return;
     if (declineOutcome) {
       updateSend(id, { status: 'declined' });
-      moveBalance(wallet, amount);
+      wallet.update(id, { status: 'declined' }, amount);
       set({ outcome: 'declined', stage: 1 });
     } else {
       updateSend(id, { status: 'completed' });
+      wallet.update(id, { status: 'completed' });
       set({ outcome: 'completed', stage: 2 });
     }
   }

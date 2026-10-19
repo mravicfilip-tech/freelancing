@@ -59,10 +59,14 @@ export type CashMethod = {
 
 export type Selection = { kind: 'coin'; coinId: CoinId } | { kind: 'cash'; methodId: CashMethodId };
 
+/** Money that moves inside the product, in USDT, such as a send to an agent, a tip or a gift code. */
+export type MoveMethod = { kind: 'move'; label: string; icon: 'agent' | 'tip' | 'gift' };
+export type TxMethod = Selection | MoveMethod;
+
 export type Transaction = {
   id: string;
   direction: Direction;
-  method: Selection;
+  method: TxMethod;
   networkId?: string;
   /** Amount in the method's own currency, coin units for coins and USD for cash. */
   amount: number;
@@ -226,7 +230,8 @@ export function historyFor(size: 'default' | 'large' | 'empty'): Transaction[] {
   return out;
 }
 
-export function methodLabel(sel: Selection, networkId?: string) {
+export function methodLabel(sel: TxMethod, networkId?: string) {
+  if (sel.kind === 'move') return sel.label;
   if (sel.kind === 'cash') return cashById(sel.methodId).name;
   const coin = coinById(sel.coinId);
   const net = coin.networks.find((n) => n.id === networkId);

@@ -75,7 +75,17 @@ export const initialsOf = (name: string) =>
 // The wallet store's record() only takes its own Transaction type, which has no shape for an agent
 // send, a tip or a gift code. update() with an id that matches nothing leaves the history alone and
 // still moves the balance, so the top bar stays true without touching the wallet feature.
-export const moveBalance = (wallet: ReturnType<typeof useWallet>, change: number) => wallet.update('money-balance-only', {}, change);
+/** Records a move in the wallet history and changes the balance in one step. */
+export function recordMove(
+  wallet: ReturnType<typeof useWallet>,
+  move: { id: string; direction: 'deposit' | 'withdraw'; label: string; icon: 'agent' | 'tip' | 'gift'; amount: number; status: 'pending' | 'completed' | 'declined'; reference: string },
+) {
+  const change = move.status === 'declined' ? 0 : move.direction === 'deposit' ? move.amount : -move.amount;
+  wallet.record(
+    { id: move.id, direction: move.direction, method: { kind: 'move', label: move.label, icon: move.icon }, amount: move.amount, value: move.amount, status: move.status, date: new Date().toISOString().slice(0, 19), reference: move.reference },
+    change,
+  );
+}
 
 export const FieldNote = ({ children }: { children: ReactNode }) => (
   <p role="alert" className="flex items-start gap-2 text-14 text-danger">

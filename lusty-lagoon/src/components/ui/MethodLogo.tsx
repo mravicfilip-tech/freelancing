@@ -1,7 +1,7 @@
 import type { ReactNode } from 'react';
-import { Bank } from '@phosphor-icons/react';
+import { Bank, Gift, HandCoins, Headset } from '@phosphor-icons/react';
 import { siPaypal, siVisa } from 'simple-icons';
-import type { CashMethodId, Selection } from '../../data/wallet';
+import type { CashMethodId, TxMethod } from '../../data/wallet';
 import { coinById } from '../../data/wallet';
 import { cn } from '../../lib/cn';
 
@@ -26,7 +26,17 @@ const CASH: Record<CashMethodId, (size: Size) => ReactNode> = {
 
 // Card, wallet and bank logos sit on a white tile, the way a checkout shows them, so their own
 // colours read on the dark ground. Coins show as their flat round logo.
-export function MethodLogo({ selection, size = 'md', className }: { selection: Selection; size?: Size; className?: string }) {
+const MOVE = { agent: Headset, tip: HandCoins, gift: Gift } as const;
+
+export function MethodLogo({ selection, size = 'md', className }: { selection: TxMethod; size?: Size; className?: string }) {
+  if (selection.kind === 'move') {
+    const Icon = MOVE[selection.icon];
+    return (
+      <span className={cn('flex shrink-0 items-center justify-center rounded-full bg-raised', size === 'sm' ? 'h-6 w-6' : 'h-8 w-8', className)}>
+        <Icon weight="fill" className={cn('text-accent', size === 'sm' ? 'h-4 w-4' : 'h-5 w-5')} aria-hidden />
+      </span>
+    );
+  }
   if (selection.kind === 'coin') {
     const coin = coinById(selection.coinId);
     const px = size === 'sm' ? 24 : 32;

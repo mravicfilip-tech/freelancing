@@ -27,6 +27,13 @@
       "previewProjects": [
         "ekotehnika-hero"
       ]
+    },
+    {
+      "id": "lusty-lagoon",
+      "repos": [
+        "lusty-lagoon"
+      ],
+      "previewProjects": []
     }
   ]
 }

@@ -9,6 +9,7 @@ import { KitButton } from '../kit/parts';
 // The cinematic hero after Betsera. Near black, one light from purple into ember, the tallest crisp
 // character we have breaking out above the frame and whole, a 64 headline on one line, the orange key
 // as a pill and a quiet secondary. The character is girl-floral, 644 by 1100, drawn 568 and 608 tall.
+// The chest stands in front of her legs, 420 by 420, drawn 264 and 288 wide.
 
 export const DRAW_IN_SECONDS = 2 * 86400 + 14 * 3600 + 8 * 60 + 22;
 export const ENTRIES = Math.floor(RACE.you.wagered / GIVEAWAY.entryEvery);
@@ -40,22 +41,23 @@ export function Hero({ joined, onJoin, onPlay, onRules }: { joined: boolean; onJ
           <img src="/art/lobby/hero-sunset.webp" alt="" className="m2-hero-scene absolute inset-0 h-full w-full object-cover" />
           <span className="m2-hero-light absolute inset-0" />
           <span className="m2-hero-shade absolute inset-0" />
+          <span className="m2-hero-purple absolute inset-0" />
         </div>
         <img
           src="/art/landing/girl-floral.webp"
           alt=""
           width={644}
           height={1100}
-          className="m2-rise pointer-events-none absolute bottom-[1px] left-[calc(var(--m2-cx)-166px)] z-10 h-[568px] w-auto max-w-none w1920:left-[calc(var(--m2-cx)-178px)] w1920:h-[608px]"
+          className="m2-rise pointer-events-none absolute bottom-0 left-[calc(var(--m2-cx)-166px)] z-10 h-[568px] w-auto max-w-none w1920:left-[calc(var(--m2-cx)-178px)] w1920:h-[608px]"
         />
         {/* A soft contact shadow, so the chest stands on the floor of the stage instead of floating. */}
-        <span aria-hidden className="pointer-events-none absolute bottom-[10px] left-[calc(var(--m2-cx)+108px)] z-10 h-6 w-[160px] rounded-full bg-black/60 blur-[10px] w1920:left-[calc(var(--m2-cx)+126px)] w1920:w-[172px]" />
+        <span aria-hidden className="pointer-events-none absolute bottom-[10px] left-[calc(var(--m2-cx)+26px)] z-10 h-6 w-[228px] rounded-full bg-black/60 blur-[10px] w1920:left-[calc(var(--m2-cx)+36px)] w1920:w-[248px]" />
         <img
           src="/art/lobby/giveaway-chest.webp"
           alt=""
           width={420}
           height={420}
-          className="m2-rise m2-rise-late pointer-events-none absolute bottom-[12px] left-[calc(var(--m2-cx)+96px)] z-10 w-[184px] w1920:left-[calc(var(--m2-cx)+112px)] w1920:w-[200px]"
+          className="m2-rise m2-rise-late pointer-events-none absolute bottom-[12px] left-[calc(var(--m2-cx)+8px)] z-10 w-[264px] w1920:left-[calc(var(--m2-cx)+16px)] w1920:w-[288px]"
         />
         <div className="relative z-20 flex h-full w-[600px] flex-col justify-center pl-12 w1920:w-[720px] w1920:pl-16">
           <p className="flex items-center gap-2 text-12 font-bold uppercase tracking-[0.12em] text-[#FFB27A]">
@@ -66,7 +68,7 @@ export function Hero({ joined, onJoin, onPlay, onRules }: { joined: boolean; onJ
             Ride the hot streak
           </h1>
           <p className="mt-3 max-w-[440px] text-16 text-[rgb(var(--m2-ink2))]">
-            Ten players split <span className="num font-semibold text-gold">{GIVEAWAY.pool} BTC</span> on {GIVEAWAY.ends}. Every ${GIVEAWAY.entryEvery} you play this week is one entry.
+            Ten players split <span className="num font-semibold text-ink">{GIVEAWAY.pool} BTC</span> on {GIVEAWAY.ends}. Every ${GIVEAWAY.entryEvery} you play this week is one entry.
           </p>
           <div className="mt-8 flex items-center gap-3">
             {joined ? (
@@ -85,7 +87,7 @@ export function Hero({ joined, onJoin, onPlay, onRules }: { joined: boolean; onJ
           </div>
           <div className="mt-8 flex items-end gap-8">
             <Stat label="Prize pool">
-              <span className="num text-28 font-bold leading-8 tracking-[-0.01em] text-gold">{GIVEAWAY.pool} BTC</span>
+              <span className="num text-28 font-bold leading-8 tracking-[-0.01em] text-ink">{GIVEAWAY.pool} BTC</span>
             </Stat>
             <span aria-hidden className="h-10 w-[1px] bg-white/[0.1]" />
             <Stat label="Draw in">

@@ -27,7 +27,7 @@ function Giveaway({ joined, onJoin }: { joined: boolean; onJoin: () => void }) {
   return (
     <>
       <Line k="Prize pool">
-        <span className="text-gold">{GIVEAWAY.pool} BTC</span>
+        <span className="text-ink">{GIVEAWAY.pool} BTC</span>
       </Line>
       <Line k="Draw in">
         {d}d {h}h {m}m
@@ -60,7 +60,7 @@ function Chest() {
       <div className="flex items-end justify-between">
         <div className="flex flex-col gap-1">
           <span className="text-12 font-semibold uppercase tracking-[0.08em] text-[rgb(var(--m2-ink3))]">Today's chest</span>
-          <span className="num text-28 font-bold leading-8 text-gold">
+          <span className="num text-28 font-bold leading-8 text-ink">
             {today.amount} {DAILY_CHEST.currency}
           </span>
         </div>
@@ -81,7 +81,7 @@ function Chest() {
             )}
           >
             <span className="text-12 font-semibold text-[rgb(var(--m2-ink2))]">{x.day}</span>
-            <span className={cn('num text-14 font-bold', x.status === 'locked' ? 'text-[rgb(var(--m2-ink3))]' : x.status === 'today' ? 'text-gold' : 'text-ink')}>{x.amount}</span>
+            <span className={cn('num text-14 font-bold', x.status === 'locked' ? 'text-[rgb(var(--m2-ink3))]' : 'text-ink')}>{x.amount}</span>
             <span aria-label={x.status} className="flex h-4 items-center">
               {x.status === 'claimed' ? <Check weight="bold" className="h-4 w-4 text-[#5FF0A0]" /> : x.status === 'locked' ? <Lock weight="fill" className="h-[12px] w-[12px] text-[rgb(var(--m2-ink3))]" /> : <span className="h-[8px] w-[8px] rounded-full bg-gold" />}
             </span>
@@ -108,7 +108,7 @@ function Race() {
             <span className={cn('num flex h-6 w-6 items-center justify-center rounded-full text-12 font-black text-[#1A0F2B]', l.place === 1 ? 'bg-gold' : l.place === 2 ? 'bg-[#D7DCE6]' : 'bg-[#E9A46A]')}>{l.place}</span>
             <img src={l.avatar} alt="" className="h-6 w-6 rounded-full" />
             <span className="flex-1 text-14 font-semibold text-ink">{l.player}</span>
-            <span className="num text-14 font-bold text-gold">{formatAmount(l.prize, 0)} USDT</span>
+            <span className="num text-14 font-bold text-ink">{formatAmount(l.prize, 0)} USDT</span>
           </li>
         ))}
         <li className="flex h-[48px] items-center gap-3 rounded-full border border-[#B47CFF]/50 bg-[#7B2FF0]/15 px-4">
@@ -128,7 +128,7 @@ function Race() {
 const RANKS = [
   { name: 'Bronze', at: 0, perk: '2% weekly cashback', tone: 'text-[#E9A46A]' },
   { name: 'Silver', at: 650_000, perk: '5% weekly cashback and a monthly chest', tone: 'text-[#D7DCE6]' },
-  { name: 'Gold', at: 2_000_000, perk: '8% cashback and a personal host', tone: 'text-gold' },
+  { name: 'Gold', at: 2_000_000, perk: '8% cashback and a personal host', tone: 'text-ink' },
   { name: 'Platinum', at: 6_000_000, perk: '12% cashback and faster withdrawals', tone: 'text-[#9FE7FF]' },
 ];
 

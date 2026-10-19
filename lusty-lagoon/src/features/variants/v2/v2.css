@@ -21,7 +21,16 @@
   position: relative;
   isolation: isolate;
   min-height: 100vh;
-  background: rgb(var(--m2-ground));
+  /* The brand purple light on the near black ground, pinned to the page and not the viewport, so a
+   * full page shot shows what a scroll shows. One wide light from the top left behind the hero, a
+   * second down the right behind the originals and covers, a third low on the left behind the bets.
+   * Radial fills that fade to nothing, painted as the ground itself so they add no layer. */
+  background:
+    radial-gradient(1200px 820px at 22% -160px, rgb(141 38 231 / 0.3) 0%, rgb(141 38 231 / 0.1) 50%, rgb(141 38 231 / 0) 100%),
+    radial-gradient(1100px 1000px at 104% 1180px, rgb(120 36 220 / 0.2) 0%, rgb(120 36 220 / 0.07) 50%, rgb(120 36 220 / 0) 100%),
+    radial-gradient(1100px 900px at 4% 2050px, rgb(141 38 231 / 0.18) 0%, rgb(141 38 231 / 0.06) 50%, rgb(141 38 231 / 0) 100%),
+    rgb(var(--m2-ground));
+  background-repeat: no-repeat;
   color: #fff;
 }
 
@@ -66,11 +75,9 @@
 
 /* ---------- Hero ---------- */
 
-.m2-hero {
-  background: #0c0912;
-  border: 1px solid rgb(255 255 255 / 0.08);
-  box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.06);
-}
+/* No frame line. The stage reads by its own light against the ground, so no 1px edge runs round it
+ * or under the character's feet. */
+.m2-hero { background: #110a1c; }
 /* The one light, purple from the top left into an ember glow behind the character, Betsera's red
  * glow behind the cat moved onto the brand. A hot core at her waist, a wider red to magenta halo. */
 .m2-hero-light {
@@ -81,14 +88,25 @@
   animation: m2-breathe 6s ease-in-out infinite alternate;
 }
 @keyframes m2-breathe { from { opacity: 0.86; } to { opacity: 1; } }
-/* The scene behind the light, dim, fading out at the edges, Betsera's dark pagoda behind the cat. */
+/* The scene behind the light, dim, fading out at the edges, Betsera's dark pagoda behind the cat.
+ * A second mask fades the right side out early, so the cliff edge and the sky beside it never read
+ * as a stray vertical line right of the character. */
 .m2-hero-scene {
   opacity: 0.32;
-  -webkit-mask-image: radial-gradient(46% 90% at var(--m2-cx, 66%) 40%, #000 0%, transparent 100%);
-  mask-image: radial-gradient(46% 90% at var(--m2-cx, 66%) 40%, #000 0%, transparent 100%);
+  -webkit-mask-image: radial-gradient(46% 90% at var(--m2-cx, 66%) 40%, #000 0%, transparent 100%), linear-gradient(90deg, #000 0%, #000 68%, transparent 84%);
+  mask-image: radial-gradient(46% 90% at var(--m2-cx, 66%) 40%, #000 0%, transparent 100%), linear-gradient(90deg, #000 0%, #000 68%, transparent 84%);
+  -webkit-mask-composite: source-in;
+  mask-composite: intersect;
 }
-/* The left side stays dark under the headline. */
-.m2-hero-shade { background: linear-gradient(90deg, rgb(12 9 18 / 0.92) 0%, rgb(12 9 18 / 0.6) 32%, transparent 52%); }
+/* The left side stays deep under the headline, a dark brand purple rather than black. */
+.m2-hero-shade { background: linear-gradient(90deg, rgb(20 10 34 / 0.9) 0%, rgb(20 10 34 / 0.56) 32%, transparent 52%); }
+/* The brand purple over the shade, so the stage carries purple and not only ember. A wide light from
+ * the top left behind the headline and a low one along the floor, both fading before the stats. */
+.m2-hero-purple {
+  background:
+    radial-gradient(58% 110% at 14% -24%, rgb(141 38 231 / 0.5) 0%, rgb(141 38 231 / 0.16) 55%, rgb(141 38 231 / 0) 100%),
+    radial-gradient(40% 70% at 44% 118%, rgb(141 38 231 / 0.34) 0%, rgb(141 38 231 / 0) 100%);
+}
 
 /* ---------- Art tiles, one hue each ---------- */
 
@@ -131,6 +149,13 @@
 .group:hover .m2-cover-ring, .group:focus-visible .m2-cover-ring { box-shadow: inset 0 0 0 2px #b47cff; }
 
 /* ---------- Live ---------- */
+
+/* The bets table head, one sunken pill bar, and the faint rule between rows, after variant 5. */
+.m2-thead {
+  background: rgb(255 255 255 / 0.05);
+  box-shadow: inset 0 0 0 1px rgb(255 255 255 / 0.08), inset 0 1px 0 rgb(255 255 255 / 0.06);
+}
+.m2-rule { border-color: rgb(255 255 255 / 0.05); }
 
 .m2-run { display: flex; width: max-content; animation: m2-run var(--m2-run, 70s) linear infinite; }
 .m2-runwrap:hover .m2-run, .m2-runwrap:focus-within .m2-run, .m2-runwrap[data-paused='true'] .m2-run { animation-play-state: paused; }

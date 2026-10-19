@@ -53,8 +53,9 @@ function PromoTile({ p }: { p: Promo }) {
   );
 }
 
-function Row({ icon, label, active, badge, onClick, to }: { icon: ReactNode; label: string; active?: boolean; badge?: ReactNode; onClick?: () => void; to?: string }) {
+function Row({ icon, label, active, badge, onClick, to, fx }: { icon: ReactNode; label: string; active?: boolean; badge?: ReactNode; onClick?: () => void; to?: string; fx?: 'trophy' | 'pop' }) {
   const cls = cn(
+    fx && 'k-hov-icon',
     'flex h-10 w-full items-center gap-3 rounded-full px-3 text-14 font-semibold outline-none transition-colors duration-150 focus-visible:ring-2 focus-visible:ring-[#B47CFF]',
     active ? 'm2-nav-on' : 'text-[rgb(var(--m2-ink2))] hover:bg-[rgb(var(--m2-raised))] hover:text-ink',
   );
@@ -67,12 +68,12 @@ function Row({ icon, label, active, badge, onClick, to }: { icon: ReactNode; lab
   );
   if (to)
     return (
-      <Link to={to} className={cls}>
+      <Link to={to} className={cls} data-icon={fx}>
         {inner}
       </Link>
     );
   return (
-    <button type="button" aria-current={active ? 'page' : undefined} onClick={onClick} className={cls}>
+    <button type="button" aria-current={active ? 'page' : undefined} onClick={onClick} className={cls} data-icon={fx}>
       {inner}
     </button>
   );
@@ -215,7 +216,7 @@ export function Sidebar({ filter, onFilter, onSearch, onOpen }: { filter: Filter
         </Group>
         <Group icon={<Crown weight="fill" className="text-gold" />} label="Rewards" open={open.rewards} onToggle={() => setOpen((o) => ({ ...o, rewards: !o.rewards }))}>
           <Row icon={<Gift weight="fill" />} label="Daily chest" onClick={() => onOpen('chest')} />
-          <Row icon={<Trophy weight="fill" />} label="Weekly race" onClick={() => onOpen('race')} />
+          <Row icon={<Trophy weight="fill" />} label="Weekly race" onClick={() => onOpen('race')} fx="trophy" />
           <Row icon={<Lightning weight="fill" />} label="Hot streak" onClick={() => onOpen('giveaway')} />
         </Group>
         <Group icon={<Wallet weight="fill" className="text-[#5FF0A0]" />} label="Wallet" open={open.money} onToggle={() => setOpen((o) => ({ ...o, money: !o.money }))}>

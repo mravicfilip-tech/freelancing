@@ -51,7 +51,7 @@ Task format
   - [ ] Account settings, all 4 states
   - [ ] Mods across the whole product
 
-- lusty-lagoon-2 Five dashboard variants, one page each, from the ten references. Brief briefs/round-3/variants-brief.md. Live https://lusty-lagoon.vercel.app/variants, commit f8ced30. Round 6 on the branch at 383ec1e, notes briefs/round-6/notes.md
+- lusty-lagoon-2 Five dashboard variants, one page each, from the ten references. Brief briefs/round-3/variants-brief.md. Live https://lusty-lagoon.vercel.app/variants, commit f8ced30. Round 7 on the branch, notes briefs/round-7/notes.md
   - [x] Save the ten references with a status
   - [x] Shared data, routes and the builder brief
   - [x] Build the five variants, rejected on execution, layouts kept
@@ -82,7 +82,11 @@ Task format
   - [x] Drop variants 3 and 4
   - [x] Rework variants 1, 2 and 5 per the round 6 notes
   - [x] Round 6 checks, after shots and a board of the three
-  - [ ] Filip reviews round 6 on localhost
+  - [x] Filip reviews round 6 on localhost, Loom 5 plus two screenshots, 21 notes, briefs/round-7/notes.md
+  - [x] Round 7 plan, briefs/round-7/plan.md
+  - [x] Hover board and styled scrollbars in the kit, ?hover=1 to 4
+  - [ ] Round 7 build, variant 5 chrome and chest motion, variant 1 type and search
+  - [ ] Filip answers the art, variant 2 hero and card redraws, and the 2560 width
   - [ ] Filip picks a variant
 
 ## Review

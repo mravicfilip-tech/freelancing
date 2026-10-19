@@ -104,7 +104,8 @@ function BellButton() {
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger
         aria-label={unread ? `Notifications, ${unread} unread` : 'Notifications'}
-        className="m2-box m2-hover relative flex h-[48px] w-[48px] shrink-0 items-center justify-center rounded-full text-[rgb(var(--m2-ink2))] outline-none hover:text-ink focus-visible:ring-2 focus-visible:ring-[#B47CFF] data-[state=open]:text-ink"
+        data-icon="bell"
+        className="k-hov-icon m2-box m2-hover relative flex h-[48px] w-[48px] shrink-0 items-center justify-center rounded-full text-[rgb(var(--m2-ink2))] outline-none hover:text-ink focus-visible:ring-2 focus-visible:ring-[#B47CFF] data-[state=open]:text-ink"
       >
         <Bell weight="fill" className="h-5 w-5" aria-hidden />
         {unread > 0 && (
@@ -276,7 +277,7 @@ export function TopBar({ onPlay, state }: { onPlay: (g: CatalogueGame) => void; 
       <WinsStrip onPlay={onPlay} state={state} />
       <div className="flex shrink-0 items-center gap-2">
         <BalancePill onDeposit={deposit} />
-        <KitButton tone="primary" shape="pill" onClick={deposit} className="h-[48px] pl-4 pr-6">
+        <KitButton tone="primary" shape="pill" onClick={deposit} data-icon="plus" className="k-hov-icon h-[48px] pl-4 pr-6">
           <Plus weight="bold" className="h-5 w-5" aria-hidden />
           Deposit
         </KitButton>

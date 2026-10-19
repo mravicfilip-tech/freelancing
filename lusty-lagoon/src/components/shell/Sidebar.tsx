@@ -48,7 +48,7 @@ function RankCard() {
 function RewardCard() {
   return (
     <section aria-labelledby="reward-title" className="flex gap-3 rounded-xl border border-line bg-panel p-4">
-      <Gift weight="fill" className="h-6 w-6 shrink-0 text-gold" aria-hidden />
+      <Gift weight="fill" className="h-6 w-6 shrink-0 text-accent" aria-hidden />
       <div className="flex flex-col gap-1">
         <h2 id="reward-title" className="text-14 font-semibold text-ink">
           Silver reward
@@ -64,7 +64,7 @@ export function Sidebar() {
   const pending = transactions.filter((t) => t.status === 'pending').length;
   return (
     <aside className="sticky top-0 flex h-screen w-sidebar shrink-0 flex-col gap-6 overflow-y-auto border-r border-line bg-page px-4 pb-6">
-      <Link to="/lobby" className="flex h-16 shrink-0 items-center rounded-lg px-2" aria-label="Lusty Lagoon, go to the lobby">
+      <Link to="/lobby" className="flex shrink-0 items-center rounded-lg px-2 py-4" aria-label="Lusty Lagoon, go to the lobby">
         <Logo />
       </Link>
       <nav aria-label="Main">

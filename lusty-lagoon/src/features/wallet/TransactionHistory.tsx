@@ -3,6 +3,7 @@ import * as RG from '@radix-ui/react-radio-group';
 import { ArrowDownLeft, ArrowUpRight, Copy, Receipt, WarningCircle } from '@phosphor-icons/react';
 import { Button } from '../../components/ui/Button';
 import { MethodLogo } from '../../components/ui/MethodLogo';
+import { Message } from '../../components/ui/Message';
 import { Skeleton } from '../../components/ui/Skeleton';
 import { StatusChip } from '../../components/ui/StatusChip';
 import { Tooltip } from '../../components/ui/Tooltip';
@@ -60,17 +61,6 @@ function Reference({ value }: { value: string }) {
       <Button variant="quiet" size="sm" className="w-8 px-0" aria-label={copied ? 'Reference copied' : `Copy reference ${text}`} onClick={copy}>
         <Copy className="h-4 w-4" aria-hidden />
       </Button>
-    </div>
-  );
-}
-
-function Message({ icon, title, body, action }: { icon: React.ReactNode; title: string; body: string; action?: React.ReactNode }) {
-  return (
-    <div className="flex flex-col items-center gap-3 px-6 py-16 text-center">
-      {icon}
-      <p className="text-18 font-semibold text-ink">{title}</p>
-      <p className="max-w-md text-16 text-ink2">{body}</p>
-      {action}
     </div>
   );
 }

@@ -1,64 +1,45 @@
 import { useState } from 'react';
-import { Check } from '@phosphor-icons/react';
-import { Button } from '../../../components/ui/Button';
-import { Dialog, DialogContent } from '../../../components/ui/Dialog';
-import { coinById } from '../../../data/wallet';
+import { CheckCircle } from '@phosphor-icons/react';
+import { formatAmount } from '../../../lib/format';
 import { GIVEAWAY } from '../../lobby/data';
-import { Coin } from './parts';
+import { RACE } from '../shared/data';
+import { Coin, KitButton } from '../kit/parts';
 
-// Compact. The chest is the only prop art on the page below the balance card.
+// The giveaway, compact. The only place on the page that carries the chest, which sits on the
+// strip's left edge and breaks out of its top.
+
 export function Giveaway() {
-  const [open, setOpen] = useState(false);
   const [joined, setJoined] = useState(false);
-  const coin = coinById(GIVEAWAY.coin);
+  const entries = Math.floor(RACE.you.wagered / GIVEAWAY.entryEvery);
   return (
-    <section aria-labelledby="v5-giveaway" className="relative mt-8 flex h-[88px] items-center rounded-2xl border border-line bg-sunken pl-[172px] pr-6">
-      <img src="/art/lobby/giveaway-chest.webp" alt="" aria-hidden width={136} height={136} className="pointer-events-none absolute -top-[22px] left-4 h-[136px] w-[136px] max-w-none" />
-      <div className="flex min-w-0 flex-1 flex-col">
-        <h2 id="v5-giveaway" className="font-display text-20 font-semibold leading-6 text-ink">
-          Hot Streak giveaway
+    <section aria-labelledby="give-title" className="relative flex h-[80px] items-center gap-6 rounded-[20px] bg-[rgb(var(--k-panel))] pl-[132px] pr-4">
+      <img src="/art/lobby/giveaway-chest.webp" alt="" className="pointer-events-none absolute -top-6 left-4 w-[104px]" />
+      <div className="flex min-w-0 flex-1 flex-col gap-0.5">
+        <h2 id="give-title" className="font-display text-20 font-bold uppercase leading-6 text-ink">
+          Hot streak giveaway
         </h2>
-        <p className="text-14 text-ink2">
-          Every ${GIVEAWAY.entryEvery} you play is one entry. The draw is {GIVEAWAY.ends}.
+        <p className="truncate text-14 font-semibold text-[rgb(var(--k-muted))]">
+          Every ${GIVEAWAY.entryEvery} you play this week is one entry. The draw is {GIVEAWAY.ends}.
         </p>
       </div>
-      <p className="mr-8 flex items-center gap-3">
-        <span className="text-14 text-ink2">Win a share of</span>
-        <span className="num flex items-center gap-2 font-display text-24 font-semibold text-gold">
-          <Coin id={GIVEAWAY.coin} size={24} />
-          {GIVEAWAY.pool} {coin.symbol}
+      <div className="flex shrink-0 flex-col items-end">
+        <span className="text-12 font-semibold text-[rgb(var(--k-dim))]">Prize pool</span>
+        <span className="flex items-center gap-2">
+          <Coin id={GIVEAWAY.coin} size={22} />
+          <span className="num font-display text-24 font-bold leading-7 text-gold">{GIVEAWAY.pool} BTC</span>
         </span>
-      </p>
+      </div>
+      <span aria-hidden className="h-10 w-px bg-ink/10" />
       {joined ? (
-        <p role="status" className="flex h-10 items-center gap-2 rounded-lg border border-success/50 px-4 text-14 font-semibold text-success">
-          <Check weight="bold" className="h-4 w-4" aria-hidden />
-          You are in
+        <p role="status" className="flex h-11 w-[188px] shrink-0 items-center justify-center gap-2 rounded-[12px] bg-win/10 text-14 font-bold text-win">
+          <CheckCircle weight="fill" className="h-5 w-5" aria-hidden />
+          In, {formatAmount(entries, 0)} entries
         </p>
       ) : (
-        <Button variant="secondary" onClick={() => setOpen(true)}>
+        <KitButton tone="purple" size="md" onClick={() => setJoined(true)} className="h-11 w-[188px] shrink-0">
           Join the giveaway
-        </Button>
+        </KitButton>
       )}
-      <Dialog open={open} onOpenChange={setOpen}>
-        <DialogContent title="Hot Streak giveaway" description={`Win a share of ${GIVEAWAY.pool} ${coin.symbol}. The draw is ${GIVEAWAY.ends}.`}>
-          <ul className="flex list-disc flex-col gap-2 pl-[20px] text-16 text-ink2">
-            <li>Every ${GIVEAWAY.entryEvery} you play this week is one entry.</li>
-            <li>Ten winners share the pool, paid to your wallet in {coin.symbol}.</li>
-            <li>Entries count from the moment you join.</li>
-          </ul>
-          <div>
-            <Button
-              size="lg"
-              onClick={() => {
-                setJoined(true);
-                setOpen(false);
-              }}
-            >
-              Join the giveaway
-            </Button>
-          </div>
-        </DialogContent>
-      </Dialog>
     </section>
   );
 }

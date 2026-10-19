@@ -1,90 +1,85 @@
-import { Link } from 'react-router-dom';
-import { ArrowUpRight, CheckCircle, Clock, WarningCircle, XCircle } from '@phosphor-icons/react';
-import { Button } from '../../../components/ui/Button';
+import { useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import { ArrowDownLeft, ArrowUpRight, Eye, EyeSlash, TrendUp, WarningCircle } from '@phosphor-icons/react';
 import { MethodLogo } from '../../../components/ui/MethodLogo';
 import { Skeleton } from '../../../components/ui/Skeleton';
-import { ACCOUNT, coinById, methodLabel, type Transaction } from '../../../data/wallet';
+import { ACCOUNT, methodLabel, type Transaction } from '../../../data/wallet';
 import { formatAmount, formatDate } from '../../../lib/format';
 import { cn } from '../../../lib/cn';
 import { useWallet } from '../../wallet/store';
+import { Coin, KitButton } from '../kit/parts';
 
-// The signature. The balance is set as type, Bai Jamjuree at 64px, tabular, the cents a step
-// quieter, with the currency small beside it. One cut-out stands at the right edge of the card.
+// The signature. The balance set as type, Bai Jamjuree Bold at 64px, tabular, the cents a step
+// quieter and the currency small beside it, the day's result under it. One cut-out, girl-wrap,
+// stands at the card's right edge, her head past its top, her legs behind the transactions box.
 
 /** The day's result so far, the Sugar Rush session of 12 minutes ago. */
 const TODAY = 60;
 
 const STATUS = {
-  pending: { label: 'Pending', Icon: Clock, tone: 'text-pending' },
-  completed: { label: 'Completed', Icon: CheckCircle, tone: 'text-ink2' },
-  declined: { label: 'Declined', Icon: XCircle, tone: 'text-danger' },
+  completed: { label: 'Completed', cls: 'text-win bg-win/10' },
+  pending: { label: 'Pending', cls: 'text-pending bg-pending/10' },
+  declined: { label: 'Declined', cls: 'text-[#FF8FA3] bg-danger/15' },
 } as const;
 
-function StatusText({ status }: { status: Transaction['status'] }) {
-  const { label, Icon, tone } = STATUS[status];
-  return (
-    <span className={cn('flex items-center gap-1 text-14 leading-5', tone)}>
-      <Icon weight="bold" className="h-4 w-4" aria-hidden />
-      {label}
-    </span>
-  );
-}
-
-function Recent({ tx }: { tx: Transaction }) {
+function TxRow({ tx }: { tx: Transaction }) {
   const dep = tx.direction === 'deposit';
   const d = formatDate(tx.date);
+  const st = STATUS[tx.status];
   return (
-    <li className="flex h-[60px] items-center gap-4 border-b border-line/70 last:border-b-0">
-      <MethodLogo selection={tx.method} size="md" />
+    <li className="flex h-[52px] items-center gap-3 border-t border-ink/5 first:border-t-0">
+      <span className="relative flex w-12 shrink-0 justify-center">
+        <MethodLogo selection={tx.method} size="md" />
+        <span aria-hidden className={cn('absolute -bottom-1 right-0 flex h-4 w-4 items-center justify-center rounded-full border-2 border-[rgb(var(--k-item))]', dep ? 'bg-win text-[#0B2A14]' : 'bg-[#B47CFF] text-[#1A0F2B]')}>
+          {dep ? <ArrowDownLeft weight="bold" className="h-[10px] w-[10px]" /> : <ArrowUpRight weight="bold" className="h-[10px] w-[10px]" />}
+        </span>
+      </span>
       <span className="flex min-w-0 flex-1 flex-col">
-        <span className="truncate text-16 font-medium leading-5 text-ink">{dep ? 'Deposit' : 'Withdrawal'}</span>
-        <span className="num truncate text-14 leading-5 text-ink3">
+        <span className="truncate text-14 font-bold leading-5 text-ink">{dep ? 'Deposit' : 'Withdrawal'}</span>
+        <span className="num truncate text-12 font-semibold leading-4 text-[rgb(var(--k-muted))]">
           {methodLabel(tx.method, tx.networkId)}, {d.day}, {d.time}
         </span>
       </span>
-      <span className="flex shrink-0 flex-col items-end">
-        <span className={cn('num text-16 font-semibold leading-5', tx.status === 'declined' ? 'text-ink3' : dep && tx.status === 'completed' ? 'text-success' : 'text-ink')}>
-          {dep ? '+' : '−'}
-          {formatAmount(tx.value)}
-        </span>
-        <StatusText status={tx.status} />
+      <span className={cn('rounded-[8px] px-2 py-0.5 text-12 font-bold leading-4', st.cls)}>{st.label}</span>
+      <span className={cn('num w-[84px] shrink-0 text-right text-16 font-bold', tx.status === 'declined' ? 'text-[rgb(var(--k-dim))] line-through decoration-1' : dep ? 'text-win' : 'text-ink')}>
+        {dep ? '+' : '−'}
+        {formatAmount(tx.value)}
       </span>
     </li>
   );
 }
 
-function RecentList() {
+function Recent() {
   const { transactions, historyState, retryHistory } = useWallet();
   const last = transactions.slice(0, 3);
   return (
-    <div className="flex min-w-0 max-w-[600px] flex-col border-l border-line pl-12">
-      <div className="flex h-8 items-center justify-between">
-        <h3 className="text-14 text-ink2">Last transactions</h3>
-        <Link to="/wallet" className="flex items-center gap-1 rounded text-14 font-medium text-accent hover:text-ink">
+    <div className="relative z-10 rounded-[16px] bg-[rgb(var(--k-item))] px-4 pb-1 pt-3">
+      <div className="flex items-center justify-between pb-1">
+        <h3 className="text-14 font-bold text-ink">Last transactions</h3>
+        <Link to="/wallet/deposit" className="rounded-[6px] text-14 font-bold text-accent hover:text-ink">
           All transactions
-          <ArrowUpRight weight="bold" className="h-4 w-4" aria-hidden />
         </Link>
       </div>
       {historyState === 'loading' ? (
-        <div className="mt-1 flex flex-col gap-2" aria-hidden>
-          {Array.from({ length: 3 }, (_, i) => (
-            <Skeleton key={i} className="h-[48px] w-full" />
+        <div className="flex flex-col gap-2 py-2">
+          {[0, 1, 2].map((i) => (
+            <Skeleton key={i} className="h-10 w-full rounded-[10px]" />
           ))}
         </div>
       ) : historyState === 'error' ? (
-        <div className="mt-2 flex items-center gap-3 text-14 text-ink2">
-          <WarningCircle weight="fill" className="h-5 w-5 shrink-0 text-danger" aria-hidden />
-          <span>We could not load your transactions.</span>
-          <Button variant="tertiary" size="sm" onClick={retryHistory}>
+        <div className="flex h-[156px] flex-col items-center justify-center gap-2 text-center">
+          <WarningCircle weight="fill" className="h-6 w-6 text-danger" aria-hidden />
+          <p className="text-14 font-semibold text-ink">Transactions did not load</p>
+          <KitButton tone="dark" size="sm" onClick={retryHistory} className="bg-[rgb(var(--k-panel))]">
             Try again
-          </Button>
+          </KitButton>
         </div>
       ) : last.length === 0 ? (
-        <p className="mt-2 text-14 text-ink2">Nothing yet. A deposit shows up here the moment you make one.</p>
+        <p className="flex h-[156px] items-center justify-center text-14 font-semibold text-[rgb(var(--k-muted))]">No deposits or withdrawals yet.</p>
       ) : (
-        <ul aria-label="Last three transactions" className="mt-1 flex flex-col">
-          {last.map((tx) => (
-            <Recent key={tx.id} tx={tx} />
+        <ul aria-label="Last three transactions">
+          {last.map((t) => (
+            <TxRow key={t.id} tx={t} />
           ))}
         </ul>
       )}
@@ -93,57 +88,66 @@ function RecentList() {
 }
 
 export function BalanceCard() {
+  const navigate = useNavigate();
   const { balance } = useWallet();
-  const [whole, cents] = balance.toFixed(2).split('.');
-  const coin = coinById('usdt');
+  const [hidden, setHidden] = useState(false);
+  const [whole, cents] = formatAmount(balance).split('.');
   return (
-    <section aria-labelledby="v5-balance" className="relative overflow-hidden rounded-2xl border border-line bg-panel">
-      {/* The cut-out stands at the right edge, cropped by the card at the hip. */}
-      <img
-        src="/art/auth/login-player.webp"
-        alt=""
-        aria-hidden
-        className="pointer-events-none absolute right-8 top-4 h-[440px] max-w-none select-none"
-        style={{ aspectRatio: '475 / 1000' }}
-      />
-      <div className="relative grid grid-cols-[380px_minmax(0,1fr)] gap-12 px-12 py-8 pr-[260px]">
-        <div className="flex flex-col">
-          <h2 id="v5-balance" className="text-16 text-ink2">
+    <section aria-labelledby="bal-title" className="relative flex flex-col justify-between gap-4 rounded-[24px] bg-[rgb(var(--k-panel))] p-[20px]">
+      {/* The cut-out. Its frame reaches past the card's top so her head breaks out, and is clipped at the card's bottom. */}
+      <div aria-hidden className="pointer-events-none absolute -top-6 bottom-0 right-0 w-[300px] overflow-hidden rounded-br-[24px]">
+        <span className="absolute right-[-72px] top-[64px] h-[320px] w-[320px] rounded-full bg-[rgb(var(--k-item))]/70" />
+        <img src="/art/landing/girl-wrap.webp" alt="" className="absolute right-[-60px] top-0 h-[520px] w-auto max-w-none" />
+      </div>
+
+      <div className="relative flex flex-col gap-3">
+        <div className="flex items-center gap-2">
+          <h2 id="bal-title" className="text-16 font-bold text-[rgb(var(--k-muted))]">
             Balance
           </h2>
-          <Link
-            to="/wallet"
-            aria-label={`Balance ${formatAmount(balance)} ${ACCOUNT.currency}, open the wallet`}
-            className="mt-2 flex w-fit items-baseline gap-3 rounded-lg"
-            aria-live="polite"
+          <button
+            type="button"
+            aria-pressed={hidden}
+            aria-label={hidden ? 'Show balance' : 'Hide balance'}
+            onClick={() => setHidden((h) => !h)}
+            className="flex h-8 w-8 items-center justify-center rounded-[8px] text-[rgb(var(--k-muted))] hover:bg-[rgb(var(--k-item))] hover:text-ink"
           >
-            <span className="num font-display text-[64px] font-semibold leading-[68px] tracking-[-0.02em] text-ink">
-              {Number(whole.replace(/,/g, '')).toLocaleString('en-US')}
-              <span className="text-ink2">.{cents}</span>
-            </span>
-            <span className="flex items-center gap-2 font-display text-24 font-medium text-ink2">
-              <img src={coin.icon} alt="" width={28} height={28} className="h-[28px] w-[28px] self-center" />
-              {ACCOUNT.currency}
-            </span>
-          </Link>
-          <p className="num mt-2 text-16 font-medium text-win">
-            {signed(TODAY)} <span className="font-normal text-ink2">today</span>
-          </p>
-          <div className="mt-8 flex gap-3">
-            <Button size="lg" className="w-[168px]" asChild>
-              <Link to="/wallet/deposit">Deposit</Link>
-            </Button>
-            <Button size="lg" variant="secondary" className="w-[168px]" asChild>
-              <Link to="/wallet/withdraw">Withdraw</Link>
-            </Button>
-          </div>
+            {hidden ? <EyeSlash weight="bold" className="h-4 w-4" aria-hidden /> : <Eye weight="bold" className="h-4 w-4" aria-hidden />}
+          </button>
         </div>
-        <RecentList />
+        <p className="flex items-end gap-3">
+          <span className="num font-display text-[64px] font-bold leading-[60px] tracking-[-0.02em] text-ink">
+            {hidden ? (
+              '••••••'
+            ) : (
+              <>
+                {whole}
+                <span className="text-[rgb(var(--k-muted))]">.{cents}</span>
+              </>
+            )}
+          </span>
+          <span className="mb-1 flex items-center gap-2">
+            <Coin id="usdt" size={24} />
+            <span className="font-display text-20 font-bold text-[rgb(var(--k-muted))]">{ACCOUNT.currency}</span>
+          </span>
+        </p>
+        <p className="flex items-center gap-2">
+          <span className="num inline-flex h-8 items-center gap-1 rounded-[8px] bg-win/10 px-2 text-14 font-bold text-win">
+            <TrendUp weight="bold" className="h-4 w-4" aria-hidden />+{formatAmount(TODAY)}
+          </span>
+          <span className="text-14 font-semibold text-[rgb(var(--k-muted))]">today, from Sugar Rush</span>
+        </p>
+        <div className="mt-1 flex gap-2">
+          <KitButton tone="purple" size="md" onClick={() => navigate('/wallet/withdraw')} className="h-11 w-[132px]">
+            Withdraw
+          </KitButton>
+          <KitButton tone="dark" size="md" onClick={() => navigate('/agent')} className="h-11 px-[20px]">
+            Send to agent
+          </KitButton>
+        </div>
       </div>
+
+      <Recent />
     </section>
   );
-}
-
-function signed(n: number) {
-  return `${n >= 0 ? '+' : '−'}${formatAmount(Math.abs(n))}`;
 }

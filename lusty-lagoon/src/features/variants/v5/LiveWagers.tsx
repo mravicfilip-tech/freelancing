@@ -1,154 +1,114 @@
 import { useState } from 'react';
 import { GameController, WarningCircle } from '@phosphor-icons/react';
-import { Message } from '../../../components/ui/Message';
 import { Skeleton } from '../../../components/ui/Skeleton';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '../../../components/ui/Tabs';
-import { Avatar } from '../../../components/ui/Avatar';
+import { Message } from '../../../components/ui/Message';
 import { gameById, type CatalogueGame } from '../../../data/games';
 import { coinById } from '../../../data/wallet';
-import { formatUsd } from '../../../lib/format';
+import { formatAmount } from '../../../lib/format';
 import { cn } from '../../../lib/cn';
 import { BETS, payout, type Bet } from '../../lobby/data';
-import { Coin, useStill } from './parts';
+import { Coin } from '../kit/parts';
+import { CardTitle, Segmented, handle } from './ui';
 
-// The centre of the page. A table that reads like a ledger, a pinned header, flat rows with a
-// hairline between them, the payout in win green. The game cell opens the game.
+// The centre of the page, NewBettie's latest bets table at full size. Twelve rows, a header that
+// pins under the top bar while the table scrolls past, the cover and name, the player, the time,
+// the wager with its coin, the multiplier and the payout in a green box when it is above zero.
 
-const TABS = [
-  { value: 'all', label: 'All wagers', pick: (_: Bet) => true },
-  { value: 'high', label: 'High wins', pick: (b: Bet) => payout(b) >= 250 },
-  { value: 'lucky', label: 'Lucky wins', pick: (b: Bet) => b.multiplier >= 5 },
-  { value: 'mine', label: 'My wagers', pick: (b: Bet) => !!b.mine },
+type Tab = 'all' | 'high' | 'lucky' | 'mine';
+const TABS: { value: Tab; label: string; pick: (b: Bet) => boolean }[] = [
+  { value: 'all', label: 'All wagers', pick: () => true },
+  { value: 'high', label: 'High wins', pick: (b) => payout(b) >= 250 },
+  { value: 'lucky', label: 'Lucky wins', pick: (b) => b.multiplier >= 5 },
+  { value: 'mine', label: 'My wagers', pick: (b) => !!b.mine },
 ];
 
-const COLS = 'grid grid-cols-[minmax(0,2.4fr)_minmax(0,1.7fr)_minmax(0,1fr)_minmax(0,1.3fr)_minmax(0,1fr)_minmax(0,1.3fr)] items-center gap-4 px-6';
+const COLS = 'grid grid-cols-[minmax(0,2.3fr)_minmax(0,1.7fr)_0.9fr_1.2fr_0.9fr_1.3fr] items-center gap-3';
 
-function Head() {
+function Row({ b, onPlay }: { b: Bet; onPlay: (g: CatalogueGame) => void }) {
+  const g = gameById(b.gameId)!;
+  const p = payout(b);
+  const sym = coinById(b.coin).symbol;
   return (
-    <div role="row" className={cn(COLS, 'sticky top-[72px] z-10 h-10 rounded-t-2xl border-b border-line bg-sunken text-12 uppercase tracking-[0.05em] text-label')}>
-      <span role="columnheader">Game</span>
-      <span role="columnheader">Player</span>
-      <span role="columnheader">Time</span>
-      <span role="columnheader">Wager</span>
-      <span role="columnheader" className="text-right">Multiplier</span>
-      <span role="columnheader" className="text-right">Payout</span>
-    </div>
-  );
-}
-
-function Row({ bet, onPlay }: { bet: Bet; onPlay: (g: CatalogueGame) => void }) {
-  const g = gameById(bet.gameId)!;
-  const coin = coinById(bet.coin);
-  const p = payout(bet);
-  return (
-    <div role="row" className={cn(COLS, 'h-[60px] border-b border-line/70 text-16 transition-colors last:border-b-0 hover:bg-raised/60')}>
-      <span role="cell" className="min-w-0">
-        <button type="button" onClick={() => onPlay(g)} aria-label={`Play ${g.name}`} className="group flex max-w-full items-center gap-4 rounded text-left">
-          <img src={g.image} alt="" loading="lazy" className="h-[44px] w-[33px] shrink-0 rounded object-cover" />
-          <span className="truncate font-medium text-ink group-hover:text-accent">{g.name}</span>
-        </button>
+    <li className={cn(COLS, 'h-[56px] border-t border-ink/5 px-[20px] text-14 font-semibold')}>
+      <button type="button" onClick={() => onPlay(g)} aria-label={`Play ${g.name}`} className="group flex min-w-0 items-center gap-3 rounded-[10px] text-left">
+        <img src={g.image} alt="" className="h-10 w-10 shrink-0 rounded-[10px] object-cover ring-2 ring-transparent transition group-hover:ring-accent" />
+        <span className="flex min-w-0 flex-col">
+          <span className="truncate text-14 font-bold text-ink group-hover:text-accent">{g.short ?? g.name}</span>
+          <span className="truncate text-12 font-semibold text-[rgb(var(--k-dim))]">{g.provider}</span>
+        </span>
+      </button>
+      <span className="flex min-w-0 items-center gap-2">
+        {b.avatar ? (
+          <img src={b.avatar} alt="" className="h-8 w-8 shrink-0 rounded-[10px] object-cover" />
+        ) : (
+          <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-[10px] bg-[#3A2A63] text-12 font-bold text-ink">{b.initials}</span>
+        )}
+        <span className={cn('truncate', b.mine ? 'text-accent' : 'text-ink')}>{handle(b.player)}</span>
+        {b.mine && <span className="shrink-0 rounded-[6px] bg-accent/15 px-[6px] text-12 font-bold leading-5 text-accent">You</span>}
       </span>
-      <span role="cell" className="flex min-w-0 items-center gap-3">
-        {bet.avatar ? <img src={bet.avatar} alt="" width={32} height={32} className="h-8 w-8 shrink-0 rounded-full object-cover" /> : <Avatar initials={bet.initials} size="sm" />}
-        <span className="truncate text-ink">{bet.player}</span>
-        {bet.mine ? <span className="shrink-0 rounded border border-accent/50 px-1 text-12 text-accent">You</span> : null}
+      <span className="num text-[rgb(var(--k-muted))]">{b.time}</span>
+      <span className="num flex items-center gap-2 text-ink">
+        <Coin id={b.coin} size={18} className="ring-1 ring-ink/20" />
+        {formatAmount(b.wager)}
+        <span className="sr-only"> {sym}</span>
       </span>
-      <span role="cell" className="num text-ink2">
-        {bet.time}
+      <span className={cn('num', b.multiplier >= 5 ? 'text-gold' : b.multiplier > 0 ? 'text-ink' : 'text-[rgb(var(--k-dim))]')}>{b.multiplier.toFixed(2)}x</span>
+      <span className="flex justify-end">
+        {p > 0 ? (
+          <span className="num inline-flex h-8 items-center gap-2 rounded-[10px] bg-win/10 px-3 text-win">
+            <Coin id={b.coin} size={16} className="ring-1 ring-ink/20" />
+            {formatAmount(p)}
+            <span className="sr-only"> {sym}</span>
+          </span>
+        ) : (
+          <span className="num pr-3 text-[rgb(var(--k-dim))]">0.00</span>
+        )}
       </span>
-      <span role="cell" className="num flex items-center gap-2 text-ink">
-        {formatUsd(bet.wager)}
-        <Coin id={bet.coin} size={20} />
-        <span className="sr-only">{coin.symbol}</span>
-      </span>
-      <span role="cell" className={cn('num text-right', bet.multiplier >= 5 ? 'font-semibold text-gold' : bet.multiplier > 0 ? 'text-ink' : 'text-ink3')}>
-        {bet.multiplier.toFixed(2)}x
-      </span>
-      <span role="cell" className={cn('num text-right', p > 0 ? 'font-semibold text-win' : 'text-ink3')}>
-        {formatUsd(p)}
-      </span>
-    </div>
-  );
-}
-
-function Rows({ rows, state, onPlay }: { rows: Bet[]; state: string | null; onPlay: (g: CatalogueGame) => void }) {
-  if (state === 'loading') {
-    return (
-      <div aria-busy className="flex flex-col">
-        {Array.from({ length: 12 }, (_, i) => (
-          <div key={i} className={cn(COLS, 'h-[60px] border-b border-line/70 last:border-b-0')}>
-            <span className="flex items-center gap-4">
-              <Skeleton className="h-[44px] w-[33px]" />
-              <Skeleton className="h-5 w-[140px]" />
-            </span>
-            <Skeleton className="h-5 w-[120px]" />
-            <Skeleton className="h-5 w-[72px]" />
-            <Skeleton className="h-5 w-[100px]" />
-            <Skeleton className="ml-auto h-5 w-[56px]" />
-            <Skeleton className="ml-auto h-5 w-[80px]" />
-          </div>
-        ))}
-      </div>
-    );
-  }
-  if (state === 'error') {
-    return (
-      <Message
-        className="py-16"
-        icon={<WarningCircle weight="fill" className="h-10 w-10 text-danger" aria-hidden />}
-        title="Live wagers are paused"
-        body="The feed lost its connection. It reconnects on its own, or reload the page."
-      />
-    );
-  }
-  if (!rows.length) {
-    return <Message className="py-16" icon={<GameController weight="fill" className="h-10 w-10 text-ink3" aria-hidden />} title="No wagers here yet" body="Wagers that match this tab show up the moment they land." />;
-  }
-  return (
-    <>
-      {rows.map((b) => (
-        <Row key={b.id} bet={b} onPlay={onPlay} />
-      ))}
-    </>
+    </li>
   );
 }
 
 export function LiveWagers({ state, onPlay }: { state: string | null; onPlay: (g: CatalogueGame) => void }) {
-  const [tab, setTab] = useState('all');
-  const still = useStill();
-  const paused = state === 'error';
+  const [tab, setTab] = useState<Tab>('all');
+  const list = BETS.filter(TABS.find((t) => t.value === tab)!.pick).slice(0, 12);
   return (
-    <section aria-labelledby="v5-wagers" className="mt-12">
-      <Tabs value={tab} onValueChange={setTab}>
-        <div className="flex items-end justify-between gap-6">
-          <div className="flex items-center gap-4">
-            <h2 id="v5-wagers" className="font-display text-24 font-semibold leading-[1.2] text-ink">
-              Live wagers
-            </h2>
-            <p className={cn('flex h-6 items-center gap-2 rounded-full border px-3 text-12 font-semibold', paused ? 'border-danger/50 text-danger' : 'border-success/40 text-success')}>
-              <span aria-hidden className={cn('h-2 w-2 rounded-full', paused ? 'bg-danger' : 'bg-success', !paused && !still && 'animate-pulse')} />
-              {paused ? 'Paused' : 'Live'}
-            </p>
-          </div>
-          <TabsList aria-label="Wagers" className="gap-8 border-b-0">
-            {TABS.map((t) => (
-              <TabsTrigger key={t.value} value={t.value}>
-                {t.label}
-              </TabsTrigger>
+    <section id="wagers" aria-labelledby="wagers-title" className="flex min-w-0 scroll-mt-[100px] flex-col gap-4">
+      <div className="flex h-11 items-center justify-between gap-4">
+        <div className="flex items-center gap-3">
+          <CardTitle id="wagers-title" dot={state !== 'error'}>
+            Live wagers
+          </CardTitle>
+          <span className="text-14 font-semibold text-[rgb(var(--k-muted))]">{state === 'error' ? 'Paused' : 'Updating live'}</span>
+        </div>
+        <Segmented label="Wagers" items={TABS} value={tab} onChange={setTab} controls="wagers-panel" />
+      </div>
+      <div id="wagers-panel" role="tabpanel" aria-labelledby="wagers-title" className="min-h-[724px] rounded-[20px] bg-[rgb(var(--k-panel))] pb-2">
+        <div aria-hidden className={cn(COLS, 'sticky top-[84px] z-10 h-11 rounded-t-[20px] border-b border-ink/5 bg-[rgb(var(--k-panel))] px-[20px] text-12 font-bold uppercase tracking-[0.06em] text-[rgb(var(--k-dim))]')}>
+          <span>Game</span>
+          <span>Player</span>
+          <span>Time</span>
+          <span>Wager</span>
+          <span>Multiplier</span>
+          <span className="text-right">Payout</span>
+        </div>
+        {state === 'loading' ? (
+          <div className="flex flex-col gap-2 px-[20px] py-3">
+            {Array.from({ length: 8 }, (_, i) => (
+              <Skeleton key={i} className="h-11 w-full rounded-[12px]" />
             ))}
-          </TabsList>
-        </div>
-        <div className="mt-4 rounded-2xl border border-line bg-panel">
-          {TABS.map((t) => (
-            <TabsContent key={t.value} value={t.value} className="outline-none">
-              <div role="table" aria-label="Latest wagers">
-                <Head />
-                <Rows rows={BETS.filter(t.pick)} state={state} onPlay={onPlay} />
-              </div>
-            </TabsContent>
-          ))}
-        </div>
-      </Tabs>
+          </div>
+        ) : state === 'error' ? (
+          <Message className="py-[72px]" icon={<WarningCircle weight="fill" className="h-10 w-10 text-danger" aria-hidden />} title="Live wagers are paused" body="The feed lost its connection. It reconnects on its own, your balance is not affected." />
+        ) : list.length === 0 ? (
+          <Message className="py-[72px]" icon={<GameController weight="fill" className="h-10 w-10 text-[rgb(var(--k-dim))]" aria-hidden />} title="No wagers here yet" body="Wagers that match this tab show up the moment they land." />
+        ) : (
+          <ul aria-label="Latest wagers">
+            {list.map((b) => (
+              <Row key={b.id} b={b} onPlay={onPlay} />
+            ))}
+          </ul>
+        )}
+      </div>
     </section>
   );
 }

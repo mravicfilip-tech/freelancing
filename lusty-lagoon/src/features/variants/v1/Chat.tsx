@@ -40,7 +40,7 @@ function WinCard({ id, onPlay }: { id: string; onPlay: (g: CatalogueGame) => voi
           <CoinChip id={w.coin} className="bg-black/25 text-ink/80" />
         </span>
       </span>
-      <span className="n1-keysq absolute right-[6px] top-[6px] flex h-5 w-5 items-center justify-center rounded-full text-ink">
+      <span data-icon="arrow" className="k-hov-icon n1-keysq absolute right-[6px] top-[6px] flex h-5 w-5 items-center justify-center rounded-full text-ink">
         <CaretRight weight="bold" className="h-[12px] w-[12px]" aria-hidden />
       </span>
     </button>
@@ -110,9 +110,10 @@ export function Chat({ onPlay, onRules, state, className }: { onPlay: (g: Catalo
 
   return (
     <section aria-labelledby="n1-chat-title" className={cn('n1-panel flex min-h-[0px] flex-col rounded-[20px]', className)}>
-      <header className="flex h-[60px] shrink-0 items-center gap-2 border-b border-white/[0.06] px-4">
+      {/* The header sits on the same 12px inset as the messages and the composer (round 7, note 4). */}
+      <header className="flex h-[60px] shrink-0 items-center gap-2 border-b border-white/[0.06] px-3">
         <ChatCircleDots weight="fill" className="h-5 w-5 text-[rgb(var(--n-lilac))]" aria-hidden />
-        <h2 id="n1-chat-title" className="text-16 font-extrabold text-ink">
+        <h2 id="n1-chat-title" className="font-display text-16 font-bold text-ink">
           Chat
         </h2>
         <span className="n1-well ml-auto flex h-8 items-center gap-2 rounded-[10px] px-[10px] text-12 font-extrabold text-ink">
@@ -182,7 +183,8 @@ export function Chat({ onPlay, onRules, state, className }: { onPlay: (g: Catalo
                         setReply(m);
                         input.current?.focus();
                       }}
-                      className="n1-ring flex h-6 w-6 shrink-0 items-center justify-center rounded-[6px] bg-white/[0.06] text-[rgb(var(--n-muted))] hover:bg-white/[0.12] hover:text-ink"
+                      data-icon="pop"
+                      className="k-hov-icon n1-ring flex h-6 w-6 shrink-0 items-center justify-center rounded-[6px] bg-white/[0.06] text-[rgb(var(--n-muted))] hover:bg-white/[0.12] hover:text-ink"
                     >
                       <ArrowBendUpLeft weight="bold" className="h-[14px] w-[14px]" aria-hidden />
                     </button>
@@ -197,7 +199,8 @@ export function Chat({ onPlay, onRules, state, className }: { onPlay: (g: Catalo
                     aria-pressed={!!liked[m.id]}
                     aria-label={`Like ${m.player}'s message`}
                     onClick={() => setLiked((l) => ({ ...l, [m.id]: !l[m.id] }))}
-                    className={cn('n1-ring absolute right-[6px] flex h-6 w-6 items-center justify-center rounded-[6px] hover:bg-white/[0.06] hover:text-ink', m.winId ? 'top-[34px]' : 'bottom-[6px]', liked[m.id] ? 'text-[#FF6FA8]' : 'text-[rgb(var(--n-dim))] opacity-0 focus-visible:opacity-100 group-hover/msg:opacity-100')}
+                    data-icon="pop"
+                    className={cn('k-hov-icon n1-ring absolute right-[6px] flex h-6 w-6 items-center justify-center rounded-[6px] hover:bg-white/[0.06] hover:text-ink', m.winId ? 'top-[34px]' : 'bottom-[6px]', liked[m.id] ? 'text-[#FF6FA8]' : 'text-[rgb(var(--n-dim))] opacity-0 focus-visible:opacity-100 group-hover/msg:opacity-100')}
                   >
                     <Heart weight={liked[m.id] ? 'fill' : 'bold'} className="h-[14px] w-[14px]" aria-hidden />
                   </button>
@@ -215,7 +218,7 @@ export function Chat({ onPlay, onRules, state, className }: { onPlay: (g: Catalo
             <span className="min-w-0 flex-1">
               <Quote of={reply} />
             </span>
-            <button type="button" onClick={() => setReply(null)} aria-label="Cancel the reply" className="n1-ring flex h-8 w-8 shrink-0 items-center justify-center rounded-[8px] text-[rgb(var(--n-muted))] hover:bg-white/[0.06] hover:text-ink">
+            <button type="button" onClick={() => setReply(null)} aria-label="Cancel the reply" data-icon="pop" className="k-hov-icon n1-ring flex h-8 w-8 shrink-0 items-center justify-center rounded-[8px] text-[rgb(var(--n-muted))] hover:bg-white/[0.06] hover:text-ink">
               <X weight="bold" className="h-4 w-4" aria-hidden />
             </button>
           </div>
@@ -234,7 +237,7 @@ export function Chat({ onPlay, onRules, state, className }: { onPlay: (g: Catalo
             className="h-9 min-w-0 flex-1 bg-transparent text-14 font-medium text-ink outline-none placeholder:text-[rgb(var(--n-dim))]"
           />
           <P.Root open={emoji} onOpenChange={setEmoji}>
-            <P.Trigger aria-label="Add an emoji" className="n1-ring flex h-9 w-9 shrink-0 items-center justify-center rounded-[10px] bg-white/[0.06] text-[rgb(var(--n-muted))] hover:bg-white/[0.1] hover:text-ink data-[state=open]:text-ink">
+            <P.Trigger aria-label="Add an emoji" data-icon="pop" className="k-hov-icon n1-ring flex h-9 w-9 shrink-0 items-center justify-center rounded-[10px] bg-white/[0.06] text-[rgb(var(--n-muted))] hover:bg-white/[0.1] hover:text-ink data-[state=open]:text-ink">
               <Smiley weight="fill" className="h-5 w-5" aria-hidden />
             </P.Trigger>
             <P.Portal>
@@ -257,7 +260,7 @@ export function Chat({ onPlay, onRules, state, className }: { onPlay: (g: Catalo
               </P.Content>
             </P.Portal>
           </P.Root>
-          <button type="submit" aria-label="Send" className="n1-keysq n1-ring flex h-9 w-9 shrink-0 items-center justify-center rounded-[10px] text-ink transition-[filter] hover:brightness-110 active:translate-y-px">
+          <button type="submit" aria-label="Send" data-icon="arrow" className="k-hov-icon n1-keysq n1-ring flex h-9 w-9 shrink-0 items-center justify-center rounded-[10px] text-ink transition-[filter] hover:brightness-110 active:translate-y-px">
             <PaperPlaneRight weight="fill" className="h-[18px] w-[18px]" aria-hidden />
           </button>
         </div>

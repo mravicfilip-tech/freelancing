@@ -72,7 +72,9 @@
   transition: filter 0.15s var(--n-ease), transform 0.1s var(--n-ease), box-shadow 0.15s var(--n-ease);
 }
 .n1-key:focus-visible { outline: 2px solid #b47cff; outline-offset: 2px; }
-.n1-key:hover:not(:disabled) { filter: brightness(1.06); }
+.n1-key:not(.k-hov):hover:not(:disabled) { filter: brightness(1.06); }
+/* An orange key on the round 7 hover board (kit/hover.css) takes the board's hover and its timing. */
+.n1-key.k-hov { transition: transform 0.2s var(--n-ease), filter 0.2s var(--n-ease), box-shadow 0.15s var(--n-ease); }
 .n1-key:active:not(:disabled) { transform: translateY(1px); filter: brightness(0.97); }
 .n1-key:disabled { cursor: not-allowed; opacity: 0.45; }
 
@@ -108,6 +110,43 @@
 /* The mark inside a key, a darker circle the icon sits in. */
 .n1-key-mark { display: flex; align-items: center; justify-content: center; border-radius: 999px; background: rgb(0 0 0 / 0.14); }
 .n1-key-purple .n1-key-mark { background: rgb(0 0 0 / 0.18); }
+
+/* ---------- Hover board, round 7, notes 10 and 11 ---------- */
+
+/* The Deposit key is both a primary and the plus icon. Its plus turns under every treatment, where
+ * Pulse alone would nudge it sideways. */
+[data-hover] .n1 .k-hov.k-hov-icon[data-icon='plus']:hover:not(:disabled) svg { transform: rotate(90deg); }
+/* A chevron that sits inside a row or a card nudges when the whole row is hovered, and nothing else in
+ * the row moves. */
+.n1 .group:hover > .k-hov-icon[data-icon='arrow'] :is(svg, img) { transform: translateX(3px); }
+@media (prefers-reduced-motion: reduce) {
+  .n1 .group:hover > .k-hov-icon[data-icon='arrow'] :is(svg, img) { transform: none; }
+}
+/* The top bar Deposit sits 12px under the window edge, so its pulse rings, glow and sparks reach 12px
+ * at most and never run off the top of the window. */
+[data-hover='2'] .n1-bar .k-hov:hover:not(:disabled) .k-hov-fx { animation-name: n1-pulse-bar; }
+@keyframes n1-pulse-bar {
+  0% { box-shadow: 0 0 0 0 rgb(255 128 40 / 0.55), 0 0 0 0 rgb(255 128 40 / 0.3); }
+  100% { box-shadow: 0 0 0 6px rgb(255 128 40 / 0), 0 0 0 10px rgb(255 128 40 / 0); }
+}
+[data-hover='3'] .n1-bar .k-hov:hover:not(:disabled) { filter: brightness(1.08) drop-shadow(0 0 8px rgb(255 116 23 / 0.35)); }
+[data-hover='4'] .n1-bar .k-hov:hover:not(:disabled) .k-hov-fx::before,
+[data-hover='4'] .n1-bar .k-hov:hover:not(:disabled) .k-hov-fx::after { animation-name: n1-spark-bar; }
+@keyframes n1-spark-bar {
+  0% { opacity: 0; transform: translateY(0) scale(0.6); }
+  25% { opacity: 1; transform: translateY(-6px) scale(1); }
+  100% { opacity: 0; transform: translateY(-12px) scale(0.8); }
+}
+
+/* ---------- All games search, round 7, note 3 ---------- */
+
+/* The field widens while in use, so a query always has room, and the chips scroll under a fade. */
+.n1-search:focus-within,
+.n1-search:has(input:not(:placeholder-shown)) { min-width: 220px; }
+.n1-chips-fade {
+  -webkit-mask-image: linear-gradient(90deg, #000 calc(100% - 48px), transparent);
+  mask-image: linear-gradient(90deg, #000 calc(100% - 48px), transparent);
+}
 
 /* ---------- Pills ---------- */
 

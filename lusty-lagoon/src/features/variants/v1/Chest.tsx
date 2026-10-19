@@ -22,9 +22,12 @@ export const Chest = forwardRef<HTMLElement, { loading?: boolean }>(function Che
       tabIndex={-1}
       id="n1-chest"
       aria-labelledby="n1-chest-title"
-      className="n1-ring n1-top relative shrink-0 overflow-hidden rounded-[20px] border border-white/[0.08] bg-[linear-gradient(180deg,#221A55_0%,#16133D_62%)] p-4"
+      className="n1-ring n1-top relative shrink-0 rounded-[20px] border border-white/[0.08] bg-[linear-gradient(180deg,#221A55_0%,#16133D_62%)] p-4"
     >
-      <span aria-hidden className="n1-chest-light pointer-events-none absolute -right-[30px] -top-[48px] h-[200px] w-[200px]" />
+      {/* Only the light is clipped to the card, so a hovered Open the chest key can glow past its edge. */}
+      <span aria-hidden className="pointer-events-none absolute inset-0 overflow-hidden rounded-[inherit]">
+        <span className="n1-chest-light absolute -right-[30px] -top-[48px] h-[200px] w-[200px]" />
+      </span>
       <img src="/art/lobby/giveaway-chest.webp" alt="" className="pointer-events-none absolute right-2 top-0 h-[112px] w-[112px] w1920:right-4 w1920:h-[124px] w1920:w-[124px]" />
       <div className="relative flex h-[92px] flex-col pl-1 pt-1">
         <Label id="n1-chest-title">Daily chest</Label>

@@ -134,7 +134,8 @@ export function Hero({ onPlay }: { onPlay: () => void }) {
             </span>
           </span>
           <div className="flex flex-col gap-4">
-            <h1 id="n1-hero-title" className="font-display text-[56px] font-bold uppercase leading-[56px] tracking-[-0.01em] text-ink">
+            {/* The page's one heading style, Bai Jamjuree 700 in sentence case (round 7, note 2). */}
+            <h1 id="n1-hero-title" className="font-display text-[56px] font-bold leading-[56px] tracking-[-0.01em] text-ink">
               Where luck
               <br />
               meets lust.

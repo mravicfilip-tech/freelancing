@@ -4,6 +4,7 @@ import { CircleNotch, X } from '@phosphor-icons/react';
 import { coinById, type CoinId } from '../../../data/wallet';
 import { formatAmount } from '../../../lib/format';
 import { cn } from '../../../lib/cn';
+import { HoverFx } from '../kit/hover';
 import './neon.css';
 
 // Small parts the Neon arcade page composes. Everything sits on the seven size ramp, 12, 14, 16,
@@ -21,8 +22,10 @@ type KeyProps = ButtonHTMLAttributes<HTMLButtonElement> & { tone?: 'orange' | 'p
 /**
  * The page's key, round 6. The sleek kit key built in the folder (taste log 20:40). Orange is the one
  * primary per section with a dark label, purple the secondary, quiet sits on the surface with an edge.
+ * Round 7 puts every orange key on the shared hover board (kit/hover.css, notes 10 and 11).
  */
 export const Key = forwardRef<HTMLButtonElement, KeyProps>(function Key({ tone = 'purple', size = 48, loading, disabled, className, children, type = 'button', ...rest }, ref) {
+  const primary = tone === 'orange';
   return (
     <button
       ref={ref}
@@ -32,6 +35,7 @@ export const Key = forwardRef<HTMLButtonElement, KeyProps>(function Key({ tone =
       className={cn(
         'n1-key inline-flex select-none items-center justify-center gap-2 whitespace-nowrap',
         `n1-key-${tone}`,
+        primary && 'k-hov',
         size === 36 && 'h-9 rounded-[10px] px-4 text-14',
         size === 48 && 'h-[48px] rounded-[12px] px-6 text-16',
         size === 56 && 'h-[56px] rounded-[14px] px-8 text-16',
@@ -39,6 +43,7 @@ export const Key = forwardRef<HTMLButtonElement, KeyProps>(function Key({ tone =
       )}
       {...rest}
     >
+      {primary && <HoverFx />}
       {loading && <CircleNotch weight="bold" className="h-5 w-5 animate-spin" aria-hidden />}
       {children}
     </button>
@@ -102,16 +107,20 @@ export function amountText(coin: CoinId, amount: number) {
   return formatAmount(amount, digits);
 }
 
-/** A square icon button on the raised surface, with an edge. */
-export function IconSquare({ label, children, onClick, className, size = 44, pressed }: { label: string; children: ReactNode; onClick?: () => void; className?: string; size?: 36 | 44 | 48; pressed?: boolean }) {
+/** The icon hovers on the shared board (kit/hover.css, note 11). */
+export type IconFx = 'bell' | 'trophy' | 'plus' | 'arrow' | 'pop';
+
+/** A square icon button on the raised surface, with an edge. Its icon animates on hover, a pop unless told. */
+export function IconSquare({ label, children, onClick, className, size = 44, pressed, fx = 'pop' }: { label: string; children: ReactNode; onClick?: () => void; className?: string; size?: 36 | 44 | 48; pressed?: boolean; fx?: IconFx }) {
   return (
     <button
       type="button"
       aria-label={label}
       aria-pressed={pressed}
       onClick={onClick}
+      data-icon={fx}
       className={cn(
-        'n1-raised n1-hoverable n1-ring relative flex shrink-0 items-center justify-center rounded-[12px] text-[rgb(var(--n-muted))] hover:text-ink',
+        'k-hov-icon n1-raised n1-hoverable n1-ring relative flex shrink-0 items-center justify-center rounded-[12px] text-[rgb(var(--n-muted))] hover:text-ink',
         size === 48 ? 'h-[48px] w-12' : size === 44 ? 'h-11 w-11' : 'h-9 w-9 rounded-[10px]',
         className,
       )}
@@ -225,7 +234,7 @@ export function NDialog({ open, onOpenChange, title, description, children, wide
               <D.Title className="text-20 font-extrabold tracking-[-0.01em] text-ink">{title}</D.Title>
               {description ? <D.Description className="text-14 text-[rgb(var(--n-muted))]">{description}</D.Description> : <D.Description className="sr-only">{title}</D.Description>}
             </div>
-            <D.Close aria-label="Close" className="n1-raised n1-hoverable n1-ring flex h-9 w-9 shrink-0 items-center justify-center rounded-[10px] text-[rgb(var(--n-muted))] hover:text-ink">
+            <D.Close aria-label="Close" data-icon="pop" className="k-hov-icon n1-raised n1-hoverable n1-ring flex h-9 w-9 shrink-0 items-center justify-center rounded-[10px] text-[rgb(var(--n-muted))] hover:text-ink">
               <X weight="bold" className="h-4 w-4" aria-hidden />
             </D.Close>
           </div>

@@ -88,7 +88,7 @@ function BalanceMenu({ onDeposit }: { onDeposit: () => void }) {
           </M.Content>
         </M.Portal>
       </M.Root>
-      <Key tone="orange" size={48} onClick={onDeposit} className="pl-4 pr-[20px]">
+      <Key tone="orange" size={48} onClick={onDeposit} data-icon="plus" className="k-hov-icon pl-4 pr-[20px]">
         <Plus weight="bold" className="h-5 w-5" aria-hidden />
         Deposit
       </Key>
@@ -102,7 +102,7 @@ function Bell_() {
   const [open, setOpen] = useState(false);
   return (
     <P.Root open={open} onOpenChange={setOpen}>
-      <P.Trigger aria-label={unread ? `Notifications, ${unread} unread` : 'Notifications'} className="n1-raised n1-hoverable n1-ring relative flex h-[48px] w-12 items-center justify-center rounded-[12px] text-[rgb(var(--n-muted))] hover:text-ink data-[state=open]:bg-[rgb(var(--n-hover))] data-[state=open]:text-ink">
+      <P.Trigger aria-label={unread ? `Notifications, ${unread} unread` : 'Notifications'} data-icon="bell" className="k-hov-icon n1-raised n1-hoverable n1-ring relative flex h-[48px] w-12 items-center justify-center rounded-[12px] text-[rgb(var(--n-muted))] hover:text-ink data-[state=open]:bg-[rgb(var(--n-hover))] data-[state=open]:text-ink">
         <Bell weight="fill" className="h-5 w-5" aria-hidden />
         {unread > 0 && (
           <span aria-hidden className="num absolute -right-1 -top-1 flex h-5 min-w-[20px] items-center justify-center rounded-full border-2 border-[rgb(var(--n-bar))] bg-[#FF5C8A] px-1 text-12 font-extrabold leading-none text-ink">
@@ -171,7 +171,8 @@ export function TopBar({ onDeposit, onRace, onSearch }: { onDeposit: () => void;
           <Logo className="text-[20px] leading-[22px]" />
         </Link>
       </div>
-      <div className="n1-raised flex h-[48px] items-center gap-3 rounded-[12px] pl-[6px] pr-[6px]">
+      {/* The trophy lifts and glints when the pill is hovered (note 11). */}
+      <div data-icon="trophy" className="k-hov-icon n1-raised flex h-[48px] items-center gap-3 rounded-[12px] pl-[6px] pr-[6px]">
         <span className="n1-keysq flex h-9 w-9 items-center justify-center rounded-full text-ink">
           <Trophy weight="fill" className="h-5 w-5" aria-hidden />
         </span>
@@ -188,7 +189,7 @@ export function TopBar({ onDeposit, onRace, onSearch }: { onDeposit: () => void;
       <div className="mx-auto">
         <BalanceMenu onDeposit={onDeposit} />
       </div>
-      <IconSquare size={48} label="Search games" onClick={onSearch}>
+      <IconSquare size={48} label="Search games" fx="pop" onClick={onSearch}>
         <MagnifyingGlass weight="bold" className="h-5 w-5" aria-hidden />
       </IconSquare>
       <Bell_ />

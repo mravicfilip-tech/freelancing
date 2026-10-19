@@ -1,4 +1,4 @@
-import { forwardRef, useEffect, useMemo, useState } from 'react';
+import { forwardRef, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import * as M from '@radix-ui/react-dropdown-menu';
 import { CaretDown, Check, Fire, MagnifyingGlass, Play, SortAscending, WarningCircle, X } from '@phosphor-icons/react';
 import type { CatalogueGame } from '../../../data/games';
@@ -6,8 +6,9 @@ import { cn } from '../../../lib/cn';
 import { Key, NMessage, Segments, Skel } from './ui';
 import { NAV, ORDERED, type Filter } from './nav';
 
-// All games after Snegbet's finder. A title with the count, a wide search, a sort menu, pill segments
-// with the vivid purple pill on, then covers in whole rows only, 5 across below 1920 and 7 from 1920.
+// All games after Snegbet's finder. A title with the count, then pill segments with the vivid purple
+// pill on and the search and sort menu at the row's right end (round 7, note 3), then covers in whole
+// rows only, 5 across below 1920 and 7 from 1920.
 
 type Sort = 'popular' | 'az' | 'rtp';
 const SORTS: { value: Sort; label: string }[] = [
@@ -67,31 +68,66 @@ export const Games = forwardRef<HTMLInputElement, { filter: Filter; onFilter: (f
   const more = whole > cols * 2;
   const sortLabel = SORTS.find((s) => s.value === sort)!.label;
 
+  // Note 3. The chips fade at their right edge only while the search squeezes them and more chips
+  // wait past the edge. The placeholder shortens to fit a narrow field.
+  const row = useRef<HTMLDivElement>(null);
+  const [clipped, setClipped] = useState(false);
+  const [roomy, setRoomy] = useState(true);
+  useLayoutEffect(() => {
+    const chips = row.current?.querySelector<HTMLElement>('[role="radiogroup"]');
+    const field = row.current?.querySelector<HTMLElement>('form');
+    if (!chips || !field) return;
+    const check = () => {
+      setClipped(chips.scrollLeft + chips.clientWidth < chips.scrollWidth - 1);
+      setRoomy(field.clientWidth >= 200);
+    };
+    const ro = new ResizeObserver(check);
+    ro.observe(chips);
+    ro.observe(field);
+    chips.addEventListener('scroll', check, { passive: true });
+    check();
+    return () => {
+      ro.disconnect();
+      chips.removeEventListener('scroll', check);
+    };
+  }, []);
+
   return (
     <section id="n1-games" aria-labelledby="n1-games-title" className="flex scroll-mt-[96px] flex-col gap-4">
-      <div className="flex items-center gap-3">
-        <h2 id="n1-games-title" className="flex items-center gap-3 text-20 font-extrabold tracking-[-0.01em] text-ink">
+      {/* The title row keeps the title and the count only (round 7, note 3). It keeps its 44px height,
+          so nothing under it moves. */}
+      <div className="flex h-11 items-center">
+        <h2 id="n1-games-title" className="flex items-center gap-3 font-display text-20 font-bold tracking-[-0.01em] text-ink">
           <Fire weight="fill" className="h-6 w-6 text-[#FF7A3D]" aria-hidden />
           All games
-          <span className="num rounded-[8px] bg-white/[0.08] px-2 text-12 font-extrabold leading-6 text-[rgb(var(--n-muted))]">{list.length}</span>
+          <span className="num rounded-[8px] bg-white/[0.08] px-2 font-sans text-12 font-extrabold leading-6 text-[rgb(var(--n-muted))]">{list.length}</span>
         </h2>
-        <form role="search" onSubmit={(e) => e.preventDefault()} className="n1-raised ml-auto flex h-11 w-[300px] items-center gap-3 rounded-[12px] px-4 focus-within:border-[rgb(var(--n-purple)/0.7)] w1920:w-[380px]">
+      </div>
+
+      {/* The chips, then the search and the sort right aligned on the same row (note 3). The search
+          takes the row's spare width up to 380px. Below 1920 the sort is an icon square, and the
+          search widens while in use, the chips scrolling under a fade at their right edge. */}
+      <div ref={row} className="flex items-center gap-3">
+        <Segments label="Category" value={filter} onChange={onFilter} items={NAV.map((n) => ({ value: n.value, label: n.chip, icon: n.icon }))} className={cn('n1-noscroll min-w-0 overflow-x-auto', clipped && 'n1-chips-fade')} />
+        <form role="search" onSubmit={(e) => e.preventDefault()} className="n1-search n1-raised ml-auto flex h-11 min-w-[120px] max-w-[380px] flex-1 items-center gap-3 rounded-[12px] px-4 focus-within:border-[rgb(var(--n-purple)/0.7)]">
           <MagnifyingGlass weight="bold" className="h-[18px] w-[18px] shrink-0 text-[rgb(var(--n-dim))]" aria-hidden />
           <label htmlFor="n1-search" className="sr-only">
             Search for games
           </label>
-          <input ref={searchRef} id="n1-search" type="search" value={query} onChange={(e) => setQuery(e.target.value)} placeholder="Search for games" className="h-full min-w-0 flex-1 bg-transparent text-14 font-semibold text-ink outline-none placeholder:text-[rgb(var(--n-dim))] [&::-webkit-search-cancel-button]:hidden" />
+          <input ref={searchRef} id="n1-search" type="search" value={query} onChange={(e) => setQuery(e.target.value)} placeholder={roomy ? 'Search for games' : 'Search'} className="h-full min-w-0 flex-1 bg-transparent text-14 font-semibold text-ink outline-none placeholder:text-[rgb(var(--n-dim))] [&::-webkit-search-cancel-button]:hidden" />
           {query && (
-            <button type="button" onClick={() => setQuery('')} aria-label="Clear the search" className="n1-ring flex h-6 w-6 items-center justify-center rounded-[6px] text-[rgb(var(--n-muted))] hover:bg-white/[0.08] hover:text-ink">
+            <button type="button" onClick={() => setQuery('')} aria-label="Clear the search" data-icon="pop" className="k-hov-icon n1-ring flex h-6 w-6 shrink-0 items-center justify-center rounded-[6px] text-[rgb(var(--n-muted))] hover:bg-white/[0.08] hover:text-ink">
               <X weight="bold" className="h-[14px] w-[14px]" aria-hidden />
             </button>
           )}
         </form>
         <M.Root>
-          <M.Trigger aria-label={`Sort by ${sortLabel}`} className="n1-raised n1-hoverable n1-ring group flex h-11 items-center gap-2 rounded-[12px] px-4 text-14 font-semibold text-[rgb(var(--n-muted))] data-[state=open]:bg-[rgb(var(--n-hover))]">
-            <SortAscending weight="bold" className="h-[18px] w-[18px]" aria-hidden />
-            Sort by <span className="font-extrabold text-ink">{sortLabel}</span>
-            <CaretDown weight="bold" className="h-4 w-4 transition-transform group-data-[state=open]:rotate-180" aria-hidden />
+          <M.Trigger aria-label={`Sort by ${sortLabel}`} className="n1-raised n1-hoverable n1-ring group flex h-11 w-11 shrink-0 items-center justify-center gap-2 rounded-[12px] text-14 font-semibold text-[rgb(var(--n-muted))] data-[state=open]:bg-[rgb(var(--n-hover))] max-w1920:hover:text-ink w1920:w-auto w1920:px-4">
+            <SortAscending weight="bold" className="h-[18px] w-[18px] shrink-0" aria-hidden />
+            <span className="hidden items-center gap-2 whitespace-nowrap w1920:inline-flex">
+              Sort by <span className="font-extrabold text-ink">{sortLabel}</span>
+            </span>
+            <CaretDown weight="bold" className="hidden h-4 w-4 transition-transform group-data-[state=open]:rotate-180 w1920:block" aria-hidden />
           </M.Trigger>
           <M.Portal>
             <M.Content align="end" sideOffset={8} className="n1 n1-panel z-30 w-[200px] rounded-[16px] p-2 shadow-[0_24px_48px_rgb(0_0_0/0.5)]">
@@ -109,8 +145,6 @@ export const Games = forwardRef<HTMLInputElement, { filter: Filter; onFilter: (f
           </M.Portal>
         </M.Root>
       </div>
-
-      <Segments label="Category" value={filter} onChange={onFilter} items={NAV.map((n) => ({ value: n.value, label: n.chip, icon: n.icon }))} className="n1-noscroll overflow-x-auto" />
 
       {state === 'loading' ? (
         <div className="grid grid-cols-5 gap-3 w1920:grid-cols-7">

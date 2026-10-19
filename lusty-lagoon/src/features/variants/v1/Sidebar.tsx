@@ -13,7 +13,9 @@ import { NAV, countOf, type Filter } from './nav';
 // panel that turns into one vivid hue under large art. Snegbet's first panel, the picks row with NEW
 // and hot badges over Turbo Bet's Games list, every row its own faint pill and the active row lit
 // from the left. Snegbet's grouped panel with colour icons and chevrons. Turbo Bet's bottom promo
-// card for the hot streak giveaway, heavy caps and the chest breaking out of the card.
+// card for the hot streak giveaway, the chest breaking out of the card. Round 7 sets its title in the
+// page's one heading style, Bai Jamjuree 700 in sentence case (note 2), and the row chevrons nudge on
+// hover (note 11).
 
 type Hue = 'ember' | 'blue' | 'purple' | 'green';
 
@@ -62,7 +64,7 @@ function GroupRow({ to, icon, hue, label, badge }: { to: string; icon: ReactNode
       </span>
       <span className="flex-1 truncate">{label}</span>
       {badge}
-      <span className="flex h-6 w-6 items-center justify-center rounded-[6px] bg-white/[0.06] text-[rgb(var(--n-muted))] transition-colors group-hover:bg-white/[0.12] group-hover:text-ink">
+      <span data-icon="arrow" className="k-hov-icon flex h-6 w-6 items-center justify-center rounded-[6px] bg-white/[0.06] text-[rgb(var(--n-muted))] transition-colors group-hover:bg-white/[0.12] group-hover:text-ink">
         <CaretRight weight="bold" className="h-[12px] w-[12px]" aria-hidden />
       </span>
     </Link>
@@ -157,7 +159,7 @@ export function Sidebar({ filter, onFilter, onPlay, onChest, onRank, onGiveaway,
         {/* The chest breaks out of the card's top right, whole, 420 square drawn at 120. */}
         <img src="/art/lobby/giveaway-chest.webp" alt="" className="pointer-events-none absolute -top-[44px] right-1 h-[116px] w-[116px] select-none drop-shadow-[0_10px_18px_rgb(10_4_30/0.55)] w1920:-top-[50px] w1920:right-2 w1920:h-[128px] w1920:w-[128px]" />
         <p className="n1-label text-[rgb(var(--n-lilac))]">Draw {GIVEAWAY.ends.replace(' at midnight', '')}</p>
-        <h2 id="n1-streak" className="mt-2 max-w-[140px] text-20 font-black uppercase leading-[22px] tracking-[-0.01em] text-ink w1920:max-w-[160px]">
+        <h2 id="n1-streak" className="mt-2 max-w-[140px] font-display text-20 font-bold leading-[22px] tracking-[-0.01em] text-ink w1920:max-w-[160px]">
           Hot streak giveaway
         </h2>
         <div className="mt-4 flex items-end justify-between">

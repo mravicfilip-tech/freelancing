@@ -105,9 +105,11 @@ export function Bets({ onPlay, state }: { onPlay: (g: CatalogueGame) => void; st
   const list = state === 'empty' ? [] : feed.filter(TABS.find((t) => t.value === tab)!.pick).slice(0, ROWS);
   return (
     <section aria-labelledby="n1-bets-title" className="n1-panel n1-top flex min-w-0 flex-col gap-4 rounded-[20px] p-4">
-      <div className="flex h-11 items-center justify-between gap-4 pl-2">
+      {/* The title sits on the panel's 16px inset, the same edge as the column bar and the rows under
+          it (round 7, note 4), in the page's one heading style (note 2). */}
+      <div className="flex h-11 items-center justify-between gap-4">
         <div className="flex items-center gap-3">
-          <h2 id="n1-bets-title" className="text-20 font-extrabold tracking-[-0.01em] text-ink">
+          <h2 id="n1-bets-title" className="font-display text-20 font-bold tracking-[-0.01em] text-ink">
             Latest bets
           </h2>
           {state === 'error' ? (

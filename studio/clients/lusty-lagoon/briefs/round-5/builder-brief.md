@@ -12,15 +12,16 @@ You build one of five design directions for the Lusty Lagoon dashboard, from zer
    until you can describe their craft in numbers. All of `references/2026-10-19-round-5/`, then the
    ones from older sets your row names.
 3. Your variant today, the before shots `v<N>_1440.png` and `v<N>_1920.png` in
-   `/home/user/freelancing/studio/.state/shots/lusty-lagoon-r4-after/` (variant 2 has none, it is new).
+   `<main checkout>/studio/.state/shots/lusty-lagoon-r4-after/` (variant 2 has none, it is new).
 4. The code in your folder, the kit in `features/variants/kit/` (read only), the shared data in
    `features/variants/shared/data.ts`, `data/games.ts` and `features/wallet/store.tsx`.
 
 ## Setup
 
-- First command in your worktree, `git checkout -B r5-v<N> <base sha from your prompt>`.
-- Symlink installs, never install. `ln -s /home/user/freelancing/lusty-lagoon/node_modules lusty-lagoon/node_modules`
-  and `ln -s /home/user/freelancing/studio/node_modules studio/node_modules`.
+- First command in your worktree, `git checkout -B r5-v<N> <base sha from your prompt>`. Your prompt
+  names the main checkout too.
+- Symlink installs, never install. `ln -s <main checkout>/lusty-lagoon/node_modules lusty-lagoon/node_modules`
+  and `ln -s <main checkout>/studio/node_modules studio/node_modules`.
 - `npm run build` in `lusty-lagoon/`, then `npx vite preview --port <your port> --strictPort` in the
   background. Free a port with `fuser -k <port>/tcp`, never `pkill -f`.
 - Shots, `node /tmp/claude-0/-home-user-freelancing/76496740-33b7-5e16-a5ef-af5406e9e2dd/scratchpad/tools/snap.mjs "<url>?still" <out.png> <width> 900 [--full]`.

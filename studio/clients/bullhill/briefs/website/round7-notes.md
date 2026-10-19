@@ -38,24 +38,29 @@ read the same data.
 Checks. The six routes add up to 7,939 m, which matches the 8 km in the stats box, and the connections add
 up to 270, which matches the 270 there. The stats box says 5 towns and the cards are six places.
 
-## Round plan, waiting on Filip's go
+## Round plan, hardened 19 October, waiting on Filip's go
 
 Live version touched, Foundry at `/?v=1`, production at 80b8ba0. Daylight and Underground take the same
-data. Deadline not set in the thread.
+data. Deadline to be named.
 
-1. Notes 1, 3 to 7. The Projects row has six cards in the client's order, Admont, Gröbming, Hohenfeld,
-   Ardning, Oberhaus, Haus im Ennstal. Rows Route, Year, Scope, Connections, no For. Route in metres,
-   "1,909 m" in English and "1.909 m" in German. Scope "Trench, ducts, house connections", German
-   "Graben, Rohre, Hausanschlüsse". The five cards keep the photos they have, the sixth gets `road-crew`.
-2. Note 2. The place becomes the title, ADMONT, and the line under it reads "Styria, Austria", German
-   "Steiermark, Österreich". The stand-in titles go.
-3. Spelling. Gröbming and Haus im Ennstal, the official names, where the client wrote Grobming and Haus am
-   Ennstal. Hohenfeld is the one place not confirmed as Styria.
-4. The Projects lede "A few of the routes from the last three years, from village backbones to town
-   centre rollouts." no longer fits. It becomes "Our routes from 2025 and 2026, trench, ducts and house
-   connections.", German to match.
-5. Layout. Note 8, the three crew portraits leave the crew section, and "A small crew that knows the
-   work." is followed straight by "Then we leave the street the way we found it.". The people data stays
-   in the file, unused, for when the client sends real portraits.
-6. The stats box says 5 towns against six places. Either it stays 5, because Oberhaus counts under Haus,
-   or it becomes 6. Ask the client.
+1. Six cards in the client's order, Admont, Gröbming, Hohenfeld, Ardning, Oberhaus, Haus im Ennstal. Rows
+   Route, Year, Scope, Connections. The For row goes.
+2. Route in metres as the client sent them, written "1909 m". Scope "Trench, ducts, house connections" on
+   every card, German "Graben, Rohre, Hausanschlüsse".
+3. Years. Admont and Ardning 2025, the other four 2026, from the client's later correction.
+4. The place becomes the title, ADMONT. The line under it carries the region, region to be confirmed by
+   the client for each place.
+5. Gröbming and Haus im Ennstal, the usual spellings, where the client wrote Grobming and Haus am Ennstal.
+6. The five cards keep their photos once the client confirms each was taken at that place. Haus im
+   Ennstal needs a photo from the client, `road-crew` is already in the work row.
+7. The Projects lede becomes "Our routes from 2025 and 2026, trench, ducts and house connections.",
+   German to match.
+8. Layout, its own answer. The three crew portraits leave Foundry. Daylight keeps them unless Filip says
+   both. The people data stays in the file for when real portraits come.
+
+Questions for the client, in one message Filip forwards.
+- Is each photo from the place now on its card, and is there one from Haus im Ennstal?
+- Which region is Hohenfeld in, and are the other five in Styria?
+- The stats box says 5 towns and there are six places, 5 or 6?
+- Still open from round 6, the registration and VAT number for the footer, and whether the crew in
+  `crew-dusk` may show their faces.

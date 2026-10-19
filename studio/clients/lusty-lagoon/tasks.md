@@ -85,7 +85,9 @@ Task format
   - [x] Filip reviews round 6 on localhost, Loom 5 plus two screenshots, 21 notes, briefs/round-7/notes.md
   - [x] Round 7 plan, briefs/round-7/plan.md
   - [x] Hover board and styled scrollbars in the kit, ?hover=1 to 4
-  - [ ] Round 7 build, variant 5 chrome and chest motion, variant 1 type and search
+  - [x] Round 7 build, variant 5 chrome and chest motion, variant 1 type and search
+  - [x] Round 7 checks, after shots at 1440, 1920 and 2560, board of the three
+  - [ ] Filip picks a hover and a chest motion
   - [ ] Filip answers the art, variant 2 hero and card redraws, and the 2560 width
   - [ ] Filip picks a variant
 

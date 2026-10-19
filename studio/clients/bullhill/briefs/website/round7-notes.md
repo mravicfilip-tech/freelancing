@@ -66,3 +66,9 @@ Questions for the client, in one message Filip forwards.
 - The stats box says 5 towns and there are six places, 5 or 6?
 - Still open from round 6, the registration and VAT number for the footer, and whether the crew in
   `crew-dusk` may show their faces.
+
+## Answers from the client, 19 October 2026
+
+"Höhenfeld, da Styria, slike su dobre tako kako stoje", Höhenfeld, yes Styria, the photos are good as they
+stand. "6 towns". VAT number "SI 77173686", shown as SI77173686 in the footer. The register number has not
+come.

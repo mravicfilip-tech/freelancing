@@ -23,6 +23,14 @@ Task format
 
 ## Backlog
 
+- bullhill-16 Publish the site on its own domain
+  - [ ] The client buys the domain, bullhill.com is taken since 1999
+  - [ ] Hosting on a plan that allows a company site
+  - [ ] The contact form sends for real, today it only shows success
+  - [ ] Legal notice and privacy pages, English and German, the links go to the top today
+  - [ ] The pathway keys and variant switches off for the public build
+  - [ ] Filip opens the build, then the domain goes live
+
 ## In progress
 
 - bullhill-2 Hero scroll smooth, frame rate on phones and desktop
@@ -122,7 +130,7 @@ Task format
   - [x] Eight notes queued from the client chat, round plan written and hardened
   - [x] Filip's go, the portraits leave Foundry and Daylight both
   - [x] Built, 3f15369, six cards, the place as title, no For row, Haus im Ennstal on a new photo of the client's taken there
-  - [ ] The client confirms Hohenfeld and Oberhaus, the photo on each card, and 5 or 6 towns in the stats box
+  - [x] The client confirms Höhenfeld, Styria, the photos as they stand and 6 towns, and sends the VAT number, built
   - [x] Live at 845348c on Filip's "deploy", 19 October 2026
 
 - bullhill-14 Projects row will not scroll back. Note 16 in briefs/website/round6-notes.md

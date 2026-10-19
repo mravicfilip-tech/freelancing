@@ -254,7 +254,7 @@ const en: Content = {
       // the client's figures, 15 October 2026
       { value: '8', unit: 'km', label: 'of trench dug' },
       { value: '270', label: 'house connections' },
-      { value: '5', label: 'towns and municipalities' },
+      { value: '6', label: 'towns and municipalities' },
       { value: '1', label: 'year in the ground' },
     ],
   },
@@ -267,7 +267,7 @@ const en: Content = {
       // the client's routes, 19 October 2026, round 7 notes. Each place keeps the photo the client put it on.
       { id: 'admont', title: 'Admont', place: 'Admont', region: 'Styria, Austria', length: '1909 m', year: '2025', scope: 'Trench, ducts, house connections', connections: '70', shot: { id: 'p1', photo: 'ducts-fence', brief: 'Green and orange ducts in a trench along a garden fence' } },
       { id: 'groebming', title: 'Gröbming', place: 'Gröbming', region: 'Styria, Austria', length: '1330 m', year: '2026', scope: 'Trench, ducts, house connections', connections: '44', shot: { id: 'p2', photo: 'excavator-street', brief: 'Excavator on a village street, the trench open beside it' } },
-      { id: 'hohenfeld', title: 'Hohenfeld', place: 'Hohenfeld', region: 'Styria, Austria', length: '755 m', year: '2026', scope: 'Trench, ducts, house connections', connections: '25', shot: { id: 'p3', photo: 'route-trench-village', brief: 'Open trench with ducts along a village road' } },
+      { id: 'hohenfeld', title: 'Höhenfeld', place: 'Höhenfeld', region: 'Styria, Austria', length: '755 m', year: '2026', scope: 'Trench, ducts, house connections', connections: '25', shot: { id: 'p3', photo: 'route-trench-village', brief: 'Open trench with ducts along a village road' } },
       { id: 'ardning', title: 'Ardning', place: 'Ardning', region: 'Styria, Austria', length: '2197 m', year: '2025', scope: 'Trench, ducts, house connections', connections: '73', shot: { id: 'p4', photo: 'restored-wall', brief: 'Restored strip along the kerb' } },
       { id: 'oberhaus', title: 'Oberhaus', place: 'Oberhaus', region: 'Styria, Austria', length: '957 m', year: '2026', scope: 'Trench, ducts, house connections', connections: '32', shot: { id: 'p5', photo: 'restored-lane', brief: 'Finished route, restored verge' } },
       { id: 'haus', title: 'Haus im Ennstal', place: 'Haus im Ennstal', region: 'Styria, Austria', length: '791 m', year: '2026', scope: 'Trench, ducts, house connections', connections: '26', shot: { id: 'p6', photo: 'street-barriers', brief: 'Barriers along a village road during the works' } },
@@ -346,8 +346,8 @@ const en: Content = {
     legal: 'Legal notice',
     privacy: 'Privacy',
     rights: '© 2026 BullHill',
-    // the Slovenian register and VAT numbers follow from the client, the line hides while empty
-    company: '',
+    // the client's VAT number, 19 October 2026. The register number has not come, so it is not shown.
+    company: 'VAT ID SI77173686',
     madeFor: 'Back to top',
   },
 };
@@ -459,7 +459,7 @@ const de: Content = {
     items: [
       { value: '8', unit: 'km', label: 'Graben gebaut' },
       { value: '270', label: 'Hausanschlüsse' },
-      { value: '5', label: 'Orte und Gemeinden' },
+      { value: '6', label: 'Orte und Gemeinden' },
       { value: '1', label: 'Jahr im Tiefbau' },
     ],
   },
@@ -471,7 +471,7 @@ const de: Content = {
     items: [
       { id: 'admont', title: 'Admont', place: 'Admont', region: 'Steiermark, Österreich', length: '1909 m', year: '2025', scope: 'Graben, Rohre, Hausanschlüsse', connections: '70', shot: { id: 'p1', photo: 'ducts-fence', brief: 'Grüne und orange Rohre in einem Graben entlang eines Gartenzauns' } },
       { id: 'groebming', title: 'Gröbming', place: 'Gröbming', region: 'Steiermark, Österreich', length: '1330 m', year: '2026', scope: 'Graben, Rohre, Hausanschlüsse', connections: '44', shot: { id: 'p2', photo: 'excavator-street', brief: 'Bagger auf einer Ortsstraße, daneben der offene Graben' } },
-      { id: 'hohenfeld', title: 'Hohenfeld', place: 'Hohenfeld', region: 'Steiermark, Österreich', length: '755 m', year: '2026', scope: 'Graben, Rohre, Hausanschlüsse', connections: '25', shot: { id: 'p3', photo: 'route-trench-village', brief: 'Offener Graben mit Rohren entlang einer Ortsstraße' } },
+      { id: 'hohenfeld', title: 'Höhenfeld', place: 'Höhenfeld', region: 'Steiermark, Österreich', length: '755 m', year: '2026', scope: 'Graben, Rohre, Hausanschlüsse', connections: '25', shot: { id: 'p3', photo: 'route-trench-village', brief: 'Offener Graben mit Rohren entlang einer Ortsstraße' } },
       { id: 'ardning', title: 'Ardning', place: 'Ardning', region: 'Steiermark, Österreich', length: '2197 m', year: '2025', scope: 'Graben, Rohre, Hausanschlüsse', connections: '73', shot: { id: 'p4', photo: 'restored-wall', brief: 'Wiederhergestellter Streifen entlang der Bordsteinkante' } },
       { id: 'oberhaus', title: 'Oberhaus', place: 'Oberhaus', region: 'Steiermark, Österreich', length: '957 m', year: '2026', scope: 'Graben, Rohre, Hausanschlüsse', connections: '32', shot: { id: 'p5', photo: 'restored-lane', brief: 'Fertige Trasse, wiederhergestelltes Bankett' } },
       { id: 'haus', title: 'Haus im Ennstal', place: 'Haus im Ennstal', region: 'Steiermark, Österreich', length: '791 m', year: '2026', scope: 'Graben, Rohre, Hausanschlüsse', connections: '26', shot: { id: 'p6', photo: 'street-barriers', brief: 'Absperrungen entlang einer Ortsstraße während der Arbeiten' } },
@@ -548,7 +548,7 @@ const de: Content = {
     legal: 'Impressum',
     privacy: 'Datenschutz',
     rights: '© 2026 BullHill',
-    company: '',
+    company: 'USt-IdNr. SI77173686',
     madeFor: 'Nach oben',
   },
 };

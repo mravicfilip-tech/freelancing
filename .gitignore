@@ -3,3 +3,6 @@ dist
 .DS_Store
 *.log
 remittix-hero.html
+
+# Builder worktrees, one per helper, removed when a round ends
+.claude/worktrees/

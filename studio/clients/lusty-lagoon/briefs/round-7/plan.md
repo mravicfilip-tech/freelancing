@@ -56,7 +56,7 @@ G. Art that sits in the scene, notes 1, 6 and 20. Variants 1, 2 and 5.
    - The spiral pattern leaves the balance card and moves to the giveaway band, so it stays on the
      page.
    - Variant 5's card is built first as the test, then the same recipe goes to variants 1 and 2.
-H. Variant 2 hero and cards redrawn, notes 5 to 9.
+H. Variant 2 hero redrawn, notes 5 to 7 and 9.
    Reference, Snegbet's tournament hero (accepted 18:10), where prize, timer and action sit in one
    framed block.
    - The scene runs edge to edge and the art takes the right 55 percent at every width, so no empty

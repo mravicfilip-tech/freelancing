@@ -12,7 +12,7 @@ this file at the end. The source is Profitable Skills 3.0, module 2, read throug
 | 2026-10-16 | Startups that need a working prototype before a raise or a launch | SUPERSEDED by the row above | Filip wanted a wider audience than startups alone |
 | 2026-10-16 | A wide audience across any type of buyer | NOT TAKEN | Mixed buyers do not share 8 to 10 pains, so the pain research and the logic chain both fail |
 | 2026-10-16 | Filip's view. The work is worth more than $3k to $5k and only needs the right audience to be priced higher | SUPERSEDED by the row below | Funded buyers pick on proof, and no deal so far is in the market |
-| 2026-10-16 | First 2 to 3 deals in the market at $10k to $15k, fixed scope, published price, with a case study clause. Raise after 3 case studies | ACCEPTED | Filip said go with it. Matches the $10k floor at DesignMe, Eleken, Halo Lab and Phenomenon, and our own best deal |
+| 2026-10-16 | First 2 to 3 deals in the market at $10k to $15k, fixed scope, published price, with a case study clause. Raise after 3 case studies | ACCEPTED, the published part UNDER REVIEW since 2026-10-19 | Filip said go with it. Matches the $10k floor at DesignMe, Eleken, Halo Lab and Phenomenon, and our own best deal |
 | 2026-10-16 | Sell a fixed result, never hours | ACCEPTED, part of the pricing call | Eleken, Halo Lab and Arounda list $25 to $49 an hour on Clutch, the same range as the Remittix rate, yet take nothing under $10k |
 | 2026-10-17 | The studio is called Ahai Studio. Folder renamed from `agency` to `ahai-studio` | ACCEPTED | From Filip |
 | 2026-10-17 | The first three pieces of proof come from teardowns | ACCEPTED | From Filip |
@@ -34,6 +34,9 @@ this file at the end. The source is Profitable Skills 3.0, module 2, read throug
 | 2026-10-17 | Offer draft 4 in `offer.md` with all of the above | ACCEPTED as the first draft | Filip asked for a first draft of the offer |
 | 2026-10-16 | The team is three people in total | ACCEPTED | From Filip. Serg's note names the other two as Serg and Miloš |
 | 2026-10-17 | Web3 teams before a launch or TGE are the first segment, inside the existing umbrella | ACCEPTED | Filip said yes. Serg's experience, the clearest trigger and the only proof in the market are there |
+| 2026-10-19 | Rob's feedback on the offer. Work the logic chain through before any funnel. Six weeks at $15k is a lot of scope. Price on the value to the client, not one fixed number. Asked whether the team has delivered this scope in six weeks before | RECEIVED | Slack, 2026-10-19. The honest answer to his last question is no, not as a team |
+| 2026-10-19 | The published fixed price | UNDER REVIEW | Rob's feedback. Srdjan wants prices kept off the internet until a deal is agreed. Filip is open to waiting to see the client, but worried about pricing an unknown or anonymous team in the dark |
+| 2026-10-19 | Keep $15,000 as a private floor, never published, and quote upward after a discovery call that sizes the value. Teams we cannot show stay at $20,000 up front | PROPOSED by Claude | Answers Rob's value point and Filip's anonymous client worry with one rule. Ask Rob for his method to size value on a first call, not for a number |
 | 2026-10-17 | The package is $15,000, not Serg's $5k to $10k | ACCEPTED | Filip said yes. At Serg's 90 hours a week, $15k over 6 weeks is about $28 an hour, the Remittix rate |
 | 2026-10-17 | Miloš is a co-founder and the brand identity designer | ACCEPTED | From Filip |
 | 2026-10-17 | The team will make case studies to show, and past work is not a worry | OPEN | From Filip. Concept work has to be labelled as concept work. Invented clients or numbers would be caught fast in Web3, where buyers already screen for scams |

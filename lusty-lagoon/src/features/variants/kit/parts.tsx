@@ -6,6 +6,7 @@ import { coinById, type CoinId } from '../../../data/wallet';
 import { formatAmount } from '../../../lib/format';
 import { cn } from '../../../lib/cn';
 import './kit.css';
+import { HoverFx } from './hover';
 
 // The kit every dashboard variant composes. Round 4 splits it per D1 in the taste log. Chrome parts
 // (Panel, Box, buttons, nav, chips, menus) follow the two dark UI references, a 1px light edge,
@@ -38,7 +39,8 @@ type KitButtonProps = ButtonHTMLAttributes<HTMLButtonElement> & {
 /**
  * The tactile key, the round 5 button direction (taste log 18:10). Two close stops lighter at the
  * top, a 1px inner top light, a 2px darker inner bottom edge, so it reads pressable. Pressed moves
- * down 1px and drops the edge. No gloss sheen, sunburst or glow.
+ * down 1px and drops the edge. No gloss sheen, sunburst or glow at rest. The orange key opts into the
+ * round 7 hover board (kit/hover.css), the only place light moves on it.
  */
 export const KitButton = forwardRef<HTMLButtonElement, KitButtonProps>(function KitButton({ tone = 'purple', size = 'md', shape = 'rounded', loading, disabled, className, children, ...rest }, ref) {
   const key = tone === 'primary' || tone === 'gold' ? 'k-key' : tone === 'purple' ? 'k-key k-key-purple' : null;
@@ -50,6 +52,7 @@ export const KitButton = forwardRef<HTMLButtonElement, KitButtonProps>(function 
       className={cn(
         'inline-flex select-none items-center justify-center gap-2 whitespace-nowrap outline-none focus-visible:ring-2 focus-visible:ring-[#B47CFF] focus-visible:ring-offset-2 focus-visible:ring-offset-[rgb(var(--ll-page))] disabled:cursor-not-allowed disabled:opacity-45',
         key && [key, shape === 'pill' && 'k-key-pill', shape === 'angled' && 'k-key-angled'],
+        key === 'k-key' && 'k-hov',
         !key && 'rounded-[12px] font-bold transition-[filter,background-color] duration-150',
         tone === 'white' && 'bg-ink text-page hover:bg-ink/90',
         tone === 'dark' && 'border border-white/[0.07] bg-[rgb(var(--k-item))] text-ink hover:bg-[rgb(var(--k-item-hover))]',
@@ -60,6 +63,7 @@ export const KitButton = forwardRef<HTMLButtonElement, KitButtonProps>(function 
       )}
       {...rest}
     >
+      {key === 'k-key' && <HoverFx />}
       {loading && <CircleNotch weight="bold" className="h-5 w-5 animate-spin" aria-hidden />}
       {children}
     </button>

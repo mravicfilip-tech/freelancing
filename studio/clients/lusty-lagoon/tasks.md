@@ -25,7 +25,7 @@ Task format
 
 ## In progress
 
-- lusty-lagoon-1 Lusty Lagoon refurb, landing page and product. Design https://www.figma.com/design/MjPhupcafS4TyCyssMHTjU/Lusty-Lagoon-Casino?node-id=83-53. Wallet flow on branch claude/busy-edison-mmjwbn, review commit 1c4453d
+- lusty-lagoon-1 Lusty Lagoon refurb, landing page and product. Design https://www.figma.com/design/MjPhupcafS4TyCyssMHTjU/Lusty-Lagoon-Casino?node-id=83-53. Branch claude/busy-edison-mmjwbn, review commit a824509 (lobby and shell, 1:1)
   - [x] Read the Figma file and list the screens
   - [x] Kickoff answers from Filip
   - [x] Queue round 1 review notes, briefs/round-1/notes.md
@@ -39,7 +39,8 @@ Task format
   - [ ] Filip accepts the wallet flow, then kit and golden
   - [x] Built every screen on the flat system, rejected by Filip as a step back from the Figma
   - [x] Agree the 1:1 approach, Figma frames as the bar, only the review notes change
-  - [ ] Lobby, sidebar and top bar 1:1, side-by-side board, Filip confirms the bar
+  - [x] Lobby, sidebar and top bar 1:1 with a side-by-side board, commit a824509
+  - [ ] Filip confirms the lobby as the bar for every other screen
   - [x] Unblock Figma assets, the Pro team copy fGqIuwR8pailgKcy4UFfNg works
   - [ ] Pull every image and icon from the copy
   - [ ] Landing page

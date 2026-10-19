@@ -13,6 +13,16 @@ import { StatusChip } from '../components/ui/StatusChip';
 import { Stepper } from '../components/ui/Stepper';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '../components/ui/Tabs';
 import { cashById } from '../data/wallet';
+import { Accordion, AccordionItem } from '../components/ui/Accordion';
+import { Checkbox } from '../components/ui/Checkbox';
+import { Dialog, DialogContent, DialogTrigger } from '../components/ui/Dialog';
+import { GameTile } from '../components/ui/GameTile';
+import { Message } from '../components/ui/Message';
+import { PasswordField } from '../components/ui/PasswordField';
+import { Select } from '../components/ui/Select';
+import { Switch } from '../components/ui/Switch';
+import { GAMES } from '../data/games';
+import { Receipt } from '@phosphor-icons/react';
 
 // The system that replaced the effects. Every part in its states, on one page, for the case study.
 
@@ -170,6 +180,49 @@ export function KitPage() {
           </div>
         </div>
         <Stepper steps={['Method', 'Amount', 'Review', 'Status']} current={2} />
+      </Section>
+
+      <Section title="Choices and toggles" note="Radix underneath, so keyboard and focus behave. Every control has a label.">
+        <div className="grid grid-cols-3 gap-6">
+          <Select label="Default payment method" options={[{ value: 'visa', label: 'Visa ending 4821' }, { value: 'usdt', label: 'USDT on Tron' }, { value: 'paypal', label: 'PayPal' }]} defaultValue="visa" />
+          <PasswordField label="Password" defaultValue="lagoon2026" hint="At least 8 characters, with a letter and a number." />
+          <div className="flex flex-col gap-4">
+            <Switch label="Deposit and withdrawal updates" description="A notice when money lands or leaves." defaultChecked />
+            <Switch label="Giveaway news" />
+            <Checkbox label="I am 18 or older and I agree to the terms" defaultChecked />
+          </div>
+        </div>
+      </Section>
+
+      <Section title="Games, questions and dialogs">
+        <div className="grid grid-cols-6 gap-4">
+          {GAMES.filter((g) => !g.wideOnly).slice(0, 6).map((g) => (
+            <GameTile key={g.id} game={g} />
+          ))}
+        </div>
+        <div className="grid grid-cols-2 gap-6">
+          <div className="rounded-2xl border border-line bg-panel px-6">
+            <Accordion type="single" collapsible defaultValue="a">
+              <AccordionItem value="a" title="How long do withdrawals take?">
+                After a short security check, crypto usually arrives in under 20 minutes.
+              </AccordionItem>
+              <AccordionItem value="b" title="Are there fees?">
+                Cards cost 2.5% and PayPal 3%. Crypto deposits are free.
+              </AccordionItem>
+            </Accordion>
+          </div>
+          <div className="flex flex-col items-start gap-4 rounded-2xl border border-line bg-panel p-6">
+            <Dialog>
+              <DialogTrigger asChild>
+                <Button variant="secondary">Open a dialog</Button>
+              </DialogTrigger>
+              <DialogContent title="Sugar Rush" description="Pragmatic Play">
+                <p className="text-16 text-ink2">A dialog on the panel surface, with the page dimmed behind it.</p>
+              </DialogContent>
+            </Dialog>
+            <Message className="py-6" icon={<Receipt weight="fill" className="h-10 w-10 text-ink3" aria-hidden />} title="No transactions yet" body="Deposits and withdrawals show here the moment you make one." />
+          </div>
+        </div>
       </Section>
 
       <Section title="Notes and loading">

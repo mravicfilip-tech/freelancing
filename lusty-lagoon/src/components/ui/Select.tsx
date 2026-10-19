@@ -10,6 +10,7 @@ export function Select({
   label,
   options,
   value,
+  defaultValue,
   onValueChange,
   placeholder = 'Choose',
   hint,
@@ -18,6 +19,7 @@ export function Select({
   label: string;
   options: Option[];
   value?: string;
+  defaultValue?: string;
   onValueChange?: (v: string) => void;
   placeholder?: string;
   hint?: string;
@@ -29,7 +31,7 @@ export function Select({
       <label htmlFor={id} className="text-14 font-medium text-ink2">
         {label}
       </label>
-      <S.Root value={value} onValueChange={onValueChange}>
+      <S.Root value={value} defaultValue={defaultValue} onValueChange={onValueChange}>
         <S.Trigger
           id={id}
           className="flex h-11 items-center justify-between gap-2 rounded-lg border border-field bg-sunken px-4 text-left text-16 text-ink data-[placeholder]:text-ink3 focus-visible:border-accent"

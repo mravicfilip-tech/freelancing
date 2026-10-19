@@ -475,12 +475,14 @@ export function StatusStep({ s, dispatch, onRetry }: StepProps & { onRetry: () =
       spin: false,
     },
     completed: { Icon: CheckCircle, tone: 'text-success', title: deposit ? 'Deposit complete' : 'Withdrawal sent', spin: false },
-    declined: { Icon: XCircle, tone: 'text-danger', title: 'Your bank declined this payment', spin: false },
+    declined: { Icon: XCircle, tone: 'text-danger', title: deposit ? 'Your bank declined this payment' : 'This withdrawal was declined', spin: false },
   }[s.outcome ?? 'processing'];
 
   const lead =
     s.outcome === 'declined'
-      ? 'No money was taken. Try again, or pay another way.'
+      ? deposit
+        ? 'No money was taken. Try again, or pay another way.'
+        : 'It did not pass our security check, and the money is back in your balance. Try again, or withdraw another way.'
       : s.outcome === 'completed' && deposit
         ? coin && s.received
           ? `We received ${formatToken(s.received, coin.symbol, coin.decimals)}. You can play with it now.`
@@ -544,7 +546,7 @@ export function StatusStep({ s, dispatch, onRetry }: StepProps & { onRetry: () =
               Try again
             </Button>
             <Button size="lg" variant="secondary" onClick={() => dispatch({ type: 'go', step: 'method' })}>
-              Pay another way
+              {deposit ? 'Pay another way' : 'Withdraw another way'}
             </Button>
           </>
         ) : s.outcome === 'processing' ? null : (

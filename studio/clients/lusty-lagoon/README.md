@@ -77,7 +77,9 @@ Use this copy. The original, MjPhupcafS4TyCyssMHTjU, sits on a Starter plan that
 - Routes to shoot `deposit=/wallet/deposit,withdraw=/wallet/withdraw,kit=/kit`.
 - Deep links for every state. `?pick=<coin or method>&step=<send|amount|details|review|status>`,
   plus `amount`, `address` and `network`. `step=status` runs the flow to its end on load.
-  `?outcome=declined` declines card deposits. `?access=locked` locks withdrawals.
+  `?outcome=declined` declines card deposits and fails withdrawals at the security check. In the flow
+  itself, a Mastercard number ending in 0002, such as 5555 5555 5508 0002, is declined by the bank.
+  `?access=locked` locks withdrawals.
   `?history=loading|error|empty|large` sets the transaction table state.
 - Nothing moves on its own except status timers, which `step=status` skips, so shots are stable.
 - Vercel previews are on hold, so Filip reviews the pushed commit on his own localhost.

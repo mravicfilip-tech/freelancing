@@ -54,7 +54,7 @@
       "sev": 2,
       "where": "lusty-lagoon/src/features/wallet/steps.tsx:544 Go to the lobby and :114 Verify identity, WalletPage.tsx Tip and Gift card tabs, Sidebar nav Lobby, Send to agent, Refer a friend, FAQ",
       "what": "primary CTAs after a completed deposit and on the locked withdraw state land on a Placeholder reading This screen is not part of the prototype yet, and the Tip and Gift card tabs show placeholder copy. Placeholder copy on a clickable primary path and four dead nav items.",
-      "status": "open",
+      "status": "fixed",
       "round": 1
     },
     {
@@ -78,7 +78,7 @@
       "sev": 3,
       "where": "lusty-lagoon/src/features/wallet/store.tsx ?outcome=declined, PaymentFlow.tsx",
       "what": "the declined result is reachable only by a URL switch, and there is no declined path for withdrawals.",
-      "status": "open",
+      "status": "fixed",
       "round": 1
     },
     {
@@ -86,7 +86,7 @@
       "sev": 3,
       "where": "lusty-lagoon/src/features/wallet/TransactionHistory.tsx tr hover:bg-raised",
       "what": "hover highlight on every history row, but the rows do nothing on click. Hover on the inert.",
-      "status": "open",
+      "status": "fixed",
       "round": 1
     },
     {
@@ -110,7 +110,7 @@
       "sev": 3,
       "where": "studio/.state/packs/lusty-lagoon-1/pack.md",
       "what": "unverified. The pack has no walk, golden or kit results, so sections 9 and 11 were graded from code and the criteria only.",
-      "status": "open",
+      "status": "partly",
       "round": 1
     }
   ],
@@ -124,6 +124,19 @@
       "ids": [
         "F9",
         "F10"
+      ]
+    },
+    {
+      "after": 3,
+      "kind": "fix",
+      "choice": "fix lusty-lagoon-1 F4 F7 F8 F11",
+      "at": "2026-10-19T19:29:09.846Z",
+      "proof": "c4bd6877-637d-4c12-9481-17181779dcea",
+      "ids": [
+        "F4",
+        "F7",
+        "F8",
+        "F11"
       ]
     }
   ],

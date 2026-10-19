@@ -1,0 +1,18 @@
+{
+  "name": "Withdrawal declined at the security check",
+  "job": "A player's Bitcoin withdrawal fails the security check, the money returns to the balance, and they can try again",
+  "start": "/wallet/withdraw?outcome=declined",
+  "maxClicks": 6,
+  "steps": [
+    { "click": "BTC" },
+    { "click": "Continue" },
+    { "fill": { "label": "Bitcoin address", "value": "bc1qar0srrr7xfkvy5l643lydnw9re59gtzzwf5mdq" } },
+    { "fill": { "label": "Amount", "value": "1000" } },
+    { "click": "Continue" },
+    { "click": "Confirm withdrawal" },
+    { "expect": "This withdrawal was declined" },
+    { "expect": "the money is back in your balance" },
+    { "expect": "2,492" },
+    { "expect": "Withdraw another way" }
+  ]
+}

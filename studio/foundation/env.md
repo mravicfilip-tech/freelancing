@@ -11,6 +11,10 @@ so the lesson outlives the context window.
 - The cloud stop hook asks for a commit whenever the working tree is dirty. Builders work in their
   own git worktree, per build recipe step 2, so the main tree stays clean while they run.
 
+- A background `vite preview` did not survive a pause in the session on 19 Oct 2026, twice, and the
+  next shot failed with connection refused. Curl the port before a run of shots and restart the
+  server when it refuses.
+
 ## Shots
 
 - The container has 4 cores and no GPU. WebGL renders in software. Wait 9000 to 13000ms per frame

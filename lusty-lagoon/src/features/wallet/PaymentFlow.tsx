@@ -19,7 +19,7 @@ import {
   StatusStep,
   type StepProps,
 } from './steps';
-import { nextTxId, useWallet } from './store';
+import { isDeclinedTestCard, nextTxId, useWallet } from './store';
 
 const wait = (ms: number) => new Promise((r) => setTimeout(r, ms));
 
@@ -102,7 +102,7 @@ export function PaymentFlow({ direction }: { direction: Direction }) {
       dispatch({ type: 'submit', txId: id, outcome: 'processing' });
       await tick(m.id === 'paypal' ? 1800 : 1400);
       if (!alive()) return;
-      const declined = wallet.declineCards && m.kind === 'card';
+      const declined = m.kind === 'card' && (wallet.declineCards || (m.id === 'mastercard' && isDeclinedTestCard(s.card.number)));
       wallet.record(
         { id, direction, method: sel, amount: q.amount, value: q.receive, status: declined ? 'declined' : 'completed', date: now, reference: `${m.id.slice(0, 3).toUpperCase()}-1019-${id.slice(-4)}` },
         declined ? 0 : q.receive,
@@ -121,6 +121,12 @@ export function PaymentFlow({ direction }: { direction: Direction }) {
     dispatch({ type: 'stage', stage: 1, outcome: 'pending' });
     await tick(1800);
     if (!alive()) return;
+    // The security check can decline a withdrawal, and the money goes straight back to the balance.
+    if (wallet.declineCards) {
+      wallet.update(id, { status: 'declined', reference: 'Declined at the security check' }, q.amount);
+      dispatch({ type: 'stage', stage: 1, outcome: 'declined' });
+      return;
+    }
     if (coin) {
       wallet.update(id, { status: 'completed', reference: '3f8a1c9e27d04b6a5e1f83c90d7b2a4e6c15f8d03a9b7e2c41d6f05b8e3a9c72' });
       dispatch({ type: 'stage', stage: 2, outcome: 'completed' });

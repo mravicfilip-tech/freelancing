@@ -1,0 +1,19 @@
+{
+  "name": "Card deposit declined by the bank",
+  "job": "A player adds a Mastercard the bank declines, sees that no money was taken, and can try again or pay another way",
+  "start": "/wallet/deposit",
+  "maxClicks": 6,
+  "steps": [
+    { "click": "Mastercard" },
+    { "click": "Continue" },
+    { "click": "$100" },
+    { "click": "Continue" },
+    { "fill": { "label": "Card number", "value": "5555 5555 5508 0002" } },
+    { "fill": { "label": "Expiry", "value": "08/29" } },
+    { "fill": { "label": "Security code", "value": "123" } },
+    { "click": "Confirm and pay" },
+    { "expect": "Your bank declined this payment" },
+    { "expect": "No money was taken" },
+    { "expect": "Pay another way" }
+  ]
+}

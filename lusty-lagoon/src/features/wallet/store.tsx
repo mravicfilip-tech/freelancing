@@ -7,9 +7,15 @@ import { ACCOUNT, historyFor, type Transaction } from '../../data/wallet';
 // URL switches for screenshots and the case study, read once on load.
 //   ?history=loading|error|empty|large
 //   ?access=locked   withdrawals locked until identity is verified
-//   ?outcome=declined   card deposits are declined by the bank
+//   ?outcome=declined   card deposits are declined by the bank, withdrawals fail the security check
+//
+// In the flow itself, a Mastercard number ending in 0002 is declined by the bank, the way payment
+// sandboxes use test cards, so the declined result is reachable without a URL switch.
 
 export type HistoryState = 'ready' | 'loading' | 'error';
+
+/** The test card the bank declines, any number ending in 0002. */
+export const isDeclinedTestCard = (number: string) => number.replace(/\D/g, '').endsWith('0002');
 
 type Store = {
   balance: number;

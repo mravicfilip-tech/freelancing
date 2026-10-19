@@ -150,7 +150,7 @@ export function TransactionHistory() {
                     const dep = tx.direction === 'deposit';
                     const DirIcon = dep ? ArrowDownLeft : ArrowUpRight;
                     return (
-                      <tr key={tx.id} className="border-t border-line transition-colors hover:bg-raised">
+                      <tr key={tx.id} className="border-t border-line">
                         <td className="px-6 py-3">
                           <span className="flex items-center gap-3">
                             <span className="flex h-8 w-8 items-center justify-center rounded-full bg-raised">

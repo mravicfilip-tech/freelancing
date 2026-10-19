@@ -41,7 +41,8 @@ export default function Variant2() {
   return (
     <div className={cn('m2', still && 'm2-still')}>
       <TopBar onPlay={setGame} state={state} />
-      <div className="flex gap-6 pb-16 pl-4 pr-6 pt-6">
+      {/* Its own stacking context, so the hero art and tiles never paint over the sticky top bar. */}
+      <div className="isolate flex gap-6 pb-16 pl-4 pr-6 pt-6">
         <Sidebar filter={filter} onFilter={pick} onSearch={search} onOpen={setDialog} />
         <main className="flex min-w-0 flex-1 flex-col gap-12">
           <Hero joined={joined} onJoin={() => setJoined(true)} onPlay={() => setGame(gameById('sugar-rush')!)} onRules={() => setDialog('giveaway')} />

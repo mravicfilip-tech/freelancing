@@ -59,3 +59,9 @@ so the lesson outlives the context window.
 ```json
 { "git": { "deploymentEnabled": { "claude/*": false } } }
 ```
+
+## Cloudflare Pages
+
+- A Pages only token attaches a custom domain but cannot write its DNS record, so the domain sits pending.
+  Filip clicks Activate domain on the project's Custom domains tab, or the token gets Zone DNS edit.
+- `_redirects` rewriting to `/index.html` answers 308 to `/`. Rewrite to `/` instead.

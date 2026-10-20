@@ -45,7 +45,10 @@ Task format
   - [x] Impressum facts gathered in briefs/website/golive.md, legal name, register number, VAT, director
   - [x] The pathway keys and variant switches off for the public build, npm run build:public, golive-check.mjs
   - [x] Launch files, robots, sitemap, hreflang, a 404 page, cache and security headers
-  - [ ] Filip opens the build, then the domain goes live
+  - [x] Filip opened preview 048c0fb and said deploy, 20 October 2026
+  - [x] Production at 048c0fb on bullhill-site.pages.dev, bullhill.co and www attached, pending DNS
+  - [ ] Filip activates the two domains in Cloudflare, the old GoDaddy A records replaced
+  - [ ] bullhill-site.vercel.app redirects to bullhill.co, Filip's yes 20 October 2026, after the domain answers
 - bullhill-2 Hero scroll smooth, frame rate on phones and desktop
   - [x] Measure frame cost on a scripted scroll, phone and desktop
   - [x] Fix the worst costs, measure again, c9d30f3

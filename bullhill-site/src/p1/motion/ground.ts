@@ -1,4 +1,5 @@
 import { useLayoutEffect } from 'react';
+import { bezier } from '../variants/hero/hero6/timeline';
 import { motionOn, onScroll } from './motion';
 
 // The page ground, briefs/website/round5-notes.md note 18, after landonorris.com.
@@ -7,9 +8,12 @@ import { motionOn, onScroll } from './motion';
 // colour. The section backgrounds themselves go transparent under [data-motion='on'] in foundry.css,
 // so this is the only thing that paints between sections.
 //
-// The controller writes --page on .p1 and data-page="dark|light". CSS carries the transition, 600ms
-// on background-color, and the header reads the same two values. With motion off nothing runs and
-// every section keeps its own background.
+// The controller writes data-page="dark|light" on .p1. The page itself is the dark ground and the light
+// one is a fixed layer behind the sections that fades in and out, 600ms on opacity, foundry.css. The
+// ground was a background-color transition on .p1, which repainted the whole screen every frame of the
+// 600ms and read back the computed colour each frame, the hitch Filip filmed on 20 October 2026 as the
+// scroll got "laggy" past the hero. An opacity fade runs on the compositor. With motion off nothing runs
+// and every section keeps its own background.
 //
 // The switch point. Scrolling down the ground changes as the incoming section's first text reaches
 // the bottom of the viewport, so the 600ms runs while that text rises in and it never rests on the
@@ -29,6 +33,9 @@ type Ground = 'dark' | 'light';
 type Tx = 'd' | 'w' | 'k' | 'l';
 const txFor = (g: number): Tx => (g < 30 ? 'd' : g < 117.2 ? 'w' : g < 214 ? 'k' : 'l');
 const PAPER_G = 218;
+// the same curve and time as --m-ground-ease and --m-ground in foundry.css
+const GROUND_EASE = bezier(0.22, 0.61, 0.36, 1);
+const GROUND_MS = 600;
 
 // Whether a button has a panel of its own, the first opaque background above it before the page.
 function onPanel(el: HTMLElement, root: HTMLElement): boolean {
@@ -117,6 +124,9 @@ export function useGround(root: HTMLElement | null, ready = true) {
 
     let tx: Tx | null = null;
     let target = 0;
+    let from = 0;
+    let live = 0;
+    let t0 = 0;
     let track = 0;
     const setTx = (t: Tx) => {
       if (t === tx) return;
@@ -125,13 +135,13 @@ export function useGround(root: HTMLElement | null, ready = true) {
       const gr = t === 'd' || t === 'w' ? 'dark' : 'light';
       bare.forEach((b) => (b.dataset.ground = gr));
     };
-    // follows the live ground through the transition, one read a frame, and stops once it lands
-    const follow = () => {
+    // follows the ground through the fade on the fade's own curve, no style read, and stops once it lands
+    const follow = (now: number) => {
       track = 0;
-      const m = getComputedStyle(root).backgroundColor.match(/[\d.]+/g);
-      const g = m ? Number(m[0]) : target;
-      setTx(txFor(g));
-      if (Math.abs(g - target) > 0.5) track = requestAnimationFrame(follow);
+      const k = Math.min(1, Math.max(0, (now - t0) / GROUND_MS));
+      live = from + (target - from) * GROUND_EASE(k);
+      setTx(txFor(live));
+      if (k < 1) track = requestAnimationFrame(follow);
       else {
         setTx(txFor(target));
         delete root.dataset.gmid;
@@ -146,13 +156,15 @@ export function useGround(root: HTMLElement | null, ready = true) {
       const first = shown === null;
       shown = g;
       target = g === 'light' ? PAPER_G : 0;
+      from = first ? target : live;
+      live = from;
+      t0 = performance.now();
       cancelAnimationFrame(track);
       if (first) setTx(txFor(target));
       else {
         root.dataset.gmid = '';
         track = requestAnimationFrame(follow);
       }
-      root.style.setProperty('--page', g === 'light' ? 'var(--paper)' : 'var(--ground)');
       root.dataset.page = g;
       // the first ground is set with no transition, so a reload part way down does not fade from black
       if (!root.dataset.gt) requestAnimationFrame(() => (root.dataset.gt = 'on'));
@@ -208,7 +220,6 @@ export function useGround(root: HTMLElement | null, ready = true) {
       delete root.dataset.gmid;
       ro.disconnect();
       window.removeEventListener('load', onLoad);
-      root.style.removeProperty('--page');
       delete root.dataset.page;
       delete root.dataset.gt;
     };

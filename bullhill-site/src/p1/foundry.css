@@ -879,26 +879,35 @@
 }
 
 /* ---------- the page ground, motion on only ----------
- * motion/ground.ts writes --page on .p1 and data-page="dark|light" as a section arrives. Each full
+ * motion/ground.ts writes data-page="dark|light" on .p1 as a section arrives. Each full
  * width section loses its own background here, so the page ground is the only thing painted between
  * sections and there are no hard edges. Panels, cards, the process drawing, the crew matrix, the FAQ
  * panel, the contact box and the red closing panel keep their own colours. The hero keeps its red
  * glow, which is its own gradient. The list is in step with SECTIONS in motion/ground.ts. With motion
  * off none of this applies and every section keeps its background. */
-/* --page is read by .p1 alone, so it does not inherit. A ground change then restyles the root and not
- * every element under it, about 3,500 of them, each time a section arrives */
-@property --page {
-  syntax: '*';
-  inherits: false;
-}
+/* The page is the dark ground, and the light ground is a fixed layer that fades in over it, behind every
+ * section. An opacity fade runs on the compositor, where the background-color transition it replaced
+ * repainted the whole screen every frame of the fade, 20 October 2026. isolation keeps the layer above
+ * the page's own background and under its content. */
 .p1[data-motion='on'] {
   --m-ground: 600ms;
   --m-ground-ease: cubic-bezier(0.22, 0.61, 0.36, 1);
-  --page: var(--ground);
-  background-color: var(--page);
+  background-color: var(--ground);
+  isolation: isolate;
 }
-.p1[data-motion='on'][data-gt='on'] {
-  transition: background-color var(--m-ground) var(--m-ground-ease);
+.p1[data-motion='on']::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  background: var(--paper);
+  opacity: 0;
+  pointer-events: none;
+  will-change: opacity;
+}
+.p1[data-motion='on'][data-page='light']::before { opacity: 1; }
+.p1[data-motion='on'][data-gt='on']::before {
+  transition: opacity var(--m-ground) var(--m-ground-ease);
 }
 .p1[data-motion='on'] :is(.hero, .hv6, .hv6__pin, .wk, .eth, .proc, .proj, .crew, .auds, .faq, .conw, .end) {
   background-color: transparent;

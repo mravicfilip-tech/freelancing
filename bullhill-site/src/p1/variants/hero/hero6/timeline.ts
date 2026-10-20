@@ -16,7 +16,7 @@ export const A1 = 2800;
 export const ASSEMBLE = A1 - A0;
 
 // cubic-bezier(x1, y1, x2, y2) as a function of x, the same curve as --m-ease
-function bezier(x1: number, y1: number, x2: number, y2: number) {
+export function bezier(x1: number, y1: number, x2: number, y2: number) {
   const cx = 3 * x1;
   const bx = 3 * (x2 - x1) - cx;
   const ax = 1 - cx - bx;

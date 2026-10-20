@@ -30,7 +30,9 @@ Task format
 - bullhill-18 The site feels heavy, make browsing smooth. Notes in briefs/website/round8-notes.md
   - [x] Measured, the sections below the hero mounted one scene frame apart, Lenis glided every wheel notch
   - [x] Sections mount in idle time and all at once on the first scroll, touch or key
-  - [x] Lenis off, native scrolling on every input, Filip's "Ur AI"
+  - [x] Lenis off, native scrolling on every input, Filip's "Ur AI", undone the same hour after his Loom
+  - [x] Filip's Loom of the preview, laggy past the hero, landonorris.com effortless, Lenis back
+  - [x] The page ground fades as a fixed layer on the compositor, raster crossing into Services 330ms to 80ms
   - [x] Form field focus outline gone, the underline shows focus
   - [ ] Filip feels it on the preview
 ## In progress

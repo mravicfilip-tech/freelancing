@@ -39,7 +39,7 @@ Task format
   - [x] RESEND_API_KEY set as a Pages secret by Filip, Production and Preview, CONTACT_TO on Preview is Filip's address
   - [x] Preview at 5e61273, https://preview.bullhill-site.pages.dev, public, noindex
   - [x] First real send from the preview reached Filip's inbox, 20 October 2026 13:22 UTC
-  - [ ] Filip opens the preview and sends the form himself
+  - [x] Filip opens the preview and sends the form himself, the email arrived, 20 October 2026
   - [x] Legal notice and privacy pages, English and German, at /legal and /privacy, footer links point at them
   - [ ] Share capital, register court and the register number confirmed by the client, then the [TO CONFIRM] marks go
   - [x] Impressum facts gathered in briefs/website/golive.md, legal name, register number, VAT, director

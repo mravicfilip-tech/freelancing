@@ -236,95 +236,279 @@
 
 /* ---------- Art ---------- */
 
-/* Category tiles, Turbo Bet's vivid singles. Two close stops of one hue, a lighter burst behind the
- * art, a 1px white edge and a top highlight. */
-.n1-tile { position: relative; isolation: isolate; border: 1px solid rgb(255 255 255 / 0.16); transition: border-color 0.2s var(--n-ease); }
-.n1-tile:hover { border-color: rgb(255 255 255 / 0.4); }
-.n1-tile::before {
-  content: '';
-  position: absolute;
-  top: -1px;
-  left: 12%;
-  right: 12%;
-  height: 1px;
-  z-index: 3;
-  pointer-events: none;
-  background: linear-gradient(90deg, transparent, rgb(255 255 255 / 0.55), transparent);
+/* Category cards, round 7 (note 21, plan line J), after Betsera's Originals row. Portrait 3 to 4 on a
+ * dark purple face. The category hue comes in as light only, a tint at the top, a glow behind and
+ * under the art, a lit pool on the floor and a rim on the art, so the four hues sit together. The art
+ * is the card, standing on the floor above the title and breaking out of the top edge.
+ * The row is a size container, so each cell can reserve the breakout above its card, a fifth of the
+ * card's height (card width times 4/3 times 0.2). */
+.n1-cats { container-type: inline-size; }
+.n1-cat-cell {
+  padding-top: calc((100cqw - 48px) / 4 * 4 / 3 * 0.2);
+  padding-top: round(up, (100cqw - 48px) / 4 * 4 / 3 * 0.2, 1px);
 }
-.n1-tile::after {
+.n1-cat {
+  --floor: 86px;
+  position: relative;
+  isolation: isolate;
+  display: block;
+  width: 100%;
+  aspect-ratio: 3 / 4;
+  border-radius: 16px;
+  text-align: left;
+}
+/* The face. Dark purple, the hue as a tint from the top, a 1px edge and a top highlight. */
+.n1-cat-face {
+  position: absolute;
+  inset: 0;
+  z-index: -3;
+  overflow: hidden;
+  border-radius: inherit;
+  background:
+    linear-gradient(180deg, rgb(var(--hue) / 0.26) 0%, rgb(var(--hue) / 0.08) 32%, rgb(var(--hue) / 0) 52%),
+    linear-gradient(180deg, #1d1648 0%, #161038 58%, #110c2e 100%);
+  box-shadow: inset 0 0 0 1px rgb(255 255 255 / 0.08), inset 0 1px 0 rgb(255 255 255 / 0.12);
+  transition: box-shadow 0.25s var(--n-ease);
+}
+/* The glow behind and under the art. It brightens on hover. */
+.n1-cat-face::after {
   content: '';
   position: absolute;
   inset: 0;
-  z-index: -1;
-  pointer-events: none;
-  background: radial-gradient(70% 70% at 74% 70%, rgb(255 255 255 / 0.22), transparent 70%);
+  opacity: 0.78;
+  background: radial-gradient(62% 44% at 50% 56%, rgb(var(--hue) / 0.55) 0%, rgb(var(--hue) / 0.2) 52%, rgb(var(--hue) / 0) 100%);
+  transition: opacity 0.3s var(--n-ease);
 }
-/* Purple calms from #8F3DFF (round 5) to a deeper, less saturated pair (note 10). */
-.n1-tile-purple { background: linear-gradient(160deg, #7a4be6 0%, #4c23a6 100%); }
-.n1-tile-blue { background: linear-gradient(160deg, #3d8bff 0%, #1d4fd8 100%); }
-/* Orange and green sit darker than Turbo Bet's, so the white title keeps 3 to 1 as large text. */
-.n1-tile-orange { background: linear-gradient(160deg, #ee5f12 0%, #b93a08 100%); }
-.n1-tile-green { background: linear-gradient(160deg, #28a045 0%, #146a32 100%); }
+/* The text side of the floor stays dark, so the title and the count keep AA. */
+.n1-cat-face::before {
+  content: '';
+  position: absolute;
+  inset: auto 0 0 0;
+  height: 40%;
+  z-index: 1;
+  background: linear-gradient(0deg, rgb(17 12 46 / 0.9) 0%, rgb(17 12 46 / 0.5) 34%, rgb(17 12 46 / 0) 100%);
+}
+.n1-cat:is(:hover, :focus-visible) .n1-cat-face { box-shadow: inset 0 0 0 1px rgb(var(--hue-hi) / 0.34), inset 0 1px 0 rgb(255 255 255 / 0.2); }
+.n1-cat:is(:hover, :focus-visible) .n1-cat-face::after { opacity: 1; }
 
-/* The brand mark pattern in a tile's upper right, faint. */
+/* The brand mark pattern in the top tint, faint. It is the spiral's one place in this variant. */
 .n1-mark {
   background-image: url('/art/kit/spiral-white.svg');
   background-size: 28px 28px;
   background-repeat: space;
-  opacity: 0.14;
-  -webkit-mask-image: linear-gradient(215deg, #000 0%, transparent 55%);
-  mask-image: linear-gradient(215deg, #000 0%, transparent 55%);
+  opacity: 0.07;
+  -webkit-mask-image: linear-gradient(180deg, #000 0%, transparent 34%);
+  mask-image: linear-gradient(180deg, #000 0%, transparent 34%);
 }
+
+/* One piece of art. The figure is placed and sized against the card, never past its source pixels
+ * (--mh), and holds the floor pool and the contact shadow under the art. --top is how far its top
+ * stands above the card edge, as a share of the card's height. */
+.n1-cat-fig {
+  position: absolute;
+  z-index: -1;
+  left: var(--x, 50%);
+  bottom: var(--b, var(--floor));
+  height: calc(100% + var(--top, 16%) - var(--b, var(--floor)));
+  max-height: var(--mh);
+  aspect-ratio: var(--ar);
+  transform: translateX(-50%);
+  pointer-events: none;
+}
+/* The lit floor, a pool of the hue under the art. */
+.n1-cat-pool {
+  position: absolute;
+  left: 50%;
+  bottom: 0;
+  width: 150%;
+  height: 22%;
+  max-height: 64px;
+  transform: translate(-50%, 50%);
+  background: radial-gradient(closest-side, rgb(var(--hue-hi) / 0.5) 0%, rgb(var(--hue) / 0.26) 46%, rgb(var(--hue) / 0) 100%);
+}
+/* The contact shadow where the art meets the floor. It softens as the art lifts. */
+.n1-cat-shadow {
+  position: absolute;
+  left: 50%;
+  bottom: 0;
+  width: 92%;
+  height: 7%;
+  max-height: 22px;
+  transform: translate(-50%, 50%);
+  border-radius: 50%;
+  background: radial-gradient(closest-side, rgb(4 2 14 / 0.62) 0%, rgb(4 2 14 / 0.3) 55%, rgb(4 2 14 / 0) 100%);
+  transition: transform 0.4s var(--n-ease), opacity 0.4s var(--n-ease);
+}
+/* The art itself. It lifts 6px and grows 4 percent on hover, from its foot. */
+.n1-cat-art {
+  position: absolute;
+  inset: 0;
+  transform-origin: 50% 100%;
+  transition: transform 0.4s var(--n-ease), filter 0.4s var(--n-ease);
+}
+.n1-cat-art > img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  max-width: none;
+  /* The rim, a thin edge of the hue on the art's top edges, and a soft bloom of the hue round it. */
+  filter: drop-shadow(0 -1px 0 rgb(var(--hue-hi) / 0.75)) drop-shadow(0 0 12px rgb(var(--hue) / 0.24));
+}
+/* The light the lit floor throws back up onto the art, masked by the art's own alpha (--src). */
+.n1-cat-wrap {
+  position: absolute;
+  inset: 0;
+  mix-blend-mode: soft-light;
+  opacity: 0.7;
+  background: linear-gradient(0deg, rgb(var(--hue-hi)) 0%, rgb(var(--hue-hi) / 0.4) 28%, rgb(var(--hue) / 0) 60%);
+  -webkit-mask-image: var(--src);
+  -webkit-mask-size: 100% 100%;
+  mask-image: var(--src);
+  mask-size: 100% 100%;
+}
+/* A wide prop, the chest, is sized by the card's width instead of its height. */
+.n1-cat-wide { height: auto; width: min(94%, var(--mh)); }
+/* A piece standing further back, darker and a step softer. */
+.n1-cat-back .n1-cat-art { filter: brightness(0.7) saturate(0.85); }
+/* Art cropped above the floor sinks into it. Its lower edge fades into the haze, and the pool spreads
+ * wider in place of a contact shadow. */
+.n1-cat-sink .n1-cat-art {
+  -webkit-mask-image: linear-gradient(180deg, #000 72%, transparent 96%);
+  mask-image: linear-gradient(180deg, #000 72%, transparent 96%);
+}
+.n1-cat-sink .n1-cat-shadow { display: none; }
+.n1-cat-sink .n1-cat-pool { bottom: 10%; height: 30%; max-height: 96px; }
+.n1-cat:is(:hover, :focus-visible) .n1-cat-art { transform: translateY(-6px) scale(1.04); }
+.n1-cat:is(:hover, :focus-visible) .n1-cat-shadow { transform: translate(-50%, 50%) scale(0.92); opacity: 0.7; }
+
+/* The arrow slides in beside the title on hover. */
+.n1-cat-arrow {
+  opacity: 0;
+  transform: translateX(-8px);
+  background: rgb(var(--hue) / 0.3);
+  box-shadow: inset 0 0 0 1px rgb(var(--hue-hi) / 0.4);
+  transition: opacity 0.25s var(--n-ease), transform 0.3s var(--n-ease);
+}
+.n1-cat:is(:hover, :focus-visible) .n1-cat-arrow { opacity: 1; transform: none; }
 
 /* ---------- The hero ---------- */
 
-/* A deep, less saturated purple (note 10). The only lit area is the burst behind the woman, placed
- * with --bx (her centre) and --by (her shoulders). */
+/* A deep, less saturated purple (note 10). The only lit area is the lamp light behind the woman,
+ * placed with --bx (her centre) and --by (her shoulders). */
 .n1-hero {
   background:
     radial-gradient(60% 80% at 0% 0%, rgb(70 46 150 / 0.32), transparent 70%),
     linear-gradient(180deg, #1b1240 0%, #160e36 55%, #110a2a 100%);
   box-shadow: inset 0 0 0 1px rgb(255 255 255 / 0.08), inset 0 1px 0 rgb(255 255 255 / 0.12);
 }
-/* The lagoon night scene, toned into the hero's purple by its own light, faded away from the text. */
-.n1-scene {
-  mix-blend-mode: luminosity;
-  opacity: 0.4;
-  -webkit-mask-image: linear-gradient(90deg, transparent 0%, transparent 34%, rgb(0 0 0 / 0.7) 56%, #000 75%), linear-gradient(180deg, #000 50%, rgb(0 0 0 / 0.35) 100%);
-  -webkit-mask-composite: source-in;
-  mask-image: linear-gradient(90deg, transparent 0%, transparent 34%, rgb(0 0 0 / 0.7) 56%, #000 75%), linear-gradient(180deg, #000 50%, rgb(0 0 0 / 0.35) 100%);
-  mask-composite: intersect;
-}
-/* The lit core, screened over the scene so it reads as light. A lavender heart behind her head and
- * shoulders, calm purple round it, nothing by the edge of its circle. */
-.n1-core {
-  mix-blend-mode: screen;
+/* Round 7 builds the hero art on briefs/round-7/art-recipe.md, layer by layer, back to front.
+ * 1. The scene. The night courtyard sits behind her in depth, out of focus and darker, so the text
+ * keeps AA. Its terrace floor meets her hips. The wrapper filters both copies as one picture. */
+.n1-scene { --sx: max(0px, calc(100% - 1608px)); filter: blur(2.5px) brightness(0.6) saturate(0.9); }
+/* Under 1920 the band sits a little higher, so the dealer at the table stays hidden behind her and
+ * the haze. --sx holds the scene's left edge, so at 2560 it ends under the top win card's middle. */
+.n1-scene-img { object-fit: cover; object-position: 0% 12%; }
+@media (min-width: 1920px) { .n1-scene-img { object-position: 0% 30%; } }
+.n1-scene-mirror { transform: scaleX(-1); }
+/* The purple grade, the scene takes the hero's hue and keeps its own light and dark. */
+.n1-grade { background: rgb(86 52 196); mix-blend-mode: color; opacity: 0.45; }
+/* 7. The vignette, from the hero's own purple. Solid behind the headline, open behind her, a soft
+ * edge at the top and the right so the scene melts into the frame. */
+.n1-vignette {
   background:
-    radial-gradient(closest-side, rgb(236 224 255 / 0.62) 0%, rgb(214 192 255 / 0.3) 14%, rgb(214 192 255 / 0) 30%),
-    radial-gradient(closest-side, rgb(132 92 230 / 0.9) 0%, rgb(122 82 214 / 0.62) 26%, rgb(106 64 200 / 0.24) 54%, rgb(96 56 190 / 0.06) 78%, rgb(96 56 190 / 0) 100%);
+    linear-gradient(90deg, rgb(19 12 46) 0, rgb(19 12 46 / 0.94) 300px, rgb(19 12 46 / 0.78) 420px, rgb(19 12 46 / 0.3) 540px, rgb(19 12 46 / 0) 660px),
+    linear-gradient(180deg, rgb(19 12 46 / 0.6) 0%, rgb(19 12 46 / 0) 30%),
+    linear-gradient(270deg, rgb(19 12 46 / 0.72) 0%, rgb(19 12 46 / 0) 26%);
 }
-/* Soft edged rays in two layers, strongest at the core, masked to a circle. */
-.n1-rays {
+/* 2. The lamp light from the terrace behind her left shoulder, orange into purple, never yellow. */
+.n1-lamp {
   mix-blend-mode: screen;
-  background:
-    repeating-conic-gradient(from 0deg at 50% 50%, rgb(226 210 255 / 0) 0deg, rgb(226 210 255 / 0.22) 2.5deg, rgb(226 210 255 / 0) 5deg, rgb(226 210 255 / 0) 15deg),
-    repeating-conic-gradient(from 7.5deg at 50% 50%, rgb(226 210 255 / 0) 0deg, rgb(226 210 255 / 0.1) 5deg, rgb(226 210 255 / 0) 10deg, rgb(226 210 255 / 0) 25.714deg);
-  -webkit-mask-image: radial-gradient(closest-side, #000 4%, rgb(0 0 0 / 0.7) 30%, rgb(0 0 0 / 0.25) 60%, transparent 92%);
-  mask-image: radial-gradient(closest-side, #000 4%, rgb(0 0 0 / 0.7) 30%, rgb(0 0 0 / 0.25) 60%, transparent 92%);
-  transform: translate(-50%, -50%);
-  animation: n1-turn 240s linear infinite;
+  background: radial-gradient(closest-side, rgb(255 132 56 / 0.5) 0%, rgb(255 108 40 / 0.26) 30%, rgb(150 84 224 / 0.14) 62%, rgb(150 84 224 / 0) 100%);
 }
-@keyframes n1-turn { from { transform: translate(-50%, -50%) rotate(0deg); } to { transform: translate(-50%, -50%) rotate(360deg); } }
-/* The orange floor light where she stands. */
-.n1-floor { background: radial-gradient(closest-side, rgb(255 122 40 / 0.3) 0%, rgb(255 122 40 / 0.1) 50%, rgb(255 122 40 / 0) 100%); }
-/* Her crown touches the top of the source, so the top 14px are feathered. */
+/* 3. Her shadow on the floor behind her legs, 35 percent black at the heart. */
+.n1-contact { background: radial-gradient(closest-side, rgb(6 3 18 / 0.35) 0%, rgb(6 3 18 / 0.16) 55%, rgb(6 3 18 / 0) 100%); }
+/* 4. The woman, sharp and graded toward the scene. The rim is a warm 1.5px edge on the lit side only,
+ * the side the lamp sits on. Her crown touches the top of the source, so the top 14px are feathered. */
 .n1-woman {
+  filter: brightness(0.9) contrast(1.05) saturate(0.86);
   -webkit-mask-image: linear-gradient(180deg, transparent 0, #000 14px);
   mask-image: linear-gradient(180deg, transparent 0, #000 14px);
-  filter: drop-shadow(0 12px 32px rgb(10 4 30 / 0.5));
 }
-/* The flower pillars, a step back from her. */
-.n1-pillar { filter: brightness(0.66) saturate(0.85); }
+/* The rim, her own silhouette in the lamp's orange, 1.5px toward the lamp and behind her, so a thin
+ * warm edge shows on the lit side only. It is strongest at her head and shoulders, level with the
+ * lamp, and gone by her hips. */
+.n1-rim {
+  transform: translate(-1.5px, -0.5px);
+  background: rgb(255 164 100);
+  opacity: 0.6;
+  -webkit-mask-image: url('/art/landing/girl-offshoulder.webp'), linear-gradient(180deg, transparent 0, #000 14px, #000 42%, transparent 66%);
+  -webkit-mask-size: 100% 100%, 100% 100%;
+  -webkit-mask-composite: source-in;
+  mask-image: url('/art/landing/girl-offshoulder.webp'), linear-gradient(180deg, transparent 0, #000 14px, #000 42%, transparent 66%);
+  mask-size: 100% 100%, 100% 100%;
+  mask-composite: intersect;
+}
+/* 5. The light wrap, masked by her own alpha. Warm lamp light on her left, the purple of the scene
+ * on her right and low down, so her shadows go purple and her highlights warm. */
+.n1-wrap {
+  background:
+    linear-gradient(180deg, rgb(72 40 168 / 0) 50%, rgb(72 40 168 / 0.9) 100%),
+    linear-gradient(98deg, rgb(255 150 80) 0%, rgb(255 150 80 / 0.35) 32%, rgb(130 90 230 / 0.2) 62%, rgb(96 60 210) 100%);
+  mix-blend-mode: soft-light;
+  opacity: 0.75;
+  -webkit-mask-image: url('/art/landing/girl-offshoulder.webp'), linear-gradient(180deg, transparent 0, #000 14px);
+  -webkit-mask-size: 100% 100%, 100% 100%;
+  -webkit-mask-composite: source-in;
+  mask-image: url('/art/landing/girl-offshoulder.webp'), linear-gradient(180deg, transparent 0, #000 14px);
+  mask-size: 100% 100%, 100% 100%;
+  mask-composite: intersect;
+}
+/* The shade, the scene's purple multiplied into her shadow side and her legs, deepest at the crop. */
+.n1-shade {
+  mix-blend-mode: multiply;
+  opacity: 0.55;
+  background:
+    linear-gradient(180deg, rgb(120 90 220 / 0) 40%, rgb(92 60 196 / 0.9) 100%),
+    linear-gradient(98deg, rgb(255 255 255 / 0) 30%, rgb(132 100 230 / 0.6) 62%, rgb(112 80 220) 100%);
+}
+/* 6. The flower pillars in front of her, darker and a little soft, so they read nearer. The lamp sits
+ * behind them, so their edges toward it catch a thin warm rim. The shade, masked by each pillar's
+ * alpha (--src), takes them into the scene's purple, deepest where they meet the haze. */
+.n1-pillar { filter: blur(1px) drop-shadow(-1px 0 0 rgb(255 150 90 / 0.35)); }
+.n1-pillar > img { filter: brightness(0.58) saturate(0.8); }
+.n1-pillar-shade {
+  mix-blend-mode: multiply;
+  opacity: 0.7;
+  background: linear-gradient(180deg, rgb(132 104 220 / 0.5) 0%, rgb(96 66 196 / 0.75) 45%, rgb(60 36 150) 100%);
+  -webkit-mask-image: var(--src);
+  -webkit-mask-size: 100% 100%;
+  mask-image: var(--src);
+  mask-size: 100% 100%;
+}
+/* The haze band low in the frame, crossing her crop and the pillar feet. */
+.n1-haze {
+  background:
+    radial-gradient(36% 80% at var(--bx) 100%, rgb(255 118 48 / 0.12), rgb(255 118 48 / 0) 70%),
+    linear-gradient(0deg, rgb(20 12 48 / 0.94) 0%, rgb(30 18 72 / 0.7) 22%, rgb(56 34 120 / 0.28) 55%, rgb(80 50 150 / 0) 100%);
+}
+/* 8. Sparks drifting up through the lamp light. */
+.n1-spark {
+  position: absolute;
+  width: 4px;
+  height: 4px;
+  border-radius: 999px;
+  background: rgb(255 158 96);
+  box-shadow: 0 0 6px 1px rgb(255 128 56 / 0.6);
+  opacity: 0;
+  animation: n1-drift 16s linear infinite;
+}
+.n1-spark-lilac { width: 3px; height: 3px; background: rgb(206 182 255); box-shadow: 0 0 6px 1px rgb(150 110 255 / 0.6); }
+@keyframes n1-drift {
+  0% { opacity: 0; transform: translate(0, 0); }
+  15% { opacity: 0.85; }
+  70% { opacity: 0.6; }
+  100% { opacity: 0; transform: translate(18px, -90px); }
+}
 
 /* Glass on the burst, the top win card and the online pill. */
 .n1-glass {
@@ -362,10 +546,17 @@
 .n1-noscroll { scrollbar-width: none; }
 .n1-noscroll::-webkit-scrollbar { display: none; }
 
-/* ?still holds every loop, for shots. */
-.n1-still .n1-rays, .n1-still .n1-live::after, .n1-still .n1-enter, .n1-still .n1-skel { animation: none; }
+/* ?still holds every loop, for shots. Sparks hold where they are, half lit. */
+.n1-still .n1-live::after, .n1-still .n1-enter, .n1-still .n1-skel, .n1-still .n1-spark { animation: none; }
+.n1-still .n1-spark { opacity: 0.55; }
+.n1-still :is(.n1-cat, .n1-cat *),
+.n1-still .n1-cat-face::after { transition: none; }
 
 @media (prefers-reduced-motion: reduce) {
-  .n1-live::after, .n1-skel, .n1-rays, .n1-enter { animation: none; }
-  .n1-zoom, .n1-promo, .n1-tile, .n1-hoverable, .n1-key, .n1-row { transition: none; }
+  .n1-live::after, .n1-skel, .n1-enter, .n1-spark { animation: none; }
+  .n1-spark { opacity: 0.55; }
+  .n1-zoom, .n1-promo, .n1-hoverable, .n1-key, .n1-row, .n1-cat, .n1-cat *, .n1-cat-face::after { transition: none; }
+  /* The card's art keeps still on hover, the glow and the arrow still answer it. */
+  .n1-cat:is(:hover, :focus-visible) .n1-cat-art { transform: none; }
+  .n1-cat:is(:hover, :focus-visible) .n1-cat-arrow { transform: none; }
 }

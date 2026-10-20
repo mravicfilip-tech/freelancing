@@ -123,7 +123,7 @@ export function PhoneLobby({ state, filter, setFilter, searchRef, onPlay, onSuga
       <main className="n1m-main">
         {m === 3 && <RewardChips onChest={open('rewards')} onGiveaway={open('rewards', 'giveaway')} open={panel === 'rewards'} />}
         <Feed onPlay={onPlay} state={state} />
-        <Hero onPlay={onSugarRush} onGiveaway={() => rewards('giveaway')} onChest={() => rewards('top')} />
+        <Hero onPlay={onSugarRush} />
         {m === 2 ? (
           <Rails state={state} onPlay={onPlay} onSeeAll={(f, e) => {
               setFilter(f);

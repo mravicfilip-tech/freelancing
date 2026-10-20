@@ -84,7 +84,7 @@ export default function Variant1() {
             <Sidebar filter={filter} onFilter={pick} onPlay={setOpen} onChest={() => chest.current?.focus()} onRank={() => setRank(true)} onGiveaway={() => setGive(true)} joined={joined} />
             <main className="flex min-w-0 flex-1 flex-col gap-4">
               <Feed onPlay={setOpen} state={state} />
-              <Hero onPlay={sugarRush} onGiveaway={() => setGive(true)} onChest={() => chest.current?.focus()} />
+              <Hero onPlay={sugarRush} />
               <div className="mt-6 flex flex-col gap-12">
                 <Games ref={search} filter={filter} onFilter={pick} state={state} onPlay={setOpen} />
                 <Tiles onPick={pick} />

@@ -23,7 +23,7 @@ const SPARKS = [
   { x: '68%', y: '70%', delay: -12, dur: 17, lilac: true },
 ];
 
-export function Hero({ onPlay }: { onPlay: () => void; onGiveaway?: () => void; onChest?: () => void }) {
+export function Hero({ onPlay }: { onPlay: () => void }) {
   const game = gameById('sugar-rush')!;
   return (
     <section aria-labelledby="n1-hero-title" className="h8-hero">

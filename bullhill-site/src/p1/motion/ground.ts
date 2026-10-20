@@ -108,9 +108,12 @@ export function useGround(root: HTMLElement | null, ready = true) {
     }
     if (secs.length < 2) return;
 
-    let dirty = true;
+    // Measuring walks every text node and reads its layout, so it never runs inside a scroll frame. It ran
+    // there whenever the page had resized, a 68ms forced layout in one frame on Filip's machine, 20 October
+    // 2026. It runs once now, and again in idle time after a resize, a font or the load.
+    let asked = 0;
     const measure = () => {
-      dirty = false;
+      asked = 0;
       for (const s of secs) {
         const e = textEdges(s.el);
         s.first = e ? e.first : 0;
@@ -171,7 +174,6 @@ export function useGround(root: HTMLElement | null, ready = true) {
     };
 
     const stop = onScroll((vh) => {
-      if (dirty) measure();
       const y = window.scrollY;
       if (dir === 1) {
         if (y > anchor) anchor = y;
@@ -200,16 +202,17 @@ export function useGround(root: HTMLElement | null, ready = true) {
     });
 
     // layout moves as images and fonts land, so measure again then, and on a resize
-    const ro = new ResizeObserver(() => {
-      dirty = true;
-    });
-    ro.observe(root);
-    void document.fonts?.ready.then(() => {
-      dirty = true;
-    });
-    const onLoad = () => {
-      dirty = true;
+    const ric = window.requestIdleCallback ?? ((f: () => void) => window.setTimeout(f, 50));
+    const cic = window.cancelIdleCallback ?? window.clearTimeout;
+    const remeasure = () => {
+      if (!asked) asked = ric(measure, { timeout: 500 });
     };
+    // the first measure too, the switch falls on each section's top until it lands
+    remeasure();
+    const ro = new ResizeObserver(remeasure);
+    ro.observe(root);
+    void document.fonts?.ready.then(remeasure);
+    const onLoad = remeasure;
     window.addEventListener('load', onLoad);
 
     return () => {
@@ -219,6 +222,7 @@ export function useGround(root: HTMLElement | null, ready = true) {
       delete root.dataset.tx;
       delete root.dataset.gmid;
       ro.disconnect();
+      if (asked) cic(asked);
       window.removeEventListener('load', onLoad);
       delete root.dataset.page;
       delete root.dataset.gt;

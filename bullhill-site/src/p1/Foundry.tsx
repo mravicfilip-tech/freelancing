@@ -43,36 +43,44 @@ export default function Foundry() {
   const HeroN = hv === 1 ? Hero : HERO_VARIANTS[hv];
   // with motion off there is no start to protect, so the page mounts whole, and shots stay exact
   const [shown, setShown] = useState(() => (needAll() || !motion ? ALL : 0));
+  const [hurry, setHurry] = useState(false);
   useEffect(() => {
     if (shown >= ALL) return;
     // The first section waits for the hero's first frames, the rest follow in idle time, one at a time.
     // They followed one animation frame apart, so on a phone running the live hero each one waited for a
     // scene frame and the page below the hero took seconds to arrive, growing under the visitor's thumb.
     // Idle time with a 120ms cap is not tied to the scene's frames.
+    const next = () => startTransition(() => setShown((n) => Math.min(ALL, n + 1)));
     const ric = window.requestIdleCallback ?? ((f: () => void) => window.setTimeout(f, 16));
     const cic = window.cancelIdleCallback ?? window.clearTimeout;
     let id = 0;
     const t = window.setTimeout(
       () => {
-        id = ric(() => startTransition(() => setShown((n) => Math.min(ALL, n + 1))), { timeout: 120 });
+        // hurried, each section mounts in the task after a painted frame, so the scroll keeps getting frames
+        if (hurry) id = requestAnimationFrame(() => (id = window.setTimeout(next, 0)));
+        else id = ric(next, { timeout: 120 });
       },
-      shown === 0 ? 400 : 0,
+      shown === 0 && !hurry ? 400 : 0,
     );
     return () => {
       window.clearTimeout(t);
+      cancelAnimationFrame(id);
+      window.clearTimeout(id);
       cic(id);
     };
-  }, [shown]);
-  // the first scroll, touch or key mounts the rest at once, so nothing is missing where the visitor is going
+  }, [shown, hurry]);
+  // The first scroll, touch or key hurries the rest, one section a frame with no idle wait, so the page is
+  // there where the visitor is going and no single task builds it all. Mounting the rest at once blocked
+  // Filip's first wheel for 1.1s, measured on his machine on 20 October 2026.
   const done = shown >= ALL;
   useEffect(() => {
-    if (done) return;
-    const all = () => setShown(ALL);
+    if (done || hurry) return;
+    const go = () => setHurry(true);
     const opts = { once: true, passive: true } as const;
     const evs = ['wheel', 'touchstart', 'keydown', 'scroll'] as const;
-    evs.forEach((e) => window.addEventListener(e, all, opts));
-    return () => evs.forEach((e) => window.removeEventListener(e, all));
-  }, [done]);
+    evs.forEach((e) => window.addEventListener(e, go, opts));
+    return () => evs.forEach((e) => window.removeEventListener(e, go));
+  }, [done, hurry]);
   useGround(root, shown >= ALL);
   // off screen sections skip rendering once every section has been laid out once and its size remembered
   useEffect(() => {

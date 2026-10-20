@@ -1,23 +1,25 @@
-/* Round 8 hero, note 6, plan part C. Base and three iterations, picked with ?hero=1, 2 or 3. Class
- * names start with h8 so nothing reaches the rest of the page. Desktop sizes follow the v1 hero, 464px
- * tall up to 1920 wide and 540px from there. Under 768px every hero, Base too, turns into a phone
- * card, the art in a band at the top and the copy under it. The art follows
- * briefs/round-7/art-recipe.md, and no art is drawn past its source pixels. */
-
-/* ---------- Shared ---------- */
+/* The v1 hero, round 8 (note 6), Filip's pick "Combo baseline and 3, no slider". 464px tall up to
+ * 1920 wide and 540px from there, the round 7 hero's sizes. Under 768px it turns into a phone card,
+ * the art in a band at the top and the copy under it. The art follows briefs/round-7/art-recipe.md,
+ * and nothing is drawn past its source pixels. Class names start with h8 so nothing reaches the rest
+ * of the page. */
 
 .h8-hero {
+  /* --hx is her centre. From 1920 she moves left of Top win today, 565px in from the right edge,
+     which keeps her clear of the card at 1920 and 2560 and clear of the copy. */
+  --hx: 73%;
+  --fh: 440px;
   position: relative;
   isolation: isolate;
   overflow: hidden;
   height: 464px;
   border-radius: 20px;
-  /* The hero is a size container, so the scene math below reads its width with cqw. */
+  /* A size container, so the parts inside can place themselves by its width with cqw. */
   container-type: inline-size;
   background: linear-gradient(180deg, #1b1240 0%, #160e36 55%, #110a2a 100%);
 }
 @media (min-width: 1920px) {
-  .h8-hero { height: 540px; }
+  .h8-hero { --hx: calc(100cqw - 565px); --fh: 516px; height: 540px; }
 }
 /* The hero's edge, drawn over the art so the scene never covers it. */
 .h8-hero::after {
@@ -30,25 +32,58 @@
   box-shadow: inset 0 0 0 1px rgb(255 255 255 / 0.08), inset 0 1px 0 rgb(255 255 255 / 0.12);
 }
 
-.h8-head { font-size: 56px; line-height: 56px; letter-spacing: -0.01em; }
-/* Labels on glass over art take a lighter lilac than the page's muted ink, so they hold AA over the
- * brightest scene the glass sits on. */
-.h8-hero .h8-label { color: rgb(200 192 238); }
-.h8-line { max-width: 360px; color: rgb(var(--n-muted)); }
+.h8-art { position: absolute; inset: 0; pointer-events: none; }
 
-/* 1. A scene, placed and sized by the iteration with --sw, --sx and --sy. The image keeps its own
- * aspect, so --sw alone sets its size. */
-.h8-scene { inset: 0; overflow: hidden; }
-.h8-scene-img { position: absolute; left: var(--sx, 0); top: var(--sy, 0); width: var(--sw, 100%); max-width: none; height: auto; }
-.h8-flip { transform: scaleX(-1); }
+/* 1. The sunset beach, from the right edge, as wide as the hero or its 1740 source pixels, whichever is
+ * less, and mirrored so the sun sits high on the right and the cliff and the palm fall behind the copy.
+ * The box runs 8px past the edge so the blur leaves no rim there. */
+.h8-scene {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  right: -8px;
+  width: min(100cqw + 8px, 1740px);
+  overflow: hidden;
+  filter: blur(2px) brightness(0.84) saturate(1.02) hue-rotate(-10deg);
+}
+.h8-scene-img { position: absolute; inset: 0; width: 100%; height: 100%; max-width: none; object-fit: cover; object-position: 0% 14%; transform: scaleX(-1); }
+/* The grade, the scene takes the hero's purple and keeps its own light and dark. */
+.h8-grade { position: absolute; inset: 0; background: rgb(96 56 200); mix-blend-mode: color; opacity: 0.36; }
+/* 2. The sun, a colour layer, so its disc takes orange and never reads yellow. */
+.h8-sun {
+  position: absolute;
+  right: -10%;
+  top: -20%;
+  width: 70%;
+  height: 120%;
+  mix-blend-mode: color;
+  background: radial-gradient(closest-side, rgb(255 112 52 / 0.75) 0%, rgb(255 104 60 / 0.4) 45%, rgb(150 84 224 / 0) 100%);
+}
+/* 7. The vignette, solid behind the copy and open behind her, a soft edge at the top and the right. */
+.h8-vignette {
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(90deg, rgb(22 13 54) 0, rgb(22 13 54 / 0.94) 300px, rgb(22 13 54 / 0.62) 440px, rgb(22 13 54 / 0.2) 620px, rgb(22 13 54 / 0) 760px),
+    linear-gradient(180deg, rgb(22 13 54 / 0.45) 0%, rgb(22 13 54 / 0) 24%),
+    linear-gradient(270deg, rgb(22 13 54 / 0.5) 0%, rgb(22 13 54 / 0) 12%);
+}
+@media (min-width: 1920px) {
+  /* She stands closer to the copy from 1920, so the solid part ends where the copy's text ends. */
+  .h8-vignette {
+    background:
+      linear-gradient(90deg, rgb(22 13 54) 0, rgb(22 13 54 / 0.94) 340px, rgb(22 13 54 / 0.62) 460px, rgb(22 13 54 / 0.2) 580px, rgb(22 13 54 / 0) 700px),
+      linear-gradient(180deg, rgb(22 13 54 / 0.45) 0%, rgb(22 13 54 / 0) 24%),
+      linear-gradient(270deg, rgb(22 13 54 / 0.5) 0%, rgb(22 13 54 / 0) 12%);
+  }
+}
 
 /* 4 and 5. A figure. Its height is --fh, never more than its source (--src-h). The image is graded
- * toward the scene. The rim is its own silhouette in the key light's colour, nudged toward the light
- * and laid behind it, so a thin warm line shows on the lit side only. The shade multiplies the scene's
- * purple into its shadow side, the wrap lays the scene's light over it, both masked by its alpha. */
+ * toward the scene. The rim is its own silhouette in the sun's colour, nudged toward the sun and laid
+ * behind it, so a thin warm line shows on the lit side only. The shade multiplies the scene's purple
+ * into its shadow side, the wrap lays the sun's light over it, both masked by its alpha. */
 .h8-fig { height: var(--fh); max-height: var(--src-h); }
-.h8-fig-stack { position: absolute; inset: 0; display: block; }
-.h8-fig-img { position: absolute; inset: 0; display: block; width: 100%; height: 100%; max-width: none; filter: var(--grade, brightness(0.92) contrast(1.05) saturate(0.9)); }
+.h8-fig-img { position: absolute; inset: 0; display: block; width: 100%; height: 100%; max-width: none; filter: brightness(0.95) contrast(1.04) saturate(0.92); }
 .h8-rim,
 .h8-shade,
 .h8-wrap {
@@ -59,21 +94,28 @@
   mask-image: var(--src);
   mask-size: 100% 100%;
 }
-.h8-rim {
-  transform: translate(var(--rim-x, -1.5px), -0.5px);
-  background: var(--rim, rgb(255 164 100));
-  opacity: var(--rim-o, 0.6);
+.h8-rim { transform: translate(1.5px, -0.5px); background: rgb(255 170 112); opacity: 0.6; }
+.h8-shade {
+  mix-blend-mode: multiply;
+  opacity: 0.45;
+  background:
+    linear-gradient(180deg, rgb(120 90 220 / 0) 50%, rgb(92 60 196 / 0.8) 100%),
+    linear-gradient(-98deg, rgb(255 255 255 / 0) 40%, rgb(132 100 230 / 0.5) 70%, rgb(112 80 220) 100%);
 }
-.h8-shade { mix-blend-mode: multiply; background: var(--shade, transparent); opacity: var(--shade-o, 0.5); }
-.h8-wrap { mix-blend-mode: soft-light; background: var(--wrap, transparent); opacity: var(--wrap-o, 0.7); }
+.h8-wrap {
+  mix-blend-mode: soft-light;
+  opacity: 0.6;
+  background: linear-gradient(-98deg, rgb(255 150 84) 0%, rgb(255 150 84 / 0.35) 32%, rgb(130 90 230 / 0.2) 62%, rgb(96 60 210) 100%);
+}
+.h8-her { bottom: 0; left: var(--hx); transform: translateX(-50%); }
 
-/* The haze band low in the frame, across a crop, so no hard edge shows. */
+/* 3 and 6. Her dress ends at the frame, so the haze crosses her crop instead of a floor shadow. */
 .h8-haze {
   position: absolute;
   left: 0;
   right: 0;
   bottom: 0;
-  pointer-events: none;
+  height: 84px;
   background: linear-gradient(0deg, rgb(20 12 48 / 0.94) 0%, rgb(30 18 72 / 0.7) 22%, rgb(56 34 120 / 0.28) 55%, rgb(80 50 150 / 0) 100%);
 }
 
@@ -96,95 +138,8 @@
   100% { opacity: 0; transform: translate(18px, -90px); }
 }
 
-/* ---------- 1, Spotlight right ---------- */
-
-/* --stage-x is where the scene may start, --stw the scene's width, capped at its 1100 source pixels,
- * so at 2560 it starts further right and the card bridges the gap. --hz is where the sea line lands,
- * --fh her height. She stands 57 percent of the way across the scene. */
-.h8-spot {
-  --stage-x: 400px;
-  --stw: min(100cqw - var(--stage-x), 1100px);
-  --hz: 300px;
-  --fh: 444px;
-  background: linear-gradient(180deg, #1a1140 0%, #150d34 60%, #110a2b 100%);
-}
-@media (min-width: 1920px) {
-  .h8-spot { --stage-x: 600px; --hz: 352px; --fh: 516px; }
-}
-/* The one soft light behind the headline, a violet bloom, no glow on the type itself. */
-.h8-spot-light {
-  position: absolute;
-  z-index: -4;
-  left: -120px;
-  top: 50%;
-  width: 760px;
-  height: 620px;
-  transform: translateY(-50%);
-  pointer-events: none;
-  background: radial-gradient(closest-side, rgb(116 76 222 / 0.42) 0%, rgb(96 60 200 / 0.2) 48%, rgb(80 50 180 / 0) 100%);
-}
-/* Wide, the light spreads further, so the purple between the copy and the scene is lit, never empty. */
-@container (min-width: 1600px) {
-  .h8-spot-light { left: -180px; width: 1240px; height: 760px; }
-}
-.h8-spot-stage {
-  position: absolute;
-  z-index: -3;
-  top: 0;
-  bottom: 0;
-  right: 0;
-  width: var(--stw);
-  pointer-events: none;
-  /* An eased fade, so its start shows no line. */
-  -webkit-mask-image: linear-gradient(90deg, transparent 0%, rgb(0 0 0 / 0.06) 8%, rgb(0 0 0 / 0.2) 16%, rgb(0 0 0 / 0.45) 25%, rgb(0 0 0 / 0.75) 34%, rgb(0 0 0 / 0.93) 42%, #000 50%);
-  mask-image: linear-gradient(90deg, transparent 0%, rgb(0 0 0 / 0.06) 8%, rgb(0 0 0 / 0.2) 16%, rgb(0 0 0 / 0.45) 25%, rgb(0 0 0 / 0.75) 34%, rgb(0 0 0 / 0.93) 42%, #000 50%);
-}
-.h8-spot-scene {
-  --sw: var(--stw);
-  /* The sea line sits 57.5 percent down the source, and the image is 1.25 times as tall as wide. */
-  --sy: calc(var(--hz) - var(--stw) * 0.71875);
-  filter: blur(2px) brightness(0.8) saturate(0.95);
-}
-/* The grade, the scene takes the hero's purple and keeps its own light and dark. */
-.h8-spot-grade { position: absolute; inset: 0; background: rgb(96 56 200); mix-blend-mode: color; opacity: 0.4; }
-/* 2. The sun's light low over the water, behind her left shoulder, orange into purple. */
-.h8-spot-sun {
-  position: absolute;
-  left: 30%;
-  top: calc(var(--hz) - 60px);
-  width: 120%;
-  height: 120%;
-  transform: translate(-50%, -50%);
-  mix-blend-mode: screen;
-  background: radial-gradient(closest-side, rgb(255 140 70 / 0.5) 0%, rgb(255 112 52 / 0.24) 30%, rgb(150 84 224 / 0.12) 62%, rgb(150 84 224 / 0) 100%);
-}
-.h8-spot-fig {
-  z-index: -2;
-  bottom: 0;
-  left: calc(100cqw - var(--stw) * 0.43);
-  transform: translateX(-50%);
-  --grade: brightness(0.94) contrast(1.05) saturate(0.92);
-  --rim-x: -1.5px;
-  --rim: rgb(255 168 108);
-  --rim-o: 0.7;
-  --shade: linear-gradient(180deg, rgb(120 90 220 / 0) 46%, rgb(92 60 196 / 0.85) 100%), linear-gradient(98deg, rgb(255 255 255 / 0) 34%, rgb(132 100 230 / 0.55) 64%, rgb(112 80 220) 100%);
-  --shade-o: 0.5;
-  --wrap: linear-gradient(98deg, rgb(255 150 80) 0%, rgb(255 150 80 / 0.4) 30%, rgb(130 90 230 / 0.2) 62%, rgb(96 60 210) 100%);
-  --wrap-o: 0.7;
-}
-.h8-spot-haze { z-index: -1; height: 132px; }
-.h8-spot-sparks { z-index: -1; }
-/* 7. The vignette, from the hero's purple at the top and the right edge. */
-.h8-spot-vignette {
-  position: absolute;
-  inset: 0;
-  z-index: -1;
-  pointer-events: none;
-  background:
-    linear-gradient(180deg, rgb(21 13 52 / 0.55) 0%, rgb(21 13 52 / 0) 26%),
-    linear-gradient(270deg, rgb(21 13 52 / 0.6) 0%, rgb(21 13 52 / 0) 14%);
-}
-.h8-spot-copy {
+/* The copy, the round 7 hero's column. */
+.h8-copy {
   position: relative;
   z-index: 10;
   display: flex;
@@ -192,534 +147,50 @@
   width: 440px;
   flex-direction: column;
   justify-content: center;
-  align-items: flex-start;
   gap: 24px;
   padding: 0 40px;
 }
 @media (min-width: 1920px) {
-  .h8-spot-copy { width: 600px; gap: 32px; padding: 0 48px; }
+  .h8-copy { width: 600px; gap: 48px; padding: 0 48px; }
 }
-.h8-spot-chips { display: flex; flex-wrap: wrap; gap: 8px; }
-/* Top win today, low on the right, across the scene's left edge and in front of her legs. */
-.h8-spot-win {
-  position: absolute;
-  z-index: 10;
-  bottom: 24px;
-  left: calc(100cqw - var(--stw) - 24px);
-  width: 330px;
-}
-/* Over the bright scene the glass needs more body, so its muted labels keep AA. */
-.h8-hero .h8-spot-win { background: linear-gradient(180deg, rgb(30 19 68 / 0.86) 0%, rgb(20 12 48 / 0.9) 100%); }
-@media (min-width: 1920px) {
-  .h8-spot-win { bottom: 32px; left: calc(100cqw - var(--stw) - 32px); width: 360px; }
-}
+.h8-head { font-size: 56px; line-height: 56px; letter-spacing: -0.01em; }
+.h8-line { max-width: 360px; color: rgb(var(--n-muted)); }
+
+/* The streak pill, low by her feet. */
+.h8-streak { position: absolute; z-index: 10; bottom: 24px; left: var(--hx); transform: translateX(-50%); }
+/* Top win today on the right from 1920, centred on the hero's height. */
+.h8-win-tall { position: absolute; z-index: 10; right: 48px; top: 50%; width: 320px; transform: translateY(-50%); }
+/* Over the sunset the glass needs more body than the page's, so its labels keep AA, and the labels
+ * take a lighter lilac than the page's muted ink. */
+.h8-hero .h8-win { background: linear-gradient(180deg, rgb(30 19 68 / 0.86) 0%, rgb(20 12 48 / 0.9) 100%); }
+.h8-hero .h8-label { color: rgb(200 192 238); }
 
 /* ---------- The phone, under 768px ---------- */
 
 @media (max-width: 767.98px) {
-  .h8-hero { height: auto; }
-  .h8-head { font-size: 32px; line-height: 36px; }
-  .h8-hero .h8-key { width: 100%; justify-content: space-between; padding-left: 24px; }
-
-  /* Spotlight. The scene fills a 300px band at the top and fades into the purple under her, the
-     headline, the line and the key follow, then Top win today. */
-  .h8-spot { --stage-x: 0px; --hz: 196px; --fh: 290px; --band: 300px; padding: 0 20px 20px; }
-  .h8-spot-light { left: -200px; top: auto; bottom: -200px; transform: none; width: 640px; height: 560px; }
-  .h8-spot-stage {
-    bottom: auto;
-    height: var(--band);
-    -webkit-mask-image: linear-gradient(180deg, #000 62%, transparent 100%);
-    mask-image: linear-gradient(180deg, #000 62%, transparent 100%);
-  }
-  .h8-spot-sun { left: 34%; }
-  .h8-spot-fig { bottom: auto; top: calc(var(--band) - var(--fh)); }
-  .h8-spot-haze { bottom: auto; top: calc(var(--band) - 110px); height: 110px; background: linear-gradient(0deg, rgb(26 17 64) 0%, rgb(26 17 64 / 0.75) 30%, rgb(56 34 120 / 0.25) 70%, rgb(80 50 150 / 0) 100%); }
-  .h8-spot-sparks { bottom: auto; height: var(--band); }
-  .h8-spot-vignette { bottom: auto; height: var(--band); background: linear-gradient(180deg, rgb(21 13 52 / 0.5) 0%, rgb(21 13 52 / 0) 28%); }
-  .h8-spot-copy { position: static; width: auto; height: auto; padding: calc(var(--band) - 28px) 0 0; gap: 20px; align-items: stretch; }
-  .h8-spot-chips { display: contents; }
-  .h8-spot-chips > :first-child { position: absolute; top: 16px; left: 16px; }
-  .h8-spot-streak { position: absolute; top: calc(var(--band) - 96px); left: 16px; }
-  .h8-spot-win { position: relative; left: auto; bottom: auto; width: 100%; margin-top: 16px; }
-}
-
-/* ---------- 2, Poster ---------- */
-
-/* --fx is her centre, --fh her height, the frame cuts her at the thigh. --hz is where the sea line
- * lands, --edge the inset of the panel and the bar. The cove is drawn as wide as the hero, never past
- * its 1920 source pixels, and moved up so the sea line lands on --hz. */
-.h8-poster {
-  --fx: 67%;
-  --fh: 530px;
-  --hz: 286px;
-  --edge: 24px;
-  --bar-h: 64px;
-  background: #1a1040;
-}
-@media (min-width: 1920px) {
-  .h8-poster { --fh: 620px; --hz: 330px; --edge: 32px; --bar-h: 72px; }
-}
-.h8-poster-stage { position: absolute; inset: 0; z-index: -4; pointer-events: none; }
-.h8-poster-scene {
-  --sw: min(100cqw, 1920px);
-  /* The sea line sits 47.7 percent down the source, which is 0.656 times as tall as wide. */
-  --sy: min(0px, var(--hz) - min(100cqw, 1920px) * 0.3125);
-  left: auto;
-  right: 0;
-  width: min(100cqw, 1920px);
-  filter: blur(1.5px) brightness(0.98) saturate(1.1) hue-rotate(-10deg);
-}
-/* The night falls from the top, the bright sunset sky multiplied into a deep purple. */
-.h8-poster-sky {
-  position: absolute;
-  inset: 0;
-  mix-blend-mode: multiply;
-  background: linear-gradient(180deg, rgb(86 52 164) 0%, rgb(128 86 198) 30%, rgb(196 152 228) 50%, rgb(255 255 255) 64%);
-}
-/* The grade, a purple colour over everything, lighter than Base's so the scene stays warm. */
-.h8-poster-grade { position: absolute; inset: 0; background: rgb(110 64 210); mix-blend-mode: color; opacity: 0.26; }
-/* 2. The sun's last light on the water, orange, behind her left side. */
-.h8-poster-sun {
-  position: absolute;
-  left: 52.6%;
-  top: var(--hz);
-  width: 1000px;
-  height: 560px;
-  transform: translate(-50%, -50%);
-  mix-blend-mode: screen;
-  background: radial-gradient(closest-side, rgb(255 136 64 / 0.62) 0%, rgb(255 108 48 / 0.26) 42%, rgb(170 90 220 / 0) 100%);
-}
-.h8-poster-fig {
-  z-index: -2;
-  top: 20px;
-  left: var(--fx);
-  transform: translateX(-50%);
-  /* She is mirrored, so these read in the source's own left and right. Her lit side, the sun side,
-     is the source's right, which lands on screen left. */
-  --grade: brightness(0.96) contrast(1.04) saturate(0.95);
-  --rim-x: 1.5px;
-  --rim: rgb(255 170 110);
-  --rim-o: 0.45;
-  --shade: linear-gradient(-98deg, rgb(255 255 255 / 0) 36%, rgb(110 84 214 / 0.5) 66%, rgb(96 70 206) 100%);
-  --shade-o: 0.45;
-  --wrap: linear-gradient(-98deg, rgb(255 150 84) 0%, rgb(255 150 84 / 0.4) 32%, rgb(130 90 230 / 0.2) 62%, rgb(90 70 210) 100%);
-  --wrap-o: 0.65;
-}
-.h8-poster-haze { z-index: -1; height: 150px; }
-.h8-poster-sparks { z-index: -1; }
-/* 7. The vignette, deeper on the panel side and at the top, so the frame holds the art. */
-.h8-poster-vignette {
-  position: absolute;
-  inset: 0;
-  z-index: -1;
-  pointer-events: none;
-  background:
-    linear-gradient(90deg, rgb(22 13 54 / 0.62) 0%, rgb(22 13 54 / 0.3) 28%, rgb(22 13 54 / 0) 46%),
-    linear-gradient(180deg, rgb(22 13 54 / 0.4) 0%, rgb(22 13 54 / 0) 22%);
-}
-/* The frosted glass panel and bar. The tint carries enough body that the sunlit water behind never
- * pulls a label under AA, and the labels inside take a lighter lilac. */
-.h8-poster-panel,
-.h8-poster-bar {
-  --n-muted: 202 194 238;
-  background: linear-gradient(180deg, rgb(34 20 78 / 0.8) 0%, rgb(22 13 54 / 0.84) 100%);
-  -webkit-backdrop-filter: blur(20px) saturate(1.3);
-  backdrop-filter: blur(20px) saturate(1.3);
-  box-shadow: inset 0 0 0 1px rgb(255 255 255 / 0.14), inset 0 1px 0 rgb(255 255 255 / 0.2), 0 24px 60px -28px rgb(0 0 0 / 0.7);
-}
-.h8-poster-panel {
-  position: absolute;
-  z-index: 10;
-  left: var(--edge);
-  top: var(--edge);
-  bottom: calc(var(--edge) + var(--bar-h) + 16px);
-  width: 408px;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: flex-start;
-  gap: 24px;
-  padding: 32px;
-  border-radius: 20px;
-}
-@media (min-width: 1920px) {
-  .h8-poster { --fx: 64%; }
-  .h8-poster-panel { width: 560px; gap: 32px; padding: 40px; }
-}
-.h8-poster-line { color: rgb(var(--n-muted)); }
-/* The bar, one glass strip with three cells split by hairlines. */
-.h8-poster-bar {
-  position: absolute;
-  z-index: 10;
-  left: var(--edge);
-  right: var(--edge);
-  bottom: var(--edge);
-  height: var(--bar-h);
-  display: grid;
-  grid-template-columns: auto 1px minmax(0, 1fr) 1px auto;
-  align-items: center;
-  gap: 24px;
-  padding: 0 24px;
-  border-radius: 16px;
-}
-/* Wide, the three cells share the bar in equal thirds, each centred in its own. */
-@container (min-width: 1200px) {
-  .h8-poster-bar { grid-template-columns: 1fr 1px 1fr 1px 1fr; }
-  .h8-poster-bar > :is(.h8-poster-cell, .h8-poster-win) { justify-self: center; }
-}
-.h8-poster-cell { display: flex; flex-direction: column; gap: 2px; white-space: nowrap; }
-.h8-poster-rule { align-self: stretch; width: 1px; margin: 14px 0; background: rgb(255 255 255 / 0.12); }
-
-@media (max-width: 767.98px) {
-  /* The poster on the phone. The cove fills the whole card, she stands in its top part, the glass
-     panel sits over her crop and the bar closes the card in two rows. */
-  .h8-poster { --fx: 60%; --fh: 380px; display: flex; flex-direction: column; gap: 12px; padding: 300px 16px 16px; }
-  .h8-poster-scene { left: 0; width: 100%; }
-  .h8-poster-scene .h8-scene-img { left: 0; top: 0; width: 100%; height: 100%; object-fit: cover; object-position: 54% 34%; }
-  .h8-poster-sun { top: 46%; width: 640px; height: 420px; }
-  .h8-poster-sky { background: linear-gradient(180deg, rgb(58 32 132) 0%, rgb(92 56 170) 18%, rgb(150 104 210) 32%, rgb(255 255 255) 46%); }
-  .h8-poster-fig { top: 16px; }
-  .h8-poster-haze { bottom: auto; top: 220px; height: 120px; background: linear-gradient(0deg, rgb(30 18 72 / 0.7) 0%, rgb(56 34 120 / 0.28) 55%, rgb(80 50 150 / 0) 100%); }
-  .h8-poster-vignette { background: linear-gradient(180deg, rgb(22 13 54 / 0.45) 0%, rgb(22 13 54 / 0) 20%, rgb(22 13 54 / 0) 50%, rgb(22 13 54 / 0.55) 100%); }
-  .h8-poster-panel { position: relative; inset: auto; width: auto; gap: 20px; padding: 24px 20px; align-items: stretch; }
-  .h8-poster-bar { position: relative; inset: auto; height: auto; grid-template-columns: 1fr 1fr; gap: 16px; padding: 16px 20px; }
-  .h8-poster-rule { display: none; }
-  .h8-poster-win { grid-column: 1 / -1; grid-row: 1; }
-}
-
-/* ---------- 3, Carousel ---------- */
-
-/* --px is where a prop stands across the hero and --floor how high. At 1440 the stats capsule takes
- * the bottom right, so the prop stands a step back, above it, and its contact shadow still shows. From
- * 1920 there is room left of the capsule, so it stands on the scene's own floor. */
-.h8-car { --copy-w: 440px; --pad: 40px; --top: 32px; --foot: 28px; --px: 71%; --floor: 112px; background: #160e36; }
-@media (min-width: 1920px) {
-  .h8-car { --copy-w: 600px; --pad: 48px; --top: 40px; --foot: 36px; --px: 57%; --floor: 30px; }
-}
-.h8-car-slides { position: absolute; inset: 0; touch-action: pan-y; }
-/* Every slide is its own layer, so its art stacks the same while it fades. The one on screen fades
- * in over 0.6s, its art drifts 24px into place and its copy rises 8px. */
-.h8-slide {
-  position: absolute;
-  inset: 0;
-  isolation: isolate;
-  opacity: 0;
-  visibility: hidden;
-  transition: opacity 0.6s var(--n-ease), visibility 0s linear 0.6s;
-}
-.h8-slide.is-on { opacity: 1; visibility: visible; transition: opacity 0.6s var(--n-ease); }
-.h8-slide-art { position: absolute; inset: 0; pointer-events: none; transform: translateX(24px); transition: transform 0.9s var(--n-ease); }
-.h8-slide-copy {
-  position: absolute;
-  z-index: 1;
-  top: 0;
-  bottom: 0;
-  left: 0;
-  width: var(--copy-w);
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: flex-start;
-  gap: 24px;
-  padding: calc(var(--top) + 56px) var(--pad) calc(var(--foot) + 68px);
-  transform: translateY(8px);
-  transition: transform 0.6s var(--n-ease);
-}
-@media (min-width: 1920px) {
-  .h8-slide-copy { gap: 32px; }
-}
-.h8-slide.is-on :is(.h8-slide-art, .h8-slide-copy) { transform: none; }
-
-/* 1. The scene, from the right edge, as wide as the hero or its source, whichever is less, so it is
- * never drawn past its pixels. The box runs 8px past the edge so the blur leaves no rim there. */
-.h8-slide-scene { left: auto; right: -8px; width: min(100cqw + 8px, var(--src-w)); }
-.h8-slide-scene .h8-scene-img { left: 0; top: 0; width: 100%; height: 100%; object-fit: cover; object-position: var(--op, 50% 50%); }
-.h8-slide-grade { position: absolute; inset: 0; background: rgb(96 56 200); mix-blend-mode: color; opacity: var(--grade-o, 0.36); }
-/* 7. The vignette, solid behind the copy and open behind the art. */
-.h8-slide-vignette {
-  position: absolute;
-  inset: 0;
-  background:
-    linear-gradient(90deg, rgb(22 13 54) 0, rgb(22 13 54 / 0.94) calc(var(--copy-w) - 140px), rgb(22 13 54 / 0.62) var(--copy-w), rgb(22 13 54 / 0.2) calc(var(--copy-w) + 180px), rgb(22 13 54 / 0) calc(var(--copy-w) + 320px)),
-    linear-gradient(180deg, rgb(22 13 54 / 0.45) 0%, rgb(22 13 54 / 0) 24%),
-    linear-gradient(270deg, rgb(22 13 54 / 0.5) 0%, rgb(22 13 54 / 0) 12%);
-}
-.h8-slide-haze { height: 84px; }
-@media (min-width: 1920px) {
-  :is(.h8-slide-giveaway, .h8-slide-chest) .h8-slide-haze { height: 44px; }
-}
-/* The floor a prop stands on, a pool of warm light on the ground round its base, so it reads as
- * standing on the scene's floor a step back, never hanging over it. */
-.h8-pool {
-  position: absolute;
-  bottom: calc(var(--floor) - 56px);
-  width: 640px;
-  height: 124px;
-  transform: translateX(-50%);
-  mix-blend-mode: screen;
-  background: radial-gradient(closest-side, rgb(255 136 64 / 0.8) 0%, rgb(246 116 62 / 0.5) 34%, rgb(200 96 190 / 0.2) 66%, rgb(150 84 224 / 0) 100%);
-}
-/* The shadow a prop casts across the floor, away from the light, from its contact shadow. */
-:is(.h8-give-contact, .h8-chest-contact)::after {
-  content: '';
-  position: absolute;
-  left: 46%;
-  top: 22%;
-  width: 70%;
-  height: 56%;
-  border-radius: 50%;
-  transform: skewX(-30deg);
-  background: radial-gradient(closest-side, rgb(8 4 22 / 0.55) 0%, rgb(8 4 22 / 0.24) 60%, rgb(8 4 22 / 0) 100%);
-}
-.h8-pool { left: var(--px); }
-
-/* Welcome. The sunset beach mirrored, so the sun sits high on the right behind her and the cliff and
- * the palm fall behind the copy. Her rim and wrap are warm from the right. */
-.h8-welcome-scene { --src-w: 1740px; --op: 0% 14%; filter: blur(2px) brightness(0.84) saturate(1.02) hue-rotate(-10deg); }
-.h8-welcome-sun {
-  position: absolute;
-  right: -10%;
-  top: -20%;
-  width: 70%;
-  height: 120%;
-  /* A colour layer, so the sun's disc takes orange and never reads yellow. */
-  mix-blend-mode: color;
-  background: radial-gradient(closest-side, rgb(255 112 52 / 0.75) 0%, rgb(255 104 60 / 0.4) 45%, rgb(150 84 224 / 0) 100%);
-}
-.h8-welcome-fig {
-  --fh: 440px;
-  bottom: 0;
-  left: 73%;
-  transform: translateX(-50%);
-  --grade: brightness(0.95) contrast(1.04) saturate(0.92);
-  --rim-x: 1.5px;
-  --rim: rgb(255 170 112);
-  --rim-o: 0.6;
-  --shade: linear-gradient(180deg, rgb(120 90 220 / 0) 50%, rgb(92 60 196 / 0.8) 100%), linear-gradient(-98deg, rgb(255 255 255 / 0) 40%, rgb(132 100 230 / 0.5) 70%, rgb(112 80 220) 100%);
-  --shade-o: 0.45;
-  --wrap: linear-gradient(-98deg, rgb(255 150 84) 0%, rgb(255 150 84 / 0.35) 32%, rgb(130 90 230 / 0.2) 62%, rgb(96 60 210) 100%);
-  --wrap-o: 0.6;
-}
-
-/* Hot streak giveaway. The slot arcade, its arched window the warm light on the machine's left, the
- * machine standing a step back on the carpet, on its own shadow, clear of the capsule. */
-.h8-give-scene { --src-w: 1600px; --op: 22% 92%; filter: blur(2.5px) brightness(0.8) saturate(0.95); }
-.h8-give-lamp {
-  position: absolute;
-  left: var(--px);
-  top: 36%;
-  width: 760px;
-  height: 560px;
-  transform: translate(-50%, -50%);
-  mix-blend-mode: screen;
-  background: radial-gradient(closest-side, rgb(255 132 60 / 0.38) 0%, rgb(255 104 40 / 0.14) 40%, rgb(150 84 224 / 0) 100%);
-}
-.h8-give-contact {
-  position: absolute;
-  left: var(--px);
-  bottom: calc(var(--floor) - 20px);
-  width: 250px;
-  height: 44px;
-  transform: translateX(-50%);
-  background: radial-gradient(closest-side, rgb(6 3 18 / 0.72) 0%, rgb(6 3 18 / 0.34) 55%, rgb(6 3 18 / 0) 100%);
-}
-.h8-give-fig {
-  --fh: 324px;
-  bottom: var(--floor);
-  left: var(--px);
-  transform: translateX(-50%);
-  --grade: brightness(0.9) contrast(1.05) saturate(0.95);
-  --rim-x: -1.5px;
-  --rim: rgb(255 160 96);
-  --rim-o: 0.55;
-  --shade: linear-gradient(98deg, rgb(255 255 255 / 0) 40%, rgb(120 90 220 / 0.55) 72%, rgb(96 70 206) 100%), linear-gradient(180deg, rgb(0 0 0 / 0) 70%, rgb(80 50 170 / 0.6) 100%);
-  --shade-o: 0.45;
-  --wrap: linear-gradient(98deg, rgb(255 146 80) 0%, rgb(255 146 80 / 0.3) 34%, rgb(130 90 230 / 0.2) 64%, rgb(96 60 210) 100%);
-  --wrap-o: 0.55;
-}
-
-/* Daily chest. The night jungle with its lit pool, the chest on the far shore over the water, its own
- * ember light spilling up from the lid. The source carries black bars top and bottom, so the box runs
- * 44px past both edges and the cover crop drops them. */
-.h8-chest-scene { --src-w: 1536px; --op: 50% 100%; top: -44px; bottom: -44px; filter: blur(2px) brightness(0.8) saturate(0.95); }
-.h8-chest-glow {
-  position: absolute;
-  left: var(--px);
-  bottom: calc(var(--floor) + 40px);
-  width: 620px;
-  height: 460px;
-  transform: translate(-50%, 30%);
-  mix-blend-mode: screen;
-  background: radial-gradient(closest-side, rgb(255 132 56 / 0.46) 0%, rgb(255 104 40 / 0.18) 42%, rgb(150 84 224 / 0) 100%);
-}
-.h8-chest-contact {
-  position: absolute;
-  left: var(--px);
-  bottom: calc(var(--floor) - 18px);
-  width: 260px;
-  height: 44px;
-  transform: translateX(-50%);
-  background: radial-gradient(closest-side, rgb(6 3 18 / 0.72) 0%, rgb(6 3 18 / 0.32) 55%, rgb(6 3 18 / 0) 100%);
-}
-.h8-chest-fig {
-  --fh: 236px;
-  bottom: calc(var(--floor) - 6px);
-  left: var(--px);
-  transform: translateX(-50%);
-  --grade: brightness(0.95) contrast(1.05) saturate(0.95);
-  --rim-x: 0px;
-  --rim-o: 0;
-  --shade: linear-gradient(180deg, rgb(0 0 0 / 0) 45%, rgb(70 44 160 / 0.7) 100%);
-  --shade-o: 0.5;
-  --wrap: linear-gradient(180deg, rgb(255 150 80) 0%, rgb(255 150 80 / 0.3) 36%, rgb(110 80 220 / 0.3) 70%, rgb(80 50 190) 100%);
-  --wrap-o: 0.5;
-}
-@media (min-width: 1920px) {
-  .h8-welcome-fig { --fh: 516px; }
-  .h8-give-fig { --fh: 388px; }
-  .h8-give-contact { width: 290px; }
-  .h8-chest-fig { --fh: 284px; }
-  .h8-chest-contact { width: 310px; }
-}
-
-/* The chrome that stays while the slides change. */
-.h8-car-online { position: absolute; z-index: 10; top: var(--top); left: var(--pad); }
-.h8-car-foot {
-  position: absolute;
-  z-index: 10;
-  left: var(--pad);
-  right: var(--pad);
-  bottom: var(--foot);
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 16px;
-}
-.h8-car-controls { display: flex; align-items: center; gap: 8px; }
-.h8-car-arrow {
-  display: flex;
-  width: 36px;
-  height: 36px;
-  flex-shrink: 0;
-  align-items: center;
-  justify-content: center;
-  border-radius: 999px;
-  color: #fff;
-  background: rgb(255 255 255 / 0.08);
-  box-shadow: inset 0 0 0 1px rgb(255 255 255 / 0.14);
-  -webkit-backdrop-filter: blur(10px);
-  backdrop-filter: blur(10px);
-  transition: background-color 0.15s var(--n-ease);
-}
-.h8-car-arrow:hover { background: rgb(255 255 255 / 0.16); }
-/* Dots, 24px targets round an 8px pip. The current one is a 28px bar whose fill runs the 6 seconds. */
-.h8-car-dot { display: flex; width: 24px; height: 24px; align-items: center; justify-content: center; border-radius: 999px; transition: width 0.3s var(--n-ease); }
-.h8-car-dot[aria-current] { width: 40px; }
-.h8-car-pip { position: relative; display: block; width: 8px; height: 8px; overflow: hidden; border-radius: 999px; background: rgb(255 255 255 / 0.45); transition: width 0.3s var(--n-ease), background-color 0.2s var(--n-ease); }
-.h8-car-dot:hover .h8-car-pip { background: rgb(255 255 255 / 0.7); }
-.h8-car-dot[aria-current] .h8-car-pip { width: 28px; background: rgb(255 255 255 / 0.3); }
-.h8-car-still .h8-car-dot[aria-current] .h8-car-pip { background: #fff; }
-.h8-car-fill { position: absolute; inset: 0; background: #fff; transform-origin: 0 50%; animation: h8-fill 6s linear forwards; }
-.h8-car-fill.is-held { animation-play-state: paused; }
-@keyframes h8-fill {
-  from { transform: scaleX(0); }
-  to { transform: scaleX(1); }
-}
-/* Top win today and the streak, one glass capsule at the bottom right. */
-.h8-car-stats {
-  display: flex;
-  align-items: center;
-  gap: 16px;
-  min-width: 0;
-  height: 64px;
-  padding: 0 20px 0 12px;
-  border-radius: 16px;
-  background: linear-gradient(180deg, rgb(28 18 64 / 0.72) 0%, rgb(18 11 44 / 0.78) 100%);
-  -webkit-backdrop-filter: blur(14px) saturate(1.2);
-  backdrop-filter: blur(14px) saturate(1.2);
-  box-shadow: inset 0 0 0 1px rgb(255 255 255 / 0.12), inset 0 1px 0 rgb(255 255 255 / 0.16), 0 18px 40px -18px rgb(0 0 0 / 0.7);
-}
-.h8-car-win { min-width: 0; }
-.h8-car-rule { align-self: stretch; width: 1px; margin: 14px 0; background: rgb(255 255 255 / 0.12); }
-
-@media (max-width: 767.98px) {
-  /* The carousel on the phone. Each slide puts its art in a 280px band and its copy under it, the
-     slides share one grid cell so the frame takes the tallest, and a swipe moves them. */
-  .h8-car { --band: 280px; --pad: 20px; padding-bottom: 20px; }
-  .h8-car-slides { position: relative; inset: auto; display: grid; }
-  .h8-slide { position: relative; inset: auto; grid-area: 1 / 1; }
-  .h8-slide-art {
+  /* The art takes a 300px band and fades out at its foot, she stands at 64 percent, the online pill
+     sits over the band's top left, the streak pill by her feet, and the copy runs under the band. */
+  .h8-hero { --hx: 64%; --fh: 268px; --band: 300px; height: auto; }
+  .h8-art {
     bottom: auto;
     height: var(--band);
     overflow: hidden;
     -webkit-mask-image: linear-gradient(180deg, #000 66%, transparent 100%);
     mask-image: linear-gradient(180deg, #000 66%, transparent 100%);
   }
-  .h8-slide-copy { position: relative; inset: auto; width: auto; justify-content: flex-start; align-items: stretch; gap: 20px; padding: calc(var(--band) - 20px) var(--pad) 0; }
-  .h8-slide-vignette { background: linear-gradient(180deg, rgb(22 13 54 / 0.5) 0%, rgb(22 13 54 / 0) 26%, rgb(22 13 54 / 0) 60%, rgb(22 13 54 / 0.85) 100%); }
-  .h8-slide-haze { height: 90px; }
-  .h8-welcome-fig { --fh: 268px; left: 64%; }
-  .h8-car { --floor: 30px; --px: 67%; }
-  .h8-give-fig { --fh: 230px; }
-  .h8-give-contact { width: 150px; height: 30px; bottom: calc(var(--floor) - 14px); }
-  .h8-chest-fig { --fh: 196px; }
-  .h8-chest-contact { width: 200px; height: 30px; bottom: calc(var(--floor) - 12px); }
-  .h8-chest-glow { width: 420px; height: 320px; }
-  .h8-pool { width: 340px; height: 70px; bottom: calc(var(--floor) - 32px); }
-  .h8-give-lamp { width: 520px; height: 420px; }
-  .h8-car-online { top: 16px; left: 16px; }
-  .h8-car-foot { position: static; flex-direction: column; align-items: stretch; gap: 16px; margin: 20px var(--pad) 0; }
-  .h8-car-controls { justify-content: center; }
-  /* No backdrop filter here, it would hold the streak chip inside the capsule. */
-  .h8-car-stats { height: auto; padding: 12px 16px 12px 12px; -webkit-backdrop-filter: none; backdrop-filter: none; }
-  .h8-car-rule { display: none; }
-  /* The streak leaves the capsule for the foot of the art band, a chip of its own. */
-  .h8-car-streak {
-    position: absolute;
-    z-index: 10;
-    top: calc(var(--band) - 64px);
-    left: 16px;
-    height: 32px;
-    padding: 0 12px 0 8px;
-    border-radius: 999px;
-    background: linear-gradient(180deg, rgb(28 18 64 / 0.72) 0%, rgb(18 11 44 / 0.78) 100%);
-    -webkit-backdrop-filter: blur(14px) saturate(1.2);
-    backdrop-filter: blur(14px) saturate(1.2);
-    box-shadow: inset 0 0 0 1px rgb(255 255 255 / 0.12), inset 0 1px 0 rgb(255 255 255 / 0.16);
-  }
-}
-
-/* ---------- Base on the phone ---------- */
-
-/* Base keeps its round 7 markup and its neon.css look. Under 768px its art layers, which sit in one
- * wrapper (.h8b-art), shrink into a 300px band at the top with the woman centred between her pillars
- * at 63 percent of her desktop size, and the copy runs under the band at the phone's full width. */
-@media (max-width: 767.98px) {
-  /* One flat ground on the phone, so the band's fade meets the same colour all the way across. */
-  .n1-hero.h8-base { height: auto; --bx: 50%; --by: 34%; background: #170f38; }
-  .h8-base .h8b-art { bottom: auto; height: 300px; }
-  .h8-base .n1-vignette { background: linear-gradient(180deg, rgb(23 15 56 / 0.55) 0%, rgb(23 15 56 / 0) 30%, rgb(23 15 56 / 0) 58%, rgb(23 15 56) 100%); }
-  .h8-base .n1-lamp { left: calc(var(--bx) - 94px); width: 400px; height: 330px; }
-  .h8-base .n1-contact { bottom: -30px; width: 230px; height: 76px; }
-  .h8-base .n1-figure { left: calc(var(--bx) - 84px); width: 167px; height: 280px; }
-  .h8-base .n1-pillar { bottom: -15px; height: 190px; }
-  .h8-base .h8b-pillar-l { left: calc(var(--bx) - 115px); }
-  .h8-base .h8b-pillar-r { left: calc(var(--bx) + 62px); }
-  .h8-base .n1-haze { height: 96px; background: linear-gradient(0deg, rgb(23 15 56) 0%, rgb(30 18 72 / 0.7) 30%, rgb(56 34 120 / 0.28) 60%, rgb(80 50 150 / 0) 100%); }
-  .h8-base .h8b-streak { bottom: auto; top: 236px; }
-  .h8-base .h8b-copy { position: static; width: auto; height: auto; justify-content: flex-start; gap: 24px; padding: 284px 20px 20px; }
-  .h8-base .h8b-online { position: absolute; top: 16px; left: 16px; }
-  .h8-base h1 { font-size: 32px; line-height: 36px; }
-  .h8-base .n1-key { align-self: stretch; justify-content: space-between; padding-left: 24px; }
+  .h8-vignette { background: linear-gradient(180deg, rgb(22 13 54 / 0.5) 0%, rgb(22 13 54 / 0) 26%, rgb(22 13 54 / 0) 60%, rgb(22 13 54 / 0.85) 100%); }
+  .h8-haze { height: 90px; }
+  .h8-streak { bottom: auto; top: calc(var(--band) - 64px); }
+  /* 16px at the sides, the same inset as the online pill, so Top win today keeps its whole line. */
+  .h8-copy { width: auto; height: auto; justify-content: flex-start; gap: 24px; padding: calc(var(--band) - 16px) 16px 24px; }
+  .h8-online { position: absolute; top: 16px; left: 16px; }
+  .h8-head { font-size: 32px; line-height: 36px; }
+  .h8-hero .h8-key { align-self: stretch; justify-content: space-between; padding-left: 24px; }
 }
 
 /* ---------- Still frames and reduced motion ---------- */
 
 .n1-still .h8-spark { animation: none; opacity: 0.55; }
-.n1-still :is(.h8-slide, .h8-slide-art, .h8-slide-copy, .h8-car-dot, .h8-car-pip) { transition: none; }
 @media (prefers-reduced-motion: reduce) {
   .h8-spark { animation: none; opacity: 0.55; }
-  :is(.h8-slide, .h8-slide-art, .h8-slide-copy, .h8-car-dot, .h8-car-pip) { transition: none; }
-  .h8-slide-art,
-  .h8-slide-copy { transform: none; }
 }

@@ -67,7 +67,8 @@ Use this copy. The original, MjPhupcafS4TyCyssMHTjU, sits on a Starter plan that
 
 ## Widths
 
-1440, 1920, 2560. Filip's browser renders at about 2560 wide (round 7).
+1440, 1920, 2560, and the phone at 375 and 425. Filip's browser renders at about 2560 wide (round 7). The
+phone is named in the brief from round 8 on, "mobile centric ... 425".
 
 ## Run
 

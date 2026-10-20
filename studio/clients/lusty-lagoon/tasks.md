@@ -87,12 +87,21 @@ Task format
   - [x] Hover board and styled scrollbars in the kit, ?hover=1 to 4
   - [x] Round 7 build, variant 5 chrome and chest motion, variant 1 type and search
   - [x] Round 7 checks, after shots at 1440, 1920 and 2560, board of the three
-  - [ ] Filip picks a hover and a chest motion
+  - [x] Filip picks a hover, the sheen. Chest motion left with variant 5
   - [x] Filip answers the art, variant 2 hero and card redraws, and the 2560 width, "do these suggestions"
   - [x] Round 7 redraws, scene art in variants 1, 2 and 5, variant 2 hero, category cards in 1 and 2
   - [x] Redraw checks, after shots at 1440, 1920 and 2560, board against this morning
-  - [ ] Filip reviews the redraws on localhost
-  - [ ] Filip picks a variant
+  - [x] Filip reviews the redraws on localhost, Loom 6, variant 1 picked
+  - [x] Filip picks a variant, Neon arcade
+
+- lusty-lagoon-3 Neon arcade on mobile, plus hero and card options. Brief briefs/round-8/notes.md, plan briefs/round-8/plan.md. Branch claude/busy-edison-mmjwbn
+  - [x] Loom 6 notes, 13 of them
+  - [x] Sheen hover locked on primary and secondary keys
+  - [ ] Desktop fixes, three card treatments, notifications panel, secondary hover
+  - [ ] Three hero iterations
+  - [ ] Three mobile iterations at 375 and 425
+  - [ ] Checks, shots and one board per choice
+  - [ ] Filip picks a hero, a mobile and a card treatment
 
 ## Review
 

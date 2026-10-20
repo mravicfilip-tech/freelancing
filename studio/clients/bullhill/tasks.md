@@ -27,7 +27,8 @@ Task format
 
 - bullhill-16 Publish the site on its own domain. Plan in briefs/website/golive-plan.md
   - [x] Launch plan written, waiting for Filip's go
-  - [x] Domain bought, bullhill.co, on Filip's Cloudflare account, 20 October 2026. bullhill.com is someone else's since 1999
+  - [x] Domain bought, bullhill.co, at GoDaddy, nameservers ns73 and ns74.domaincontrol.com, 20 October 2026. bullhill.com is someone else's since 1999
+  - [ ] bullhill.co added to Cloudflare and GoDaddy's nameservers switched to Cloudflare's
   - [x] Hosting on Cloudflare Pages, free plan, Filip's pick over Vercel Pro at 20 dollars a month
   - [x] Pages deploy token and account ID in the cloud environment, CLOUDFLARE_API_TOKEN and CLOUDFLARE_ACCOUNT_ID, 20 October 2026, a new session reads them
   - [ ] The registrant on bullhill.co is BullHill d.o.o., auto-renew on

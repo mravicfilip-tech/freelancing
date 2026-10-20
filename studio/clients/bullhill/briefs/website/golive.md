@@ -12,4 +12,4 @@ Task bullhill-16 in `studio/clients/bullhill/tasks.md`. Gathered 20 October 2026
   the client sent, so that figure is about the trenching work, not the company's age.
 - Managing director, Dusan Stoilović, spelling confirmed by Filip 20 October 2026.
 - Email bullhilldoo@gmail.com, phone and WhatsApp +43 665 65942472, from the client.
-- Domain bullhill.co on Filip's Cloudflare account, hosting Cloudflare Pages, free plan.
+- Domain bullhill.co registered at GoDaddy, DNS moving to Cloudflare, hosting Cloudflare Pages, free plan.

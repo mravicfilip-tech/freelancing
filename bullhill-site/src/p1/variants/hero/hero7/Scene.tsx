@@ -17,7 +17,7 @@
 
 import { param } from '../../../../shared/env';
 import { Canvas, useFrame, useThree } from '@react-three/fiber';
-import { useEffect, useLayoutEffect, useMemo, useRef } from 'react';
+import { useCallback, useEffect, useLayoutEffect, useMemo, useRef } from 'react';
 import * as THREE from 'three';
 import type { Progress } from '../hero6/progress';
 import { LoadClock, riseEase } from '../hero6/timeline';
@@ -96,6 +96,7 @@ function Rig({ drive, still, phone, frame, onReady }: { drive?: Drive; still?: S
       st.ground.setVignette(true, b.x, b.y);
     }
     state.current = { drawn: 0, done: false, p: NaN };
+    prep.current = 'idle';
     invalidate();
     return () => {
       scene.remove(st.group);
@@ -125,9 +126,49 @@ function Rig({ drive, still, phone, frame, onReady }: { drive?: Drive; still?: S
   useEffect(() => invalidate(), [stillP, invalidate]);
   useEffect(() => () => window.clearTimeout(rockWake.current), []);
 
+  // The scene draws nothing until its ground tiles are painted, in a worker, and every program is compiled,
+  // in parallel through compileAsync, so starting the hero never blocks the page. Both blocked one task for
+  // about 0.6s on Filip's machine, 20 October 2026. This frame callback takes the render over, priority 1,
+  // so nothing is drawn before then.
+  const prep = useRef<'idle' | 'busy' | 'go'>('idle');
+  const fenced = useRef(false);
+  const ready = useCallback(() => {
+    document.documentElement.dataset.h7 = 'ready';
+    onReady();
+    // draw once more a moment later, some compositors only present the second frame
+    window.setTimeout(() => invalidate(), 800);
+  }, [onReady, invalidate]);
   useFrame((fs) => {
     const st = stage.current;
     if (!st) return;
+    if (prep.current !== 'go') {
+      if (prep.current === 'idle') {
+        prep.current = 'busy';
+        void st.ground.ready
+          .then(async () => {
+            if (stage.current !== st) return;
+            const hidden: THREE.Object3D[] = [];
+            st.group.traverse((o) => {
+              if (!o.visible) {
+                hidden.push(o);
+                o.visible = true;
+              }
+            });
+            try {
+              await gl.compileAsync(scene, camera);
+            } finally {
+              hidden.forEach((o) => (o.visible = false));
+            }
+          })
+          .catch(() => undefined)
+          .then(() => {
+            if (stage.current !== st) return;
+            prep.current = 'go';
+            invalidate();
+          });
+      }
+      return;
+    }
     const clock = drive?.clock;
     const p = still ? still.p : drive ? drive.progress.current() : 0;
     // the route's draw and the idle rock, both from the load clock
@@ -257,15 +298,36 @@ function Rig({ drive, still, phone, frame, onReady }: { drive?: Drive; still?: S
       invalidate();
     } else if (!s.done) {
       s.done = true;
-      // read one pixel back, so the flag means the frame is really drawn
-      const ctx = gl.getContext();
-      ctx.readPixels(0, 0, 1, 1, ctx.RGBA, ctx.UNSIGNED_BYTE, new Uint8Array(4));
-      document.documentElement.dataset.h7 = 'ready';
-      onReady();
-      // draw once more a moment later, some compositors only present the second frame
-      window.setTimeout(() => invalidate(), 800);
+      if (still) {
+        // a still reads one pixel back, so the flag means the frame is really drawn before the shot
+        const ctx = gl.getContext();
+        ctx.readPixels(0, 0, 1, 1, ctx.RGBA, ctx.UNSIGNED_BYTE, new Uint8Array(4));
+        ready();
+      } else fenced.current = true;
     }
-  });
+    gl.render(scene, camera);
+    // The live scene learns its first frame is drawn from a fence it checks on the next frames, without
+    // waiting. A pixel read back here made the page wait for the GPU to compile, upload and draw everything,
+    // the 1.2s frame of the hero's start in a software renderer and the r3f frame of Filip's report.
+    if (fenced.current) {
+      fenced.current = false;
+      const g2 = gl.getContext();
+      if ('fenceSync' in g2) {
+        const sync = g2.fenceSync(g2.SYNC_GPU_COMMANDS_COMPLETE, 0);
+        g2.flush();
+        const poll = () => {
+          if (stage.current !== st || !sync) return;
+          const r = g2.clientWaitSync(sync, 0, 0);
+          if (r === g2.TIMEOUT_EXPIRED) requestAnimationFrame(poll);
+          else {
+            g2.deleteSync(sync);
+            ready();
+          }
+        };
+        requestAnimationFrame(poll);
+      } else requestAnimationFrame(() => requestAnimationFrame(ready));
+    }
+  }, 1);
   return null;
 }
 

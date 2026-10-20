@@ -9,7 +9,7 @@
 // courses.
 
 import * as THREE from 'three';
-import { makeGround } from '../hero6/textures';
+import { groundMaps } from './groundTextures';
 import { CYCLES, D, DUCTS, DUMPX, EDGE, FEED_X, HALF_W, KEY_Y, LEAD_X, MZ, PILE_Z, ROAD_W, ROAD_Z, ROUTE_LEG, ROUTE_LEN, SAND, SHOULDER, X_CUT, X_T0, HOUSE, camDirs, type Pose, type V3 } from './world';
 
 const HEAP_H = 0.85; // the height of a mound
@@ -389,6 +389,8 @@ function gridGeometry() {
 }
 
 export type GroundRig = {
+  // settles once the ground tiles are painted
+  ready: Promise<void>;
   group: THREE.Group;
   mesh: THREE.Mesh;
   set(p: Pose): void;
@@ -401,10 +403,12 @@ export type GroundRig = {
 };
 
 export function buildGround(dpr: number): GroundRig {
-  const soil = makeGround('backfill');
-  const asph = makeGround('asphalt');
-  const gravel = makeGround('gravel');
-  const sand = makeGround('sand');
+  // painted in a worker, the scene shows once they are in, see groundTextures.ts
+  const tiles = groundMaps();
+  const soil = { map: tiles.maps.backfill };
+  const asph = { map: tiles.maps.asphalt };
+  const gravel = { map: tiles.maps.gravel };
+  const sand = { map: tiles.maps.sand };
   const { c, r } = camDirs();
   // the key from the upper left and in front of the camera, the rim from behind and to the right
   const norm = (v: V3): V3 => {
@@ -459,6 +463,7 @@ export function buildGround(dpr: number): GroundRig {
   const group = new THREE.Group();
   group.add(mesh);
   return {
+    ready: tiles.ready,
     group,
     mesh,
     set(p) {
@@ -487,7 +492,7 @@ export function buildGround(dpr: number): GroundRig {
     dispose() {
       geo.dispose();
       mat.dispose();
-      for (const t of [soil.map, soil.bump, asph.map, asph.bump, gravel.map, gravel.bump, sand.map, sand.bump]) t.dispose();
+      tiles.dispose();
     },
   };
 }

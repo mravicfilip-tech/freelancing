@@ -48,7 +48,8 @@ Task format
   - [x] Filip, fps drops on Process and the audiences. Dot fields draw at most 60 a second, canvases capped at 4 million pixels, the audience's fine dots batched
   - [x] Filip's second report, 240fps below the hero, at most 5 frames over 8ms a section, "much smoother"
   - [x] Production at 938e556 on bullhill.co, on Filip's "we can deploy", 20 October 2026
-  - [ ] The 0.6s hitch in the hero at load, a React render of 485ms and the scene's first frame
+  - [x] The 0.6s hitch in the hero at load. Ground tiles painted in a worker, shaders through compileAsync before the first draw, the first frame known from a fence and not a pixel read, stills pixel identical
+  - [ ] Filip's meter report on the review copy, then his deploy
 ## In progress
 
 - bullhill-16 Publish the site on its own domain. Plan in briefs/website/golive-plan.md

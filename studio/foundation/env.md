@@ -14,6 +14,9 @@ so the lesson outlives the context window.
 - A background `vite preview` did not survive a pause in the session on 19 Oct 2026, twice, and the
   next shot failed with connection refused. Curl the port before a run of shots and restart the
   server when it refuses.
+- On Filip's Windows PowerShell, `npm run live` fails with "npm.ps1 cannot be loaded because running
+  scripts is disabled". Give him `npm.cmd run live` (and `npx.cmd` for npx) in any command he will
+  paste. It skips the PowerShell script and needs no policy change.
 
 ## Shots
 

@@ -30,6 +30,7 @@ Task format
   - [x] Video renderer, scripts/render-hero7-video.mjs, 301 frames at 30fps on video-pace.json
   - [x] Phone hero plays the video from landing, label from its time, end frame for reduced motion
   - [x] Video rendered, 10s at 30fps, H.264 1.7MB and VP9 1.9MB, plays from 0.5s after landing, labels step through, end frame on reduced motion
+  - [x] Live on bullhill.co at 938e556
   - [ ] Filip watches it on his phone
 - bullhill-18 The site feels heavy, make browsing smooth. Notes in briefs/website/round8-notes.md
   - [x] Measured, the sections below the hero mounted one scene frame apart, Lenis glided every wheel notch
@@ -45,7 +46,9 @@ Task format
   - [x] Frame meter on review builds, ?perf=1, Filip's report, 240Hz screen, RX 6750 XT, a 1.45s freeze on the first wheel and a 68ms forced layout
   - [x] The rest of the page mounts one section a frame after the first wheel, the ground measures in idle time
   - [x] Filip, fps drops on Process and the audiences. Dot fields draw at most 60 a second, canvases capped at 4 million pixels, the audience's fine dots batched
-  - [ ] Filip feels it on the preview
+  - [x] Filip's second report, 240fps below the hero, at most 5 frames over 8ms a section, "much smoother"
+  - [x] Production at 938e556 on bullhill.co, on Filip's "we can deploy", 20 October 2026
+  - [ ] The 0.6s hitch in the hero at load, a React render of 485ms and the scene's first frame
 ## In progress
 
 - bullhill-16 Publish the site on its own domain. Plan in briefs/website/golive-plan.md
@@ -73,7 +76,7 @@ Task format
   - [x] bullhill.co and www live on Pages at 048c0fb, 20 October 2026 14:30 UTC, the old GoDaddy A records replaced
   - [x] bullhill-site.vercel.app redirects to bullhill.co, a redirect only Vercel production on Filip's yes, 20 October 2026
   - [x] Link preview image, public/og.jpg from scripts/og, on preview at 2ea6165
-  - [ ] Filip's deploy for the link preview image
+  - [x] Link preview image live on bullhill.co with round 8, 938e556
   - [ ] www.bullhill.co answers the same site, Pages _redirects cannot redirect a host, a Cloudflare redirect rule would
 - bullhill-2 Hero scroll smooth, frame rate on phones and desktop
   - [x] Measure frame cost on a scripted scroll, phone and desktop

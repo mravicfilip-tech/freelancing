@@ -88,7 +88,8 @@ Task format
   - [x] Round 7 build, variant 5 chrome and chest motion, variant 1 type and search
   - [x] Round 7 checks, after shots at 1440, 1920 and 2560, board of the three
   - [ ] Filip picks a hover and a chest motion
-  - [ ] Filip answers the art, variant 2 hero and card redraws, and the 2560 width
+  - [x] Filip answers the art, variant 2 hero and card redraws, and the 2560 width, "do these suggestions"
+  - [ ] Round 7 redraws, scene art in variants 1, 2 and 5, variant 2 hero, category cards in 1 and 2
   - [ ] Filip picks a variant
 
 ## Review

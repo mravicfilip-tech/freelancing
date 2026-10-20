@@ -7,7 +7,7 @@ import type { Category } from '../../../data/games';
 import { Live } from './ui';
 
 // The four category cards, round 7 (note 21, plan line J), after Betsera's Originals row. Portrait
-// 3 to 4 on a dark purple face, the category hue as light (a top tint, a glow behind and under the
+// 3 to 4 up to 360px tall, then a wider stage at that height, on a dark purple face, the category hue as light (a top tint, a glow behind and under the
 // art, a lit pool on the floor, a rim on the art). The art is the card, it stands on the floor above
 // the title and breaks out of the top edge. The title keeps the page's one heading style at one size,
 // with the live count under it as one line, both on the 16px inset set this morning (notes 2 and 4).
@@ -48,8 +48,8 @@ const TILES: Tile[] = [
     line: 'playing',
     countLabel: 'playing megaways',
     art: [
-      { src: '/art/landing/pillar-gems-b.webp', w: 285, h: 800, className: 'n1-cat-back', style: { '--x': '66%', '--b': 'calc(var(--floor) + 6%)', '--top': '8%' } as CSSProperties },
-      { src: '/art/landing/pillar-gems-a.webp', w: 267, h: 800, style: { '--x': '38%' } as CSSProperties },
+      { src: '/art/landing/pillar-gems-b.webp', w: 285, h: 800, className: 'n1-cat-back', style: { '--dx': '0.12', '--b': 'calc(var(--floor) + 6%)', '--top': '8%' } as CSSProperties },
+      { src: '/art/landing/pillar-gems-a.webp', w: 267, h: 800, style: { '--dx': '-0.09' } as CSSProperties },
     ],
     filter: 'megaways',
   },
@@ -59,7 +59,7 @@ const TILES: Tile[] = [
     count: players('hold-and-win'),
     line: 'playing',
     countLabel: 'playing hold and win',
-    art: [{ src: '/art/lobby/giveaway-chest.webp', w: 420, h: 420, className: 'n1-cat-wide', style: { '--b': 'calc(var(--floor) - 2%)' } as CSSProperties }],
+    art: [{ src: '/art/lobby/giveaway-chest.webp', w: 420, h: 420, className: 'n1-cat-wide' }],
     filter: 'hold-and-win',
   },
   {
@@ -69,7 +69,7 @@ const TILES: Tile[] = [
     count: 12,
     line: 'joined this week',
     countLabel: 'friends joined this week',
-    art: [{ src: '/art/money/refer-megaphone.webp', w: 452, h: 640, className: 'n1-cat-sink', style: { '--x': '54%', '--b': 'calc(var(--floor) - 34px)' } as CSSProperties }],
+    art: [{ src: '/art/money/refer-megaphone.webp', w: 452, h: 640, className: 'n1-cat-sink', style: { '--dx': '0.03', '--b': 'calc(var(--floor) - 34px)' } as CSSProperties }],
     to: '/refer',
   },
 ];

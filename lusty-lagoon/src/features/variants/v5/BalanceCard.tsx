@@ -1,4 +1,4 @@
-import { useRef, useState, type KeyboardEvent } from 'react';
+import { useRef, useState, type CSSProperties, type KeyboardEvent } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { ArrowRight, ArrowUpRight, Eye, EyeSlash, Headset, TrendUp, Wallet } from '@phosphor-icons/react';
 import { coinById } from '../../../data/wallet';
@@ -11,10 +11,58 @@ import { Caps, Key, Light, Skel } from './ui';
 import { TODAY, WEEK } from './week';
 
 // The hero and the first thing the eye lands on. The balance at 88, Switzer 600, tight and tabular,
-// the cents a step quieter, the day's change under it. The money row's one light enters from the top
-// right behind the character, who stands whole inside the glass. Across the foot a frosted well holds
-// the week as glass bars after the trading shot's chart, today's bar in brand purple, and the
-// character's lower half reads softly through it, the vault's pane of glass.
+// the cents a step quieter, the day's change under it. Beside it the card opens onto the lagoon at
+// sunset, and the character stands on that beach, lit by its sun (round 7, note 20, plan line G,
+// briefs/round-7/art-recipe.md). Across the foot a frosted well holds the week as glass bars after
+// the trading shot's chart, today's bar in brand purple, and the scene and her lower half read softly
+// through it, the vault's pane of glass.
+
+const SCENE = '/art/lobby/hero-sunset.webp';
+const HER = '/art/landing/girl-wrap.webp';
+
+/** A few slow motes drifting up off the sea in the sun's light, orange and purple only. */
+const MOTES = [
+  { x: 8, y: 62, s: 3, c: '255 150 90', t: 11, d: 0 },
+  { x: 22, y: 40, s: 2, c: '201 162 255', t: 14, d: 3.5 },
+  { x: 38, y: 70, s: 3, c: '255 132 64', t: 12, d: 6 },
+  { x: 54, y: 30, s: 2, c: '255 150 90', t: 15, d: 1.5 },
+  { x: 70, y: 56, s: 3, c: '201 162 255', t: 13, d: 8 },
+  { x: 88, y: 44, s: 2, c: '255 132 64', t: 12, d: 4.5 },
+];
+
+/**
+ * The card's art side, back to front as the recipe lists it. The sunset scene graded into the card's
+ * purple and out of focus, the sun's light and a haze low on the beach, the character graded toward
+ * the scene with its light wrapped round her edge, the haze crossing her where the frame crops her, a
+ * flower pillar in front of her edge, a few motes in the light, and the vignette that melts it all
+ * into the card on the balance side. Places per card width live in glass.css.
+ */
+function CardArt() {
+  return (
+    <div aria-hidden className="gv-art">
+      <div className="gv-scene">
+        <img src={SCENE} alt="" width={1740} height={907} decoding="async" className="gv-scene-img" />
+        <span className="gv-scene-tint" />
+        <span className="gv-scene-shade" />
+        <span className="gv-scene-sun" />
+        <span className="gv-scene-haze" />
+      </div>
+      <div className="gv-her">
+        <img src={HER} alt="" width={553} height={1036} decoding="async" className="gv-her-img" />
+        <span className="gv-her-shade" style={{ WebkitMaskImage: `url(${HER})`, maskImage: `url(${HER})` }} />
+        <span className="gv-her-wrap" style={{ WebkitMaskImage: `url(${HER})`, maskImage: `url(${HER})` }} />
+      </div>
+      <span className="gv-her-haze" />
+      <span className="gv-motes">
+        {MOTES.map((m, i) => (
+          <span key={i} style={{ '--x': `${m.x}%`, '--y': `${m.y}%`, '--s': `${m.s}px`, '--c': m.c, '--t': `${m.t}s`, '--d': `${m.d}s` } as CSSProperties} />
+        ))}
+      </span>
+      <img src="/art/landing/pillar-flowers-right.webp" alt="" width={282} height={854} decoding="async" className="gv-front" />
+      <span className="gv-vignette" />
+    </div>
+  );
+}
 
 const FOCUS = 'outline-none focus-visible:ring-2 focus-visible:ring-[#B47CFF] focus-visible:ring-offset-2 focus-visible:ring-offset-[#0E0C13]';
 
@@ -90,12 +138,8 @@ export function BalanceCard({ loading }: { loading?: boolean }) {
   return (
     <section aria-labelledby="bal-title" className="gv-glass gv-edge gv-bal relative flex min-h-[540px] flex-col overflow-hidden rounded-3xl p-3">
       <Light hue="purple" x="78%" y="0%" size="62% 88%" strength={0.56} segment="50%" segAt="76%" />
-      {/* The brand mark pattern and the flower pillar in the purple beside her (round 6, note 8). The
-          pillar stands behind her and its foot reads softly through the pane, placed in glass.css. */}
-      <span aria-hidden className="gv-mark left-[372px] right-0 top-0 h-[352px]" />
-      <img aria-hidden src="/art/landing/pillar-flowers-right.webp" alt="" width={282} height={854} className="gv-pillar pointer-events-none z-0 select-none" />
-      {/* Whole inside the glass. Her head clears the top by 28, her lower half sits behind the frosted well. */}
-      <img aria-hidden src="/art/landing/girl-wrap.webp" alt="" className="pointer-events-none absolute right-[14px] top-[28px] z-0 h-[452px] w-auto max-w-none select-none [mask-image:linear-gradient(180deg,#000_78%,transparent_100%)]" />
+      {/* The spiral pattern left this card for the giveaway band (note 20). */}
+      <CardArt />
 
       <div className="relative z-10 flex flex-col px-[20px] pt-[20px]">
         <div className="flex items-center gap-3">

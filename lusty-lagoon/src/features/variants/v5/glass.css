@@ -231,29 +231,236 @@
 
 /* ---------- Balance card art ---------- */
 
-/* The brand mark pattern in the purple beside the woman (note 8). The Lusty Lagoon spiral at 22,
- * spaced evenly, white at 9 percent. It starts clear of the text column, is fullest beside her and
- * dissolves toward the text and toward the frosted pane, so no line of text sits on it. */
+/* The card opens onto the lagoon at sunset and she stands on its beach (round 7, note 20, plan line
+ * G). Built on briefs/round-7/art-recipe.md, back to front. Every layer is art, so none of it takes a
+ * pointer, and the card's own overflow clips it to the rounded corners. Places per card width are the
+ * custom properties at the foot of this block, so the three widths read in one spot. */
+.gv-bal { container-type: inline-size; }
+.gv-art {
+  --gv-panel: 34 20 57; /* the card's own purple where no art sits, sampled at 1440, 1920 and 2560 */
+  --gv-sun: 255 132 64; /* the scene's light, orange, never yellow */
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+  border-radius: inherit;
+  pointer-events: none;
+  user-select: none;
+}
+
+/* 1, the scene. From the end of the text column to the card's right edge, the lagoon sunset cropped
+ * so its shoreline meets her hips. Out of focus behind her, darker, and graded into the purple by a
+ * colour layer and a multiply layer. Its left edge dissolves into the card over --gv-fade, the
+ * vignette on the balance side, so the figures beside it stay calm. */
+.gv-scene {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  right: 0;
+  left: var(--gv-scene-x);
+  isolation: isolate;
+  -webkit-mask-image: linear-gradient(90deg, transparent 0, rgb(0 0 0 / 0.18) calc(var(--gv-fade) * 0.35), rgb(0 0 0 / 0.62) calc(var(--gv-fade) * 0.7), #000 var(--gv-fade));
+  mask-image: linear-gradient(90deg, transparent 0, rgb(0 0 0 / 0.18) calc(var(--gv-fade) * 0.35), rgb(0 0 0 / 0.62) calc(var(--gv-fade) * 0.7), #000 var(--gv-fade));
+}
+.gv-scene > * { position: absolute; inset: 0; }
+/* Six px past the frame on every side, so the blur never pulls a clear rim in at the edges. */
+.gv-scene-img {
+  inset: -6px;
+  width: calc(100% + 12px);
+  height: calc(100% + 12px);
+  max-width: none;
+  object-fit: cover;
+  object-position: var(--gv-scene-pos);
+  filter: blur(2.5px) brightness(0.8) saturate(1) hue-rotate(-12deg);
+}
+.gv-scene-tint { background: rgb(124 70 236); mix-blend-mode: color; opacity: 0.4; }
+.gv-scene-shade {
+  background: linear-gradient(180deg, rgb(110 64 176) 0%, rgb(170 110 220) 40%, rgb(90 50 150) 70%, rgb(60 32 110) 100%);
+  mix-blend-mode: multiply;
+  opacity: 0.55;
+}
+
+/* 2, atmosphere behind her. The sun's light where the sun sets, orange into purple, and a haze band
+ * low on the beach where the sea meets the sand. */
+.gv-scene-sun {
+  background: radial-gradient(var(--gv-sun-size) at var(--gv-sun-at), rgb(var(--gv-sun) / 0.58), rgb(var(--gv-sun) / 0.22) 30%, rgb(196 72 150 / 0.1) 60%, rgb(141 38 231 / 0) 100%);
+  mix-blend-mode: screen;
+}
+.gv-scene-haze {
+  top: auto;
+  height: 220px;
+  bottom: 120px;
+  background: linear-gradient(180deg, rgb(168 92 255 / 0) 0%, rgb(255 120 96 / 0.12) 38%, rgb(168 92 255 / 0.2) 60%, rgb(168 92 255 / 0) 100%);
+  mix-blend-mode: screen;
+}
+
+/* 4 and 5, her. Sharp, never past her 553 by 1036 source, nudged toward the scene so her shadows go
+ * purple and her highlights stay warm. The shade and the wrap are the same size as her and masked by
+ * her own alpha. The wrap runs orange from the sun's side into purple on the far side, in soft
+ * light, so the scene lights her. A 1px orange rim on the sun's side only. The group fades out low,
+ * where the frame crops her. */
+.gv-her {
+  position: absolute;
+  top: var(--gv-her-y);
+  right: var(--gv-her-r);
+  height: var(--gv-her-h);
+  aspect-ratio: 553 / 1036;
+  isolation: isolate;
+  -webkit-mask-image: linear-gradient(180deg, #000 70%, transparent 96%);
+  mask-image: linear-gradient(180deg, #000 70%, transparent 96%);
+}
+.gv-her-img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  max-width: none;
+  filter: brightness(0.94) contrast(1.05) saturate(0.84) drop-shadow(-1px 0 0.5px rgb(var(--gv-sun) / 0.75));
+}
+/* Her far side from the sun goes into the scene's purple shade, so the shoulder light her source
+ * art carries on that side no longer outshines the sun's side. */
+.gv-her-shade,
+.gv-her-wrap {
+  position: absolute;
+  inset: 0;
+  -webkit-mask-size: 100% 100%;
+  mask-size: 100% 100%;
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+}
+.gv-her-shade {
+  background: linear-gradient(98deg, rgb(120 70 200 / 0) 40%, rgb(120 70 200 / 0.7) 78%, rgb(84 44 168) 100%);
+  mix-blend-mode: multiply;
+  opacity: 0.55;
+}
+.gv-her-wrap {
+  background: linear-gradient(98deg, rgb(255 140 70) 0%, rgb(255 110 100) 26%, rgb(140 70 220) 58%, rgb(60 24 140) 100%);
+  mix-blend-mode: soft-light;
+  opacity: 0.7;
+}
+
+/* 3, where the frame crops her. The haze band crosses her hips just above the frosted pane, in front
+ * of her, so no hard lower edge shows, and the pane takes it from there. */
+.gv-her-haze {
+  position: absolute;
+  right: var(--gv-her-haze-r);
+  width: var(--gv-her-haze-w);
+  top: 262px;
+  height: 150px;
+  border-radius: 50%;
+  background: radial-gradient(closest-side, rgb(118 64 196 / 0.55), rgb(118 64 196 / 0.22) 55%, rgb(118 64 196 / 0) 100%);
+  filter: blur(6px);
+}
+
+/* 6, the foreground. The flower pillar stands nearer than her, over her edge on the far side from the
+ * sun, cut by the card's edge. Darker, a touch out of focus, and its own thin rim from the sun. */
+.gv-front {
+  position: absolute;
+  top: var(--gv-front-y);
+  right: var(--gv-front-r);
+  height: var(--gv-front-h);
+  width: auto;
+  max-width: none;
+  filter: brightness(0.42) saturate(0.72) blur(1.6px) drop-shadow(-1px 0 0.5px rgb(var(--gv-sun) / 0.4));
+}
+
+/* 8, life. Six motes drift slowly up off the sea in the open beach left of her, so none crosses her
+ * face. Under 960 she fills the art side and there is no open beach, so they show from 960 (2560).
+ * They hold still on ?still and under reduced motion, resting where they start. */
+.gv-motes {
+  display: none;
+  position: absolute;
+  top: 60px;
+  right: var(--gv-motes-r);
+  height: 280px;
+  width: var(--gv-motes-w);
+}
+.gv-motes > span {
+  position: absolute;
+  left: var(--x);
+  top: var(--y);
+  width: var(--s);
+  height: var(--s);
+  border-radius: 50%;
+  opacity: 0.5;
+  background: rgb(var(--c));
+  box-shadow: 0 0 6px 1px rgb(var(--c) / 0.6);
+  animation: gv-mote var(--t) ease-in-out var(--d) infinite;
+}
+@keyframes gv-mote {
+  0% { opacity: 0; transform: translate(0, 0); }
+  20% { opacity: 0.7; }
+  60% { opacity: 0.5; transform: translate(10px, -42px); }
+  100% { opacity: 0; transform: translate(-6px, -84px); }
+}
+.gv-still .gv-motes > span { animation: none; }
+
+/* 7, the vignette. The scene melts into the card's purple at its top, right and foot edges. The
+ * balance side is the scene's own fade above. */
+.gv-vignette {
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(180deg, rgb(var(--gv-panel) / 0.6) 0%, rgb(var(--gv-panel) / 0) 18%),
+    linear-gradient(270deg, rgb(var(--gv-panel) / 0.55) 0%, rgb(var(--gv-panel) / 0) 10%),
+    linear-gradient(0deg, rgb(var(--gv-panel) / 0.7) 0%, rgb(var(--gv-panel) / 0) 38%);
+}
+
+/* Places. Under 640 (1440) there is little room left of her, so the scene sits behind her and the
+ * pillar in front of her. From 640 (1920) a little more of the beach shows left of her. From 960
+ * (2560) the scene fills the wide card, the sun setting in the open left of it and the rocks behind
+ * her on the right. */
+.gv-art {
+  --gv-scene-x: 316px;
+  --gv-fade: 140px;
+  --gv-scene-pos: 0% 50%;
+  --gv-sun-at: 124px 92px;
+  --gv-sun-size: 420px 320px;
+  --gv-her-y: 28px;
+  --gv-her-h: 452px;
+  --gv-her-r: 0px;
+  --gv-her-haze-r: -20px;
+  --gv-her-haze-w: 320px;
+  --gv-front-y: 136px;
+  --gv-front-h: 460px;
+  --gv-front-r: -92px;
+}
+@container (min-width: 640px) {
+  .gv-art {
+    --gv-scene-x: 300px;
+    --gv-her-r: 44px;
+    --gv-front-r: -64px;
+  }
+}
+@container (min-width: 960px) {
+  .gv-art {
+    --gv-scene-x: 380px;
+    --gv-fade: 180px;
+    --gv-sun-size: 560px 400px;
+    --gv-her-r: 82px;
+    --gv-her-haze-r: 20px;
+    --gv-her-haze-w: 380px;
+    --gv-front-r: -30px;
+    --gv-motes-r: 360px;
+    --gv-motes-w: 520px;
+  }
+  .gv-motes { display: block; }
+}
+
+/* The spiral pattern, moved here from the balance card (note 20), so the brand mark stays on the
+ * page. The Lusty Lagoon spiral at 22, spaced evenly, white at a low strength, fullest behind the
+ * chest where the band's light sits and gone before the prize, so every line of text keeps AA. */
 .gv-mark {
   position: absolute;
+  inset: 0;
+  z-index: -1;
+  border-radius: inherit;
   pointer-events: none;
   background-image: url('/art/kit/spiral-white.svg');
   background-size: 22px 22px;
   background-repeat: space;
-  opacity: 0.09;
-  -webkit-mask-image: linear-gradient(90deg, transparent 0, rgb(0 0 0 / 0.6) 45%, #000 85%), linear-gradient(180deg, #000 50%, transparent 100%);
-  -webkit-mask-composite: source-in;
-  mask-image: linear-gradient(90deg, transparent 0, rgb(0 0 0 / 0.6) 45%, #000 85%), linear-gradient(180deg, #000 50%, transparent 100%);
-  mask-composite: intersect;
-}
-
-/* The flower pillar beside her, 300 to 320 of its 854. In a card under 640 wide (1440) there is no
- * purple left of her, so it stands behind her right shoulder, the crown clear above her hair. From
- * 640 (1920 and wider) it stands at her left, in the purple Filip pointed at, overlapped by her arm. */
-.gv-bal { container-type: inline-size; }
-.gv-pillar { position: absolute; top: 28px; right: 10px; height: 296px; width: auto; max-width: none; }
-@container (min-width: 640px) {
-  .gv-pillar { top: 64px; right: auto; left: max(400px, calc(100% - 280px)); height: 320px; }
+  opacity: 0.05;
+  -webkit-mask-image: linear-gradient(90deg, #000 0, #000 30%, rgb(0 0 0 / 0.55) 70%, rgb(0 0 0 / 0.3) 100%);
+  mask-image: linear-gradient(90deg, #000 0, #000 30%, rgb(0 0 0 / 0.55) 70%, rgb(0 0 0 / 0.3) 100%);
 }
 
 /* ---------- Lights ---------- */
@@ -457,6 +664,7 @@
 @media (prefers-reduced-motion: reduce) {
   .gv-live::after, .gv-enter, .gv-skel, .gv-fade, .gv-show { animation: none; }
   .gv-chest * { animation: none !important; }
+  .gv-motes > span { animation: none; }
   .gv-hover, .gv-pill, .gv-cover img, .gv-bar { transition: none; }
 }
 

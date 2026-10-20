@@ -12,7 +12,8 @@ import { GlassDialog } from './Dialogs';
 
 // The third thing the eye lands on. A wide glass band with one soft light inside it, orange behind
 // the chest's lid fading to purple, held inside the band so nothing spills under it, and no drop
-// shadow (round 7, notes 13 and 15). Never gold. The chest breaks 28 above the band, shows whole and
+// shadow (round 7, notes 13 and 15). Behind it the brand's spiral pattern lies faint, moved here from
+// the balance card (note 20). Never gold. The chest breaks 28 above the band, shows whole and
 // moves, four motions by ?chest=1 to 4 (note 18). The prize at 40 in white, Bai Jamjuree 600, the
 // band's one orange key, and How it works as a quiet pill that opens the rules. Every line of text
 // over the light is measured at AA (round 6, note 6).
@@ -79,6 +80,7 @@ export function Giveaway({ open, onOpen }: { open: boolean; onOpen: (o: boolean)
     <section aria-labelledby="give-title" className="relative pt-[28px]">
       <div className="gv-glass gv-flat gv-edge flex h-[148px] items-center gap-8 rounded-3xl pl-[216px] pr-6">
         <span aria-hidden className="gv-light" style={{ backgroundImage: BAND_LIGHT }} />
+        <span aria-hidden className="gv-mark" />
         <div className="flex min-w-0 flex-1 flex-col gap-1">
           <p className="flex items-center gap-2 text-12 font-semibold uppercase tracking-[0.08em] text-[rgb(var(--gv-ink-2))]">
             <span className="w1920:hidden">Draw in</span>

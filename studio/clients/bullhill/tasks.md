@@ -41,6 +41,7 @@ Task format
   - [x] Filip's second Loom, still not as smooth as landonorris.com
   - [x] Benchmarked by wheel scroll, CSS transitions on the process drawing and off screen sections were the cost
   - [x] Off screen sections skip rendering, the drawing on its own layer, frames over 25ms 44 to 15
+  - [x] Filip, still not smooth on desktop. Lenis set as landonorris.com sets it, every wheel at lerp 0.1, stepped every frame
   - [ ] Filip feels it on the preview
 ## In progress
 

@@ -30,6 +30,7 @@ Task format
   - [ ] The registrant on bullhill.co is BullHill d.o.o., auto-renew on
   - [ ] The contact form sends for real, today it only shows success
   - [ ] Legal notice and privacy pages, English and German, the links go to the top today
+  - [x] Impressum facts gathered in briefs/website/golive.md, legal name, register number, VAT, director
   - [ ] The pathway keys and variant switches off for the public build
   - [ ] Filip opens the build, then the domain goes live
 

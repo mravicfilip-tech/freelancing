@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<!-- The link preview image, 1200 by 630. Rendered to public/og.jpg by scripts/og/render.mjs.
+     Foundry on one card, the full logo on black, the hero line in Archivo at minus 5 percent,
+     a real route photo in the notched frame with crosshairs, the bull-red glow from the foot. -->
+<style>
+  @font-face { font-family: 'Archivo'; src: url('../../node_modules/@fontsource-variable/archivo/files/archivo-latin-wdth-normal.woff2') format('woff2'); font-weight: 100 900; font-stretch: 62% 125%; }
+  @font-face { font-family: 'Azeret Mono'; src: url('../../node_modules/@fontsource-variable/azeret-mono/files/azeret-mono-latin-wght-normal.woff2') format('woff2'); font-weight: 100 900; }
+  * { box-sizing: border-box; margin: 0; }
+  html, body { width: 1200px; height: 630px; background: #000; overflow: hidden; }
+  .card { position: relative; width: 1200px; height: 630px; background: #000; color: #fff; font-family: 'Archivo', sans-serif; }
+  .glow { position: absolute; left: -160px; right: 380px; bottom: -420px; height: 640px; background: radial-gradient(closest-side, rgba(208, 11, 17, 0.55), rgba(208, 11, 17, 0.18) 55%, rgba(208, 11, 17, 0) 100%); }
+  .left { position: absolute; left: 64px; top: 56px; bottom: 56px; width: 560px; display: flex; flex-direction: column; }
+  .logo { height: 72px; width: auto; align-self: flex-start; }
+  .kicker { margin-top: auto; font-family: 'Azeret Mono', monospace; font-size: 18px; line-height: 24px; letter-spacing: 0.04em; text-transform: uppercase; color: #c4c4c4; }
+  h1 { margin-top: 16px; font-weight: 500; font-stretch: 112%; text-transform: uppercase; letter-spacing: -0.05em; font-size: 64px; line-height: 64px; }
+  h1 span { display: block; }
+  .foot { margin-top: 32px; padding-top: 16px; border-top: 1px solid rgba(218, 218, 218, 0.22); display: flex; justify-content: space-between; font-family: 'Azeret Mono', monospace; font-size: 16px; line-height: 24px; letter-spacing: 0.04em; text-transform: uppercase; color: #dadada; }
+  .foot b { font-weight: 400; color: #fff; }
+  .frame { position: absolute; right: 64px; top: 56px; bottom: 56px; width: 440px; border: 1px solid rgba(218, 218, 218, 0.22); padding: 8px; }
+  .clip { position: relative; width: 100%; height: 100%; overflow: hidden; clip-path: polygon(0 0, 100% 0, 100% calc(100% - 40px), calc(100% - 40px) 100%, 0 100%); }
+  .clip img { width: 100%; height: 100%; object-fit: cover; object-position: 50% 60%; display: block; }
+  .x { position: absolute; width: 13px; height: 13px; }
+  .x::before, .x::after { content: ''; position: absolute; background: #dadada; }
+  .x::before { left: 6px; top: 0; width: 1px; height: 13px; }
+  .x::after { top: 6px; left: 0; height: 1px; width: 13px; }
+  .tl { left: -7px; top: -7px; } .tr { right: -7px; top: -7px; } .bl { left: -7px; bottom: -7px; } .br { right: -7px; bottom: -7px; }
+</style>
+</head>
+<body>
+  <div class="card">
+    <div class="glow"></div>
+    <div class="left">
+      <img class="logo" src="../../public/brand/logo-on-dark.svg" alt="BullHill" />
+      <p class="kicker">Fibre civil works</p>
+      <h1><span>We dig the routes</span><span>fibre runs through</span></h1>
+      <p class="foot"><b>bullhill.co</b><span>DE AT BE NL CZ SI</span></p>
+    </div>
+    <div class="frame">
+      <div class="clip"><img src="../../public/photos/route-trench-village-1280.jpg" alt="" /></div>
+      <i class="x tl"></i><i class="x tr"></i><i class="x bl"></i><i class="x br"></i>
+    </div>
+  </div>
+</body>
+</html>

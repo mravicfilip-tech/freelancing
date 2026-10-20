@@ -47,8 +47,9 @@ Task format
   - [x] Launch files, robots, sitemap, hreflang, a 404 page, cache and security headers
   - [x] Filip opened preview 048c0fb and said deploy, 20 October 2026
   - [x] Production at 048c0fb on bullhill-site.pages.dev, bullhill.co and www attached, pending DNS
-  - [ ] Filip activates the two domains in Cloudflare, the old GoDaddy A records replaced
-  - [ ] bullhill-site.vercel.app redirects to bullhill.co, Filip's yes 20 October 2026, after the domain answers
+  - [x] bullhill.co and www live on Pages at 048c0fb, 20 October 2026 14:30 UTC, the old GoDaddy A records replaced
+  - [x] bullhill-site.vercel.app redirects to bullhill.co, a redirect only Vercel production on Filip's yes, 20 October 2026
+  - [ ] www.bullhill.co answers the same site, Pages _redirects cannot redirect a host, a Cloudflare redirect rule would
 - bullhill-2 Hero scroll smooth, frame rate on phones and desktop
   - [x] Measure frame cost on a scripted scroll, phone and desktop
   - [x] Fix the worst costs, measure again, c9d30f3

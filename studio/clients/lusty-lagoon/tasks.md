@@ -58,6 +58,22 @@ Task format
   - [ ] Account settings, all 4 states
   - [ ] Mods across the whole product
 
+- lusty-lagoon-3 Neon arcade on mobile, plus hero and card options. Brief briefs/round-8/notes.md, plan briefs/round-8/plan.md. Branch claude/busy-edison-mmjwbn
+  - [x] Loom 6 notes, 13 of them
+  - [x] Sheen hover locked on primary and secondary keys
+  - [x] Desktop fixes, three card treatments, notifications panel, secondary hover
+  - [x] Three hero iterations, Filip picked Base and 3 combined with no slider, built as the one hero
+  - [x] Three mobile iterations at 375 and 425
+  - [x] Checks, shots and one board per choice
+  - [x] Filip picks a hero
+  - [ ] Filip picks a card treatment, C1, C2 or C3
+  - [ ] Filip picks a phone shell, M1, M2 or M3
+  - [x] Work consolidated into the mravicfilip-tech/lusty-lagoon repo
+
+## Review
+
+## Done
+
 - lusty-lagoon-2 Five dashboard variants, one page each, from the ten references. Brief briefs/round-3/variants-brief.md. Live https://lusty-lagoon.vercel.app/variants, commit f8ced30. Round 7 on the branch, notes briefs/round-7/notes.md
   - [x] Save the ten references with a status
   - [x] Shared data, routes and the builder brief
@@ -100,16 +116,3 @@ Task format
   - [x] Redraw checks, after shots at 1440, 1920 and 2560, board against this morning
   - [x] Filip reviews the redraws on localhost, Loom 6, variant 1 picked
   - [x] Filip picks a variant, Neon arcade
-
-- lusty-lagoon-3 Neon arcade on mobile, plus hero and card options. Brief briefs/round-8/notes.md, plan briefs/round-8/plan.md. Branch claude/busy-edison-mmjwbn
-  - [x] Loom 6 notes, 13 of them
-  - [x] Sheen hover locked on primary and secondary keys
-  - [ ] Desktop fixes, three card treatments, notifications panel, secondary hover
-  - [ ] Three hero iterations
-  - [ ] Three mobile iterations at 375 and 425
-  - [ ] Checks, shots and one board per choice
-  - [ ] Filip picks a hero, a mobile and a card treatment
-
-## Review
-
-## Done

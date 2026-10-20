@@ -67,7 +67,7 @@ Use this copy. The original, MjPhupcafS4TyCyssMHTjU, sits on a Starter plan that
 
 ## Widths
 
-1440, 1920
+1440, 1920, 2560. Filip's browser renders at about 2560 wide (round 7).
 
 ## Run
 

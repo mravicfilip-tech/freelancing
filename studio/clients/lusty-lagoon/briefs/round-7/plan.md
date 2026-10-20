@@ -43,6 +43,9 @@ F. Every builder checks at 1440, 1920 and 2560.
 
 ## Proposed, built after Filip's yes
 
+G, H, J and I approved 2026-10-20 09:16 with "do these suggestions". G, H and J build in parallel in three folders on one
+shared recipe, `art-recipe.md`, so the variant 5 test arrives with the other two, not before them.
+
 G. Art that sits in the scene, notes 1, 6 and 20. Variants 1, 2 and 5.
    Reference, Filip's own Figma landing hero, the woman on the lagoon beach between the flower
    pillars, which is the product's own scene (`landing/hero-beach.webp`).

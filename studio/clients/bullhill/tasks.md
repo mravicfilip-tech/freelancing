@@ -23,17 +23,24 @@ Task format
 
 ## Backlog
 
-- bullhill-16 Publish the site on its own domain
+## In progress
+
+- bullhill-16 Publish the site on its own domain. Plan in briefs/website/golive.md, branch claude/busy-goldberg-gqfqzg from claude/hopeful-maxwell-bwuy3c
   - [x] Domain bought, bullhill.co, on Filip's Cloudflare account, 20 October 2026. bullhill.com is someone else's since 1999
   - [x] Hosting on Cloudflare Pages, free plan, Filip's pick over Vercel Pro at 20 dollars a month
   - [x] Pages deploy token and account ID in the cloud environment, CLOUDFLARE_API_TOKEN and CLOUDFLARE_ACCOUNT_ID, 20 October 2026, a new session reads them
+  - [x] Launch plan written, baseline 9932467, waits for Filip's go
+  - [ ] Filip's go on the plan and his answers to its questions
+  - [ ] The token reaches the bullhill.co zone, Workers and Email Routing, today it reaches Pages only
+  - [ ] The preview hold lifted for the Cloudflare Pages project, in Filip's words
   - [ ] The registrant on bullhill.co is BullHill d.o.o., auto-renew on
+  - [ ] The client's registered name, register number and director for the legal notice
+  - [ ] The client clicks Cloudflare's verification mail at bullhilldoo@gmail.com
   - [ ] The contact form sends for real, today it only shows success
   - [ ] Legal notice and privacy pages, English and German, the links go to the top today
-  - [ ] The pathway keys and variant switches off for the public build
+  - [ ] The pathway keys and variant switches off for the public build, the root opens Foundry
+  - [ ] Pages project bullhill-site, review build on a preview alias, one real test enquiry
   - [ ] Filip opens the build, then the domain goes live
-
-## In progress
 
 - bullhill-2 Hero scroll smooth, frame rate on phones and desktop
   - [x] Measure frame cost on a scripted scroll, phone and desktop

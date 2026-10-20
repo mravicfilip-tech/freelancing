@@ -38,6 +38,8 @@ so the lesson outlives the context window.
 
 - The agent proxy blocks `vercel.app`, so a preview cannot be opened from inside the container. Check
   a deployment through the Vercel API, as `studio/scripts/deploy.mjs` does, and send Filip the link to click.
+- The proxy blocks `pages.dev` the same way, a 502 on CONNECT. Check a Cloudflare Pages deployment through
+  the Pages API and send Filip the link.
 
 ## Vercel Hobby
 

@@ -29,6 +29,7 @@ Task format
   - [x] One execution proposed in words, a short video, Filip's yes 20 October 2026
   - [x] Video renderer, scripts/render-hero7-video.mjs, 301 frames at 30fps on video-pace.json
   - [x] Phone hero plays the video from landing, label from its time, end frame for reduced motion
+  - [x] Video rendered, 10s at 30fps, H.264 1.7MB and VP9 1.9MB, plays from 0.5s after landing, labels step through, end frame on reduced motion
   - [ ] Filip watches it on his phone
 - bullhill-18 The site feels heavy, make browsing smooth. Notes in briefs/website/round8-notes.md
   - [x] Measured, the sections below the hero mounted one scene frame apart, Lenis glided every wheel notch

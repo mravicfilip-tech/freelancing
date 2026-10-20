@@ -4,7 +4,8 @@
 // src/p1/variants/hero/hero7/video-pace.json, through the page's own curve (window.__h7at), so the label the
 // page writes from the video's time is the step the frame shows. Each frame is the strip of FLIP from acts.ts,
 // the same framing and the same soft black top and bottom edge as the flipbook it replaces. H.264, no sound,
-// fast start, so a phone starts playing on the first bytes. The first frame is also written as a WebP poster.
+// fast start, so a phone starts playing on the first bytes, and a VP9 WebM for browsers without H.264. The
+// first frame is also written as a WebP poster and the last as the still for reduced motion.
 //
 //   npx vite build --outDir /tmp/h7 && npx vite preview --outDir /tmp/h7 --port 5197 --strictPort &
 //   node scripts/render-hero7-video.mjs [--url http://localhost:5197] [--from 0] [--to 300] [--frames dir]
@@ -92,6 +93,9 @@ mkdirSync(edged, { recursive: true });
 execFileSync('python3', ['-I', '-c', PY.replace('.replace(".png", ".edge.png")', '.replace(sys.argv[1], sys.argv[3])'), frames, String(FADE * 2), edged], { stdio: 'inherit' });
 const mp4 = join(out, 'hero7-phone.mp4');
 execFileSync('ffmpeg', ['-y', '-v', 'error', '-framerate', String(pace.fps), '-i', join(edged, '%04d.png'), '-c:v', 'libx264', '-preset', 'slow', '-crf', process.env.CRF || '27', '-pix_fmt', 'yuv420p', '-profile:v', 'high', '-movflags', '+faststart', '-an', mp4], { stdio: 'inherit' });
+// VP9 for the browsers without H.264, Chromium builds and some Linux Firefox, listed second in the page
+const webm = join(out, 'hero7-phone.webm');
+execFileSync('ffmpeg', ['-y', '-v', 'error', '-framerate', String(pace.fps), '-i', join(edged, '%04d.png'), '-c:v', 'libvpx-vp9', '-b:v', '0', '-crf', process.env.VP9_CRF || '38', '-row-mt', '1', '-pix_fmt', 'yuv420p', '-an', webm], { stdio: 'inherit' });
 execFileSync('python3', ['-I', '-c', 'import sys; from PIL import Image; Image.open(sys.argv[1]).save(sys.argv[2], "WEBP", quality=82, method=6)', join(edged, '0000.png'), join(out, 'hero7-phone-poster.webp')]);
 execFileSync('python3', ['-I', '-c', 'import sys; from PIL import Image; Image.open(sys.argv[1]).save(sys.argv[2], "WEBP", quality=82, method=6)', join(edged, `${String(N - 1).padStart(4, '0')}.png`), join(out, 'hero7-phone-end.webp')]);
-console.log(mp4, readFileSync(mp4).length, 'bytes');
+console.log(mp4, readFileSync(mp4).length, 'bytes,', webm, readFileSync(webm).length, 'bytes');

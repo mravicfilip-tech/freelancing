@@ -385,6 +385,7 @@ function Poster({ c }: { c: Content }) {
 // The soft edge of each scrim is FADE px, set in hero7.css as --h7p-fade and read from there, and the band
 // takes half of it at each end, since the scene is half there.
 const VIDEO_SRC = '/render/hero7-phone.mp4';
+const VIDEO_WEBM = '/render/hero7-phone.webm';
 const POSTER_SRC = '/render/hero7-phone-poster.webp';
 const END_SRC = '/render/hero7-phone-end.webp';
 
@@ -430,7 +431,8 @@ function Phone({ c, mode }: { c: Content; mode: 'video' | 'poster' }) {
   const topEl = useRef<HTMLDivElement>(null);
   const footEl = useRef<HTMLDivElement>(null);
   const stepEl = useRef<HTMLDivElement>(null);
-  const video = useRef<HTMLVideoElement>(null);
+  // state, not a ref, since the video mounts only once the band is measured and the effects wait for it
+  const [v, setVideo] = useState<HTMLVideoElement | null>(null);
   const band = useBand(pin, topEl, footEl);
   const label = useStepLabel(stepEl, '.hv7p__stepi');
   // a phone that will not play it gets the end still in its place
@@ -444,7 +446,6 @@ function Phone({ c, mode }: { c: Content; mode: 'video' | 'poster' }) {
     label(still ? 1 : 0);
   }, [still, label]);
   useEffect(() => {
-    const v = video.current;
     if (still || !v) return;
     let id = 0;
     const tick = () => {
@@ -465,17 +466,21 @@ function Phone({ c, mode }: { c: Content; mode: 'video' | 'poster' }) {
       v.removeEventListener('seeked', run);
       v.removeEventListener('ended', end);
     };
-  }, [still, label]);
+  }, [v, still, label]);
   // plays on landing, pauses off screen and goes on when back, never starts over after the end
   useEffect(() => {
-    const v = video.current;
     const el = section.current;
     if (still || !v || !el) return;
     let seen = true;
+    // a play refused by the browser, low power mode on an iPhone for one, shows the end frame. A play cut off
+    // by a pause from the observer is not a refusal.
     const go = () => {
       if (!seen || document.hidden || v.ended) return;
-      v.play().catch(() => setStill(true));
+      v.play().catch((e: DOMException) => {
+        if (e.name !== 'AbortError') setStill(true);
+      });
     };
+    v.addEventListener('error', () => setStill(true), { once: true });
     const io = new IntersectionObserver((es) => {
       seen = es[es.length - 1].intersectionRatio >= 0.25;
       if (seen) go();
@@ -489,7 +494,7 @@ function Phone({ c, mode }: { c: Content; mode: 'video' | 'poster' }) {
       io.disconnect();
       document.removeEventListener('visibilitychange', vis);
     };
-  }, [still]);
+  }, [v, still]);
 
   // the strip, as wide as the screen, its band on the screen's band
   const strip = useMemo(() => {
@@ -507,7 +512,11 @@ function Phone({ c, mode }: { c: Content; mode: 'video' | 'poster' }) {
               {still ? (
                 <img className="h7vid__media" src={END_SRC} width={FLIP.w * 2} height={FLIP.rows * 2} alt="" draggable={false} />
               ) : (
-                <video ref={video} className="h7vid__media" src={VIDEO_SRC} poster={POSTER_SRC} width={FLIP.w * 2} height={FLIP.rows * 2} muted playsInline autoPlay preload="auto" disablePictureInPicture disableRemotePlayback aria-hidden="true" />
+                <video ref={setVideo} className="h7vid__media" poster={POSTER_SRC} width={FLIP.w * 2} height={FLIP.rows * 2} muted playsInline autoPlay preload="auto" disablePictureInPicture disableRemotePlayback aria-hidden="true">
+                  <source src={VIDEO_SRC} type="video/mp4" />
+                  {/* the last source failing means no format played, see the effect above */}
+                  <source src={VIDEO_WEBM} type="video/webm" onError={() => setStill(true)} />
+                </video>
               )}
             </div>
           ) : null}

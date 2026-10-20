@@ -10,6 +10,6 @@ Task bullhill-16 in `studio/clients/bullhill/tasks.md`. Gathered 20 October 2026
 - VAT ID SI77173686, tax number 77173686, from the client, and valid in VIES on 20 October 2026.
 - Entered in the register 22 August 2001, from bizi.si. The stats box says 1 year in the ground, which
   the client sent, so that figure is about the trenching work, not the company's age.
-- Managing director, Dusan Stoilovic, from Filip. The diacritics, Stoilović or Stoilovic, to be confirmed.
+- Managing director, Dusan Stoilović, spelling confirmed by Filip 20 October 2026.
 - Email bullhilldoo@gmail.com, phone and WhatsApp +43 665 65942472, from the client.
 - Domain bullhill.co on Filip's Cloudflare account, hosting Cloudflare Pages, free plan.

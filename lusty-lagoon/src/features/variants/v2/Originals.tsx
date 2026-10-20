@@ -1,5 +1,5 @@
-import type { ReactNode } from 'react';
-import { ArrowDown, Sparkle } from '@phosphor-icons/react';
+import type { CSSProperties, ReactNode } from 'react';
+import { ArrowDown, ArrowRight, Sparkle } from '@phosphor-icons/react';
 import { gameById, type Category } from '../../../data/games';
 import { formatAmount } from '../../../lib/format';
 import { cn } from '../../../lib/cn';
@@ -7,160 +7,105 @@ import { countOf, playersIn } from './data';
 import { SectionTitle, Skel } from './ui';
 import { ONLINE_NOW } from '../shared/data';
 
-// The originals row after Betsera, Gamdom and Player 145. Six tall tiles, one hue each, very heavy
-// capitals and one 3D object, the lead Slots tile taller so it rises to the heading line. Each tile
-// is a column, the capitals on top, a stage for the object, and the live count on a chip at the foot,
-// so a two line title never runs into its object.
+// The originals row, round 7, plan line J, read against Betsera's Originals row. Six portrait cards at
+// 3 to 4, all one size. The face is dark purple and the category hue comes in only as light, a glow
+// behind the art, a lit floor under it and a tint at the top, so six hues sit together. The art is the
+// card, standing on the floor with a contact shadow and a hue rim, about 120 percent of the card high
+// so it breaks out of the top edge. Under the floor the title in the heading face at one size, and the
+// live count as one line. Sizes live in v2.css under Originals cards, per width.
 
-type Tile = { key: Category | 'live'; title: ReactNode; label: string; hue: string; count: number; countLabel: string; art: ReactNode };
+type Card = { key: Category | 'live'; title: string; label: string; hue: string; count: number; countLabel: string; art: ReactNode };
 
-/** Covers stood up as cards, the way Betsera's poker tile stands its cards. */
-function CardFan({ ids }: { ids: string[] }) {
-  const three = ids.length === 3;
-  const turn = three
-    ? ['-rotate-[13deg] translate-x-[38px] translate-y-[8px] w1920:translate-x-[54px]', 'z-10', 'rotate-[13deg] -translate-x-[38px] translate-y-[8px] w1920:-translate-x-[54px]']
-    : ['-rotate-[11deg] translate-x-[22px] translate-y-[6px] w1920:translate-x-[30px]', 'z-10 rotate-[7deg] -translate-x-[18px] w1920:-translate-x-[26px]'];
+/** A game cover stood up on the floor, lit from below in the card's hue. */
+function Cover({ id, className, position }: { id: string; className: string; position?: string }) {
+  const g = gameById(id)!;
   return (
-    <span className="m2-obj absolute inset-x-0 bottom-0 top-2 flex items-end justify-center">
-      {ids.map((id, i) => {
-        const g = gameById(id)!;
-        return (
-          <img
-            key={id}
-            src={g.image}
-            alt=""
-            // A landscape cover stands up on its subject, the fish in Lucky Bass sits left of centre.
-            className={cn('m2-card aspect-[3/4] shrink-0 rounded-[12px] object-cover', g.wideOnly && 'object-[40%_50%]', three ? 'w-[70px] w1920:w-[104px]' : 'w-[92px] w1920:w-[120px]', turn[i])}
-          />
-        );
-      })}
+    <span className={cn('m2-oc-cover absolute', className)}>
+      <img src={g.image} alt="" className="h-full w-full rounded-[12px] object-cover" style={position ? { objectPosition: position } : undefined} />
     </span>
   );
 }
 
-const TILES: Tile[] = [
+/** Three covers on the floor, the lead one tall in front, two further back leaning out at its sides. */
+function Trio({ lead, left, right, leftPosition, small }: { lead: string; left: string; right: string; leftPosition?: string; small?: boolean }) {
+  return (
+    <>
+      <Cover id={left} className={cn('m2-oc-side m2-oc-side-l', small && 'm2-oc-side-sm')} position={leftPosition} />
+      <Cover id={right} className={cn('m2-oc-side m2-oc-side-r', small && 'm2-oc-side-sm')} />
+      <Cover id={lead} className="m2-oc-lead" />
+    </>
+  );
+}
+
+const CARDS: Card[] = [
   {
     key: 'slots',
-    title: 'SLOTS',
+    title: 'Slots',
     label: 'Slots',
-    hue: 'm2-hue-pink',
+    hue: '255 92 176',
     count: playersIn('slots'),
     countLabel: 'playing',
-    art: (
-      <span className="m2-obj absolute inset-0 flex items-end justify-center">
-        <img src="/art/landing/slot-machine.webp" alt="" className="h-[212px] w-auto w1920:h-[268px]" />
-      </span>
-    ),
+    art: <img src="/art/landing/slot-machine.webp" alt="" width={531} height={900} className="m2-oc-cut m2-oc-full absolute left-1/2 -translate-x-1/2" />,
   },
   {
     key: 'megaways',
-    title: (
-      <>
-        MEGA<wbr />
-        WAYS
-      </>
-    ),
+    title: 'Megaways',
     label: 'Megaways',
-    hue: 'm2-hue-blue',
+    hue: '92 148 255',
     count: playersIn('megaways'),
     countLabel: 'playing',
-    // Two reel towers leaning apart, more reels being the point of Megaways.
+    // Two reel towers leaning apart, more reels being the point of Megaways. The far one stands back.
     art: (
-      <span className="m2-obj absolute inset-x-0 -bottom-[14px] top-0 flex items-end justify-center">
-        <img src="/art/landing/pillar-gems-a.webp" alt="" className="h-[132px] w-auto translate-x-[10px] rotate-[-11deg] w1920:h-[224px] w1920:translate-x-[16px]" />
-        <img src="/art/landing/pillar-gems-a.webp" alt="" className="h-[132px] w-auto -translate-x-[10px] rotate-[11deg] -scale-x-100 w1920:h-[224px] w1920:-translate-x-[16px]" />
-      </span>
+      <>
+        <img src="/art/landing/pillar-gems-b.webp" alt="" width={285} height={800} className="m2-oc-cut m2-oc-tower-back absolute" />
+        <img src="/art/landing/pillar-gems-a.webp" alt="" width={267} height={800} className="m2-oc-cut m2-oc-tower absolute" />
+      </>
     ),
   },
   {
     key: 'hold-and-win',
-    title: (
-      <>
-        HOLD &amp;<wbr /> WIN
-      </>
-    ),
+    title: 'Hold & win',
     label: 'Hold and win',
-    hue: 'm2-hue-amber',
+    hue: '255 132 56',
     count: playersIn('hold-and-win'),
     countLabel: 'playing',
-    art: <CardFan ids={['coins-of-alkemor', 'boom-boom-gold', 'diamond-king-gold']} />,
+    art: <Trio lead="diamond-king-gold" left="coins-of-alkemor" right="boom-boom-gold" />,
   },
   {
     key: 'fish',
-    title: 'FISH',
+    title: 'Fish',
     label: 'Fish games',
-    hue: 'm2-hue-teal',
+    hue: '40 206 222',
     count: playersIn('fish'),
     countLabel: 'playing',
-    art: <CardFan ids={['lucky-bass', 'beware-the-deep']} />,
+    // The landscape Lucky Bass cover stands up on its fish, which sits left of centre.
+    art: <Trio lead="big-bass-splash" left="lucky-bass" right="beware-the-deep" leftPosition="40% 50%" small />,
   },
   {
     key: 'new',
-    title: 'NEW',
+    title: 'New',
     label: 'New games',
-    hue: 'm2-hue-violet',
+    hue: '176 120 255',
     count: countOf('new'),
     countLabel: 'this week',
-    // The neon machine stood up as a card, crisp, in the same card language as the cover fans.
-    art: (
-      <span className="m2-obj absolute inset-0 flex items-center justify-center">
-        <img src="/art/kit/neon-reels.webp" alt="" className="m2-card aspect-square w-[124px] -rotate-[8deg] rounded-[20px] object-cover w1920:w-[172px]" />
-      </span>
-    ),
+    // The neon machine keyed out of its own dark ground by its light, so only the neon stands on the floor.
+    art: <img src="/art/kit/neon-reels.webp" alt="" width={512} height={512} className="m2-oc-neon absolute left-1/2 -translate-x-1/2" />,
   },
   {
     key: 'live',
-    title: 'LIVE',
+    title: 'Live',
     label: 'Live bets',
-    hue: 'm2-hue-green',
+    hue: '72 214 128',
     count: ONLINE_NOW,
     countLabel: 'online',
-    art: (
-      <span className="m2-obj absolute inset-x-0 top-0 flex justify-center">
-        <img src="/art/auth/register-player.webp" alt="" className="h-[300px] w-auto max-w-none translate-x-[4%] w1920:h-[380px]" />
-      </span>
-    ),
+    art: <img src="/art/auth/register-player.webp" alt="" width={601} height={1000} className="m2-oc-cut m2-oc-host absolute left-1/2 -translate-x-1/2" />,
   },
 ];
 
 export function Originals({ onPick, onLive, onAll, loading }: { onPick: (c: Category) => void; onLive: () => void; onAll: () => void; loading?: boolean }) {
   return (
-    <section aria-labelledby="m2-originals" className="relative">
-      <div className="grid grid-cols-6 items-end gap-4">
-        {TILES.map((t, i) => (
-          <button
-            key={t.key}
-            type="button"
-            onClick={() => (t.key === 'live' ? onLive() : onPick(t.key))}
-            aria-label={`${t.label}, ${formatAmount(t.count, 0)} ${t.countLabel}${t.key === 'live' ? ', jump to live bets' : ''}`}
-            className={cn(
-              'm2-tile group flex w-full flex-col overflow-hidden rounded-[24px] text-center outline-none focus-visible:ring-2 focus-visible:ring-[#B47CFF] focus-visible:ring-offset-2 focus-visible:ring-offset-[rgb(var(--m2-ground))]',
-              'm2-hue',
-              t.hue,
-              i === 0 ? 'h-[320px] w1920:h-[372px]' : 'h-[260px] w1920:h-[312px]',
-            )}
-          >
-            <span aria-hidden className="relative z-10 block px-3 pt-4 text-[40px] font-black leading-[36px] tracking-[-0.02em] text-ink [text-wrap:balance]">
-              {t.title}
-            </span>
-            <span aria-hidden className="relative mb-[40px] mt-2 block w-full flex-1">
-              {t.art}
-            </span>
-            <span aria-hidden className="absolute bottom-3 left-1/2 z-20 flex h-6 -translate-x-1/2 items-center gap-2 whitespace-nowrap rounded-full bg-black/45 px-3 text-12 font-bold text-ink backdrop-blur-sm">
-              {loading ? (
-                <Skel className="h-[8px] w-12 rounded-full opacity-60" />
-              ) : (
-                <>
-                  {t.key === 'new' ? <Sparkle weight="fill" className="h-[12px] w-[12px] text-gold" /> : <span className="k-live" />}
-                  <span className="num">{formatAmount(t.count, 0)}</span>
-                  <span className="font-semibold text-ink/80">{t.countLabel}</span>
-                </>
-              )}
-            </span>
-          </button>
-        ))}
-      </div>
-      <div className="absolute left-[calc((100%-80px)/6+16px)] right-0 top-0 flex h-11 items-center justify-between gap-4">
+    <section aria-labelledby="m2-originals" className="m2-oc-sec relative">
+      <div className="flex h-11 items-center justify-between gap-4">
         <SectionTitle id="m2-originals" icon={<Sparkle weight="fill" className="text-[#C9A2FF]" />}>
           Lagoon originals
         </SectionTitle>
@@ -172,6 +117,48 @@ export function Originals({ onPick, onLive, onAll, loading }: { onPick: (c: Cate
           All games
           <ArrowDown weight="bold" className="h-4 w-4 text-[rgb(var(--m2-ink3))]" aria-hidden />
         </button>
+      </div>
+      <div className="m2-oc-row grid grid-cols-6 gap-4">
+        {CARDS.map((c) => (
+          <button
+            key={c.key}
+            type="button"
+            onClick={() => (c.key === 'live' ? onLive() : onPick(c.key))}
+            aria-label={`${c.label}, ${formatAmount(c.count, 0)} ${c.countLabel}${c.key === 'live' ? ', jump to live bets' : ''}`}
+            style={{ '--oc': c.hue } as CSSProperties}
+            className="m2-oc group relative block h-full w-full rounded-[24px] text-left outline-none focus-visible:ring-2 focus-visible:ring-[#B47CFF] focus-visible:ring-offset-2 focus-visible:ring-offset-[rgb(var(--m2-ground))]"
+          >
+            <span aria-hidden className="m2-oc-face absolute inset-0 overflow-hidden rounded-[24px]">
+              <span className="m2-oc-glow absolute inset-0" />
+              <span className="m2-oc-floor absolute" />
+            </span>
+            <span aria-hidden className="m2-oc-art absolute inset-x-0 bottom-0">
+              <span className="m2-oc-shadow absolute" />
+              <span className="m2-oc-obj absolute inset-0">{c.art}</span>
+            </span>
+            <span aria-hidden className="m2-oc-fade absolute inset-x-0 bottom-0 rounded-b-[24px]" />
+            <span aria-hidden className="m2-oc-text absolute inset-x-0 bottom-0 z-10 flex items-end justify-between gap-2">
+              <span className="flex min-w-0 flex-col">
+                <span className="m2-oc-title truncate font-display font-bold tracking-[-0.01em] text-ink">{c.title}</span>
+                <span className="m2-oc-count mt-1 flex items-center gap-2 whitespace-nowrap font-semibold text-[rgb(var(--m2-ink2))]">
+                  {loading ? (
+                    <Skel className="h-[8px] w-16 rounded-full opacity-60" />
+                  ) : (
+                    <>
+                      {c.key === 'new' ? <Sparkle weight="fill" className="h-[12px] w-[12px] text-[#C9A2FF]" /> : <span className="k-live" />}
+                      <span>
+                        <span className="num text-ink">{formatAmount(c.count, 0)}</span> {c.countLabel}
+                      </span>
+                    </>
+                  )}
+                </span>
+              </span>
+              <span className="m2-oc-go flex h-8 w-8 shrink-0 items-center justify-center rounded-full">
+                <ArrowRight weight="bold" className="h-4 w-4 text-ink" />
+              </span>
+            </span>
+          </button>
+        ))}
       </div>
     </section>
   );

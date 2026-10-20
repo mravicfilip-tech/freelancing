@@ -24,8 +24,10 @@ Task format
 ## Backlog
 
 - bullhill-16 Publish the site on its own domain
-  - [ ] The client buys the domain, bullhill.com is taken since 1999
-  - [ ] Hosting on a plan that allows a company site
+  - [x] Domain bought, bullhill.co, on Filip's Cloudflare account, 20 October 2026. bullhill.com is someone else's since 1999
+  - [x] Hosting on Cloudflare Pages, free plan, Filip's pick over Vercel Pro at 20 dollars a month
+  - [ ] Pages deploy token and account ID in the cloud environment, CLOUDFLARE_API_TOKEN and CLOUDFLARE_ACCOUNT_ID
+  - [ ] The registrant on bullhill.co is BullHill d.o.o., auto-renew on
   - [ ] The contact form sends for real, today it only shows success
   - [ ] Legal notice and privacy pages, English and German, the links go to the top today
   - [ ] The pathway keys and variant switches off for the public build

@@ -1,3 +1,4 @@
+import { param } from '../../../../shared/env';
 import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { clamp01 } from './geometry';
 
@@ -22,7 +23,7 @@ type Store = Progress & { bind(section: HTMLElement | null, pin: HTMLElement | n
 
 export function urlProgress(): number | null {
   if (typeof window === 'undefined') return null;
-  const v = new URLSearchParams(window.location.search).get('p');
+  const v = param('p');
   if (v === null || v.trim() === '') return null;
   const n = Number(v);
   return Number.isFinite(n) ? clamp01(n) : null;

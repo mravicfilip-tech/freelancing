@@ -1,0 +1,4 @@
+# Cloudflare Pages. The legal pages are routes of the one page app, served from index.html.
+/legal / 200
+/privacy / 200
+https://www.bullhill.co/* https://bullhill.co/:splat 301

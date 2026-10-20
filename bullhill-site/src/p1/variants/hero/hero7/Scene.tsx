@@ -15,6 +15,7 @@
 // width and the middle of the picture on the middle of the clear band, `frame.cy`), a shadow map of 1024 and
 // the same pixel ratio of 1 to 1.5. The headline and the foot sit over it on black scrims in the page's CSS.
 
+import { param } from '../../../../shared/env';
 import { Canvas, useFrame, useThree } from '@react-three/fiber';
 import { useEffect, useLayoutEffect, useMemo, useRef } from 'react';
 import * as THREE from 'three';
@@ -25,14 +26,14 @@ import { CAM, P0, ROUTE_LEN, camAt, makeCam, phoneLens, type View } from './worl
 
 const dbg = import.meta.env.DEV
   ? (() => {
-      const v = new URLSearchParams(window.location.search).get('cam');
+      const v = param('cam');
       const n = v ? v.split(',').map(Number) : [];
       return n.length === 6 && n.every(Number.isFinite) ? n : null;
     })()
   : null;
 
 // `?glfail=1` makes context creation throw and `?glfail=lost` loses the context after a moment, to test the fallback
-const glfail = new URLSearchParams(window.location.search).get('glfail');
+const glfail = param('glfail');
 // how long a lost context may take to come back before the hero gives up on it
 const LOST_MS = 2000;
 
@@ -72,7 +73,7 @@ function Rig({ drive, still, phone, frame, onReady }: { drive?: Drive; still?: S
   const rockWake = useRef(0);
   // the phone's frame watch, see the end of the frame
   const watch = useRef({ last: 0, gaps: [] as number[], from: 0, frames: 0, t: 0, fps: 0 });
-  const dbg7 = useMemo(() => (phone && !still && new URLSearchParams(window.location.search).get('h7dbg') === '1' ? document.createElement('div') : null), [phone, still]);
+  const dbg7 = useMemo(() => (phone && !still && param('h7dbg') === '1' ? document.createElement('div') : null), [phone, still]);
   useEffect(() => {
     if (!dbg7) return;
     dbg7.style.cssText = 'position:fixed;left:8px;bottom:8px;z-index:60;padding:4px 8px;background:#000;color:#0f0;font:12px monospace;pointer-events:none';

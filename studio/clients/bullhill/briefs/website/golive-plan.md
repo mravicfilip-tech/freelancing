@@ -1,6 +1,6 @@
 # Go-live plan, bullhill-16
 
-Written 20 October 2026, waiting for Filip's go. Baseline is a7fab6e on claude/hopeful-maxwell-bwuy3c,
+Written 20 October 2026. Filip said go the same day, steps 1 to 4 built, 5 to 7 wait on the open questions. Baseline is a7fab6e on claude/hopeful-maxwell-bwuy3c,
 the build at production 845348c plus the go-live facts. Nothing reaches bullhill.co until Filip says deploy.
 
 ## What the probe found

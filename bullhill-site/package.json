@@ -8,7 +8,8 @@
     "build": "tsc --noEmit && vite build",
     "preview": "vite preview",
     "typecheck": "tsc --noEmit",
-    "live": "node scripts/live.mjs"
+    "live": "node scripts/live.mjs",
+    "build:public": "tsc --noEmit && vite build --mode public && node scripts/golive-check.mjs"
   },
   "dependencies": {
     "@fontsource-variable/archivo": "^5.3.0",
@@ -39,3 +40,4 @@
     "node": ">=22"
   }
 }
+

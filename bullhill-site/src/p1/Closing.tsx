@@ -5,6 +5,7 @@ import { NotchFrame } from './variants/hero/Notch';
 import './variants/hero/hero.css';
 import { Bracket } from './Bracket';
 import { Logo } from '../shared/Logo';
+import { legalHref } from '../legal/copy';
 import { sh, t } from './copy';
 import { Rise } from './motion/Rise';
 import { useInView } from './motion/motion';
@@ -58,8 +59,8 @@ export function Closing({ c }: { c: Content }) {
               ))}
             </p>
             <p className="mono end__legal">
-              <a href="#top">{c.footer.legal}</a>
-              <a href="#top">{c.footer.privacy}</a>
+              <a href={legalHref('legal', c.lang)}>{c.footer.legal}</a>
+              <a href={legalHref('privacy', c.lang)}>{c.footer.privacy}</a>
             </p>
             <Logo variant="on-red-white" height={56} className="end__logo" />
           </div>

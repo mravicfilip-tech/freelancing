@@ -1,0 +1,46 @@
+/* The legal notice and the privacy page. Foundry's grid and type, square corners, the three brand
+ * colours and their greys only. Text on paper is ink, 15.9 to 1. */
+.p1.lg { min-height: 100svh; display: flex; flex-direction: column; }
+
+.lg__hd { background: var(--ground); color: var(--bh-white); }
+.lg__hdin { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding-block: 16px; }
+.lg__logo { display: inline-flex; }
+.lg__logo img { display: block; }
+
+.lg__main { flex: 1; padding-block: 64px 96px; }
+.lg__title { font-size: 40px; line-height: 48px; margin: 0; }
+.lg__date { margin: 16px 0 48px; color: var(--bh-grey-700); }
+
+.lg__block { display: grid; gap: 16px; padding-block: 32px; border-top: 1px solid var(--hair-ink); }
+.lg__h { margin: 0; }
+.lg__body { display: grid; gap: 16px; max-width: 720px; }
+.lg__body p { margin: 0; }
+.lg__rows { display: grid; gap: 12px; margin: 0; }
+.lg__row { display: grid; gap: 4px; }
+.lg__k { color: var(--bh-grey-700); }
+.lg__v { margin: 0; overflow-wrap: anywhere; }
+.lg__v a { display: inline-block; }
+.lg a { color: inherit; text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 4px; }
+.lg a:hover { color: var(--bh-red); }
+.lg__logo, .lg__logo:hover { text-decoration: none; }
+
+/* a value still waiting on the client, never shipped, see scripts/golive-check.mjs */
+.lg__tc { margin-left: 8px; padding: 2px 4px; background: var(--bh-red); color: var(--bh-white); }
+
+.lg__ft { background: var(--ground); color: var(--bh-grey-300); }
+.lg__ftin { display: flex; flex-wrap: wrap; gap: 8px 24px; padding-block: 32px; }
+.lg__ft a { display: inline-flex; align-items: center; min-height: 24px; }
+.lg__ft a[aria-current='page'] { color: var(--bh-white); }
+
+@media (min-width: 768px) {
+  .lg__title { font-size: 64px; line-height: 64px; }
+  .lg__row { grid-template-columns: 240px minmax(0, 1fr); gap: 24px; align-items: baseline; }
+}
+@media (min-width: 1200px) {
+  .lg__main { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); column-gap: 24px; align-content: start; }
+  .lg__main > * { grid-column: 1 / -1; }
+  .lg__block { grid-template-columns: repeat(12, minmax(0, 1fr)); column-gap: 24px; }
+  .lg__h { grid-column: 1 / span 3; }
+  .lg__body { grid-column: 4 / span 9; }
+  .lg__title { font-size: 96px; line-height: 96px; }
+}

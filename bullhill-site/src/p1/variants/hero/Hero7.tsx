@@ -1,3 +1,4 @@
+import { param } from '../../../shared/env';
 import { Component, Suspense, lazy, useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import type { ReactNode } from 'react';
 import type { Content } from '../../../shared/content';
@@ -196,8 +197,7 @@ function StillStage({ view, p }: { view: 'wide' | 'tall'; p: number }) {
 }
 
 export function Hero7({ c }: { c: Content }) {
-  const q = new URLSearchParams(window.location.search);
-  const still = q.get('still');
+  const still = param('still');
   if (still === 'wide' || still === 'tall') return <StillStage view={still} p={urlProgress() ?? 0} />;
   return <Specimen c={c} />;
 }
@@ -206,7 +206,7 @@ export function Hero7({ c }: { c: Content }) {
 // said, no data saver and no reduced motion. `?flip=1` forces the flipbook for a check. Every other phone gets
 // the flipbook, and reduced motion and no WebGL get the poster.
 function phoneLiveOk(motion: boolean) {
-  if (!motion || new URLSearchParams(window.location.search).get('flip') === '1') return false;
+  if (!motion || param('flip') === '1') return false;
   const nav = navigator as Navigator & { deviceMemory?: number; connection?: { saveData?: boolean } };
   if ((nav.hardwareConcurrency ?? 0) < 4) return false;
   if (nav.deviceMemory !== undefined && nav.deviceMemory < 3) return false;

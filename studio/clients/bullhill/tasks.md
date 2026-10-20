@@ -32,10 +32,14 @@ Task format
   - [x] Hosting on Cloudflare Pages, free plan, Filip's pick over Vercel Pro at 20 dollars a month
   - [x] Pages deploy token and account ID in the cloud environment, CLOUDFLARE_API_TOKEN and CLOUDFLARE_ACCOUNT_ID, 20 October 2026, a new session reads them
   - [ ] The registrant on bullhill.co is BullHill d.o.o., auto-renew on
-  - [ ] The contact form sends for real, today it only shows success
-  - [ ] Legal notice and privacy pages, English and German, the links go to the top today
+  - [x] The contact form sends for real, a Pages Function through Resend, dry run in dev, tested on the local Pages runtime
+  - [ ] Filip's Resend account, bullhill.co verified there, RESEND_API_KEY set as a Pages secret
+  - [ ] First real send to Filip's address with CONTACT_TO, then to bullhilldoo@gmail.com
+  - [x] Legal notice and privacy pages, English and German, at /legal and /privacy, footer links point at them
+  - [ ] Share capital, register court and the register number confirmed by the client, then the [TO CONFIRM] marks go
   - [x] Impressum facts gathered in briefs/website/golive.md, legal name, register number, VAT, director
-  - [ ] The pathway keys and variant switches off for the public build
+  - [x] The pathway keys and variant switches off for the public build, npm run build:public, golive-check.mjs
+  - [x] Launch files, robots, sitemap, hreflang, a 404 page, cache and security headers
   - [ ] Filip opens the build, then the domain goes live
 - bullhill-2 Hero scroll smooth, frame rate on phones and desktop
   - [x] Measure frame cost on a scripted scroll, phone and desktop

@@ -1,6 +1,7 @@
 import { RadioGroup } from 'radix-ui';
 import { useRef, useState, type CSSProperties, type FormEvent } from 'react';
 import type { Content } from '../shared/content';
+import { param } from '../shared/env';
 import { Bracket } from './Bracket';
 import { sh, t } from './copy';
 import { Rise } from './motion/Rise';
@@ -8,6 +9,12 @@ import { useInView } from './motion/motion';
 import './motion/sections-b.css';
 
 type Status = 'idle' | 'sending' | 'success' | 'error';
+
+// The form goes to the Pages Function at /api/contact, which emails it to BullHill. True when it was sent.
+async function send(body: Record<string, string | number>) {
+  const res = await fetch('/api/contact', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify(body) });
+  return res.ok;
+}
 type Values = { name: string; company: string; email: string; phone: string; place: string; length: string; message: string; role: string };
 const EMPTY: Values = { name: '', company: '', email: '', phone: '', place: '', length: '', message: '', role: '' };
 const REQUIRED: (keyof Values)[] = ['name', 'email', 'phone', 'role'];
@@ -78,7 +85,10 @@ export function Contact({ c }: { c: Content }) {
   const [v, setV] = useState<Values>(EMPTY);
   const [errors, setErrors] = useState<Partial<Record<keyof Values, string>>>({});
   const [tried, setTried] = useState(false);
-  const [status, setStatus] = useState<Status>(() => (new URLSearchParams(window.location.search).get('form') === 'error' ? 'error' : 'idle'));
+  const [status, setStatus] = useState<Status>(() => (param('form') === 'error' ? 'error' : 'idle'));
+  // when the form first showed, so the server can drop a send faster than a person types
+  const shownAt = useRef(Date.now());
+  const trap = useRef<HTMLInputElement>(null);
 
   const check = (vals: Values) => {
     const e: Partial<Record<keyof Values, string>> = {};
@@ -106,7 +116,9 @@ export function Contact({ c }: { c: Content }) {
       return;
     }
     setStatus('sending');
-    window.setTimeout(() => setStatus(new URLSearchParams(window.location.search).get('form') === 'error' ? 'error' : 'success'), 800);
+    send({ ...v, lang: c.lang, website: trap.current?.value ?? '', ms: Date.now() - shownAt.current })
+      .then((ok) => setStatus(ok && param('form') !== 'error' ? 'success' : 'error'))
+      .catch(() => setStatus('error'));
   };
 
   const txt = (k: keyof Values, label: string, opts: { type?: string; required?: boolean; ph?: string; auto?: string; f?: number } = {}) => (
@@ -150,6 +162,8 @@ export function Contact({ c }: { c: Content }) {
             </div>
           ) : (
             <form className="form" onSubmit={submit} noValidate>
+              {/* a field people never see, a bot that fills it is dropped by functions/api/contact.js */}
+              <input ref={trap} type="text" name="website" tabIndex={-1} autoComplete="off" aria-hidden="true" className="form__trap" defaultValue="" />
               <div className={`fld fld--role${errors.role ? ' fld--bad' : ''}`} ref={roleRef}>
                 <p id="role-label" className="mono fld__label">
                   {F.roleLabel}

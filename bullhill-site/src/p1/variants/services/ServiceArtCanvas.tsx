@@ -1,3 +1,4 @@
+import { param } from '../../../shared/env';
 import { useEffect, useRef } from 'react';
 import { plan } from './plan';
 import type { Kind } from './plan';
@@ -148,7 +149,7 @@ const active = new Set<Card>();
 let raf = 0;
 
 const frozen = (() => {
-  const s = new URLSearchParams(window.location.search).get('svct');
+  const s = param('svct');
   const n = s === null || s === '' ? NaN : Number(s);
   return Number.isFinite(n) ? n : null;
 })();

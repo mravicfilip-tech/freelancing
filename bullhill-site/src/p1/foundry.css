@@ -752,6 +752,9 @@
 .p1 .form__foot { display: flex; flex-wrap: wrap; align-items: center; gap: 16px 24px; }
 .p1 .form__reply { color: var(--bh-grey-700); }
 .p1 .form__note { color: var(--bh-grey-700); text-transform: none; }
+.p1 .form { position: relative; }
+/* the bot trap, off screen and out of the tab order, never display none so bots still fill it */
+.p1 .form__trap { position: absolute; left: -10000px; width: 1px; height: 1px; opacity: 0; pointer-events: none; }
 .p1 .done { padding: 32px 0; border-top: 1px solid var(--ink); border-bottom: 1px solid var(--ink); }
 .p1 .done__msg { max-width: 18em; font-size: 28px; line-height: 28px; }
 

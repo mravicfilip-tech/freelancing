@@ -1,3 +1,4 @@
+import { param } from '../../../../shared/env';
 import { clamp01, smooth } from './geometry';
 
 // Hero 6 beats 1 to 3, briefs/website/hero6-story.md. One clock for the load, so the scene, the
@@ -54,7 +55,7 @@ export const riseEase = bezier(0.2, 0.7, 0.1, 1);
 
 export function urlFreeze(): number | null {
   if (typeof window === 'undefined') return null;
-  const v = new URLSearchParams(window.location.search).get('t');
+  const v = param('t');
   if (v === null || v.trim() === '') return null;
   const n = Number(v);
   return Number.isFinite(n) ? Math.max(0, n) : null;

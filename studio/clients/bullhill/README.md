@@ -78,6 +78,11 @@ Phone is the main focus, with a desktop of the same quality (Filip, 14 October 2
 - Install `npm install`. Dev server `npm run dev` on http://localhost:5173. Pull and serve the session
   branch with `npm run live`. Production build `npm run build`.
 - Pathways at `/?v=1` Foundry, `/?v=2` Daylight and `/?v=3` Underground. Keys 1, 2 and 3 switch.
+- Public build `npm run build:public`, Foundry only with every URL switch and the keys off, then
+  `scripts/golive-check.mjs`. Legal pages at `/legal` and `/privacy`, `?lang=de` for German.
+- The contact form posts to `functions/api/contact.js`, a Cloudflare Pages Function that sends through
+  Resend. `npm run dev` runs it as a dry run unless RESEND_API_KEY is set in the shell. Locally on the
+  Pages runtime with `npx wrangler pages dev dist`.
   German at `&lang=de`.
 - Routes to shoot `foundry=/?v=1,daylight=/?v=2,underground=/?v=3`, plus the same with `&lang=de`.
 - No preview project yet. Vercel previews are on hold.

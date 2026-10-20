@@ -1,3 +1,4 @@
+import { param } from '../../shared/env';
 import { useLayoutEffect } from 'react';
 import type { RefObject } from 'react';
 
@@ -12,7 +13,7 @@ import type { RefObject } from 'react';
 
 export function motionOn(): boolean {
   if (typeof window === 'undefined') return false;
-  const m = new URLSearchParams(window.location.search).get('motion');
+  const m = param('motion');
   if (m === 'off') return false;
   if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return false;
   if (m === 'on') return true;

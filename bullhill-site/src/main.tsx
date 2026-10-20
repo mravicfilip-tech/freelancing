@@ -51,6 +51,9 @@ function App() {
   return <Suspense fallback={null}>{page ? <Legal page={page} /> : <Pathway />}</Suspense>;
 }
 
+// the frame meter for a review build, ?perf=1, see shared/perfHud.ts. The public build drops it.
+if (!PUBLIC && new URLSearchParams(window.location.search).get('perf') === '1') void import('./shared/perfHud').then((m) => m.startPerfHud());
+
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <App />

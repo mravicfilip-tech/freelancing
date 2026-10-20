@@ -23,7 +23,10 @@ Task format
 
 ## Backlog
 
-- bullhill-16 Publish the site on its own domain
+## In progress
+
+- bullhill-16 Publish the site on its own domain. Plan in briefs/website/golive-plan.md
+  - [x] Launch plan written, waiting for Filip's go
   - [x] Domain bought, bullhill.co, on Filip's Cloudflare account, 20 October 2026. bullhill.com is someone else's since 1999
   - [x] Hosting on Cloudflare Pages, free plan, Filip's pick over Vercel Pro at 20 dollars a month
   - [x] Pages deploy token and account ID in the cloud environment, CLOUDFLARE_API_TOKEN and CLOUDFLARE_ACCOUNT_ID, 20 October 2026, a new session reads them
@@ -33,9 +36,6 @@ Task format
   - [x] Impressum facts gathered in briefs/website/golive.md, legal name, register number, VAT, director
   - [ ] The pathway keys and variant switches off for the public build
   - [ ] Filip opens the build, then the domain goes live
-
-## In progress
-
 - bullhill-2 Hero scroll smooth, frame rate on phones and desktop
   - [x] Measure frame cost on a scripted scroll, phone and desktop
   - [x] Fix the worst costs, measure again, c9d30f3

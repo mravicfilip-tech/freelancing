@@ -202,6 +202,8 @@
  * list order, 350ms each, done at 1.6s, and each label fades in as its line leaves it. Dashes run
  * on pathLength 1. --cs is the drawing's scale on screen, set by Process.tsx, and keeps the 1px
  * stroke while the dash is measured in user units. */
+/* the drawing on its own layer, so its draw in repaints the drawing and not the page around it */
+.p1[data-motion='on'] .pfig__svg { will-change: transform; }
 .p1[data-motion='on'] .pfig .cut__d,
 .p1[data-motion='on'] .pfig .cut__ld {
   vector-effect: none;

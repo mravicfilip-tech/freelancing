@@ -93,6 +93,10 @@
 .p1 .hv7p__pin[data-idle='frozen']::before { animation-play-state: paused; }
 .p1 .hv7p__scene { position: absolute; inset: 0; z-index: 0; pointer-events: none; }
 .p1 .h7live { position: absolute; inset: 0; pointer-events: none; }
+/* the phone's video strip, as wide as the screen, top and height set by Hero7.tsx from the clear band. Black
+ * behind it, so the poster and the video sit on the ground the scrims fade to. */
+.p1 .h7vid { position: absolute; left: 0; right: 0; pointer-events: none; background: var(--ground); }
+.p1 .h7vid__media { display: block; width: 100%; height: 100%; object-fit: cover; user-select: none; }
 /* the flipbook's strip, as wide as the screen, top and height set by Hero7.tsx from the clear band */
 .p1 .h7flip { position: absolute; left: 0; right: 0; pointer-events: none; }
 .p1 .h7st { position: absolute; inset: 0; pointer-events: none; }

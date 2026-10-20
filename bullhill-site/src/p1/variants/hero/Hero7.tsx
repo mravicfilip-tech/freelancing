@@ -8,9 +8,9 @@ import { Rise } from '../../motion/Rise';
 import { t7 } from './copy-hero7';
 import { StepList } from './StepList';
 import { urlProgress, useProgress, type Progress } from './hero6/progress';
-import { useAutoplay } from './hero7/autoplay';
+import { videoAt } from './hero7/autoplay';
 import { LoadClock, urlFreeze } from './hero6/timeline';
-import { FLIP, FRAMES, FRAME_P, frameFades, labelAt, stepAt, textGone } from './hero7/acts';
+import { FLIP, labelAt, stepAt, textGone } from './hero7/acts';
 import './hero.css';
 import './hero6.css';
 import './hero7.css';
@@ -185,8 +185,20 @@ function useStepLabel(stepEl: React.RefObject<HTMLElement | null>, cls: string) 
 // The tall one is the whole phone screen at the reference size of the flipbook (FLIP in hero7/acts.ts), and
 // the script crops its strip out of it.
 const STILL_SIZE = { wide: [1376, 760], tall: [FLIP.w, FLIP.h] } as const;
-function StillStage({ view, p }: { view: 'wide' | 'tall'; p: number }) {
+function StillStage({ view, p: p0 }: { view: 'wide' | 'tall'; p: number }) {
   const [w, h] = STILL_SIZE[view];
+  // scripts/render-hero7-video.mjs steps p frame by frame on one page, so the shaders compile once. Review
+  // builds only, the public build never reaches a still.
+  const [p, setP] = useState(p0);
+  useEffect(() => {
+    const win = window as unknown as { __h7still?: (p: number) => void; __h7at?: (ms: number) => number };
+    win.__h7still = setP;
+    win.__h7at = videoAt;
+    return () => {
+      delete win.__h7still;
+      delete win.__h7at;
+    };
+  }, []);
   return (
     <div className="h7-still" style={{ width: w, height: h }}>
       <Suspense fallback={null}>
@@ -202,24 +214,8 @@ export function Hero7({ c }: { c: Content }) {
   return <Specimen c={c} />;
 }
 
-// A phone runs the live scene when it can take it, WebGL2, four cores or more, 3GB of memory or more or not
-// said, no data saver and no reduced motion. `?flip=1` forces the flipbook for a check. Every other phone gets
-// the flipbook, and reduced motion and no WebGL get the poster.
-function phoneLiveOk(motion: boolean) {
-  if (!motion || param('flip') === '1') return false;
-  const nav = navigator as Navigator & { deviceMemory?: number; connection?: { saveData?: boolean } };
-  if ((nav.hardwareConcurrency ?? 0) < 4) return false;
-  if (nav.deviceMemory !== undefined && nav.deviceMemory < 3) return false;
-  if (nav.connection?.saveData === true) return false;
-  try {
-    return !!document.createElement('canvas').getContext('webgl2');
-  } catch {
-    return false;
-  }
-}
-
 // The live scene is never left blank. A WebGL context that cannot be made, or is lost and not back in about
-// 2s, drops a phone to the flipbook and a desktop or a tablet to the poster. `?glfail=1` and `?glfail=lost`
+// 2s, drops a desktop or a tablet to the poster. `?glfail=1` and `?glfail=lost`
 // force each failure.
 class LiveBoundary extends Component<{ onFail: () => void; children: ReactNode }, { failed: boolean }> {
   state = { failed: false };
@@ -238,11 +234,10 @@ function Specimen({ c }: { c: Content }) {
   const desk = useMedia('(min-width: 768px)');
   const [gl] = useState(hasWebgl);
   const [motion] = useState(motionOn);
-  const [liveOk] = useState(() => phoneLiveOk(motion));
   const [failed, setFailed] = useState(false);
   const fail = useCallback(() => setFailed(true), []);
   if (desk && gl && motion && !failed) return <Live c={c} onFail={fail} />;
-  if (!desk) return <Phone c={c} mode={!motion ? 'poster' : liveOk && !failed ? 'live' : 'flip'} onFail={fail} />;
+  if (!desk) return <Phone c={c} mode={motion ? 'video' : 'poster'} />;
   return <Poster c={c} />;
 }
 
@@ -375,119 +370,23 @@ function Poster({ c }: { c: Content }) {
 // story, the page scrolls straight on into the work section after one screen. A black scrim over the top
 // carries the headline in one block, a black scrim over the foot carries the step name, the lede and the
 // button, and the action sits in the clear band between them. The band is measured from the two blocks, so a
-// longer German headline or lede moves it and the scene follows, the middle of the picture on the middle of
-// the band (phoneLens in hero7/world.ts). The story plays by itself (hero7/autoplay.ts).
+// longer German headline or lede moves the strip with it.
+//
+// The story is a video, Filip, 20 October 2026, "yes go with the video hero", after the live scene and the
+// flipbook were rejected for their timeline and for not starting on landing. It is rendered from the same
+// scene in the same lens (scripts/render-hero7-video.mjs), about 10 seconds on the pace of
+// hero7/video-pace.json, a strip of the screen around the clear band with black baked into its top and bottom
+// edges. It plays muted and inline from the moment the page shows, the first frame is its poster, it plays
+// once and holds the lit house. It pauses while the hero is off screen and goes on when it is back. The
+// phone's video decoder does the work, so the page scrolls free of it. The step label follows the video's own
+// time through the pace's curve. Reduced motion, or a phone that refuses to play it, low power mode on an
+// iPhone for one, shows the last frame, the restored route, as a still.
 //
 // The soft edge of each scrim is FADE px, set in hero7.css as --h7p-fade and read from there, and the band
 // takes half of it at each end, since the scene is half there.
-// the route takes 1.5s to draw (ROUTE_MS in hero7/Scene.tsx), the story starts just after
-const ARM_AT = 1600;
-const frameSrc = (i: number) => `/render/hero7-tall-f${String(i).padStart(2, '0')}.webp`;
-
-// The flipbook. Each frame is a still of the scene in the same lens as the live one, a strip of the screen
-// around the clear band, FLIP.rows tall at a 390 wide screen, with black baked into its top and bottom edges.
-// They dissolve into one another as the story plays (acts.ts, frameFades), and the opacities are written
-// straight on the images, so the hero never re-renders. A frame more than one from the one on top has
-// display none, so a phone holds at most three of them on the GPU. The first frame comes with the page, the
-// rest are asked for after the page has loaded, the next ones ahead of the story first, three at a time, and the
-// ones just ahead are decoded early. `gate` tells the story whether the two frames it is between have
-// arrived, so a slow connection holds the story where it is and it goes on when the next one is in. A frame
-// that failed does not hold it, the picture stays on the one before.
-const WAIT = 0;
-const ASKED = 1;
-const IN = 2;
-const LOST = 3;
-function PhoneStills({ progress, load, gate }: { progress: Progress; load: boolean; gate: (fn: ((p: number) => boolean) | null) => void }) {
-  const box = useRef<HTMLDivElement>(null);
-  useEffect(() => {
-    const el = box.current;
-    if (!el) return;
-    const ims = Array.from(el.querySelectorAll<HTMLImageElement>('.h7st__img'));
-    const o: number[] = new Array(FRAMES).fill(0);
-    const last = ims.map((im) => im.style.opacity);
-    const shown = ims.map((im) => im.style.display !== 'none');
-    const state = ims.map((im) => (!im.getAttribute('src') ? WAIT : im.complete ? (im.naturalWidth > 0 ? IN : LOST) : ASKED));
-    ims.forEach((im, i) => {
-      if (state[i] === ASKED) {
-        im.onload = () => (state[i] = IN);
-        im.onerror = () => (state[i] = LOST);
-      }
-    });
-    let top = 0;
-    const decode = (i: number) => {
-      const im = ims[i];
-      if (im && state[i] === IN) void im.decode?.().catch(() => undefined);
-    };
-    const apply = (p: number) => {
-      const t = frameFades(p, o);
-      if (t !== top) {
-        top = t;
-        for (let d = -1; d <= 2; d++) decode(top + d);
-      }
-      ims.forEach((im, i) => {
-        const keep = o[i] > 0 || Math.abs(i - top) <= 1;
-        if (keep !== shown[i]) {
-          shown[i] = keep;
-          im.style.display = keep ? '' : 'none';
-        }
-        const v = o[i].toFixed(3);
-        if (v !== last[i]) {
-          last[i] = v;
-          im.style.opacity = v;
-        }
-      });
-    };
-    apply(progress.current());
-    let live = true;
-    let busy = 0;
-    // the nearest frame not yet asked for, ahead of the story first
-    const pump = () => {
-      // before the page has loaded only the first two after the first are asked for, the story needs them
-      const reach = load ? FRAMES : 3;
-      while (live && busy < 3) {
-        let pick = -1;
-        for (let d = 0; d < FRAMES && pick < 0; d++) {
-          for (const i of [top + d, top - d]) if (i >= 0 && i < reach && state[i] === WAIT) { pick = i; break; }
-        }
-        if (pick < 0) return;
-        state[pick] = ASKED;
-        busy++;
-        const im = ims[pick];
-        const done = (ok: boolean) => {
-          busy--;
-          state[pick] = ok ? IN : LOST;
-          if (ok && pick - top <= 2) decode(pick);
-          pump();
-        };
-        im.onload = () => done(true);
-        im.onerror = () => done(false);
-        im.src = frameSrc(pick);
-      }
-    };
-    pump();
-    gate((p) => {
-      let i = 0;
-      while (i < FRAMES - 2 && p >= FRAME_P[i + 1]) i++;
-      return state[i] >= IN && state[i + 1] >= IN;
-    });
-    const un = progress.subscribe((p) => {
-      apply(p);
-      pump();
-    });
-    return () => {
-      live = false;
-      gate(null);
-      un();
-    };
-  }, [progress, load, gate]);
-  return (
-    <div ref={box} className="h7st" aria-hidden="true">
-      {Array.from({ length: FRAMES }, (_, i) => (
-        <img key={i} className="h7st__img" src={i === 0 ? frameSrc(0) : undefined} width={FLIP.w * 2} height={FLIP.rows * 2} alt="" decoding="async" fetchPriority={i === 0 ? 'high' : 'low'} draggable={false} style={{ display: i === 0 ? undefined : 'none' }} />
-      ))}
-    </div>
-  );
-}
+const VIDEO_SRC = '/render/hero7-phone.mp4';
+const POSTER_SRC = '/render/hero7-phone-poster.webp';
+const END_SRC = '/render/hero7-phone-end.webp';
 
 // the clear band, in pixels from the top of the screen, from the two blocks. null until measured.
 // top and bot are the middle of each scrim's fade, vt and vb where its solid black ends, so the scene shows
@@ -524,80 +423,75 @@ function useBand(pin: React.RefObject<HTMLElement | null>, top: React.RefObject<
   return band;
 }
 
-function Phone({ c, mode, onFail }: { c: Content; mode: 'live' | 'flip' | 'poster'; onFail: () => void }) {
+function Phone({ c, mode }: { c: Content; mode: 'video' | 'poster' }) {
   const x = t7(c);
-  const animate = mode !== 'poster';
-  const live = mode === 'live';
   const section = useRef<HTMLElement>(null);
   const pin = useRef<HTMLDivElement>(null);
   const topEl = useRef<HTMLDivElement>(null);
   const footEl = useRef<HTMLDivElement>(null);
   const stepEl = useRef<HTMLDivElement>(null);
+  const video = useRef<HTMLVideoElement>(null);
   const band = useBand(pin, topEl, footEl);
-  const [clock] = useState(() => (animate ? new LoadClock(urlFreeze()) : null));
-  const progress = useAutoplay(section, animate);
   const label = useStepLabel(stepEl, '.hv7p__stepi');
-  const [stillsLoad, setStillsLoad] = useState(false);
-  const [mounted, setMounted] = useState(false);
-  useEffect(() => setMounted(true), []);
-  // the flipbook's frames load once the page has, so the first view needs only the first
-  useEffect(() => {
-    if (mode !== 'flip') return;
-    let id = 0;
-    const go = () => {
-      id = window.setTimeout(() => setStillsLoad(true), 300);
-    };
-    if (document.readyState === 'complete') go();
-    else window.addEventListener('load', go, { once: true });
-    return () => {
-      window.clearTimeout(id);
-      window.removeEventListener('load', go);
-    };
-  }, [mode]);
-  // the live scene writes the label from its own frame, the flipbook from the story's time
-  useEffect(() => {
-    if (mode !== 'flip') return;
-    return progress.subscribe(label);
-  }, [mode, progress, label]);
-  useLayoutEffect(() => {
-    if (animate) label(progress.current());
-  });
-  // the story starts when the load has shown the headline and drawn the route, and a frozen load (?t=) holds it
-  // The story starts when the route is drawn, ARM_AT ms after the assemble began, a little before the load's
-  // own end. The clock's change ticks come ASSEMBLE after the call to begin, which is earlier than the end of
-  // the assemble when begin comes before 0.6s, so the time is waited out here and not read from the ticks.
-  useEffect(() => {
-    if (!clock || clock.frozen !== null) return;
-    let id = 0;
-    const sync = () => {
-      window.clearTimeout(id);
-      const a = clock.a();
-      if (a >= ARM_AT) progress.arm(true);
-      else if (a >= 0) id = window.setTimeout(sync, ARM_AT - a + 20);
-    };
-    sync();
-    const off = clock.on(sync);
-    return () => {
-      window.clearTimeout(id);
-      off();
-    };
-  }, [clock, progress]);
-  // the pin's p, for a check of the timing, as a plain attribute so the page is not styled by it
-  useEffect(() => {
-    const el = pin.current;
-    if (!el || !animate) return;
-    const w = (p: number) => {
-      el.dataset.p = p.toFixed(3);
-    };
-    w(progress.current());
-    return progress.subscribe(w);
-  }, [progress, animate]);
-  const onReady = useCallback(() => clock?.begin(), [clock]);
-  const drive = useMemo(() => (clock ? { progress, clock, onFrame: label } : null), [progress, clock, label]);
-  const frame = useMemo(() => (band ? { cy: (band.top + band.bot) / 2, top: band.vt, full: band.h } : undefined), [band]);
-  useLoad(section, pin, clock, live, progress, c.lang);
+  // a phone that will not play it gets the end still in its place
+  const [still, setStill] = useState(mode === 'poster');
+  const [clock] = useState(() => (still ? null : new LoadClock(urlFreeze())));
+  const progress = useMemo(() => noProgress, []);
+  useLoad(section, pin, clock, false, progress, c.lang);
 
-  // the flipbook's strip, as wide as the screen, its band on the screen's band
+  // the step label from the video's time, once a frame while it plays
+  useLayoutEffect(() => {
+    label(still ? 1 : 0);
+  }, [still, label]);
+  useEffect(() => {
+    const v = video.current;
+    if (still || !v) return;
+    let id = 0;
+    const tick = () => {
+      label(videoAt(v.currentTime * 1000));
+      id = v.paused || v.ended ? 0 : requestAnimationFrame(tick);
+    };
+    const run = () => {
+      cancelAnimationFrame(id);
+      id = requestAnimationFrame(tick);
+    };
+    const end = () => label(1);
+    v.addEventListener('playing', run);
+    v.addEventListener('seeked', run);
+    v.addEventListener('ended', end);
+    return () => {
+      cancelAnimationFrame(id);
+      v.removeEventListener('playing', run);
+      v.removeEventListener('seeked', run);
+      v.removeEventListener('ended', end);
+    };
+  }, [still, label]);
+  // plays on landing, pauses off screen and goes on when back, never starts over after the end
+  useEffect(() => {
+    const v = video.current;
+    const el = section.current;
+    if (still || !v || !el) return;
+    let seen = true;
+    const go = () => {
+      if (!seen || document.hidden || v.ended) return;
+      v.play().catch(() => setStill(true));
+    };
+    const io = new IntersectionObserver((es) => {
+      seen = es[es.length - 1].intersectionRatio >= 0.25;
+      if (seen) go();
+      else v.pause();
+    }, { threshold: [0, 0.25, 1] });
+    io.observe(el);
+    const vis = () => (document.hidden ? v.pause() : go());
+    document.addEventListener('visibilitychange', vis);
+    go();
+    return () => {
+      io.disconnect();
+      document.removeEventListener('visibilitychange', vis);
+    };
+  }, [still]);
+
+  // the strip, as wide as the screen, its band on the screen's band
   const strip = useMemo(() => {
     if (!band) return null;
     const k = band.w / FLIP.w;
@@ -605,22 +499,16 @@ function Phone({ c, mode, onFail }: { c: Content; mode: 'live' | 'flip' | 'poste
   }, [band]);
 
   return (
-    <section ref={section} className="hero hv hv7 hv7p" data-hero="7" data-pin="no" data-mode={mode} aria-labelledby="hv7-title">
+    <section ref={section} className="hero hv hv7 hv7p" data-hero="7" data-pin="no" data-mode={still ? 'poster' : 'video'} aria-labelledby="hv7-title">
       <div ref={pin} className="hv7p__pin">
         <div className="hv7p__scene" role="img" aria-label={x.figure} aria-describedby="hv7-steps">
-          {live ? (
-            mounted && drive && frame && band ? (
-              <div className="h7live" style={{ top: band.vt, height: band.vb - band.vt, bottom: 'auto' }}>
-                <LiveBoundary onFail={onFail}>
-                  <Suspense fallback={null}>
-                    <Scene drive={drive} phone frame={frame} onReady={onReady} onFail={onFail} />
-                  </Suspense>
-                </LiveBoundary>
-              </div>
-            ) : null
-          ) : strip ? (
-            <div className="h7flip" style={{ top: strip.top, height: strip.height }}>
-              {animate ? <PhoneStills progress={progress} load={stillsLoad} gate={progress.hold} /> : <img className="h7st__still" src={frameSrc(FRAMES - 1)} width={FLIP.w * 2} height={FLIP.rows * 2} alt="" draggable={false} />}
+          {strip ? (
+            <div className="h7vid" style={{ top: strip.top, height: strip.height }}>
+              {still ? (
+                <img className="h7vid__media" src={END_SRC} width={FLIP.w * 2} height={FLIP.rows * 2} alt="" draggable={false} />
+              ) : (
+                <video ref={video} className="h7vid__media" src={VIDEO_SRC} poster={POSTER_SRC} width={FLIP.w * 2} height={FLIP.rows * 2} muted playsInline autoPlay preload="auto" disablePictureInPicture disableRemotePlayback aria-hidden="true" />
+              )}
             </div>
           ) : null}
         </div>
@@ -634,16 +522,14 @@ function Phone({ c, mode, onFail }: { c: Content; mode: 'live' | 'flip' | 'poste
         <div className="hv7p__glow" aria-hidden="true" />
 
         <div ref={footEl} className="hv7p__foot">
-          {animate ? (
-            <div ref={stepEl} className="hv7p__step" aria-hidden="true">
-              {x.steps.map((name, i) => (
-                <p key={name} className="hv7p__stepi mono" style={{ opacity: 0 }}>
-                  <span className="hv7p__stepn">{`0${i + 1} / 05`}</span>
-                  <span className="hv7p__stepw">{name}</span>
-                </p>
-              ))}
-            </div>
-          ) : null}
+          <div ref={stepEl} className="hv7p__step" aria-hidden="true">
+            {x.steps.map((name, i) => (
+              <p key={name} className="hv7p__stepi mono" style={{ opacity: 0 }}>
+                <span className="hv7p__stepn">{`0${i + 1} / 05`}</span>
+                <span className="hv7p__stepw">{name}</span>
+              </p>
+            ))}
+          </div>
           <Rise as="p" body className="hv7p__lede mono-body">
             {c.hero.lede}
           </Rise>
@@ -656,3 +542,6 @@ function Phone({ c, mode, onFail }: { c: Content; mode: 'live' | 'flip' | 'poste
     </section>
   );
 }
+
+// the phone has no scroll progress, the load only reads it to skip its own start on a scroll
+const noProgress: Progress = { sample: () => 0, current: () => 0, subscribe: () => () => undefined };

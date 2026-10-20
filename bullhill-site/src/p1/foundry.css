@@ -895,6 +895,14 @@
   background-color: var(--ground);
   isolation: isolate;
 }
+/* Sections off screen skip their rendering, so a frame in one section does not style, paint or layer the
+ * other nine. Their sizes are remembered first, contain-intrinsic-size auto, and content-visibility comes a
+ * frame later from Foundry.tsx as data-cv, so the page never changes height. 20 October 2026, paint while
+ * scrolling down 40 percent and frames over 25ms down about a fifth, measured on a wheel scroll. */
+.p1[data-motion='on'] > main > :not(.hero),
+.p1[data-motion='on'] > footer { contain-intrinsic-size: auto 1000px; }
+.p1[data-motion='on'][data-cv='on'] > main > :not(.hero),
+.p1[data-motion='on'][data-cv='on'] > footer { content-visibility: auto; }
 .p1[data-motion='on']::before {
   content: '';
   position: fixed;

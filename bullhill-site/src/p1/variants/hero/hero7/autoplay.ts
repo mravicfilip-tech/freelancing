@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { clamp01 } from '../hero6/geometry';
 import { urlProgress, type Progress } from '../hero6/progress';
+import videoPace from './video-pace.json';
 
 // The phone's progress. Hero 7 on a phone plays by itself, Filip, 15 October 2026, "it can just autoplay
 // itself on load like a decent normal speed". The same Progress interface as hero6/progress.ts, sample,
@@ -27,31 +28,41 @@ const PACE: readonly (readonly [number, number])[] = [
   [18, 1], // the surface put back, the machine drives off and the house lights up
 ];
 export const PLAY_MS = PACE[PACE.length - 1][0] * 1000;
-// the speed at each key, zero at the two ends, the harmonic mean of the speeds either side between
-const RATE = PACE.map((k, i) => {
-  if (i === 0 || i === PACE.length - 1) return 0;
-  const a = (k[1] - PACE[i - 1][1]) / (k[0] - PACE[i - 1][0]);
-  const b = (PACE[i + 1][1] - k[1]) / (PACE[i + 1][0] - k[0]);
-  return (2 * a * b) / (a + b);
-});
 // the share of the hero that must be on screen for the story to run
 export const SEEN = 0.25;
 
-// p at ms into the story
-export const playAt = (ms: number) => {
-  const s = ms / 1000;
-  if (s <= 0) return 0;
-  if (s >= PACE[PACE.length - 1][0]) return 1;
-  let i = 0;
-  while (s > PACE[i + 1][0]) i++;
-  const [t0, p0] = PACE[i];
-  const [t1, p1] = PACE[i + 1];
-  const h = t1 - t0;
-  const t = (s - t0) / h;
-  const t2 = t * t;
-  const t3 = t2 * t;
-  return clamp01((2 * t3 - 3 * t2 + 1) * p0 + (t3 - 2 * t2 + t) * h * RATE[i] + (-2 * t3 + 3 * t2) * p1 + (t3 - t2) * h * RATE[i + 1]);
-};
+// p at ms into a story paced by keys. Between the keys the speed changes smoothly and never runs backwards,
+// the speed at each key the harmonic mean of the speeds either side, zero at the two ends.
+export function paceAt(keys: readonly (readonly [number, number])[]) {
+  const rate = keys.map((k, i) => {
+    if (i === 0 || i === keys.length - 1) return 0;
+    const a = (k[1] - keys[i - 1][1]) / (k[0] - keys[i - 1][0]);
+    const b = (keys[i + 1][1] - k[1]) / (keys[i + 1][0] - k[0]);
+    return (2 * a * b) / (a + b);
+  });
+  return (ms: number) => {
+    const s = ms / 1000;
+    if (s <= 0) return 0;
+    if (s >= keys[keys.length - 1][0]) return 1;
+    let i = 0;
+    while (s > keys[i + 1][0]) i++;
+    const [t0, p0] = keys[i];
+    const [t1, p1] = keys[i + 1];
+    const h = t1 - t0;
+    const t = (s - t0) / h;
+    const t2 = t * t;
+    const t3 = t2 * t;
+    return clamp01((2 * t3 - 3 * t2 + 1) * p0 + (t3 - 2 * t2 + t) * h * rate[i] + (-2 * t3 + 3 * t2) * p1 + (t3 - t2) * h * rate[i + 1]);
+  };
+}
+export const playAt = paceAt(PACE);
+
+// The phone's video, rendered from the scene by scripts/render-hero7-video.mjs on this pace, Filip's yes of
+// 20 October 2026 to about 10 seconds, the route 1s, the dig 3s, the ducts and the fibre 2.5s, the backfill 2s
+// and the lit house 1.5s. The page reads the step label from the video's own time through the same curve.
+export const VIDEO_FPS = videoPace.fps;
+export const VIDEO_MS = videoPace.keys[videoPace.keys.length - 1][0] * 1000;
+export const videoAt = paceAt(videoPace.keys as [number, number][]);
 
 export type Autoplay = Progress & {
   // armed once the headline is shown and the scene or the first frame is up

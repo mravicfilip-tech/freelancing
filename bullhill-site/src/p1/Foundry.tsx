@@ -74,6 +74,14 @@ export default function Foundry() {
     return () => evs.forEach((e) => window.removeEventListener(e, all));
   }, [done]);
   useGround(root, shown >= ALL);
+  // off screen sections skip rendering once every section has been laid out once and its size remembered
+  useEffect(() => {
+    if (!done || !root || !motion) return;
+    let id = requestAnimationFrame(() => {
+      id = requestAnimationFrame(() => (root.dataset.cv = 'on'));
+    });
+    return () => cancelAnimationFrame(id);
+  }, [done, root, motion]);
   useSmoothScroll();
   if (lab() === 'buttons') {
     return (

@@ -25,8 +25,11 @@ Task format
 
 - bullhill-17 Phone hero animation, a new execution. Notes in briefs/website/round8-notes.md
   - [x] Filip's rejection logged in taste.md, 20 October 2026
-  - [ ] Filip's answer on what bothers him and a reference
-  - [ ] One execution proposed in words, then built after his yes
+  - [x] Filip's answer, the timeline and that it does not play on landing
+  - [x] One execution proposed in words, a short video, Filip's yes 20 October 2026
+  - [x] Video renderer, scripts/render-hero7-video.mjs, 301 frames at 30fps on video-pace.json
+  - [x] Phone hero plays the video from landing, label from its time, end frame for reduced motion
+  - [ ] Filip watches it on his phone
 - bullhill-18 The site feels heavy, make browsing smooth. Notes in briefs/website/round8-notes.md
   - [x] Measured, the sections below the hero mounted one scene frame apart, Lenis glided every wheel notch
   - [x] Sections mount in idle time and all at once on the first scroll, touch or key
@@ -34,6 +37,9 @@ Task format
   - [x] Filip's Loom of the preview, laggy past the hero, landonorris.com effortless, Lenis back
   - [x] The page ground fades as a fixed layer on the compositor, raster crossing into Services 330ms to 80ms
   - [x] Form field focus outline gone, the underline shows focus
+  - [x] Filip's second Loom, still not as smooth as landonorris.com
+  - [x] Benchmarked by wheel scroll, CSS transitions on the process drawing and off screen sections were the cost
+  - [x] Off screen sections skip rendering, the drawing on its own layer, frames over 25ms 44 to 15
   - [ ] Filip feels it on the preview
 ## In progress
 

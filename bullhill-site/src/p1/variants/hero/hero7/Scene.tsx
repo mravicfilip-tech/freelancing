@@ -120,6 +120,9 @@ function Rig({ drive, still, phone, frame, onReady }: { drive?: Drive; still?: S
 
   // the clear band moved, for a new text length or screen, ask for a frame
   useEffect(() => invalidate(), [cy, invalidate]);
+  // a still stepped to a new p by the video renderer
+  const stillP = still?.p;
+  useEffect(() => invalidate(), [stillP, invalidate]);
   useEffect(() => () => window.clearTimeout(rockWake.current), []);
 
   useFrame((fs) => {
@@ -215,6 +218,8 @@ function Rig({ drive, still, phone, frame, onReady }: { drive?: Drive; still?: S
       }
     }
     drive?.onFrame(p);
+    // the p this frame draws, for the video renderer to wait on
+    if (still) document.documentElement.dataset.h7p = String(p);
     const s = state.current;
     // On the second frame every program is linked, with every part shown and drawn into one pixel, so none of
     // them stalls the scroll the first time its part appears, the strands, the sand, the house, the stubs. The

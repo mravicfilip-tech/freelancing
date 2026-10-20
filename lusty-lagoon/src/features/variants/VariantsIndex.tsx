@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom';
 import { Logo } from '../../components/ui/Logo';
-import { DASHBOARD_VARIANTS } from './variants';
+import { DASHBOARD_VARIANTS, V1_OPTION_SETS } from './variants';
 
 // The dashboard variants side by side with the Figma 1 to 1 lobby they grew from.
 export function VariantsIndex() {
@@ -21,6 +21,25 @@ export function VariantsIndex() {
           </li>
         ))}
       </ul>
+      <h2 className="font-display text-24 font-bold text-ink">Neon arcade, open choices</h2>
+      <p className="text-16 text-ink2">Variant 1 is the pick. Each set below is one choice, answered with its short name. Phone sets show under 768px wide.</p>
+      {V1_OPTION_SETS.map((set) => (
+        <section key={set.param} className="flex flex-col gap-3">
+          <h3 className="text-18 font-semibold text-ink">{set.title}</h3>
+          <ul className="flex flex-col gap-3">
+            {set.options.map((o) => (
+              <li key={o.value}>
+                <Link to={`/variants/1?${set.param}=${o.value}`} className="ll-card flex flex-col gap-1 p-4 hover:border-card-line/40">
+                  <span className="text-18 font-semibold text-ink">
+                    {o.short}, {o.label}
+                  </span>
+                  <span className="text-14 text-ink2">{o.note}</span>
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </section>
+      ))}
     </main>
   );
 }

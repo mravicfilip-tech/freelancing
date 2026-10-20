@@ -16,6 +16,8 @@
 // same value when the href gives one. A baseline at /lobby?compare shows the bar only when reached
 // from the switcher, and options of one page such as ?btn=1 to ?btn=5 are entries of their own.
 // Keys, when no field has focus and no modifier is held. [ and ] step, a digit jumps to that entry.
+// Several option sets on one page, such as a hero pick and a card pick, mount one bar each, stacked
+// with `bottom`, and every bar but the first sets `keyboard={false}` so a digit moves one set only.
 // It hides itself for automated browsers, so shots and variant boards stay clean. Add ?switcher to
 // the URL to show it in a shot. React only, no Tailwind, no router import, its own scoped styles.
 
@@ -41,6 +43,10 @@ type Props = {
   indexHref?: string;
   /** Text on the bar's handle. */
   title?: string;
+  /** Distance from the bottom of the viewport in px, so several bars can stack. Default 16. */
+  bottom?: number;
+  /** Whether [ ] and the digits move this bar. Default true. Turn it off on every stacked bar but one. */
+  keyboard?: boolean;
 };
 
 const STORE = 'studio-variant-switcher-collapsed';
@@ -90,7 +96,7 @@ function Icon({ d }: { d: string }) {
   );
 }
 
-export function VariantSwitcher({ variants, location, navigate, indexHref, title = 'Variants' }: Props) {
+export function VariantSwitcher({ variants, location, navigate, indexHref, title = 'Variants', bottom = 16, keyboard = true }: Props) {
   const [collapsed, setCollapsed] = useState(readCollapsed);
   const hidden = useMemo(() => typeof navigator !== 'undefined' && navigator.webdriver && !new URLSearchParams(location.search).has('switcher'), [location.search]);
   const current = variants.findIndex((v) => matches(v, location));
@@ -100,7 +106,7 @@ export function VariantSwitcher({ variants, location, navigate, indexHref, title
   const step = (d: number) => go(variants[(current + d + variants.length) % variants.length].href);
 
   useEffect(() => {
-    if (current < 0 || hidden) return;
+    if (current < 0 || hidden || !keyboard) return;
     const onKey = (e: KeyboardEvent) => {
       if (e.altKey || e.ctrlKey || e.metaKey || e.defaultPrevented) return;
       const t = e.target as HTMLElement | null;
@@ -138,7 +144,7 @@ export function VariantSwitcher({ variants, location, navigate, indexHref, title
   const now = variants[current];
 
   return (
-    <nav className="vsw" aria-label="Design variants">
+    <nav className="vsw" aria-label={`Design variants, ${title}`} style={{ bottom }}>
       <style>{CSS}</style>
       {collapsed ? (
         <button type="button" className="vsw-btn" onClick={toggle} aria-expanded={false} title="Show the variant switcher">

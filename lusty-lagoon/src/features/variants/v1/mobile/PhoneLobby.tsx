@@ -3,9 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { ChatCircleDots, DotsThree, GameController, Gift, SquaresFour } from '@phosphor-icons/react';
 import type { CatalogueGame } from '../../../../data/games';
 import { cn } from '../../../../lib/cn';
-// For now the bell opens the account route's shared panel. The main thread swaps this one import for
-// v1's own Notifications panel at merge (round 8, plan part B).
-import { NotificationsPanel } from '../../../account';
+import { N1Notifications } from '../Notifications';
 import { Feed } from '../Feed';
 import { Hero } from '../Hero';
 import { Games } from '../Games';
@@ -175,13 +173,7 @@ export function PhoneLobby({ state, filter, setFilter, searchRef, onPlay, onSuga
       )}
 
       <Sheet open={panel === 'notifications'} kind="top" title="Notifications" titleHidden bodyClassName="n1m-notes" {...sheet}>
-        <NotificationsPanel
-          className="w-full"
-          onNavigate={(to) => {
-            close();
-            navigate(to);
-          }}
-        />
+        <N1Notifications className="w-full" onClose={close} />
       </Sheet>
 
       <Sheet open={panel === 'account'} kind="top" title="Account" {...sheet}>

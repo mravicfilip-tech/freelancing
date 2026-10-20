@@ -30,7 +30,7 @@ function Switcher() {
   // A missing value counts as its set's fallback, so the bare URL still shows the bars.
   const now = new URLSearchParams(location.search);
   for (const set of V1_OPTION_SETS) if (!now.has(set.param)) now.set(set.param, set.fallback);
-  const shown = (phone ? ['m', 'hero'] : ['hero', 'cards']).map((p) => V1_OPTION_SETS.find((set) => set.param === p)!);
+  const shown = (phone ? ['m'] : ['cards']).map((p) => V1_OPTION_SETS.find((set) => set.param === p)!);
   return (
     <>
       {shown.map((set, i) => (

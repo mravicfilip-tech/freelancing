@@ -10,22 +10,11 @@ export const DASHBOARD_VARIANTS: SwitcherVariant[] = [
 ];
 
 // Round 8, Neon arcade picked. Its open choices on /variants/1, one set per choice, each a query value
-// the page reads. 0 is Base, the round 7 build. The app mounts one switcher bar per set and keeps the
-// other sets' values in every link, so a hero and a card pick can be seen together. On a phone the bars
-// are mobile and hero; on desktop hero and cards.
-export type V1OptionSet = { param: 'hero' | 'cards' | 'm'; title: string; fallback: string; options: { value: string; short: string; label: string; note: string }[] };
+// the page reads. The app mounts one switcher bar per set and keeps the other sets' values in every
+// link. On a phone the bar is mobile, on desktop cards. The hero set left when Filip picked the hero
+// at 2026-10-20 12:18.
+export type V1OptionSet = { param: 'cards' | 'm'; title: string; fallback: string; options: { value: string; short: string; label: string; note: string }[] };
 export const V1_OPTION_SETS: V1OptionSet[] = [
-  {
-    param: 'hero',
-    title: 'Hero',
-    fallback: '0',
-    options: [
-      { value: '0', short: 'Base', label: 'Hero, Base', note: 'The round 7 hero, the woman between pillars over the courtyard' },
-      { value: '1', short: 'H1', label: 'Hero 1, Spotlight right', note: 'The woman lit on the right, a clean purple headline side' },
-      { value: '2', short: 'H2', label: 'Hero 2, Poster', note: 'The scene edge to edge, the headline in frosted glass, one stats bar' },
-      { value: '3', short: 'H3', label: 'Hero 3, Carousel', note: 'Three slides, welcome, the giveaway and the Daily chest' },
-    ],
-  },
   {
     param: 'cards',
     title: 'Cards',

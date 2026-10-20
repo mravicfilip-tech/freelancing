@@ -23,6 +23,13 @@ Task format
 
 ## Backlog
 
+- bullhill-17 Phone hero animation, a new execution. Notes in briefs/website/round8-notes.md
+  - [x] Filip's rejection logged in taste.md, 20 October 2026
+  - [ ] Filip's answer on what bothers him and a reference
+  - [ ] One execution proposed in words, then built after his yes
+- bullhill-18 The site feels heavy, make browsing smooth. Notes in briefs/website/round8-notes.md
+  - [ ] Measure frame cost, long tasks and load on phone and desktop
+  - [ ] Fix by measured cost, shots before and after
 ## In progress
 
 - bullhill-16 Publish the site on its own domain. Plan in briefs/website/golive-plan.md

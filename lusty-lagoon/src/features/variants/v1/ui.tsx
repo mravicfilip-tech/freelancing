@@ -22,10 +22,10 @@ type KeyProps = ButtonHTMLAttributes<HTMLButtonElement> & { tone?: 'orange' | 'p
 /**
  * The page's key, round 6. The sleek kit key built in the folder (taste log 20:40). Orange is the one
  * primary per section with a dark label, purple the secondary, quiet sits on the surface with an edge.
- * Round 7 puts every orange key on the shared hover board (kit/hover.css, notes 10 and 11).
+ * Every key takes the picked sheen hover (kit/hover.css), orange with its orange glow, purple and quiet
+ * with the purple glow of .k-hov-2 (round 8, note 13).
  */
 export const Key = forwardRef<HTMLButtonElement, KeyProps>(function Key({ tone = 'purple', size = 48, loading, disabled, className, children, type = 'button', ...rest }, ref) {
-  const primary = tone === 'orange';
   return (
     <button
       ref={ref}
@@ -33,9 +33,9 @@ export const Key = forwardRef<HTMLButtonElement, KeyProps>(function Key({ tone =
       disabled={disabled || loading}
       aria-busy={loading || undefined}
       className={cn(
-        'n1-key inline-flex select-none items-center justify-center gap-2 whitespace-nowrap',
+        'n1-key k-hov inline-flex select-none items-center justify-center gap-2 whitespace-nowrap',
         `n1-key-${tone}`,
-        primary && 'k-hov',
+        tone !== 'orange' && 'k-hov-2',
         size === 36 && 'h-9 rounded-[10px] px-4 text-14',
         size === 48 && 'h-[48px] rounded-[12px] px-6 text-16',
         size === 56 && 'h-[56px] rounded-[14px] px-8 text-16',
@@ -43,7 +43,7 @@ export const Key = forwardRef<HTMLButtonElement, KeyProps>(function Key({ tone =
       )}
       {...rest}
     >
-      {primary && <HoverFx />}
+      <HoverFx />
       {loading && <CircleNotch weight="bold" className="h-5 w-5 animate-spin" aria-hidden />}
       {children}
     </button>

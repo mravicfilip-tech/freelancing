@@ -4,7 +4,7 @@ import * as M from '@radix-ui/react-dropdown-menu';
 import * as P from '@radix-ui/react-popover';
 import { ArrowCircleDown, ArrowCircleUp, Bell, CaretDown, Check, Gear, MagnifyingGlass, Plus, SignOut, Trophy, UserPlus, Wallet } from '@phosphor-icons/react';
 import { Logo } from '../../../components/ui/Logo';
-import { NotificationsPanel, useUnreadCount } from '../../account';
+import { useUnreadCount } from '../../account';
 import { useWallet } from '../../wallet/store';
 import { ACCOUNT, coinById, type CoinId } from '../../../data/wallet';
 import { formatAmount } from '../../../lib/format';
@@ -12,6 +12,7 @@ import { cn } from '../../../lib/cn';
 import { AnimatedNumber } from '../kit/parts';
 import { RACE, useCountdown } from '../shared/data';
 import { CoinIcon, IconSquare, Key } from './ui';
+import { N1Notifications } from './Notifications';
 
 // The top bar after Snegbet. The wordmark over the sidebar, the weekly race chip in a raised box with
 // a purple key, the balance menu with the orange Deposit key, icon squares with edges, the account box.
@@ -97,7 +98,6 @@ function BalanceMenu({ onDeposit }: { onDeposit: () => void }) {
 }
 
 function Bell_() {
-  const navigate = useNavigate();
   const unread = useUnreadCount();
   const [open, setOpen] = useState(false);
   return (
@@ -111,13 +111,9 @@ function Bell_() {
         )}
       </P.Trigger>
       <P.Portal>
-        <P.Content align="end" sideOffset={8} className="z-30 rounded-[16px] border border-line bg-raised shadow-3 outline-none">
-          <NotificationsPanel
-            onNavigate={(to) => {
-              setOpen(false);
-              navigate(to);
-            }}
-          />
+        {/* The v1 panel (note 12), on the page's own surface. Its height is capped to the room under the bar, and the list scrolls inside. */}
+        <P.Content align="end" sideOffset={8} className="n1 n1-panel z-30 flex max-h-[min(640px,calc(100vh-96px))] w-[min(400px,calc(100vw-32px))] flex-col overflow-hidden rounded-[16px] shadow-[0_24px_48px_rgb(0_0_0/0.5)] outline-none">
+          <N1Notifications onClose={() => setOpen(false)} />
         </P.Content>
       </P.Portal>
     </P.Root>

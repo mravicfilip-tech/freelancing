@@ -294,11 +294,11 @@
   mix-blend-mode: screen;
 }
 
-/* 4 and 5, her. Sharp, never past her 553 by 1036 source, nudged toward the scene so her shadows go
- * purple and her highlights stay warm. The shade and the wrap are the same size as her and masked by
- * her own alpha. The wrap runs orange from the sun's side into purple on the far side, in soft
- * light, so the scene lights her. A 1px orange rim on the sun's side only. The group fades out low,
- * where the frame crops her. */
+/* 4 and 5, her. Sharp, never past her 553 by 1036 source, and vivid. The grade nudges her toward the
+ * scene and never repaints her, so her own colour and contrast stay close to the source. The shade
+ * and the wrap are the same size as her and masked by her own alpha. The wrap runs orange from the
+ * sun's side into purple on the far side, in soft light, so the scene lights her. A 1px orange rim on
+ * the sun's side only. The group fades out low, behind the frosted pane, where the frame crops her. */
 .gv-her {
   position: absolute;
   top: var(--gv-her-y);
@@ -314,7 +314,7 @@
   width: 100%;
   height: 100%;
   max-width: none;
-  filter: brightness(0.94) contrast(1.05) saturate(0.84) drop-shadow(-1px 0 0.5px rgb(var(--gv-sun) / 0.75));
+  filter: var(--gv-her-tone) drop-shadow(-1px 0 0.5px rgb(var(--gv-sun) / 0.75));
 }
 /* Her far side from the sun goes into the scene's purple shade, so the shoulder light her source
  * art carries on that side no longer outshines the sun's side. */
@@ -330,25 +330,26 @@
 .gv-her-shade {
   background: linear-gradient(98deg, rgb(120 70 200 / 0) 40%, rgb(120 70 200 / 0.7) 78%, rgb(84 44 168) 100%);
   mix-blend-mode: multiply;
-  opacity: 0.55;
+  opacity: var(--gv-shade-o);
 }
 .gv-her-wrap {
-  background: linear-gradient(98deg, rgb(255 140 70) 0%, rgb(255 110 100) 26%, rgb(140 70 220) 58%, rgb(60 24 140) 100%);
+  background: var(--gv-wrap);
   mix-blend-mode: soft-light;
-  opacity: 0.7;
+  opacity: var(--gv-wrap-o);
 }
 
-/* 3, where the frame crops her. The haze band crosses her hips just above the frosted pane, in front
- * of her, so no hard lower edge shows, and the pane takes it from there. */
+/* 3, where the frame crops her. A thin haze band, 60px, centred on the top edge of the frosted pane
+ * (201px above the card's foot), so no hard lower edge of hers shows. It never reaches her chest or
+ * face. */
 .gv-her-haze {
   position: absolute;
-  right: var(--gv-her-haze-r);
-  width: var(--gv-her-haze-w);
-  top: 262px;
-  height: 150px;
-  border-radius: 50%;
-  background: radial-gradient(closest-side, rgb(118 64 196 / 0.55), rgb(118 64 196 / 0.22) 55%, rgb(118 64 196 / 0) 100%);
-  filter: blur(6px);
+  right: calc(var(--gv-her-r) - 12px);
+  width: 266px;
+  bottom: 171px;
+  height: 60px;
+  background: linear-gradient(180deg, rgb(118 64 196 / 0) 0%, rgb(118 64 196 / 0.42) 50%, rgb(118 64 196 / 0) 100%);
+  -webkit-mask-image: linear-gradient(90deg, transparent 0, #000 18%, #000 82%, transparent 100%);
+  mask-image: linear-gradient(90deg, transparent 0, #000 18%, #000 82%, transparent 100%);
 }
 
 /* 6, the foreground. The flower pillar stands nearer than her, over her edge on the far side from the
@@ -360,7 +361,7 @@
   height: var(--gv-front-h);
   width: auto;
   max-width: none;
-  filter: brightness(0.42) saturate(0.72) blur(1.6px) drop-shadow(-1px 0 0.5px rgb(var(--gv-sun) / 0.4));
+  filter: brightness(var(--gv-front-b)) saturate(0.72) blur(1.6px) drop-shadow(-1px 0 0.5px rgb(var(--gv-sun) / 0.4));
 }
 
 /* 8, life. Six motes drift slowly up off the sea in the open beach left of her, so none crosses her
@@ -394,8 +395,8 @@
 }
 .gv-still .gv-motes > span { animation: none; }
 
-/* 7, the vignette. The scene melts into the card's purple at its top, right and foot edges. The
- * balance side is the scene's own fade above. */
+/* 7, the vignette, inside the scene so it never fogs her. The scene melts into the card's purple at
+ * its top, right and foot edges. The balance side is the scene's own fade above. */
 .gv-vignette {
   position: absolute;
   inset: 0;
@@ -405,41 +406,53 @@
     linear-gradient(0deg, rgb(var(--gv-panel) / 0.7) 0%, rgb(var(--gv-panel) / 0) 38%);
 }
 
-/* Places. Under 640 (1440) there is little room left of her, so the scene sits behind her and the
- * pillar in front of her. From 640 (1920) a little more of the beach shows left of her. From 960
- * (2560) the scene fills the wide card, the sun setting in the open left of it and the rocks behind
- * her on the right. */
+/* Places. Under 640 (1440) and from 640 (1920) she stands a little past the card's right edge, her
+ * far side cut there and behind the pillar, so the sky opens beside her head and shoulders on the
+ * balance side. The crop puts the mountain and the palm behind her, darker than she is so she reads
+ * clearly, and the sun's glow comes in from just off the frame on the balance side. She stays vivid
+ * at those widths, a lighter wrap and shade under 30 percent that tint her and never darken her. From
+ * 960 (2560) the scene fills the wide card, the sun setting in the open left of it and the rocks
+ * behind her on the right, and she takes the scene's light more strongly. */
 .gv-art {
-  --gv-scene-x: 316px;
-  --gv-fade: 140px;
-  --gv-scene-pos: 0% 50%;
-  --gv-sun-at: 124px 92px;
-  --gv-sun-size: 420px 320px;
+  --gv-scene-x: 320px;
+  --gv-fade: 110px;
+  --gv-scene-pos: 54% 50%;
+  --gv-sun-at: 56px 96px;
+  --gv-sun-size: 320px 280px;
   --gv-her-y: 28px;
   --gv-her-h: 452px;
-  --gv-her-r: 0px;
-  --gv-her-haze-r: -20px;
-  --gv-her-haze-w: 320px;
+  --gv-her-r: -28px;
+  --gv-her-tone: brightness(1.02) contrast(1.05) saturate(1.04);
+  --gv-wrap: linear-gradient(98deg, rgb(255 150 80) 0%, rgb(255 140 110) 30%, rgb(170 128 214) 70%, rgb(140 100 200) 100%);
+  --gv-wrap-o: 0.28;
+  --gv-shade-o: 0.22;
   --gv-front-y: 136px;
   --gv-front-h: 460px;
-  --gv-front-r: -92px;
+  --gv-front-r: -100px;
+  --gv-front-b: 0.54;
 }
 @container (min-width: 640px) {
   .gv-art {
-    --gv-scene-x: 300px;
-    --gv-her-r: 44px;
-    --gv-front-r: -64px;
+    --gv-scene-x: 330px;
+    --gv-fade: 120px;
+    --gv-her-r: -10px;
+    --gv-front-r: -82px;
   }
 }
 @container (min-width: 960px) {
   .gv-art {
     --gv-scene-x: 380px;
     --gv-fade: 180px;
+    --gv-scene-pos: 0% 50%;
+    --gv-sun-at: 124px 92px;
     --gv-sun-size: 560px 400px;
     --gv-her-r: 82px;
-    --gv-her-haze-r: 20px;
-    --gv-her-haze-w: 380px;
+    --gv-her-tone: brightness(0.94) contrast(1.05) saturate(0.84);
+    --gv-wrap: linear-gradient(98deg, rgb(255 140 70) 0%, rgb(255 110 100) 26%, rgb(140 70 220) 58%, rgb(60 24 140) 100%);
+    --gv-wrap-o: 0.7;
+    --gv-shade-o: 0.55;
     --gv-front-r: -30px;
+    --gv-front-b: 0.42;
     --gv-motes-r: 360px;
     --gv-motes-w: 520px;
   }

@@ -32,10 +32,11 @@ const MOTES = [
 
 /**
  * The card's art side, back to front as the recipe lists it. The sunset scene graded into the card's
- * purple and out of focus, the sun's light and a haze low on the beach, the character graded toward
- * the scene with its light wrapped round her edge, the haze crossing her where the frame crops her, a
- * flower pillar in front of her edge, a few motes in the light, and the vignette that melts it all
- * into the card on the balance side. Places per card width live in glass.css.
+ * purple and out of focus, the sun's light, a haze low on the beach and the vignette that melts the
+ * scene into the card, then the character nudged toward the scene with its light wrapped round her
+ * edge, a thin haze where the frosted pane crops her, a few motes in the light, and a flower pillar
+ * in front of her edge. Nothing but that thin haze lies over her. Places per card width live in
+ * glass.css.
  */
 function CardArt() {
   return (
@@ -46,6 +47,7 @@ function CardArt() {
         <span className="gv-scene-shade" />
         <span className="gv-scene-sun" />
         <span className="gv-scene-haze" />
+        <span className="gv-vignette" />
       </div>
       <div className="gv-her">
         <img src={HER} alt="" width={553} height={1036} decoding="async" className="gv-her-img" />
@@ -59,7 +61,6 @@ function CardArt() {
         ))}
       </span>
       <img src="/art/landing/pillar-flowers-right.webp" alt="" width={282} height={854} decoding="async" className="gv-front" />
-      <span className="gv-vignette" />
     </div>
   );
 }

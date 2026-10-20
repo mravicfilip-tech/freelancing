@@ -44,6 +44,7 @@ Task format
   - [x] Filip, still not smooth on desktop. Lenis set as landonorris.com sets it, every wheel at lerp 0.1, stepped every frame
   - [x] Frame meter on review builds, ?perf=1, Filip's report, 240Hz screen, RX 6750 XT, a 1.45s freeze on the first wheel and a 68ms forced layout
   - [x] The rest of the page mounts one section a frame after the first wheel, the ground measures in idle time
+  - [x] Filip, fps drops on Process and the audiences. Dot fields draw at most 60 a second, canvases capped at 4 million pixels, the audience's fine dots batched
   - [ ] Filip feels it on the preview
 ## In progress
 

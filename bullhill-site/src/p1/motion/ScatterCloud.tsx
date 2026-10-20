@@ -135,6 +135,10 @@ export function ScatterCloud({ className, seed, mirror }: { className?: string; 
       const sp = sprites(grey);
       ctx.fillStyle = grey;
       ctx.imageSmoothingQuality = 'high';
+      // the fine dots in one path per opacity step, so they are a few fills and not hundreds. They are the far
+      // ones, so they are filled first and the near discs drawn over them.
+      const fine: (Path2D | undefined)[] = [];
+      const near: number[] = [];
       for (let i = 0; i < cloud.n; i++) {
         const ze = ZN + mod(cloud.z[i] - cam - ZN, LEN);
         const f = FOCAL / ze;
@@ -145,16 +149,24 @@ export function ScatterCloud({ className, seed, mirror }: { className?: string; 
         if (sx < -r || sx > VW + r || sy < -r || sy > VH + r) continue;
         // a little fade as the point passes, and in from the back
         const a = 0.75 * alphaOf(r) * Math.min(1, (ZMAX - ze) / 3) * (r > R_FADE ? 1 - (r - R_FADE) / (R_MAX - R_FADE) : 1);
-        ctx.globalAlpha = a;
         if (r < 3.5) {
-          ctx.beginPath();
-          ctx.arc(sx, sy, Math.max(r, 0.5), 0, Math.PI * 2);
-          ctx.fill();
-        } else {
-          const d = r * 2 * env.k;
-          const img = d <= 36 ? sp[0] : d <= 110 ? sp[1] : sp[2];
-          ctx.drawImage(img, sx - r, sy - r, r * 2, r * 2);
-        }
+          const rr = Math.max(r, 0.5);
+          const p = (fine[Math.round(a * 20)] ??= new Path2D());
+          p.moveTo(sx + rr, sy);
+          p.arc(sx, sy, rr, 0, Math.PI * 2);
+        } else near.push(sx, sy, r, a);
+      }
+      fine.forEach((p, b) => {
+        if (!p) return;
+        ctx.globalAlpha = b / 20;
+        ctx.fill(p);
+      });
+      for (let j = 0; j < near.length; j += 4) {
+        const [sx, sy, r, a] = [near[j], near[j + 1], near[j + 2], near[j + 3]];
+        ctx.globalAlpha = a;
+        const d = r * 2 * env.k;
+        const img = d <= 36 ? sp[0] : d <= 110 ? sp[1] : sp[2];
+        ctx.drawImage(img, sx - r, sy - r, r * 2, r * 2);
       }
     });
   }, [seed, mirror]);

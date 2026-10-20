@@ -19,7 +19,10 @@ for (const f of ['index.html', '404.html', '_redirects', '_headers', 'robots.txt
 if (!existsSync(new URL('../functions/api/contact.js', import.meta.url))) fails.push('functions/api/contact.js missing');
 // class prefixes only Daylight and Underground use
 for (const mark of ['p2-hero', 'p3-work']) if (code.includes(mark)) fails.push(`${mark} found, a frozen pathway is in the public build`);
-if (code.includes('[TO CONFIRM]')) (strict ? fails : warns).push('a legal value is still [TO CONFIRM], see src/legal/copy.ts');
+// the marker is a constant the page always ships, so the check reads the copy for values that use it
+const legal = readFileSync(new URL('../src/legal/copy.ts', import.meta.url), 'utf8');
+const pending = legal.split('\n').filter((l) => /v: (`[^`]*\$\{TO_CONFIRM\}|TO_CONFIRM\b)/.test(l)).length;
+if (pending) (strict ? fails : warns).push(`${pending} legal value${pending > 1 ? 's are' : ' is'} still [TO CONFIRM], see src/legal/copy.ts`);
 
 for (const w of warns) console.log(`warn  ${w}`);
 for (const f of fails) console.log(`FAIL  ${f}`);

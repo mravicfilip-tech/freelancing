@@ -41,7 +41,7 @@ Task format
   - [x] First real send from the preview reached Filip's inbox, 20 October 2026 13:22 UTC
   - [x] Filip opens the preview and sends the form himself, the email arrived, 20 October 2026
   - [x] Legal notice and privacy pages, English and German, at /legal and /privacy, footer links point at them
-  - [ ] Share capital, register court and the register number confirmed by the client, then the [TO CONFIRM] marks go
+  - [x] Share capital, register court and the register number from the AJPES extract, the [TO CONFIRM] marks gone
   - [x] Impressum facts gathered in briefs/website/golive.md, legal name, register number, VAT, director
   - [x] The pathway keys and variant switches off for the public build, npm run build:public, golive-check.mjs
   - [x] Launch files, robots, sitemap, hreflang, a 404 page, cache and security headers

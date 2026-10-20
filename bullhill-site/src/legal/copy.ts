@@ -40,7 +40,7 @@ export const legalCopy: Record<Lang, LegalCopy> = {
             { k: 'Short name', v: 'BULL HILL d.o.o.' },
             { k: 'Legal form', v: 'Limited liability company under Slovenian law (d.o.o.)' },
             { k: 'Registered office', v: 'Kidričeva ulica 24, 3000 Celje, Slovenia' },
-            { k: 'Managing director', v: 'Dusan Stoilović' },
+            { k: 'Managing director', v: 'Dušan Stoilović' },
             { k: 'Business', v: 'Trenching, duct laying and house connections for fibre networks' },
           ],
         },
@@ -48,9 +48,9 @@ export const legalCopy: Record<Lang, LegalCopy> = {
           title: 'Register',
           rows: [
             { k: 'Register', v: 'Slovenian business register (AJPES)' },
-            { k: 'Register court', v: `District Court of Celje ${TO_CONFIRM}` },
-            { k: 'Registration number', v: `1639676000 ${TO_CONFIRM}` },
-            { k: 'Share capital', v: TO_CONFIRM },
+            { k: 'Register court', v: 'District Court of Celje (Okrožno sodišče v Celju)' },
+            { k: 'Registration number', v: '1639676000' },
+            { k: 'Share capital', v: 'EUR 8,763.00' },
             { k: 'VAT ID', v: 'SI77173686' },
             { k: 'Tax number', v: '77173686' },
           ],
@@ -64,7 +64,7 @@ export const legalCopy: Record<Lang, LegalCopy> = {
         },
         {
           title: 'Responsible for content',
-          body: ['Dusan Stoilović, at the address above.'],
+          body: ['Dušan Stoilović, at the address above.'],
         },
         {
           title: 'Liability',
@@ -139,7 +139,7 @@ export const legalCopy: Record<Lang, LegalCopy> = {
             { k: 'Kurzform', v: 'BULL HILL d.o.o.' },
             { k: 'Rechtsform', v: 'Gesellschaft mit beschränkter Haftung nach slowenischem Recht (d.o.o.)' },
             { k: 'Sitz', v: 'Kidričeva ulica 24, 3000 Celje, Slowenien' },
-            { k: 'Geschäftsführer', v: 'Dusan Stoilović' },
+            { k: 'Geschäftsführer', v: 'Dušan Stoilović' },
             { k: 'Unternehmensgegenstand', v: 'Tiefbau, Rohrverlegung und Hausanschlüsse für Glasfasernetze' },
           ],
         },
@@ -147,9 +147,9 @@ export const legalCopy: Record<Lang, LegalCopy> = {
           title: 'Register',
           rows: [
             { k: 'Register', v: 'Slowenisches Unternehmensregister (AJPES)' },
-            { k: 'Registergericht', v: `Bezirksgericht Celje ${TO_CONFIRM}` },
-            { k: 'Registernummer', v: `1639676000 ${TO_CONFIRM}` },
-            { k: 'Stammkapital', v: TO_CONFIRM },
+            { k: 'Registergericht', v: 'Kreisgericht Celje (Okrožno sodišče v Celju)' },
+            { k: 'Registernummer', v: '1639676000' },
+            { k: 'Stammkapital', v: '8.763,00 EUR' },
             { k: 'USt-IdNr.', v: 'SI77173686' },
             { k: 'Steuernummer', v: '77173686' },
           ],
@@ -163,7 +163,7 @@ export const legalCopy: Record<Lang, LegalCopy> = {
         },
         {
           title: 'Verantwortlich für den Inhalt',
-          body: ['Dusan Stoilović, Anschrift wie oben.'],
+          body: ['Dušan Stoilović, Anschrift wie oben.'],
         },
         {
           title: 'Haftung',

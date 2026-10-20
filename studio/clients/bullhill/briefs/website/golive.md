@@ -13,3 +13,8 @@ Task bullhill-16 in `studio/clients/bullhill/tasks.md`. Gathered 20 October 2026
 - Managing director, Dusan Stoilović, spelling confirmed by Filip 20 October 2026.
 - Email bullhilldoo@gmail.com, phone and WhatsApp +43 665 65942472, from the client.
 - Domain bullhill.co registered at GoDaddy, DNS moving to Cloudflare, hosting Cloudflare Pages, free plan.
+- AJPES extract of 29 September 2026, sent by Filip 20 October 2026, confirms registration number 1639676000,
+  tax number SI 77173686, share capital EUR 8,763.00, entered 22 August 2001, registered office Celje.
+  Director and sole partner STOILOVIĆ DUŠAN, so the legal notice spells him Dušan Stoilović.
+- Register court, the extract names none. District Court of Celje, Okrožno sodišče v Celju, is the court for a
+  company seated in Celje under the Slovenian court register act, taken as the default.

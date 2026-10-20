@@ -71,7 +71,7 @@ function GroupRow({ to, icon, hue, label, badge }: { to: string; icon: ReactNode
   );
 }
 
-export function Sidebar({ filter, onFilter, onPlay, onChest, onRank, onGiveaway, joined }: { filter: Filter; onFilter: (f: Filter) => void; onPlay: (g: CatalogueGame) => void; onChest: () => void; onRank: () => void; onGiveaway: () => void; joined: boolean }) {
+export function Sidebar({ filter, onFilter, onPlay, onChest, onRank, onGiveaway, joined, className }: { filter: Filter; onFilter: (f: Filter) => void; onPlay: (g: CatalogueGame) => void; onChest: () => void; onRank: () => void; onGiveaway: () => void; joined: boolean; className?: string }) {
   const { transactions } = useWallet();
   const pending = transactions.filter((t) => t.status === 'pending').length;
   // Never clips and never scrolls inside itself. It sticks under the top bar, and when it is taller
@@ -92,7 +92,8 @@ export function Sidebar({ filter, onFilter, onPlay, onChest, onRank, onGiveaway,
     };
   }, []);
   return (
-    <aside ref={ref} aria-label="Sidebar" style={{ top }} className="sticky flex w-[240px] shrink-0 flex-col gap-3 self-start w1920:w-[264px]">
+    // The phone menu panel passes a className that drops the sticky and the fixed width (round 8).
+    <aside ref={ref} aria-label="Sidebar" style={{ top }} className={cn('sticky flex w-[240px] shrink-0 flex-col gap-3 self-start w1920:w-[264px]', className)}>
       <div className="grid grid-cols-2 gap-2">
         <Promo hue="ember" label={['Daily', 'chest']} art="/art/lobby/giveaway-chest.webp" artClass="-bottom-[10px] -right-[12px] h-[76px] w1920:h-[84px]" onClick={onChest} />
         <Promo hue="blue" label={['Rank', 'road']} art="/brand/rank-bronze.png" artClass="-bottom-[8px] -right-[6px] h-[64px] rotate-[8deg] w1920:h-[72px]" onClick={onRank} />

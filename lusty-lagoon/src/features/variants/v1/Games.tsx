@@ -49,12 +49,17 @@ function Cover({ g, onPlay }: { g: CatalogueGame; onPlay: () => void }) {
   );
 }
 
-export const Games = forwardRef<HTMLInputElement, { filter: Filter; onFilter: (f: Filter) => void; state: string | null; onPlay: (g: CatalogueGame) => void }>(function Games({ filter, onFilter, state, onPlay }, searchRef) {
+// The phone shell (round 8) sets its own column count and how many whole rows show closed.
+type GamesProps = { filter: Filter; onFilter: (f: Filter) => void; state: string | null; onPlay: (g: CatalogueGame) => void; columns?: number; rows?: number };
+
+export const Games = forwardRef<HTMLInputElement, GamesProps>(function Games({ filter, onFilter, state, onPlay, columns, rows = 2 }, searchRef) {
   const [query, setQuery] = useState(state === 'empty' ? 'Starburst' : '');
   const [sort, setSort] = useState<Sort>('popular');
   const [all, setAll] = useState(false);
   const [failed, setFailed] = useState(state === 'error');
-  const cols = useColumns();
+  const wide = useColumns();
+  const cols = columns ?? wide;
+  const grid = columns ? { gridTemplateColumns: `repeat(${columns}, minmax(0, 1fr))` } : undefined;
   const list = useMemo(() => {
     const q = query.trim().toLowerCase();
     const out = ORDERED.filter((g) => (filter === 'all' || g.category === filter) && (!q || g.name.toLowerCase().includes(q) || g.provider.toLowerCase().includes(q)));
@@ -64,8 +69,8 @@ export const Games = forwardRef<HTMLInputElement, { filter: Filter; onFilter: (f
   }, [filter, query, sort]);
   // Whole rows only. Two rows closed, every whole row open. A list shorter than a row shows as it is.
   const whole = list.length < cols ? list.length : Math.floor(list.length / cols) * cols;
-  const shown = list.slice(0, all ? whole : Math.min(whole, cols * 2));
-  const more = whole > cols * 2;
+  const shown = list.slice(0, all ? whole : Math.min(whole, cols * rows));
+  const more = whole > cols * rows;
   const sortLabel = SORTS.find((s) => s.value === sort)!.label;
 
   // Note 3. The chips fade at their right edge only while the search squeezes them and more chips
@@ -147,9 +152,9 @@ export const Games = forwardRef<HTMLInputElement, { filter: Filter; onFilter: (f
       </div>
 
       {state === 'loading' ? (
-        <div className="grid grid-cols-5 gap-3 w1920:grid-cols-7">
-          {Array.from({ length: 14 }, (_, i) => (
-            <Skel key={i} className={cn('aspect-[3/4] w-full rounded-[16px]', i >= 10 && 'hidden w1920:block')} />
+        <div className="grid grid-cols-5 gap-3 w1920:grid-cols-7" style={grid}>
+          {Array.from({ length: columns ? columns * rows : 14 }, (_, i) => (
+            <Skel key={i} className={cn('aspect-[3/4] w-full rounded-[16px]', !columns && i >= 10 && 'hidden w1920:block')} />
           ))}
         </div>
       ) : failed ? (
@@ -180,7 +185,7 @@ export const Games = forwardRef<HTMLInputElement, { filter: Filter; onFilter: (f
         </div>
       ) : (
         <>
-          <ul className="grid grid-cols-5 gap-3 w1920:grid-cols-7">
+          <ul className="grid grid-cols-5 gap-3 w1920:grid-cols-7" style={grid}>
             {shown.map((g) => (
               <li key={g.id}>
                 <Cover g={g} onPlay={() => onPlay(g)} />

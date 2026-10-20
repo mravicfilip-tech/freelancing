@@ -21,18 +21,18 @@ export function RaceDialog({ open, onOpenChange, onPlay }: { open: boolean; onOp
               <RankBadge place={l.place} />
               <img src={l.avatar} alt="" className="h-[28px] w-[28px] rounded-full object-cover" />
               <span className="flex-1 truncate text-14 font-bold text-ink">{handle(l.player)}</span>
-              <span className="num flex items-center gap-1 text-12 font-bold text-[rgb(var(--n-muted))]">
+              <span className="n1m-race-played num flex items-center gap-1 text-12 font-bold text-[rgb(var(--n-muted))]">
                 <Lightning weight="fill" className="h-4 w-4 text-[rgb(var(--n-lilac))]" aria-hidden />
                 {formatAmount(l.wagered, 0)} played
               </span>
-              <span className="num w-[110px] text-right text-14 font-extrabold text-ink">{formatAmount(l.prize, 0)} USDT</span>
+              <span className="n1m-race-prize num w-[110px] text-right text-14 font-extrabold text-ink">{formatAmount(l.prize, 0)} USDT</span>
             </li>
           ))}
         </ol>
       </div>
       <div className="flex flex-col gap-2">
         <Label>Your position</Label>
-        <div className="flex h-[64px] items-center gap-3 rounded-[16px] border border-[rgb(var(--n-purple)/0.4)] bg-[rgb(var(--n-purple)/0.16)] pl-[10px] pr-2">
+        <div className="n1m-race-you flex h-[64px] items-center gap-3 rounded-[16px] border border-[rgb(var(--n-purple)/0.4)] bg-[rgb(var(--n-purple)/0.16)] pl-[10px] pr-2">
           <RankBadge place={RACE.you.place} />
           <img src="/art/avatars/john-sm.webp" alt="" className="h-[28px] w-[28px] rounded-full object-cover" />
           <span className="flex min-w-0 flex-1 flex-col">

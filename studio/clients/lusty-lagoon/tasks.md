@@ -23,6 +23,13 @@ Task format
 
 ## Backlog
 
+- lusty-lagoon-4 The rest of the dashboard pages in the Neon arcade UI, deposit, withdraw, settings, category pages and the rest. Brief briefs/pages/brief.md. Own session, in the mravicfilip-tech/lusty-lagoon repo
+  - [ ] Kickoff answers and the page list from Filip
+  - [ ] Filip's phone shell pick, M1, M2 or M3
+
+- lusty-lagoon-5 Landing page redo, mobile first. Brief briefs/landing/brief.md. Own session, in the mravicfilip-tech/lusty-lagoon repo
+  - [ ] Kickoff answers from Filip
+
 ## In progress
 
 - lusty-lagoon-1 Lusty Lagoon refurb, landing page and product. Design https://www.figma.com/design/MjPhupcafS4TyCyssMHTjU/Lusty-Lagoon-Casino?node-id=83-53. Branch claude/busy-edison-mmjwbn, review commit a824509 (lobby and shell, 1:1)

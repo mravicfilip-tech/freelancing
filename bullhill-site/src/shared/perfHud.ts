@@ -73,10 +73,12 @@ export function startPerfHud() {
   }
 
   btn.onclick = () => {
-    const bySec: Record<string, { frames: number; over25: number; worst: number }> = {};
+    const bySec: Record<string, { frames: number; over8: number; over25: number; worst: number }> = {};
     for (const g of gaps) {
-      const s = (bySec[g.sec] ??= { frames: 0, over25: 0, worst: 0 });
+      const s = (bySec[g.sec] ??= { frames: 0, over8: 0, over25: 0, worst: 0 });
       s.frames++;
+      // over 8ms is a dropped frame on a 120Hz or faster screen, over 25ms on any screen
+      if (g.gap > 8.5) s.over8++;
       if (g.gap > 25) s.over25++;
       s.worst = Math.max(s.worst, Math.round(g.gap));
     }

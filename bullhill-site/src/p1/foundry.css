@@ -742,6 +742,9 @@
 .p1 .in::placeholder { color: var(--bh-grey-600); opacity: 1; }
 .p1 .in:hover { border-bottom-color: var(--ink); }
 .p1 .in:focus { border-bottom-color: var(--ink); box-shadow: 0 1px 0 var(--ink); background: rgba(17, 17, 17, 0.04); }
+/* no outline box on a field, Filip 20 October 2026, "remove also this border on focus". The 2px ink underline and the
+ * tint above are the field's focus signal, so a keyboard user still sees which field is live. */
+.p1 .in:focus-visible { outline: none; }
 .p1 .in--area { min-height: 96px; resize: vertical; }
 .p1 .fld--bad .in { border-bottom-color: var(--bh-red); box-shadow: 0 1px 0 var(--bh-red); }
 .p1 .fld__err { display: flex; gap: 8px; align-items: center; margin-top: 4px; color: var(--ink); }

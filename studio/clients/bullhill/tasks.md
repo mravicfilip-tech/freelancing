@@ -28,8 +28,11 @@ Task format
   - [ ] Filip's answer on what bothers him and a reference
   - [ ] One execution proposed in words, then built after his yes
 - bullhill-18 The site feels heavy, make browsing smooth. Notes in briefs/website/round8-notes.md
-  - [ ] Measure frame cost, long tasks and load on phone and desktop
-  - [ ] Fix by measured cost, shots before and after
+  - [x] Measured, the sections below the hero mounted one scene frame apart, Lenis glided every wheel notch
+  - [x] Sections mount in idle time and all at once on the first scroll, touch or key
+  - [x] Lenis off, native scrolling on every input, Filip's "Ur AI"
+  - [x] Form field focus outline gone, the underline shows focus
+  - [ ] Filip feels it on the preview
 ## In progress
 
 - bullhill-16 Publish the site on its own domain. Plan in briefs/website/golive-plan.md

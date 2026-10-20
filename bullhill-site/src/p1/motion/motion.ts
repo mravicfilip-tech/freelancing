@@ -80,7 +80,7 @@ function ask() {
 
 // The glide. A scroll linked value closes a share of the gap to the scroll each frame, so wheel
 // notches arrive as one continuous move, the same time constants as the hero (hero6/progress.ts).
-const TAU = 70; // short, the page itself glides on a wheel since 15 October 2026 (smoothScroll.ts)
+const TAU = 70; // short, so a wheel notch glides here without the scene trailing the native page
 export function glide(cur: number, target: number, dt: number) {
   const v = cur + (target - cur) * (1 - Math.exp(-dt / TAU));
   return Math.abs(target - v) < 2e-4 ? target : v;

@@ -9,8 +9,8 @@ import { clamp01 } from './geometry';
 // The p subscribers get glides toward the scroll, it is not the scroll itself. Each frame it closes
 // a share of the gap, the share set by a time constant, so any step left in the scroll arrives as a
 // continuous move, at any frame rate. Filip, 14 October 2026, "smooth as fuck, the smoother it can
-// get the better". The page itself glides on a mouse wheel (motion/smoothScroll.ts) and natively on a
-// trackpad or touch, so the constant is short and the scene stays with the page.
+// get the better". The page scrolls natively on every input since 20 October 2026, Lenis was taken off,
+// so the constant is short and the scene stays with the page.
 
 export type Progress = {
   sample(): number;
@@ -29,9 +29,9 @@ export function urlProgress(): number | null {
   return Number.isFinite(n) ? clamp01(n) : null;
 }
 
-// the time constants of the glide, in ms. Short since 15 October 2026, a mouse wheel's notches are
-// smoothed by Lenis (motion/smoothScroll.ts) and trackpads and touch glide natively, so a long glide
-// only made the scene trail the page.
+// the time constants of the glide, in ms. Short, so the scene stays with the page. Lenis smoothed a
+// mouse wheel from 15 to 20 October 2026, Filip found the page lagging, "browsing feels heavy", and it
+// went, so a wheel notch arrives as this glide and a long one would make the scene trail the page.
 const TAU = 70;
 const TAU_TOUCH = 70;
 

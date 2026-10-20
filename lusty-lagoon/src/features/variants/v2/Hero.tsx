@@ -41,7 +41,7 @@ export function Hero({ joined, onJoin, onPlay, onRules }: { joined: boolean; onJ
   return (
     <section aria-labelledby="m2-hero-title" className="relative">
       <div className="flex h-[56px] flex-col justify-center">
-        <p className="text-20 font-extrabold leading-6 tracking-[-0.01em] text-ink">Welcome back, {ACCOUNT.name.split(' ')[0]}</p>
+        <p className="font-display text-20 font-bold leading-6 tracking-[-0.01em] text-ink">Welcome back, {ACCOUNT.name.split(' ')[0]}</p>
         <p className="flex items-center gap-2 text-14 font-semibold text-[rgb(var(--m2-ink2))]">
           <span aria-hidden className="k-live" />
           <span>

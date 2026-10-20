@@ -26,7 +26,8 @@ export function useWide() {
 /** A handle the way the feeds write it, @peki82. */
 export const handle = (name: string) => `@${name.replace(/\s|\./g, '').toLowerCase()}`;
 
-/** A section title, a coloured icon in a small round well and a bold title. */
+/** A section title, a coloured icon in a small round well and the title in the variant's one heading
+ * style, Bai Jamjuree 700 in sentence case, the same as the hero headline and the originals cards. */
 export function SectionTitle({ id, icon, children, sub }: { id?: string; icon: ReactNode; children: ReactNode; sub?: ReactNode }) {
   return (
     <div className="flex min-w-0 items-center gap-3">
@@ -34,7 +35,7 @@ export function SectionTitle({ id, icon, children, sub }: { id?: string; icon: R
         {icon}
       </span>
       <div className="flex min-w-0 flex-col">
-        <h2 id={id} className="truncate text-20 font-extrabold leading-6 tracking-[-0.01em] text-ink">
+        <h2 id={id} className="truncate font-display text-20 font-bold leading-6 tracking-[-0.01em] text-ink">
           {children}
         </h2>
         {sub && <p className="truncate text-12 font-semibold text-[rgb(var(--m2-ink3))]">{sub}</p>}

@@ -37,7 +37,7 @@
  * so they stay behind the covers and the bets they lit before. */
 .m2 { --m2-lift: 69px; }
 @media (min-width: 1920px) { .m2 { --m2-lift: 148px; } }
-@media (min-width: 2560px) { .m2 { --m2-lift: 402px; } }
+@media (min-width: 2560px) { .m2 { --m2-lift: 249px; } }
 
 /* ---------- Surfaces ---------- */
 
@@ -247,12 +247,15 @@
  * the card high (92.31 percent of the box) and still lift on hover; it is clipped at the card's sides
  * and foot and open above. --floor is the line the art stands on, the title and the count sit under
  * it. The row pads its top by the breakout and the hover lift, so the art never reaches the heading.
- * Cards are 3 to 4 from the row's width, rounded to whole pixels with the padding, so the sections
- * under the row shift by a whole number of pixels and render exactly as before. */
+ * A card face is 3 to 4 from the row's width up to 360px high, the same cap as variant 1, then the
+ * cards only widen. --oc-h is that face height in whole pixels, and every art size and offset is a
+ * share of it, so the art scales with the card's height and stays centred on its floor however wide
+ * the card gets. The padding rounds too, so the sections under the row shift by whole pixels. */
 .m2-oc-sec { container-type: inline-size; }
 .m2-oc-row {
-  padding-top: round(calc((100cqw - 80px) * 0.05 + 16px), 1px);
-  grid-auto-rows: round(down, calc((100cqw - 80px) / 6 * 4 / 3), 1px);
+  --oc-h: min(round(down, calc((100cqw - 80px) / 6 * 4 / 3), 1px), 360px);
+  padding-top: round(calc(var(--oc-h) * 0.225 + 16px), 1px);
+  grid-auto-rows: var(--oc-h);
 }
 .m2-oc { --floor: 84px; isolation: isolate; }
 @media (min-width: 1920px) { .m2-oc { --floor: 104px; } }
@@ -266,16 +269,16 @@
 }
 .m2-oc-face::before { content: ''; position: absolute; inset: 0; background: linear-gradient(180deg, rgb(var(--oc) / 0.34) 0%, rgb(var(--oc) / 0.1) 32%, rgb(var(--oc) / 0) 56%); }
 .m2-oc-glow {
-  background: radial-gradient(66% 44% at 50% 54%, rgb(var(--oc) / 0.62) 0%, rgb(var(--oc) / 0.18) 55%, rgb(var(--oc) / 0) 100%);
+  background: radial-gradient(calc(var(--oc-h) * 0.495) calc(var(--oc-h) * 0.44) at 50% 54%, rgb(var(--oc) / 0.62) 0%, rgb(var(--oc) / 0.18) 55%, rgb(var(--oc) / 0) 100%);
   opacity: 0.8;
   transition: opacity 0.3s var(--m2-ease), transform 0.45s var(--m2-ease);
 }
 .m2-oc-floor {
-  left: 0;
-  right: 0;
+  left: 50%;
+  width: calc(var(--oc-h) * 0.75);
   bottom: var(--floor);
   height: 24%;
-  transform: translateY(50%);
+  transform: translate(-50%, 50%);
   background: radial-gradient(closest-side, rgb(var(--oc) / 0.8) 0%, rgb(var(--oc) / 0.22) 55%, rgb(var(--oc) / 0) 100%);
 }
 
@@ -283,7 +286,7 @@
 .m2-oc-shadow {
   left: 50%;
   bottom: var(--floor);
-  width: 66%;
+  width: calc(var(--oc-h) * 0.495);
   height: 7%;
   transform: translate(-50%, 50%);
   border-radius: 50%;
@@ -296,13 +299,13 @@
 /* Cut outs stand on the floor, sharp, with a 1.5px rim of the hue along their top edges, backlit. */
 .m2-oc-cut { filter: drop-shadow(0 -1.5px 0.5px rgb(var(--oc) / 0.7)); }
 .m2-oc-full { bottom: var(--floor); height: calc(92.31% - var(--floor)); width: auto; max-width: none; }
-.m2-oc-tower { bottom: var(--floor); height: calc(92.31% - var(--floor)); width: auto; max-width: none; left: 18%; transform: rotate(-7deg); transform-origin: 50% 100%; }
+.m2-oc-tower { bottom: var(--floor); height: calc(92.31% - var(--floor)); width: auto; max-width: none; left: calc(50% - var(--oc-h) * 0.24); transform: rotate(-7deg); transform-origin: 50% 100%; }
 .m2-oc-tower-back {
   bottom: calc(var(--floor) + 3%);
   height: calc((92.31% - var(--floor)) * 0.84);
   width: auto;
   max-width: none;
-  left: 47%;
+  left: calc(50% - var(--oc-h) * 0.0225);
   transform: rotate(8deg);
   transform-origin: 50% 100%;
   filter: brightness(0.72) drop-shadow(0 -1.5px 0.5px rgb(var(--oc) / 0.7));
@@ -319,7 +322,7 @@
 /* The neon machine is keyed by its own light, its near black ground drops out, the neon stays. */
 .m2-oc-neon {
   bottom: calc(var(--floor) - 15%);
-  width: 126%;
+  width: calc(var(--oc-h) * 0.945);
   height: auto;
   max-width: none;
   aspect-ratio: 1;
@@ -342,8 +345,8 @@
 /* Beware the Deep is 275 pixels high and Lucky Bass 300, so the fish sides stand smaller to stay under
  * source pixels at 2560. */
 .m2-oc-side-sm { height: calc((92.31% - var(--floor)) * 0.58); }
-.m2-oc-side-l { left: 2%; transform: rotate(-15deg); }
-.m2-oc-side-r { right: 2%; transform: rotate(13deg); }
+.m2-oc-side-l { left: calc(50% - var(--oc-h) * 0.36); transform: rotate(-15deg); }
+.m2-oc-side-r { right: calc(50% - var(--oc-h) * 0.36); transform: rotate(13deg); }
 
 /* The title band. A dark fade under the floor keeps the title and the count at AA over any art. */
 .m2-oc-fade { height: calc(var(--floor) + 8px); background: linear-gradient(0deg, rgb(13 8 26 / 0.95) 0%, rgb(13 8 26 / 0.78) 55%, rgb(13 8 26 / 0) 100%); }

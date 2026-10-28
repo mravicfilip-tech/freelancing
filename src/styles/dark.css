@@ -144,6 +144,46 @@
 [data-theme='dark'] .bars__chip--light .bars__chipInner {
   background: var(--bars-chip-lead);
 }
+/* The Earn testers slide. The window's capture has its own dark twin; the cards around it become
+   the lifted surface with their edges doing the separating, and the yield card's lavender wash
+   comes down to a glow. The testers' plates take the illustration ladder rather than tints that
+   were pale on purpose. */
+[data-theme='dark'] .earnSlide {
+  --eb-tile: var(--d-surface);
+  --eb-edge: var(--d-rail);
+  --eb-soft: var(--d-surface-2);
+  --eb-track: var(--d-il-line);
+  --eb-indigo: var(--d-indigo);
+  --el-chrome: var(--d-surface);
+  --el-dot: var(--d-rail);
+  /* A shadow barely reads on a dark ground, so the edge is carried by a lit top rim instead and
+     the drop only deepens what is underneath. */
+  --el-shadow: inset 0 1px 0 rgb(238 242 245 / 3%), 0 18px 36px -18px rgb(0 0 0 / 60%);
+  --eb-shadow:
+    inset 0 1px 0 rgb(238 242 245 / 5%),
+    0 2px 4px rgb(0 0 0 / 22%),
+    0 16px 30px -14px rgb(0 0 0 / 55%);
+  --eb-wash-a: rgb(144 146 244 / 18%);
+  --eb-wash-b: rgb(110 113 216 / 16%);
+  --eb-rule: rgb(238 242 245 / 7%);
+  --eb-tone-0: #26285a;
+  --eb-tone-0-ink: #b9bbff;
+  --eb-tone-1: #2c3310;
+  --eb-tone-1-ink: var(--d-lime);
+  --eb-tone-2: var(--d-il-line);
+  --eb-tone-2-ink: var(--d-ink);
+  --eb-tone-3: var(--d-ink);
+  --eb-tone-3-ink: #0c1219;
+}
+/* The tester sign-up takes the hero's tokens already; only its warning red is a light-page red, too
+   deep to read on this ground, and the scrim has to darken a page that is already dark. */
+[data-theme='dark'] .ts {
+  --ts-danger: #ff8f7a;
+  box-shadow: 0 40px 80px -32px rgb(0 0 0 / 75%);
+}
+[data-theme='dark'] .ts::backdrop {
+  background: rgb(4 8 12 / 62%);
+}
 /* The countdown's own digits sit at the label tone, which is an aside on white and a whisper on
    black. They are the one number on the band that has to be read at a glance. */
 [data-theme='dark'] .fh__digits {

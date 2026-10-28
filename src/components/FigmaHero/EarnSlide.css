@@ -1,0 +1,456 @@
+/* The hero's fourth slide: the RTX Earn dashboard with cards laid over it (EarnSlide.tsx).
+
+   Drawn at the slide's design size, 605 × 520, and scaled with it the way the other slides' SVGs
+   are: every length is a multiple of `--u`, one design pixel at the slide's current width, so the
+   stack keeps its proportions — and its overlaps — from a wide screen down to a tablet. Under 480px
+   of slide the front cards would be too small to read, so the stack re-cuts to the window and the
+   two cards that carry the story, and the unit grows to suit them. */
+.earnSlide {
+  --eb-tile: #fff;
+  --eb-edge: rgb(18 36 51 / 8%);
+  --eb-soft: #f1f3f5;
+  --eb-track: #e6e9ed;
+  --eb-indigo: #4042d2;
+  --eb-lime: #d9f24e;
+  --el-chrome: #fff;
+  --el-dot: #dadee2;
+  /* Depth is built from several faint shadows rather than one heavy one: a contact shadow that
+     holds the edge, then wider and fainter layers that lift it. Each stays close to the card, so
+     what sits under it is shaded, not smudged. The window is the far layer and lifts less. */
+  --el-shadow:
+    0 1px 2px rgb(18 36 51 / 4%),
+    0 4px 10px -2px rgb(18 36 51 / 4%),
+    0 14px 28px -14px rgb(18 36 51 / 12%);
+  --eb-shadow:
+    0 1px 1px rgb(18 36 51 / 3%),
+    0 2px 4px -1px rgb(18 36 51 / 5%),
+    0 6px 12px -4px rgb(18 36 51 / 6%),
+    0 16px 28px -12px rgb(18 36 51 / 12%);
+  /* The yield card is the front layer's lead: a white plate washed lavender at its foot, as the
+     feature band's cards are, with the chart in the indigo the site spends on what is live. */
+  --eb-wash-a: rgb(144 146 244 / 30%);
+  --eb-wash-b: rgb(179 181 245 / 34%);
+  --eb-rule: rgb(18 36 51 / 8%);
+  /* the plates the testers sit on: three tints off the page's own colours, and one in ink */
+  --eb-tone-0: #e3e4fd;
+  --eb-tone-0-ink: #4042d2;
+  --eb-tone-1: #eef7c8;
+  --eb-tone-1-ink: #55620f;
+  --eb-tone-2: #e6e9ed;
+  --eb-tone-2-ink: #122433;
+  --eb-tone-3: #122433;
+  --eb-tone-3-ink: #fff;
+  position: absolute;
+  inset: 0;
+  container-type: inline-size;
+}
+
+.el {
+  --u: calc(100cqw / 605);
+  position: absolute;
+  inset: 0;
+  font-family: var(--fh-sans);
+  color: var(--fh-ink);
+}
+
+/* ---------- Back: the dashboard window ---------- */
+.el__window {
+  position: absolute;
+  left: calc(var(--u) * 46);
+  top: 0;
+  width: calc(var(--u) * 549);
+  overflow: hidden;
+  border: 1px solid var(--fh-line);
+  border-radius: calc(var(--u) * 14);
+  background: var(--el-chrome);
+  box-shadow: var(--el-shadow);
+}
+.el__bar {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: calc(var(--u) * 28);
+  border-bottom: 1px solid var(--fh-line);
+}
+.el__dots {
+  position: absolute;
+  left: calc(var(--u) * 12);
+  top: 50%;
+  display: flex;
+  gap: calc(var(--u) * 6);
+  transform: translateY(-50%);
+}
+.el__dots i {
+  display: block;
+  width: calc(var(--u) * 8);
+  height: calc(var(--u) * 8);
+  border-radius: 50%;
+  background: var(--el-dot);
+}
+.el__address {
+  display: inline-flex;
+  align-items: center;
+  gap: calc(var(--u) * 6);
+  height: calc(var(--u) * 18);
+  padding: 0 calc(var(--u) * 4) 0 calc(var(--u) * 10);
+  border-radius: 999px;
+  background: var(--fh-bg);
+  font-size: calc(var(--u) * 10);
+  font-weight: 600;
+  color: var(--fh-label);
+}
+.el__address b,
+.eb__badge b {
+  padding: calc(var(--u) * 1) calc(var(--u) * 6);
+  border-radius: 999px;
+  background: var(--eb-indigo);
+  font-family: var(--fh-pixel);
+  font-size: calc(var(--u) * 7);
+  font-weight: 400;
+  letter-spacing: 0.06em;
+  line-height: calc(var(--u) * 12);
+  text-transform: uppercase;
+  color: var(--eb-tile);
+}
+.el__screen {
+  aspect-ratio: 960 / 640;
+  background: var(--fh-bg);
+}
+.el__shot {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* ---------- Front: the cards ---------- */
+.eb__tile {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  padding: calc(var(--u) * 16);
+  overflow: hidden;
+  border: 1px solid var(--eb-edge);
+  border-radius: calc(var(--u) * 16);
+  background: var(--eb-tile);
+  box-shadow: var(--eb-shadow);
+  will-change: transform;
+}
+.eb__tile--yield {
+  left: calc(var(--u) * -30);
+  top: calc(var(--u) * 258);
+  width: calc(var(--u) * 300);
+  height: calc(var(--u) * 250);
+}
+.eb__tile--seats {
+  left: calc(var(--u) * 414);
+  top: calc(var(--u) * 146);
+  width: calc(var(--u) * 196);
+}
+.eb__tile--tests {
+  left: calc(var(--u) * 286);
+  top: calc(var(--u) * 350);
+  width: calc(var(--u) * 300);
+}
+
+.eb__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: calc(var(--u) * 8);
+}
+.eb__label {
+  margin: 0;
+  font-size: calc(var(--u) * 12);
+  font-weight: 500;
+  line-height: 1.3;
+  color: var(--fh-label);
+}
+.eb__sub {
+  margin: calc(var(--u) * 4) 0 0;
+  font-size: calc(var(--u) * 11.5);
+  line-height: 1.4;
+  color: var(--fh-body);
+}
+.eb__big {
+  margin: calc(var(--u) * 8) 0 0;
+  font-family: var(--fh-display);
+  font-size: calc(var(--u) * 40);
+  font-weight: 500;
+  line-height: 1;
+  letter-spacing: -0.03em;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+/* ---------- The yield card ---------- */
+.eb__tile--yield {
+  background:
+    radial-gradient(90% 70% at 100% 108%, var(--eb-wash-a), transparent 70%),
+    radial-gradient(70% 55% at 0% 112%, var(--eb-wash-b), transparent 70%),
+    var(--eb-tile);
+}
+.eb__live {
+  display: inline-flex;
+  align-items: center;
+  gap: calc(var(--u) * 6);
+  height: calc(var(--u) * 20);
+  padding: 0 calc(var(--u) * 8);
+  border: 1px solid var(--eb-edge);
+  border-radius: 999px;
+  background: var(--eb-tile);
+  font-size: calc(var(--u) * 10.5);
+  font-weight: 600;
+  color: var(--fh-ink);
+}
+/* lime is a light on dark; on white it needs a darker core to read as a dot at all */
+.eb__live i {
+  width: calc(var(--u) * 6);
+  height: calc(var(--u) * 6);
+  border-radius: 50%;
+  background: #8fb012;
+  box-shadow: 0 0 0 calc(var(--u) * 2.5) rgb(217 242 78 / 55%);
+}
+.eb__chart {
+  position: relative;
+  flex: 1 1 auto;
+  min-height: 0;
+  margin: calc(var(--u) * 12) calc(var(--u) * -16) calc(var(--u) * -16);
+}
+.eb__chart svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+.eb__rule {
+  stroke: var(--eb-rule);
+  stroke-dasharray: 4 4;
+  vector-effect: non-scaling-stroke;
+}
+.eb__line {
+  fill: none;
+  stroke: var(--eb-indigo);
+  stroke-width: 2;
+  stroke-linecap: round;
+  vector-effect: non-scaling-stroke;
+}
+/* The day's figure, at the end of the line: a lit point that rings each time the yield ticks. */
+.eb__tip {
+  --ring: 1;
+  position: absolute;
+  width: calc(var(--u) * 10);
+  height: calc(var(--u) * 10);
+  margin: calc(var(--u) * -5) 0 0 calc(var(--u) * -5);
+  border: calc(var(--u) * 2) solid var(--eb-tile);
+  border-radius: 50%;
+  background: var(--eb-indigo);
+  box-shadow:
+    0 1px 3px rgb(18 36 51 / 20%),
+    0 0 0 calc(var(--u) * 12 * var(--ring)) color-mix(in srgb, var(--eb-indigo) calc(30% * (1 - var(--ring))), transparent);
+}
+
+/* ---------- The seats ---------- */
+.eb__seatsLead {
+  margin: calc(var(--u) * 6) 0 0;
+  font-family: var(--fh-display);
+  font-size: calc(var(--u) * 19);
+  font-weight: 500;
+  line-height: 1.15;
+  letter-spacing: -0.02em;
+}
+.eb__seats {
+  display: flex;
+  align-items: center;
+  margin-top: calc(var(--u) * 14);
+}
+.eb__seat {
+  position: relative;
+  display: block;
+  box-sizing: border-box;
+  flex: 0 0 auto;
+  width: calc(var(--u) * 32);
+  height: calc(var(--u) * 32);
+  margin-left: calc(var(--u) * -8);
+  border: calc(var(--u) * 1.5) dashed color-mix(in srgb, var(--fh-muted) 55%, var(--fh-line));
+  border-radius: 50%;
+  background: var(--eb-tile);
+}
+.eb__seat:first-child {
+  margin-left: 0;
+}
+.eb__avatar {
+  position: absolute;
+  inset: calc(var(--u) * -1.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: calc(var(--u) * 2) solid var(--eb-tile);
+  border-radius: 50%;
+  font-family: var(--fh-pixel);
+  font-size: calc(var(--u) * 9);
+  letter-spacing: 0.02em;
+}
+.eb__avatar[data-tone='0'] { background: var(--eb-tone-0); color: var(--eb-tone-0-ink); }
+.eb__avatar[data-tone='1'] { background: var(--eb-tone-1); color: var(--eb-tone-1-ink); }
+.eb__avatar[data-tone='2'] { background: var(--eb-tone-2); color: var(--eb-tone-2-ink); }
+.eb__avatar[data-tone='3'] { background: var(--eb-tone-3); color: var(--eb-tone-3-ink); }
+/* The seat still free. It is the only thing on the slide that keeps asking, so it is the only
+   thing that pulses: a lime ring that breathes out from it while the slide is up. */
+.eb__seat--open {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-left: calc(var(--u) * 6);
+  border-color: var(--fh-muted);
+  font-family: var(--fh-pixel);
+  font-size: calc(var(--u) * 8);
+  color: var(--fh-ink);
+}
+.eb__seat--open::after {
+  content: '';
+  position: absolute;
+  inset: calc(var(--u) * -2);
+  border-radius: 50%;
+  opacity: 0;
+}
+.fh__slide[data-active] .eb__seat--open::after {
+  animation: eb-ask 1.8s ease-out 1.6s infinite;
+}
+@keyframes eb-ask {
+  0% { opacity: 1; box-shadow: 0 0 0 0 var(--eb-lime); }
+  70% { opacity: 0; box-shadow: 0 0 0 calc(var(--u) * 10) var(--eb-lime); }
+  100% { opacity: 0; box-shadow: 0 0 0 calc(var(--u) * 10) var(--eb-lime); }
+}
+
+/* ---------- The test run ---------- */
+.eb__counter {
+  font-family: var(--fh-pixel);
+  font-size: calc(var(--u) * 11);
+  letter-spacing: 0.06em;
+  color: var(--fh-label);
+}
+.eb__count {
+  color: var(--fh-ink);
+}
+.eb__tests {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: calc(var(--u) * 8);
+  margin: calc(var(--u) * 12) 0 0;
+  padding: 0;
+  list-style: none;
+}
+.eb__test {
+  display: flex;
+  align-items: center;
+  gap: calc(var(--u) * 8);
+  height: calc(var(--u) * 34);
+  padding: 0 calc(var(--u) * 10);
+  border-radius: calc(var(--u) * 10);
+  background: var(--eb-soft);
+  font-size: calc(var(--u) * 12);
+  font-weight: 600;
+  white-space: nowrap;
+  color: var(--fh-label);
+  transition: color 240ms ease;
+}
+.eb__box {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  width: calc(var(--u) * 18);
+  height: calc(var(--u) * 18);
+  border: calc(var(--u) * 1.5) solid var(--fh-line);
+  border-radius: 50%;
+  background: var(--eb-tile);
+  transition: background-color 240ms ease, border-color 240ms ease, transform 300ms cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+.eb__box svg {
+  width: 55%;
+  height: 55%;
+  fill: #122433;
+  opacity: 0;
+  transition: opacity 200ms ease;
+}
+/* Running: the box takes the indigo and turns, the way a step in progress does. */
+.eb__test[data-state='running'],
+.eb__test[data-state='passed'] {
+  color: var(--fh-ink);
+}
+.eb__test[data-state='running'] .eb__box {
+  border-color: var(--eb-indigo) transparent var(--eb-indigo) var(--eb-indigo);
+  animation: eb-spin 700ms linear infinite;
+}
+.eb__test[data-state='passed'] .eb__box {
+  border-color: var(--eb-lime);
+  background: var(--eb-lime);
+  transform: scale(1.08);
+}
+.eb__test[data-state='passed'] .eb__box svg {
+  opacity: 1;
+}
+@keyframes eb-spin {
+  to { transform: rotate(360deg); }
+}
+.eb__progress {
+  display: block;
+  height: calc(var(--u) * 4);
+  margin-top: calc(var(--u) * 12);
+  overflow: hidden;
+  border-radius: 999px;
+  background: var(--eb-track);
+}
+.eb__progress i {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: var(--eb-indigo);
+  transform-origin: 0 50%;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .fh__slide[data-active] .eb__seat--open::after,
+  .eb__test[data-state='running'] .eb__box {
+    animation: none;
+  }
+}
+
+/* A phone: the window, with the yield and the seats over its foot, drawn larger. */
+@container (max-width: 480px) {
+  .el {
+    --u: calc(100cqw / 420);
+  }
+  .el__window {
+    left: calc(var(--u) * 26);
+    width: calc(var(--u) * 394);
+  }
+  .eb__tile--yield {
+    left: 0;
+    top: calc(var(--u) * 150);
+    width: calc(var(--u) * 236);
+    height: calc(var(--u) * 205);
+  }
+  .eb__tile--seats {
+    left: auto;
+    right: 0;
+    top: calc(var(--u) * 196);
+    width: calc(var(--u) * 172);
+  }
+  .eb__tile--tests,
+  .eb__live {
+    display: none;
+  }
+  .eb__big {
+    font-size: calc(var(--u) * 32);
+  }
+  .eb__seatsLead {
+    font-size: calc(var(--u) * 17);
+  }
+  .eb__seat {
+    width: calc(var(--u) * 28);
+    height: calc(var(--u) * 28);
+  }
+}

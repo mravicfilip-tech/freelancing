@@ -2,6 +2,8 @@ import { useEffect, useRef, useState } from 'react';
 import { LangPicker } from './LangPicker';
 import { ThemeToggle } from './ThemeToggle';
 import { ChestSlide } from './ChestSlide';
+import { EarnSlide } from './EarnSlide';
+import { TesterSignup, TESTERS_HASH } from './TesterSignup';
 import { HeroPlanet } from '../HeroPlanet';
 import { Bars } from './Bars';
 import { useHeroEntrance } from './useHeroEntrance';
@@ -133,7 +135,7 @@ function Unit({ value, label }: { value: string; label: string }) {
 }
 
 /** The hero graphic: one slide per visual. The corridors globe, the bars from the Figma design,
- *  then the chest, which draws itself in from its own line work. */
+ *  the chest, which draws itself in from its own line work, then the call for RTX Earn testers. */
 const SLIDES = [
   {
     id: 'globe',
@@ -167,6 +169,19 @@ const SLIDES = [
        placeholder anchors. Give it a real destination when there is one. */
     cta: 'Explore Mystery Boxes',
   },
+  {
+    id: 'earn',
+    label: 'RTX Earn testers wanted',
+    lead: 'RTX Earn',
+    payoff: 'Testers Wanted.',
+    body:
+      'Get early access to RTX Earn — stablecoin yield pools you can deposit into and track ' +
+      'in one place. Try it before launch and help shape it.',
+    cta: 'Sign Up Now',
+    /* The sign-up opens on this hash (see TesterSignup), so the button is a plain link and the same
+       link opens the form from anywhere else too. */
+    href: TESTERS_HASH,
+  },
 ] as const;
 
 function GraphicSlides({ index }: { index: number }) {
@@ -189,6 +204,9 @@ function GraphicSlides({ index }: { index: number }) {
       </div>
       <div className="fh__slide" data-slide="chest" data-active={index === 2 || undefined} aria-hidden={index !== 2}>
         <ChestSlide active={index === 2} />
+      </div>
+      <div className="fh__slide" data-slide="earn" data-active={index === 3 || undefined} aria-hidden={index !== 3}>
+        <EarnSlide active={index === 3} />
       </div>
     </div>
   );
@@ -372,7 +390,7 @@ export function FigmaHero() {
             </h1>
             <p className="fh__body">{copy.body}</p>
           </div>
-          <PresaleButton wide label={'cta' in copy ? copy.cta : undefined} />
+          <PresaleButton wide label={'cta' in copy ? copy.cta : undefined} href={'href' in copy ? copy.href : undefined} />
         </div>
         <div className="fh__graphic">
           <GraphicSlides index={slide} />
@@ -425,6 +443,8 @@ export function FigmaHero() {
           <Unit value={seconds} label="seconds" />
         </div>
       </footer>
+
+      <TesterSignup />
     </section>
   );
 }

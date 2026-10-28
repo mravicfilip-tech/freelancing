@@ -79,8 +79,10 @@
 }
 
 /* Lift the hero's content off the dotted frame behind it. The nav is exempt: it is fixed and
-   rides the whole page, so it must not be pinned back into the hero's own layer. */
-.fh > :not(.fh__frame):not(.fh__nav):not(.fh__menu):not(.fh__scrim) {
+   rides the whole page, so it must not be pinned back into the hero's own layer. So is the tester
+   sign-up: a modal dialog given `relative` computes to `absolute` in the top layer, and opens
+   against the top of the document instead of the screen — off it, once the page has scrolled. */
+.fh > :not(.fh__frame):not(.fh__nav):not(.fh__menu):not(.fh__scrim):not(.ts) {
   position: relative;
   z-index: 1;
 }

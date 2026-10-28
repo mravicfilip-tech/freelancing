@@ -1,49 +1,70 @@
-/* The hero's fourth slide: the RTX Earn dashboard with cards laid over it (EarnSlide.tsx).
+/* The hero's fourth slide: a beta test session on the Remittix dashboard (EarnSlide.tsx).
 
-   Drawn at the slide's design size, 605 × 520, and scaled with it the way the other slides' SVGs
-   are: every length is a multiple of `--u`, one design pixel at the slide's current width, so the
-   stack keeps its proportions — and its overlaps — from a wide screen down to a tablet. Under 480px
-   of slide the front cards would be too small to read, so the stack re-cuts to the window and the
-   two cards that carry the story, and the unit grows to suit them. */
+   Drawn on a 605 × 520 stage, the slide's own design size, and scaled with it: every length is a
+   multiple of `--u`, one design pixel at the stage's width, so the overlaps hold from a wide screen
+   to a tablet. Under 480px of stage it re-cuts to the window and the two instruments that carry the
+   story, and the unit grows to suit them.
+
+   Depth is three heights, and each has its own shadow rather than one grey shadow under everything:
+   the window is the far layer and barely lifts, the test log sits above it, and the yield card is
+   nearest. Every shadow is a stack of thin layers in the page's ink — a contact line that holds the
+   edge, then wider and fainter ones — so what lies underneath is shaded, not smudged. Radii follow
+   the same order: the nearer the layer, the rounder its corners. */
 .earnSlide {
-  --eb-tile: #fff;
-  --eb-edge: rgb(18 36 51 / 8%);
-  --eb-soft: #f1f3f5;
-  --eb-track: #e6e9ed;
-  --eb-indigo: #4042d2;
-  --eb-lime: #d9f24e;
-  --el-chrome: #fff;
-  --el-dot: #dadee2;
-  /* Depth is built from several faint shadows rather than one heavy one: a contact shadow that
-     holds the edge, then wider and fainter layers that lift it. Each stays close to the card, so
-     what sits under it is shaded, not smudged. The window is the far layer and lifts less. */
-  --el-shadow:
+  --el-surface: #fff;
+  --el-chrome: #f6f7f9;
+  --el-line: rgb(18 36 51 / 8%);
+  --el-rule: rgb(18 36 51 / 7%);
+  --el-accent: #4042d2;
+  --el-onAccent: #fff;
+  --el-pass: #d9f24e;
+  --el-passSoft: #eef6c7;
+  --el-passInk: #122433;
+  --el-live: #8fb012;
+  --el-tip: #122433;
+  --el-onTip: #fff;
+  --el-e0:
+    0 0 0 1px rgb(18 36 51 / 7%),
     0 1px 2px rgb(18 36 51 / 4%),
-    0 4px 10px -2px rgb(18 36 51 / 4%),
-    0 14px 28px -14px rgb(18 36 51 / 12%);
-  --eb-shadow:
+    0 6px 16px -6px rgb(18 36 51 / 8%),
+    0 18px 32px -16px rgb(18 36 51 / 10%);
+  --el-e1:
+    0 0 0 1px rgb(18 36 51 / 7%),
     0 1px 1px rgb(18 36 51 / 3%),
-    0 2px 4px -1px rgb(18 36 51 / 5%),
-    0 6px 12px -4px rgb(18 36 51 / 6%),
-    0 16px 28px -12px rgb(18 36 51 / 12%);
-  /* The yield card is the front layer's lead: a white plate washed lavender at its foot, as the
-     feature band's cards are, with the chart in the indigo the site spends on what is live. */
-  --eb-wash-a: rgb(144 146 244 / 30%);
-  --eb-wash-b: rgb(179 181 245 / 34%);
-  --eb-rule: rgb(18 36 51 / 8%);
-  /* the plates the testers sit on: three tints off the page's own colours, and one in ink */
-  --eb-tone-0: #e3e4fd;
-  --eb-tone-0-ink: #4042d2;
-  --eb-tone-1: #eef7c8;
-  --eb-tone-1-ink: #55620f;
-  --eb-tone-2: #e6e9ed;
-  --eb-tone-2-ink: #122433;
-  --eb-tone-3: #122433;
-  --eb-tone-3-ink: #fff;
+    0 2px 4px -1px rgb(18 36 51 / 4%),
+    0 6px 10px -3px rgb(18 36 51 / 5%),
+    0 14px 22px -8px rgb(18 36 51 / 8%),
+    0 28px 40px -18px rgb(18 36 51 / 10%);
+  --el-e2:
+    0 0 0 1px rgb(18 36 51 / 7%),
+    0 1px 1px rgb(18 36 51 / 3%),
+    0 2px 4px -1px rgb(18 36 51 / 4%),
+    0 8px 14px -4px rgb(18 36 51 / 6%),
+    0 20px 32px -10px rgb(18 36 51 / 10%),
+    0 44px 64px -24px rgb(18 36 51 / 16%);
+  --el-tone-0: #e3e4fd;
+  --el-tone-0-ink: #4042d2;
+  --el-tone-1: #eef6c7;
+  --el-tone-1-ink: #55620f;
+  --el-tone-2: #e6e9ed;
+  --el-tone-2-ink: #122433;
+  --el-tone-3: #122433;
+  --el-tone-3-ink: #fff;
   position: absolute;
   inset: 0;
   container-type: inline-size;
+  /* The stage grows into the room beside the copy. It grows mostly leftwards and a little up, from
+     a point near its right edge, so it reaches toward the headline without touching it and stays
+     inside the dashed frame. How far depends on how much room the copy leaves at each width. */
+  transform-origin: 85% 42%;
 }
+/* Below 1281 the slide is flush with the frame's right edge, so it grows leftwards only. */
+@media (min-width: 1000px) and (max-width: 1099px) { .earnSlide { transform: scale(1.05); transform-origin: 100% 42%; } }
+@media (min-width: 1100px) and (max-width: 1280px) { .earnSlide { transform: scale(1.14); transform-origin: 100% 42%; } }
+@media (min-width: 1281px) and (max-width: 1319px) { .earnSlide { transform: scale(1.08); } }
+@media (min-width: 1320px) and (max-width: 1379px) { .earnSlide { transform: scale(1.16); } }
+@media (min-width: 1380px) and (max-width: 1439px) { .earnSlide { transform: scale(1.24); } }
+@media (min-width: 1440px) { .earnSlide { transform: scale(1.3); } }
 
 .el {
   --u: calc(100cqw / 605);
@@ -51,19 +72,20 @@
   inset: 0;
   font-family: var(--fh-sans);
   color: var(--fh-ink);
+  font-variant-numeric: tabular-nums;
 }
 
-/* ---------- Back: the dashboard window ---------- */
+/* ---------- Far: the window ---------- */
 .el__window {
   position: absolute;
-  left: calc(var(--u) * 46);
+  z-index: 1;
+  left: calc(var(--u) * 40);
   top: 0;
-  width: calc(var(--u) * 549);
+  width: calc(var(--u) * 565);
   overflow: hidden;
-  border: 1px solid var(--fh-line);
-  border-radius: calc(var(--u) * 14);
+  border-radius: calc(var(--u) * 12);
   background: var(--el-chrome);
-  box-shadow: var(--el-shadow);
+  box-shadow: var(--el-e0);
 }
 .el__bar {
   position: relative;
@@ -71,7 +93,7 @@
   align-items: center;
   justify-content: center;
   height: calc(var(--u) * 28);
-  border-bottom: 1px solid var(--fh-line);
+  border-bottom: 1px solid var(--el-line);
 }
 .el__dots {
   position: absolute;
@@ -82,375 +104,483 @@
   transform: translateY(-50%);
 }
 .el__dots i {
-  display: block;
   width: calc(var(--u) * 8);
   height: calc(var(--u) * 8);
   border-radius: 50%;
-  background: var(--el-dot);
+  background: var(--el-line);
 }
 .el__address {
   display: inline-flex;
   align-items: center;
   gap: calc(var(--u) * 6);
   height: calc(var(--u) * 18);
-  padding: 0 calc(var(--u) * 4) 0 calc(var(--u) * 10);
+  padding: 0 calc(var(--u) * 12);
   border-radius: 999px;
-  background: var(--fh-bg);
+  background: var(--el-surface);
+  box-shadow: 0 0 0 1px var(--el-line);
   font-size: calc(var(--u) * 10);
   font-weight: 600;
   color: var(--fh-label);
 }
-.el__address b,
-.eb__badge b {
-  padding: calc(var(--u) * 1) calc(var(--u) * 6);
-  border-radius: 999px;
-  background: var(--eb-indigo);
-  font-family: var(--fh-pixel);
-  font-size: calc(var(--u) * 7);
-  font-weight: 400;
-  letter-spacing: 0.06em;
-  line-height: calc(var(--u) * 12);
-  text-transform: uppercase;
-  color: var(--eb-tile);
-}
 .el__screen {
-  aspect-ratio: 960 / 640;
+  position: relative;
+  aspect-ratio: 1200 / 860;
   background: var(--fh-bg);
 }
 .el__shot {
   display: block;
   width: 100%;
   height: 100%;
-  object-fit: cover;
 }
-
-/* ---------- Front: the cards ---------- */
-.eb__tile {
+/* The dashboard's own states, captured at the same pixel, laid exactly over where they happen. */
+.el__patch {
   position: absolute;
-  display: flex;
-  flex-direction: column;
-  padding: calc(var(--u) * 16);
-  overflow: hidden;
-  border: 1px solid var(--eb-edge);
-  border-radius: calc(var(--u) * 16);
-  background: var(--eb-tile);
-  box-shadow: var(--eb-shadow);
-  will-change: transform;
 }
-.eb__tile--yield {
-  left: calc(var(--u) * -30);
-  top: calc(var(--u) * 258);
-  width: calc(var(--u) * 300);
-  height: calc(var(--u) * 250);
+.el__patch--amount,
+.el__patch--card {
+  left: 21.5%;
+  top: 75%;
+  width: 32.6667%;
+  height: 25%;
 }
-.eb__tile--seats {
-  left: calc(var(--u) * 414);
-  top: calc(var(--u) * 146);
-  width: calc(var(--u) * 196);
+.el__patch--copied {
+  left: 86.3333%;
+  top: 91.8605%;
+  width: 10.6667%;
+  height: 7.907%;
 }
-.eb__tile--tests {
-  left: calc(var(--u) * 286);
-  top: calc(var(--u) * 350);
-  width: calc(var(--u) * 300);
+.el__hit {
+  position: absolute;
+  width: 0;
+  height: 0;
 }
+.el__hit--amount { left: 36.79%; top: 96.4%; }
+.el__hit--card { left: 45.125%; top: 78.95%; }
+.el__hit--copy { left: 91.46%; top: 95.81%; }
 
-.eb__head {
+/* ---------- Middle: the test log ---------- */
+.el__log {
+  position: absolute;
+  z-index: 2;
+  left: calc(var(--u) * 408);
+  top: calc(var(--u) * 40);
+  width: calc(var(--u) * 197);
+  padding: calc(var(--u) * 14) calc(var(--u) * 10) calc(var(--u) * 12);
+  border-radius: calc(var(--u) * 14);
+  background: var(--el-surface);
+  box-shadow: var(--el-e1);
+}
+.el__logHead {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: calc(var(--u) * 8);
+  padding: 0 calc(var(--u) * 4);
+  font-size: calc(var(--u) * 13);
 }
-.eb__label {
-  margin: 0;
-  font-size: calc(var(--u) * 12);
-  font-weight: 500;
-  line-height: 1.3;
-  color: var(--fh-label);
+.el__logHead b {
+  font-weight: 600;
 }
-.eb__sub {
-  margin: calc(var(--u) * 4) 0 0;
-  font-size: calc(var(--u) * 11.5);
-  line-height: 1.4;
-  color: var(--fh-body);
-}
-.eb__big {
-  margin: calc(var(--u) * 8) 0 0;
-  font-family: var(--fh-display);
-  font-size: calc(var(--u) * 40);
-  font-weight: 500;
-  line-height: 1;
-  letter-spacing: -0.03em;
-  font-variant-numeric: tabular-nums;
-  white-space: nowrap;
-}
-
-/* ---------- The yield card ---------- */
-.eb__tile--yield {
-  background:
-    radial-gradient(90% 70% at 100% 108%, var(--eb-wash-a), transparent 70%),
-    radial-gradient(70% 55% at 0% 112%, var(--eb-wash-b), transparent 70%),
-    var(--eb-tile);
-}
-.eb__live {
+.el__status {
   display: inline-flex;
   align-items: center;
-  gap: calc(var(--u) * 6);
+  gap: calc(var(--u) * 5);
   height: calc(var(--u) * 20);
   padding: 0 calc(var(--u) * 8);
-  border: 1px solid var(--eb-edge);
   border-radius: 999px;
-  background: var(--eb-tile);
-  font-size: calc(var(--u) * 10.5);
+  font-size: calc(var(--u) * 11);
   font-weight: 600;
-  color: var(--fh-ink);
+  transition: background-color 240ms ease, color 240ms ease;
 }
-/* lime is a light on dark; on white it needs a darker core to read as a dot at all */
-.eb__live i {
+.el__status i {
   width: calc(var(--u) * 6);
   height: calc(var(--u) * 6);
   border-radius: 50%;
-  background: #8fb012;
-  box-shadow: 0 0 0 calc(var(--u) * 2.5) rgb(217 242 78 / 55%);
+  background: currentColor;
 }
-.eb__chart {
+.el__status[data-state='running'] {
+  background: color-mix(in srgb, var(--el-accent) 9%, transparent);
+  color: var(--el-accent);
+}
+.el__status[data-state='passed'] {
+  background: var(--el-passSoft);
+  color: var(--el-passInk);
+}
+.el__status[data-state='passed'] i {
+  background: var(--el-live);
+}
+.el__steps {
+  display: grid;
+  gap: calc(var(--u) * 2);
+  margin: calc(var(--u) * 10) 0 0;
+  padding: 0;
+  list-style: none;
+}
+.el__step {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  gap: calc(var(--u) * 9);
+  height: calc(var(--u) * 32);
+  padding: 0 calc(var(--u) * 6);
+  border-radius: calc(var(--u) * 8);
+  font-size: calc(var(--u) * 12.5);
+  font-weight: 500;
+  color: var(--fh-label);
+  transition: background-color 240ms ease, color 240ms ease;
+}
+.el__step[data-state='running'] {
+  background: color-mix(in srgb, var(--el-accent) 6%, transparent);
+  color: var(--fh-ink);
+}
+.el__step[data-state='passed'] {
+  color: var(--fh-ink);
+}
+.el__mark {
   position: relative;
-  flex: 1 1 auto;
-  min-height: 0;
-  margin: calc(var(--u) * 12) calc(var(--u) * -16) calc(var(--u) * -16);
+  box-sizing: border-box;
+  width: calc(var(--u) * 16);
+  height: calc(var(--u) * 16);
+  border: calc(var(--u) * 1.5) solid var(--el-line);
+  border-radius: 50%;
 }
-.eb__chart svg {
+.el__mark::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  top: 46%;
+  width: 26%;
+  height: 46%;
+  border-right: calc(var(--u) * 1.4) solid var(--el-passInk);
+  border-bottom: calc(var(--u) * 1.4) solid var(--el-passInk);
+  opacity: 0;
+  transform: translate(-50%, -50%) rotate(45deg);
+}
+.el__step[data-state='running'] .el__mark {
+  border-color: var(--el-accent) var(--el-accent) var(--el-accent) transparent;
+  animation: el-turn 0.9s linear infinite;
+}
+.el__step[data-state='passed'] .el__mark {
+  border-color: var(--el-pass);
+  background: var(--el-pass);
+  animation: el-pass 380ms cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+.el__step[data-state='passed'] .el__mark::after {
+  opacity: 1;
+}
+.el__took {
+  font-size: calc(var(--u) * 11);
+  color: var(--fh-label);
+  opacity: 0;
+  transform: translateX(calc(var(--u) * -4));
+  transition: opacity 260ms ease, transform 360ms cubic-bezier(0.22, 0.61, 0.36, 1);
+}
+.el__step[data-state='passed'] .el__took {
+  opacity: 1;
+  transform: none;
+}
+@keyframes el-turn {
+  to { transform: rotate(360deg); }
+}
+@keyframes el-pass {
+  from { transform: scale(0.55); }
+  to { transform: none; }
+}
+.el__progress {
+  display: block;
+  height: calc(var(--u) * 3);
+  margin: calc(var(--u) * 10) calc(var(--u) * 4) 0;
+  overflow: hidden;
+  border-radius: 999px;
+  background: var(--el-line);
+}
+.el__progress i {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: var(--el-accent);
+  transform-origin: 0 50%;
+}
+
+/* ---------- The testers ---------- */
+.el__testers {
+  --seat: calc(var(--u) * 28);
+  --overlap: calc(var(--u) * -8);
+  position: absolute;
+  z-index: 2;
+  left: calc(var(--u) * 186);
+  top: calc(var(--u) * 448);
+  display: flex;
+  align-items: center;
+  gap: calc(var(--u) * 10);
+  padding: calc(var(--u) * 6) calc(var(--u) * 16) calc(var(--u) * 6) calc(var(--u) * 6);
+  border-radius: 999px;
+  background: var(--el-surface);
+  box-shadow: var(--el-e1);
+}
+.el__seats {
+  display: flex;
+  align-items: center;
+}
+.el__seat {
+  display: grid;
+  place-items: center;
+  flex: 0 0 auto;
+  box-sizing: border-box;
+  width: var(--seat);
+  height: var(--seat);
+  margin-left: var(--overlap);
+  overflow: hidden;
+  border: calc(var(--u) * 2) solid var(--el-surface);
+  border-radius: 50%;
+  font-size: calc(var(--u) * 9.5);
+  font-weight: 600;
+  letter-spacing: 0.02em;
+}
+.el__seat:first-child {
+  margin-left: 0;
+}
+.el__seat[data-tone='0'] { background: var(--el-tone-0); color: var(--el-tone-0-ink); }
+.el__seat[data-tone='1'] { background: var(--el-tone-1); color: var(--el-tone-1-ink); }
+.el__seat[data-tone='2'] { background: var(--el-tone-2); color: var(--el-tone-2-ink); }
+.el__seat[data-tone='3'] { background: var(--el-tone-3); color: var(--el-tone-3-ink); }
+.el__seat--open {
+  margin-left: calc(var(--u) * 4);
+  border: calc(var(--u) * 1.5) dashed color-mix(in srgb, var(--fh-muted) 70%, transparent);
+  background: none;
+  font-size: calc(var(--u) * 14);
+  font-weight: 400;
+  color: var(--fh-label);
+}
+.el__testersText {
+  display: grid;
+  font-size: calc(var(--u) * 11.5);
+  line-height: 1.35;
+  white-space: nowrap;
+  color: var(--fh-label);
+}
+.el__testersText b {
+  font-size: calc(var(--u) * 12.5);
+  font-weight: 600;
+  color: var(--fh-ink);
+}
+
+/* ---------- Near: the yield card ---------- */
+.el__yield {
+  position: absolute;
+  z-index: 3;
+  left: 0;
+  top: calc(var(--u) * 92);
+  width: calc(var(--u) * 236);
+  height: calc(var(--u) * 210);
+  padding: calc(var(--u) * 16);
+  overflow: hidden;
+  border-radius: calc(var(--u) * 18);
+  background: var(--el-surface);
+  box-shadow: var(--el-e2);
+}
+.el__yieldHead {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: calc(var(--u) * 12.5);
+  font-weight: 500;
+  color: var(--fh-label);
+}
+.el__live {
+  display: inline-flex;
+  align-items: center;
+  gap: calc(var(--u) * 6);
+  font-size: calc(var(--u) * 11);
+  font-weight: 600;
+  color: var(--fh-ink);
+}
+.el__live i {
+  width: calc(var(--u) * 6);
+  height: calc(var(--u) * 6);
+  border-radius: 50%;
+  background: var(--el-live);
+  box-shadow: 0 0 0 calc(var(--u) * 2.5) color-mix(in srgb, var(--el-pass) 60%, transparent);
+}
+.el__yieldFigure {
+  display: flex;
+  align-items: baseline;
+  margin: calc(var(--u) * 10) 0 0;
+  font-family: var(--fh-display);
+  font-size: calc(var(--u) * 38);
+  font-weight: 500;
+  letter-spacing: -0.03em;
+  line-height: 1;
+}
+.el__yieldSub {
+  display: flex;
+  align-items: baseline;
+  gap: 0.28em;
+  margin: calc(var(--u) * 8) 0 0;
+  font-size: calc(var(--u) * 12);
+  color: var(--fh-body);
+}
+.el__count {
+  color: var(--fh-ink);
+  font-weight: 600;
+}
+
+/* An odometer: every digit is a strip of 0–9 behind a one-digit slot. */
+.el__odo {
+  display: inline-flex;
+}
+.el__odoSlot {
+  display: inline-block;
+  height: 1.08em;
+  overflow: hidden;
+}
+.el__odoStrip {
+  display: flex;
+  flex-direction: column;
+}
+.el__odoStrip span,
+.el__odoSep {
+  height: 1.08em;
+  line-height: 1.08em;
+}
+
+.el__chart {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: calc(var(--u) * 92);
+}
+.el__chart svg {
   display: block;
   width: 100%;
   height: 100%;
   overflow: visible;
 }
-.eb__rule {
-  stroke: var(--eb-rule);
-  stroke-dasharray: 4 4;
+.el__rule {
+  stroke: var(--el-rule);
+  stroke-dasharray: 3 4;
   vector-effect: non-scaling-stroke;
 }
-.eb__line {
+.el__line {
   fill: none;
-  stroke: var(--eb-indigo);
+  stroke: var(--el-accent);
   stroke-width: 2;
   stroke-linecap: round;
+  stroke-linejoin: round;
   vector-effect: non-scaling-stroke;
 }
-/* The day's figure, at the end of the line: a lit point that rings each time the yield ticks. */
-.eb__tip {
-  --ring: 1;
+.el__end,
+.el__guideDot {
   position: absolute;
   width: calc(var(--u) * 10);
   height: calc(var(--u) * 10);
   margin: calc(var(--u) * -5) 0 0 calc(var(--u) * -5);
-  border: calc(var(--u) * 2) solid var(--eb-tile);
+  border: calc(var(--u) * 2) solid var(--el-surface);
   border-radius: 50%;
-  background: var(--eb-indigo);
-  box-shadow:
-    0 1px 3px rgb(18 36 51 / 20%),
-    0 0 0 calc(var(--u) * 12 * var(--ring)) color-mix(in srgb, var(--eb-indigo) calc(30% * (1 - var(--ring))), transparent);
+  background: var(--el-accent);
+  box-shadow: 0 1px 3px rgb(18 36 51 / 25%);
 }
-
-/* ---------- The seats ---------- */
-.eb__seatsLead {
-  margin: calc(var(--u) * 6) 0 0;
-  font-family: var(--fh-display);
-  font-size: calc(var(--u) * 19);
-  font-weight: 500;
-  line-height: 1.15;
-  letter-spacing: -0.02em;
-}
-.eb__seats {
-  display: flex;
-  align-items: center;
-  margin-top: calc(var(--u) * 14);
-}
-.eb__seat {
-  position: relative;
-  display: block;
-  box-sizing: border-box;
-  flex: 0 0 auto;
-  width: calc(var(--u) * 32);
-  height: calc(var(--u) * 32);
-  margin-left: calc(var(--u) * -8);
-  border: calc(var(--u) * 1.5) dashed color-mix(in srgb, var(--fh-muted) 55%, var(--fh-line));
-  border-radius: 50%;
-  background: var(--eb-tile);
-}
-.eb__seat:first-child {
-  margin-left: 0;
-}
-.eb__avatar {
+/* The reading line the pointer drags across the chart, with the day it is on. */
+.el__guide {
+  --y: 0%;
+  --ax: -50%;
   position: absolute;
-  inset: calc(var(--u) * -1.5);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border: calc(var(--u) * 2) solid var(--eb-tile);
-  border-radius: 50%;
-  font-family: var(--fh-pixel);
-  font-size: calc(var(--u) * 9);
-  letter-spacing: 0.02em;
-}
-.eb__avatar[data-tone='0'] { background: var(--eb-tone-0); color: var(--eb-tone-0-ink); }
-.eb__avatar[data-tone='1'] { background: var(--eb-tone-1); color: var(--eb-tone-1-ink); }
-.eb__avatar[data-tone='2'] { background: var(--eb-tone-2); color: var(--eb-tone-2-ink); }
-.eb__avatar[data-tone='3'] { background: var(--eb-tone-3); color: var(--eb-tone-3-ink); }
-/* The seat still free. It is the only thing on the slide that keeps asking, so it is the only
-   thing that pulses: a lime ring that breathes out from it while the slide is up. */
-.eb__seat--open {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin-left: calc(var(--u) * 6);
-  border-color: var(--fh-muted);
-  font-family: var(--fh-pixel);
-  font-size: calc(var(--u) * 8);
-  color: var(--fh-ink);
-}
-.eb__seat--open::after {
-  content: '';
-  position: absolute;
-  inset: calc(var(--u) * -2);
-  border-radius: 50%;
+  top: 0;
+  bottom: 0;
+  width: 0;
+  border-left: 1px dashed color-mix(in srgb, var(--fh-ink) 22%, transparent);
+  /* only there while the pointer is reading the chart */
+  visibility: hidden;
   opacity: 0;
 }
-.fh__slide[data-active] .eb__seat--open::after {
-  animation: eb-ask 1.8s ease-out 1.6s infinite;
+.el__guideDot {
+  left: 0;
+  top: var(--y);
 }
-@keyframes eb-ask {
-  0% { opacity: 1; box-shadow: 0 0 0 0 var(--eb-lime); }
-  70% { opacity: 0; box-shadow: 0 0 0 calc(var(--u) * 10) var(--eb-lime); }
-  100% { opacity: 0; box-shadow: 0 0 0 calc(var(--u) * 10) var(--eb-lime); }
-}
-
-/* ---------- The test run ---------- */
-.eb__counter {
-  font-family: var(--fh-pixel);
-  font-size: calc(var(--u) * 11);
-  letter-spacing: 0.06em;
-  color: var(--fh-label);
-}
-.eb__count {
-  color: var(--fh-ink);
-}
-.eb__tests {
+.el__tip {
+  position: absolute;
+  left: 0;
+  bottom: calc(100% - var(--y) + var(--u) * 12);
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: calc(var(--u) * 8);
-  margin: calc(var(--u) * 12) 0 0;
-  padding: 0;
-  list-style: none;
+  gap: calc(var(--u) * 1);
+  padding: calc(var(--u) * 6) calc(var(--u) * 9);
+  border-radius: calc(var(--u) * 8);
+  background: var(--el-tip);
+  box-shadow: 0 4px 12px -4px rgb(18 36 51 / 35%);
+  font-size: calc(var(--u) * 10.5);
+  line-height: 1.25;
+  white-space: nowrap;
+  color: color-mix(in srgb, var(--el-onTip) 62%, transparent);
+  transform: translateX(var(--ax));
 }
-.eb__test {
-  display: flex;
-  align-items: center;
-  gap: calc(var(--u) * 8);
-  height: calc(var(--u) * 34);
-  padding: 0 calc(var(--u) * 10);
-  border-radius: calc(var(--u) * 10);
-  background: var(--eb-soft);
+.el__guide[data-below] .el__tip {
+  top: calc(var(--y) + var(--u) * 12);
+  bottom: auto;
+}
+.el__tipValue {
   font-size: calc(var(--u) * 12);
   font-weight: 600;
-  white-space: nowrap;
-  color: var(--fh-label);
-  transition: color 240ms ease;
+  color: var(--el-onTip);
 }
-.eb__box {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex: 0 0 auto;
-  width: calc(var(--u) * 18);
-  height: calc(var(--u) * 18);
-  border: calc(var(--u) * 1.5) solid var(--fh-line);
-  border-radius: 50%;
-  background: var(--eb-tile);
-  transition: background-color 240ms ease, border-color 240ms ease, transform 300ms cubic-bezier(0.34, 1.56, 0.64, 1);
-}
-.eb__box svg {
-  width: 55%;
-  height: 55%;
-  fill: #122433;
+
+/* ---------- The pointer ---------- */
+.el__cursor {
+  position: absolute;
+  z-index: 4;
+  left: 0;
+  top: 0;
+  width: calc(var(--u) * 16);
+  height: calc(var(--u) * 20);
+  margin: calc(var(--u) * -1.5) 0 0 calc(var(--u) * -1.5);
+  overflow: visible;
   opacity: 0;
-  transition: opacity 200ms ease;
+  transform-origin: 10% 8%;
+  filter: drop-shadow(0 1px 1.5px rgb(18 36 51 / 30%));
 }
-/* Running: the box takes the indigo and turns, the way a step in progress does. */
-.eb__test[data-state='running'],
-.eb__test[data-state='passed'] {
-  color: var(--fh-ink);
-}
-.eb__test[data-state='running'] .eb__box {
-  border-color: var(--eb-indigo) transparent var(--eb-indigo) var(--eb-indigo);
-  animation: eb-spin 700ms linear infinite;
-}
-.eb__test[data-state='passed'] .eb__box {
-  border-color: var(--eb-lime);
-  background: var(--eb-lime);
-  transform: scale(1.08);
-}
-.eb__test[data-state='passed'] .eb__box svg {
-  opacity: 1;
-}
-@keyframes eb-spin {
-  to { transform: rotate(360deg); }
-}
-.eb__progress {
-  display: block;
-  height: calc(var(--u) * 4);
-  margin-top: calc(var(--u) * 12);
-  overflow: hidden;
-  border-radius: 999px;
-  background: var(--eb-track);
-}
-.eb__progress i {
-  display: block;
-  height: 100%;
-  border-radius: inherit;
-  background: var(--eb-indigo);
-  transform-origin: 0 50%;
+.el__cursor path {
+  fill: var(--el-tip);
+  stroke: var(--el-onTip);
+  stroke-width: 1.2;
+  stroke-linejoin: round;
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .fh__slide[data-active] .eb__seat--open::after,
-  .eb__test[data-state='running'] .eb__box {
+  .el__step[data-state='running'] .el__mark,
+  .el__step[data-state='passed'] .el__mark {
     animation: none;
   }
 }
 
-/* A phone: the window, with the yield and the seats over its foot, drawn larger. */
+/* A phone: the instruments move to the window's upper corners, so the strip of the dashboard the
+   session works in — Buy and the flash sale — stays in view; the testers row goes. */
 @container (max-width: 480px) {
   .el {
     --u: calc(100cqw / 420);
   }
   .el__window {
-    left: calc(var(--u) * 26);
-    width: calc(var(--u) * 394);
+    left: calc(var(--u) * 22);
+    top: calc(var(--u) * 44);
+    width: calc(var(--u) * 398);
   }
-  .eb__tile--yield {
-    left: 0;
-    top: calc(var(--u) * 150);
-    width: calc(var(--u) * 236);
-    height: calc(var(--u) * 205);
-  }
-  .eb__tile--seats {
+  .el__log {
     left: auto;
     right: 0;
-    top: calc(var(--u) * 196);
-    width: calc(var(--u) * 172);
+    top: calc(var(--u) * 12);
+    width: calc(var(--u) * 190);
   }
-  .eb__tile--tests,
-  .eb__live {
-    display: none;
+  .el__yield {
+    top: 0;
+    width: calc(var(--u) * 204);
+    height: calc(var(--u) * 182);
+    padding: calc(var(--u) * 14);
   }
-  .eb__big {
+  .el__yieldFigure {
     font-size: calc(var(--u) * 32);
   }
-  .eb__seatsLead {
-    font-size: calc(var(--u) * 17);
+  .el__chart {
+    height: calc(var(--u) * 76);
   }
-  .eb__seat {
-    width: calc(var(--u) * 28);
-    height: calc(var(--u) * 28);
+  .el__testers {
+    display: none;
   }
 }

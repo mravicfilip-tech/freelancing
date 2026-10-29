@@ -25,6 +25,17 @@ Task format
 
 ## In progress
 
+- ekotehnika-12 Round 6, the client's notes, logo on the building, their service vans, Najam as a rent story, even scroll. Notes in briefs/round6/client-notes.md, plan in briefs/round6/plan.md
+  - [x] Write down the client's four notes and get the van files from their Drive
+  - [x] Plan the round, the Najam beat table for Filip
+  - [ ] The real EKOTEHNIKA logo on the building
+  - [ ] Their VW Caddy in its wrap in place of the four made up vans
+  - [ ] Even scroll, three feels on localhost
+  - [ ] Filip picks a feel
+  - [ ] Filip answers the deadline, the rent scope and the short term rent line
+  - [ ] Filip says yes to the Najam beat table
+  - [ ] Build the hardest Najam beat, the warehouse aisle with the terms
+
 - ekotehnika-11 Client sees the site all white and not loading on production. Link https://ekotehnika-hero.vercel.app
   - [x] Production is public, it answers with no login
   - [x] With WebGL off the page crashed to a blank white screen, it now shows its text without the 3D

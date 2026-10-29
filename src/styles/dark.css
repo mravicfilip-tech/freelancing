@@ -146,9 +146,9 @@
 }
 /* The Earn testers slide. The window's captures have their own dark twins. Around them a shadow
    barely reads on this ground, so each layer's edge is carried by a lit rim and a hairline instead,
-   the drop only deepening what is underneath. Kong's cards keep their colours — they are the
-   offer, in the brand's lime and indigo, on any ground — and the starburst's rim turns to the
-   ground's own dark so it reads as cut out of it. */
+   the drop only deepening what is underneath; the nearer layers sit on lighter surfaces. The
+   cards' zinc greys turn to the dark surfaces, their hairlines to the dark theme's lines, and the
+   indigo lifts to the dark theme's own. */
 [data-theme='dark'] .earnSlide {
   --el-surface: var(--d-surface);
   --el-chrome: var(--d-band-a);
@@ -158,19 +158,20 @@
   --el-onAccent: #0c1219;
   --el-tip: var(--d-ink);
   --el-onTip: #0c1219;
-  --el-star: #05080c;
-  --el-starRim: var(--d-lime);
+  --el-pointer: #5b5df0;
   --el-e0:
     inset 0 1px 0 rgb(238 242 245 / 4%),
     0 0 0 1px rgb(238 242 245 / 7%),
     0 18px 36px -18px rgb(0 0 0 / 60%);
   --el-e1:
-    0 0 0 1px rgb(0 0 0 / 30%),
+    inset 0 1px 0 rgb(238 242 245 / 6%),
+    0 0 0 1px rgb(238 242 245 / 8%),
     0 2px 4px rgb(0 0 0 / 22%),
     0 14px 24px -10px rgb(0 0 0 / 45%),
     0 28px 44px -20px rgb(0 0 0 / 50%);
   --el-e2:
-    0 0 0 1px rgb(0 0 0 / 30%),
+    inset 0 1px 0 rgb(238 242 245 / 7%),
+    0 0 0 1px rgb(238 242 245 / 9%),
     0 2px 4px rgb(0 0 0 / 25%),
     0 20px 32px -12px rgb(0 0 0 / 55%),
     0 44px 64px -24px rgb(0 0 0 / 60%);
@@ -182,6 +183,29 @@
   --el-tone-2-ink: var(--d-ink);
   --el-tone-3: var(--d-ink);
   --el-tone-3-ink: #0c1219;
+  --ev-card: var(--d-surface-2);
+  --ev-sunk: var(--d-surface);
+  --ev-line: rgb(238 242 245 / 9%);
+  --ev-rule: rgb(238 242 245 / 6%);
+  --ev-ink: var(--d-ink);
+  --ev-body: #a3afba;
+  --ev-muted: var(--d-label);
+  --ev-hover: rgb(238 242 245 / 6%);
+  --ev-green: #4ade80;
+  --ev-greenSoft: rgb(34 197 94 / 12%);
+  --ev-greenLine: rgb(34 197 94 / 28%);
+  --ev-red: #f87171;
+  --ev-redSoft: rgb(239 68 68 / 12%);
+  --ev-redLine: rgb(239 68 68 / 28%);
+  --ev-accent: var(--d-indigo);
+  --ev-accentSoft: rgb(144 146 244 / 14%);
+  --ev-accentLine: rgb(144 146 244 / 30%);
+  --ev-barTop: #a4a6f7;
+  --ev-barFoot: var(--d-indigo);
+  --ev-barLeft: #34395c;
+  --ev-wire: rgb(238 242 245 / 10%);
+  --ev-trace: rgb(144 146 244 / 26%);
+  --ev-halo: rgb(144 146 244 / 16%);
 }
 /* The tester sign-up takes the hero's tokens already; only its warning red is a light-page red, too
    deep to read on this ground, and the scrim has to darken a page that is already dark. */

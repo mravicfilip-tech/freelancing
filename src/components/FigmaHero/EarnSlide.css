@@ -1,4 +1,4 @@
-/* The hero's fourth slide: a beta test session on the Remittix dashboard, with Kong's bento laid
+/* The hero's fourth slide: a beta test session on the Remittix dashboard, with two cards laid
    over it (EarnSlide.tsx).
 
    Drawn on a 605 × 520 stage, the slide's own design size, and scaled with it: every length is a
@@ -6,10 +6,11 @@
    to a tablet. Under 480px of stage it re-cuts to the window and the two cards, and the unit grows
    to suit them.
 
-   The window is the far layer and barely lifts; the cards are Kong's — flat colour fields with no
-   border, set hard on whatever is under them — so all they carry is a contact line and one drop in
-   the page's ink. Their type is Kong's kind: heavy and wide for a heading, heavy and condensed for
-   a figure, set in Bricolage Grotesque's width axis ('Earn Poster'). */
+   Depth is three heights, and each has its own shadow rather than one grey shadow under everything:
+   the window is the far layer and barely lifts, the far card sits above it, and the near card is
+   nearest. Every shadow is a stack of thin layers in the page's ink — a contact line that holds the
+   edge, then wider and fainter ones — so what lies underneath is shaded, not smudged. The cards
+   themselves are in EarnCards.css. */
 .earnSlide {
   --el-surface: #fff;
   --el-chrome: #f6f7f9;
@@ -19,16 +20,7 @@
   --el-onAccent: #fff;
   --el-tip: #122433;
   --el-onTip: #fff;
-  /* Kong's three: the lime, the violet (here the site's indigo, lifted), and the black of the
-     starburst, each with its own ink. */
-  --el-lime: #d9f24e;
-  --el-onLime: #0b0f14;
-  --el-violetTop: #7577f4;
-  --el-violetFoot: #4a4cdc;
-  --el-onViolet: #fff;
-  --el-violetWell: rgb(255 255 255 / 16%);
-  --el-star: #0b0f14;
-  --el-starRim: #fff;
+  --el-pointer: #4042d2;
   --el-e0:
     0 0 0 1px rgb(18 36 51 / 7%),
     0 1px 2px rgb(18 36 51 / 4%),
@@ -164,263 +156,6 @@
 .el__hit--card { left: 45.125%; top: 78.95%; }
 .el__hit--copy { left: 91.46%; top: 95.81%; }
 
-/* ---------- Kong's violet card: the perks ---------- */
-.el__perks {
-  position: absolute;
-  z-index: 2;
-  left: calc(var(--u) * 414);
-  top: calc(var(--u) * 40);
-  width: calc(var(--u) * 191);
-  padding: calc(var(--u) * 17) calc(var(--u) * 15) calc(var(--u) * 15);
-  border-radius: calc(var(--u) * 15);
-  background: linear-gradient(160deg, var(--el-violetTop), var(--el-violetFoot));
-  box-shadow: var(--el-e1);
-  color: var(--el-onViolet);
-}
-.el__perksHead {
-  display: block;
-  font-family: 'Earn Poster', var(--fh-sans);
-  font-size: calc(var(--u) * 15.5);
-  font-weight: 800;
-  font-stretch: 100%;
-  line-height: 1.02;
-  letter-spacing: 0.01em;
-  text-transform: uppercase;
-}
-.el__perksCopy {
-  margin: calc(var(--u) * 8) 0 0;
-  font-size: calc(var(--u) * 9);
-  font-weight: 500;
-  line-height: 1.4;
-  color: rgb(255 255 255 / 88%);
-}
-.el__perkList {
-  display: grid;
-  gap: calc(var(--u) * 6);
-  margin: calc(var(--u) * 13) 0 0;
-  padding: 0;
-  list-style: none;
-}
-.el__perkList li {
-  display: grid;
-  grid-template-columns: calc(var(--u) * 28) 1fr;
-  gap: calc(var(--u) * 6);
-  height: calc(var(--u) * 28);
-}
-.el__perkIcon,
-.el__perk {
-  display: grid;
-  place-items: center;
-  border-radius: calc(var(--u) * 8);
-  background: var(--el-violetWell);
-}
-.el__perkIcon svg {
-  width: calc(var(--u) * 13);
-  height: calc(var(--u) * 13);
-  fill: none;
-  stroke: currentColor;
-  stroke-width: 2.2;
-  stroke-linecap: round;
-  stroke-linejoin: round;
-}
-.el__perk {
-  font-family: 'Earn Poster', var(--fh-sans);
-  font-size: calc(var(--u) * 7.5);
-  font-weight: 800;
-  font-stretch: 100%;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-}
-
-/* ---------- Kong's lime card: early access ---------- */
-.el__access {
-  position: absolute;
-  z-index: 3;
-  left: 0;
-  top: calc(var(--u) * 76);
-  display: grid;
-  grid-template-columns: auto 1fr;
-  grid-template-rows: auto auto 1fr;
-  column-gap: calc(var(--u) * 10);
-  width: calc(var(--u) * 322);
-  height: calc(var(--u) * 196);
-  padding: calc(var(--u) * 17) 0 calc(var(--u) * 15) calc(var(--u) * 18);
-  overflow: hidden;
-  border-radius: calc(var(--u) * 15);
-  background: var(--el-lime);
-  box-shadow: var(--el-e2);
-  color: var(--el-onLime);
-}
-.el__accessHead {
-  grid-column: 1 / -1;
-  font-family: 'Earn Poster', var(--fh-sans);
-  font-size: calc(var(--u) * 15.5);
-  font-weight: 800;
-  font-stretch: 100%;
-  line-height: 1;
-  letter-spacing: 0.01em;
-  text-transform: uppercase;
-}
-.el__accessCopy {
-  grid-column: 1 / -1;
-  max-width: calc(var(--u) * 268);
-  margin: calc(var(--u) * 8) 0 0;
-  font-size: calc(var(--u) * 9);
-  font-weight: 500;
-  line-height: 1.4;
-}
-/* Kong's "50% / REV SHARE": the figure and its label set to one width, the label under it. */
-.el__deal {
-  align-self: end;
-  display: grid;
-  justify-items: start;
-  font-family: 'Earn Poster', var(--fh-sans);
-  font-weight: 800;
-  font-stretch: 75%;
-  line-height: 0.86;
-  text-transform: uppercase;
-}
-.el__big {
-  display: flex;
-  align-items: flex-start;
-  font-size: calc(var(--u) * 64);
-  letter-spacing: -0.035em;
-}
-/* The point is the one thing in the figure that is easy to lose; it gets room either side. */
-.el__big .el__odoSep {
-  margin: 0 0.05em;
-}
-.el__bigLabel {
-  margin-top: calc(var(--u) * 3);
-  /* set so the label runs exactly the figure's width, as Kong's REV SHARE does under its 50% */
-  font-size: calc(var(--u) * 30.3);
-  font-stretch: 100%;
-  letter-spacing: -0.01em;
-}
-/* The reels run off the card's right edge, as Kong's partner rows do, and fade in from the left. */
-.el__reels {
-  align-self: end;
-  display: grid;
-  gap: calc(var(--u) * 7);
-  min-width: 0;
-  padding-bottom: calc(var(--u) * 2);
-  mask-image: linear-gradient(90deg, transparent, #000 22%);
-}
-.el__reel {
-  overflow: hidden;
-}
-.el__reelTrack {
-  display: flex;
-  align-items: center;
-  gap: calc(var(--u) * 9);
-  width: max-content;
-  height: calc(var(--u) * 19);
-  animation: el-reel 16s linear infinite;
-}
-.el__reel[data-dir='right'] .el__reelTrack {
-  animation-direction: reverse;
-  animation-duration: 19s;
-}
-/* The reels only run while the slide is up. */
-.fh__slide:not([data-active]) .el__reelTrack {
-  animation-play-state: paused;
-}
-@keyframes el-reel {
-  to { transform: translateX(calc(-50% - var(--u) * 4.5)); }
-}
-.el__reelName {
-  font-size: calc(var(--u) * 14);
-  line-height: 1;
-  white-space: nowrap;
-}
-/* Kong's partners each keep their own lettering; the pools get three. */
-.el__reelName[data-face='0'] {
-  font-family: 'Earn Poster', var(--fh-sans);
-  font-weight: 800;
-  font-stretch: 75%;
-  font-size: calc(var(--u) * 17);
-  text-transform: uppercase;
-}
-.el__reelName[data-face='1'] {
-  font-weight: 600;
-  letter-spacing: -0.02em;
-}
-.el__reelName[data-face='2'] {
-  font-family: 'Earn Poster', var(--fh-sans);
-  font-weight: 800;
-  font-stretch: 100%;
-  font-size: calc(var(--u) * 12);
-  letter-spacing: 0.04em;
-  text-transform: uppercase;
-}
-.el__reelSep {
-  flex: none;
-  width: calc(var(--u) * 14);
-  height: calc(var(--u) * 14);
-}
-.el__reelSep--bolt {
-  fill: currentColor;
-}
-.el__reelSep--wave {
-  fill: none;
-  stroke: currentColor;
-  stroke-width: 2.6;
-  stroke-linecap: round;
-  stroke-linejoin: round;
-}
-.el__reelMark {
-  flex: none;
-  width: calc(var(--u) * 22);
-  height: auto;
-}
-
-/* ---------- Kong's starburst: the seats left ---------- */
-.el__sticker {
-  position: absolute;
-  z-index: 4;
-  left: calc(var(--u) * 276);
-  top: calc(var(--u) * 222);
-  display: grid;
-  place-items: center;
-  align-content: center;
-  width: calc(var(--u) * 84);
-  height: calc(var(--u) * 84);
-  rotate: -9deg;
-  color: var(--el-lime);
-  filter: drop-shadow(0 calc(var(--u) * 6) calc(var(--u) * 8) rgb(11 15 20 / 28%));
-}
-.el__sticker svg {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-}
-.el__sticker polygon {
-  fill: var(--el-star);
-  stroke: var(--el-starRim);
-  stroke-width: 4;
-  stroke-linejoin: round;
-}
-.el__stickerNum {
-  position: relative;
-  font-family: 'Earn Poster', var(--fh-sans);
-  font-size: calc(var(--u) * 27);
-  font-weight: 800;
-  font-stretch: 75%;
-  line-height: 1;
-  letter-spacing: -0.01em;
-}
-.el__stickerLabel {
-  position: relative;
-  margin-top: calc(var(--u) * 1);
-  font-family: 'Earn Poster', var(--fh-sans);
-  font-size: calc(var(--u) * 6.5);
-  font-weight: 800;
-  font-stretch: 100%;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-}
-
 /* ---------- The testers ---------- */
 .el__testers {
   --seat: calc(var(--u) * 28);
@@ -484,27 +219,7 @@
   color: var(--fh-ink);
 }
 
-/* An odometer: every digit is a strip of 0–9 behind a one-digit slot. */
-.el__odo {
-  display: inline-flex;
-}
-.el__odoSlot {
-  display: inline-block;
-  height: 1.08em;
-  overflow: hidden;
-}
-.el__odoStrip {
-  display: flex;
-  flex-direction: column;
-}
-.el__odoStrip span,
-.el__odoSep {
-  height: 1.08em;
-  line-height: 1.08em;
-}
-
-
-/* ---------- The pointer ---------- */
+/* ---------- The pointer: Medusa's, an arrow with its owner's name ---------- */
 .el__cursor {
   position: absolute;
   z-index: 4;
@@ -513,27 +228,40 @@
   width: calc(var(--u) * 16);
   height: calc(var(--u) * 20);
   margin: calc(var(--u) * -1.5) 0 0 calc(var(--u) * -1.5);
-  overflow: visible;
   opacity: 0;
   transform-origin: 10% 8%;
+}
+.el__cursor svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
   filter: drop-shadow(0 1px 1.5px rgb(18 36 51 / 30%));
 }
 .el__cursor path {
-  fill: var(--el-tip);
-  stroke: var(--el-onTip);
+  fill: var(--el-pointer);
+  stroke: #fff;
   stroke-width: 1.2;
   stroke-linejoin: round;
 }
-
-@media (prefers-reduced-motion: reduce) {
-  .el__reelTrack {
-    animation: none;
-  }
+.el__cursorTag {
+  position: absolute;
+  left: calc(var(--u) * 13);
+  top: calc(var(--u) * 17);
+  padding: calc(var(--u) * 2) calc(var(--u) * 5);
+  border-radius: calc(var(--u) * 3);
+  background: var(--el-pointer);
+  box-shadow: 0 2px 6px -2px rgb(18 36 51 / 35%);
+  font-family: var(--fh-sans);
+  font-size: calc(var(--u) * 8.5);
+  font-weight: 500;
+  line-height: 1.3;
+  color: #fff;
+  white-space: nowrap;
 }
 
-/* A phone: the cards move to the window's upper corners, smaller, so the strip of the dashboard
-   the session works in — Buy and the flash sale — stays in view; the testers row goes, and the
-   seat is taken on the sticker. */
+/* A phone: the window steps down and in so the cards can take its upper corners (EarnCards.css);
+   the testers row goes. */
 @container (max-width: 480px) {
   .el {
     --u: calc(100cqw / 420);
@@ -542,44 +270,6 @@
     left: calc(var(--u) * 22);
     top: calc(var(--u) * 44);
     width: calc(var(--u) * 398);
-  }
-  .el__perks {
-    left: auto;
-    right: 0;
-    top: calc(var(--u) * 6);
-    width: calc(var(--u) * 168);
-    padding: calc(var(--u) * 14) calc(var(--u) * 12) calc(var(--u) * 12);
-  }
-  .el__perksCopy {
-    display: none;
-  }
-  .el__perkList {
-    margin-top: calc(var(--u) * 10);
-  }
-  .el__access {
-    top: 0;
-    width: calc(var(--u) * 238);
-    height: calc(var(--u) * 196);
-    padding: calc(var(--u) * 15) 0 calc(var(--u) * 13) calc(var(--u) * 15);
-  }
-  .el__accessCopy {
-    max-width: calc(var(--u) * 205);
-  }
-  /* Too narrow for the reels to read as more than a sliver; the figure carries the card alone. */
-  .el__reels {
-    display: none;
-  }
-  .el__big {
-    font-size: calc(var(--u) * 56);
-  }
-  .el__bigLabel {
-    font-size: calc(var(--u) * 26.5);
-  }
-  .el__sticker {
-    left: calc(var(--u) * 196);
-    top: calc(var(--u) * 160);
-    width: calc(var(--u) * 76);
-    height: calc(var(--u) * 76);
   }
   .el__testers {
     display: none;

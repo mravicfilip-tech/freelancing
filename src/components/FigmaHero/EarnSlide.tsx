@@ -13,8 +13,9 @@ import './EarnSlide.css';
  * code copied — so when the session touches the dashboard, the dashboard answers with its own UI
  * rather than with something drawn to look like it. The page runs on far below 860px, so it is
  * captured trimmed: the Buy card ends at its amount, the flash sale at its promo code (without its
- * paragraph), and nothing after that row is drawn, so the window's foot is the page's own margin
- * rather than a cut. In front of it lie two cards (EarnCards, in three versions picked with
+ * paragraph, and with its title on one line — the countdown gives up some of its spacing for it),
+ * and nothing after that row is drawn, so the window's foot is the page's own margin rather than a
+ * cut. In front of it lie two cards (EarnCards, in three versions picked with
  * `?earn=1|2|3`).
  *
  * Every movement has a cause. The pointer — a beta tester, named like Medusa's — picks $500,

@@ -677,17 +677,22 @@ function buildCaddy() {
   for (let i = 0; i < pos.count; i++) pos.setZ(i, (pos.getZ(i) * halfAt(pos.getY(i))) / CADDY.half);
   body.computeVertexNormals();
   const poly = (pts: [number, number][]) => new THREE.Shape(pts.map(([x, y]) => new THREE.Vector2(x, y)));
-  // the cab door window with its black frame and a lighter band high on the glass
-  const frame = flank(poly([[1.03, 1.04], [1.03, 1.3], [0.6, 1.59], [-0.19, 1.66], [-0.19, 1.04]]), 0.012);
-  const glass = flank(poly([[0.98, 1.08], [0.98, 1.28], [0.58, 1.55], [-0.14, 1.62], [-0.14, 1.08]]), 0.018);
-  const band = flank(poly([[0.78, 1.4], [0.58, 1.55], [-0.14, 1.62], [-0.14, 1.49], [0.62, 1.43]]), 0.022);
-  // the windscreen on the slope from the cowl at (1.22, 1.13) to the roof edge at (0.4, 1.66), and the tail face
+  // the cab door window with its black frame and a lighter band high on the glass. The front of the window stays under
+  // the windscreen's slope, from the cowl at (1.22, 1.13) to the roof edge at (0.4, 1.66), so none of it rises above the
+  // body, the glass is 0.09 under that line and the frame 0.045.
+  const frame = flank(poly([[1.015, 1.045], [1.015, 1.205], [0.6, 1.485], [0.38, 1.605], [-0.19, 1.66], [-0.19, 1.045]]), 0.012);
+  const glass = flank(poly([[0.98, 1.08], [0.98, 1.19], [0.58, 1.455], [0.38, 1.57], [-0.14, 1.62], [-0.14, 1.08]]), 0.018);
+  const band = flank(poly([[0.84, 1.275], [0.58, 1.455], [0.38, 1.57], [-0.14, 1.62], [-0.14, 1.5], [0.4, 1.45], [0.62, 1.34]]), 0.022);
+  // the windscreen on that slope, between the pillars, and the tail face
+  // The glass stops short of the roof edge and of the cowl, so the roof runs over the top of it and the bonnet meets it
+  // below, and it keeps clear of the flanks, with the black seal showing all round it.
   const n = new THREE.Vector2(0.54, 0.84);
-  const slope = (inset: number, off: number) => {
-    const lo = [1.22 + n.x * off, 1.13 + n.y * off] as const;
-    const hi = [0.4 + n.x * off, 1.66 + n.y * off] as const;
-    const zb = halfAt(1.13) - inset;
-    const zt = halfAt(1.66) - inset;
+  const slope = (inset: number, off: number, t0: number, t1: number) => {
+    const at = (t: number) => [1.22 - 0.82 * t + n.x * off, 1.13 + 0.53 * t + n.y * off] as const;
+    const lo = at(t0);
+    const hi = at(t1);
+    const zb = halfAt(lo[1]) - inset;
+    const zt = halfAt(hi[1]) - inset;
     return quad([[lo[0], lo[1], -zb], [lo[0], lo[1], zb], [hi[0], hi[1], zt], [hi[0], hi[1], -zt]], -1);
   };
   const tail = (off: number) => {
@@ -705,8 +710,9 @@ function buildCaddy() {
     frame,
     glass,
     band,
-    screenSeal: slope(0.07, 0.004),
-    screen: slope(0.13, 0.008),
+    screenSeal: slope(0.06, 0.004, 0.03, 0.96),
+    screen: slope(0.12, 0.008, 0.08, 0.91),
+    screenBand: slope(0.12, 0.011, 0.78, 0.91),
     tail: tail(0.006),
     arch,
   };
@@ -751,6 +757,7 @@ export function Van({ x, z, yaw = 0, scale = 1 }: { x: number; z: number; yaw?: 
       <mesh geometry={c.tail} material={mats.rear} />
       <mesh geometry={c.screenSeal} material={vanDark} />
       <mesh geometry={c.screen} material={vanGlass} />
+      <mesh geometry={c.screenBand} material={vanGlassHi} />
       {[0.3, -0.35].map((zz) => (
         <Bar key={zz} p={[1.061, 1.257, zz]} s={[0.012, 0.03, 0.62]} m={vanGraphite} r={[0, 0, 1.0]} />
       ))}

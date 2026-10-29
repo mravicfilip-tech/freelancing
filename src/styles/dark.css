@@ -144,51 +144,56 @@
 [data-theme='dark'] .bars__chip--light .bars__chipInner {
   background: var(--bars-chip-lead);
 }
-/* The Earn testers slide. The window's captures have their own dark twins. Around them a shadow
-   barely reads on this ground, so each layer's edge is carried by a lit rim and a hairline instead,
-   the drop only deepening what is underneath; the nearer layers sit on lighter surfaces. The
-   indigo lifts to the dark theme's own, and the pointer and the chart's reading turn light. */
+/* The Earn testers slide (Tenor's construction). The cards turn to the dark surfaces with their
+   slab edges stepping down into the ground instead of up out of it, the indigo lifts to the dark
+   theme's own, and the plate's mist becomes the dark band's so the dashboard sits back in it. */
 [data-theme='dark'] .earnSlide {
-  --el-surface: var(--d-surface);
-  --el-chrome: var(--d-band-a);
-  --el-line: rgb(238 242 245 / 8%);
-  --el-rule: rgb(238 242 245 / 6%);
-  --el-accent: var(--d-indigo);
-  --el-onAccent: #0c1219;
-  --el-passSoft: #2c3310;
-  --el-passInk: #122433;
-  --el-tip: var(--d-ink);
-  --el-onTip: #0c1219;
-  --el-e0:
-    inset 0 1px 0 rgb(238 242 245 / 4%),
-    0 0 0 1px rgb(238 242 245 / 7%),
-    0 18px 36px -18px rgb(0 0 0 / 60%);
-  --el-e1:
-    inset 0 1px 0 rgb(238 242 245 / 6%),
-    0 0 0 1px rgb(238 242 245 / 8%),
-    0 2px 4px rgb(0 0 0 / 22%),
-    0 14px 24px -10px rgb(0 0 0 / 45%),
-    0 28px 44px -20px rgb(0 0 0 / 50%);
-  --el-e2:
-    inset 0 1px 0 rgb(238 242 245 / 7%),
-    0 0 0 1px rgb(238 242 245 / 9%),
-    0 2px 4px rgb(0 0 0 / 25%),
-    0 20px 32px -12px rgb(0 0 0 / 55%),
-    0 44px 64px -24px rgb(0 0 0 / 60%);
-  --el-tone-0: #26285a;
-  --el-tone-0-ink: #b9bbff;
-  --el-tone-1: #2c3310;
-  --el-tone-1-ink: var(--d-lime);
-  --el-tone-2: var(--d-il-line);
-  --el-tone-2-ink: var(--d-ink);
-  --el-tone-3: var(--d-ink);
-  --el-tone-3-ink: #0c1219;
+  --tn-ink: var(--d-ink);
+  --tn-body: #a3afba;
+  --tn-muted: var(--d-body);
+  --tn-surface: var(--d-surface-2);
+  --tn-field: var(--d-surface);
+  --tn-pill: #26303b;
+  --tn-plate: #0f161e;
+  --tn-mist: 12 18 25;
+  --tn-shade: 0 0 0;
+  --tn-e1: #2a3440;
+  --tn-e2: #27313c;
+  --tn-e3: #242d38;
+  --tn-e4: #212a34;
+  --tn-e5: #1e2630;
+  --tn-e6: #1b232c;
+  --tn-e7: #192029;
+  --tn-e8: #161d25;
+  --tn-e9: #141a22;
+  --tn-e10: #11171e;
+  --tn-chipEdge1: #2c3642;
+  --tn-chipEdge2: #222a34;
+  --tn-ctaTop: #f4f7f9;
+  --tn-ctaFoot: #d9e0e6;
+  --tn-ctaEdge1: #9aa6b1;
+  --tn-ctaEdge2: #6c7783;
+  --tn-onCta: #0c1219;
+  --tn-track: #262a52;
+  --tn-trackEdge: #1d2042;
+  --tn-fill: #4b4e8f;
+  --tn-fillEdge: #3b3e74;
+  --tn-strong: var(--d-indigo);
+  --tn-strongEdge: #6e71d8;
+  --tn-greyTrack: #232c37;
+  --tn-greyTrackEdge: #1a222b;
+  --tn-greyFill: #36414e;
+  --tn-greyFillEdge: #2a3440;
+  --tn-band: rgb(144 146 244 / 9%);
 }
-[data-theme='dark'] .el__yield {
-  --el-surface: var(--d-surface-2);
+[data-theme='dark'] .tn__frame {
+  box-shadow: inset 0 0 0 1px rgb(238 242 245 / 7%);
 }
-[data-theme='dark'] .el__status[data-state='passed'] {
-  color: var(--d-lime);
+[data-theme='dark'] .tn__fx {
+  color: #0c1219;
+}
+[data-theme='dark'] .tn__row--chosen .tn__label {
+  color: #0c1219;
 }
 /* The tester sign-up takes the hero's tokens already; only its warning red is a light-page red, too
    deep to read on this ground, and the scrim has to darken a page that is already dark. */

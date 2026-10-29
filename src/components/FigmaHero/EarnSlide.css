@@ -1,61 +1,61 @@
-/* The hero's fourth slide: a beta test session on the Remittix dashboard (EarnSlide.tsx).
+/* The hero's fourth slide: RTX Earn, on Tenor's hero (EarnSlide.tsx).
+
+   Tenor's construction is taken over value for value: one isometric plane (Tenor's own matrix,
+   scaled by --k) carrying two cards that sit 26 units apart on it; each card is a 24-radius plate
+   whose thickness is ten stacked one-unit offsets, then a tight contact shadow and one long drop;
+   every bar, chip, tab and button on them is a smaller slab of the same kind. Tenor's warm neutrals
+   are turned to the site's cool ones and its blues to the site's indigo; the geometry, the layering
+   and the type scale are Tenor's.
 
    Drawn on a 605 × 520 stage, the slide's own design size, and scaled with it: every length is a
-   multiple of `--u`, one design pixel at the stage's width, so the overlaps hold from a wide screen
-   to a tablet. Under 480px of stage it re-cuts to the window and the two instruments that carry the
-   story, and the unit grows to suit them.
-
-   Depth is three heights, and each has its own shadow rather than one grey shadow under everything:
-   the window is the far layer and barely lifts, the test log sits above it, and the yield card is
-   nearest. Every shadow is a stack of thin layers in the page's ink — a contact line that holds the
-   edge, then wider and fainter ones — so what lies underneath is shaded, not smudged. Radii follow
-   the same order: the nearer the layer, the rounder its corners. */
+   multiple of --u, one design pixel at the stage's width. Under 480px of stage the rate card goes
+   and the deposit card is drawn larger on its own. */
 .earnSlide {
-  --el-surface: #fff;
-  --el-chrome: #f6f7f9;
-  --el-line: rgb(18 36 51 / 8%);
-  --el-rule: rgb(18 36 51 / 7%);
-  --el-accent: #4042d2;
-  --el-onAccent: #fff;
-  --el-pass: #d9f24e;
-  --el-passSoft: #eef6c7;
-  --el-passInk: #122433;
-  --el-live: #8fb012;
-  --el-tip: #122433;
-  --el-onTip: #fff;
-  --el-e0:
-    0 0 0 1px rgb(18 36 51 / 7%),
-    0 1px 2px rgb(18 36 51 / 4%),
-    0 6px 16px -6px rgb(18 36 51 / 8%),
-    0 18px 32px -16px rgb(18 36 51 / 10%);
-  --el-e1:
-    0 0 0 1px rgb(18 36 51 / 7%),
-    0 1px 1px rgb(18 36 51 / 3%),
-    0 2px 4px -1px rgb(18 36 51 / 4%),
-    0 6px 10px -3px rgb(18 36 51 / 5%),
-    0 14px 22px -8px rgb(18 36 51 / 8%),
-    0 28px 40px -18px rgb(18 36 51 / 10%);
-  --el-e2:
-    0 0 0 1px rgb(18 36 51 / 7%),
-    0 1px 1px rgb(18 36 51 / 3%),
-    0 2px 4px -1px rgb(18 36 51 / 4%),
-    0 8px 14px -4px rgb(18 36 51 / 6%),
-    0 20px 32px -10px rgb(18 36 51 / 10%),
-    0 44px 64px -24px rgb(18 36 51 / 16%);
-  --el-tone-0: #e3e4fd;
-  --el-tone-0-ink: #4042d2;
-  --el-tone-1: #eef6c7;
-  --el-tone-1-ink: #55620f;
-  --el-tone-2: #e6e9ed;
-  --el-tone-2-ink: #122433;
-  --el-tone-3: #122433;
-  --el-tone-3-ink: #fff;
+  --tn-ink: #122433;
+  --tn-body: #3d4954;
+  --tn-muted: #6b7682;
+  --tn-surface: #fff;
+  --tn-field: #f5f6f8;
+  --tn-pill: #eff1f4;
+  /* Tenor's plate is a cool blue mist; the dashboard is seen through it */
+  --tn-plate: #dfe5ee;
+  --tn-mist: 214 222 235;
+  --tn-shade: 18 36 51;
+  /* the slab's ten edge tones, top of the edge to its foot */
+  --tn-e1: #dadee3;
+  --tn-e2: #d6dbe1;
+  --tn-e3: #d2d7de;
+  --tn-e4: #ced3db;
+  --tn-e5: #cad0d8;
+  --tn-e6: #c6ccd5;
+  --tn-e7: #c0c6d0;
+  --tn-e8: #bbc1cc;
+  --tn-e9: #b6bcc8;
+  --tn-e10: #aeb5c2;
+  --tn-chipEdge1: #dde1e6;
+  --tn-chipEdge2: #d0d5dc;
+  --tn-ctaTop: #1e3242;
+  --tn-ctaFoot: #0d1b26;
+  --tn-ctaEdge1: #60707e;
+  --tn-ctaEdge2: #3a4855;
+  --tn-onCta: #fff;
+  /* bars: the fixed terms in the site's indigo, the chosen one at full strength, live pools in grey */
+  --tn-track: #dfe0fb;
+  --tn-trackEdge: #c6c8f4;
+  --tn-fill: #b3b5f5;
+  --tn-fillEdge: #9799e8;
+  --tn-strong: #4042d2;
+  --tn-strongEdge: #3234b2;
+  --tn-greyTrack: #e3e6ea;
+  --tn-greyTrackEdge: #cfd4da;
+  --tn-greyFill: #c9ced6;
+  --tn-greyFillEdge: #b2b8c2;
+  --tn-band: rgb(64 66 210 / 6%);
   position: absolute;
   inset: 0;
   container-type: inline-size;
-  /* The stage grows into the room beside the copy. It grows mostly leftwards and a little up, from
-     a point near its right edge, so it reaches toward the headline without touching it and stays
-     inside the dashed frame. How far depends on how much room the copy leaves at each width. */
+  /* The stage grows into the room beside the copy: mostly leftwards and a little up, from a point
+     near its right edge, so it reaches toward the headline without touching it. */
   transform-origin: 85% 42%;
 }
 /* Below 1281 the slide is flush with the frame's right edge, so it grows leftwards only. */
@@ -66,521 +66,416 @@
 @media (min-width: 1380px) and (max-width: 1439px) { .earnSlide { transform: scale(1.24); } }
 @media (min-width: 1440px) { .earnSlide { transform: scale(1.3); } }
 
-.el {
+.tn {
   --u: calc(100cqw / 605);
+  /* one step of a slab's edge, and the plane's scale against Tenor's own */
+  --e: calc(var(--u) * 0.6991);
   position: absolute;
   inset: 0;
   font-family: var(--fh-sans);
-  color: var(--fh-ink);
+  color: var(--tn-ink);
   font-variant-numeric: tabular-nums;
 }
 
-/* ---------- Far: the window ---------- */
-.el__window {
+/* ---------- The plate ---------- */
+.tn__plate {
   position: absolute;
   z-index: 1;
-  left: calc(var(--u) * 40);
-  top: 0;
-  width: calc(var(--u) * 565);
+  left: calc(var(--u) * 70);
+  top: calc(var(--u) * 14);
+  right: calc(var(--u) * -24);
+  bottom: calc(var(--u) * 18);
   overflow: hidden;
-  border-radius: calc(var(--u) * 12);
-  background: var(--el-chrome);
-  box-shadow: var(--el-e0);
+  border-radius: calc(var(--u) * 32) 0 0 calc(var(--u) * 32);
+  background: var(--tn-plate);
+  box-shadow: 0 0 0 1px rgb(var(--tn-shade) / 5%);
 }
-.el__bar {
-  position: relative;
+.tn__shot {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: 0 0;
+}
+/* The dashboard reads at the top and falls back toward the foot, where the cards lie on it. */
+.tn__mist {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgb(var(--tn-mist) / 22%) 0%, rgb(var(--tn-mist) / 58%) 50%, rgb(var(--tn-mist) / 88%) 100%);
+}
+.tn__frame {
+  position: absolute;
+  left: calc(var(--u) * 16);
+  top: calc(var(--u) * 16);
+  right: calc(var(--u) * -2);
+  bottom: calc(var(--u) * 16);
+  border-radius: calc(var(--u) * 20) 0 0 calc(var(--u) * 20);
+  box-shadow: inset 0 0 0 1px rgb(255 255 255 / 75%);
+}
+
+/* ---------- The plane ---------- */
+.tn__plane {
+  position: absolute;
+  z-index: 2;
+  inset: 0;
+}
+/* Tenor's isometric matrix, at two thirds of its size. Both cards are laid out flat on the rig and
+   the rig is turned onto the plane, so their text, shadows and edges all lie in it. */
+.tn__rig {
+  position: absolute;
+  left: calc(var(--u) * -8);
+  top: calc(var(--u) * 384);
+  width: calc(var(--u) * 656);
+  height: calc(var(--u) * 327.5);
+  transform: matrix(0.636031, -0.367535, 0.636031, 0.367535, 0, 0);
+  transform-origin: 0 0;
+}
+
+/* A card's slab: an inner lip, ten edge steps, a contact shadow and the long drop. */
+.tn__panel,
+.tn__book {
+  position: absolute;
+  top: 0;
+  height: calc(var(--u) * 327.5);
+  border-radius: calc(var(--u) * 24);
+  background: var(--tn-surface);
+  box-shadow:
+    rgb(var(--tn-shade) / 10%) calc(var(--u) * 3) 0 calc(var(--u) * 3) calc(var(--u) * -2) inset,
+    rgb(var(--tn-shade) / 12%) 0 calc(var(--u) * -3) calc(var(--u) * 3) calc(var(--u) * -2) inset,
+    var(--tn-e1) calc(var(--e) * -1) calc(var(--e) * 1) 0 0,
+    var(--tn-e2) calc(var(--e) * -2) calc(var(--e) * 2) 0 0,
+    var(--tn-e3) calc(var(--e) * -3) calc(var(--e) * 3) 0 0,
+    var(--tn-e4) calc(var(--e) * -4) calc(var(--e) * 4) 0 0,
+    var(--tn-e5) calc(var(--e) * -5) calc(var(--e) * 5) 0 0,
+    var(--tn-e6) calc(var(--e) * -6) calc(var(--e) * 6) 0 0,
+    var(--tn-e7) calc(var(--e) * -7) calc(var(--e) * 7) 0 0,
+    var(--tn-e8) calc(var(--e) * -8) calc(var(--e) * 8) 0 0,
+    var(--tn-e9) calc(var(--e) * -9) calc(var(--e) * 9) 0 0,
+    var(--tn-e10) calc(var(--e) * -10) calc(var(--e) * 10) 0 0,
+    rgb(var(--tn-shade) / 26%) calc(var(--u) * -7.19) calc(var(--u) * 7.19) calc(var(--u) * 6) calc(var(--u) * -2),
+    rgb(24 36 60 / 22%) calc(var(--u) * 10.71) calc(var(--u) * 33.29) calc(var(--u) * 48) 0;
+}
+
+/* ---------- The deposit card (Tenor's borrow panel) ---------- */
+.tn__panel {
+  left: 0;
+  width: calc(var(--u) * 290);
+  display: flex;
+  flex-direction: column;
+  gap: calc(var(--u) * 9);
+  padding: calc(var(--u) * 14);
+}
+.tn__tabs {
+  display: flex;
+  gap: calc(var(--u) * 2);
+  align-self: flex-start;
+  padding: calc(var(--u) * 3);
+  border-radius: 999px;
+  background: var(--tn-pill);
+  box-shadow: rgb(var(--tn-shade) / 7.5%) calc(var(--u) * -0.85) calc(var(--u) * 0.85) calc(var(--u) * 1.25) 0 inset;
+  font-size: calc(var(--u) * 12);
+  font-weight: 600;
+  line-height: 1;
+  color: var(--tn-muted);
+}
+.tn__tab {
+  padding: calc(var(--u) * 6) calc(var(--u) * 12);
+  border-radius: 999px;
+}
+.tn__tab--on {
+  background: var(--tn-surface);
+  color: var(--tn-ink);
+  box-shadow:
+    var(--tn-chipEdge1) calc(var(--u) * -0.3) calc(var(--u) * 0.3) 0 0,
+    var(--tn-chipEdge1) calc(var(--u) * -0.6) calc(var(--u) * 0.6) 0 0,
+    rgb(var(--tn-shade) / 10%) calc(var(--u) * -0.65) calc(var(--u) * 1.65) calc(var(--u) * 2) 0;
+}
+.tn__field {
+  display: flex;
+  flex-direction: column;
+  padding: calc(var(--u) * 10) calc(var(--u) * 12) calc(var(--u) * 11);
+  border-radius: calc(var(--u) * 12);
+  background: var(--tn-field);
+  box-shadow:
+    rgb(var(--tn-shade) / 8%) calc(var(--u) * -1) calc(var(--u) * 1) calc(var(--u) * 1.25) 0 inset,
+    rgb(var(--tn-shade) / 2.4%) 0 0 0 calc(var(--u) * 1) inset;
+}
+.tn__k {
+  font-size: calc(var(--u) * 11.5);
+  font-weight: 500;
+  line-height: 1;
+  color: var(--tn-muted);
+}
+.tn__v {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: calc(var(--u) * 10);
+  margin-top: calc(var(--u) * 7);
+}
+.tn__num {
+  font-size: calc(var(--u) * 20);
+  font-weight: 500;
+  letter-spacing: -0.02em;
+  line-height: 1;
+}
+.tn__chip {
+  display: flex;
+  align-items: center;
+  gap: calc(var(--u) * 6);
+  padding: calc(var(--u) * 4) calc(var(--u) * 9) calc(var(--u) * 4) calc(var(--u) * 4);
+  border-radius: 999px;
+  background: var(--tn-surface);
+  box-shadow:
+    rgb(var(--tn-shade) / 8%) 0 0 0 calc(var(--u) * 1) inset,
+    var(--tn-chipEdge1) calc(var(--u) * -0.3) calc(var(--u) * 0.3) 0 0,
+    var(--tn-chipEdge2) calc(var(--u) * -0.6) calc(var(--u) * 0.6) 0 0,
+    rgb(var(--tn-shade) / 12%) calc(var(--u) * -0.84) calc(var(--u) * 1.44) calc(var(--u) * 1.6) 0;
+  font-size: calc(var(--u) * 12);
+  font-weight: 600;
+  line-height: 1;
+}
+.tn__coin {
+  display: block;
+  flex: 0 0 auto;
+  width: calc(var(--u) * 18);
+  height: calc(var(--u) * 18);
+}
+.tn__coin circle {
+  fill: #2775ca;
+}
+.tn__coin path {
+  fill: #fff;
+}
+.tn__term {
+  display: flex;
+  align-items: center;
+  gap: calc(var(--u) * 8);
+  padding: calc(var(--u) * 3) calc(var(--u) * 4) calc(var(--u) * 1);
+}
+.tn__d {
+  padding: calc(var(--u) * 6) calc(var(--u) * 8);
+  border-radius: calc(var(--u) * 8);
+  background: var(--tn-pill);
+  box-shadow:
+    rgb(var(--tn-shade) / 8%) calc(var(--u) * -1) calc(var(--u) * 1) calc(var(--u) * 1.25) 0 inset,
+    rgb(var(--tn-shade) / 2.4%) 0 0 0 calc(var(--u) * 1) inset;
+  font-size: calc(var(--u) * 12);
+  font-weight: 500;
+  line-height: 1;
+  color: var(--tn-body);
+}
+.tn__r {
+  display: flex;
+  align-items: center;
+  gap: calc(var(--u) * 6);
+  margin-left: auto;
+}
+.tn__rate {
+  font-size: calc(var(--u) * 15);
+  font-weight: 600;
+  line-height: 1;
+}
+.tn__fx {
+  padding: calc(var(--u) * 4) calc(var(--u) * 6);
+  border-radius: 999px;
+  background: var(--tn-ink);
+  font-size: calc(var(--u) * 10);
+  font-weight: 600;
+  line-height: 1;
+  color: var(--tn-surface);
+}
+.tn__cta {
   display: flex;
   align-items: center;
   justify-content: center;
-  height: calc(var(--u) * 28);
-  border-bottom: 1px solid var(--el-line);
-}
-.el__dots {
-  position: absolute;
-  left: calc(var(--u) * 12);
-  top: 50%;
-  display: flex;
-  gap: calc(var(--u) * 6);
-  transform: translateY(-50%);
-}
-.el__dots i {
-  width: calc(var(--u) * 8);
-  height: calc(var(--u) * 8);
-  border-radius: 50%;
-  background: var(--el-line);
-}
-.el__address {
-  display: inline-flex;
-  align-items: center;
-  gap: calc(var(--u) * 6);
-  height: calc(var(--u) * 18);
-  padding: 0 calc(var(--u) * 12);
+  height: calc(var(--u) * 42);
+  margin-top: calc(var(--u) * 2);
   border-radius: 999px;
-  background: var(--el-surface);
-  box-shadow: 0 0 0 1px var(--el-line);
-  font-size: calc(var(--u) * 10);
+  background: linear-gradient(var(--tn-ctaTop), var(--tn-ctaFoot));
+  box-shadow:
+    rgb(255 255 255 / 18%) 0 calc(var(--u) * 1) 0 0 inset,
+    rgb(0 0 0 / 35%) 0 calc(var(--u) * -1) 0 0 inset,
+    var(--tn-ctaEdge1) calc(var(--u) * -0.5) calc(var(--u) * 0.5) 0 0,
+    var(--tn-ctaEdge2) calc(var(--u) * -1) calc(var(--u) * 1) 0 0,
+    rgb(var(--tn-shade) / 20%) calc(var(--u) * -1.6) calc(var(--u) * 2.6) calc(var(--u) * 2.6) 0;
+  font-size: calc(var(--u) * 13.5);
   font-weight: 600;
-  color: var(--fh-label);
-}
-.el__screen {
-  position: relative;
-  aspect-ratio: 1200 / 860;
-  background: var(--fh-bg);
-}
-.el__shot {
-  display: block;
-  width: 100%;
-  height: 100%;
-}
-/* The dashboard's own states, captured at the same pixel, laid exactly over where they happen. */
-.el__patch {
-  position: absolute;
-}
-.el__patch--amount,
-.el__patch--card {
-  left: 21.5%;
-  top: 75%;
-  width: 32.6667%;
-  height: 25%;
-}
-.el__patch--copied {
-  left: 86.3333%;
-  top: 91.8605%;
-  width: 10.6667%;
-  height: 7.907%;
-}
-.el__hit {
-  position: absolute;
-  width: 0;
-  height: 0;
-}
-.el__hit--amount { left: 36.79%; top: 96.4%; }
-.el__hit--card { left: 45.125%; top: 78.95%; }
-.el__hit--copy { left: 91.46%; top: 95.81%; }
-
-/* ---------- Middle: the test log ---------- */
-.el__log {
-  position: absolute;
-  z-index: 2;
-  left: calc(var(--u) * 408);
-  top: calc(var(--u) * 40);
-  width: calc(var(--u) * 197);
-  padding: calc(var(--u) * 14) calc(var(--u) * 10) calc(var(--u) * 12);
-  border-radius: calc(var(--u) * 14);
-  background: var(--el-surface);
-  box-shadow: var(--el-e1);
-}
-.el__logHead {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 0 calc(var(--u) * 4);
-  font-size: calc(var(--u) * 13);
-}
-.el__logHead b {
-  font-weight: 600;
-}
-.el__status {
-  display: inline-flex;
-  align-items: center;
-  gap: calc(var(--u) * 5);
-  height: calc(var(--u) * 20);
-  padding: 0 calc(var(--u) * 8);
-  border-radius: 999px;
-  font-size: calc(var(--u) * 11);
-  font-weight: 600;
-  transition: background-color 240ms ease, color 240ms ease;
-}
-.el__status i {
-  width: calc(var(--u) * 6);
-  height: calc(var(--u) * 6);
-  border-radius: 50%;
-  background: currentColor;
-}
-.el__status[data-state='running'] {
-  background: color-mix(in srgb, var(--el-accent) 9%, transparent);
-  color: var(--el-accent);
-}
-.el__status[data-state='passed'] {
-  background: var(--el-passSoft);
-  color: var(--el-passInk);
-}
-.el__status[data-state='passed'] i {
-  background: var(--el-live);
-}
-.el__steps {
-  display: grid;
-  gap: calc(var(--u) * 2);
-  margin: calc(var(--u) * 10) 0 0;
-  padding: 0;
-  list-style: none;
-}
-.el__step {
-  display: grid;
-  grid-template-columns: auto 1fr auto;
-  align-items: center;
-  gap: calc(var(--u) * 9);
-  height: calc(var(--u) * 32);
-  padding: 0 calc(var(--u) * 6);
-  border-radius: calc(var(--u) * 8);
-  font-size: calc(var(--u) * 12.5);
-  font-weight: 500;
-  color: var(--fh-label);
-  transition: background-color 240ms ease, color 240ms ease;
-}
-.el__step[data-state='running'] {
-  background: color-mix(in srgb, var(--el-accent) 6%, transparent);
-  color: var(--fh-ink);
-}
-.el__step[data-state='passed'] {
-  color: var(--fh-ink);
-}
-.el__mark {
-  position: relative;
-  box-sizing: border-box;
-  width: calc(var(--u) * 16);
-  height: calc(var(--u) * 16);
-  border: calc(var(--u) * 1.5) solid var(--el-line);
-  border-radius: 50%;
-}
-.el__mark::after {
-  content: '';
-  position: absolute;
-  left: 50%;
-  top: 46%;
-  width: 26%;
-  height: 46%;
-  border-right: calc(var(--u) * 1.4) solid var(--el-passInk);
-  border-bottom: calc(var(--u) * 1.4) solid var(--el-passInk);
-  opacity: 0;
-  transform: translate(-50%, -50%) rotate(45deg);
-}
-.el__step[data-state='running'] .el__mark {
-  border-color: var(--el-accent) var(--el-accent) var(--el-accent) transparent;
-  animation: el-turn 0.9s linear infinite;
-}
-.el__step[data-state='passed'] .el__mark {
-  border-color: var(--el-pass);
-  background: var(--el-pass);
-  animation: el-pass 380ms cubic-bezier(0.34, 1.56, 0.64, 1);
-}
-.el__step[data-state='passed'] .el__mark::after {
-  opacity: 1;
-}
-.el__took {
-  font-size: calc(var(--u) * 11);
-  color: var(--fh-label);
-  opacity: 0;
-  transform: translateX(calc(var(--u) * -4));
-  transition: opacity 260ms ease, transform 360ms cubic-bezier(0.22, 0.61, 0.36, 1);
-}
-.el__step[data-state='passed'] .el__took {
-  opacity: 1;
-  transform: none;
-}
-@keyframes el-turn {
-  to { transform: rotate(360deg); }
-}
-@keyframes el-pass {
-  from { transform: scale(0.55); }
-  to { transform: none; }
-}
-.el__progress {
-  display: block;
-  height: calc(var(--u) * 3);
-  margin: calc(var(--u) * 10) calc(var(--u) * 4) 0;
-  overflow: hidden;
-  border-radius: 999px;
-  background: var(--el-line);
-}
-.el__progress i {
-  display: block;
-  height: 100%;
-  border-radius: inherit;
-  background: var(--el-accent);
-  transform-origin: 0 50%;
+  letter-spacing: -0.005em;
+  color: var(--tn-onCta);
 }
 
-/* ---------- The testers ---------- */
-.el__testers {
-  --seat: calc(var(--u) * 28);
-  --overlap: calc(var(--u) * -8);
-  position: absolute;
-  z-index: 2;
-  left: calc(var(--u) * 186);
-  top: calc(var(--u) * 448);
+/* ---------- The rate card (Tenor's order book) ---------- */
+.tn__book {
+  left: calc(var(--u) * 316);
+  width: calc(var(--u) * 340);
+}
+.tn__head {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   gap: calc(var(--u) * 10);
-  padding: calc(var(--u) * 6) calc(var(--u) * 16) calc(var(--u) * 6) calc(var(--u) * 6);
-  border-radius: 999px;
-  background: var(--el-surface);
-  box-shadow: var(--el-e1);
+  padding: calc(var(--u) * 20) calc(var(--u) * 20) calc(var(--u) * 4);
 }
-.el__seats {
-  display: flex;
-  align-items: center;
+.tn__head .tn__coin {
+  width: calc(var(--u) * 31);
+  height: calc(var(--u) * 31);
 }
-.el__seat {
-  display: grid;
-  place-items: center;
-  flex: 0 0 auto;
-  box-sizing: border-box;
-  width: var(--seat);
-  height: var(--seat);
-  margin-left: var(--overlap);
-  overflow: hidden;
-  border: calc(var(--u) * 2) solid var(--el-surface);
-  border-radius: 50%;
-  font-size: calc(var(--u) * 9.5);
-  font-weight: 600;
-  letter-spacing: 0.02em;
-}
-.el__seat:first-child {
-  margin-left: 0;
-}
-.el__seat[data-tone='0'] { background: var(--el-tone-0); color: var(--el-tone-0-ink); }
-.el__seat[data-tone='1'] { background: var(--el-tone-1); color: var(--el-tone-1-ink); }
-.el__seat[data-tone='2'] { background: var(--el-tone-2); color: var(--el-tone-2-ink); }
-.el__seat[data-tone='3'] { background: var(--el-tone-3); color: var(--el-tone-3-ink); }
-.el__seat--open {
-  margin-left: calc(var(--u) * 4);
-  border: calc(var(--u) * 1.5) dashed color-mix(in srgb, var(--fh-muted) 70%, transparent);
-  background: none;
-  font-size: calc(var(--u) * 14);
-  font-weight: 400;
-  color: var(--fh-label);
-}
-.el__testersText {
-  display: grid;
-  font-size: calc(var(--u) * 11.5);
-  line-height: 1.35;
-  white-space: nowrap;
-  color: var(--fh-label);
-}
-.el__testersText b {
-  font-size: calc(var(--u) * 12.5);
-  font-weight: 600;
-  color: var(--fh-ink);
-}
-
-/* ---------- Near: the yield card ---------- */
-.el__yield {
-  position: absolute;
-  z-index: 3;
-  left: 0;
-  top: calc(var(--u) * 92);
-  width: calc(var(--u) * 236);
-  height: calc(var(--u) * 210);
-  padding: calc(var(--u) * 16);
-  overflow: hidden;
-  border-radius: calc(var(--u) * 18);
-  background: var(--el-surface);
-  box-shadow: var(--el-e2);
-}
-.el__yieldHead {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  font-size: calc(var(--u) * 12.5);
-  font-weight: 500;
-  color: var(--fh-label);
-}
-.el__live {
-  display: inline-flex;
-  align-items: center;
-  gap: calc(var(--u) * 6);
-  font-size: calc(var(--u) * 11);
-  font-weight: 600;
-  color: var(--fh-ink);
-}
-.el__live i {
-  width: calc(var(--u) * 6);
-  height: calc(var(--u) * 6);
-  border-radius: 50%;
-  background: var(--el-live);
-  box-shadow: 0 0 0 calc(var(--u) * 2.5) color-mix(in srgb, var(--el-pass) 60%, transparent);
-}
-.el__yieldFigure {
-  display: flex;
-  align-items: baseline;
-  margin: calc(var(--u) * 10) 0 0;
-  font-family: var(--fh-display);
-  font-size: calc(var(--u) * 38);
-  font-weight: 500;
-  letter-spacing: -0.03em;
-  line-height: 1;
-}
-.el__yieldSub {
-  display: flex;
-  align-items: baseline;
-  gap: 0.28em;
-  margin: calc(var(--u) * 8) 0 0;
-  font-size: calc(var(--u) * 12);
-  color: var(--fh-body);
-}
-.el__count {
-  color: var(--fh-ink);
-  font-weight: 600;
-}
-
-/* An odometer: every digit is a strip of 0–9 behind a one-digit slot. */
-.el__odo {
-  display: inline-flex;
-}
-.el__odoSlot {
-  display: inline-block;
-  height: 1.08em;
-  overflow: hidden;
-}
-.el__odoStrip {
+.tn__mk {
   display: flex;
   flex-direction: column;
+  gap: calc(var(--u) * 2);
+  font-size: calc(var(--u) * 15);
+  line-height: 1;
 }
-.el__odoStrip span,
-.el__odoSep {
-  height: 1.08em;
-  line-height: 1.08em;
-}
-
-.el__chart {
-  position: absolute;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  height: calc(var(--u) * 92);
-}
-.el__chart svg {
-  display: block;
-  width: 100%;
-  height: 100%;
-  overflow: visible;
-}
-.el__rule {
-  stroke: var(--el-rule);
-  stroke-dasharray: 3 4;
-  vector-effect: non-scaling-stroke;
-}
-.el__line {
-  fill: none;
-  stroke: var(--el-accent);
-  stroke-width: 2;
-  stroke-linecap: round;
-  stroke-linejoin: round;
-  vector-effect: non-scaling-stroke;
-}
-.el__end,
-.el__guideDot {
-  position: absolute;
-  width: calc(var(--u) * 10);
-  height: calc(var(--u) * 10);
-  margin: calc(var(--u) * -5) 0 0 calc(var(--u) * -5);
-  border: calc(var(--u) * 2) solid var(--el-surface);
-  border-radius: 50%;
-  background: var(--el-accent);
-  box-shadow: 0 1px 3px rgb(18 36 51 / 25%);
-}
-/* The reading line the pointer drags across the chart, with the day it is on. */
-.el__guide {
-  --y: 0%;
-  --ax: -50%;
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  width: 0;
-  border-left: 1px dashed color-mix(in srgb, var(--fh-ink) 22%, transparent);
-  /* only there while the pointer is reading the chart */
-  visibility: hidden;
-  opacity: 0;
-}
-.el__guideDot {
-  left: 0;
-  top: var(--y);
-}
-.el__tip {
-  position: absolute;
-  left: 0;
-  bottom: calc(100% - var(--y) + var(--u) * 12);
-  display: grid;
-  gap: calc(var(--u) * 1);
-  padding: calc(var(--u) * 6) calc(var(--u) * 9);
-  border-radius: calc(var(--u) * 8);
-  background: var(--el-tip);
-  box-shadow: 0 4px 12px -4px rgb(18 36 51 / 35%);
-  font-size: calc(var(--u) * 10.5);
-  line-height: 1.25;
-  white-space: nowrap;
-  color: color-mix(in srgb, var(--el-onTip) 62%, transparent);
-  transform: translateX(var(--ax));
-}
-.el__guide[data-below] .el__tip {
-  top: calc(var(--y) + var(--u) * 12);
-  bottom: auto;
-}
-.el__tipValue {
-  font-size: calc(var(--u) * 12);
+.tn__mk b {
   font-weight: 600;
-  color: var(--el-onTip);
 }
-
-/* ---------- The pointer ---------- */
-.el__cursor {
+.tn__tm {
+  display: flex;
+  align-items: center;
+  gap: calc(var(--u) * 6);
+  font-size: calc(var(--u) * 11.5);
+  font-weight: 500;
+  color: var(--tn-body);
+}
+.tn__dd {
+  padding: calc(var(--u) * 2) calc(var(--u) * 6);
+  border-radius: 999px;
+  background: var(--tn-pill);
+  box-shadow:
+    rgb(var(--tn-shade) / 8%) calc(var(--u) * -1) calc(var(--u) * 1) calc(var(--u) * 1.25) 0 inset,
+    rgb(var(--tn-shade) / 2.4%) 0 0 0 calc(var(--u) * 1) inset;
+  font-size: calc(var(--u) * 10.5);
+}
+.tn__rows {
+  padding-top: calc(var(--u) * 14);
+}
+.tn__rows--live {
+  padding: 0 0 calc(var(--u) * 14);
+}
+.tn__row {
+  position: relative;
+  display: grid;
+  grid-template-columns: calc(var(--u) * 232) calc(var(--u) * 54);
+  align-items: center;
+  gap: calc(var(--u) * 14);
+  height: calc(var(--u) * 29);
+  padding: 0 calc(var(--u) * 20);
+  font-size: calc(var(--u) * 13);
+  font-weight: 500;
+  line-height: 1;
+  color: var(--tn-body);
+}
+/* the term the deposit card is taking: lit across the card, as Tenor lights its best offer */
+.tn__row--chosen::before {
+  content: '';
   position: absolute;
-  z-index: 4;
+  inset: 0;
+  background: var(--tn-band);
+}
+.tn__slot {
+  position: relative;
+  height: calc(var(--u) * 20);
+}
+.tn__bar {
+  --bar: var(--tn-track);
+  --edge: var(--tn-trackEdge);
+  position: absolute;
   left: 0;
   top: 0;
-  width: calc(var(--u) * 16);
-  height: calc(var(--u) * 20);
-  margin: calc(var(--u) * -1.5) 0 0 calc(var(--u) * -1.5);
-  overflow: visible;
-  opacity: 0;
-  transform-origin: 10% 8%;
-  filter: drop-shadow(0 1px 1.5px rgb(18 36 51 / 30%));
+  height: 100%;
+  border-radius: calc(var(--u) * 4);
+  background: var(--bar);
+  box-shadow:
+    var(--edge) calc(var(--u) * -0.25) calc(var(--u) * 0.25) 0 0,
+    var(--edge) calc(var(--u) * -0.5) calc(var(--u) * 0.5) 0 0,
+    var(--edge) calc(var(--u) * -0.75) calc(var(--u) * 0.75) 0 0,
+    var(--edge) calc(var(--u) * -1) calc(var(--u) * 1) 0 0,
+    rgb(var(--tn-shade) / 12%) calc(var(--u) * -1.08) calc(var(--u) * 2.08) calc(var(--u) * 1.6) 0;
+  transform: translate(calc(var(--u) * 0.6), calc(var(--u) * -0.6));
+  transform-origin: 0 50%;
 }
-.el__cursor path {
-  fill: var(--el-tip);
-  stroke: var(--el-onTip);
-  stroke-width: 1.2;
-  stroke-linejoin: round;
+.tn__bar--fill {
+  --bar: var(--tn-fill);
+  --edge: var(--tn-fillEdge);
+}
+.tn__row--chosen .tn__bar--track {
+  --bar: var(--tn-fill);
+  --edge: var(--tn-fillEdge);
+}
+.tn__row--chosen .tn__bar--fill {
+  --bar: var(--tn-strong);
+  --edge: var(--tn-strongEdge);
+}
+.tn__row--live .tn__bar--track {
+  --bar: var(--tn-greyTrack);
+  --edge: var(--tn-greyTrackEdge);
+}
+.tn__row--live .tn__bar--fill {
+  --bar: var(--tn-greyFill);
+  --edge: var(--tn-greyFillEdge);
+}
+.tn__label {
+  position: absolute;
+  left: calc(var(--u) * 7);
+  top: 50%;
+  font-size: calc(var(--u) * 10.5);
+  font-weight: 500;
+  white-space: nowrap;
+  color: var(--tn-body);
+  transform: translate(calc(var(--u) * 0.6), calc(-50% - var(--u) * 0.6));
+}
+.tn__row--chosen .tn__label {
+  color: var(--tn-surface);
+}
+.tn__badge {
+  position: absolute;
+  right: 0;
+  top: 50%;
+  display: flex;
+  align-items: center;
+  height: calc(var(--u) * 17);
+  padding: 0 calc(var(--u) * 6);
+  border-radius: calc(var(--u) * 4);
+  background: var(--tn-pill);
+  box-shadow: rgb(var(--tn-shade) / 9%) 0 0 0 calc(var(--u) * 1) inset;
+  font-size: calc(var(--u) * 10);
+  font-weight: 500;
+  white-space: nowrap;
+  color: var(--tn-body);
+  transform: translateY(-50%);
+}
+.tn__apy {
+  justify-self: end;
+  color: var(--tn-ink);
+}
+.tn__row--live .tn__apy {
+  color: var(--tn-muted);
+}
+.tn__sep {
+  height: calc(var(--u) * 22);
+  margin: 0 calc(var(--u) * 20);
+  background: linear-gradient(rgb(var(--tn-shade) / 8%), rgb(var(--tn-shade) / 8%)) center / 100% 1px no-repeat;
 }
 
-@media (prefers-reduced-motion: reduce) {
-  .el__step[data-state='running'] .el__mark,
-  .el__step[data-state='passed'] .el__mark {
-    animation: none;
-  }
-}
-
-/* A phone: the instruments move to the window's upper corners, so the strip of the dashboard the
-   session works in — Buy and the flash sale — stays in view; the testers row goes. */
+/* A phone: the deposit card alone, larger, over the dashboard's foot. */
 @container (max-width: 480px) {
-  .el {
+  .tn {
     --u: calc(100cqw / 420);
   }
-  .el__window {
-    left: calc(var(--u) * 22);
-    top: calc(var(--u) * 44);
-    width: calc(var(--u) * 398);
-  }
-  .el__log {
-    left: auto;
-    right: 0;
-    top: calc(var(--u) * 12);
-    width: calc(var(--u) * 190);
-  }
-  .el__yield {
+  .tn__plate {
+    left: calc(var(--u) * 40);
     top: 0;
-    width: calc(var(--u) * 204);
-    height: calc(var(--u) * 182);
-    padding: calc(var(--u) * 14);
+    right: calc(var(--u) * -10);
+    bottom: calc(var(--u) * 40);
+    border-radius: calc(var(--u) * 24) 0 0 calc(var(--u) * 24);
   }
-  .el__yieldFigure {
-    font-size: calc(var(--u) * 32);
+  .tn__rig {
+    left: calc(var(--u) * 14);
+    top: calc(var(--u) * 220);
   }
-  .el__chart {
-    height: calc(var(--u) * 76);
-  }
-  .el__testers {
+  .tn__book {
     display: none;
   }
 }

@@ -8,6 +8,7 @@ import { track } from '../../../story/scenes/sistem/tracks';
 import type { SceneProps } from '../../clock';
 import { BP, NP, WH_C, routeAt, truckS, AISLES } from './route';
 import { focusAt, toWorld } from './atplan';
+import { najamCam, type Cam } from './najamplan';
 import { DARK_BG, PAPER, ease, isDark, lerp, range, rad, softTexture, uOf } from './kit';
 
 export type CamState = { target: THREE.Vector3; d: number; shadow: number };
@@ -41,9 +42,10 @@ const AT_D = 11.8;
 const AT_YAW = [80, 74];
 const AT_PITCH = -16;
 const AT_SX = 0.22;
-// The rental floor runs across the whole width with its bays, the fifteen trucks standing on the lower part of the frame.
+// The rental floor of T runs across the whole width with its bays, the fifteen trucks standing on the lower part of the frame.
 // The hall's end wall stands behind the last bay row and its foot lands on the grid rule under the spec row (y 543 at 1080),
 // so the title, lede and spec row sit on the wall itself. Nothing is masked or faded, the camera only places the world.
+// N is the Najam warehouse of najam.tsx now and has its own camera, najamCam in najamplan.ts, which ends on this pose.
 const N_D = 52;
 const N_SY = 0.305;
 const nShift = (_w: number, _h: number) => ({ sx: 0, sy: N_SY, d: N_D });
@@ -58,6 +60,7 @@ const orbit = (t: THREE.Vector3, d: number, yawDeg: number, pitchDeg: number, ou
 export type Pose = { pos: THREE.Vector3; yaw: number; pitch: number; sx: number; sy: number; target: THREE.Vector3; d: number; shadow: number };
 
 const tmp = { t: new THREE.Vector3(), p0: new THREE.Vector3() };
+const najamPose: Cam = { x: 0, y: 0, z: 0, d: 0, yaw: 0, pitch: 0, sx: 0, sy: 0, shadow: 0 };
 
 export function poseAt(u: number, pos: number, out: Pose, w = 1920, h = 1080): Pose {
   const n = nShift(w, h);
@@ -131,13 +134,15 @@ export function poseAt(u: number, pos: number, out: Pose, w = 1920, h = 1080): P
     out.shadow = 8;
     orbit(t, out.d, out.yaw, out.pitch, out.pos);
   } else if (u < 13) {
-    t.set(NP.x - 0.5, 0.9, NP.z);
-    out.d = n.d;
-    out.yaw = 90;
-    out.pitch = -24;
-    out.sx = n.sx;
-    out.sy = n.sy;
-    out.shadow = 18;
+    // Najam, the warehouse. The rental floor was a hold, the warehouse's camera is a pure function of k like the rest, see najamCam.
+    const c = najamCam(u, najamPose);
+    t.set(NP.x + c.x, c.y, NP.z + c.z);
+    out.d = c.d;
+    out.yaw = c.yaw;
+    out.pitch = c.pitch;
+    out.sx = c.sx;
+    out.sy = c.sy;
+    out.shadow = c.shadow;
     orbit(t, out.d, out.yaw, out.pitch, out.pos);
   } else {
     // T and AT. The depot camera glides down the aisle to about 4 m and then follows the order, three quarter view, the

@@ -153,6 +153,18 @@ export const najam = {
     { figure: 'Održavanje', label: 'Uključeno u najam' },
     { figure: 'Zamena', label: 'Viljuškara tokom najma' },
   ] satisfies Fact[],
+  // The long term offer, round 6, the terms pane of N3 and N4. The months are the client's own terms, 36, 48, 60 and 72. The title and
+  // the line are new words for this story.
+  terms: {
+    title: ['Dugoročni', 'najam'], // dummy
+    text: 'Izaberite period, od 36 do 72 meseci.', // dummy
+    cells: [
+      { figure: '36', label: 'meseci' }, // the client's own terms
+      { figure: '48', label: 'meseci' },
+      { figure: '60', label: 'meseci' },
+      { figure: '72', label: 'meseci' },
+    ] satisfies Fact[],
+  },
 };
 
 export const automatizacija = {

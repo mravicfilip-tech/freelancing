@@ -904,6 +904,47 @@
   gap: 24px;
 }
 
+/* ---- Najam terms, NT. The spec row of N as a selector, the lit cell drawn like the active Prodaja tab, the 2px ink rule along its
+   bottom wiping in from the left in 600ms and its figure and label in ink, the others in text grey. --- */
+.s2-nt .cell {
+  position: relative;
+}
+
+.s2-nt .cell .fig,
+.s2-nt .cell .lab {
+  color: var(--fg2);
+  transition: color 200ms;
+}
+
+.s2-nt .cell[data-lit] .fig,
+.s2-nt .cell[data-lit] .lab {
+  color: var(--fg);
+}
+
+/* over the row's own hairline, 1px below the cell like the tab's rule */
+.s2-nt .cell::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -1px;
+  height: 2px;
+  background: var(--fg);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 600ms var(--ease-wipe);
+}
+
+/* a cell's own box ends 24px short of the next vertical, the column gap, so its rule runs on over the gap to the line, as the tab's
+   rule runs from line to line */
+.s2-nt .cell:not(:last-child)::before {
+  right: -24px;
+}
+
+.s2-nt .cell[data-lit]::before {
+  transform: scaleX(1);
+}
+
 /* ---- the first screen, every beat's reveal is at its end in reduced motion ---- */
 .s2-still .s2-layer {
   visibility: visible;
@@ -912,7 +953,8 @@
 @media (prefers-reduced-motion: reduce) {
   .p-fig,
   .p-fig *,
-  .tab::before {
+  .tab::before,
+  .s2-nt .cell::before {
     transition: none;
   }
 }

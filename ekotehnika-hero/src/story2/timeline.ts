@@ -1,8 +1,8 @@
 // Storyline 2, from studio/clients/ekotehnika/briefs/hero-rebuild/storyline-2-plan.md and Filip's voice over.
-// One pinned story of 12,000px, then the products range and the footer as normal page sections.
+// One pinned story of 14,500px, then the products range and the footer as normal page sections.
 // Beats marked hold are "stop scroll" moments, the scene rests while the text and tiles fill the open space.
 
-export const LENGTH = 13000;
+export const LENGTH = 14500;
 
 export type Section = 'hero' | 'kompanija' | 'prodaja' | 'servis' | 'najam' | 'automatizacija';
 
@@ -28,14 +28,37 @@ export const TIMELINE: BeatSpan[] = [
   { id: 'B', section: 'prodaja', start: 7600, end: 8000, note: 'Camera zooms into a black part of the forklift' },
   { id: 'S', section: 'servis', start: 8000, end: 10000, hold: true, note: 'The X50 lit on the black ground, then from k 0.5 the servis map, Čurug and Vrčin and their roads' },
   { id: 'L', section: 'servis', start: 10000, end: 10600, note: 'A very large fork across the frame lifts the next section up' },
-  { id: 'N', section: 'najam', start: 10600, end: 11500, hold: true, note: 'Many forklifts ready for rent, a grid filling row by row' },
-  { id: 'T', section: 'najam', start: 11500, end: 11900, note: 'The grid drops away, the dark floor rises, dotted paths draw' },
-  { id: 'AT', section: 'automatizacija', start: 11900, end: 13000, hold: true, note: 'Small robots carry boxes out and back along dotted paths' },
+  { id: 'N', section: 'najam', start: 10600, end: 13000, hold: true, note: 'Najam as one rent story, a working warehouse in four sub beats, see N_SUB' },
+  { id: 'T', section: 'najam', start: 13000, end: 13400, note: 'The grid drops away, the dark floor rises, dotted paths draw' },
+  { id: 'AT', section: 'automatizacija', start: 13400, end: 14500, hold: true, note: 'Small robots carry boxes out and back along dotted paths' },
 ];
 
 // The servis map, the second half of S, round 5. Not a beat of its own, so every beat index and every u in the scenes stays,
 // but a layer of the shell with its own span, from S k 0.5 to L k 0.5, where the fork has lifted Najam over it.
 export const SERVIS_MAP: BeatSpan = { id: 'SM', section: 'servis', start: 9000, end: 10300, hold: true, note: 'The servis map, two centres and twelve roads to the ends of Serbia' };
+
+// Najam, round 6. N grew from 900px to 2,400px and tells one rent story in a working warehouse, four sub beats of the one beat so
+// every beat index and every u in the scenes stays. The windows are shares of N, k of N, and the scene and the shell both read
+// them here. N1 the lorry arrives at the docks, N2 the pallets come off it, N3 the pallets go into the racks and the term cells
+// light one by one, N4 the lorry is loaded and leaves. Round 6 builds N3 only, the other three show the warehouse standing still.
+export const N_SUB = { N1: [0, 0.25], N2: [0.25, 0.5], N3: [0.5, 0.79], N4: [0.79, 1] } as const;
+
+// The four pallets that go up into the racks in N3, as k of N, the moment each one is set down. The scene lands a pallet on these
+// marks and the lit term cell in the shell moves on at the same marks, 36 months at the first and 72 at the fourth. The last one is
+// the reach truck at the top beam.
+export const N_PALLETS = [0.585, 0.652, 0.718, 0.776] as const;
+
+// The terms pane, a layer only span over N3 and N4. It is not a beat of its own, so the beat indices stay, but a layer of the shell
+// that comes in as N3 begins and stays to the end of N, where T takes the floor.
+const N_BEAT = TIMELINE.find((b) => b.id === 'N')!;
+export const NAJAM_TERMS: BeatSpan = {
+  id: 'NT',
+  section: 'najam',
+  start: N_BEAT.start + N_SUB.N3[0] * (N_BEAT.end - N_BEAT.start),
+  end: N_BEAT.end,
+  hold: true,
+  note: 'The rental terms, 36, 48, 60 and 72 months, the lit one moving on as each pallet goes up',
+};
 
 export const beatAt = (pos: number) => {
   for (let i = TIMELINE.length - 1; i >= 0; i--) if (pos >= TIMELINE[i].start) return i;

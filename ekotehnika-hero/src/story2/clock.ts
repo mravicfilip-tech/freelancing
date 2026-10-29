@@ -38,6 +38,9 @@ export function useStoryClock(reduced: boolean) {
 
   useEffect(() => {
     if (reduced) return;
+    // A read only handle for timing checks, ?debug=clock.
+    const debug = new URLSearchParams(window.location.search).get('debug') === 'clock';
+    if (debug) Object.defineProperty(window, '__storyPos', { get: () => pos.current, configurable: true });
     // Shots and reviews can freeze the clock on one keyframe, ?at=<beatId>&k=<0 to 1>.
     const q = new URLSearchParams(window.location.search);
     const at = TIMELINE.findIndex((b) => b.id === q.get('at'));
@@ -63,7 +66,10 @@ export function useStoryClock(reduced: boolean) {
       }
     };
     gsap.ticker.add(tick);
-    return () => gsap.ticker.remove(tick);
+    return () => {
+      gsap.ticker.remove(tick);
+      if (debug) delete (window as { __storyPos?: number }).__storyPos;
+    };
   }, [reduced, progress, clock]);
 
   const goToBeat = (id: string) => {

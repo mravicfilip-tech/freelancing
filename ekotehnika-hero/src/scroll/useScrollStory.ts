@@ -2,6 +2,12 @@
 // stage for length px and scrubs progress from 0 to 1. Read progress.current inside useFrame or a
 // requestAnimationFrame loop, never through React state.
 //
+// The follow is time based, so it feels the same at 30, 60 and 120 fps, and the story clock has a top speed so a hard
+// flick plays the beats through at a steady pace. The page scroll itself is never capped.
+//
+// ?feel=0 is the old per frame follow with no cap. ?feel=1, 2 and 3 cap the clock at 1500, 2500 and 4000 story px a
+// second. No parameter means 2. The parameter is read once, when the module loads.
+//
 // With reduced motion there is no Lenis, no pin and no scrub. goTo(p) sets a still frame.
 
 import { useLayoutEffect, useRef } from 'react';
@@ -12,6 +18,14 @@ import Lenis from 'lenis';
 gsap.registerPlugin(ScrollTrigger);
 
 let lenis: Lenis | null = null;
+
+const FEEL_CAPS = [0, 1500, 2500, 4000];
+const FEEL = (() => {
+  const n = Number(new URLSearchParams(window.location.search).get('feel') ?? 2);
+  return Number.isInteger(n) && n >= 0 && n < FEEL_CAPS.length ? n : 2;
+})();
+// Seconds the speed cap stays lifted after goTo, the 1.4 s jump plus the time the follow takes to catch up.
+const JUMP_HOLD = 1.8;
 
 // One Lenis for the page, driven by the GSAP ticker so ScrollTrigger and Lenis share a clock.
 function startLenis() {
@@ -42,6 +56,8 @@ export function useScrollStory({ length, reduced, snap, smoothing = 0.08 }: Scro
   const progress = useRef(0);
   const raw = useRef(0);
   const stRef = useRef<ScrollTrigger | null>(null);
+  // ticker time until which the speed cap is lifted, set by goTo
+  const jumpUntil = useRef(0);
 
   useLayoutEffect(() => {
     const stage = stageRef.current;
@@ -64,12 +80,28 @@ export function useScrollStory({ length, reduced, snap, smoothing = 0.08 }: Scro
             }
           : undefined,
         onUpdate: (self) => {
-          raw.current = self.progress;
+          // The pin start can sit a fraction of a pixel off the top, so the ends are snapped to land on exactly 0 and 1.
+          const p = self.progress;
+          raw.current = FEEL !== 0 && p * length < 0.05 ? 0 : FEEL !== 0 && (1 - p) * length < 0.05 ? 1 : p;
         },
       });
     }, stage);
-    const tick = () => {
-      progress.current += (raw.current - progress.current) * smoothing * 2.2;
+    // The old factor per frame was smoothing * 2.2 at 60 fps. The same follow as a rate per second, so a frame of any
+    // length moves the same share of the distance.
+    const rate = -60 * Math.log(1 - Math.min(smoothing * 2.2, 0.999));
+    const cap = FEEL_CAPS[FEEL];
+    const tick = (time: number, deltaTime: number) => {
+      if (FEEL === 0) {
+        progress.current += (raw.current - progress.current) * smoothing * 2.2;
+      } else {
+        const dt = Math.min(deltaTime / 1000, 0.1);
+        let step = (raw.current - progress.current) * (1 - Math.exp(-rate * dt));
+        if (time > jumpUntil.current) {
+          const max = (cap * dt) / length;
+          step = Math.max(-max, Math.min(max, step));
+        }
+        progress.current += step;
+      }
       if (Math.abs(raw.current - progress.current) < 0.00005) progress.current = raw.current;
     };
     gsap.ticker.add(tick);
@@ -89,6 +121,7 @@ export function useScrollStory({ length, reduced, snap, smoothing = 0.08 }: Scro
       return;
     }
     const y = st.start + (st.end - st.start) * p;
+    jumpUntil.current = gsap.ticker.time + JUMP_HOLD;
     if (lenis) lenis.scrollTo(y, { duration: 1.4 });
     else window.scrollTo({ top: y, behavior: 'smooth' });
   };

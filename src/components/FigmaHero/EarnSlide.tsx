@@ -17,8 +17,10 @@ import './EarnSlide.css';
  * Every movement has a cause. The pointer — a beta tester, named like Medusa's — picks $500,
  * switches to card and copies the promo code, the dashboard answering each time. Then it works the
  * cards: it opens the Remittix pool and the deposit runs down the wire to it (1), claims yield and
- * the claim lands in the activity (2), or pays out and the payout passes the whitelist on its way
- * to the wallet (3). A tester joins the row, the board clears, and the next tester starts.
+ * the claim lands in the activity (2), or pays out and a burst of payouts passes the whitelist on
+ * its way to the wallet (3). A tester joins the row, the board clears, and the next tester starts.
+ * In (3) the payouts also run on their own the whole time the slide is up, so the eye is drawn
+ * to the circuit even between sessions.
  *
  * The markup is the resting picture, so a reader with reduced motion gets all of it standing still;
  * the animation sets its own start state and puts the markup back when the slide is left.
@@ -94,6 +96,53 @@ export function EarnSlide({ active }: { active: boolean }) {
         const hover = (el: Element, on: boolean) => () => void el.toggleAttribute('data-hover', on);
         const park = () => ({ x: stage.offsetWidth * 0.9, y: stage.offsetHeight * 0.97 });
 
+        /* ---- Safe payouts (3): the circuit draws in, then payouts run through it for as long as the
+           slide is up — a stream of fine dashes on every trace (CSS), and every 1.6s a brighter run
+           along one of the three ways through, sending a ring off the shield as it passes the
+           whitelist and nudging the wallet as it lands. ---- */
+        const safe =
+          EARN_VARIANT === '3'
+            ? (() => {
+                const traces = qa<SVGPathElement>('.ev-traces path');
+                const runs = qa<SVGPathElement>('.ev-comet[data-run]');
+                const bursts = qa<SVGPathElement>('.ev-comet[data-burst]');
+                const seal = q<HTMLElement>('.ev-seal');
+                const ripple = q<HTMLElement>('.ev-ripple');
+                const wallet = q<SVGElement>('.ev-orb--wallet .ev-icon');
+                /* A run's dash starts just short of the path and ends just past it; it is over the
+                   shield a little past half-way, and at the wallet near the end. */
+                const run = (tl: gsap.core.Timeline, path: SVGPathElement, t: number, duration: number, marks: boolean) => {
+                  tl.fromTo(path, { strokeDashoffset: 16, opacity: 1 }, { strokeDashoffset: -path.getTotalLength(), duration, ease: 'none' }, t);
+                  tl.set(path, { opacity: 0 }, t + duration);
+                  if (!marks) return;
+                  tl.fromTo(ripple, { scale: 1, opacity: 0.5 }, { scale: 1.5, opacity: 0, duration: 0.8, ease: 'power2.out' }, t + duration * 0.55);
+                  tl.fromTo(seal, { scale: 1 }, { scale: 1.3, duration: 0.15, ease: 'power2.out', yoyo: true, repeat: 1 }, t + duration * 0.55);
+                  tl.fromTo(wallet, { scale: 1 }, { scale: 1.22, duration: 0.15, ease: 'power2.out', yoyo: true, repeat: 1, transformOrigin: '50% 50%' }, t + duration * 0.92);
+                };
+                return {
+                  enter: (tl: gsap.core.Timeline, t: number) => {
+                    // The traces draw from the pool out; the right-hand ones are written from the edge in.
+                    traces.forEach((p) => {
+                      const length = p.getTotalLength();
+                      gsap.set(p, { strokeDasharray: length, strokeDashoffset: p.hasAttribute('data-back') ? -length : length });
+                    });
+                    tl.to(traces, { strokeDashoffset: 0, duration: 0.9, ease: 'power2.inOut', stagger: 0.04 }, t);
+                    tl.set(traces, { clearProps: 'strokeDasharray,strokeDashoffset' }, t + 1.4);
+                    tl.from('.ev-halo', { opacity: 0, duration: 0.8, ease: 'power1.out' }, t + 0.2);
+                    tl.from(qa('.ev-orb'), { scale: 0.5, opacity: 0, duration: 0.6, ease: 'back.out(2)', stagger: 0.16 }, t + 0.1);
+                    tl.from(seal, { scale: 0, duration: 0.5, ease: 'back.out(3)' }, t + 0.7);
+                    tl.from('.ev-stream', { opacity: 0, duration: 0.6, ease: 'power1.out' }, t + 0.9);
+                  },
+                  loop: () => {
+                    const tl = gsap.timeline({ repeat: -1 });
+                    runs.forEach((p, i) => run(tl, p, i * 1.6, 1.3, true));
+                    tl.to({}, { duration: 0.3 }, 4.5);
+                  },
+                  burst: (tl: gsap.core.Timeline, t: number) => bursts.forEach((p, i) => run(tl, p, t, 1.1, i === 0)),
+                };
+              })()
+            : null;
+
         /* ---- What the pointer does on the cards, and how each card goes back for the next tester ---- */
         type Act = {
           target: Element;
@@ -148,28 +197,14 @@ export function EarnSlide({ active }: { active: boolean }) {
             };
           },
           // 3. Pay out from the pool: the payout runs to the shield, passes the whitelist, goes on to the wallet.
-          '3': () => {
-            const orb = q('.ev-orb--pool');
-            const comet = q<SVGPathElement>('.ev-comet');
-            const seal = q<HTMLElement>('.ev-seal');
-            const wallet = q<SVGElement>('.ev-orb--wallet .ev-icon');
-            return {
-              target: orb,
-              fx: 0.5,
-              start: () => void gsap.set(seal, { scale: 0 }),
-              play: (tl, t) => {
-                tl.set(comet, { opacity: 1, strokeDashoffset: 14 }, t + 0.1);
-                tl.to(comet, { strokeDashoffset: -54, duration: 0.45, ease: 'power1.in' }, t + 0.1);
-                tl.to(seal, { scale: 1, duration: 0.5, ease: 'back.out(3)' }, t + 0.55);
-                tl.to(comet, { strokeDashoffset: -136, duration: 0.5, ease: 'power1.out' }, t + 0.7);
-                tl.set(comet, { opacity: 0 }, t + 1.2);
-                tl.to(wallet, { scale: 1.2, duration: 0.14, ease: 'power2.out', yoyo: true, repeat: 1, transformOrigin: '50% 50%' }, t + 1.15);
-              },
-              clear: (tl, t) => {
-                tl.to(seal, { scale: 0, duration: 0.25, ease: 'power2.in' }, t);
-              },
-            };
-          },
+          // 3. Pay out from the pool: all three ways through fire at once, on top of the steady run.
+          '3': () => ({
+            target: q('.ev-orb--pool'),
+            fx: 0.5,
+            start: () => undefined,
+            play: (tl, t) => safe!.burst(tl, t + 0.05),
+            clear: () => undefined,
+          }),
         };
         const act = acts[EARN_VARIANT]();
 
@@ -186,6 +221,10 @@ export function EarnSlide({ active }: { active: boolean }) {
         entry.from(pill, { y: 12, opacity: 0, duration: 0.9 }, 0.3);
         entry.from(near, { y: 22, opacity: 0, duration: 1 }, 0.36);
         if (EARN_VARIANT === '3') entry.from(qa('.ev-bars i'), { scaleY: 0, duration: 0.7, ease: 'power3.out', stagger: 0.03 }, 0.6);
+        if (safe) {
+          safe.enter(entry, 0.4);
+          entry.add(() => safe.loop(), 1.6);
+        }
 
         // ---- The session ----
         const session = () => {

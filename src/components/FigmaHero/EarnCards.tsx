@@ -260,6 +260,13 @@ const RIGHT_TRACES = [
   'M162 33h-10q-2 0-2-2v-9q0-4-4-4h-43',
   'M162 51h-10q-2 0-2 2v9q0 4-4 4h-43',
 ];
+/* The three ways a payout runs from the pool, through the shield, to the wallet: straight across,
+   and along the inner trace above and below. */
+const RUNS = [
+  'M36 42H171',
+  'M50 37h8q4 0 4-4v-3q0-4 4-4h75q4 0 4 4v3q0 4 4 4h8',
+  'M50 47h8q4 0 4 4v3q0 4 4 4h75q4 0 4-4v-3q0-4 4-4h8',
+];
 
 function SafePayouts() {
   return (
@@ -268,15 +275,38 @@ function SafePayouts() {
       <div className="ev-circuit">
         <span className="ev-halo" />
         <svg viewBox="0 0 207 84" aria-hidden="true">
-          {[...LEFT_TRACES, ...RIGHT_TRACES].map((d) => (
-            <path key={d} d={d} />
+          {/* The traces, drawn from the pool out: the left ones run toward the shield, the right
+              ones are written from the far edge in, so they are marked to be drawn backwards. */}
+          <g className="ev-traces">
+            {LEFT_TRACES.map((d) => (
+              <path key={d} d={d} />
+            ))}
+            {RIGHT_TRACES.map((d) => (
+              <path key={d} d={d} data-back="" />
+            ))}
+          </g>
+          {/* The same traces again, as a stream of fine dashes always running left to right. */}
+          <g className="ev-stream">
+            {LEFT_TRACES.map((d) => (
+              <path key={d} d={d} />
+            ))}
+            {RIGHT_TRACES.map((d) => (
+              <path key={d} d={d} data-back="" />
+            ))}
+          </g>
+          {/* Payouts: one set for the steady run, one for the burst a click sends. */}
+          {RUNS.map((d, i) => (
+            <path key={`run${i}`} className="ev-comet" data-run={i} d={d} />
           ))}
-          <path className="ev-comet" d="M36 42H171" />
+          {RUNS.map((d, i) => (
+            <path key={`burst${i}`} className="ev-comet" data-burst={i} d={d} />
+          ))}
         </svg>
         <span className="ev-orb ev-orb--pool">
           <Icon d={P.bank} />
         </span>
         <span className="ev-orb ev-orb--shield">
+          <span className="ev-ripple" />
           <Icon d={P.shield} />
           <span className="ev-seal">
             <Icon d={P.check} />

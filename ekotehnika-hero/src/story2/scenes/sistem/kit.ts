@@ -2,10 +2,15 @@
 import * as THREE from 'three';
 import { Font } from 'three/examples/jsm/loaders/FontLoader.js';
 import { TextGeometry } from 'three/examples/jsm/geometries/TextGeometry.js';
+import { SVGLoader } from 'three/examples/jsm/loaders/SVGLoader.js';
 import { C } from '../../../tokens';
 import type { StoryClock } from '../../clock';
 import { clamp01, range, smooth } from '../../../story/scenes/sistem/tracks';
 import dax from './daxCaps.json';
+// The brand files themselves, read as text so the scene draws their own paths and never a redraw.
+import wordmarkSvg from '../../../../public/brand/ekotehnika.svg?raw';
+import wordmarkWhiteSvg from '../../../../public/brand/ekotehnika-white.svg?raw';
+import lindeSvg from '../../../../public/brand/linde-mh.svg?raw';
 
 export { clamp01, range, smooth };
 export const lerp = (a: number, b: number, t: number) => a + (b - a) * t;
@@ -113,6 +118,46 @@ export function signGeometry(text: string, capH: number, depth: number) {
   const g = new TextGeometry(text, { font, size, depth, curveSegments: 6, bevelEnabled: false });
   g.computeBoundingBox();
   return g;
+}
+
+// ---- the brand files ----------------------------------------------------------------------------------------
+
+export const BRAND = { wordmark: wordmarkSvg, wordmarkWhite: wordmarkWhiteSvg, linde: lindeSvg };
+
+/** One path of a brand SVG as supplied, its own fill, its path data and its bounds in the file's units. */
+export type BrandPath = { fill: string; d: string; x0: number; y0: number; x1: number; y1: number };
+
+/** The view box of a brand SVG, x, y, width and height in the file's units. */
+export const brandView = (svg: string) => svg.match(/viewBox="([^"]+)"/)![1].split(' ').map(Number) as [number, number, number, number];
+
+/** The paths of a brand SVG in file order. The files hold only absolute move, line and curve commands, so the numbers
+ *  come in x, y pairs and the bounds are those of the points, which is exact enough to tell the words from the script. */
+export function brandPaths(svg: string): BrandPath[] {
+  return [...svg.matchAll(/<path fill="([^"]+)" d="([^"]+)"/g)].map(([, fill, d]) => {
+    const n = d.match(/-?\d+\.?\d*/g)!.map(Number);
+    const xs = n.filter((_, i) => i % 2 === 0);
+    const ys = n.filter((_, i) => i % 2 === 1);
+    return { fill, d, x0: Math.min(...xs), y0: Math.min(...ys), x1: Math.max(...xs), y1: Math.max(...ys) };
+  });
+}
+
+/** The EKOTEHNIKA wordmark of public/brand/ekotehnika.svg extruded from the file's own paths, one geometry per path with
+ *  that path's own fill. The letters take depth, the tagline and the red mark under them take the shallower tagDepth so
+ *  they stay crisp. The geometries stay in the file's units, y down, so the mesh group that holds them is scaled by
+ *  [s, -s, s] with s the metres per file unit. Origin is the file's origin, see brandView for the frame. */
+export function wordmarkSign(width: number, depth: number, tagDepth: number) {
+  const view = brandView(wordmarkSvg);
+  const s = width / view[2];
+  const parts = new SVGLoader().parse(wordmarkSvg).paths.map((path) => {
+    const shapes = path.toShapes();
+    const flat = new THREE.ShapeGeometry(shapes);
+    flat.computeBoundingBox();
+    const tag = flat.boundingBox!.min.y > view[1] + view[3] * 0.4;
+    flat.dispose();
+    const geo = new THREE.ExtrudeGeometry(shapes, { depth: (tag ? tagDepth : depth) / s, bevelEnabled: false, curveSegments: 6 });
+    return { geo, fill: (path.userData as { style: { fill: string } }).style.fill };
+  });
+  return { parts, s, view };
 }
 
 // Deterministic noise so every frame and every session builds the same warehouse.

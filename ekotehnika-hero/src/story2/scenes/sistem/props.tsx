@@ -1,14 +1,15 @@
 // Shared set dressing for the Sistem scene. Low poly trees with a trunk and faceted crown masses in two tones from the
 // key light, each set in a kerbed tree pit with a contact shadow, clipped hedges, shrubs in planters, a real lamp post,
-// a detailed van with the Ekotehnika livery and real wheels (tyre with tread and sidewall, rim, hub), kerbs with a
+// the service van in its wrap with real wheels (tyre with tread and sidewall, rim, hub), kerbs with a
 // chamfer and a gutter. Everything is white, an LMH grey or black, lit by the scene rig, nothing is a cone or a blob.
 // Meshes are merged per kind and instanced. The build in on load lives here too, see introClock.
-import { useLayoutEffect, useMemo, useRef, type ReactNode } from 'react';
-import { useFrame } from '@react-three/fiber';
+import { useEffect, useLayoutEffect, useMemo, useRef, type ReactNode } from 'react';
+import { useFrame, useThree } from '@react-three/fiber';
 import * as THREE from 'three';
 import { mergeGeometries } from 'three/examples/jsm/utils/BufferGeometryUtils.js';
 import { RoundedBox } from '@react-three/drei';
-import { G, K, blobMaterial, clamp01, lam, lerp, lit, poolMaterial, rng, signGeometry } from './kit';
+import { G, K, blobMaterial, clamp01, lam, lerp, lit, poolMaterial, rad, rng } from './kit';
+import { SIDE, vanSkins } from './vanWrap';
 import { INTRO_SKIP, introStart, markIntroStart } from './intro';
 
 // ---- geometry helpers ---------------------------------------------------------------------------------------
@@ -520,9 +521,10 @@ const wheelCache = new Map<string, { tyre: THREE.BufferGeometry; rim: THREE.Buff
 
 // A road wheel, radius R and width W, its axis along y and its outer face to +y. The tyre is a turned profile with
 // rounded shoulders, a sidewall with a raised lettering band and a tread of staggered blocks across the crown. The rim
-// is a barrel, a lip, a dished face with six holes, a centre boss, five wheel nuts and a hub cap.
-function wheelGeometry(R: number, W: number) {
-  const key = `${R}|${W}`;
+// is a barrel, a lip, a dished face with six holes or, with spokes, that many spokes between black pockets, a centre
+// boss, five wheel nuts and a hub cap.
+function wheelGeometry(R: number, W: number, spokes: number) {
+  const key = `${R}|${W}|${spokes}`;
   const hit = wheelCache.get(key);
   if (hit) return hit;
   const prof = [
@@ -555,9 +557,15 @@ function wheelGeometry(R: number, W: number) {
   const lip = new THREE.TorusGeometry(0.635 * R, 0.022, 6, 40);
   lip.rotateX(Math.PI / 2);
   rim.push({ geo: at(lip, 0, 0.42 * W, 0), color: G.pale });
-  for (let i = 0; i < 6; i++) {
-    const a = (i / 6) * Math.PI * 2;
-    rim.push({ geo: at(new THREE.CylinderGeometry(0.085 * R, 0.085 * R, 0.022, 10), Math.cos(a) * 0.42 * R, 0.3 * W + 0.002, Math.sin(a) * 0.42 * R), color: G.black });
+  if (spokes) {
+    // spokes are what stands between black pockets, one wedge of the dish for each gap, 0.6 of the pitch wide
+    const pitch = (Math.PI * 2) / spokes;
+    for (let i = 0; i < spokes; i++) rim.push({ geo: at(new THREE.CylinderGeometry(0.58 * R, 0.58 * R, 0.022, 14, 1, false, i * pitch + 0.2 * pitch, 0.6 * pitch), 0, 0.3 * W + 0.002, 0), color: G.black });
+  } else {
+    for (let i = 0; i < 6; i++) {
+      const a = (i / 6) * Math.PI * 2;
+      rim.push({ geo: at(new THREE.CylinderGeometry(0.085 * R, 0.085 * R, 0.022, 10), Math.cos(a) * 0.42 * R, 0.3 * W + 0.002, Math.sin(a) * 0.42 * R), color: G.black });
+    }
   }
   for (let i = 0; i < 5; i++) {
     const a = (i / 5) * Math.PI * 2 + 0.3;
@@ -569,8 +577,8 @@ function wheelGeometry(R: number, W: number) {
 }
 
 /** A wheel standing on the ground at x, z, turned so its outer face looks away from the vehicle's centre line. */
-export function Wheel({ x, z, r = 0.36, w = 0.24 }: { x: number; z: number; r?: number; w?: number }) {
-  const g = useMemo(() => wheelGeometry(r, w), [r, w]);
+export function Wheel({ x, z, r = 0.36, w = 0.24, spokes = 0 }: { x: number; z: number; r?: number; w?: number; spokes?: number }) {
+  const g = useMemo(() => wheelGeometry(r, w, spokes), [r, w, spokes]);
   return (
     <group position={[x, r, z]} rotation={[z > 0 ? Math.PI / 2 : -Math.PI / 2, 0, 0]}>
       <mesh geometry={g.tyre} material={tyreMat} castShadow receiveShadow />
@@ -581,21 +589,26 @@ export function Wheel({ x, z, r = 0.36, w = 0.24 }: { x: number; z: number; r?: 
 
 // ---- van ----------------------------------------------------------------------------------------------------
 
-const vanBody = lam(G.white, { emissive: lit(G.white).multiplyScalar(0.55) });
-const vanPale = lam(G.pale, { emissive: lit(G.pale).multiplyScalar(0.55) });
+// The Ekotehnika service van is a VW Caddy Mk3 panel van in the 2023 wrap, after the client's own photos and guideline
+// (briefs/round6/refs). It is built as one lean box shape, a side profile with the wheel arches cut out, extruded across
+// the width with rounded edges and narrowed towards the roof. The wrap lives on panels laid a few millimetres off the
+// body, a canvas texture for each side and one for the rear (vanWrap.ts), so it reads as printed film and not as paint.
+const vanSilver = lam(G.pale, { emissive: lit(G.pale).multiplyScalar(0.55) });
 const vanGraphite = lam(G.graphite);
 const vanGlass = lam(G.mid, { emissive: lit(G.mid).multiplyScalar(0.4) });
 const vanGlassHi = lam(G.light, { emissive: lit(G.light).multiplyScalar(0.5) });
 const vanDark = lam(G.black);
+const vanWell = lam(G.black, { side: THREE.DoubleSide });
 const vanSeam = lam(G.mid);
 const vanLens = lam(G.pale, { emissive: lit(G.pale).multiplyScalar(0.7) });
+const vanRed = lam('#a00020', { emissive: lit('#a00020').multiplyScalar(0.5) });
 const plateMat = lam(G.white, { emissive: lit(G.white).multiplyScalar(0.8) });
 const lightMat = new THREE.MeshBasicMaterial({ color: G.white, toneMapped: false });
 const vanShadow = blobMaterial(0.36);
 
 // A thin box laid on a surface, for panel lines, frames and seals.
-const Bar = ({ p, s, m }: { p: [number, number, number]; s: [number, number, number]; m: THREE.Material }) => (
-  <mesh position={p} material={m}>
+const Bar = ({ p, s, m, r }: { p: [number, number, number]; s: [number, number, number]; m: THREE.Material; r?: [number, number, number] }) => (
+  <mesh position={p} rotation={r} material={m}>
     <boxGeometry args={s} />
   </mesh>
 );
@@ -608,141 +621,207 @@ const Plate = ({ x, y }: { x: number; y: number }) => (
   </group>
 );
 
-// The Ekotehnika van. Cargo box and cab with panel lines, a sliding door on its rail, cab doors, glass in black rubber
-// seals with a lighter band, wipers, a slatted grille, framed head and tail lamps, plates without text, mirrors on arms,
-// wheel arch lips, sill skirts, real wheels and a soft contact shadow. A graphite livery band with the wordmark in
-// Daxline caps on both sides. About 5.3 m long, 2.3 m high, facing +x.
+// The Caddy, 4.4 m long, 1.82 m high, 1.79 m wide on a 2.68 m wheelbase, facing +x. Half the width at a height, the
+// flanks lean in 0.1 m from the sill to the roof.
+const CADDY = { half: 0.895, sill: 0.27, roof: 1.82, axle: 1.34, arch: 0.41, wheel: 0.31, track: 0.75 };
+const halfAt = (y: number) => CADDY.half - 0.1 * ((y - CADDY.sill) / (CADDY.roof - CADDY.sill));
+const REAR_X = (y: number) => -2.12 + ((y - 0.55) / (CADDY.roof - 0.55)) * 0.32;
+
+// The side profile, front at +x. Short sloped bonnet, a raked windscreen, a long flat roof, a leaning tail and the two
+// wheel arches cut out of the foot.
+function caddyProfile() {
+  const pts: [number, number][] = [
+    [2.02, CADDY.sill], [2.1, 0.5], [2.12, 0.86], [1.6, 1.0], [1.22, 1.13], [0.4, 1.66], [0.12, 1.76], [-0.35, 1.81], [-0.9, CADDY.roof], [-1.8, CADDY.roof], [-2.12, 0.55], [-2.04, CADDY.sill],
+  ];
+  for (const ax of [-CADDY.axle, CADDY.axle]) {
+    for (let a = 185; a >= -5; a -= 19) pts.push([ax + CADDY.arch * Math.cos(rad(a)), CADDY.wheel + CADDY.arch * Math.sin(rad(a))]);
+  }
+  return new THREE.Shape(pts.map(([x, y]) => new THREE.Vector2(x, y)));
+}
+
+// A flat piece of the profile or of a window, laid on the flank at a height above it. Its uv runs over the side frame of
+// the wrap, flipped for the side that shows the front on the left.
+function flank(shape: THREE.Shape, off: number, flip = false, wrap = false) {
+  const g = new THREE.ShapeGeometry(shape);
+  const pos = g.getAttribute('position');
+  const uv = g.getAttribute('uv');
+  for (let i = 0; i < pos.count; i++) {
+    const X = pos.getX(i);
+    const Y = pos.getY(i);
+    pos.setZ(i, halfAt(Y) + off);
+    if (wrap) uv.setXY(i, flip ? (SIDE.x1 - X) / (SIDE.x1 - SIDE.x0) : (X - SIDE.x0) / (SIDE.x1 - SIDE.x0), (Y - SIDE.y0) / (SIDE.y1 - SIDE.y0));
+  }
+  g.computeVertexNormals();
+  return g;
+}
+
+// A four corner panel from its two bottom and two top corners, for the windscreen and the rear. Corners run from the
+// bottom left to the top left as the viewer sees them, and out says which way the face looks.
+function quad(c: [number, number, number][], out: 1 | -1) {
+  const g = new THREE.BufferGeometry();
+  g.setAttribute('position', new THREE.Float32BufferAttribute(c.flat(), 3));
+  g.setAttribute('uv', new THREE.Float32BufferAttribute([0, 0, 1, 0, 1, 1, 0, 1], 2));
+  g.setIndex(out > 0 ? [0, 1, 2, 0, 2, 3] : [0, 2, 1, 0, 3, 2]);
+  g.computeVertexNormals();
+  return g;
+}
+
+type CaddyParts = ReturnType<typeof buildCaddy>;
+let caddyParts: CaddyParts | undefined;
+function buildCaddy() {
+  const profile = caddyProfile();
+  const depth = CADDY.half * 2 - 0.07;
+  const body = new THREE.ExtrudeGeometry(profile, { depth, bevelEnabled: true, bevelThickness: 0.035, bevelSize: 0.035, bevelOffset: -0.035, bevelSegments: 2 });
+  body.translate(0, 0, -depth / 2);
+  const pos = body.getAttribute('position');
+  for (let i = 0; i < pos.count; i++) pos.setZ(i, (pos.getZ(i) * halfAt(pos.getY(i))) / CADDY.half);
+  body.computeVertexNormals();
+  const poly = (pts: [number, number][]) => new THREE.Shape(pts.map(([x, y]) => new THREE.Vector2(x, y)));
+  // the cab door window with its black frame and a lighter band high on the glass. The front of the window stays under
+  // the windscreen's slope, from the cowl at (1.22, 1.13) to the roof edge at (0.4, 1.66), so none of it rises above the
+  // body, the glass is 0.09 under that line and the frame 0.045.
+  const frame = flank(poly([[1.015, 1.045], [1.015, 1.205], [0.6, 1.485], [0.38, 1.605], [-0.19, 1.66], [-0.19, 1.045]]), 0.012);
+  const glass = flank(poly([[0.98, 1.08], [0.98, 1.19], [0.58, 1.455], [0.38, 1.57], [-0.14, 1.62], [-0.14, 1.08]]), 0.018);
+  const band = flank(poly([[0.84, 1.275], [0.58, 1.455], [0.38, 1.57], [-0.14, 1.62], [-0.14, 1.5], [0.4, 1.45], [0.62, 1.34]]), 0.022);
+  // the windscreen on that slope, between the pillars, and the tail face
+  // The glass stops short of the roof edge and of the cowl, so the roof runs over the top of it and the bonnet meets it
+  // below, and it keeps clear of the flanks, with the black seal showing all round it.
+  const n = new THREE.Vector2(0.54, 0.84);
+  const slope = (inset: number, off: number, t0: number, t1: number) => {
+    const at = (t: number) => [1.22 - 0.82 * t + n.x * off, 1.13 + 0.53 * t + n.y * off] as const;
+    const lo = at(t0);
+    const hi = at(t1);
+    const zb = halfAt(lo[1]) - inset;
+    const zt = halfAt(hi[1]) - inset;
+    return quad([[lo[0], lo[1], -zb], [lo[0], lo[1], zb], [hi[0], hi[1], zt], [hi[0], hi[1], -zt]], -1);
+  };
+  const tail = (off: number) => {
+    const yb = 0.62;
+    const yt = 1.81;
+    const nx = -0.969 * off;
+    const ny = 0.244 * off;
+    return quad([[REAR_X(yb) + nx, yb + ny, -halfAt(yb)], [REAR_X(yb) + nx, yb + ny, halfAt(yb)], [REAR_X(yt) + nx, yt + ny, halfAt(yt)], [REAR_X(yt) + nx, yt + ny, -halfAt(yt)]], 1);
+  };
+  const arch = new THREE.TorusGeometry(CADDY.arch + 0.035, 0.03, 5, 16, Math.PI);
+  return {
+    body,
+    plus: flank(profile, 0.006, false, true),
+    minus: flank(profile, 0.006, true, true),
+    frame,
+    glass,
+    band,
+    screenSeal: slope(0.06, 0.004, 0.03, 0.96),
+    screen: slope(0.12, 0.008, 0.08, 0.91),
+    screenBand: slope(0.12, 0.011, 0.78, 0.91),
+    tail: tail(0.006),
+    arch,
+  };
+}
+
+// The wrap materials, lit like the scene's other pale surfaces, one per texture. The map colours the surface and the
+// emissive map lifts it by the same share, so a texel of LMH pale grey lands where the van's pale paint did.
+let wrapMats: { plus: THREE.Material; minus: THREE.Material; rear: THREE.Material } | undefined;
+const wrapMaterial = (map: THREE.Texture) =>
+  lam(G.white, { map, emissive: lit(G.white).multiplyScalar(0.55), emissiveMap: map, polygonOffset: true, polygonOffsetFactor: -1, polygonOffsetUnits: -1 });
+
+// One lamp cluster on the tail, a black frame with a red lens above a white one above a red one, leaning with the tail.
+const TailLamp = ({ s }: { s: number }) => (
+  <group position={[REAR_X(0.98) - 0.01, 0.98, s * (halfAt(0.98) - 0.1)]} rotation={[0, 0, -0.247]}>
+    <Bar p={[0, 0, 0]} s={[0.05, 0.46, 0.17]} m={vanDark} />
+    <Bar p={[-0.027, 0.1, 0]} s={[0.012, 0.22, 0.13]} m={vanRed} />
+    <Bar p={[-0.027, -0.07, 0]} s={[0.012, 0.08, 0.13]} m={vanLens} />
+    <Bar p={[-0.027, -0.16, 0]} s={[0.012, 0.09, 0.13]} m={vanRed} />
+  </group>
+);
+
 export function Van({ x, z, yaw = 0, scale = 1 }: { x: number; z: number; yaw?: number; scale?: number }) {
-  const word = useMemo(() => {
-    const g = signGeometry('EKOTEHNIKA', 0.3, 0.02);
-    g.computeBoundingBox();
-    return g;
-  }, []);
-  const arch = useMemo(() => new THREE.TorusGeometry(0.44, 0.045, 6, 18, Math.PI), []);
-  const ww = word.boundingBox!.max.x;
+  const c = (caddyParts ??= buildCaddy());
+  const skins = useMemo(() => vanSkins(), []);
+  const mats = (wrapMats ??= { plus: wrapMaterial(skins.plus), minus: wrapMaterial(skins.minus), rear: wrapMaterial(skins.rear) });
+  const invalidate = useThree((st) => st.invalidate);
+  useEffect(() => {
+    let off = false;
+    skins.ready.then(() => !off && invalidate());
+    return () => {
+      off = true;
+    };
+  }, [skins, invalidate]);
+  const wells = [-CADDY.axle, CADDY.axle];
   return (
     <group position={[x, 0, z]} rotation={[0, yaw, 0]} scale={scale}>
-      <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0.05, 0.028, 0]} material={vanShadow} renderOrder={1}>
-        <planeGeometry args={[6.1, 2.9]} />
+      <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, 0.028, 0]} material={vanShadow} renderOrder={1}>
+        <planeGeometry args={[5.3, 2.6]} />
       </mesh>
-      {/* chassis and floor */}
-      <mesh position={[0, 0.5, 0]} material={vanDark} castShadow>
-        <boxGeometry args={[5.0, 0.2, 1.7]} />
-      </mesh>
-      {/* cargo box */}
-      <RoundedBox args={[3.3, 1.85, 2.0]} radius={0.1} smoothness={3} position={[-0.95, 1.52, 0]} material={vanBody} castShadow receiveShadow />
-      {/* cab, lower body and the roof line */}
-      <RoundedBox args={[1.9, 1.05, 2.0]} radius={0.14} smoothness={3} position={[1.55, 1.07, 0]} material={vanBody} castShadow receiveShadow />
-      <RoundedBox args={[1.3, 0.78, 1.96]} radius={0.16} smoothness={3} position={[1.25, 1.84, 0]} material={vanBody} castShadow />
-      {/* bonnet, grille with its slats and a plain badge, the bumper with a step */}
-      <RoundedBox args={[0.35, 0.34, 1.96]} radius={0.08} smoothness={2} position={[2.52, 0.78, 0]} material={vanPale} castShadow />
-      <Bar p={[2.7, 0.8, 0]} s={[0.02, 0.22, 1.0]} m={vanGraphite} />
-      {[0.73, 0.8, 0.87].map((y) => (
-        <Bar key={y} p={[2.712, y, 0]} s={[0.012, 0.018, 0.94]} m={vanSeam} />
+      {/* the body and the tail wrap, the windscreen in its black seal */}
+      <mesh geometry={c.body} material={vanSilver} castShadow receiveShadow />
+      <mesh geometry={c.tail} material={mats.rear} />
+      <mesh geometry={c.screenSeal} material={vanDark} />
+      <mesh geometry={c.screen} material={vanGlass} />
+      <mesh geometry={c.screenBand} material={vanGlassHi} />
+      {[0.3, -0.35].map((zz) => (
+        <Bar key={zz} p={[1.061, 1.257, zz]} s={[0.012, 0.03, 0.62]} m={vanGraphite} r={[0, 0, 1.0]} />
       ))}
-      <mesh position={[2.72, 0.8, 0]} rotation={[0, 0, Math.PI / 2]} material={vanPale}>
-        <cylinderGeometry args={[0.055, 0.055, 0.015, 16]} />
+      {/* bumpers, black, with the front grille, a plain round badge, the head lamps and a plate each end */}
+      <RoundedBox args={[0.3, 0.38, 1.86]} radius={0.07} smoothness={2} position={[2.05, 0.43, 0]} material={vanDark} castShadow />
+      <RoundedBox args={[0.26, 0.38, 1.86]} radius={0.07} smoothness={2} position={[-2.07, 0.43, 0]} material={vanDark} castShadow />
+      <Plate x={2.205} y={0.43} />
+      <group rotation={[0, Math.PI, 0]}>
+        <Plate x={2.205} y={0.43} />
+      </group>
+      <Bar p={[2.13, 0.72, 0]} s={[0.025, 0.13, 0.9]} m={vanDark} />
+      <Bar p={[2.145, 0.8, 0]} s={[0.012, 0.018, 0.9]} m={vanSeam} />
+      <mesh position={[2.15, 0.8, 0]} rotation={[0, 0, Math.PI / 2]} material={vanLens}>
+        <cylinderGeometry args={[0.05, 0.05, 0.015, 16]} />
       </mesh>
-      <RoundedBox args={[0.2, 0.2, 2.02]} radius={0.06} smoothness={2} position={[2.64, 0.5, 0]} material={vanGraphite} castShadow />
-      <Plate x={2.745} y={0.5} />
-      {/* head lamps, a graphite surround, a pale lens and the lit element */}
-      {[0.72, -0.72].map((s) => (
-        <group key={s} position={[2.69, 0.98, s]}>
-          <Bar p={[0, 0, 0]} s={[0.04, 0.2, 0.42]} m={vanGraphite} />
-          <Bar p={[0.015, 0, 0]} s={[0.03, 0.15, 0.36]} m={vanLens} />
-          <Bar p={[0.032, 0, s > 0 ? 0.06 : -0.06]} s={[0.01, 0.08, 0.14]} m={lightMat} />
+      {[0.69, -0.69].map((s) => (
+        <group key={s} position={[2.1, 0.74, s]}>
+          <Bar p={[0, 0, 0]} s={[0.05, 0.17, 0.42]} m={vanDark} />
+          <Bar p={[0.02, 0, 0]} s={[0.03, 0.13, 0.37]} m={vanLens} />
+          <Bar p={[0.04, 0, s > 0 ? 0.05 : -0.05]} s={[0.01, 0.07, 0.12]} m={lightMat} />
         </group>
       ))}
-      {/* windscreen in a black seal, a lighter band high on the glass, two wipers */}
-      <mesh position={[1.86, 1.86, 0]} rotation={[0, 0, -0.5]} material={vanDark}>
-        <boxGeometry args={[0.04, 0.7, 1.86]} />
-      </mesh>
-      <mesh position={[1.875, 1.86, 0]} rotation={[0, 0, -0.5]} material={vanGlass}>
-        <boxGeometry args={[0.04, 0.62, 1.76]} />
-      </mesh>
-      <mesh position={[1.82, 2.0, 0]} rotation={[0, 0, -0.5]} material={vanGlassHi}>
-        <boxGeometry args={[0.042, 0.14, 1.7]} />
-      </mesh>
-      {[0.35, -0.45].map((s) => (
-        <mesh key={s} position={[2.03, 1.6, s]} rotation={[0.25, 0, -0.5]} material={vanGraphite}>
-          <boxGeometry args={[0.02, 0.025, 0.7]} />
-        </mesh>
-      ))}
-      {[1, -1].map((s) => (
-        <group key={s} position={[0, 0, s * 1.0]}>
-          {/* cab side window in a black seal, with a lighter band */}
-          <Bar p={[1.4, 1.88, s * 0.005]} s={[1.04, 0.62, 0.02]} m={vanDark} />
-          <Bar p={[1.42, 1.88, s * 0.016]} s={[0.92, 0.5, 0.01]} m={vanGlass} />
-          <Bar p={[1.42, 2.04, s * 0.022]} s={[0.92, 0.1, 0.01]} m={vanGlassHi} />
-          <Bar p={[1.62, 1.88, s * 0.024]} s={[0.035, 0.5, 0.01]} m={vanDark} />
-          {/* cab door, its shut lines and the handle */}
-          <Bar p={[1.1, 1.3, s * 0.012]} s={[0.012, 1.6, 0.01]} m={vanSeam} />
-          <Bar p={[1.98, 1.0, s * 0.012]} s={[0.012, 0.9, 0.01]} m={vanSeam} />
-          <Bar p={[1.54, 0.58, s * 0.012]} s={[0.88, 0.012, 0.01]} m={vanSeam} />
-          <Bar p={[1.25, 1.42, s * 0.02]} s={[0.2, 0.045, 0.03]} m={vanGraphite} />
-          {/* mirror on its arm, the glass to the rear */}
-          <Bar p={[2.0, 1.72, s * 0.1]} s={[0.06, 0.04, 0.2]} m={vanGraphite} />
-          <mesh position={[2.0, 1.78, s * 0.24]} material={vanGraphite} castShadow>
-            <boxGeometry args={[0.1, 0.28, 0.16]} />
+      {/* the tail lamps, the rear doors, their windows and the handle bar are in the wrap */}
+      <TailLamp s={1} />
+      <TailLamp s={-1} />
+      {/* wheel arches, each a black lining with an end wall and a lip round the opening on both sides */}
+      {wells.map((ax) => (
+        <group key={ax} position={[ax, CADDY.wheel, 0]}>
+          <mesh rotation={[Math.PI / 2, 0, 0]} material={vanWell}>
+            <cylinderGeometry args={[CADDY.arch - 0.01, CADDY.arch - 0.01, CADDY.half * 2, 10, 1, true, Math.PI / 2, Math.PI]} />
           </mesh>
-          <Bar p={[1.945, 1.78, s * 0.24]} s={[0.01, 0.22, 0.12]} m={vanGlassHi} />
-          {/* sliding door, its shut lines, the rail on the rear quarter and the handle */}
-          <Bar p={[-0.25, 1.48, s * 0.012]} s={[0.012, 1.7, 0.01]} m={vanSeam} />
-          <Bar p={[0.62, 1.48, s * 0.012]} s={[0.012, 1.7, 0.01]} m={vanSeam} />
-          <Bar p={[0.185, 2.33, s * 0.012]} s={[0.87, 0.012, 0.01]} m={vanSeam} />
-          <Bar p={[-1.3, 1.66, s * 0.016]} s={[2.1, 0.035, 0.018]} m={vanGraphite} />
-          <Bar p={[0.48, 1.4, s * 0.02]} s={[0.18, 0.045, 0.03]} m={vanGraphite} />
-          {/* panel seams on the cargo box, a fuel flap and a side marker lamp */}
-          <Bar p={[-1.75, 1.75, s * 0.012]} s={[0.012, 1.1, 0.01]} m={vanSeam} />
-          <mesh position={[-2.0, 1.42, s * 0.012]} rotation={[Math.PI / 2, 0, 0]} material={vanSeam}>
-            <cylinderGeometry args={[0.08, 0.08, 0.01, 16]} />
-          </mesh>
-          <Bar p={[-0.9, 0.72, s * 0.02]} s={[0.1, 0.05, 0.02]} m={vanLens} />
-          {/* sill skirt between the wheels */}
-          <Bar p={[0.0, 0.64, s * 0.0]} s={[2.1, 0.14, 0.04]} m={vanGraphite} />
-          {/* wheel wells and the arch lips round them */}
-          {[-1.65, 1.6].map((ax) => (
-            <group key={ax}>
-              <mesh position={[ax, 0.52, s * -0.01]} rotation={[Math.PI / 2, 0, 0]} material={vanDark}>
-                <cylinderGeometry args={[0.45, 0.45, 0.01, 20]} />
+          {[1, -1].map((s) => (
+            <group key={s}>
+              <mesh position={[0, 0, s * 0.6]} rotation={[Math.PI / 2, 0, 0]} material={vanDark}>
+                <cylinderGeometry args={[CADDY.arch - 0.01, CADDY.arch - 0.01, 0.01, 10, 1, false, Math.PI / 2, Math.PI]} />
               </mesh>
-              <mesh geometry={arch} position={[ax, 0.38, s * 0.012]} material={vanGraphite} castShadow />
+              <mesh geometry={c.arch} position={[0, 0, s * (halfAt(0.7) + 0.012)]} material={vanDark} castShadow />
             </group>
           ))}
-          {/* livery, a graphite band low on the cargo box, a thin line above it and the wordmark */}
-          <mesh position={[-1.42, 0.98, s * 0.012]} material={vanGraphite}>
-            <boxGeometry args={[2.34, 0.34, 0.012]} />
-          </mesh>
-          <mesh position={[-0.95, 1.22, s * 0.012]} material={vanGraphite}>
-            <boxGeometry args={[3.28, 0.025, 0.012]} />
-          </mesh>
         </group>
       ))}
-      {/* the wordmark, both sides */}
-      <mesh geometry={word} material={vanGraphite} position={[-0.95 - (ww * 0.9) / 2, 1.95, 1.011]} scale={[0.9, 0.9, 1]} />
-      <mesh geometry={word} material={vanGraphite} position={[-0.95 + (ww * 0.9) / 2, 1.95, -1.011]} rotation={[0, Math.PI, 0]} scale={[0.9, 0.9, 1]} />
-      {/* rear doors with their centre seam, hinges and handle, the bumper, the plate and the roof rail */}
-      <Bar p={[-2.6, 1.52, 0]} s={[0.012, 1.7, 0.02]} m={vanSeam} />
-      {[0.95, 2.1].flatMap((y) => [0.9, -0.9].map((zz) => <Bar key={`${y}${zz}`} p={[-2.605, y, zz]} s={[0.03, 0.14, 0.06]} m={vanGraphite} />))}
-      <Bar p={[-2.61, 1.45, 0.12]} s={[0.03, 0.05, 0.16]} m={vanGraphite} />
-      <RoundedBox args={[0.16, 0.18, 2.02]} radius={0.05} smoothness={2} position={[-2.58, 0.52, 0]} material={vanGraphite} castShadow />
-      <group rotation={[0, Math.PI, 0]}>
-        <Plate x={2.62} y={0.78} />
-      </group>
-      <mesh position={[-0.95, 2.47, 0]} material={vanPale}>
-        <boxGeometry args={[3.0, 0.04, 1.5]} />
-      </mesh>
-      {/* tail lamps, tall clusters in a graphite frame */}
-      {[0.84, -0.84].map((s) => (
-        <group key={s} position={[-2.61, 1.05, s]}>
-          <Bar p={[0, 0, 0]} s={[0.03, 0.46, 0.16]} m={vanGraphite} />
-          <Bar p={[-0.012, 0.06, 0]} s={[0.02, 0.24, 0.12]} m={vanLens} />
-          <Bar p={[-0.012, -0.14, 0]} s={[0.02, 0.1, 0.12]} m={vanGlassHi} />
+      {/* the two sides, the wrap and what stands on it, front to the right on +z and the same layout flipped on -z */}
+      {[1, -1].map((s) => (
+        <group key={s} scale={[1, 1, s]}>
+          <mesh geometry={s > 0 ? c.plus : c.minus} material={s > 0 ? mats.plus : mats.minus} />
+          {/* cab door window in its black frame with a lighter band, and the quarter pillar behind it */}
+          <mesh geometry={c.frame} material={vanDark} />
+          <mesh geometry={c.glass} material={vanGlass} />
+          <mesh geometry={c.band} material={vanGlassHi} />
+          {/* the black rubbing strip along both doors, a door handle on the cab door, a lamp at the rear corner */}
+          <Bar p={[-0.035, 0.66, halfAt(0.66) + 0.014]} s={[1.87, 0.04, 0.028]} m={vanDark} />
+          <Bar p={[0.0, 0.9, halfAt(0.9) + 0.016]} s={[0.17, 0.035, 0.03]} m={vanGraphite} />
+          {/* mirror on its arm, the glass to the rear */}
+          <Bar p={[1.03, 1.26, halfAt(1.26) + 0.06]} s={[0.05, 0.035, 0.14]} m={vanGraphite} />
+          <mesh position={[0.99, 1.31, halfAt(1.26) + 0.13]} material={vanGraphite} castShadow>
+            <boxGeometry args={[0.07, 0.16, 0.12]} />
+          </mesh>
+          <Bar p={[0.953, 1.31, halfAt(1.26) + 0.13]} s={[0.006, 0.12, 0.09]} m={vanGlassHi} />
+          {/* wheels, set so the rim face stands proud of the dark well behind it */}
+          {wells.map((ax) => (
+            <Wheel key={ax} x={ax} z={CADDY.track} r={CADDY.wheel} w={0.2} spokes={5} />
+          ))}
         </group>
       ))}
-      {/* wheels */}
-      {/* set out so the rim face stands proud of the dark wheel well behind it */}
-      {[-1.65, 1.6].flatMap((ax) => [0.93, -0.93].map((az) => <Wheel key={`${ax}${az}`} x={ax} z={az} />))}
     </group>
   );
 }

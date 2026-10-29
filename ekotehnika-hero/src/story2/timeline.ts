@@ -44,9 +44,9 @@ export const SERVIS_MAP: BeatSpan = { id: 'SM', section: 'servis', start: 9000, 
 export const N_SUB = { N1: [0, 0.25], N2: [0.25, 0.5], N3: [0.5, 0.79], N4: [0.79, 1] } as const;
 
 // The four pallets that go up into the racks in N3, as k of N, the moment each one is set down. The scene lands a pallet on these
-// marks and the lit term cell in the shell moves on at the same marks, 36 months at the first and 72 at the fourth. The last one is
-// the reach truck at the top beam.
-export const N_PALLETS = [0.585, 0.652, 0.718, 0.776] as const;
+// marks and the lit term cell in the shell moves on at the same marks, 36 months at the first and 72 at the fourth. The first two are
+// X50s, the third a reach truck on the second beam and the last the reach truck at the top beam.
+export const N_PALLETS = [0.615, 0.67, 0.705, 0.77] as const;
 
 // The terms pane, a layer only span over N3 and N4. It is not a beat of its own, so the beat indices stay, but a layer of the shell
 // that comes in as N3 begins and stays to the end of N, where T takes the floor.

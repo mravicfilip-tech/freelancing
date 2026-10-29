@@ -14,7 +14,7 @@ import { BoxSet, type BoxItem } from './props';
 import { labelTexture } from './warehouse';
 import { G, K, ease, lam, lit, range, rng, uOf } from './kit';
 import { N_SUB } from '../../timeline';
-import { HALL, PALLETS, d12At, h30At, isHeroSlot, levelY, palletAt, r16At, x50At, type Pose } from './najamplan';
+import { HALL, PALLETS, d12At, h30At, isHeroSlot, levelY, palletAt, r16AAt, r16BAt, x50AAt, x50BAt, type Pose } from './najamplan';
 
 // ---- materials --------------------------------------------------------------------------------------------------------
 
@@ -264,8 +264,9 @@ function Hall({ dock }: { dock: React.RefObject<THREE.Group | null> }) {
       bands.push([x, 0.14 + h * 0.3, z, 1.15, 0.07, 0.95], [x, 0.14 + h * 0.68, z, 1.15, 0.07, 0.95]);
     };
     [10.1, 11.5].forEach((x) => [-1.9, 0, 1.9].forEach((dz) => stack(x, HALL.docks[0] + dz)));
-    [10.5, 11.9].forEach((x) => [-1.0, 1.0].forEach((dz) => stack(x, HALL.docks[2] + dz)));
-    stack(11.2, HALL.docks[3] - 0.9);
+    // two more blocks wait in front of the second dock, away from the work aisle at the open side of the hall
+    [10.5, 11.9].forEach((x) => [-1.0, 1.0].forEach((dz) => stack(x, HALL.docks[1] + dz)));
+    stack(11.2, HALL.docks[1] - 3.2);
     return { wall, lintel, band, door, groove, bumper, lev, frame, side, sideBand, yard, bayLines, floor, joints, marks, base, loads, shell, bands };
   }, []);
   return (
@@ -428,51 +429,60 @@ function ReachCarriage({ carriage, stage }: { carriage: React.RefObject<THREE.Gr
   );
 }
 
-function Movers({ clock }: SceneProps) {
-  const x50 = useRef<THREE.Group>(null);
-  const r16 = useRef<THREE.Group>(null);
-  const d12 = useRef<THREE.Group>(null);
-  const h30 = useRef<THREE.Group>(null);
-  const x50Api = useRef<TruckApi | null>(null);
-  const r16Api = useRef<TruckApi | null>(null);
-  const d12Api = useRef<TruckApi | null>(null);
-  const h30Api = useRef<TruckApi | null>(null);
+// One truck of the plan, placed every frame from its pose. A reach truck gets its carriage and mast stage, a truck that carries a
+// pallet its load, the rest is the real model.
+type MoverDef = { name: ModelName; at: (k: number, o: Pose) => Pose; carry?: [number, number] };
+const MOVERS: MoverDef[] = [
+  { name: 'x50', at: x50AAt },
+  { name: 'x50', at: x50BAt },
+  { name: 'r16', at: r16AAt },
+  { name: 'r16', at: r16BAt },
+  { name: 'd12', at: d12At, carry: [1.0, 1] },
+  { name: 'h30d', at: h30At, carry: [1.1, 2] },
+];
+
+function Mover({ clock, def }: SceneProps & { def: MoverDef }) {
+  const g = useRef<THREE.Group>(null);
+  const api = useRef<TruckApi | null>(null);
   const carriage = useRef<THREE.Group>(null);
   const stage = useRef<THREE.Group>(null);
-  const pallets = useRef<(THREE.Group | null)[]>([]);
   const p = useMemo<Pose>(() => ({ x: 0, z: 0, th: 0, lift: 0, roll: 0, reach: 0 }), []);
+  const reach = def.name === 'r16';
+  useFrame(() => {
+    const k = Math.min(Math.max(uOf(clock) - 12, 0), 1);
+    def.at(k, p);
+    if (g.current) place(g.current, p);
+    api.current?.set(reach ? 0 : p.lift, p.roll);
+    if (!reach) return;
+    // the carriage and the upper stage of the mast, in the model's frame which faces -x
+    carriage.current?.position.set(-p.reach, p.lift, 0);
+    if (stage.current) {
+      const top = p.lift + 1.1;
+      stage.current.position.set(0, MAST_TOP, 0);
+      stage.current.scale.y = Math.max(top - MAST_TOP, 0.001);
+      stage.current.visible = top > MAST_TOP + 0.05;
+    }
+  });
+  const load = def.carry ? SPEC[def.name].load! : null;
+  return (
+    <group ref={g}>
+      <Truck name={def.name} apiRef={api}>
+        {reach && <ReachCarriage carriage={carriage} stage={stage} />}
+        {load && def.carry && (
+          <group position={load}>
+            <Load h={def.carry[0]} colour={def.carry[1]} />
+          </group>
+        )}
+      </Truck>
+    </group>
+  );
+}
+
+function Movers({ clock }: SceneProps) {
+  const pallets = useRef<(THREE.Group | null)[]>([]);
   const q = useMemo(() => ({ x: 0, y: 0, z: 0, th: 0 }), []);
   useFrame(() => {
     const k = Math.min(Math.max(uOf(clock) - 12, 0), 1);
-    if (x50.current) {
-      x50At(k, p);
-      place(x50.current, p);
-      x50Api.current?.set(p.lift, p.roll);
-    }
-    if (r16.current) {
-      r16At(k, p);
-      place(r16.current, p);
-      r16Api.current?.set(0, 0);
-      // the carriage and the upper stage of the mast, in the model's frame which faces -x
-      carriage.current?.position.set(-p.reach, p.lift, 0);
-      if (stage.current) {
-        const top = p.lift + 1.1;
-        const h = Math.max(top - MAST_TOP, 0.001);
-        stage.current.position.set(0, MAST_TOP, 0);
-        stage.current.scale.y = h;
-        stage.current.visible = top > MAST_TOP + 0.05;
-      }
-    }
-    if (d12.current) {
-      d12At(k, p);
-      place(d12.current, p);
-      d12Api.current?.set(0, p.roll);
-    }
-    if (h30.current) {
-      h30At(k, p);
-      place(h30.current, p);
-      h30Api.current?.set(0, p.roll);
-    }
     PALLETS.forEach((_, i) => {
       const g = pallets.current[i];
       if (!g) return;
@@ -481,35 +491,11 @@ function Movers({ clock }: SceneProps) {
       g.rotation.y = -q.th;
     });
   });
-  // a pallet on the forks of a truck that carries one, in the frame of the model
-  const carry = (name: ModelName, h: number, colour: number) => {
-    const load = SPEC[name].load!;
-    return (
-      <group position={load}>
-        <Load h={h} colour={colour} />
-      </group>
-    );
-  };
   return (
     <group>
-      <group ref={x50}>
-        <Truck name="x50" apiRef={x50Api} />
-      </group>
-      <group ref={r16}>
-        <Truck name="r16" apiRef={r16Api}>
-          <ReachCarriage carriage={carriage} stage={stage} />
-        </Truck>
-      </group>
-      <group ref={d12}>
-        <Truck name="d12" apiRef={d12Api}>
-          {carry('d12', 1.0, 1)}
-        </Truck>
-      </group>
-      <group ref={h30}>
-        <Truck name="h30d" apiRef={h30Api}>
-          {carry('h30d', 1.1, 2)}
-        </Truck>
-      </group>
+      {MOVERS.map((def, i) => (
+        <Mover key={i} clock={clock} def={def} />
+      ))}
       {PALLETS.map((_, i) => (
         <group key={i} ref={(g) => { pallets.current[i] = g; }}>
           <Load h={1.05} colour={i % 3} />

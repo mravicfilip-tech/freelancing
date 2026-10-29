@@ -288,7 +288,8 @@ export function StoryShell({ Scene, tone, reduced, darkLayers, darkTop = DARK_TO
           // a hard cut half way through the leave window, no opacity ramp (taste 2026-10-12 17:55, nothing fades)
           on = pos < (G.leave[0] + G.leave[1]) / 2;
         } else {
-          on = k >= 0 && k <= 1 && k < (G.leave[0] + G.leave[1]) / 2;
+          // the terms pane is gone on the frame T starts, at k 1 of its own span, where the others hold their last pixel
+          on = k >= 0 && (k < 1 || (G.id !== 'NT' && k === 1)) && k < (G.leave[0] + G.leave[1]) / 2;
         }
         // the hero block stays off until the street starts building in, its grey lede included, see s0 above
         if (G.id === 'H' && s0 === Infinity) on = false;

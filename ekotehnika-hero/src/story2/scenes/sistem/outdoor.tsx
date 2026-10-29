@@ -1,13 +1,13 @@
 // The Ekotehnika site in daylight, white and the LMH greys. The company building with real windows, a door, a canopy
-// and a roof edge, cladding seams, downpipes and a contact shadow along its foot, its live 3D name in black, the vans
-// with their graphite livery, low poly trees in kerbed pits, hedges and shrubs, lamp posts, kerbs, and the road that
-// turns into the grey S path. Everything is still, the truck drives past it, so the parallax comes from the camera.
+// and a roof edge, cladding seams, downpipes and a contact shadow along its foot, its name as the real wordmark extruded
+// from the brand file, the service vans in their wrap, low poly trees in kerbed pits, hedges and shrubs, lamp posts,
+// kerbs, and the road that turns into the grey S path. Everything is still, the truck drives past it, so the parallax comes from the camera.
 // On load the road, the kerbs and the pavement draw along and everything else rises out of the ground (props.tsx).
 import { useLayoutEffect, useMemo, useRef } from 'react';
 import { useFrame } from '@react-three/fiber';
 import * as THREE from 'three';
 import { BUILDING_X, ROUTE } from './route';
-import { G, K, lam, lit, rng, signGeometry } from './kit';
+import { G, K, lam, lit, rng, wordmarkSign } from './kit';
 import { BoxSet, Hedge, Kerb, LampPost, Planter, Rise, Trees, Van, introClock, introFront, stripShadowMaterial, type BoxItem, type TreeSpec } from './props';
 import type { StoryClock } from '../../clock';
 import Yard from './yard';
@@ -285,14 +285,28 @@ function Hall({ x, w, h, d, zc }: { x: number; w: number; h: number; d: number; 
   );
 }
 
+// The company name on the wall is the real wordmark of public/brand/ekotehnika.svg, extruded from the file's own paths
+// with each path's own fill, the grey letters and tagline and the red mark, shaded as the rest of the scene is. It is
+// 6.2 m wide, the free stretch of wall between the cladding band and the upper window sills holds 1.27 m of height, and
+// its letters start at the left edge of the sign it replaced. Letters stand 0.2 m proud, the tagline 0.06 m.
+const SIGN_W = 6.2;
+const SIGN_BOTTOM = 3.2;
+
 export function Building() {
-  const sign = useMemo(() => signGeometry('EKOTEHNIKA', 0.9, 0.2), []);
+  const sign = useMemo(() => {
+    const { parts, s, view } = wordmarkSign(SIGN_W, 0.2, 0.06);
+    return { parts: parts.map((p) => ({ ...p, material: lam(p.fill, { emissive: lit(p.fill).multiplyScalar(0.5) }) })), s, view };
+  }, []);
   return (
     <group>
       <Rise x={BUILDING_X} depth={7.6}>
         <Facade x0={BX0} x1={BX1} h={6.4} doorX={BUILDING_X + 5.4} plain={11.5} />
-        {/* the live 3D name, Daxline caps, the one dark element on the wall */}
-        <mesh geometry={sign} material={K.sign} position={[BUILDING_X + 0.2, 3.45, FRONT + 0.1]} castShadow />
+        {/* the real wordmark, extruded from the brand file, the file's y runs down so the group is flipped */}
+        <group position={[BUILDING_X + 0.2 - sign.s * sign.view[0], SIGN_BOTTOM + sign.s * (sign.view[1] + sign.view[3]), FRONT + 0.1]} scale={[sign.s, -sign.s, sign.s]}>
+          {sign.parts.map((p, i) => (
+            <mesh key={i} geometry={p.geo} material={p.material} castShadow />
+          ))}
+        </group>
       </Rise>
       <Rise x={BUILDING_X + 20.5} depth={5.8}>
         <Hall x={BUILDING_X + 20.5} w={14} h={4.6} d={9} zc={FRONT - 4.5} />

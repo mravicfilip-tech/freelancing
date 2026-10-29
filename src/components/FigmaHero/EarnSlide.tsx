@@ -2,6 +2,14 @@ import { useEffect, useRef, useState } from 'react';
 import { useTheme } from '../../theme';
 import { EarnCards } from './EarnCards';
 import { EARN_VARIANT } from './earnVariant';
+import baseLight from './earn/dash-base-light.webp';
+import baseDark from './earn/dash-base-dark.webp';
+import amountLight from './earn/dash-amount-light.webp';
+import amountDark from './earn/dash-amount-dark.webp';
+import cardLight from './earn/dash-card-light.webp';
+import cardDark from './earn/dash-card-dark.webp';
+import copiedLight from './earn/dash-copied-light.webp';
+import copiedDark from './earn/dash-copied-dark.webp';
 import './EarnSlide.css';
 
 /**
@@ -31,6 +39,13 @@ import './EarnSlide.css';
  */
 
 const TESTERS = ['AK', 'MJ', 'LS'] as const;
+/* The captures go through the bundler rather than public/, so each gets a name hashed from its
+   contents: re-capturing the dashboard gives new URLs, and no browser holding yesterday's copy can
+   lay old pictures under the new targets. */
+const SHOTS = {
+  light: { base: baseLight, amount: amountLight, card: cardLight, copied: copiedLight },
+  dark: { base: baseDark, amount: amountDark, card: cardDark, copied: copiedDark },
+};
 
 export function EarnSlide({ active }: { active: boolean }) {
   const theme = useTheme();
@@ -307,10 +322,10 @@ export function EarnSlide({ active }: { active: boolean }) {
           <div className="el__screen">
             {load && (
               <>
-                <img className="el__shot" src={`/figma/earn/dash-base-${theme}.webp`} alt="" width={1200} height={860} decoding="async" />
-                <img className="el__shot el__patch el__patch--amount" src={`/figma/earn/dash-amount-${theme}.webp`} alt="" decoding="async" />
-                <img className="el__shot el__patch el__patch--card" src={`/figma/earn/dash-card-${theme}.webp`} alt="" decoding="async" />
-                <img className="el__shot el__patch el__patch--copied" src={`/figma/earn/dash-copied-${theme}.webp`} alt="" decoding="async" />
+                <img className="el__shot" src={SHOTS[theme].base} alt="" width={1200} height={860} decoding="async" />
+                <img className="el__shot el__patch el__patch--amount" src={SHOTS[theme].amount} alt="" decoding="async" />
+                <img className="el__shot el__patch el__patch--card" src={SHOTS[theme].card} alt="" decoding="async" />
+                <img className="el__shot el__patch el__patch--copied" src={SHOTS[theme].copied} alt="" decoding="async" />
               </>
             )}
             {/* Where the session's pointer goes, on the capture's own controls. */}

@@ -1,61 +1,67 @@
-/* The hero's fourth slide: RTX Earn, on Tenor's hero (EarnSlide.tsx).
-
-   Tenor's construction is taken over value for value: one isometric plane (Tenor's own matrix,
-   scaled by --k) carrying two cards that sit 26 units apart on it; each card is a 24-radius plate
-   whose thickness is ten stacked one-unit offsets, then a tight contact shadow and one long drop;
-   every bar, chip, tab and button on them is a smaller slab of the same kind. Tenor's warm neutrals
-   are turned to the site's cool ones and its blues to the site's indigo; the geometry, the layering
-   and the type scale are Tenor's.
+/* The hero's fourth slide: a beta test session on the Remittix dashboard, with Kong's bento laid
+   over it (EarnSlide.tsx).
 
    Drawn on a 605 × 520 stage, the slide's own design size, and scaled with it: every length is a
-   multiple of --u, one design pixel at the stage's width. Under 480px of stage the rate card goes
-   and the deposit card is drawn larger on its own. */
+   multiple of `--u`, one design pixel at the stage's width, so the overlaps hold from a wide screen
+   to a tablet. Under 480px of stage it re-cuts to the window and the two cards, and the unit grows
+   to suit them.
+
+   The window is the far layer and barely lifts; the cards are Kong's — flat colour fields with no
+   border, set hard on whatever is under them — so all they carry is a contact line and one drop in
+   the page's ink. Their type is Kong's kind: heavy and wide for a heading, heavy and condensed for
+   a figure, set in Bricolage Grotesque's width axis ('Earn Poster'). */
 .earnSlide {
-  --tn-ink: #122433;
-  --tn-body: #3d4954;
-  --tn-muted: #6b7682;
-  --tn-surface: #fff;
-  --tn-field: #f5f6f8;
-  --tn-pill: #eff1f4;
-  /* Tenor's plate is a cool blue mist; the dashboard is seen through it */
-  --tn-plate: #dfe5ee;
-  --tn-mist: 214 222 235;
-  --tn-shade: 18 36 51;
-  /* the slab's ten edge tones, top of the edge to its foot */
-  --tn-e1: #dadee3;
-  --tn-e2: #d6dbe1;
-  --tn-e3: #d2d7de;
-  --tn-e4: #ced3db;
-  --tn-e5: #cad0d8;
-  --tn-e6: #c6ccd5;
-  --tn-e7: #c0c6d0;
-  --tn-e8: #bbc1cc;
-  --tn-e9: #b6bcc8;
-  --tn-e10: #aeb5c2;
-  --tn-chipEdge1: #dde1e6;
-  --tn-chipEdge2: #d0d5dc;
-  --tn-ctaTop: #1e3242;
-  --tn-ctaFoot: #0d1b26;
-  --tn-ctaEdge1: #60707e;
-  --tn-ctaEdge2: #3a4855;
-  --tn-onCta: #fff;
-  /* bars: the fixed terms in the site's indigo, the chosen one at full strength, live pools in grey */
-  --tn-track: #dfe0fb;
-  --tn-trackEdge: #c6c8f4;
-  --tn-fill: #b3b5f5;
-  --tn-fillEdge: #9799e8;
-  --tn-strong: #4042d2;
-  --tn-strongEdge: #3234b2;
-  --tn-greyTrack: #e3e6ea;
-  --tn-greyTrackEdge: #cfd4da;
-  --tn-greyFill: #c9ced6;
-  --tn-greyFillEdge: #b2b8c2;
-  --tn-band: rgb(64 66 210 / 6%);
+  --el-surface: #fff;
+  --el-chrome: #f6f7f9;
+  --el-line: rgb(18 36 51 / 8%);
+  --el-rule: rgb(18 36 51 / 7%);
+  --el-accent: #4042d2;
+  --el-onAccent: #fff;
+  --el-tip: #122433;
+  --el-onTip: #fff;
+  /* Kong's three: the lime, the violet (here the site's indigo, lifted), and the black of the
+     starburst, each with its own ink. */
+  --el-lime: #d9f24e;
+  --el-onLime: #0b0f14;
+  --el-violetTop: #7577f4;
+  --el-violetFoot: #4a4cdc;
+  --el-onViolet: #fff;
+  --el-violetWell: rgb(255 255 255 / 16%);
+  --el-star: #0b0f14;
+  --el-starRim: #fff;
+  --el-e0:
+    0 0 0 1px rgb(18 36 51 / 7%),
+    0 1px 2px rgb(18 36 51 / 4%),
+    0 6px 16px -6px rgb(18 36 51 / 8%),
+    0 18px 32px -16px rgb(18 36 51 / 10%);
+  --el-e1:
+    0 0 0 1px rgb(18 36 51 / 7%),
+    0 1px 1px rgb(18 36 51 / 3%),
+    0 2px 4px -1px rgb(18 36 51 / 4%),
+    0 6px 10px -3px rgb(18 36 51 / 5%),
+    0 14px 22px -8px rgb(18 36 51 / 8%),
+    0 28px 40px -18px rgb(18 36 51 / 10%);
+  --el-e2:
+    0 0 0 1px rgb(18 36 51 / 7%),
+    0 1px 1px rgb(18 36 51 / 3%),
+    0 2px 4px -1px rgb(18 36 51 / 4%),
+    0 8px 14px -4px rgb(18 36 51 / 6%),
+    0 20px 32px -10px rgb(18 36 51 / 10%),
+    0 44px 64px -24px rgb(18 36 51 / 16%);
+  --el-tone-0: #e3e4fd;
+  --el-tone-0-ink: #4042d2;
+  --el-tone-1: #eef6c7;
+  --el-tone-1-ink: #55620f;
+  --el-tone-2: #e6e9ed;
+  --el-tone-2-ink: #122433;
+  --el-tone-3: #122433;
+  --el-tone-3-ink: #fff;
   position: absolute;
   inset: 0;
   container-type: inline-size;
-  /* The stage grows into the room beside the copy: mostly leftwards and a little up, from a point
-     near its right edge, so it reaches toward the headline without touching it. */
+  /* The stage grows into the room beside the copy. It grows mostly leftwards and a little up, from
+     a point near its right edge, so it reaches toward the headline without touching it and stays
+     inside the dashed frame. How far depends on how much room the copy leaves at each width. */
   transform-origin: 85% 42%;
 }
 /* Below 1281 the slide is flush with the frame's right edge, so it grows leftwards only. */
@@ -66,416 +72,516 @@
 @media (min-width: 1380px) and (max-width: 1439px) { .earnSlide { transform: scale(1.24); } }
 @media (min-width: 1440px) { .earnSlide { transform: scale(1.3); } }
 
-.tn {
+.el {
   --u: calc(100cqw / 605);
-  /* one step of a slab's edge, and the plane's scale against Tenor's own */
-  --e: calc(var(--u) * 0.6991);
   position: absolute;
   inset: 0;
   font-family: var(--fh-sans);
-  color: var(--tn-ink);
+  color: var(--fh-ink);
   font-variant-numeric: tabular-nums;
 }
 
-/* ---------- The plate ---------- */
-.tn__plate {
+/* ---------- Far: the window ---------- */
+.el__window {
   position: absolute;
   z-index: 1;
-  left: calc(var(--u) * 70);
-  top: calc(var(--u) * 14);
-  right: calc(var(--u) * -24);
-  bottom: calc(var(--u) * 18);
+  left: calc(var(--u) * 40);
+  top: 0;
+  width: calc(var(--u) * 565);
   overflow: hidden;
-  border-radius: calc(var(--u) * 32) 0 0 calc(var(--u) * 32);
-  background: var(--tn-plate);
-  box-shadow: 0 0 0 1px rgb(var(--tn-shade) / 5%);
+  border-radius: calc(var(--u) * 12);
+  background: var(--el-chrome);
+  box-shadow: var(--el-e0);
 }
-.tn__shot {
+.el__bar {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: calc(var(--u) * 28);
+  border-bottom: 1px solid var(--el-line);
+}
+.el__dots {
+  position: absolute;
+  left: calc(var(--u) * 12);
+  top: 50%;
+  display: flex;
+  gap: calc(var(--u) * 6);
+  transform: translateY(-50%);
+}
+.el__dots i {
+  width: calc(var(--u) * 8);
+  height: calc(var(--u) * 8);
+  border-radius: 50%;
+  background: var(--el-line);
+}
+.el__address {
+  display: inline-flex;
+  align-items: center;
+  gap: calc(var(--u) * 6);
+  height: calc(var(--u) * 18);
+  padding: 0 calc(var(--u) * 12);
+  border-radius: 999px;
+  background: var(--el-surface);
+  box-shadow: 0 0 0 1px var(--el-line);
+  font-size: calc(var(--u) * 10);
+  font-weight: 600;
+  color: var(--fh-label);
+}
+.el__screen {
+  position: relative;
+  aspect-ratio: 1200 / 860;
+  background: var(--fh-bg);
+}
+.el__shot {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+/* The dashboard's own states, captured at the same pixel, laid exactly over where they happen. */
+.el__patch {
+  position: absolute;
+}
+.el__patch--amount,
+.el__patch--card {
+  left: 21.5%;
+  top: 75%;
+  width: 32.6667%;
+  height: 25%;
+}
+.el__patch--copied {
+  left: 86.3333%;
+  top: 91.8605%;
+  width: 10.6667%;
+  height: 7.907%;
+}
+.el__hit {
+  position: absolute;
+  width: 0;
+  height: 0;
+}
+.el__hit--amount { left: 36.79%; top: 96.4%; }
+.el__hit--card { left: 45.125%; top: 78.95%; }
+.el__hit--copy { left: 91.46%; top: 95.81%; }
+
+/* ---------- Kong's violet card: the perks ---------- */
+.el__perks {
+  position: absolute;
+  z-index: 2;
+  left: calc(var(--u) * 414);
+  top: calc(var(--u) * 40);
+  width: calc(var(--u) * 191);
+  padding: calc(var(--u) * 17) calc(var(--u) * 15) calc(var(--u) * 15);
+  border-radius: calc(var(--u) * 15);
+  background: linear-gradient(160deg, var(--el-violetTop), var(--el-violetFoot));
+  box-shadow: var(--el-e1);
+  color: var(--el-onViolet);
+}
+.el__perksHead {
+  display: block;
+  font-family: 'Earn Poster', var(--fh-sans);
+  font-size: calc(var(--u) * 15.5);
+  font-weight: 800;
+  font-stretch: 100%;
+  line-height: 1.02;
+  letter-spacing: 0.01em;
+  text-transform: uppercase;
+}
+.el__perksCopy {
+  margin: calc(var(--u) * 8) 0 0;
+  font-size: calc(var(--u) * 9);
+  font-weight: 500;
+  line-height: 1.4;
+  color: rgb(255 255 255 / 88%);
+}
+.el__perkList {
+  display: grid;
+  gap: calc(var(--u) * 6);
+  margin: calc(var(--u) * 13) 0 0;
+  padding: 0;
+  list-style: none;
+}
+.el__perkList li {
+  display: grid;
+  grid-template-columns: calc(var(--u) * 28) 1fr;
+  gap: calc(var(--u) * 6);
+  height: calc(var(--u) * 28);
+}
+.el__perkIcon,
+.el__perk {
+  display: grid;
+  place-items: center;
+  border-radius: calc(var(--u) * 8);
+  background: var(--el-violetWell);
+}
+.el__perkIcon svg {
+  width: calc(var(--u) * 13);
+  height: calc(var(--u) * 13);
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2.2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.el__perk {
+  font-family: 'Earn Poster', var(--fh-sans);
+  font-size: calc(var(--u) * 7.5);
+  font-weight: 800;
+  font-stretch: 100%;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+/* ---------- Kong's lime card: early access ---------- */
+.el__access {
+  position: absolute;
+  z-index: 3;
+  left: 0;
+  top: calc(var(--u) * 76);
+  display: grid;
+  grid-template-columns: auto 1fr;
+  grid-template-rows: auto auto 1fr;
+  column-gap: calc(var(--u) * 10);
+  width: calc(var(--u) * 322);
+  height: calc(var(--u) * 196);
+  padding: calc(var(--u) * 17) 0 calc(var(--u) * 15) calc(var(--u) * 18);
+  overflow: hidden;
+  border-radius: calc(var(--u) * 15);
+  background: var(--el-lime);
+  box-shadow: var(--el-e2);
+  color: var(--el-onLime);
+}
+.el__accessHead {
+  grid-column: 1 / -1;
+  font-family: 'Earn Poster', var(--fh-sans);
+  font-size: calc(var(--u) * 15.5);
+  font-weight: 800;
+  font-stretch: 100%;
+  line-height: 1;
+  letter-spacing: 0.01em;
+  text-transform: uppercase;
+}
+.el__accessCopy {
+  grid-column: 1 / -1;
+  max-width: calc(var(--u) * 268);
+  margin: calc(var(--u) * 8) 0 0;
+  font-size: calc(var(--u) * 9);
+  font-weight: 500;
+  line-height: 1.4;
+}
+/* Kong's "50% / REV SHARE": the figure and its label set to one width, the label under it. */
+.el__deal {
+  align-self: end;
+  display: grid;
+  justify-items: start;
+  font-family: 'Earn Poster', var(--fh-sans);
+  font-weight: 800;
+  font-stretch: 75%;
+  line-height: 0.86;
+  text-transform: uppercase;
+}
+.el__big {
+  display: flex;
+  align-items: flex-start;
+  font-size: calc(var(--u) * 64);
+  letter-spacing: -0.035em;
+}
+/* The point is the one thing in the figure that is easy to lose; it gets room either side. */
+.el__big .el__odoSep {
+  margin: 0 0.05em;
+}
+.el__bigLabel {
+  margin-top: calc(var(--u) * 3);
+  /* set so the label runs exactly the figure's width, as Kong's REV SHARE does under its 50% */
+  font-size: calc(var(--u) * 30.3);
+  font-stretch: 100%;
+  letter-spacing: -0.01em;
+}
+/* The reels run off the card's right edge, as Kong's partner rows do, and fade in from the left. */
+.el__reels {
+  align-self: end;
+  display: grid;
+  gap: calc(var(--u) * 7);
+  min-width: 0;
+  padding-bottom: calc(var(--u) * 2);
+  mask-image: linear-gradient(90deg, transparent, #000 22%);
+}
+.el__reel {
+  overflow: hidden;
+}
+.el__reelTrack {
+  display: flex;
+  align-items: center;
+  gap: calc(var(--u) * 9);
+  width: max-content;
+  height: calc(var(--u) * 19);
+  animation: el-reel 16s linear infinite;
+}
+.el__reel[data-dir='right'] .el__reelTrack {
+  animation-direction: reverse;
+  animation-duration: 19s;
+}
+/* The reels only run while the slide is up. */
+.fh__slide:not([data-active]) .el__reelTrack {
+  animation-play-state: paused;
+}
+@keyframes el-reel {
+  to { transform: translateX(calc(-50% - var(--u) * 4.5)); }
+}
+.el__reelName {
+  font-size: calc(var(--u) * 14);
+  line-height: 1;
+  white-space: nowrap;
+}
+/* Kong's partners each keep their own lettering; the pools get three. */
+.el__reelName[data-face='0'] {
+  font-family: 'Earn Poster', var(--fh-sans);
+  font-weight: 800;
+  font-stretch: 75%;
+  font-size: calc(var(--u) * 17);
+  text-transform: uppercase;
+}
+.el__reelName[data-face='1'] {
+  font-weight: 600;
+  letter-spacing: -0.02em;
+}
+.el__reelName[data-face='2'] {
+  font-family: 'Earn Poster', var(--fh-sans);
+  font-weight: 800;
+  font-stretch: 100%;
+  font-size: calc(var(--u) * 12);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+.el__reelSep {
+  flex: none;
+  width: calc(var(--u) * 14);
+  height: calc(var(--u) * 14);
+}
+.el__reelSep--bolt {
+  fill: currentColor;
+}
+.el__reelSep--wave {
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2.6;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.el__reelMark {
+  flex: none;
+  width: calc(var(--u) * 22);
+  height: auto;
+}
+
+/* ---------- Kong's starburst: the seats left ---------- */
+.el__sticker {
+  position: absolute;
+  z-index: 4;
+  left: calc(var(--u) * 276);
+  top: calc(var(--u) * 222);
+  display: grid;
+  place-items: center;
+  align-content: center;
+  width: calc(var(--u) * 84);
+  height: calc(var(--u) * 84);
+  rotate: -9deg;
+  color: var(--el-lime);
+  filter: drop-shadow(0 calc(var(--u) * 6) calc(var(--u) * 8) rgb(11 15 20 / 28%));
+}
+.el__sticker svg {
   position: absolute;
   inset: 0;
   width: 100%;
   height: 100%;
-  object-fit: cover;
-  object-position: 0 0;
 }
-/* The dashboard reads at the top and falls back toward the foot, where the cards lie on it. */
-.tn__mist {
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(180deg, rgb(var(--tn-mist) / 22%) 0%, rgb(var(--tn-mist) / 58%) 50%, rgb(var(--tn-mist) / 88%) 100%);
+.el__sticker polygon {
+  fill: var(--el-star);
+  stroke: var(--el-starRim);
+  stroke-width: 4;
+  stroke-linejoin: round;
 }
-.tn__frame {
-  position: absolute;
-  left: calc(var(--u) * 16);
-  top: calc(var(--u) * 16);
-  right: calc(var(--u) * -2);
-  bottom: calc(var(--u) * 16);
-  border-radius: calc(var(--u) * 20) 0 0 calc(var(--u) * 20);
-  box-shadow: inset 0 0 0 1px rgb(255 255 255 / 75%);
+.el__stickerNum {
+  position: relative;
+  font-family: 'Earn Poster', var(--fh-sans);
+  font-size: calc(var(--u) * 27);
+  font-weight: 800;
+  font-stretch: 75%;
+  line-height: 1;
+  letter-spacing: -0.01em;
+}
+.el__stickerLabel {
+  position: relative;
+  margin-top: calc(var(--u) * 1);
+  font-family: 'Earn Poster', var(--fh-sans);
+  font-size: calc(var(--u) * 6.5);
+  font-weight: 800;
+  font-stretch: 100%;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
 }
 
-/* ---------- The plane ---------- */
-.tn__plane {
+/* ---------- The testers ---------- */
+.el__testers {
+  --seat: calc(var(--u) * 28);
+  --overlap: calc(var(--u) * -8);
   position: absolute;
   z-index: 2;
-  inset: 0;
-}
-/* Tenor's isometric matrix, at two thirds of its size. Both cards are laid out flat on the rig and
-   the rig is turned onto the plane, so their text, shadows and edges all lie in it. */
-.tn__rig {
-  position: absolute;
-  left: calc(var(--u) * -8);
-  top: calc(var(--u) * 384);
-  width: calc(var(--u) * 656);
-  height: calc(var(--u) * 327.5);
-  transform: matrix(0.636031, -0.367535, 0.636031, 0.367535, 0, 0);
-  transform-origin: 0 0;
-}
-
-/* A card's slab: an inner lip, ten edge steps, a contact shadow and the long drop. */
-.tn__panel,
-.tn__book {
-  position: absolute;
-  top: 0;
-  height: calc(var(--u) * 327.5);
-  border-radius: calc(var(--u) * 24);
-  background: var(--tn-surface);
-  box-shadow:
-    rgb(var(--tn-shade) / 10%) calc(var(--u) * 3) 0 calc(var(--u) * 3) calc(var(--u) * -2) inset,
-    rgb(var(--tn-shade) / 12%) 0 calc(var(--u) * -3) calc(var(--u) * 3) calc(var(--u) * -2) inset,
-    var(--tn-e1) calc(var(--e) * -1) calc(var(--e) * 1) 0 0,
-    var(--tn-e2) calc(var(--e) * -2) calc(var(--e) * 2) 0 0,
-    var(--tn-e3) calc(var(--e) * -3) calc(var(--e) * 3) 0 0,
-    var(--tn-e4) calc(var(--e) * -4) calc(var(--e) * 4) 0 0,
-    var(--tn-e5) calc(var(--e) * -5) calc(var(--e) * 5) 0 0,
-    var(--tn-e6) calc(var(--e) * -6) calc(var(--e) * 6) 0 0,
-    var(--tn-e7) calc(var(--e) * -7) calc(var(--e) * 7) 0 0,
-    var(--tn-e8) calc(var(--e) * -8) calc(var(--e) * 8) 0 0,
-    var(--tn-e9) calc(var(--e) * -9) calc(var(--e) * 9) 0 0,
-    var(--tn-e10) calc(var(--e) * -10) calc(var(--e) * 10) 0 0,
-    rgb(var(--tn-shade) / 26%) calc(var(--u) * -7.19) calc(var(--u) * 7.19) calc(var(--u) * 6) calc(var(--u) * -2),
-    rgb(24 36 60 / 22%) calc(var(--u) * 10.71) calc(var(--u) * 33.29) calc(var(--u) * 48) 0;
-}
-
-/* ---------- The deposit card (Tenor's borrow panel) ---------- */
-.tn__panel {
-  left: 0;
-  width: calc(var(--u) * 290);
-  display: flex;
-  flex-direction: column;
-  gap: calc(var(--u) * 9);
-  padding: calc(var(--u) * 14);
-}
-.tn__tabs {
-  display: flex;
-  gap: calc(var(--u) * 2);
-  align-self: flex-start;
-  padding: calc(var(--u) * 3);
-  border-radius: 999px;
-  background: var(--tn-pill);
-  box-shadow: rgb(var(--tn-shade) / 7.5%) calc(var(--u) * -0.85) calc(var(--u) * 0.85) calc(var(--u) * 1.25) 0 inset;
-  font-size: calc(var(--u) * 12);
-  font-weight: 600;
-  line-height: 1;
-  color: var(--tn-muted);
-}
-.tn__tab {
-  padding: calc(var(--u) * 6) calc(var(--u) * 12);
-  border-radius: 999px;
-}
-.tn__tab--on {
-  background: var(--tn-surface);
-  color: var(--tn-ink);
-  box-shadow:
-    var(--tn-chipEdge1) calc(var(--u) * -0.3) calc(var(--u) * 0.3) 0 0,
-    var(--tn-chipEdge1) calc(var(--u) * -0.6) calc(var(--u) * 0.6) 0 0,
-    rgb(var(--tn-shade) / 10%) calc(var(--u) * -0.65) calc(var(--u) * 1.65) calc(var(--u) * 2) 0;
-}
-.tn__field {
-  display: flex;
-  flex-direction: column;
-  padding: calc(var(--u) * 10) calc(var(--u) * 12) calc(var(--u) * 11);
-  border-radius: calc(var(--u) * 12);
-  background: var(--tn-field);
-  box-shadow:
-    rgb(var(--tn-shade) / 8%) calc(var(--u) * -1) calc(var(--u) * 1) calc(var(--u) * 1.25) 0 inset,
-    rgb(var(--tn-shade) / 2.4%) 0 0 0 calc(var(--u) * 1) inset;
-}
-.tn__k {
-  font-size: calc(var(--u) * 11.5);
-  font-weight: 500;
-  line-height: 1;
-  color: var(--tn-muted);
-}
-.tn__v {
+  left: calc(var(--u) * 186);
+  top: calc(var(--u) * 448);
   display: flex;
   align-items: center;
-  justify-content: space-between;
   gap: calc(var(--u) * 10);
-  margin-top: calc(var(--u) * 7);
-}
-.tn__num {
-  font-size: calc(var(--u) * 20);
-  font-weight: 500;
-  letter-spacing: -0.02em;
-  line-height: 1;
-}
-.tn__chip {
-  display: flex;
-  align-items: center;
-  gap: calc(var(--u) * 6);
-  padding: calc(var(--u) * 4) calc(var(--u) * 9) calc(var(--u) * 4) calc(var(--u) * 4);
+  padding: calc(var(--u) * 6) calc(var(--u) * 16) calc(var(--u) * 6) calc(var(--u) * 6);
   border-radius: 999px;
-  background: var(--tn-surface);
-  box-shadow:
-    rgb(var(--tn-shade) / 8%) 0 0 0 calc(var(--u) * 1) inset,
-    var(--tn-chipEdge1) calc(var(--u) * -0.3) calc(var(--u) * 0.3) 0 0,
-    var(--tn-chipEdge2) calc(var(--u) * -0.6) calc(var(--u) * 0.6) 0 0,
-    rgb(var(--tn-shade) / 12%) calc(var(--u) * -0.84) calc(var(--u) * 1.44) calc(var(--u) * 1.6) 0;
-  font-size: calc(var(--u) * 12);
-  font-weight: 600;
-  line-height: 1;
+  background: var(--el-surface);
+  box-shadow: var(--el-e1);
 }
-.tn__coin {
-  display: block;
-  flex: 0 0 auto;
-  width: calc(var(--u) * 18);
-  height: calc(var(--u) * 18);
-}
-.tn__coin circle {
-  fill: #2775ca;
-}
-.tn__coin path {
-  fill: #fff;
-}
-.tn__term {
+.el__seats {
   display: flex;
   align-items: center;
-  gap: calc(var(--u) * 8);
-  padding: calc(var(--u) * 3) calc(var(--u) * 4) calc(var(--u) * 1);
 }
-.tn__d {
-  padding: calc(var(--u) * 6) calc(var(--u) * 8);
-  border-radius: calc(var(--u) * 8);
-  background: var(--tn-pill);
-  box-shadow:
-    rgb(var(--tn-shade) / 8%) calc(var(--u) * -1) calc(var(--u) * 1) calc(var(--u) * 1.25) 0 inset,
-    rgb(var(--tn-shade) / 2.4%) 0 0 0 calc(var(--u) * 1) inset;
-  font-size: calc(var(--u) * 12);
-  font-weight: 500;
-  line-height: 1;
-  color: var(--tn-body);
-}
-.tn__r {
-  display: flex;
-  align-items: center;
-  gap: calc(var(--u) * 6);
-  margin-left: auto;
-}
-.tn__rate {
-  font-size: calc(var(--u) * 15);
-  font-weight: 600;
-  line-height: 1;
-}
-.tn__fx {
-  padding: calc(var(--u) * 4) calc(var(--u) * 6);
-  border-radius: 999px;
-  background: var(--tn-ink);
-  font-size: calc(var(--u) * 10);
-  font-weight: 600;
-  line-height: 1;
-  color: var(--tn-surface);
-}
-.tn__cta {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  height: calc(var(--u) * 42);
-  margin-top: calc(var(--u) * 2);
-  border-radius: 999px;
-  background: linear-gradient(var(--tn-ctaTop), var(--tn-ctaFoot));
-  box-shadow:
-    rgb(255 255 255 / 18%) 0 calc(var(--u) * 1) 0 0 inset,
-    rgb(0 0 0 / 35%) 0 calc(var(--u) * -1) 0 0 inset,
-    var(--tn-ctaEdge1) calc(var(--u) * -0.5) calc(var(--u) * 0.5) 0 0,
-    var(--tn-ctaEdge2) calc(var(--u) * -1) calc(var(--u) * 1) 0 0,
-    rgb(var(--tn-shade) / 20%) calc(var(--u) * -1.6) calc(var(--u) * 2.6) calc(var(--u) * 2.6) 0;
-  font-size: calc(var(--u) * 13.5);
-  font-weight: 600;
-  letter-spacing: -0.005em;
-  color: var(--tn-onCta);
-}
-
-/* ---------- The rate card (Tenor's order book) ---------- */
-.tn__book {
-  left: calc(var(--u) * 316);
-  width: calc(var(--u) * 340);
-}
-.tn__head {
-  display: flex;
-  align-items: flex-start;
-  gap: calc(var(--u) * 10);
-  padding: calc(var(--u) * 20) calc(var(--u) * 20) calc(var(--u) * 4);
-}
-.tn__head .tn__coin {
-  width: calc(var(--u) * 31);
-  height: calc(var(--u) * 31);
-}
-.tn__mk {
-  display: flex;
-  flex-direction: column;
-  gap: calc(var(--u) * 2);
-  font-size: calc(var(--u) * 15);
-  line-height: 1;
-}
-.tn__mk b {
-  font-weight: 600;
-}
-.tn__tm {
-  display: flex;
-  align-items: center;
-  gap: calc(var(--u) * 6);
-  font-size: calc(var(--u) * 11.5);
-  font-weight: 500;
-  color: var(--tn-body);
-}
-.tn__dd {
-  padding: calc(var(--u) * 2) calc(var(--u) * 6);
-  border-radius: 999px;
-  background: var(--tn-pill);
-  box-shadow:
-    rgb(var(--tn-shade) / 8%) calc(var(--u) * -1) calc(var(--u) * 1) calc(var(--u) * 1.25) 0 inset,
-    rgb(var(--tn-shade) / 2.4%) 0 0 0 calc(var(--u) * 1) inset;
-  font-size: calc(var(--u) * 10.5);
-}
-.tn__rows {
-  padding-top: calc(var(--u) * 14);
-}
-.tn__rows--live {
-  padding: 0 0 calc(var(--u) * 14);
-}
-.tn__row {
-  position: relative;
+.el__seat {
   display: grid;
-  grid-template-columns: calc(var(--u) * 232) calc(var(--u) * 54);
-  align-items: center;
-  gap: calc(var(--u) * 14);
-  height: calc(var(--u) * 29);
-  padding: 0 calc(var(--u) * 20);
-  font-size: calc(var(--u) * 13);
-  font-weight: 500;
-  line-height: 1;
-  color: var(--tn-body);
+  place-items: center;
+  flex: 0 0 auto;
+  box-sizing: border-box;
+  width: var(--seat);
+  height: var(--seat);
+  margin-left: var(--overlap);
+  overflow: hidden;
+  border: calc(var(--u) * 2) solid var(--el-surface);
+  border-radius: 50%;
+  font-size: calc(var(--u) * 9.5);
+  font-weight: 600;
+  letter-spacing: 0.02em;
 }
-/* the term the deposit card is taking: lit across the card, as Tenor lights its best offer */
-.tn__row--chosen::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background: var(--tn-band);
+.el__seat:first-child {
+  margin-left: 0;
 }
-.tn__slot {
-  position: relative;
-  height: calc(var(--u) * 20);
+.el__seat[data-tone='0'] { background: var(--el-tone-0); color: var(--el-tone-0-ink); }
+.el__seat[data-tone='1'] { background: var(--el-tone-1); color: var(--el-tone-1-ink); }
+.el__seat[data-tone='2'] { background: var(--el-tone-2); color: var(--el-tone-2-ink); }
+.el__seat[data-tone='3'] { background: var(--el-tone-3); color: var(--el-tone-3-ink); }
+.el__seat--open {
+  margin-left: calc(var(--u) * 4);
+  border: calc(var(--u) * 1.5) dashed color-mix(in srgb, var(--fh-muted) 70%, transparent);
+  background: none;
+  font-size: calc(var(--u) * 14);
+  font-weight: 400;
+  color: var(--fh-label);
 }
-.tn__bar {
-  --bar: var(--tn-track);
-  --edge: var(--tn-trackEdge);
-  position: absolute;
-  left: 0;
-  top: 0;
-  height: 100%;
-  border-radius: calc(var(--u) * 4);
-  background: var(--bar);
-  box-shadow:
-    var(--edge) calc(var(--u) * -0.25) calc(var(--u) * 0.25) 0 0,
-    var(--edge) calc(var(--u) * -0.5) calc(var(--u) * 0.5) 0 0,
-    var(--edge) calc(var(--u) * -0.75) calc(var(--u) * 0.75) 0 0,
-    var(--edge) calc(var(--u) * -1) calc(var(--u) * 1) 0 0,
-    rgb(var(--tn-shade) / 12%) calc(var(--u) * -1.08) calc(var(--u) * 2.08) calc(var(--u) * 1.6) 0;
-  transform: translate(calc(var(--u) * 0.6), calc(var(--u) * -0.6));
-  transform-origin: 0 50%;
-}
-.tn__bar--fill {
-  --bar: var(--tn-fill);
-  --edge: var(--tn-fillEdge);
-}
-.tn__row--chosen .tn__bar--track {
-  --bar: var(--tn-fill);
-  --edge: var(--tn-fillEdge);
-}
-.tn__row--chosen .tn__bar--fill {
-  --bar: var(--tn-strong);
-  --edge: var(--tn-strongEdge);
-}
-.tn__row--live .tn__bar--track {
-  --bar: var(--tn-greyTrack);
-  --edge: var(--tn-greyTrackEdge);
-}
-.tn__row--live .tn__bar--fill {
-  --bar: var(--tn-greyFill);
-  --edge: var(--tn-greyFillEdge);
-}
-.tn__label {
-  position: absolute;
-  left: calc(var(--u) * 7);
-  top: 50%;
-  font-size: calc(var(--u) * 10.5);
-  font-weight: 500;
+.el__testersText {
+  display: grid;
+  font-size: calc(var(--u) * 11.5);
+  line-height: 1.35;
   white-space: nowrap;
-  color: var(--tn-body);
-  transform: translate(calc(var(--u) * 0.6), calc(-50% - var(--u) * 0.6));
+  color: var(--fh-label);
 }
-.tn__row--chosen .tn__label {
-  color: var(--tn-surface);
-}
-.tn__badge {
-  position: absolute;
-  right: 0;
-  top: 50%;
-  display: flex;
-  align-items: center;
-  height: calc(var(--u) * 17);
-  padding: 0 calc(var(--u) * 6);
-  border-radius: calc(var(--u) * 4);
-  background: var(--tn-pill);
-  box-shadow: rgb(var(--tn-shade) / 9%) 0 0 0 calc(var(--u) * 1) inset;
-  font-size: calc(var(--u) * 10);
-  font-weight: 500;
-  white-space: nowrap;
-  color: var(--tn-body);
-  transform: translateY(-50%);
-}
-.tn__apy {
-  justify-self: end;
-  color: var(--tn-ink);
-}
-.tn__row--live .tn__apy {
-  color: var(--tn-muted);
-}
-.tn__sep {
-  height: calc(var(--u) * 22);
-  margin: 0 calc(var(--u) * 20);
-  background: linear-gradient(rgb(var(--tn-shade) / 8%), rgb(var(--tn-shade) / 8%)) center / 100% 1px no-repeat;
+.el__testersText b {
+  font-size: calc(var(--u) * 12.5);
+  font-weight: 600;
+  color: var(--fh-ink);
 }
 
-/* A phone: the deposit card alone, larger, over the dashboard's foot. */
+/* An odometer: every digit is a strip of 0–9 behind a one-digit slot. */
+.el__odo {
+  display: inline-flex;
+}
+.el__odoSlot {
+  display: inline-block;
+  height: 1.08em;
+  overflow: hidden;
+}
+.el__odoStrip {
+  display: flex;
+  flex-direction: column;
+}
+.el__odoStrip span,
+.el__odoSep {
+  height: 1.08em;
+  line-height: 1.08em;
+}
+
+
+/* ---------- The pointer ---------- */
+.el__cursor {
+  position: absolute;
+  z-index: 4;
+  left: 0;
+  top: 0;
+  width: calc(var(--u) * 16);
+  height: calc(var(--u) * 20);
+  margin: calc(var(--u) * -1.5) 0 0 calc(var(--u) * -1.5);
+  overflow: visible;
+  opacity: 0;
+  transform-origin: 10% 8%;
+  filter: drop-shadow(0 1px 1.5px rgb(18 36 51 / 30%));
+}
+.el__cursor path {
+  fill: var(--el-tip);
+  stroke: var(--el-onTip);
+  stroke-width: 1.2;
+  stroke-linejoin: round;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .el__reelTrack {
+    animation: none;
+  }
+}
+
+/* A phone: the cards move to the window's upper corners, smaller, so the strip of the dashboard
+   the session works in — Buy and the flash sale — stays in view; the testers row goes, and the
+   seat is taken on the sticker. */
 @container (max-width: 480px) {
-  .tn {
+  .el {
     --u: calc(100cqw / 420);
   }
-  .tn__plate {
-    left: calc(var(--u) * 40);
+  .el__window {
+    left: calc(var(--u) * 22);
+    top: calc(var(--u) * 44);
+    width: calc(var(--u) * 398);
+  }
+  .el__perks {
+    left: auto;
+    right: 0;
+    top: calc(var(--u) * 6);
+    width: calc(var(--u) * 168);
+    padding: calc(var(--u) * 14) calc(var(--u) * 12) calc(var(--u) * 12);
+  }
+  .el__perksCopy {
+    display: none;
+  }
+  .el__perkList {
+    margin-top: calc(var(--u) * 10);
+  }
+  .el__access {
     top: 0;
-    right: calc(var(--u) * -10);
-    bottom: calc(var(--u) * 40);
-    border-radius: calc(var(--u) * 24) 0 0 calc(var(--u) * 24);
+    width: calc(var(--u) * 238);
+    height: calc(var(--u) * 196);
+    padding: calc(var(--u) * 15) 0 calc(var(--u) * 13) calc(var(--u) * 15);
   }
-  .tn__rig {
-    left: calc(var(--u) * 14);
-    top: calc(var(--u) * 220);
+  .el__accessCopy {
+    max-width: calc(var(--u) * 205);
   }
-  .tn__book {
+  /* Too narrow for the reels to read as more than a sliver; the figure carries the card alone. */
+  .el__reels {
+    display: none;
+  }
+  .el__big {
+    font-size: calc(var(--u) * 56);
+  }
+  .el__bigLabel {
+    font-size: calc(var(--u) * 26.5);
+  }
+  .el__sticker {
+    left: calc(var(--u) * 196);
+    top: calc(var(--u) * 160);
+    width: calc(var(--u) * 76);
+    height: calc(var(--u) * 76);
+  }
+  .el__testers {
     display: none;
   }
 }

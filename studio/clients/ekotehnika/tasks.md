@@ -35,7 +35,8 @@ Task format
   - [x] Filip answers the rent scope, Najam only
   - [ ] Filip answers the deadline and the short term rent line
   - [x] Filip says yes to the Najam beat table
-  - [ ] Build the hardest Najam beat, the warehouse aisle with the terms
+  - [x] Build the hardest Najam beat, the warehouse aisle with the terms, branch claude/awesome-faraday-lkhnn2-najam, sheet briefs/round6/refs/r6-najam-skladiste-pass2.jpg
+  - [ ] Filip picks the Skladište camera, close at the racks or wide over the whole hall
 
 - ekotehnika-11 Client sees the site all white and not loading on production. Link https://ekotehnika-hero.vercel.app
   - [x] Production is public, it answers with no login

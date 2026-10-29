@@ -141,24 +141,24 @@
 .el__patch--amount,
 .el__patch--card {
   left: 21.5%;
-  top: 75%;
-  width: 32.6667%;
-  height: 25%;
+  top: 75.2326%;
+  width: 32.75%;
+  height: 20.4651%;
 }
 .el__patch--copied {
-  left: 86.3333%;
-  top: 91.8605%;
-  width: 10.6667%;
-  height: 7.907%;
+  left: 86.8333%;
+  top: 87.3256%;
+  width: 9.25%;
+  height: 6.9767%;
 }
 .el__hit {
   position: absolute;
   width: 0;
   height: 0;
 }
-.el__hit--amount { left: 36.79%; top: 96.4%; }
+.el__hit--amount { left: 36.79%; top: 93.02%; }
 .el__hit--card { left: 45.125%; top: 78.95%; }
-.el__hit--copy { left: 91.46%; top: 95.81%; }
+.el__hit--copy { left: 91.46%; top: 90.81%; }
 
 /* ---------- The testers ---------- */
 .el__testers {

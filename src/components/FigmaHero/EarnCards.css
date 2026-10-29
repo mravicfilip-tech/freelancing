@@ -563,6 +563,12 @@
   padding: calc(var(--u) * 20) calc(var(--u) * 18) 0;
   box-shadow: var(--el-e1);
 }
+/* Where the screen leaves room past the window's right edge, the callout hangs 24px over it. */
+@media (min-width: 1520px) {
+  .ev-safe {
+    left: calc(var(--u) * 416.5);
+  }
+}
 .ev-circuit {
   position: relative;
   height: calc(var(--u) * 84);

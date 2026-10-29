@@ -57,6 +57,10 @@
   transform-origin: 85% 42%;
 }
 /* Below 1281 the slide is flush with the frame's right edge, so it grows leftwards only. */
+/* Until the entry takes over (EarnSlide.tsx). */
+.earnSlide[data-entrance='pending'] .el {
+  visibility: hidden;
+}
 @media (min-width: 1000px) and (max-width: 1099px) { .earnSlide { transform: scale(1.05); transform-origin: 100% 42%; } }
 @media (min-width: 1100px) and (max-width: 1280px) { .earnSlide { transform: scale(1.14); transform-origin: 100% 42%; } }
 @media (min-width: 1281px) and (max-width: 1319px) { .earnSlide { transform: scale(1.08); } }

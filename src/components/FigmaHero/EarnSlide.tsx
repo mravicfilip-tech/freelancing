@@ -31,9 +31,9 @@ const TESTERS = ['AK', 'MJ', 'LS'] as const;
 export function EarnSlide({ active }: { active: boolean }) {
   const theme = useTheme();
   const ref = useRef<HTMLDivElement>(null);
-  /* The captures are the heaviest thing on the slide and nobody sees them before the fourth slide,
-     so they are not requested with the page: they mount the first time the slide is shown, or once
-     the page has settled, whichever comes first. */
+  /* The captures are the heaviest thing on the slide, so they mount the first time the slide is
+     shown — at once, now that it opens the hero — or once the page has settled, whichever comes
+     first. */
   const [load, setLoad] = useState(false);
   useEffect(() => {
     if (active) setLoad(true);
@@ -46,7 +46,14 @@ export function EarnSlide({ active }: { active: boolean }) {
   useEffect(() => {
     const root = ref.current;
     if (!active || !load || !root) return;
-    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    /* The scene renders `data-entrance="pending"`, hidden in CSS, so the hero's first paint never
+       shows its finished picture a beat before the entry takes it apart; the attribute is cleared
+       in the frame the entry takes over — or at once, if there is no entry to wait for. */
+    const reveal = () => void delete root.dataset.entrance;
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      reveal();
+      return;
+    }
 
     const q = <T extends Element>(s: string) => root.querySelector<T>(s)!;
     const qa = <T extends Element>(s: string) => Array.from(root.querySelectorAll<T>(s));
@@ -225,6 +232,7 @@ export function EarnSlide({ active }: { active: boolean }) {
           safe.enter(entry, 0.4);
           entry.add(() => safe.loop(), 1.6);
         }
+        reveal();
 
         // ---- The session ----
         const session = () => {
@@ -268,7 +276,7 @@ export function EarnSlide({ active }: { active: boolean }) {
         };
       }, root);
       revert = () => ctx.revert();
-    });
+    }, reveal);
 
     return () => {
       cancelled = true;
@@ -280,7 +288,7 @@ export function EarnSlide({ active }: { active: boolean }) {
   }, [active, load]);
 
   return (
-    <div ref={ref} className="earnSlide" aria-hidden="true">
+    <div ref={ref} className="earnSlide" data-entrance="pending" aria-hidden="true">
       <div className="el">
         {/* ---- Far: the dashboard ---- */}
         <div className="el__window">

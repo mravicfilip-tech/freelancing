@@ -1,0 +1,774 @@
+/* The cards over the Earn slide's dashboard, three versions (EarnCards.tsx).
+
+   Lengths are in the slide's `--u`, one design pixel of its 605 × 520 stage, like everything else
+   on it. The look is the sources' own: Medusa's zinc greys, hairline borders, small bordered icon
+   boxes and green and red change pills; the Performance and Security cards' soft white, indigo bars
+   and lavender halo — with the site's indigo for theirs. Each card lifts off the dashboard on the
+   slide's own shadows (`--el-e1` for the far card, `--el-e2` for the near one). */
+.earnSlide {
+  --ev-card: #fff;
+  --ev-sunk: #fafafa;
+  --ev-line: #e4e4e7;
+  --ev-rule: #f0f0f2;
+  --ev-ink: #18181b;
+  --ev-body: #52525b;
+  --ev-muted: #a1a1aa;
+  --ev-hover: #f4f4f5;
+  --ev-green: #16a34a;
+  --ev-greenSoft: #ecfdf5;
+  --ev-greenLine: #bbf7d0;
+  --ev-red: #dc2626;
+  --ev-redSoft: #fef2f2;
+  --ev-redLine: #fecaca;
+  --ev-blue: #3b82f6;
+  --ev-amber: #f59e0b;
+  --ev-accent: #4042d2;
+  --ev-accentSoft: #eef0ff;
+  --ev-accentLine: #dfe1ff;
+  --ev-barTop: #5b5df0;
+  --ev-barFoot: #4042d2;
+  --ev-barLeft: #cfd0f7;
+  --ev-wire: #e4e4ea;
+  --ev-trace: #dcdcf6;
+  --ev-halo: rgb(64 66 210 / 14%);
+}
+
+.ev-card {
+  position: absolute;
+  overflow: hidden;
+  border-radius: calc(var(--u) * 10);
+  background: var(--ev-card);
+  color: var(--ev-ink);
+  font-family: var(--fh-sans);
+  font-variant-numeric: tabular-nums;
+}
+.ev-icon {
+  width: calc(var(--u) * 11);
+  height: calc(var(--u) * 11);
+  flex: none;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.7;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+/* Medusa's small bordered icon box. */
+.ev-box {
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: calc(var(--u) * 19);
+  height: calc(var(--u) * 19);
+  border-radius: calc(var(--u) * 5);
+  background: var(--ev-sunk);
+  box-shadow: inset 0 0 0 1px var(--ev-line);
+  color: var(--ev-body);
+}
+
+/* ================================================================ 1 — the pools and a deposit */
+
+/* ---- Medusa's "Sales channels" table ---- */
+.ev-table {
+  z-index: 3;
+  left: 0;
+  top: calc(var(--u) * 96);
+  width: calc(var(--u) * 252);
+  height: calc(var(--u) * 186);
+  box-shadow: var(--el-e2);
+}
+/* The last row runs out under the card's foot, as Medusa's does, into the card's own white. */
+.ev-table::after,
+.ev-feed::after {
+  content: '';
+  position: absolute;
+  inset: auto 0 0;
+  height: calc(var(--u) * 36);
+  background: linear-gradient(transparent, var(--ev-card));
+  pointer-events: none;
+}
+.ev-tableHead {
+  display: flex;
+  align-items: center;
+  gap: calc(var(--u) * 9);
+  padding: calc(var(--u) * 11) calc(var(--u) * 13);
+  border-bottom: 1px solid var(--ev-line);
+  font-size: calc(var(--u) * 11);
+  font-weight: 500;
+}
+.ev-tableCols,
+.ev-tableRow {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: calc(var(--u) * 10);
+  padding: 0 calc(var(--u) * 13);
+}
+.ev-tableCols {
+  align-items: center;
+  height: calc(var(--u) * 30);
+  border-bottom: 1px solid var(--ev-line);
+  font-size: calc(var(--u) * 9.5);
+  font-weight: 500;
+}
+.ev-tableRow {
+  align-items: center;
+  height: calc(var(--u) * 44);
+  border-bottom: 1px solid var(--ev-rule);
+  transition: background-color 160ms ease;
+}
+/* Where the session's pointer rests on a row. */
+.ev-tableRow[data-hover] {
+  background: var(--ev-hover);
+}
+.ev-cell {
+  display: grid;
+  gap: calc(var(--u) * 3);
+  min-width: 0;
+}
+.ev-cellTop {
+  display: flex;
+  align-items: center;
+  gap: calc(var(--u) * 5);
+  font-size: calc(var(--u) * 9.5);
+  font-weight: 500;
+  white-space: nowrap;
+}
+.ev-cellSub {
+  font-size: calc(var(--u) * 8.5);
+  color: var(--ev-muted);
+  white-space: nowrap;
+}
+.ev-cell--market {
+  grid-template-columns: auto 1fr;
+  align-items: center;
+  gap: calc(var(--u) * 8);
+}
+.ev-cellText {
+  display: grid;
+  gap: calc(var(--u) * 3);
+  min-width: 0;
+}
+.ev-thumb {
+  display: grid;
+  place-items: center;
+  width: calc(var(--u) * 21);
+  height: calc(var(--u) * 21);
+  border-radius: calc(var(--u) * 5);
+  background: var(--ev-sunk);
+  box-shadow: inset 0 0 0 1px var(--ev-line);
+}
+.ev-thumb img {
+  width: calc(var(--u) * 13);
+  height: calc(var(--u) * 13);
+  border-radius: calc(var(--u) * 3);
+}
+/* Medusa's change pill: an arrow and a figure in a tinted, bordered capsule. */
+.ev-delta {
+  display: inline-flex;
+  align-items: center;
+  gap: calc(var(--u) * 1.5);
+  padding: calc(var(--u) * 1) calc(var(--u) * 3.5) calc(var(--u) * 1) calc(var(--u) * 2.5);
+  border-radius: calc(var(--u) * 4);
+  font-size: calc(var(--u) * 7.5);
+  font-weight: 600;
+}
+.ev-delta .ev-icon {
+  width: calc(var(--u) * 7.5);
+  height: calc(var(--u) * 7.5);
+  stroke-width: 2.4;
+}
+.ev-delta--up {
+  background: var(--ev-greenSoft);
+  box-shadow: inset 0 0 0 1px var(--ev-greenLine);
+  color: var(--ev-green);
+}
+.ev-delta--down {
+  background: var(--ev-redSoft);
+  box-shadow: inset 0 0 0 1px var(--ev-redLine);
+  color: var(--ev-red);
+}
+
+/* ---- Medusa's Payment → Cart graph ---- */
+.ev-flow {
+  z-index: 2;
+  left: calc(var(--u) * 405);
+  top: calc(var(--u) * 36);
+  width: calc(var(--u) * 200);
+  height: calc(var(--u) * 186);
+  background: var(--ev-sunk);
+  box-shadow: var(--el-e1);
+}
+.ev-wires {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+.ev-wires path {
+  fill: none;
+  stroke: var(--ev-wire);
+  stroke-width: 1;
+}
+.ev-wires circle {
+  fill: var(--ev-sunk);
+  stroke: var(--ev-wire);
+  stroke-width: 1;
+}
+.ev-node {
+  position: absolute;
+  left: calc(var(--u) * 30);
+  width: calc(var(--u) * 140);
+  border-radius: calc(var(--u) * 8);
+  background: var(--ev-card);
+  box-shadow:
+    0 0 0 1px var(--ev-line),
+    0 1px 2px rgb(24 24 27 / 5%);
+}
+.ev-node--deposit {
+  top: calc(var(--u) * 26);
+}
+.ev-node--pool {
+  top: calc(var(--u) * 140);
+}
+.ev-nodeHead {
+  display: flex;
+  align-items: center;
+  gap: calc(var(--u) * 8);
+  height: calc(var(--u) * 32);
+  padding: 0 calc(var(--u) * 7);
+  font-size: calc(var(--u) * 10);
+  font-weight: 500;
+}
+.ev-dot {
+  width: calc(var(--u) * 5);
+  height: calc(var(--u) * 5);
+  margin-left: auto;
+  margin-right: calc(var(--u) * 3);
+  border-radius: 50%;
+  background: #22c55e;
+  box-shadow: 0 0 0 calc(var(--u) * 2.5) rgb(34 197 94 / 18%);
+}
+.ev-dot[data-off] {
+  background: var(--ev-line);
+  box-shadow: 0 0 0 calc(var(--u) * 2.5) transparent;
+}
+.ev-nodeList {
+  display: grid;
+  margin: 0 calc(var(--u) * 5) calc(var(--u) * 5);
+  overflow: hidden;
+  border-radius: calc(var(--u) * 6);
+  box-shadow: inset 0 0 0 1px var(--ev-line);
+}
+.ev-nodeItem {
+  display: flex;
+  align-items: center;
+  gap: calc(var(--u) * 7);
+  height: calc(var(--u) * 21);
+  padding: 0 calc(var(--u) * 7);
+  font-size: calc(var(--u) * 9);
+  font-weight: 500;
+}
+.ev-nodeItem + .ev-nodeItem {
+  border-top: 1px solid var(--ev-line);
+}
+.ev-nodeItem img {
+  width: calc(var(--u) * 12);
+  height: calc(var(--u) * 12);
+  border-radius: calc(var(--u) * 3);
+}
+.ev-tick {
+  margin-left: auto;
+  color: var(--ev-muted);
+}
+/* The deposit travelling down the wire to the pool. */
+.ev-pulse {
+  position: absolute;
+  left: calc(var(--u) * 97);
+  top: calc(var(--u) * 106);
+  width: calc(var(--u) * 6);
+  height: calc(var(--u) * 6);
+  border-radius: 50%;
+  background: var(--ev-accent);
+  box-shadow: 0 0 0 calc(var(--u) * 3) rgb(64 66 210 / 18%);
+  opacity: 0;
+}
+
+/* ================================================================ 2 — a position */
+
+/* ---- Medusa's order chips and menu ---- */
+.ev-menuCard {
+  z-index: 2;
+  left: calc(var(--u) * 404);
+  top: calc(var(--u) * 36);
+  width: calc(var(--u) * 196);
+  padding: calc(var(--u) * 12);
+  background: var(--ev-sunk);
+  box-shadow: var(--el-e1);
+  overflow: visible;
+}
+.ev-chips {
+  display: flex;
+  gap: calc(var(--u) * 5);
+}
+.ev-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: calc(var(--u) * 4);
+  height: calc(var(--u) * 21);
+  padding: 0 calc(var(--u) * 8);
+  border-radius: calc(var(--u) * 6);
+  background: var(--ev-card);
+  box-shadow:
+    inset 0 0 0 1px var(--ev-line),
+    0 1px 1px rgb(24 24 27 / 4%);
+  font-size: calc(var(--u) * 9);
+  font-weight: 500;
+  color: var(--ev-body);
+  white-space: nowrap;
+}
+.ev-chip--state {
+  opacity: 0.4;
+}
+.ev-chip--state i {
+  width: calc(var(--u) * 4.5);
+  height: calc(var(--u) * 4.5);
+  border-radius: 50%;
+  background: #22c55e;
+}
+.ev-chip--more {
+  gap: calc(var(--u) * 2);
+  padding: 0 calc(var(--u) * 6);
+}
+.ev-chip--more i {
+  width: calc(var(--u) * 2.2);
+  height: calc(var(--u) * 2.2);
+  border-radius: 50%;
+  background: currentColor;
+}
+.ev-menu {
+  display: grid;
+  margin: calc(var(--u) * 6) 0 0 calc(var(--u) * 10);
+  padding: calc(var(--u) * 4);
+  border-radius: calc(var(--u) * 8);
+  background: var(--ev-card);
+  box-shadow:
+    0 0 0 1px var(--ev-line),
+    0 4px 10px -2px rgb(24 24 27 / 8%),
+    0 12px 24px -12px rgb(24 24 27 / 14%);
+}
+.ev-act {
+  display: flex;
+  align-items: center;
+  gap: calc(var(--u) * 8);
+  height: calc(var(--u) * 24);
+  padding: 0 calc(var(--u) * 7);
+  border-radius: calc(var(--u) * 5);
+  font-size: calc(var(--u) * 9.5);
+  color: var(--ev-ink);
+  white-space: nowrap;
+  transition: background-color 140ms ease;
+}
+.ev-act .ev-icon {
+  color: var(--ev-body);
+}
+.ev-act[data-hover] {
+  background: var(--ev-hover);
+}
+.ev-menuRule {
+  height: 1px;
+  margin: calc(var(--u) * 4) calc(var(--u) * -4);
+  background: var(--ev-line);
+}
+
+/* ---- Medusa's activity ---- */
+.ev-feed {
+  position: absolute;
+  z-index: 3;
+  left: 0;
+  top: calc(var(--u) * 100);
+  display: grid;
+  width: calc(var(--u) * 250);
+  padding: calc(var(--u) * 10) calc(var(--u) * 9) 0;
+  overflow: hidden;
+  border-radius: calc(var(--u) * 10);
+  background: var(--ev-card);
+  box-shadow: var(--el-e2);
+  font-family: var(--fh-sans);
+  color: var(--ev-ink);
+}
+.ev-feed::after {
+  height: calc(var(--u) * 30);
+}
+/* Each event is its own card; the outer box only folds, so a new one can open in at the top. */
+.ev-event {
+  padding-bottom: calc(var(--u) * 6);
+}
+.ev-event--new {
+  height: 0;
+  padding-bottom: 0;
+  overflow: hidden;
+  opacity: 0;
+}
+.ev-eventIn {
+  display: grid;
+  gap: calc(var(--u) * 4);
+  padding: calc(var(--u) * 10) calc(var(--u) * 11);
+  border-radius: calc(var(--u) * 8);
+  background: var(--ev-card);
+  box-shadow:
+    0 0 0 1px var(--ev-line),
+    0 1px 2px rgb(24 24 27 / 5%);
+}
+.ev-event[data-state='review'] {
+  height: calc(var(--u) * 30);
+  opacity: 0.55;
+}
+.ev-eventTop {
+  display: flex;
+  align-items: center;
+  gap: calc(var(--u) * 7);
+  font-size: calc(var(--u) * 10);
+}
+.ev-eventTop b {
+  font-weight: 500;
+}
+.ev-what {
+  padding-left: calc(var(--u) * 18);
+  font-size: calc(var(--u) * 8.5);
+  color: var(--ev-muted);
+}
+.ev-when {
+  margin-left: auto;
+  font-size: calc(var(--u) * 8.5);
+  color: var(--ev-muted);
+  white-space: nowrap;
+}
+.ev-by {
+  display: grid;
+  place-items: center;
+  width: calc(var(--u) * 13);
+  height: calc(var(--u) * 13);
+  margin-left: auto;
+  border-radius: 50%;
+  background: var(--el-tone-1);
+  color: var(--el-tone-1-ink);
+  font-size: calc(var(--u) * 5.5);
+  font-weight: 600;
+}
+.ev-by + .ev-when {
+  margin-left: 0;
+}
+/* Medusa's status marks: done is a filled green check, waiting a half-filled blue ring, review an
+   amber quarter. */
+.ev-status {
+  position: relative;
+  flex: none;
+  width: calc(var(--u) * 11);
+  height: calc(var(--u) * 11);
+  border-radius: 50%;
+}
+[data-state='done'] .ev-status {
+  background: #22c55e;
+}
+[data-state='done'] .ev-status::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  top: 44%;
+  width: 22%;
+  height: 42%;
+  border-right: calc(var(--u) * 1.3) solid #fff;
+  border-bottom: calc(var(--u) * 1.3) solid #fff;
+  transform: translate(-50%, -50%) rotate(45deg);
+}
+[data-state='wait'] .ev-status {
+  background: conic-gradient(var(--ev-blue) 0 50%, transparent 50% 100%);
+  box-shadow: inset 0 0 0 calc(var(--u) * 1.4) var(--ev-blue);
+}
+[data-state='review'] .ev-status {
+  background: conic-gradient(var(--ev-amber) 0 25%, transparent 25% 100%);
+  box-shadow: inset 0 0 0 calc(var(--u) * 1.4) var(--ev-amber);
+}
+
+/* ================================================================ 3 — the rate and the payouts */
+
+/* Both are callouts here: each lies over a quiet part of the dashboard and hangs off its edge — the
+   rate off the window's bottom-left corner, over the sidebar's foot (the account and Collapse),
+   and the payouts over the chart's unfilled future stages — so the dashboard's title, balances, current
+   stage, Buy and flash sale all stay in view. */
+
+/* ---- The Performance card, as a callout ---- */
+.ev-term {
+  z-index: 3;
+  left: 0;
+  top: calc(var(--u) * 338);
+  width: calc(var(--u) * 160);
+  padding: calc(var(--u) * 13);
+  box-shadow: var(--el-e2);
+}
+.ev-termTitle {
+  display: block;
+  font-size: calc(var(--u) * 11);
+  font-weight: 500;
+  letter-spacing: -0.005em;
+}
+.ev-metric {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  margin-top: calc(var(--u) * 7);
+}
+.ev-metricValue {
+  font-size: calc(var(--u) * 16.5);
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  color: var(--ev-accent);
+}
+.ev-metricValue small {
+  margin-left: calc(var(--u) * 2);
+  font-size: calc(var(--u) * 9);
+  font-weight: 500;
+  color: var(--ev-ink);
+}
+.ev-badge {
+  padding: calc(var(--u) * 2) calc(var(--u) * 5);
+  border-radius: 999px;
+  background: var(--ev-accentSoft);
+  box-shadow: inset 0 0 0 1px var(--ev-accentLine);
+  font-size: calc(var(--u) * 7);
+  font-weight: 600;
+  color: var(--ev-accent);
+}
+.ev-bars {
+  display: flex;
+  justify-content: space-between;
+  height: calc(var(--u) * 28);
+  margin-top: calc(var(--u) * 6);
+}
+.ev-bars i {
+  width: calc(var(--u) * 3.6);
+  border-radius: calc(var(--u) * 1);
+  background: linear-gradient(var(--ev-barTop), var(--ev-barFoot));
+  transform-origin: 50% 100%;
+}
+.ev-bars i[data-left] {
+  background: var(--ev-barLeft);
+}
+
+/* ---- The Security card, as a callout ---- */
+.ev-safe {
+  z-index: 2;
+  left: calc(var(--u) * 398);
+  top: calc(var(--u) * 160);
+  width: calc(var(--u) * 207);
+  padding: calc(var(--u) * 20) calc(var(--u) * 18) 0;
+  box-shadow: var(--el-e1);
+}
+/* Where the screen leaves room past the window's right edge, the callout hangs 24px over it. */
+@media (min-width: 1520px) {
+  .ev-safe {
+    left: calc(var(--u) * 416.5);
+  }
+}
+.ev-circuit {
+  position: relative;
+  height: calc(var(--u) * 84);
+  margin: calc(var(--u) * 10) calc(var(--u) * -18) calc(var(--u) * 6);
+}
+.ev-halo {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: calc(var(--u) * 170);
+  height: calc(var(--u) * 90);
+  border-radius: 50%;
+  background: radial-gradient(closest-side, var(--ev-halo), transparent);
+  transform: translate(-50%, -50%);
+}
+.ev-circuit > svg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+.ev-circuit > svg path {
+  fill: none;
+  stroke: var(--ev-trace);
+  stroke-width: 0.8;
+}
+/* The stream: fine dashes of the indigo running along every trace, pool to wallet, for as long as
+   the slide is up. The right-hand traces are written from the edge in, so theirs runs backwards. */
+.ev-circuit > svg .ev-stream path {
+  stroke: var(--ev-accent);
+  stroke-width: 0.9;
+  stroke-linecap: round;
+  stroke-dasharray: 1.4 6.6;
+  opacity: 0.55;
+  animation: ev-stream 1.1s linear infinite;
+}
+.ev-circuit > svg .ev-stream path[data-back] {
+  animation-direction: reverse;
+}
+@keyframes ev-stream {
+  to { stroke-dashoffset: -8; }
+}
+.fh__slide:not([data-active]) .ev-stream path {
+  animation-play-state: paused;
+}
+/* A payout: a short bright run along one of the three ways through. */
+.ev-circuit > svg .ev-comet {
+  stroke: var(--ev-accent);
+  stroke-width: 1.6;
+  stroke-linecap: round;
+  stroke-dasharray: 16 400;
+  stroke-dashoffset: 16;
+  opacity: 0;
+  filter: drop-shadow(0 0 1.5px var(--ev-accent));
+}
+.ev-orb {
+  position: absolute;
+  top: 50%;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: var(--ev-card);
+  box-shadow:
+    0 0 0 1px var(--ev-accentLine),
+    0 6px 14px -6px rgb(64 66 210 / 30%);
+  color: var(--ev-accent);
+  /* centred with `translate`, so the entry's scale (a transform) composes with it */
+  translate: -50% -50%;
+}
+/* The ring that leaves the shield each time a payout passes it. */
+.ev-ripple {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  box-shadow: 0 0 0 calc(var(--u) * 1.5) var(--ev-accent);
+  opacity: 0;
+}
+.ev-orb--pool,
+.ev-orb--wallet {
+  width: calc(var(--u) * 34);
+  height: calc(var(--u) * 34);
+}
+.ev-orb--pool { left: calc(100% * 36 / 207); }
+.ev-orb--wallet { left: calc(100% * 171 / 207); }
+.ev-orb--shield {
+  left: 50%;
+  width: calc(var(--u) * 54);
+  height: calc(var(--u) * 54);
+}
+.ev-orb .ev-icon {
+  width: calc(var(--u) * 15);
+  height: calc(var(--u) * 15);
+  stroke-width: 1.5;
+}
+.ev-orb--shield .ev-icon {
+  width: calc(var(--u) * 26);
+  height: calc(var(--u) * 26);
+  stroke-width: 1.3;
+}
+.ev-seal {
+  position: absolute;
+  right: calc(var(--u) * 11);
+  bottom: calc(var(--u) * 10);
+  display: grid;
+  place-items: center;
+  width: calc(var(--u) * 13);
+  height: calc(var(--u) * 13);
+  border-radius: 50%;
+  background: var(--ev-accent);
+  box-shadow: 0 0 0 calc(var(--u) * 1.5) var(--ev-card);
+  color: #fff;
+}
+.ev-seal .ev-icon {
+  width: calc(var(--u) * 8);
+  height: calc(var(--u) * 8);
+  stroke-width: 3;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ev-circuit > svg .ev-stream path {
+    animation: none;
+    opacity: 0;
+  }
+}
+
+/* ================================================================ A phone */
+
+/* The two cards move to the window's upper corners, smaller, so the strip of the dashboard the
+   session works in — Buy and the flash sale — stays in view. */
+@container (max-width: 480px) {
+  .ev-flow,
+  .ev-menuCard,
+  .ev-safe {
+    left: auto;
+    right: 0;
+    top: calc(var(--u) * 8);
+    width: calc(var(--u) * 176);
+  }
+  .ev-table,
+  .ev-feed {
+    top: 0;
+    width: calc(var(--u) * 222);
+  }
+  /* 1: the graph is drawn for 200 wide; it keeps its nodes and loses some wire. */
+  .ev-flow {
+    height: calc(var(--u) * 180);
+  }
+  .ev-node {
+    left: calc(var(--u) * 18);
+  }
+  .ev-pulse {
+    left: calc(var(--u) * 85);
+  }
+  .ev-cell--market {
+    display: none;
+  }
+  .ev-tableCols span:last-child {
+    display: none;
+  }
+  .ev-tableCols,
+  .ev-tableRow {
+    grid-template-columns: 1fr;
+  }
+  /* 2: the menu gives up its last two actions. */
+  .ev-menuCard .ev-act:nth-child(4),
+  .ev-menuCard .ev-menuRule,
+  .ev-menuCard .ev-act:last-child {
+    display: none;
+  }
+  .ev-chip--state {
+    display: none;
+  }
+  /* 3: the callouts keep to the same quiet places — the payouts over the chart's right, between the
+     balances and the flash sale, and the rate off the window's left side, clear of Buy — with
+     their type a step larger so it still reads at this size. */
+  .ev-safe {
+    top: calc(var(--u) * 128);
+    padding-top: calc(var(--u) * 16);
+  }
+  .ev-circuit {
+    margin-top: calc(var(--u) * 6);
+  }
+  .ev-term {
+    top: calc(var(--u) * 168);
+    width: calc(var(--u) * 142);
+    padding: calc(var(--u) * 11);
+  }
+  .ev-termTitle {
+    font-size: calc(var(--u) * 12);
+  }
+  .ev-metricValue {
+    font-size: calc(var(--u) * 18);
+  }
+  .ev-badge {
+    font-size: calc(var(--u) * 7.5);
+  }
+  .ev-bars {
+    height: calc(var(--u) * 24);
+  }
+  .ev-bars i {
+    width: calc(var(--u) * 3.2);
+  }
+}

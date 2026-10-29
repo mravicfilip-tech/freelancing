@@ -2,6 +2,8 @@ import { useEffect, useRef, useState } from 'react';
 import { LangPicker } from './LangPicker';
 import { ThemeToggle } from './ThemeToggle';
 import { ChestSlide } from './ChestSlide';
+import { EarnSlide } from './EarnSlide';
+import { TesterSignup, TESTERS_HASH } from './TesterSignup';
 import { HeroPlanet } from '../HeroPlanet';
 import { Bars } from './Bars';
 import { useHeroEntrance } from './useHeroEntrance';
@@ -132,9 +134,23 @@ function Unit({ value, label }: { value: string; label: string }) {
   );
 }
 
-/** The hero graphic: one slide per visual. The corridors globe, the bars from the Figma design,
- *  then the chest, which draws itself in from its own line work. */
+/** The hero graphic: one slide per visual. The call for RTX Earn testers opens the hero; then the
+ *  corridors globe, the bars from the Figma design, and the chest, which draws itself in from its
+ *  own line work. */
 const SLIDES = [
+  {
+    id: 'earn',
+    label: 'RTX Earn testers wanted',
+    lead: 'RTX Earn',
+    payoff: 'Testers Wanted.',
+    body:
+      'Get early access to RTX Earn — stablecoin yield pools you can deposit into and track ' +
+      'in one place. Try it before launch and help shape it.',
+    cta: 'Sign Up Now',
+    /* The sign-up opens on this hash (see TesterSignup), so the button is a plain link and the same
+       link opens the form from anywhere else too. */
+    href: TESTERS_HASH,
+  },
   {
     id: 'globe',
     label: 'Payment corridors around the world',
@@ -173,22 +189,25 @@ function GraphicSlides({ index }: { index: number }) {
   const globeHost = useRef<HTMLDivElement>(null);
   return (
     <div className="fh__viewport" role="region" aria-roledescription="carousel" aria-label="Hero graphic">
+      <div className="fh__slide" data-slide="earn" data-active={index === 0 || undefined} aria-hidden={index !== 0}>
+        <EarnSlide active={index === 0} />
+      </div>
       <div
         ref={globeHost}
         className="fh__slide fh__slide--globe"
         data-slide="globe"
-        data-active={index === 0 || undefined}
-        aria-hidden={index !== 0}
+        data-active={index === 1 || undefined}
+        aria-hidden={index !== 1}
       >
         {PLANET_ENABLED && (
-          <HeroPlanet hostRef={globeHost} variant="figma-corridors" layout="capture" scroll={false} forceStatic={PLANET_STATIC} active={index === 0} />
+          <HeroPlanet hostRef={globeHost} variant="figma-corridors" layout="capture" scroll={false} forceStatic={PLANET_STATIC} active={index === 1} />
         )}
       </div>
-      <div className="fh__slide" data-slide="bars" data-active={index === 1 || undefined} aria-hidden={index !== 1}>
-        <Bars active={index === 1} />
+      <div className="fh__slide" data-slide="bars" data-active={index === 2 || undefined} aria-hidden={index !== 2}>
+        <Bars active={index === 2} />
       </div>
-      <div className="fh__slide" data-slide="chest" data-active={index === 2 || undefined} aria-hidden={index !== 2}>
-        <ChestSlide active={index === 2} />
+      <div className="fh__slide" data-slide="chest" data-active={index === 3 || undefined} aria-hidden={index !== 3}>
+        <ChestSlide active={index === 3} />
       </div>
     </div>
   );
@@ -372,7 +391,7 @@ export function FigmaHero() {
             </h1>
             <p className="fh__body">{copy.body}</p>
           </div>
-          <PresaleButton wide label={'cta' in copy ? copy.cta : undefined} />
+          <PresaleButton wide label={'cta' in copy ? copy.cta : undefined} href={'href' in copy ? copy.href : undefined} />
         </div>
         <div className="fh__graphic">
           <GraphicSlides index={slide} />
@@ -425,6 +444,8 @@ export function FigmaHero() {
           <Unit value={seconds} label="seconds" />
         </div>
       </footer>
+
+      <TesterSignup />
     </section>
   );
 }

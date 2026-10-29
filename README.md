@@ -23,6 +23,24 @@ cache on hashed assets). Either:
 
 Node 22 or newer is required (set in `package.json` engines; Vercel's default).
 
+## RTX Earn tester sign-up
+
+The hero's fourth slide ("RTX Earn Testers Wanted") opens a sign-up dialog that
+asks for an email and an ERC-20 wallet address. It opens on the `#earn-testers`
+hash, so `https://<site>/#earn-testers` lands on the page with the form open.
+
+The site has no backend, so submissions go to whatever endpoint is set at build
+time:
+
+```
+VITE_EARN_TESTERS_ENDPOINT=https://… npm run build
+```
+
+It receives a JSON `POST` of `{ "email", "wallet", "source" }` and must answer
+2xx (a Formspree form endpoint works as-is). Without it the form says it could
+not send rather than pretending it did, so set it in the Vercel project's
+environment variables before deploying.
+
 ## Globe switcher
 
 The hero ships with three globe treatments and a switcher pinned to the bottom

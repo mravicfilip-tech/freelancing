@@ -1,0 +1,299 @@
+/* The RTX Earn beta sign-up (TesterSignup.tsx). A native modal dialog, rendered inside the hero so
+   it reads the hero's tokens and turns over with the theme with no palette of its own. On a phone it
+   stands on the foot of the screen as a sheet, where the thumb and the keyboard already are. */
+.ts {
+  --ts-danger: #c2412d;
+  --ts-ring: color-mix(in srgb, var(--fh-progress) 22%, transparent);
+  width: min(480px, 100% - 32px);
+  max-width: none;
+  max-height: calc(100dvh - 32px);
+  padding: 0;
+  border: 1px solid var(--fh-line);
+  border-radius: 20px;
+  background: var(--fh-surface);
+  color: var(--fh-ink);
+  font-family: var(--fh-sans);
+  box-shadow: 0 40px 80px -32px rgb(18 36 51 / 35%);
+  overflow: auto;
+  overscroll-behavior: contain;
+}
+.ts::backdrop {
+  background: rgb(18 36 51 / 38%);
+  backdrop-filter: blur(6px);
+}
+.ts[open] {
+  animation: ts-in 320ms cubic-bezier(0.22, 0.61, 0.36, 1);
+}
+.ts[open]::backdrop {
+  animation: ts-fade 220ms ease-out;
+}
+.ts[data-closing] {
+  animation: ts-out 160ms cubic-bezier(0.4, 0, 1, 1) forwards;
+}
+.ts[data-closing]::backdrop {
+  animation: ts-fade 160ms ease-in reverse forwards;
+}
+@keyframes ts-in {
+  from { opacity: 0; transform: translateY(16px) scale(0.98); }
+  to { opacity: 1; transform: none; }
+}
+@keyframes ts-out {
+  to { opacity: 0; transform: translateY(10px) scale(0.98); }
+}
+@keyframes ts-fade {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.ts__panel {
+  position: relative;
+  padding: 32px;
+}
+.ts__close {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  padding: 0;
+  border: 1px solid var(--fh-line);
+  border-radius: 50%;
+  background: var(--fh-surface);
+  cursor: pointer;
+  transition: background-color 180ms ease, border-color 180ms ease;
+}
+.ts__close svg {
+  display: block;
+  fill: none;
+  stroke: var(--fh-ink);
+  stroke-width: 1.6;
+  stroke-linecap: round;
+}
+.ts__close:hover {
+  border-color: var(--fh-ink);
+}
+.ts__close:focus-visible {
+  outline: 2px solid var(--fh-progress);
+  outline-offset: 2px;
+}
+
+.ts__form,
+.ts__done {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+.ts__badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 24px;
+  padding: 0 4px 0 12px;
+  border-radius: 999px;
+  background: var(--fh-bg);
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--fh-label);
+}
+.ts__beta {
+  padding: 2px 7px;
+  border-radius: 999px;
+  background: var(--fh-progress);
+  font-family: var(--fh-pixel);
+  font-size: 8px;
+  letter-spacing: 0.06em;
+  line-height: 12px;
+  text-transform: uppercase;
+  color: var(--fh-surface);
+}
+/* Two tones, as every headline on the site is set. */
+.ts__title {
+  margin: 20px 0 0;
+  font-family: var(--fh-display);
+  font-size: 36px;
+  font-weight: 500;
+  line-height: 1.1;
+  letter-spacing: -1px;
+}
+.ts__titleMuted {
+  color: var(--fh-muted);
+}
+.ts__lede {
+  margin: 12px 0 0;
+  max-width: 38ch;
+  font-size: 15px;
+  line-height: 1.6;
+  color: var(--fh-body);
+}
+.ts__lede strong {
+  font-weight: 600;
+  color: var(--fh-ink);
+  overflow-wrap: anywhere;
+}
+
+/* ---------- Fields ---------- */
+.ts__field {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  width: 100%;
+  margin-top: 20px;
+}
+.ts__field + .ts__field {
+  margin-top: 16px;
+}
+.ts__field label {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--fh-ink);
+}
+.ts__field input {
+  width: 100%;
+  height: 48px;
+  padding: 0 14px;
+  border: 1px solid var(--fh-line);
+  border-radius: 12px;
+  background: var(--fh-bg);
+  font: inherit;
+  /* 16px: anything smaller and a phone zooms the page in when the field takes focus */
+  font-size: 16px;
+  color: var(--fh-ink);
+  transition: border-color 160ms ease, box-shadow 160ms ease, background-color 160ms ease;
+}
+.ts__field input::placeholder {
+  color: var(--fh-label);
+}
+.ts__field input:hover {
+  border-color: var(--fh-muted);
+}
+.ts__field input:focus {
+  outline: none;
+  border-color: var(--fh-progress);
+  background: var(--fh-surface);
+  box-shadow: 0 0 0 3px var(--ts-ring);
+}
+/* An address is checked by eye a few characters at a time, so it gets even letterforms. */
+.ts__field input.ts__address {
+  font-family: ui-monospace, 'SF Mono', Menlo, Consolas, monospace;
+  font-size: 15px;
+  letter-spacing: 0.01em;
+}
+.ts__field[data-invalid] input {
+  border-color: var(--ts-danger);
+}
+.ts__field[data-invalid] input:focus {
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--ts-danger) 20%, transparent);
+}
+.ts__hint,
+.ts__error {
+  margin: 0;
+  font-size: 13px;
+  line-height: 1.5;
+}
+.ts__hint {
+  color: var(--fh-body);
+}
+.ts__error {
+  color: var(--ts-danger);
+}
+.ts__failure {
+  width: 100%;
+  margin: 20px 0 0;
+  padding: 12px 14px;
+  border-radius: 12px;
+  background: color-mix(in srgb, var(--ts-danger) 10%, transparent);
+  font-size: 14px;
+  line-height: 1.5;
+  color: var(--ts-danger);
+}
+.ts__trap {
+  position: absolute;
+  left: -9999px;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+}
+.fh__btn.ts__submit {
+  width: 100%;
+  margin-top: 24px;
+  border: 0;
+  font-family: inherit;
+  font-size: 15px;
+  cursor: pointer;
+}
+.fh__btn.ts__submit:disabled {
+  cursor: progress;
+  opacity: 0.7;
+}
+.fh__btn.ts__submit:focus-visible {
+  outline: 2px solid var(--fh-progress);
+  outline-offset: 3px;
+}
+
+/* ---------- Done ---------- */
+.ts__doneMark {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background: #d9f24e;
+  animation: ts-pop 420ms cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+.ts__doneMark path {
+  fill: #122433;
+}
+.ts__done .ts__title {
+  margin-top: 24px;
+}
+@keyframes ts-pop {
+  from { transform: scale(0.4); opacity: 0; }
+  to { transform: none; opacity: 1; }
+}
+
+@media (max-width: 560px) {
+  .ts {
+    width: 100%;
+    max-height: calc(100dvh - 24px);
+    margin: auto 0 0;
+    border-width: 1px 0 0;
+    border-radius: 20px 20px 0 0;
+  }
+  .ts[open] {
+    animation-name: ts-sheet-in;
+  }
+  .ts[data-closing] {
+    animation-name: ts-sheet-out;
+  }
+  .ts__panel {
+    padding: 28px 20px calc(24px + env(safe-area-inset-bottom));
+  }
+  .ts__close {
+    top: 12px;
+    right: 12px;
+    width: 44px;
+    height: 44px;
+  }
+  .ts__title {
+    font-size: 30px;
+  }
+}
+@keyframes ts-sheet-in {
+  from { transform: translateY(100%); }
+  to { transform: none; }
+}
+@keyframes ts-sheet-out {
+  to { transform: translateY(100%); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ts[open],
+  .ts[open]::backdrop,
+  .ts__doneMark {
+    animation: none;
+  }
+}

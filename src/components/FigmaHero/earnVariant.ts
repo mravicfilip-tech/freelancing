@@ -7,4 +7,5 @@
  */
 const raw = new URLSearchParams(window.location.search).get('earn');
 export type EarnVariant = '1' | '2' | '3';
-export const EARN_VARIANT: EarnVariant = raw === '2' || raw === '3' ? raw : '1';
+/** 3 is the one chosen; the other two stay reachable for comparison. */
+export const EARN_VARIANT: EarnVariant = raw === '1' || raw === '2' ? raw : '3';

@@ -491,35 +491,34 @@
 
 /* ================================================================ 3 — the rate and the payouts */
 
-/* ---- The Performance card ---- */
+/* Both are callouts here: each lies over a quiet part of the dashboard and hangs off its edge — the
+   rate off the window's bottom-left corner, over the sidebar's foot (the account and Collapse),
+   and the payouts over the chart's unfilled future stages — so the dashboard's title, balances, current
+   stage, Buy and flash sale all stay in view. */
+
+/* ---- The Performance card, as a callout ---- */
 .ev-term {
   z-index: 3;
   left: 0;
-  top: calc(var(--u) * 92);
-  width: calc(var(--u) * 250);
-  padding: calc(var(--u) * 20) calc(var(--u) * 18) calc(var(--u) * 18);
+  top: calc(var(--u) * 338);
+  width: calc(var(--u) * 160);
+  padding: calc(var(--u) * 13);
   box-shadow: var(--el-e2);
 }
 .ev-termTitle {
   display: block;
-  font-size: calc(var(--u) * 13);
+  font-size: calc(var(--u) * 11);
   font-weight: 500;
   letter-spacing: -0.005em;
-}
-.ev-termCopy {
-  margin: calc(var(--u) * 7) 0 0;
-  font-size: calc(var(--u) * 9);
-  line-height: 1.65;
-  color: var(--ev-body);
 }
 .ev-metric {
   display: flex;
   align-items: baseline;
   justify-content: space-between;
-  margin-top: calc(var(--u) * 14);
+  margin-top: calc(var(--u) * 7);
 }
 .ev-metricValue {
-  font-size: calc(var(--u) * 19);
+  font-size: calc(var(--u) * 16.5);
   font-weight: 600;
   letter-spacing: -0.02em;
   color: var(--ev-accent);
@@ -531,23 +530,23 @@
   color: var(--ev-ink);
 }
 .ev-badge {
-  padding: calc(var(--u) * 2.5) calc(var(--u) * 6);
+  padding: calc(var(--u) * 2) calc(var(--u) * 5);
   border-radius: 999px;
   background: var(--ev-accentSoft);
   box-shadow: inset 0 0 0 1px var(--ev-accentLine);
-  font-size: calc(var(--u) * 8);
+  font-size: calc(var(--u) * 7);
   font-weight: 600;
   color: var(--ev-accent);
 }
 .ev-bars {
   display: flex;
   justify-content: space-between;
-  height: calc(var(--u) * 44);
-  margin-top: calc(var(--u) * 8);
+  height: calc(var(--u) * 28);
+  margin-top: calc(var(--u) * 6);
 }
 .ev-bars i {
-  width: calc(var(--u) * 5.4);
-  border-radius: calc(var(--u) * 1.4);
+  width: calc(var(--u) * 3.6);
+  border-radius: calc(var(--u) * 1);
   background: linear-gradient(var(--ev-barTop), var(--ev-barFoot));
   transform-origin: 50% 100%;
 }
@@ -555,11 +554,11 @@
   background: var(--ev-barLeft);
 }
 
-/* ---- The Security card ---- */
+/* ---- The Security card, as a callout ---- */
 .ev-safe {
   z-index: 2;
   left: calc(var(--u) * 398);
-  top: calc(var(--u) * 36);
+  top: calc(var(--u) * 160);
   width: calc(var(--u) * 207);
   padding: calc(var(--u) * 20) calc(var(--u) * 18) 0;
   box-shadow: var(--el-e1);
@@ -567,7 +566,7 @@
 .ev-circuit {
   position: relative;
   height: calc(var(--u) * 84);
-  margin: calc(var(--u) * 12) calc(var(--u) * -18) calc(var(--u) * 6);
+  margin: calc(var(--u) * 10) calc(var(--u) * -18) calc(var(--u) * 6);
 }
 .ev-halo {
   position: absolute;
@@ -666,8 +665,7 @@
     width: calc(var(--u) * 176);
   }
   .ev-table,
-  .ev-feed,
-  .ev-term {
+  .ev-feed {
     top: 0;
     width: calc(var(--u) * 222);
   }
@@ -700,14 +698,34 @@
   .ev-chip--state {
     display: none;
   }
-  /* 3: the cards keep their figures and lose their copy. */
-  .ev-termCopy {
-    display: none;
-  }
+  /* 3: the callouts keep to the same quiet places — the payouts over the chart's right, between the
+     balances and the flash sale, and the rate off the window's left side, clear of Buy — with
+     their type a step larger so it still reads at this size. */
   .ev-safe {
+    top: calc(var(--u) * 128);
     padding-top: calc(var(--u) * 16);
   }
   .ev-circuit {
     margin-top: calc(var(--u) * 6);
+  }
+  .ev-term {
+    top: calc(var(--u) * 168);
+    width: calc(var(--u) * 142);
+    padding: calc(var(--u) * 11);
+  }
+  .ev-termTitle {
+    font-size: calc(var(--u) * 12);
+  }
+  .ev-metricValue {
+    font-size: calc(var(--u) * 18);
+  }
+  .ev-badge {
+    font-size: calc(var(--u) * 7.5);
+  }
+  .ev-bars {
+    height: calc(var(--u) * 24);
+  }
+  .ev-bars i {
+    width: calc(var(--u) * 3.2);
   }
 }

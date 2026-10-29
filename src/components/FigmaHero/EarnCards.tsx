@@ -10,7 +10,8 @@ import './EarnCards.css';
  * 2 — Medusa's order menu (with its named pointer) becomes a position's menu, and its activity what
  *     has happened to that position.
  * 3 — the Performance card becomes the fixed rate, its bars the term, and the Security card
- *     whitelisted payouts.
+ *     whitelisted payouts. Here the two are callouts: a title and the one picture each, no copy,
+ *     set over the quiet parts of the dashboard so its own figures still read.
  *
  * Every card is drawn finished, so a reader with reduced motion gets the whole picture standing
  * still; EarnSlide's session sets each one's start state and plays it.
@@ -226,7 +227,6 @@ function FixedYield() {
   return (
     <div className="ev-card ev-term">
       <b className="ev-termTitle">Fixed yield</b>
-      <p className="ev-termCopy">Lock USDC for 12 months at a rate that can’t move. Yield accrues every day.</p>
       <div className="ev-metric">
         <span className="ev-metricValue">
           17.4<small>%</small>
@@ -265,7 +265,6 @@ function SafePayouts() {
   return (
     <div className="ev-card ev-safe">
       <b className="ev-termTitle">Safe payouts</b>
-      <p className="ev-termCopy">Yield only goes to an address that passed review and a 24-hour cooldown.</p>
       <div className="ev-circuit">
         <span className="ev-halo" />
         <svg viewBox="0 0 207 84" aria-hidden="true">

@@ -35,3 +35,29 @@ Then the floor drops away into Automatizacija as today.
 - **New.** A lorry with a box trailer for the docks, and the four term cells.
 - **Copy.** The months are the client's. The other words are today's, from their live site, and stay marked as placeholders where they are.
 - **Three ways to answer.** A voice note over the table, marked frames, or a yes.
+
+## The Najam storyboard, second version, 30 October
+
+Filip on the first build of all four beats. "the warehouse needs to look different we shouldn't see inside of it immediately", "cut scenes, missing details", "poor readibility too here cuz of storyboard", "lets deep analyze and execute this better overall".
+
+What was wrong at the root
+- **No reveal.** The hall was a cutaway, so the inside showed from the first frame and the story had nowhere to go.
+- **Framed for the 3D, not the words.** In Istovar the four facts sat over grey kerbs and the trailer roof. A white box stood behind the lede.
+- **The world stopped at the frame.** The road and the slabs ended in view.
+
+The device. The camera goes in through the dock door with the goods, and back out through the roof. Outside the building is closed and finished, inside is only seen once we are through the door.
+
+| Beat | Scroll | Camera | What the scene shows | Calm ground behind the words | Words |
+|---|---|---|---|---|---|
+| N1 Dolazak | 600px | High three quarter view of the building, a slow push in | A closed warehouse with its roof, roof lights and the EKOTEHNIKA sign on the facade. The lorry with EKOTEHNIKA on its trailer comes down the road and backs onto dock 1. The yard, the gate, parked cars, trees and the road run on into the haze | The pale roof and the open concrete of the yard | Najam viljuškara, the lede, the CTA |
+| Flight 1 | 520px | Down to dock 1 | The dock door rolls up as the camera arrives, the first glimpse inside | The facade | The same |
+| N2 Istovar | 560px | From the yard beside the lorry, looking at the open door | Two forklifts come out over the dock leveller into the trailer and carry the pallets in | The plain facade above the dock doors fills the word zone | The four facts |
+| Flight 2 | 520px | Through the open door behind a forklift with its pallet | The inside is revealed, roof structure, lights, racks, floor lines | Clear hall floor | Facts leave, terms rise |
+| N3 Skladište | 800px | The aisle end camera Filip picked, now under a roof | Four pallets go into the racks, the term cells light 36, 48, 60, 72 | The wall and floor at the left of the hall | Dugoročni najam, the line, the four terms |
+| Flight 3 | 520px | Up and out through a roof light | Back outside over the closed building | The roof | The terms stay |
+| N4 Otprema | 480px | High view over the docks | The loaded lorry leaves at dock 3 and drives out of the frame, the next one turns in | The roof and the yard | The terms, 72 lit, and the CTA |
+
+Then T dives through the roof into the automation aisle, the way Prodaja dives into its warehouse.
+
+- **Hardest part.** Flight 2, a continuous move from outside through a 3 m door into a roofed hall, with light inside and no wall cutting the lens.
+- **Readability rule.** Each beat's camera is set from the layout first. The title, lede and facts sit over calm light surfaces, anything that moves stays below the facts row or right of the centre vertical, and a light haze of the ground colour softens whatever is far behind the words.

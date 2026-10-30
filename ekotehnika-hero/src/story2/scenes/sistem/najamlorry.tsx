@@ -21,18 +21,25 @@ export type LorryApi = { trailer: THREE.Group; tractor: THREE.Group; doorA: THRE
 const wheelSet = (xs: number[], zs: number[], r: number, w: number) => {
   const tyres: THREE.BufferGeometry[] = [];
   const hubs: THREE.BufferGeometry[] = [];
+  const caps: THREE.BufferGeometry[] = [];
   for (const x of xs)
     for (const z of zs) {
-      const t = new THREE.CylinderGeometry(r, r, w, 18);
+      const out = Math.sign(z) * (w / 2);
+      // a round tyre of 24 sides, the rim a pale disc proud of its face and a dark cap on the rim, so the wheel reads as a tyre round a rim
+      const t = new THREE.CylinderGeometry(r, r, w, 24);
       t.rotateX(Math.PI / 2);
       t.translate(x, r, z);
       tyres.push(t);
-      const h = new THREE.CylinderGeometry(r * 0.58, r * 0.58, 0.02, 14);
+      const h = new THREE.CylinderGeometry(r * 0.66, r * 0.66, 0.04, 20);
       h.rotateX(Math.PI / 2);
-      h.translate(x, r, z + Math.sign(z) * (w / 2 + 0.005));
+      h.translate(x, r, z + out + Math.sign(z) * 0.01);
       hubs.push(h);
+      const c = new THREE.CylinderGeometry(r * 0.3, r * 0.3, 0.07, 14);
+      c.rotateX(Math.PI / 2);
+      c.translate(x, r, z + out + Math.sign(z) * 0.03);
+      caps.push(c);
     }
-  return { tyres, hubs };
+  return { tyres, hubs, caps };
 };
 const cat = (g: THREE.BufferGeometry[]) => mergeGeometries(g, false);
 
@@ -53,6 +60,9 @@ function build() {
     [0.02, 3.95, 0, 0.1, 0.1, 2.7],
     [0.02, BED + 0.04, 0, 0.1, 0.1, 2.7],
     [4.9, 3.99, 0, 9.9, 0.04, 2.7],
+    // the mudguards over the three axles, one each side, and the side skirt between the bed and the wheels
+    [3.7, 1.09, -1.13, 3.5, 0.08, 0.64],
+    [3.7, 1.09, 1.13, 3.5, 0.08, 0.64],
   ];
   const ribs: BoxItem[] = [];
   for (let x = 0.9; x < 9.6; x += 1.35) for (const s of [-1, 1]) ribs.push([x, 2.6, s * 1.31, 0.06, 2.65, 0.03]);
@@ -77,7 +87,7 @@ function build() {
 
   // the tractor in a frame with the fifth wheel at the origin, x - 12.3 from the frame the first Najam lorry was drawn in
   const T = (x: number) => x - 12.3;
-  const tGrey: BoxItem[] = [[T(13.7), 0.95, 0, 6.2, 0.3, 1.0], [T(12.3), 1.3, 0, 1.4, 0.12, 1.5], [T(17.0), 0.55, 0, 0.3, 0.4, 2.3]];
+  const tGrey: BoxItem[] = [[T(13.7), 0.95, 0, 6.2, 0.3, 1.0], [T(12.3), 1.3, 0, 1.4, 0.12, 1.5], [T(17.0), 0.55, 0, 0.3, 0.4, 2.3], [T(11.65), 1.09, -1.0, 2.5, 0.08, 0.62], [T(11.65), 1.09, 1.0, 2.5, 0.08, 0.62], [T(16.0), 1.09, -1.05, 1.4, 0.08, 0.62], [T(16.0), 1.09, 1.05, 1.4, 0.08, 0.62]];
   const tCab: BoxItem[] = [[T(15.5), 2.6, 0, 2.8, 2.8, 2.5], [T(16.0), 4.15, 0, 1.9, 0.5, 2.3]];
   const tGlass: BoxItem[] = [[T(16.92), 2.95, 0, 0.04, 1.1, 2.2], [T(15.6), 3.0, -1.26, 1.6, 0.9, 0.03], [T(15.6), 3.0, 1.26, 1.6, 0.9, 0.03]];
   const tGrille: BoxItem[] = [[T(16.94), 1.7, -0.85, 0.05, 0.22, 0.4], [T(16.94), 1.7, 0.85, 0.05, 0.22, 0.4], [T(16.94), 1.7, 0, 0.05, 0.5, 0.9]];
@@ -94,6 +104,7 @@ function build() {
     lights: mergeBoxes(lights),
     tyres: cat(tw.tyres),
     hubs: cat(tw.hubs),
+    caps: cat(tw.caps),
     tGrey: mergeBoxes(tGrey),
     tCab: mergeBoxes(tCab),
     tGlass: mergeBoxes(tGlass),
@@ -102,6 +113,7 @@ function build() {
     tBlack: mergeBoxes(tBlack),
     tTyres: cat([...rear.tyres, ...front.tyres]),
     tHubs: cat([...rear.hubs, ...front.hubs]),
+    tCaps: cat([...rear.caps, ...front.caps]),
     door: mergeBoxes([[0.65, 2.55, 0, 1.3, 2.6, 0.05], [0.65, 0.35, 0.04, 1.2, 0.04, 0.03]]),
   };
 }
@@ -137,6 +149,7 @@ export function Lorry({ apiRef, children }: { apiRef: MutableRefObject<LorryApi 
         <mesh geometry={b.lights} material={beamWeb} />
         <mesh geometry={b.tyres} material={tyre} castShadow />
         <mesh geometry={b.hubs} material={beamWeb} />
+        <mesh geometry={b.caps} material={black} />
         {children}
         <group position={[0.03, 0, -1.36]}>
           <Door
@@ -169,6 +182,7 @@ export function Lorry({ apiRef, children }: { apiRef: MutableRefObject<LorryApi 
         <mesh geometry={b.tBlack} material={black} />
         <mesh geometry={b.tTyres} material={tyre} castShadow />
         <mesh geometry={b.tHubs} material={beamWeb} />
+        <mesh geometry={b.tCaps} material={black} />
       </group>
     </group>
   );

@@ -38,17 +38,24 @@ const TURN = 7;
 export type LorryPose = { ax: number; az: number; psi: number; px: number; pz: number; theta: number; close: number; shown: boolean };
 export const mkLorry = (): LorryPose => ({ ax: 0, az: 0, psi: 0, px: 0, pz: 0, theta: 0, close: 0, shown: true });
 
-// Turning in. Drives south to north along the road, stops 7 m short of the dock's row, and backs a quarter circle of 7 m radius to face
-// the dock, then straight on to the bumpers. zs is how far south of the stop it starts.
-function arrival(dock: number, lead: number) {
+// Turning in. Drives along the road past the dock's row, stops 7 m beyond it, and backs a quarter circle of 7 m radius to face the dock, then
+// straight on to the bumpers. lead is how far before the stop it starts. From the south on the north bound lane, or from the north.
+function arrival(dock: number, lead: number, south = false) {
   const z0 = Z[dock];
-  const zs = z0 - TURN;
-  const ways: Way[] = [
-    { x: NORTH, z: zs + lead, th: 270 },
-    { x: NORTH, z: zs, th: 270, dir: -1, mo: 1.657 * TURN },
-    { x: NORTH - TURN, z: z0, th: 0, dir: -1, mi: 1.657 * TURN },
-    { x: REAR_X + AXLE, z: z0, th: 0 },
-  ];
+  const ways: Way[] = south
+    ? [
+        // coming down the road from the north end of the yard on the south bound lane, stops 7 m past the dock and backs north to it
+        { x: SOUTH, z: z0 + TURN - lead, th: 90 },
+        { x: SOUTH, z: z0 + TURN, th: 90, dir: -1, mo: 1.657 * TURN },
+        { x: SOUTH - TURN, z: z0, th: 0, dir: -1, mi: 1.657 * TURN },
+        { x: REAR_X + AXLE, z: z0, th: 0 },
+      ]
+    : [
+        { x: NORTH, z: z0 - TURN + lead, th: 270 },
+        { x: NORTH, z: z0 - TURN, th: 270, dir: -1, mo: 1.657 * TURN },
+        { x: NORTH - TURN, z: z0, th: 0, dir: -1, mi: 1.657 * TURN },
+        { x: REAR_X + AXLE, z: z0, th: 0 },
+      ];
   return { rt: route(ways), rev: 1 };
 }
 // Pulling away. Drives straight out from the dock, turns right onto the south bound lane with a 7 m radius and runs on down the road.
@@ -107,8 +114,8 @@ type LorryPlan = {
   to: number;
 };
 
-function lorryPlan(dock: number, p: { lead: number; go: [number, number]; stop: number; back: [number, number]; shut: [number, number]; away: [number, number]; run: number; far: number; from?: number }): LorryPlan {
-  const arrive = arrival(dock, p.lead);
+function lorryPlan(dock: number, p: { south?: boolean; lead: number; go: [number, number]; stop: number; back: [number, number]; shut: [number, number]; away: [number, number]; run: number; far: number; from?: number }): LorryPlan {
+  const arrive = arrival(dock, p.lead, p.south);
   const leave = departure(dock, p.run);
   const at = arrive.rt.at;
   return {
@@ -127,7 +134,7 @@ function lorryPlan(dock: number, p: { lead: number; go: [number, number]; stop: 
 const LORRIES: LorryPlan[] = [
   lorryPlan(0, { lead: 10, go: [0, 0.08], stop: 0.085, back: [0.085, 0.25], shut: [0.4, 0.42], away: [0.43, 0.75], run: 24, far: 41.8 }),
   lorryPlan(2, { lead: 10, go: [0.44, 0.52], stop: 0.53, back: [0.53, 0.72], shut: [0.935, 0.95], away: [0.955, 1.1], run: 14, far: 17, from: 0.44 }),
-  lorryPlan(3, { lead: 34, go: [0.62, 0.88], stop: 0.9, back: [0.9, 1.1], shut: [2, 2], away: [2, 2.1], run: 4, far: 1, from: 0.62 }),
+  lorryPlan(0, { south: true, lead: 34, go: [0.62, 0.88], stop: 0.9, back: [0.9, 1.1], shut: [2, 2], away: [2, 2.1], run: 4, far: 1, from: 0.62 }),
 ];
 export const LORRY_COUNT = LORRIES.length;
 // the k of N for a position u of the story, which runs on past 1 through T, 400px for a tenth, so the lorries do not stop as the hall sinks

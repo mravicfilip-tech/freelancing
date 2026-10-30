@@ -96,7 +96,7 @@ export const wallLaneZ = (gap: number, slot: number) => (HALL.docks[gap] + HALL.
 
 // ---- the hall ---------------------------------------------------------------------------------------------------------
 
-export function Hall({ dock }: { dock: React.RefObject<THREE.Group | null> }) {
+export function Hall({ dock, far }: { dock: React.RefObject<THREE.Group | null>; far: React.RefObject<THREE.Group | null> }) {
   const d = useMemo(() => {
     // the platform and its kerb, the floor is its top face
     const platform: BoxItem[] = [[(PX0 + PX1) / 2, -0.6, MIDZ, PX1 - PX0, 1.2, PZ1 - PZ0]];
@@ -307,12 +307,15 @@ export function Hall({ dock }: { dock: React.RefObject<THREE.Group | null> }) {
     <group>
       <BoxSet items={d.platform} mat={slab} />
       <BoxSet items={d.kerb} mat={wallBase} receive={false} />
-      <BoxSet items={d.wall} mat={wallMat} />
-      <BoxSet items={d.cols} mat={columnMat} cast />
-      <BoxSet items={d.beam} mat={beamFlange} />
-      <BoxSet items={d.roof} mat={roofMat} />
-      <BoxSet items={d.lip} mat={lipMat} />
-      <BoxSet items={d.glass} mat={glazing} receive={false} />
+      {/* the far walls sink into the floor while the camera of N2 looks down at dock 1, so no wall, column or roof edge lies above the top rule */}
+      <group ref={far}>
+        <BoxSet items={d.wall} mat={wallMat} />
+        <BoxSet items={d.cols} mat={columnMat} cast />
+        <BoxSet items={d.beam} mat={beamFlange} />
+        <BoxSet items={d.roof} mat={roofMat} />
+        <BoxSet items={d.lip} mat={lipMat} />
+        <BoxSet items={d.glass} mat={glazing} receive={false} />
+      </group>
       {/* the near walls stand for the high views and sink into the floor while the camera is low in the yard, outside them, in N3 */}
       <group ref={dock}>
         <BoxSet items={d.plinth} mat={wallMat} cast />
@@ -392,7 +395,8 @@ export function Yard() {
     const out: TreeSpec[] = [];
     const gap = (v: number) => Math.abs(v - YARD.road) < 6;
     for (let x = YARD.x0 + 3; x < YARD.x1 + 4; x += 7) {
-      if (!gap(x)) out.push({ x, z: YARD.z0 - 3.2, h: 4.4 + ((x * 7) % 5) * 0.28, v: out.length });
+      // the north line stops short of the road's west side, the N2 camera looks over it into the words
+      if (x > YARD.road && !gap(x)) out.push({ x, z: YARD.z0 - 3.2, h: 4.4 + ((x * 7) % 5) * 0.28, v: out.length });
     }
     for (let z = YARD.z0 + 3; z < YARD.z1; z += 7) out.push({ x: YARD.x1 + 3.2, z, h: 4.2 + ((z * 5) % 4) * 0.3, v: out.length });
     return out;

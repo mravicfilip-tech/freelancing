@@ -358,9 +358,10 @@ export const HALL_Y = 1.2;
 // The camera of N as one pose in the units of the Rig in camera.tsx, a target in hall metres, an orbit distance, a yaw and pitch in
 // degrees, the lens shift as a share of the frame and a field of view. Four holds and three flights between them, see N_FLIGHT.
 //   N1  a high three quarter view over the docks and the aisles, pushing in a little as the lorry turns in
-//   N2  down at dock 1 from the staging floor, 11 m up and 20 m from the door, looking down 32 degrees, so the far wall's top lies under the top row with the picture shifted down, so
-//       the apron and the work lie under the words, with a slow drift toward the door. The racks stand outside the frame on the left
-//       and the dock wall on the right, the trailer shows only its open rear, so a forklift goes out of sight in it and comes back
+//   N2  down at the rear of the lorry at dock 1 from the staging floor, 14 m up and 18 m out, looking down 35 degrees from the hall side,
+//       so the open rear of the trailer and the forklifts going in and out of it lie in the band under the facts, right of the middle
+//       vertical, the shift of the picture puts them there. The racks stand behind the camera and the far walls sink, so nothing of the
+//       hall stands above the top rule or behind the title. A slow drift toward the door
 //   N3  outside the dock wall at about 5.6 m over the yard, looking down the work aisle with a narrow lens and the picture shifted so the
 //       aisle and its racks lie right of the third vertical, the left of the frame is the floor of the hall and its far wall, and nothing
 //       stands in the bottom band of the term cells. It moves up to the mouth of the aisle, aims at the top beam and lets the pallet land.
@@ -386,10 +387,10 @@ function eye(o: Cam, c: [number, number, number], t: [number, number, number], l
   o.pitch = -(Math.asin(dy / o.d) * 180) / PI;
   return Object.assign(o, lens);
 }
-const DOCK_LENS = { sx: 0.0, sy: 0.42, shadow: 24, fov: 36 };
-const DOCK_AT: [number, number, number] = [13.0, 0.3, HALL.docks[0] + 1.3];
-const DOCK_A = eye(cam(), [8.5, 11.0, 6.5], DOCK_AT, DOCK_LENS);
-const DOCK_B = eye(cam(), [9.0, 10.6, 4.8], DOCK_AT, DOCK_LENS);
+const DOCK_LENS = { sx: 0.2, sy: 0.24, shadow: 24, fov: 36 };
+const DOCK_AT: [number, number, number] = [14.8, 0.8, HALL.docks[0]];
+const DOCK_A = eye(cam(), [1.6, 14.6, 1.35], DOCK_AT, DOCK_LENS);
+const DOCK_B = eye(cam(), [3.4, 14.0, 0.2], DOCK_AT, DOCK_LENS);
 
 // Both N3 shots look down the work aisle from outside the hall, at about 5.6 m, 32 to 36 m out, through the narrow lens, so the nearest
 // truck is 28 m away and the whole of it stands over the bottom band, and the picture is shifted right so the aisle and its racks lie
@@ -417,19 +418,25 @@ const mix = (a: Cam, b: Cam, t: number, o: Cam) => {
   o.fov = lerp(a.fov, b.fov, t);
   return o;
 };
-// A flight, the camera and what it looks at each moving along a straight line, the camera lifted over the line by arc metres at the middle
-// of it, so it flies over the walls and the racks and never through one. The orbit of the end is worked out again from where they are.
+// A flight, the camera and what it looks at each moving along a curve, a quadratic one with a pull point of its own, so it rises over the hall and
+// comes down on the far side and never passes through a wall or a rack. The picture can be shifted down by bump at the middle of the flight.
+// The pull points were found by a search that kept every rack top out of the word blocks, left of the third vertical and above the term
+// row, for the whole of both flights. The orbit of each frame is worked out again from where the camera and its target are.
 const RAD = PI / 180;
-function fly(a: Cam, b: Cam, t: number, o: Cam, arc = 0) {
+type Pull = { cam: [number, number, number]; tgt: [number, number, number]; bump: number };
+const FLIGHT_DOCK: Pull = { cam: [28, 54, 50], tgt: [-5, 4.4, -13], bump: 0.25 };
+const FLIGHT_AISLE: Pull = { cam: [33, 42, -6], tgt: [23, 1.3, 9.6], bump: 0 };
+function fly(a: Cam, b: Cam, t: number, o: Cam, pull?: Pull) {
   const pos = (c: Cam) => [c.x + c.d * Math.sin(c.yaw * RAD) * Math.cos(c.pitch * RAD), c.y - c.d * Math.sin(c.pitch * RAD), c.z + c.d * Math.cos(c.yaw * RAD) * Math.cos(c.pitch * RAD)];
+  const q = (p0: number, p1: number, p2: number | undefined) => (p2 === undefined ? lerp(p0, p1, t) : (1 - t) * (1 - t) * p0 + 2 * (1 - t) * t * p2 + t * t * p1);
   const pa = pos(a);
   const pb = pos(b);
-  const tx = lerp(a.x, b.x, t);
-  const ty = lerp(a.y, b.y, t);
-  const tz = lerp(a.z, b.z, t);
-  const px = lerp(pa[0], pb[0], t);
-  const py = lerp(pa[1], pb[1], t) + arc * Math.sin(PI * t);
-  const pz = lerp(pa[2], pb[2], t);
+  const tx = q(a.x, b.x, pull?.tgt[0]);
+  const ty = q(a.y, b.y, pull?.tgt[1]);
+  const tz = q(a.z, b.z, pull?.tgt[2]);
+  const px = q(pa[0], pb[0], pull?.cam[0]);
+  const py = q(pa[1], pb[1], pull?.cam[1]);
+  const pz = q(pa[2], pb[2], pull?.cam[2]);
   const dx = px - tx;
   const dy = py - ty;
   const dz = pz - tz;
@@ -441,7 +448,7 @@ function fly(a: Cam, b: Cam, t: number, o: Cam, arc = 0) {
   o.yaw = Math.atan2(dx, dz) / RAD;
   o.pitch = -Math.asin(dy / d) / RAD;
   o.sx = lerp(a.sx, b.sx, t);
-  o.sy = lerp(a.sy, b.sy, t);
+  o.sy = lerp(a.sy, b.sy, t) + (pull ? pull.bump * Math.sin(PI * t) : 0);
   o.shadow = lerp(a.shadow, b.shadow, t);
   o.fov = lerp(a.fov, b.fov, t);
   return o;
@@ -459,7 +466,7 @@ export function najamCam(u: number, out: Cam = cam()): Cam {
   // N1 and the first flight, from the high view down to the dock
   mix(HIGH_FAR, HIGH, ease(clamp01(k / N_SUB.N1[1])), tc.n1);
   mix(DOCK_A, DOCK_B, ease(clamp01((k - N_SUB.N2[0]) / (N_SUB.N2[1] - N_SUB.N2[0]))), tc.n2);
-  fly(tc.n1, tc.n2, within(k, N_FLIGHT.dock), tc.s2);
+  fly(tc.n1, tc.n2, within(k, N_FLIGHT.dock), tc.s2, FLIGHT_DOCK);
   // N3 and the second flight, the follow rests on the middle of the two X50s, a little of their way, and comes in a few metres over the
   // shot, the reach shot is the same place with the top beam in it
   const f = tc.follow;
@@ -470,7 +477,7 @@ export function najamCam(u: number, out: Cam = cam()): Cam {
   look(f, lerp(35, 32.5, ease(clamp01((k - 0.552) / 0.148))), 5.6, -2 + 0.2 * (mid + 2), 2.1);
   look(r, 32, 5.8, -0.5, 2.34);
   mix(f, r, ease(clamp01((k - 0.69) / 0.032)), tc.at);
-  fly(tc.s2, tc.at, within(k, N_FLIGHT.aisle), tc.s2, 3);
+  fly(tc.s2, tc.at, within(k, N_FLIGHT.aisle), tc.s2, FLIGHT_AISLE);
   // the third flight, up to the high view of N4
   fly(tc.s2, HIGH4, within(k, N_FLIGHT.high), out);
   out.y += HALL_Y;

@@ -349,6 +349,7 @@ function DockLoads({ clock }: SceneProps) {
 export default function Najam({ clock }: SceneProps) {
   const dock = useRef<THREE.Group>(null);
   const hall = useRef<THREE.Group>(null);
+  const far = useRef<THREE.Group>(null);
   useFrame(() => {
     const u = uOf(clock);
     const k = Math.min(Math.max(u - 12, 0), 1);
@@ -357,6 +358,12 @@ export default function Najam({ clock }: SceneProps) {
     if (dock.current) {
       dock.current.scale.y = Math.max(1 - down, 0.001);
       dock.current.visible = down < 0.998;
+    }
+    // the far walls sink in the first flight, before the camera stands over dock 1, and stand again in the second, before it reaches the aisle
+    const gone2 = ease(range(k, 0.2, 0.265)) * (1 - ease(range(k, 0.44, 0.52)));
+    if (far.current) {
+      far.current.scale.y = Math.max(1 - gone2, 0.001);
+      far.current.visible = gone2 < 0.998;
     }
     // T, the whole hall sinks into the floor while the walls and racks of the aisle rise out of it
     const gone = ease(range(u, 13.0, 13.45));
@@ -371,7 +378,7 @@ export default function Najam({ clock }: SceneProps) {
         <Yard />
         <Lorries clock={clock} />
         <group position={[0, HALL_Y, 0]}>
-          <Hall dock={dock} />
+          <Hall dock={dock} far={far} />
           <Racks />
           <Movers clock={clock} />
           <DockLoads clock={clock} />

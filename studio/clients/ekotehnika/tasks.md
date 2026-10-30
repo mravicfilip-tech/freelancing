@@ -39,7 +39,8 @@ Task format
   - [x] Build the hardest Najam beat, the warehouse aisle with the terms, branch claude/awesome-faraday-lkhnn2-najam, sheet briefs/round6/refs/r6-najam-skladiste-pass2.jpg
   - [x] Preview switchers on localhost, scroll feel 0 to 3 and Najam 0 Today, 1 Close, 2 Aisle end, 3 Wide, board in scratchpad r6/najam/variants-board.jpg
   - [x] Filip picks the Skladište camera, 2 Aisle end, with fixes to the timing, the floor lines and a complete hall
-  - [ ] Najam 2 finished, flights of 500px or more, the hall complete, Dolazak, Istovar and Otprema built, T without the grid
+  - [x] Najam 2 finished, flights of 500px or more, the hall complete, Dolazak, Istovar and Otprema built, T without the grid
+  - [ ] Filip looks at Najam 2 on localhost and accepts it, then it becomes the default
 
 - ekotehnika-11 Client sees the site all white and not loading on production. Link https://ekotehnika-hero.vercel.app
   - [x] Production is public, it answers with no login

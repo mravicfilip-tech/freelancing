@@ -56,14 +56,14 @@ const FACE = 270;
 // th is the heading in radians, 0 faces +x and a truck faces -z at 3 PI / 2, the same as the heading of a route
 export type Spot = { x: number; y: number; z: number; th: number };
 
-// Where the four pallets of N3 end up, all in the first four bays of the aisle. Two X50s fill the first beam of the third and second
+// Where the four pallets of N3 end up, in the fourth to seventh bays of the aisle, 15 to 25 m from the camera at its dock end. Two X50s fill the first beam of the third and second
 // bay, a reach truck the second beam of the next and a second reach truck the top beam of the first, the one nearest the staging floor,
 // so the landing at 4.6 m is the closest thing to the camera and the trucks that were busy before stand behind it.
 export const SLOTS: Spot[] = [
-  { x: slotX(3, 1), y: levelY(1.5), z: FACE_Z, th: rad(FACE) },
-  { x: slotX(2, 1), y: levelY(1.5), z: FACE_Z, th: rad(FACE) },
-  { x: slotX(1, 1), y: levelY(3.0), z: FACE_Z, th: rad(FACE) },
-  { x: slotX(0, 1), y: levelY(4.5), z: FACE_Z, th: rad(FACE) },
+  { x: slotX(6, 1), y: levelY(1.5), z: FACE_Z, th: rad(FACE) },
+  { x: slotX(5, 1), y: levelY(1.5), z: FACE_Z, th: rad(FACE) },
+  { x: slotX(4, 1), y: levelY(3.0), z: FACE_Z, th: rad(FACE) },
+  { x: slotX(3, 1), y: levelY(4.5), z: FACE_Z, th: rad(FACE) },
 ];
 // Whether a rack place is one of them, so the racks leave it empty for the pallet to land in. z is the row's z, ly the beam height.
 export const isHeroSlot = (x: number, z: number, ly: number) => SLOTS.some((s) => Math.abs(s.x - x) < 0.3 && Math.abs(s.z - z) < 0.3 && Math.abs(s.y - levelY(ly)) < 0.05);
@@ -357,22 +357,23 @@ export const HALL_Y = 1.2;
 
 // The camera of N as one pose in the units of the Rig in camera.tsx, a target in hall metres, an orbit distance, a yaw and pitch in
 // degrees, the lens shift as a share of the frame and a field of view. Four holds and three flights between them, see N_FLIGHT.
-//   N1  a high three quarter view over the docks and the aisles, pushing in a little as the lorry turns in
-//   N2  down at the rear of the lorry at dock 1 from the staging floor, 14 m up and 18 m out, looking down 35 degrees from the hall side,
-//       so the open rear of the trailer and the forklifts going in and out of it lie in the band under the facts, right of the middle
-//       vertical, the shift of the picture puts them there. The racks stand behind the camera and the far walls sink, so nothing of the
-//       hall stands above the top rule or behind the title. A slow drift toward the door
-//   N3  outside the dock wall at about 5.6 m over the yard, looking down the work aisle with a narrow lens and the picture shifted so the
-//       aisle and its racks lie right of the third vertical, the left of the frame is the floor of the hall and its far wall, and nothing
-//       stands in the bottom band of the term cells. It moves up to the mouth of the aisle, aims at the top beam and lets the pallet land.
-//   N4  the high view again, held a little higher in the frame for the term cells, which is the pose T starts from
+//   N1  a high three quarter view of the closed building from the dock side, pushing in a little as the lorry turns in
+//   N2  in the yard beside the lorry at dock 1, 5 m up and 20 m out, looking at the open side of its trailer and the door it stands at,
+//       the picture shifted down so the trailer and the forklifts lie under the facts row and the plain facade over the doors fills the
+//       word zone. A slow drift toward the door
+//   N3  inside the hall at the dock end of the work aisle, 6 m up, looking down it with the picture shifted so the racks and the trucks lie
+//       right of the third vertical and the left of the frame is the floor and the long wall of the hall
+//   N4  the high view again over the closed building, held a little higher in the frame for the term cells, which is where T starts
+//   Flight 1 straight down from the high view to the yard. Flight 2 on a spline, in through the open side of the trailer behind the second
+//   forklift, out of its rear and through the door into the hall, along the staging floor to the aisle. Flight 3 on a spline, up to the roof
+//   light over the dock end, out through it and away to the high view.
 export type Cam = { x: number; y: number; z: number; d: number; yaw: number; pitch: number; sx: number; sy: number; shadow: number; fov: number };
 const cam = (): Cam => ({ x: 0, y: 0, z: 0, d: 0, yaw: 0, pitch: 0, sx: 0, sy: 0, shadow: 0, fov: 28 });
 
 const HIGH_FAR: Cam = { x: 14, y: 0, z: -2, d: 146, yaw: 50, pitch: -30, sx: 0.0, sy: 0.34, shadow: 70, fov: 28 };
 const HIGH: Cam = { x: 14, y: 0, z: -2, d: 136, yaw: 50, pitch: -30, sx: 0.0, sy: 0.34, shadow: 70, fov: 28 };
 // N4 keeps the bottom band of the frame clear for the term cells, so the hall stands higher in it. T starts from this pose.
-export const HIGH4: Cam = { x: 3, y: 0, z: -3, d: 118, yaw: 50, pitch: -30, sx: 0.17, sy: 0.04, shadow: 60, fov: 28 };
+export const HIGH4: Cam = { x: 3, y: 0, z: -3, d: 118, yaw: 50, pitch: -30, sx: 0.2, sy: -0.06, shadow: 60, fov: 28 };
 
 // A camera from where it stands to what it looks at, both in hall metres over the platform.
 function eye(o: Cam, c: [number, number, number], t: [number, number, number], lens: Pick<Cam, 'sx' | 'sy' | 'shadow' | 'fov'>) {
@@ -387,15 +388,15 @@ function eye(o: Cam, c: [number, number, number], t: [number, number, number], l
   o.pitch = -(Math.asin(dy / o.d) * 180) / PI;
   return Object.assign(o, lens);
 }
-const DOCK_LENS = { sx: 0.2, sy: 0.24, shadow: 24, fov: 36 };
-const DOCK_AT: [number, number, number] = [14.8, 0.8, HALL.docks[0]];
-const DOCK_A = eye(cam(), [1.6, 14.6, 1.35], DOCK_AT, DOCK_LENS);
-const DOCK_B = eye(cam(), [3.4, 14.0, 0.2], DOCK_AT, DOCK_LENS);
+const DOCK_LENS = { sx: 0.24, sy: 0.3, shadow: 30, fov: 36 };
+const DOCK_AT: [number, number, number] = [17.0, 1.0, HALL.docks[0] + 0.55];
+const DOCK_A = eye(cam(), [34.1, 4.1, 4.7], DOCK_AT, DOCK_LENS);
+const DOCK_B = eye(cam(), [32.5, 3.8, 3.4], DOCK_AT, DOCK_LENS);
 
-// Both N3 shots look down the work aisle from outside the hall, at about 5.6 m, 32 to 36 m out, through the narrow lens, so the nearest
-// truck is 28 m away and the whole of it stands over the bottom band, and the picture is shifted right so the aisle and its racks lie
-// right of the third vertical. The camera sits at xc, h metres up, and looks at a point of the aisle at height ty.
-const SHOT = { z: AZ - 0.3, yaw: 87, sx: 0.2, sy: 0.04, shadow: 30, fov: 18 };
+// Both N3 shots look down the work aisle from inside the hall at its dock end, 6 m up, so the nearest truck is 15 m away and its mast over the
+// bottom band of the term cells, and the picture is shifted right so the aisle and its racks lie right of the third vertical. The camera sits
+// at xc, h metres up, and looks at a point of the aisle at height ty.
+const SHOT = { z: AZ - 0.3, yaw: 87, sx: 0.2, sy: 0.03, shadow: 30, fov: 35 };
 function look(o: Cam, xc: number, h: number, tx: number, ty: number) {
   Object.assign(o, SHOT, { x: tx, y: ty });
   o.d = Math.hypot(xc - tx, h - ty);
@@ -418,25 +419,46 @@ const mix = (a: Cam, b: Cam, t: number, o: Cam) => {
   o.fov = lerp(a.fov, b.fov, t);
   return o;
 };
-// A flight, the camera and what it looks at each moving along a curve, a quadratic one with a pull point of its own, so it rises over the hall and
-// comes down on the far side and never passes through a wall or a rack. The picture can be shifted down by bump at the middle of the flight.
-// The pull points were found by a search that kept every rack top out of the word blocks, left of the third vertical and above the term
-// row, for the whole of both flights. The orbit of each frame is worked out again from where the camera and its target are.
+// A flight, the camera and what it looks at each moving along a curve through waypoints, a Catmull Rom spline through the start, the vias and
+// the end, so it goes over a wall or through a door and never through one. The orbit of each frame is worked out again from where the camera
+// and its target are. With no vias the flight is a straight line.
 const RAD = PI / 180;
-type Pull = { cam: [number, number, number]; tgt: [number, number, number]; bump: number };
-const FLIGHT_DOCK: Pull = { cam: [28, 54, 50], tgt: [-5, 4.4, -13], bump: 0.25 };
-const FLIGHT_AISLE: Pull = { cam: [33, 42, -6], tgt: [23, 1.3, 9.6], bump: 0 };
-function fly(a: Cam, b: Cam, t: number, o: Cam, pull?: Pull) {
-  const pos = (c: Cam) => [c.x + c.d * Math.sin(c.yaw * RAD) * Math.cos(c.pitch * RAD), c.y - c.d * Math.sin(c.pitch * RAD), c.z + c.d * Math.cos(c.yaw * RAD) * Math.cos(c.pitch * RAD)];
-  const q = (p0: number, p1: number, p2: number | undefined) => (p2 === undefined ? lerp(p0, p1, t) : (1 - t) * (1 - t) * p0 + 2 * (1 - t) * t * p2 + t * t * p1);
-  const pa = pos(a);
-  const pb = pos(b);
-  const tx = q(a.x, b.x, pull?.tgt[0]);
-  const ty = q(a.y, b.y, pull?.tgt[1]);
-  const tz = q(a.z, b.z, pull?.tgt[2]);
-  const px = q(pa[0], pb[0], pull?.cam[0]);
-  const py = q(pa[1], pb[1], pull?.cam[1]);
-  const pz = q(pa[2], pb[2], pull?.cam[2]);
+type V3 = [number, number, number];
+type Via = { cam: V3[]; tgt: V3[]; sy?: number[] };
+const spline = (pts: V3[], t: number): V3 => {
+  const n = pts.length - 1;
+  if (n === 1) return [lerp(pts[0][0], pts[1][0], t), lerp(pts[0][1], pts[1][1], t), lerp(pts[0][2], pts[1][2], t)];
+  const f = Math.min(Math.max(t, 0), 1) * n;
+  const i = Math.min(Math.floor(f), n - 1);
+  const u = f - i;
+  const p0 = pts[Math.max(i - 1, 0)];
+  const p1 = pts[i];
+  const p2 = pts[i + 1];
+  const p3 = pts[Math.min(i + 2, n)];
+  return [0, 1, 2].map((c) => 0.5 * (2 * p1[c] + (-p0[c] + p2[c]) * u + (2 * p0[c] - 5 * p1[c] + 4 * p2[c] - p3[c]) * u * u + (-p0[c] + 3 * p1[c] - 3 * p2[c] + p3[c]) * u * u * u)) as V3;
+};
+// the second flight, in at the side of the trailer of dock 1, along its floor behind the second forklift, through the door and over the
+// staging floor to the mouth of the work aisle
+const VIA_AISLE: Via = {
+  cam: [[30, 2.8, -3.2], [25, 2.4, -8.6], [22.4, 2.4, -10.5], [19.6, 2.6, -10.7], [16.6, 2.7, -10.6], [9.5, 5.6, -7.5], [11.0, 6.4, -1.0]],
+  // it looks down at the forklift from the trailer on and follows it to the corner of the dock wall, so the racks are behind the camera and
+  // the dock wall and the corner are what stands behind the words, and the picture is pushed down by the lens shift at the middle of the flight,
+  // the forklift and the pallets low in the frame
+  tgt: [[19.5, 1.0, -11.0], [17.5, 1.0, -11.4], [14.5, 0.7, -11.55], [11.0, 0.3, -12.2], [12.8, 0.4, -13.2], [13.2, 0.4, -13.6], [14.0, 2.0, 2.0]],
+  sy: [0.5, 0.58, 0.6, 0.6, 0.5, 0.35, 0.15],
+};
+// the third flight, up under the roof light over the dock end, through it, over the roof and away to the high view
+const VIA_HIGH: Via = {
+  cam: [[13.0, 7.2, 7.4], [12.2, 11.6, 7.4], [12.0, 15.0, 7.2], [18.0, 24.0, 12.0], [35, 38, 32]],
+  // it tilts up to the ceiling and the sky before it rises through the roof light, and only over the roof looks down at the building
+  tgt: [[-4.0, 8.4, 7.4], [6.0, 18.0, 7.4], [2.0, 21.0, 7.4], [8.0, 6.0, 4.0], [8, 0, 0]],
+  // the lens shift keeps the trucks above the term row while the camera tilts up
+  sy: [-0.55, -0.2, -0.05, -0.1, -0.06],
+};
+function fly(a: Cam, b: Cam, t: number, o: Cam, via?: Via) {
+  const pos = (c: Cam): V3 => [c.x + c.d * Math.sin(c.yaw * RAD) * Math.cos(c.pitch * RAD), c.y - c.d * Math.sin(c.pitch * RAD), c.z + c.d * Math.cos(c.yaw * RAD) * Math.cos(c.pitch * RAD)];
+  const [px, py, pz] = spline([pos(a), ...(via?.cam ?? []), pos(b)], t);
+  const [tx, ty, tz] = spline([[a.x, a.y, a.z], ...(via?.tgt ?? []), [b.x, b.y, b.z]], t);
   const dx = px - tx;
   const dy = py - ty;
   const dz = pz - tz;
@@ -448,7 +470,7 @@ function fly(a: Cam, b: Cam, t: number, o: Cam, pull?: Pull) {
   o.yaw = Math.atan2(dx, dz) / RAD;
   o.pitch = -Math.asin(dy / d) / RAD;
   o.sx = lerp(a.sx, b.sx, t);
-  o.sy = lerp(a.sy, b.sy, t) + (pull ? pull.bump * Math.sin(PI * t) : 0);
+  o.sy = via?.sy ? spline([[a.sy, 0, 0], ...via.sy.map((v) => [v, 0, 0] as V3), [b.sy, 0, 0]], t)[0] : lerp(a.sy, b.sy, t);
   o.shadow = lerp(a.shadow, b.shadow, t);
   o.fov = lerp(a.fov, b.fov, t);
   return o;
@@ -466,7 +488,7 @@ export function najamCam(u: number, out: Cam = cam()): Cam {
   // N1 and the first flight, from the high view down to the dock
   mix(HIGH_FAR, HIGH, ease(clamp01(k / N_SUB.N1[1])), tc.n1);
   mix(DOCK_A, DOCK_B, ease(clamp01((k - N_SUB.N2[0]) / (N_SUB.N2[1] - N_SUB.N2[0]))), tc.n2);
-  fly(tc.n1, tc.n2, within(k, N_FLIGHT.dock), tc.s2, FLIGHT_DOCK);
+  fly(tc.n1, tc.n2, within(k, N_FLIGHT.dock), tc.s2);
   // N3 and the second flight, the follow rests on the middle of the two X50s, a little of their way, and comes in a few metres over the
   // shot, the reach shot is the same place with the top beam in it
   const f = tc.follow;
@@ -474,12 +496,12 @@ export function najamCam(u: number, out: Cam = cam()): Cam {
   x50AAt(k, tc.a);
   x50BAt(k, tc.b);
   const mid = (tc.a.x + tc.b.x) / 2;
-  look(f, lerp(35, 32.5, ease(clamp01((k - 0.552) / 0.148))), 5.6, -2 + 0.2 * (mid + 2), 2.1);
-  look(r, 32, 5.8, -0.5, 2.34);
+  look(f, lerp(13.3, 12.6, ease(clamp01((k - 0.552) / 0.148))), 6.0, -10.1 + 0.2 * (mid + 10.1), 1.0);
+  look(r, 12.4, 6.2, -8.6, 1.5);
   mix(f, r, ease(clamp01((k - 0.69) / 0.032)), tc.at);
-  fly(tc.s2, tc.at, within(k, N_FLIGHT.aisle), tc.s2, FLIGHT_AISLE);
+  fly(tc.s2, tc.at, within(k, N_FLIGHT.aisle), tc.s2, VIA_AISLE);
   // the third flight, up to the high view of N4
-  fly(tc.s2, HIGH4, within(k, N_FLIGHT.high), out);
+  fly(tc.s2, HIGH4, within(k, N_FLIGHT.high), out, VIA_HIGH);
   out.y += HALL_Y;
   return out;
 }

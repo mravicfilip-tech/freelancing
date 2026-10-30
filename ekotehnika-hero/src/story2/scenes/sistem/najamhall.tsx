@@ -10,10 +10,11 @@
 import { useMemo } from 'react';
 import * as THREE from 'three';
 import type { ModelName } from './models';
-import { BoxSet, Hedge, Kerb, Trees, type BoxItem, type TreeSpec } from './props';
-import { K, rng } from './kit';
+import { BoxSet, Hedge, Kerb, LampPost, Trees, Van, type BoxItem, type TreeSpec } from './props';
+import { Barrier, GateHouse } from './yard';
+import { K, lam, lit, rng, wordmarkSign } from './kit';
 import { HALL } from './najamplan';
-import { Load, Slats, apron, arrow, beamFlange, beamWeb, black, columnMat, darkGrey, doorMat, glazing, hatch, line, lineFaint, lineWhite, lipMat, loadMats, palletBase, rackGrey, roadMat, roofMat, slab, wallBase, wallMat, wrapBand, wrapShell, type SlatItem } from './najamkit';
+import { Slats, apron, arrow, beamFlange, beamWeb, black, darkGrey, doorMat, glazing, hatch, line, lineFaint, lineWhite, loadMats, palletBase, rackGrey, roadMat, roofMat, slab, wallBase, wallMat, wrapBand, wrapShell, type SlatItem } from './najamkit';
 
 // ---- the hall's measures ----------------------------------------------------------------------------------------------
 
@@ -21,7 +22,11 @@ export const DOOR_W = 3.6;
 export const DOOR_H = 3.9;
 export const WALL_T = 0.4;
 export const PLINTH = 1.0;
-export const WALL_H = 9.6;
+export const WALL_H = 10;
+// the wordmark on the long wall that faces the forecourt, 8 m wide, low on the wall from the dock corner, so it shows from the high views and is never behind the words of N2 or of the flights
+export const SIGN_W = 8;
+const SIGN_Y = 3.0;
+const SIGN_X = -1;
 export const BACK_X = HALL.backX;
 export const FRONT_Z = 15.6;
 // the platform, a little proud of the walls
@@ -44,11 +49,9 @@ export const PARKED: [ModelName, number, number][] = [
   ['x50', -19.2, 0],
   ['d12', -24.8, 0],
 ];
-// The two trucks on their chargers in the charging corner, nose to the front wall. Model, x, z, heading in radians.
-export const CHARGING: [ModelName, number, number, number][] = [
-  ['d12', -26.4, 13.3, Math.PI / 2],
-  ['h30d', -23.2, 13.3, Math.PI / 2],
-];
+// No charging corner and no wrapping station any more. The inside is seen from the dock end of the work aisle in N3, where the whole left of the frame
+// is the long wall of the hall and the words lie over it, so the left of the hall is left as floor and its markings.
+export const CHARGING: [ModelName, number, number, number][] = [];
 // the two lanes of the dock bays the trucks of the plan work in, see najamdock.ts
 export const DOCK_LANE_X = 10.4;
 
@@ -96,7 +99,13 @@ export const wallLaneZ = (gap: number, slot: number) => (HALL.docks[gap] + HALL.
 
 // ---- the hall ---------------------------------------------------------------------------------------------------------
 
-export function Hall({ dock, far }: { dock: React.RefObject<THREE.Group | null>; far: React.RefObject<THREE.Group | null> }) {
+export type HallRefs = { doors: React.MutableRefObject<(THREE.Group | null)[]>; roofHatch: React.RefObject<THREE.Group | null>; roof: React.RefObject<THREE.Group | null> };
+
+export function Hall({ doors, roofHatch, roof }: HallRefs) {
+  const sign = useMemo(() => {
+    const { parts, s, view } = wordmarkSign(SIGN_W, 0.25, 0.08);
+    return { parts: parts.map((p) => ({ ...p, material: lam(p.fill, { emissive: lit(p.fill).multiplyScalar(0.5) }) })), s, view };
+  }, []);
   const d = useMemo(() => {
     // the platform and its kerb, the floor is its top face
     const platform: BoxItem[] = [[(PX0 + PX1) / 2, -0.6, MIDZ, PX1 - PX0, 1.2, PZ1 - PZ0]];
@@ -105,60 +114,83 @@ export function Hall({ dock, far }: { dock: React.RefObject<THREE.Group | null>;
       [PX1 - 0.07, 0.03, MIDZ, 0.14, 0.06, PZ1 - PZ0],
     ];
 
-    // the far walls, a panel, a column every 6 m with its beam over the top, the roof's edge as a thin slab with a lip, and the glazing
-    // ribbon of the long wall between the columns. The back wall stays plain behind its columns, the words of N3 lie over it.
+    // the shell, closed on four sides. The back wall, the far side wall and the near side wall are a panel 10 m high with a column every 6 m on
+    // their inside faces, the dock wall is a facade of piers between the doors with a lintel over each door, a plinth band round the foot of all
+    // four, a parapet round the roof and a roof of slabs with a long roof light between them. The inside shows only to a camera that has gone
+    // through a door or a roof light. None of it casts a shadow, so the hall is lit as brightly as the yard.
     const wall: BoxItem[] = [];
+    const base: BoxItem[] = [];
     const cols: BoxItem[] = [];
-    const beam: BoxItem[] = [];
-    const roof: BoxItem[] = [];
-    const lip: BoxItem[] = [];
-    const glass: BoxItem[] = [];
     const lenZ = PZ1 - PZ0;
-    wall.push([BACK_X + 0.15, WALL_H / 2, MIDZ, 0.3, WALL_H, lenZ]);
-    for (let z = HALL.sideZ + 1.2; z < PZ1; z += 6) cols.push([BACK_X + 0.5, WALL_H / 2, z, 0.4, WALL_H, 0.4]);
-    beam.push([BACK_X + 0.4, WALL_H + 0.05, MIDZ, 0.7, 0.5, lenZ]);
-    roof.push([BACK_X + 1.05, WALL_H + 0.3, MIDZ, 2.2, 0.2, lenZ]);
-    lip.push([BACK_X + 2.1, WALL_H + 0.1, MIDZ, 0.1, 0.5, lenZ]);
     const lenX = PX1 - PX0;
+    wall.push([BACK_X + 0.15, WALL_H / 2, MIDZ, 0.3, WALL_H, lenZ]);
     wall.push([(PX0 + PX1) / 2 + 0.15, WALL_H / 2, HALL.sideZ - 0.15, lenX - 0.3, WALL_H, 0.3]);
-    for (let x = BACK_X + 1.5; x < -5; x += 6) {
-      cols.push([x, WALL_H / 2, HALL.sideZ + 0.2, 0.4, WALL_H, 0.4]);
-    }
-    for (let x = BACK_X + 4.5; x < HALL.dockX - 5; x += 6) glass.push([x, 7.5, HALL.sideZ + 0.01, 4.8, 1.4, 0.05]);
-    beam.push([(PX0 + PX1) / 2, WALL_H + 0.05, HALL.sideZ + 0.05, lenX, 0.5, 0.7]);
-    roof.push([(PX0 + PX1) / 2, WALL_H + 0.3, HALL.sideZ + 0.8, lenX, 0.2, 2.2]);
-    lip.push([(PX0 + PX1) / 2, WALL_H + 0.1, HALL.sideZ + 1.9, lenX, 0.5, 0.1]);
-    // the corner column. The long wall's columns stop at x -6, the last 20 m before the dock wall are plain panel under the beam, so the
-    // camera of N2 at the first door does not look past a column into the words
-    cols.push([BACK_X + 0.5, WALL_H / 2, HALL.sideZ + 0.2, 0.5, WALL_H, 0.5]);
-
-    // the near walls, a low plinth with a cap. The dock wall stands in piers between the doors, the front wall runs the length of the hall.
-    const plinth: BoxItem[] = [];
-    const cap: BoxItem[] = [];
-    const door: BoxItem[] = [];
-    const frame: BoxItem[] = [];
-    const bumper: BoxItem[] = [];
-    const lev: BoxItem[] = [];
+    wall.push([(BACK_X + PX1) / 2, WALL_H / 2, FRONT_Z + 0.15, PX1 - BACK_X, WALL_H, 0.3]);
+    base.push([BACK_X - 0.02, 0.35, MIDZ, 0.06, 0.7, lenZ], [(PX0 + PX1) / 2, 0.35, HALL.sideZ - 0.32, lenX, 0.7, 0.06], [(BACK_X + PX1) / 2, 0.35, FRONT_Z + 0.32, PX1 - BACK_X, 0.7, 0.06]);
+    for (let z = HALL.sideZ + 1.2; z < PZ1; z += 6) cols.push([BACK_X + 0.5, WALL_H / 2, z, 0.4, WALL_H, 0.4]);
+    // columns on the back wall and the far side wall only, the near long wall stays plain, the words of N3 lie over it
+    for (let x = BACK_X + 1.5; x < HALL.dockX - 2; x += 6) cols.push([x, WALL_H / 2, HALL.sideZ + 0.2, 0.4, WALL_H, 0.4]);
+    // the dock wall, piers between the doors and a lintel over each, the base band across the piers
     const wx = HALL.dockX + WALL_T / 2;
     const edges = [HALL.sideZ, ...HALL.docks.flatMap((z) => [z - DOOR_W / 2, z + DOOR_W / 2]), FRONT_Z];
     for (let i = 0; i < edges.length; i += 2) {
       const zc = (edges[i] + edges[i + 1]) / 2;
       const len = edges[i + 1] - edges[i];
-      plinth.push([wx, PLINTH / 2, zc, WALL_T, PLINTH, len]);
-      cap.push([wx, PLINTH + 0.04, zc, WALL_T + 0.1, 0.08, len]);
+      wall.push([wx, WALL_H / 2, zc, WALL_T, WALL_H, len]);
+      base.push([PX1 + 0.02, 0.35, zc, 0.06, 0.7, len]);
     }
-    plinth.push([(BACK_X + PX1) / 2, PLINTH / 2, FRONT_Z + 0.15, PX1 - BACK_X, PLINTH, 0.3]);
-    cap.push([(BACK_X + PX1) / 2, PLINTH + 0.04, FRONT_Z + 0.15, PX1 - BACK_X, 0.08, 0.4]);
+    wall.push([wx, WALL_H / 2, FRONT_Z + 0.15, WALL_T, WALL_H, 0.3]);
+    HALL.docks.forEach((z) => wall.push([wx, (DOOR_H + WALL_H) / 2, z, WALL_T, WALL_H - DOOR_H, DOOR_W]));
+    // the roof, slabs along z between the five long roof lights, 1.8 m wide, a parapet round it with a light cap, and the roof units
+    const roofS: BoxItem[] = [];
+    const lightsX = LIGHTS_X;
+    let x0 = PX0;
+    lightsX.forEach((lx) => {
+      roofS.push([(x0 + lx - 0.9) / 2, WALL_H + 0.2, MIDZ, lx - 0.9 - x0, 0.4, lenZ]);
+      x0 = lx + 0.9;
+    });
+    roofS.push([(x0 + PX1) / 2, WALL_H + 0.2, MIDZ, PX1 - x0, 0.4, lenZ]);
+    const lights = lightsX.map((lx) => [[lx, WALL_H + 0.16, MIDZ, 1.8, 0.1, lenZ - 0.6] as BoxItem]);
+    const para: BoxItem[] = [
+      [PX0 + 0.1, WALL_H + 0.7, MIDZ, 0.3, 0.6, lenZ],
+      [PX1 - 0.15, WALL_H + 0.7, MIDZ, 0.3, 0.6, lenZ],
+      [(PX0 + PX1) / 2, WALL_H + 0.7, PZ0 + 0.15, lenX, 0.6, 0.3],
+      [(PX0 + PX1) / 2, WALL_H + 0.7, PZ1 - 0.15, lenX, 0.6, 0.3],
+    ];
+    const paraCap: BoxItem[] = [
+      [PX0 + 0.1, WALL_H + 1.03, MIDZ, 0.42, 0.06, lenZ + 0.1],
+      [PX1 - 0.15, WALL_H + 1.03, MIDZ, 0.42, 0.06, lenZ + 0.1],
+      [(PX0 + PX1) / 2, WALL_H + 1.03, PZ0 + 0.15, lenX, 0.06, 0.42],
+      [(PX0 + PX1) / 2, WALL_H + 1.03, PZ1 - 0.15, lenX, 0.06, 0.42],
+    ];
+    const units: BoxItem[] = [];
+    const unitFans: BoxItem[] = [];
+    ([[-20, -8, 3.4, 2.0, 1.7], [-9, 6, 2.6, 1.7, 1.5], [7, -9, 3.0, 1.9, 1.6], [-27, 9, 2.2, 2.2, 1.3], [9, 10, 2.4, 1.5, 1.3], [-12, -12, 1.6, 1.6, 2.4]] as const).forEach(([x, z, w, dd, h]) => {
+      units.push([x, WALL_H + 0.4 + h / 2, z, w, h, dd]);
+      unitFans.push([x, WALL_H + 0.4 + h + 0.03, z, w * 0.6, 0.06, dd * 0.6]);
+    });
+    // the ceiling seen from inside, a truss every 6 m with its lamps hung below and a line of lamps between
+    const trusses: BoxItem[] = [];
+    const ceilLamps: BoxItem[] = [];
+    for (let x = BACK_X + 3; x < HALL.dockX; x += 6) trusses.push([x, WALL_H - 0.5, MIDZ, 0.3, 0.9, lenZ - 0.6]);
+    for (let x = BACK_X + 6; x < HALL.dockX - 1; x += 6) for (let z = HALL.sideZ + 3; z < FRONT_Z - 1; z += 5) ceilLamps.push([x, WALL_H - 1.2, z, 0.3, 0.1, 3.2]);
+    // the door frames, a lintel head, the canopy over each door with its fascia, the bumpers on the outside of the wall and the levellers
+    const canopy: BoxItem[] = [];
+    const fascia: BoxItem[] = [];
+    const frame: BoxItem[] = [];
+    const door: BoxItem[] = [];
+    const bumper: BoxItem[] = [];
+    const lev: BoxItem[] = [];
     HALL.docks.forEach((z) => {
-      // the door frame, two posts and a head, in the rack grey
       frame.push([HALL.dockX + 0.2, DOOR_H / 2, z - DOOR_W / 2 - 0.06, 0.4, DOOR_H, 0.12], [HALL.dockX + 0.2, DOOR_H / 2, z + DOOR_W / 2 + 0.06, 0.4, DOOR_H, 0.12], [HALL.dockX + 0.2, DOOR_H + 0.06, z, 0.4, 0.12, DOOR_W + 0.24]);
-      // every door is rolled up, a working dock, with its slat in the head of the frame, so the camera of N2 looks through the doors it
-      // does not work at and a lorry can back onto any of them
-      door.push([HALL.dockX + 0.2, DOOR_H + 0.1, z, 0.1, 0.2, DOOR_W]);
-      // bumpers on the outside of the wall, down the platform's edge, and a dock leveller on the floor inside
-      for (const s of [-1.35, 1.35]) bumper.push([PX1 + 0.15, -0.35, z + s, 0.3, 0.5, 0.3]);
+      // the slat the door rolls up into
+      door.push([HALL.dockX + 0.2, DOOR_H + 0.2, z, 0.1, 0.2, DOOR_W]);
+      canopy.push([PX1 + 1.3, 5.0, z, 2.6, 0.25, 5.4]);
+      fascia.push([PX1 + 2.55, 4.85, z, 0.1, 0.55, 5.4]);
+      for (const sd of [-1.35, 1.35]) bumper.push([PX1 + 0.15, -0.35, z + sd, 0.3, 0.5, 0.3]);
       lev.push([HALL.dockX - 1.2, 0.04, z, 2.4, 0.08, 2.4]);
     });
+    void edges;
 
     // ---- the floor, slab joints every 6 m and the markings of the whole of it
     const joints: BoxItem[] = [];
@@ -255,30 +287,14 @@ export function Hall({ dock, far }: { dock: React.RefObject<THREE.Group | null>;
         for (let p = 0; p < n; p++) loadedPallet(pal, r, LANE_X0 + 0.8 + p * 1.3, laneZ(i, side), false);
       }
     });
-    // floor storage, pallets in stacks of two
-    for (const x of [-11.25, -8.75, -3.75, -1.25]) {
-      loadedPallet(pal, r, x, 14.0, false);
-      if (r() < 0.6) loadedPallet(pal, r, x, 14.0, false, 1.3);
-    }
-
-    // the floor storage of the open edge, a bay holds one stack, two or three pallets high, a few bays are empty
-    for (let b = 0; b < 7; b++) {
-      if (b === 2 || b === 5) continue;
-      const x = -22.7 + b * 2.6;
-      for (const dx of [-0.65, 0.65]) {
-        loadedPallet(pal, r, x + dx, 11.7, false);
-        loadedPallet(pal, r, x + dx, 11.7, false, 1.3);
-      }
-    }
     // empty pallets in stacks of eight, by the back wall's corner and by the front wall
     const empties: BoxItem[] = [];
     const stackOf = (x: number, z: number, n: number, turned = false) => {
       for (let i = 0; i < n; i++) empties.push([x + (i % 2) * 0.02, 0.07 + i * 0.15, z, turned ? 0.82 : 1.2, 0.14, turned ? 1.2 : 0.82]);
     };
-    [-18.5, -17.2, -15.9].forEach((x) => stackOf(x, 14.2, 9));
-    [-5.2, -3.9].forEach((x) => stackOf(x, 14.2, 7));
     stackOf(-27.5, -13.2, 10, true);
     stackOf(-27.5, -11.8, 10, true);
+    stackOf(-26.1, -13.2, 8, true);
 
     // the chargers of the charging corner, a cabinet with a lamp on its top, and the cable
     const chargers: BoxItem[] = [];
@@ -288,9 +304,6 @@ export function Hall({ dock, far }: { dock: React.RefObject<THREE.Group | null>;
       lamps.push([x, 1.5, 15.1, 0.2, 0.1, 0.2]);
     });
 
-    // the wrapping station, a turntable, a mast with the film carriage and a pallet being wrapped
-    const wrap: BoxItem[] = [[-12.4, 0.07, 14.1, 1.7, 0.14, 1.7]];
-    const wrapMast: BoxItem[] = [[-11.2, 1.1, 14.1, 0.18, 2.2, 0.18], [-11.45, 1.1, 14.1, 0.3, 0.9, 0.12]];
 
     // the office cabin, 1.9 by 4.4 m and 2.7 m high in the corner behind the racks, out of the way of the cross aisle, its roof proud all
     // round, a door and two windows on the side that faces the hall, and two steps
@@ -301,29 +314,53 @@ export function Hall({ dock, far }: { dock: React.RefObject<THREE.Group | null>;
     const cabinGlass: BoxItem[] = [[cx + 0.96, 1.75, cz - 1.2, 0.04, 0.8, 1.6], [cx + 0.96, 1.75, cz + 0.5, 0.04, 0.8, 0.8]];
     const cabinDoor: BoxItem[] = [[cx + 0.96, 1.05, cz + 1.6, 0.05, 2.1, 0.9]];
     const cabinStep: BoxItem[] = [[cx + 1.25, 0.1, cz + 1.6, 0.55, 0.2, 1.2], [cx + 1.13, 0.25, cz + 1.6, 0.3, 0.1, 1.2]];
-    return { platform, kerb, wall, cols, beam, roof, lip, glass, plinth, cap, door, frame, bumper, lev, joints, marks, slats, pal, empties, chargers, lamps, wrap, wrapMast, cabin, cabinRoof, cabinGlass, cabinDoor, cabinStep };
+    return { platform, kerb, wall, base, cols, roofS, lights, para, paraCap, units, unitFans, trusses, ceilLamps, canopy, fascia, door, frame, bumper, lev, joints, marks, slats, pal, empties, chargers, lamps, cabin, cabinRoof, cabinGlass, cabinDoor, cabinStep };
   }, []);
   return (
     <group>
       <BoxSet items={d.platform} mat={slab} />
       <BoxSet items={d.kerb} mat={wallBase} receive={false} />
-      {/* the far walls sink into the floor while the camera of N2 looks down at dock 1, so no wall, column or roof edge lies above the top rule */}
-      <group ref={far}>
-        <BoxSet items={d.wall} mat={wallMat} />
-        <BoxSet items={d.cols} mat={columnMat} cast />
-        <BoxSet items={d.beam} mat={beamFlange} />
-        <BoxSet items={d.roof} mat={roofMat} />
-        <BoxSet items={d.lip} mat={lipMat} />
-        <BoxSet items={d.glass} mat={glazing} receive={false} />
+      <BoxSet items={d.wall} mat={wallMat} />
+      <BoxSet items={d.base} mat={wallBase} receive={false} />
+      <BoxSet items={d.cols} mat={wallMat} />
+      <BoxSet items={d.frame} mat={roofMat} />
+      <BoxSet items={d.door} mat={wallMat} />
+      <BoxSet items={d.canopy} mat={wallMat} />
+      <BoxSet items={d.fascia} mat={wallMat} />
+      <BoxSet items={d.bumper} mat={black} />
+      <BoxSet items={d.lev} mat={beamWeb} />
+      {/* the doors roll up into their slat, hung from the head of the frame so each draws up as its scale falls */}
+      {HALL.docks.map((z, i) => (
+        <group key={i} ref={(g) => { doors.current[i] = g; }} position={[HALL.dockX + 0.2, DOOR_H, z]}>
+          <BoxSet items={[[0, -DOOR_H / 2, 0, 0.1, DOOR_H, DOOR_W]]} mat={wallMat} />
+          <BoxSet items={[1, 2, 3, 4, 5].map((g) => [0.06, -(DOOR_H / 6) * g, 0, 0.03, 0.03, DOOR_W - 0.1] as BoxItem)} mat={wallBase} receive={false} />
+        </group>
+      ))}
+      {/* the wordmark on the front wall, extruded from the brand file the way the Kompanija building has it, reading from the forecourt */}
+      <group position={[SIGN_X, SIGN_Y, PZ1 + 0.04]}>
+        <group position={[-sign.s * sign.view[0], sign.s * (sign.view[1] + sign.view[3]), 0]} scale={[sign.s, -sign.s, sign.s]}>
+          {sign.parts.map((p, i) => (
+            <mesh key={i} geometry={p.geo} material={p.material} />
+          ))}
+        </group>
       </group>
-      {/* the near walls stand for the high views and sink into the floor while the camera is low in the yard, outside them, in N3 */}
-      <group ref={dock}>
-        <BoxSet items={d.plinth} mat={wallMat} cast />
-        <BoxSet items={d.cap} mat={wallBase} />
-        <BoxSet items={d.frame} mat={columnMat} />
-        <BoxSet items={d.door} mat={doorMat} />
-        <BoxSet items={d.bumper} mat={black} />
-        <BoxSet items={d.lev} mat={beamWeb} />
+      {/* the roof, which an iris closes in T, with the roof lights and the units on it, the trusses and lamps under it */}
+      <group ref={roof} position={[(PX0 + PX1) / 2, 0, MIDZ]}>
+        <group position={[-(PX0 + PX1) / 2, 0, -MIDZ]}>
+          <BoxSet items={d.roofS} mat={roofMat} />
+          <BoxSet items={d.para} mat={wallMat} />
+          <BoxSet items={d.paraCap} mat={roofMat} receive={false} />
+          <BoxSet items={d.units} mat={wallMat} />
+          <BoxSet items={d.unitFans} mat={darkGrey} receive={false} />
+          <BoxSet items={d.trusses} mat={wallMat} />
+          <BoxSet items={d.ceilLamps} mat={K.white} receive={false} />
+          {d.lights.slice(0, 4).map((l, i) => (
+            <BoxSet key={i} items={l} mat={glazing} receive={false} />
+          ))}
+          <group ref={roofHatch} position={[lightsAt(4), WALL_H + 0.16, MIDZ]}>
+            <BoxSet items={[[0, 0, 0, 1.8, 0.1, PZ1 - PZ0 - 0.6]]} mat={glazing} receive={false} />
+          </group>
+        </group>
       </group>
       <BoxSet items={d.joints} mat={lineFaint} receive={false} />
       <BoxSet items={d.marks} mat={line} receive={false} />
@@ -332,20 +369,17 @@ export function Hall({ dock, far }: { dock: React.RefObject<THREE.Group | null>;
       <BoxSet items={d.empties} mat={palletBase} cast />
       <BoxSet items={d.chargers} mat={darkGrey} cast />
       <BoxSet items={d.lamps} mat={lineWhite} receive={false} />
-      <BoxSet items={d.wrap} mat={beamWeb} cast />
-      <BoxSet items={d.wrapMast} mat={rackGrey} cast />
       <BoxSet items={d.cabin} mat={wallMat} cast />
       <BoxSet items={d.cabinRoof} mat={roofMat} cast />
       <BoxSet items={d.cabinGlass} mat={K.vanGlass} receive={false} />
       <BoxSet items={d.cabinDoor} mat={doorMat} />
       <BoxSet items={d.cabinStep} mat={beamFlange} />
-      {/* a pallet on the turntable, being wrapped */}
-      <group position={[-12.4, 0.14, 14.1]}>
-        <Load h={1.0} colour={1} />
-      </group>
     </group>
   );
 }
+// the long roof lights along z, 1.8 m wide, the last one over the dock end of the hall opens in the third flight for the camera to leave through
+const LIGHTS_X = [-24, -15, -6, 3, 12];
+const lightsAt = (i: number) => LIGHTS_X[i];
 // the x where the aisles open on the staging floor
 const X_MOUTH = HALL.rackX0 + 0.4;
 
@@ -355,12 +389,14 @@ const X_MOUTH = HALL.rackX0 + 0.4;
 // enough that the haze takes it and no edge or hedge shows at the horizon of N3, to 47 m out from the docks and 27 m behind the far wall to
 // 36 m in front of the near one. The yard road runs along z at x 34, 7 m wide,
 // through a gap in the hedge at each end and on to the edge of any frame, with a kerb on both sides outside the hedge.
-export const YARD = { x0: -130, x1: 47, z0: -27, z1: 36, road: 34, roadW: 7 };
+export const YARD = { x0: -400, x1: 47, z0: -27, z1: 36, road: 34, roadW: 7 };
+const WORLD = 420;
 
 export function Yard() {
   const y = useMemo(() => {
-    const paving: BoxItem[] = [[(YARD.x0 + YARD.x1) / 2, 0.02, (YARD.z0 + YARD.z1) / 2, YARD.x1 - YARD.x0, 0.04, YARD.z1 - YARD.z0]];
-    const roadLong = 190;
+    // the paving runs on to 420 m each way, so the haze takes it and no slab edge ever shows, and so does the road
+    const paving: BoxItem[] = [[0, 0.02, 0, WORLD * 2, 0.04, WORLD * 2]];
+    const roadLong = WORLD * 2;
     const road: BoxItem[] = [[YARD.road, 0.04, 0, YARD.roadW, 0.04, roadLong]];
     const marks: BoxItem[] = [];
     const white: BoxItem[] = [];
@@ -375,18 +411,46 @@ export function Yard() {
     });
     // the road's edge lines and a dashed middle, white
     for (const s of [-1, 1]) white.push([YARD.road + s * (YARD.roadW / 2 - 0.3), 0.075, 0, 0.14, 0.01, roadLong]);
-    for (let z = -90; z < 90; z += 6) white.push([YARD.road, 0.075, z + 1.5, 0.14, 0.01, 3]);
+    for (let z = -WORLD; z < WORLD; z += 6) white.push([YARD.road, 0.075, z + 1.5, 0.14, 0.01, 3]);
     // the apron's lanes between the bays and the road, a hatched strip along the platform's foot so no bay opens on bare paving
     const slats: SlatItem[] = [];
     slats.push(...hatch(PX1 + 0.1, PX1 + 0.6, YARD.z0 + 0.3, YARD.z1 - 0.3, 0.8, 0.066));
 
     // the car park on the forecourt in front of the hall, bays 2.6 m wide, 5 m deep, marked and empty, with a footpath along the wall
     const bays: BoxItem[] = [];
-    for (let x = -32; x <= 14.01; x += 2.6) bays.push([x, 0.066, 20.6, 0.1, 0.01, 5]);
-    bays.push([-9, 0.066, 18.1, 46, 0.01, 0.1], [-9, 0.066, 23.1, 46, 0.01, 0.1]);
+    // it runs from the dock end only 28 m along the wall, since from the high view of the last beat a longer strip lay behind the lede
+    for (let x = -14; x <= 14.01; x += 2.6) bays.push([x, 0.066, 20.6, 0.1, 0.01, 5]);
+    bays.push([0, 0.066, 18.1, 28, 0.01, 0.1], [0, 0.066, 23.1, 28, 0.01, 0.1]);
     // a footpath along the front wall, edge lines and a dashed middle
     bays.push([-9, 0.066, 17.0, 46, 0.01, 0.1]);
-    return { paving, road, marks, white, slats, bays };
+    // the fence round the yard, posts 4 m apart with two rails, along the east side and 40 m either side of each gate on the north and south sides
+    const fence: BoxItem[] = [];
+    const run = (x0: number, x1: number, z0: number, z1: number) => {
+      const n = Math.max(1, Math.round(Math.hypot(x1 - x0, z1 - z0) / 4));
+      for (let i = 0; i <= n; i++) fence.push([x0 + ((x1 - x0) * i) / n, 1.0, z0 + ((z1 - z0) * i) / n, 0.1, 2.0, 0.1]);
+      for (const h of [0.55, 1.75]) fence.push([(x0 + x1) / 2, h, (z0 + z1) / 2, Math.max(x1 - x0, 0.05), 0.05, Math.max(z1 - z0, 0.05)]);
+    };
+    run(YARD.x1 + 0.2, YARD.x1 + 0.2, YARD.z0, YARD.z1);
+    for (const zz of [YARD.z0 - 0.05, YARD.z1 + 0.05]) {
+      run(YARD.road - 44, YARD.road - 4.5, zz, zz);
+      run(YARD.road + 4.5, YARD.x1 + 0.2, zz, zz);
+    }
+    // low buildings of the neighbours in the haze round the site, plain boxes of 6 to 14 m in the pale grey
+    const near: BoxItem[] = [];
+    const nr = rng(61);
+    const lot = (xa: number, xb: number, za: number, zb: number, n: number) => {
+      for (let i = 0; i < n; i++) {
+        const w = 18 + nr() * 30;
+        const dd = 14 + nr() * 22;
+        const h = 6 + nr() * 8;
+        near.push([xa + nr() * (xb - xa), h / 2, za + nr() * (zb - za), w, h, dd]);
+      }
+    };
+    lot(-300, 300, -170, -70, 14);
+    lot(-300, 300, 80, 180, 14);
+    lot(75, 190, -70, 80, 8);
+    lot(-300, -75, -70, 80, 10);
+    return { paving, road, marks, white, slats, bays, fence, near };
   }, []);
 
   // trees in a line behind the hedge, 7 m apart, none across the road's gap and none along the forecourt, which is the left of the frame
@@ -422,11 +486,34 @@ export function Yard() {
       <Trees items={trees} pit={false} />
       {/* the kerb of the road beyond the hedge, a stone run on each side, north and south */}
       <group position={[YARD.road, 0, 0]} rotation={[0, Math.PI / 2, 0]}>
-        <Kerb x0={-90} x1={-YARD.z1 - 1} z={-YARD.roadW / 2} />
-        <Kerb x0={-90} x1={-YARD.z1 - 1} z={YARD.roadW / 2} />
-        <Kerb x0={-YARD.z0 + 1} x1={90} z={-YARD.roadW / 2} />
-        <Kerb x0={-YARD.z0 + 1} x1={90} z={YARD.roadW / 2} />
+        <Kerb x0={-WORLD} x1={-YARD.z1 - 1} z={-YARD.roadW / 2} />
+        <Kerb x0={-WORLD} x1={-YARD.z1 - 1} z={YARD.roadW / 2} />
+        <Kerb x0={-YARD.z0 + 1} x1={WORLD} z={-YARD.roadW / 2} />
+        <Kerb x0={-YARD.z0 + 1} x1={WORLD} z={YARD.roadW / 2} />
       </group>
+      <BoxSet items={y.fence} mat={rackGrey} />
+      <BoxSet items={y.near} mat={wallMat} />
+      {/* the gate on the south side of the yard, a gate house east of the road with its window to the road, two barriers with their arms
+          raised and the hatching before them, and a second pair of barriers on the north side. The lamp posts stand along the road
+          inside the yard and along its east side */}
+      <group position={[YARD.road + 6.2, 0, YARD.z1 - 3.4]} rotation={[0, Math.PI / 2, 0]}>
+        <GateHouse x={0} z={0} />
+      </group>
+      <Barrier x={YARD.road - 3.6} z={YARD.z1 - 2.2} />
+      <Barrier x={YARD.road + 3.6} z={YARD.z1 - 2.2} />
+      <Barrier x={YARD.road - 3.6} z={YARD.z0 + 2.2} />
+      <Barrier x={YARD.road + 3.6} z={YARD.z0 + 2.2} />
+      {[-20, 6, 22].map((z) => (
+        <LampPost key={z} x={YARD.road + 5.2} z={z} rot={Math.PI} />
+      ))}
+      {[-18, 4, 26].map((z) => (
+        <LampPost key={`e${z}`} x={YARD.x1 - 3} z={z} rot={Math.PI} />
+      ))}
+      {/* cars of the staff and a van of the service on the east side of the yard and by the gate house */}
+      <Van x={YARD.x1 - 7} z={-8} yaw={Math.PI / 2} />
+      <Van x={YARD.x1 - 7} z={-3.2} yaw={Math.PI / 2} />
+      <Van x={YARD.x1 - 7} z={12} yaw={Math.PI / 2} />
+      <Van x={YARD.road + 12} z={YARD.z1 - 4.5} yaw={Math.PI} />
     </group>
   );
 }

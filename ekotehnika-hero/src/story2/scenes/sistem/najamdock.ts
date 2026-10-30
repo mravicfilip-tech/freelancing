@@ -35,8 +35,8 @@ const TURN = 7;
 
 // A lorry's pose, the middle of the trailer's axles A and the heading psi of the trailer, which fix the trailer, and the pivot P, a hitch
 // 4.8 m ahead of them on the trailer, which the tractor follows with its own heading theta. The doors fold back at close 0 and are shut at 1.
-export type LorryPose = { ax: number; az: number; psi: number; px: number; pz: number; theta: number; close: number; shown: boolean };
-export const mkLorry = (): LorryPose => ({ ax: 0, az: 0, psi: 0, px: 0, pz: 0, theta: 0, close: 0, shown: true });
+export type LorryPose = { ax: number; az: number; psi: number; px: number; pz: number; theta: number; close: number; open: number; shown: boolean };
+export const mkLorry = (): LorryPose => ({ ax: 0, az: 0, psi: 0, px: 0, pz: 0, theta: 0, close: 0, open: 0, shown: true });
 
 // Turning in. Drives along the road past the dock's row, stops 7 m beyond it, and backs a quarter circle of 7 m radius to face the dock, then
 // straight on to the bumpers. lead is how far before the stop it starts. From the south on the north bound lane, or from the north.
@@ -58,15 +58,23 @@ function arrival(dock: number, lead: number, south = false) {
       ];
   return { rt: route(ways), rev: 1 };
 }
-// Pulling away. Drives straight out from the dock, turns right onto the south bound lane with a 7 m radius and runs on down the road.
-function departure(dock: number, run: number) {
+// Pulling away. Drives straight out from the dock and turns onto the road with a 7 m radius, right onto the south bound lane or left, the north bound
+// one, and runs on down the road.
+function departure(dock: number, run: number, north = false) {
   const z0 = Z[dock];
-  const ways: Way[] = [
-    { x: REAR_X + AXLE, z: z0, th: 0 },
-    { x: SOUTH - TURN, z: z0, th: 0, mo: 1.657 * TURN },
-    { x: SOUTH, z: z0 + TURN, th: 90, mi: 1.657 * TURN },
-    { x: SOUTH, z: z0 + TURN + run, th: 90 },
-  ];
+  const ways: Way[] = north
+    ? [
+        { x: REAR_X + AXLE, z: z0, th: 0 },
+        { x: NORTH - TURN, z: z0, th: 0, mo: 1.657 * TURN },
+        { x: NORTH, z: z0 - TURN, th: 270, mi: 1.657 * TURN },
+        { x: NORTH, z: z0 - TURN - run, th: 270 },
+      ]
+    : [
+        { x: REAR_X + AXLE, z: z0, th: 0 },
+        { x: SOUTH - TURN, z: z0, th: 0, mo: 1.657 * TURN },
+        { x: SOUTH, z: z0 + TURN, th: 90, mi: 1.657 * TURN },
+        { x: SOUTH, z: z0 + TURN + run, th: 90 },
+      ];
   return { rt: route(ways), rev: 99 };
 }
 
@@ -109,14 +117,16 @@ type LorryPlan = {
   leaveS: (k: number) => number;
   // k the doors start to shut and the k they are shut
   shut: [number, number];
+  // the near side of the trailer draws back like a curtain, from k0 to k1, and closes again from k2 to k3
+  curtain: [number, number, number, number];
   // the k the lorry is first drawn, and the k it is gone
   from: number;
   to: number;
 };
 
-function lorryPlan(dock: number, p: { south?: boolean; lead: number; go: [number, number]; stop: number; back: [number, number]; shut: [number, number]; away: [number, number]; run: number; far: number; from?: number }): LorryPlan {
+function lorryPlan(dock: number, p: { south?: boolean; north?: boolean; curtain?: [number, number, number, number]; lead: number; go: [number, number]; stop: number; back: [number, number]; shut: [number, number]; away: [number, number]; run: number; far: number; from?: number }): LorryPlan {
   const arrive = arrival(dock, p.lead, p.south);
-  const leave = departure(dock, p.run);
+  const leave = departure(dock, p.run, p.north);
   const at = arrive.rt.at;
   return {
     arrive,
@@ -124,6 +134,7 @@ function lorryPlan(dock: number, p: { south?: boolean; lead: number; go: [number
     leave,
     leaveS: pace([[0, 0], [p.away[0], 0], [p.away[1], p.far]]),
     shut: p.shut,
+    curtain: p.curtain ?? [9, 9, 9, 9],
     from: p.from ?? 0,
     to: p.away[1],
   };
@@ -132,7 +143,7 @@ function lorryPlan(dock: number, p: { south?: boolean; lead: number; go: [number
 // Lorry 1 comes in with the story and goes after N2, lorry 2 backs onto dock 3 in N2 and N3 and loads in N4, lorry 3 starts for dock 4 in N3
 // and backs on as T opens. The stops between the legs are a hold of 40px or so.
 const LORRIES: LorryPlan[] = [
-  lorryPlan(0, { lead: 10, go: [0, 0.08], stop: 0.085, back: [0.085, 0.25], shut: [0.4, 0.42], away: [0.43, 0.75], run: 24, far: 41.8 }),
+  lorryPlan(0, { lead: 10, go: [0, 0.08], stop: 0.085, back: [0.085, 0.25], north: true, curtain: [0.2, 0.27, 0.52, 0.56], shut: [0.55, 0.58], away: [0.57, 0.9], run: 24, far: 45.3 }),
   lorryPlan(2, { lead: 10, go: [0.44, 0.52], stop: 0.53, back: [0.53, 0.72], shut: [0.935, 0.95], away: [0.955, 1.1], run: 14, far: 17, from: 0.44 }),
   lorryPlan(0, { south: true, lead: 34, go: [0.62, 0.88], stop: 0.9, back: [0.9, 1.1], shut: [2, 2], away: [2, 2.1], run: 4, far: 1, from: 0.62 }),
 ];
@@ -145,6 +156,7 @@ export function lorryAt(i: number, k: number, out: LorryPose = mkLorry()): Lorry
   const L = LORRIES[i];
   out.shown = k >= L.from && k < L.to;
   out.close = sh((k - L.shut[0]) / (L.shut[1] - L.shut[0]));
+  out.open = sh((k - L.curtain[0]) / (L.curtain[1] - L.curtain[0])) * (1 - sh((k - L.curtain[2]) / (L.curtain[3] - L.curtain[2])));
   const away = k >= L.shut[1] && L.shut[1] < 2;
   if (away) poseOn(L.leave, L.leaveS(k), out);
   else poseOn(L.arrive, L.arriveS(k), out);
@@ -185,7 +197,7 @@ const A = dockTrip(
 
 // Forklift B waits at its bay in the corner by the far wall. Round an S curve onto the door's line once A has left it, in to the second pallet,
 // lifts it, backs out and turns left to the far corner of the wall, where it sets the pallet down. It finishes in the second flight.
-export const B_MARKS = { lift: [0.378, 0.39], set: [0.482, 0.492] } as const;
+export const B_MARKS = { lift: [0.418, 0.43], set: [0.522, 0.532] } as const;
 const B = dockTrip(
   [
     { x: 9.2, z: -14.5, th: 0 },
@@ -194,7 +206,7 @@ const B = dockTrip(
     { x: 11.0, z: Z[0], th: 0, mo: BEND },
     { x: 13.2, z: Z[0] - R, th: 270, mi: BEND },
   ],
-  [[0, 0], [0.3, 0], [0.378, 2], [0.39, 2], [0.446, 3], [0.482, -1]],
+  [[0, 0], [0.34, 0], [0.418, 2], [0.43, 2], [0.486, 3], [0.522, -1]],
   [[0, 0], [B_MARKS.lift[0], 0], [B_MARKS.lift[1], CARRY], [B_MARKS.set[0], CARRY], [B_MARKS.set[1], 0]],
 );
 

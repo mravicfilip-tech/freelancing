@@ -6,7 +6,8 @@
 // flick plays the beats through at a steady pace. The page scroll itself is never capped.
 //
 // ?feel=0 is the old per frame follow with no cap. ?feel=1, 2 and 3 cap the clock at 1500, 2500 and 4000 story px a
-// second. No parameter means 2. The parameter is read once, when the module loads, by story2/preview.ts, which also holds the
+// second. ?feel=4, 5 and 6 cap it at 900, 1300 and 1800 and also lock the page to it, see holdWheel below. No parameter
+// means 5. The parameter is read once, when the module loads, by story2/preview.ts, which also holds the
 // panel's way back, a page that a switch reloaded lands on the frame it left (restore below).
 //
 // With reduced motion there is no Lenis, no pin and no scrub. goTo(p) sets a still frame.
@@ -14,21 +15,52 @@
 import { useLayoutEffect, useRef } from 'react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import Lenis from 'lenis';
+import Lenis, { type VirtualScrollData } from 'lenis';
 import { FEEL } from '../story2/preview';
 
 gsap.registerPlugin(ScrollTrigger);
 
 let lenis: Lenis | null = null;
 
-const FEEL_CAPS = [0, 1500, 2500, 4000];
+const FEEL_CAPS = [0, 1500, 2500, 4000, 900, 1300, 1800];
+// Feels 4 to 6 hold the page to the story clock, the wheel can put the page's scroll target no more than LEAD px ahead of
+// the clock or behind it. Pin px and story px are 1 to 1.
+const LOCKED = FEEL >= 4;
+const LEAD = 120;
+
+// What the lock looks at, the pinned story that is on the page now.
+let lock: { st: ScrollTrigger; progress: { current: number }; length: number; jumpUntil: { current: number } } | null = null;
+
+// Lenis asks this for every wheel event before it moves the scroll target. The part of the delta past the lead is dropped,
+// never queued, so when the hand stops the page stops within LEAD px of the clock. Inside the pin only, and the lock lets go
+// once the clock is at the end of the story, or at its start when going up, so the page leaves the story freely. A jump
+// from goTo lifts it. Keys and a dragged scrollbar scroll natively and are not held, the clock cap still applies to them.
+function holdWheel(data: VirtualScrollData) {
+  const event = data.event;
+  if (!lock || !lenis || !LOCKED || !event.type.includes('wheel') || (event as WheelEvent).ctrlKey) return true;
+  const d = data.deltaY;
+  if (d === 0 || gsap.ticker.time <= lock.jumpUntil.current) return true;
+  const { st, progress, length } = lock;
+  const at = st.start + progress.current * length;
+  const target = lenis.targetScroll;
+  let next = target + d;
+  if (d > 0 && at < st.end - 0.5) next = Math.min(next, Math.max(at + LEAD, target));
+  else if (d < 0 && at > st.start + 0.5) next = Math.max(next, Math.min(at - LEAD, target));
+  if (next === target) {
+    // Lenis lets the browser scroll on its own when it gets no delta, so the event is stopped here.
+    if (event.cancelable) event.preventDefault();
+    return false;
+  }
+  data.deltaY = next - target;
+  return true;
+}
 // Seconds the speed cap stays lifted after goTo, the 1.4 s jump plus the time the follow takes to catch up.
 const JUMP_HOLD = 1.8;
 
 // One Lenis for the page, driven by the GSAP ticker so ScrollTrigger and Lenis share a clock.
 function startLenis() {
   if (lenis) return lenis;
-  lenis = new Lenis({ lerp: 0.085, wheelMultiplier: 0.9 });
+  lenis = new Lenis({ lerp: 0.085, wheelMultiplier: 0.9, virtualScroll: holdWheel });
   lenis.on('scroll', ScrollTrigger.update);
   gsap.ticker.add((t) => lenis?.raf(t * 1000));
   gsap.ticker.lagSmoothing(0);
@@ -86,6 +118,7 @@ export function useScrollStory({ length, reduced, snap, smoothing = 0.08, restor
         },
       });
     }, stage);
+    if (stRef.current) lock = { st: stRef.current, progress, length, jumpUntil };
     // a reload from the panel lands on the frame it left, straight there, the clock and the page scroll both
     if (restore !== null && stRef.current) {
       const st = stRef.current;
@@ -107,21 +140,28 @@ export function useScrollStory({ length, reduced, snap, smoothing = 0.08, restor
     const tick = (time: number, deltaTime: number) => {
       if (FEEL === 0) {
         progress.current += (raw.current - progress.current) * smoothing * 2.2;
-      } else {
-        const dt = Math.min(deltaTime / 1000, 0.1);
-        let step = (raw.current - progress.current) * (1 - Math.exp(-rate * dt));
-        if (time > jumpUntil.current) {
-          const max = (cap * dt) / length;
-          step = Math.max(-max, Math.min(max, step));
-        }
-        progress.current += step;
+        if (Math.abs(raw.current - progress.current) < 0.00005) progress.current = raw.current;
+        return;
       }
-      if (Math.abs(raw.current - progress.current) < 0.00005) progress.current = raw.current;
+      // Under the lock the clock follows the page's scroll target, which holds within LEAD px of it. The page itself is
+      // eased by Lenis and trails its target by about 0.2 s, and following that as well would cap the clock near 400 px/s.
+      const st = stRef.current;
+      const goal =
+        LOCKED && lenis && st && time > jumpUntil.current ? clamp01((lenis.targetScroll - st.start) / (st.end - st.start)) : raw.current;
+      const dt = Math.min(deltaTime / 1000, 0.1);
+      let step = (goal - progress.current) * (1 - Math.exp(-rate * dt));
+      if (time > jumpUntil.current) {
+        const max = (cap * dt) / length;
+        step = Math.max(-max, Math.min(max, step));
+      }
+      progress.current += step;
+      if (Math.abs(goal - progress.current) < 0.00005) progress.current = goal;
     };
     gsap.ticker.add(tick);
     document.fonts?.ready.then(() => ScrollTrigger.refresh());
     return () => {
       gsap.ticker.remove(tick);
+      lock = null;
       stRef.current = null;
       ctx.revert();
     };

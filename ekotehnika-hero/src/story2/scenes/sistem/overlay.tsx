@@ -228,6 +228,7 @@ function hazeTexture() {
 export default function Overlay({ clock }: SceneProps) {
   const root = useOverlayRoot();
   const haze = useRef<THREE.Mesh>(null);
+  const termHaze = useRef<THREE.Mesh>(null);
   const size = useThree((s) => s.size);
   const fade = useRef<THREE.Mesh>(null);
   const maskGroup = useRef<THREE.Group>(null);
@@ -257,6 +258,13 @@ export default function Overlay({ clock }: SceneProps) {
       const on = WAREHOUSE && u >= 11.9 && u < 13.4;
       haze.current.visible = on;
       (haze.current.material as THREE.MeshBasicMaterial).opacity = on ? 1 - ease(range(u, 13.0, 13.4)) : 0;
+    }
+    // the term row's haze, a plain veil from the row's top rule to the bottom edge, drawn while the terms are on, so a floor line or a rack
+    // edge never lies behind a figure or a label of the row. Its top edge sits on the drawn rule at 720 of 900, the way the band over the top row does
+    if (termHaze.current) {
+      const op = WAREHOUSE && u >= 12.5 && u < 13.4 ? 0.62 * ease(range(u, 12.5, 12.55)) * (1 - ease(range(u, 13.0, 13.4))) : 0;
+      termHaze.current.visible = op > 0.001;
+      (termHaze.current.material as THREE.MeshBasicMaterial).opacity = op;
     }
     // Black for the push into the forklift, a hard edged shutter. The camera has already filled the frame with the dark mast, the
     // shutter rolls up from the bottom edge and covers the frame by u 9.9. Servis then opens on plain black while its text
@@ -331,6 +339,10 @@ export default function Overlay({ clock }: SceneProps) {
       <mesh ref={haze} visible={false} renderOrder={23}>
         <planeGeometry args={[aspect * 2 + 0.2, 2]} />
         <meshBasicMaterial map={hazeTexture()} transparent depthTest={false} depthWrite={false} toneMapped={false} />
+      </mesh>
+      <mesh ref={termHaze} visible={false} position={[0, -0.8, 0]} renderOrder={23}>
+        <planeGeometry args={[aspect * 2 + 0.2, 0.4]} />
+        <meshBasicMaterial color="#ffffff" transparent opacity={0} depthTest={false} depthWrite={false} toneMapped={false} />
       </mesh>
       {/* The band over the top row draws after the fork and the curtain, so no steel ever crosses into the top row. */}
       <mesh ref={maskTop} position={[0, 1 - topH / 2, 0]} scale={[1, 1, 1]} renderOrder={25}>

@@ -361,8 +361,9 @@ export default function Najam({ clock }: SceneProps) {
       const g = doors.current[i];
       if (g) g.scale.y = Math.max(1 - 0.96 * o, 0.04);
     });
-    // the roof light over the dock end draws aside in the third flight, 0.74 to 0.78, for the camera to rise through, and closes behind it
-    if (roofHatch.current) roofHatch.current.scale.x = Math.max(1 - ease(range(k, 0.735, 0.775)) * (1 - ease(range(k, 0.86, 0.9))), 0.001);
+    // the roof light over the dock end draws aside in the third flight, 0.735 to 0.775, for the camera to rise through, and closes behind it as soon as
+    // the camera is over the roof, 0.79 to 0.815, so the camera never looks down a dark gap
+    if (roofHatch.current) roofHatch.current.scale.x = Math.max(1 - ease(range(k, 0.735, 0.775)) * (1 - ease(range(k, 0.79, 0.815))), 0.001);
     // T, the roof draws in on itself like an iris while the camera dives, then the whole hall sinks as the walls and racks of the aisle rise
     const iris = ease(range(u, 13.0, 13.3));
     if (roof.current) {

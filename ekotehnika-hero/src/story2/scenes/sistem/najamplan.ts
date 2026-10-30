@@ -373,7 +373,7 @@ const cam = (): Cam => ({ x: 0, y: 0, z: 0, d: 0, yaw: 0, pitch: 0, sx: 0, sy: 0
 const HIGH_FAR: Cam = { x: 14, y: 0, z: -2, d: 146, yaw: 50, pitch: -30, sx: 0.0, sy: 0.34, shadow: 70, fov: 28 };
 const HIGH: Cam = { x: 14, y: 0, z: -2, d: 136, yaw: 50, pitch: -30, sx: 0.0, sy: 0.34, shadow: 70, fov: 28 };
 // N4 keeps the bottom band of the frame clear for the term cells, so the hall stands higher in it. T starts from this pose.
-export const HIGH4: Cam = { x: 3, y: 0, z: -3, d: 118, yaw: 50, pitch: -30, sx: 0.17, sy: 0.04, shadow: 60, fov: 28 };
+export const HIGH4: Cam = { x: 3, y: 0, z: -3, d: 118, yaw: 50, pitch: -30, sx: 0.2, sy: -0.06, shadow: 60, fov: 28 };
 
 // A camera from where it stands to what it looks at, both in hall metres over the platform.
 function eye(o: Cam, c: [number, number, number], t: [number, number, number], lens: Pick<Cam, 'sx' | 'sy' | 'shadow' | 'fov'>) {
@@ -396,7 +396,7 @@ const DOCK_B = eye(cam(), [32.5, 3.8, 3.4], DOCK_AT, DOCK_LENS);
 // Both N3 shots look down the work aisle from inside the hall at its dock end, 6 m up, so the nearest truck is 15 m away and its mast over the
 // bottom band of the term cells, and the picture is shifted right so the aisle and its racks lie right of the third vertical. The camera sits
 // at xc, h metres up, and looks at a point of the aisle at height ty.
-const SHOT = { z: AZ - 0.3, yaw: 87, sx: 0.2, sy: 0.04, shadow: 30, fov: 26 };
+const SHOT = { z: AZ - 0.3, yaw: 87, sx: 0.2, sy: 0.03, shadow: 30, fov: 35 };
 function look(o: Cam, xc: number, h: number, tx: number, ty: number) {
   Object.assign(o, SHOT, { x: tx, y: ty });
   o.d = Math.hypot(xc - tx, h - ty);
@@ -424,7 +424,7 @@ const mix = (a: Cam, b: Cam, t: number, o: Cam) => {
 // and its target are. With no vias the flight is a straight line.
 const RAD = PI / 180;
 type V3 = [number, number, number];
-type Via = { cam: V3[]; tgt: V3[] };
+type Via = { cam: V3[]; tgt: V3[]; sy?: number[] };
 const spline = (pts: V3[], t: number): V3 => {
   const n = pts.length - 1;
   if (n === 1) return [lerp(pts[0][0], pts[1][0], t), lerp(pts[0][1], pts[1][1], t), lerp(pts[0][2], pts[1][2], t)];
@@ -441,12 +441,19 @@ const spline = (pts: V3[], t: number): V3 => {
 // staging floor to the mouth of the work aisle
 const VIA_AISLE: Via = {
   cam: [[30, 2.8, -3.2], [25, 2.4, -8.6], [22.4, 2.4, -10.5], [19.6, 2.6, -10.7], [16.6, 2.7, -10.6], [9.5, 5.6, -7.5], [11.0, 6.4, -1.0]],
-  tgt: [[19.5, 1.0, -11.0], [17.5, 1.0, -11.4], [14.5, 0.9, -11.55], [11.5, 0.9, -11.8], [8.0, 1.2, -11.0], [4.0, 1.8, -4.0], [0.0, 2.2, 5.0]],
+  // it looks down at the forklift from the trailer on and follows it to the corner of the dock wall, so the racks are behind the camera and
+  // the dock wall and the corner are what stands behind the words, and the picture is pushed down by the lens shift at the middle of the flight,
+  // the forklift and the pallets low in the frame
+  tgt: [[19.5, 1.0, -11.0], [17.5, 1.0, -11.4], [14.5, 0.7, -11.55], [11.0, 0.3, -12.2], [12.8, 0.4, -13.2], [13.2, 0.4, -13.6], [14.0, 2.0, 2.0]],
+  sy: [0.5, 0.58, 0.6, 0.6, 0.5, 0.35, 0.15],
 };
 // the third flight, up under the roof light over the dock end, through it, over the roof and away to the high view
 const VIA_HIGH: Via = {
-  cam: [[13.0, 7.2, 7.4], [12.2, 11.6, 7.4], [12.0, 15.0, 7.2], [35, 38, 32]],
-  tgt: [[4.0, 3.0, 7.0], [6.0, 2.0, 6.0], [8.0, 0.0, 4.0], [8, 0, 0]],
+  cam: [[13.0, 7.2, 7.4], [12.2, 11.6, 7.4], [12.0, 15.0, 7.2], [18.0, 24.0, 12.0], [35, 38, 32]],
+  // it tilts up to the ceiling and the sky before it rises through the roof light, and only over the roof looks down at the building
+  tgt: [[-4.0, 8.4, 7.4], [6.0, 18.0, 7.4], [2.0, 21.0, 7.4], [8.0, 6.0, 4.0], [8, 0, 0]],
+  // the lens shift keeps the trucks above the term row while the camera tilts up
+  sy: [-0.55, -0.2, -0.05, -0.1, -0.06],
 };
 function fly(a: Cam, b: Cam, t: number, o: Cam, via?: Via) {
   const pos = (c: Cam): V3 => [c.x + c.d * Math.sin(c.yaw * RAD) * Math.cos(c.pitch * RAD), c.y - c.d * Math.sin(c.pitch * RAD), c.z + c.d * Math.cos(c.yaw * RAD) * Math.cos(c.pitch * RAD)];
@@ -463,7 +470,7 @@ function fly(a: Cam, b: Cam, t: number, o: Cam, via?: Via) {
   o.yaw = Math.atan2(dx, dz) / RAD;
   o.pitch = -Math.asin(dy / d) / RAD;
   o.sx = lerp(a.sx, b.sx, t);
-  o.sy = lerp(a.sy, b.sy, t);
+  o.sy = via?.sy ? spline([[a.sy, 0, 0], ...via.sy.map((v) => [v, 0, 0] as V3), [b.sy, 0, 0]], t)[0] : lerp(a.sy, b.sy, t);
   o.shadow = lerp(a.shadow, b.shadow, t);
   o.fov = lerp(a.fov, b.fov, t);
   return o;
@@ -489,8 +496,8 @@ export function najamCam(u: number, out: Cam = cam()): Cam {
   x50AAt(k, tc.a);
   x50BAt(k, tc.b);
   const mid = (tc.a.x + tc.b.x) / 2;
-  look(f, lerp(13.3, 12.6, ease(clamp01((k - 0.552) / 0.148))), 6.0, -10.1 + 0.2 * (mid + 10.1), 2.1);
-  look(r, 12.4, 6.2, -8.6, 2.34);
+  look(f, lerp(13.3, 12.6, ease(clamp01((k - 0.552) / 0.148))), 6.0, -10.1 + 0.2 * (mid + 10.1), 1.0);
+  look(r, 12.4, 6.2, -8.6, 1.5);
   mix(f, r, ease(clamp01((k - 0.69) / 0.032)), tc.at);
   fly(tc.s2, tc.at, within(k, N_FLIGHT.aisle), tc.s2, VIA_AISLE);
   // the third flight, up to the high view of N4

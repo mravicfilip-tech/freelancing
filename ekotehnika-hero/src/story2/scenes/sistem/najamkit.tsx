@@ -25,9 +25,12 @@ export const apron = lam(G.light, { emissive: new THREE.Color().setScalar(0.2) }
 export const slab = lam(G.white, { emissive: new THREE.Color().setScalar(0.26) });
 export const doorMat = lam(G.light, { emissive: lit(G.light).multiplyScalar(0.7) });
 export const columnMat = lam(G.light, { emissive: lit(G.light).multiplyScalar(0.8) });
-export const roofMat = lam(G.light, { emissive: lit(G.light).multiplyScalar(0.85) });
+// the roof and the ceiling are lit to white all round, so the underside the camera of flight 3 looks up at is as light as the top, and the roof lights
+// are one step greyer than the slabs
+export const roofMat = lam(G.white, { emissive: new THREE.Color().setScalar(0.85) });
 export const lipMat = lam(G.light, { emissive: lit(G.light).multiplyScalar(0.8) });
-export const glazing = lam(G.light, { emissive: lit(G.light).multiplyScalar(0.2) });
+export const glazing = lam(G.pale, { emissive: new THREE.Color().setScalar(0.68) });
+export const trailerRoof = lam(G.white, { emissive: new THREE.Color().setScalar(0.9) });
 export const roadMat = lam(G.mid, { emissive: lit(G.mid).multiplyScalar(0.45) });
 export const line = new THREE.MeshBasicMaterial({ color: G.mid, opacity: 0.62, transparent: true, toneMapped: false, depthWrite: false });
 export const lineFaint = new THREE.MeshBasicMaterial({ color: G.light, opacity: 0.7, transparent: true, toneMapped: false, depthWrite: false });

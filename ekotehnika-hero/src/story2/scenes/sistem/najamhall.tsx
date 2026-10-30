@@ -23,10 +23,10 @@ export const DOOR_H = 3.9;
 export const WALL_T = 0.4;
 export const PLINTH = 1.0;
 export const WALL_H = 10;
-// the wordmark on the long wall that faces the forecourt, 10 m wide, from the dock corner, so it shows from the high views and never behind the words of N2
-export const SIGN_W = 10;
-const SIGN_Y = 6.7;
-const SIGN_X = -2;
+// the wordmark on the long wall that faces the forecourt, 8 m wide, low on the wall from the dock corner, so it shows from the high views and is never behind the words of N2 or of the flights
+export const SIGN_W = 8;
+const SIGN_Y = 3.0;
+const SIGN_X = -1;
 export const BACK_X = HALL.backX;
 export const FRONT_Z = 15.6;
 // the platform, a little proud of the walls
@@ -128,7 +128,8 @@ export function Hall({ doors, roofHatch, roof }: HallRefs) {
     wall.push([(BACK_X + PX1) / 2, WALL_H / 2, FRONT_Z + 0.15, PX1 - BACK_X, WALL_H, 0.3]);
     base.push([BACK_X - 0.02, 0.35, MIDZ, 0.06, 0.7, lenZ], [(PX0 + PX1) / 2, 0.35, HALL.sideZ - 0.32, lenX, 0.7, 0.06], [(BACK_X + PX1) / 2, 0.35, FRONT_Z + 0.32, PX1 - BACK_X, 0.7, 0.06]);
     for (let z = HALL.sideZ + 1.2; z < PZ1; z += 6) cols.push([BACK_X + 0.5, WALL_H / 2, z, 0.4, WALL_H, 0.4]);
-    for (let x = BACK_X + 1.5; x < HALL.dockX - 2; x += 6) cols.push([x, WALL_H / 2, HALL.sideZ + 0.2, 0.4, WALL_H, 0.4], [x, WALL_H / 2, FRONT_Z - 0.2, 0.4, WALL_H, 0.4]);
+    // columns on the back wall and the far side wall only, the near long wall stays plain, the words of N3 lie over it
+    for (let x = BACK_X + 1.5; x < HALL.dockX - 2; x += 6) cols.push([x, WALL_H / 2, HALL.sideZ + 0.2, 0.4, WALL_H, 0.4]);
     // the dock wall, piers between the doors and a lintel over each, the base band across the piers
     const wx = HALL.dockX + WALL_T / 2;
     const edges = [HALL.sideZ, ...HALL.docks.flatMap((z) => [z - DOOR_W / 2, z + DOOR_W / 2]), FRONT_Z];
@@ -322,7 +323,7 @@ export function Hall({ doors, roofHatch, roof }: HallRefs) {
       <BoxSet items={d.wall} mat={wallMat} />
       <BoxSet items={d.base} mat={wallBase} receive={false} />
       <BoxSet items={d.cols} mat={wallMat} />
-      <BoxSet items={d.frame} mat={wallMat} />
+      <BoxSet items={d.frame} mat={roofMat} />
       <BoxSet items={d.door} mat={wallMat} />
       <BoxSet items={d.canopy} mat={wallMat} />
       <BoxSet items={d.fascia} mat={wallMat} />
@@ -348,10 +349,10 @@ export function Hall({ doors, roofHatch, roof }: HallRefs) {
         <group position={[-(PX0 + PX1) / 2, 0, -MIDZ]}>
           <BoxSet items={d.roofS} mat={roofMat} />
           <BoxSet items={d.para} mat={wallMat} />
-          <BoxSet items={d.paraCap} mat={wallBase} receive={false} />
-          <BoxSet items={d.units} mat={wallBase} />
+          <BoxSet items={d.paraCap} mat={roofMat} receive={false} />
+          <BoxSet items={d.units} mat={wallMat} />
           <BoxSet items={d.unitFans} mat={darkGrey} receive={false} />
-          <BoxSet items={d.trusses} mat={beamFlange} />
+          <BoxSet items={d.trusses} mat={wallMat} />
           <BoxSet items={d.ceilLamps} mat={K.white} receive={false} />
           {d.lights.slice(0, 4).map((l, i) => (
             <BoxSet key={i} items={l} mat={glazing} receive={false} />
@@ -417,8 +418,9 @@ export function Yard() {
 
     // the car park on the forecourt in front of the hall, bays 2.6 m wide, 5 m deep, marked and empty, with a footpath along the wall
     const bays: BoxItem[] = [];
-    for (let x = -32; x <= 14.01; x += 2.6) bays.push([x, 0.066, 20.6, 0.1, 0.01, 5]);
-    bays.push([-9, 0.066, 18.1, 46, 0.01, 0.1], [-9, 0.066, 23.1, 46, 0.01, 0.1]);
+    // it runs from the dock end only 28 m along the wall, since from the high view of the last beat a longer strip lay behind the lede
+    for (let x = -14; x <= 14.01; x += 2.6) bays.push([x, 0.066, 20.6, 0.1, 0.01, 5]);
+    bays.push([0, 0.066, 18.1, 28, 0.01, 0.1], [0, 0.066, 23.1, 28, 0.01, 0.1]);
     // a footpath along the front wall, edge lines and a dashed middle
     bays.push([-9, 0.066, 17.0, 46, 0.01, 0.1]);
     // the fence round the yard, posts 4 m apart with two rails, along the east side and 40 m either side of each gate on the north and south sides

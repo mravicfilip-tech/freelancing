@@ -7,7 +7,7 @@ import { useMemo, type MutableRefObject, type ReactNode } from 'react';
 import * as THREE from 'three';
 import { mergeGeometries } from 'three/examples/jsm/utils/BufferGeometryUtils.js';
 import { BRAND, K, brandPaths, brandView } from './kit';
-import { beamFlange, beamWeb, black, cabGrey, mergeBoxes, rackGrey, trailerWhite, tyre } from './najamkit';
+import { beamFlange, beamWeb, black, cabGrey, mergeBoxes, rackGrey, trailerRoof, trailerWhite, tyre } from './najamkit';
 import type { BoxItem } from './props';
 
 export const BED = 1.2;
@@ -76,16 +76,11 @@ function build() {
   // the trailer, a hollow box with the rear open, ribs on the sides, the chassis under the bed and the rear frame
   const white: BoxItem[] = [
     [9.77, 2.575, 0, 0.06, 2.75, 2.5],
-    [4.9, 3.98, 0, 9.9, 0.08, 2.64],
   ];
   const grey: BoxItem[] = [
     [4.9, BED - 0.06, 0, 9.8, 0.12, 2.6],
     [4.9, 0.95, 0, 9.6, 0.2, 1.2],
-    [0.02, 2.6, -1.3, 0.1, 2.75, 0.1],
-    [0.02, 2.6, 1.3, 0.1, 2.75, 0.1],
-    [0.02, 3.95, 0, 0.1, 0.1, 2.7],
-    [0.02, BED + 0.04, 0, 0.1, 0.1, 2.7],
-    [4.9, 3.99, 0, 9.9, 0.04, 2.7],
+
     // the mudguards over the three axles, one each side, and the side skirt between the bed and the wheels
     [3.7, 1.09, -1.13, 3.5, 0.08, 0.64],
     [3.7, 1.09, 1.13, 3.5, 0.08, 0.64],
@@ -126,6 +121,8 @@ function build() {
 
   return {
     white: mergeBoxes(white),
+    // the roof and the frame of the rear are lit to white all round, they are what a camera inside the trailer looks up at
+    roof: mergeBoxes([[4.9, 3.98, 0, 9.9, 0.08, 2.64], [4.9, 3.99, 0, 9.9, 0.04, 2.7], [0.02, 2.6, -1.3, 0.1, 2.75, 0.1], [0.02, 2.6, 1.3, 0.1, 2.75, 0.1], [0.02, 3.95, 0, 0.1, 0.1, 2.7], [0.02, BED + 0.04, 0, 0.1, 0.1, 2.7]]),
     side: mergeBoxes([[-4.9, 2.575, 0, 9.8, 2.75, 0.06]]),
     sideRibs: mergeBoxes(sideRibs),
     grey: mergeBoxes(grey),
@@ -185,6 +182,7 @@ export function Lorry({ apiRef, children }: { apiRef: MutableRefObject<LorryApi 
         }}
       >
         <mesh geometry={b.white} material={trailerWhite} receiveShadow />
+        <mesh geometry={b.roof} material={trailerRoof} />
         <TrailerSide b={b} front group={(o) => { parts.curtain = o; sync(); }} />
         <TrailerSide b={b} />
         <mesh geometry={b.grey} material={rackGrey} castShadow receiveShadow />

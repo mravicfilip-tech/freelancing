@@ -31,7 +31,8 @@ export const HALL = {
   bay: 2.7,
   bays: 10,
   // three aisles, 5.5 m wide, and three rack blocks of two rows back to back between them. The last aisle has no block on its far side,
-  // it is the open edge of the hall. A dock door stands at each of four centres.
+  // it is the open edge of the hall, where the camera of N3 looks down it. A block there stood behind the page counter and the lede, so
+  // that side is floor storage, pallets stacked two high in marked bays. A dock door stands at each of four centres.
   aisles: [-7.7, 0, 7.7],
   aisleHalf: 2.75,
   blocks: [-11.55, -3.85, 3.85],
@@ -68,8 +69,8 @@ export const SLOTS: Spot[] = [
 export const isHeroSlot = (x: number, z: number, ly: number) => SLOTS.some((s) => Math.abs(s.x - x) < 0.3 && Math.abs(s.z - z) < 0.3 && Math.abs(s.y - levelY(ly)) < 0.05);
 
 // How far in front of the truck's origin the centre of its pallet stands, and how high a pallet's bottom sits over the fork height.
-const X50_FWD = 1.15;
-const X50_PAL = 0.065;
+export const X50_FWD = 1.15;
+export const X50_PAL = 0.065;
 const R16_FWD = 0.75;
 const R16_PAL = 0.07;
 
@@ -159,7 +160,7 @@ export function route(ways: Way[]): Route {
 // A value that moves between keys at a steady pace, with a short ramp at each end of a move. Two keys with the same value are a rest.
 // The peak pace is 1 / (1 - RAMP) of the average, which is what the pace limits in the head of this file are checked against.
 const RAMP = 0.15;
-function pace(keys: [number, number][]) {
+export function pace(keys: [number, number][]) {
   const n = keys.length;
   return (k: number) => {
     if (k <= keys[0][0]) return keys[0][1];
@@ -267,7 +268,7 @@ const crossAt = (c: { z0: number; z1: number; k0: number; k1: number }, k: numbe
 // ---- the poses --------------------------------------------------------------------------------------------------------
 
 export type Pose = { x: number; z: number; th: number; lift: number; roll: number; reach: number };
-const mk = (): Pose => ({ x: 0, z: 0, th: 0, lift: 0, roll: 0, reach: 0 });
+export const mk = (): Pose => ({ x: 0, z: 0, th: 0, lift: 0, roll: 0, reach: 0 });
 
 const tmp = { x: 0, z: 0, th: 0, roll: 0 };
 const x50Of = (T: ReturnType<typeof trip>) => (k: number, out: Pose = mk()): Pose => {
@@ -357,8 +358,9 @@ export const HALL_Y = 1.2;
 // The camera of N as one pose in the units of the Rig in camera.tsx, a target in hall metres, an orbit distance, a yaw and pitch in
 // degrees, the lens shift as a share of the frame and a field of view. Four holds and three flights between them, see N_FLIGHT.
 //   N1  a high three quarter view over the docks and the aisles, pushing in a little as the lorry turns in
-//   N2  down at dock 1 from inside the hall, 2.4 m up and 14 m from the door, the picture shifted down so the words lie over the pale
-//       air above the dock and the work is in the lower half, with a slow drift toward the door
+//   N2  down at dock 1 from the staging floor, 5.5 m up and 17 m from the door, looking down 18 degrees with the picture shifted down, so
+//       the apron and the work lie under the words, with a slow drift toward the door. The racks stand outside the frame on the left
+//       and the dock wall on the right, the trailer shows only its open rear, so a forklift goes out of sight in it and comes back
 //   N3  outside the dock wall at about 5.6 m over the yard, looking down the work aisle with a narrow lens and the picture shifted so the
 //       aisle and its racks lie right of the third vertical, the left of the frame is the floor of the hall and its far wall, and nothing
 //       stands in the bottom band of the term cells. It moves up to the mouth of the aisle, aims at the top beam and lets the pallet land.
@@ -366,8 +368,8 @@ export const HALL_Y = 1.2;
 export type Cam = { x: number; y: number; z: number; d: number; yaw: number; pitch: number; sx: number; sy: number; shadow: number; fov: number };
 const cam = (): Cam => ({ x: 0, y: 0, z: 0, d: 0, yaw: 0, pitch: 0, sx: 0, sy: 0, shadow: 0, fov: 28 });
 
-const HIGH_FAR: Cam = { x: 3, y: 0, z: -3, d: 126, yaw: 50, pitch: -30, sx: 0.0, sy: 0.38, shadow: 60, fov: 28 };
-const HIGH: Cam = { x: 3, y: 0, z: -3, d: 118, yaw: 50, pitch: -30, sx: 0.0, sy: 0.38, shadow: 60, fov: 28 };
+const HIGH_FAR: Cam = { x: 8, y: 0, z: -1, d: 150, yaw: 50, pitch: -30, sx: 0.0, sy: 0.4, shadow: 70, fov: 28 };
+const HIGH: Cam = { x: 8, y: 0, z: -1, d: 140, yaw: 50, pitch: -30, sx: 0.0, sy: 0.4, shadow: 70, fov: 28 };
 // N4 keeps the bottom band of the frame clear for the term cells, so the hall stands higher in it. T starts from this pose.
 export const HIGH4: Cam = { x: 3, y: 0, z: -3, d: 118, yaw: 50, pitch: -30, sx: 0.17, sy: 0.04, shadow: 60, fov: 28 };
 
@@ -384,10 +386,10 @@ function eye(o: Cam, c: [number, number, number], t: [number, number, number], l
   o.pitch = -(Math.asin(dy / o.d) * 180) / PI;
   return Object.assign(o, lens);
 }
-const DOCK_LENS = { sx: 0.1, sy: 0.3, shadow: 24, fov: 30 };
-const DOCK_AT: [number, number, number] = [14.5, 0.9, HALL.docks[0]];
-const DOCK_A = eye(cam(), [4.5, 2.4, -1.5], DOCK_AT, DOCK_LENS);
-const DOCK_B = eye(cam(), [6.4, 2.5, -2.6], DOCK_AT, DOCK_LENS);
+const DOCK_LENS = { sx: 0.0, sy: 0.42, shadow: 24, fov: 36 };
+const DOCK_AT: [number, number, number] = [13.0, 0.3, HALL.docks[0] + 1.3];
+const DOCK_A = eye(cam(), [9.0, 5.5, 5.5], DOCK_AT, DOCK_LENS);
+const DOCK_B = eye(cam(), [9.6, 5.2, 3.5], DOCK_AT, DOCK_LENS);
 
 // Both N3 shots look down the work aisle from outside the hall, at about 5.6 m, 32 to 36 m out, through the narrow lens, so the nearest
 // truck is 28 m away and the whole of it stands over the bottom band, and the picture is shifted right so the aisle and its racks lie
@@ -415,6 +417,35 @@ const mix = (a: Cam, b: Cam, t: number, o: Cam) => {
   o.fov = lerp(a.fov, b.fov, t);
   return o;
 };
+// A flight, the camera and what it looks at each moving along a straight line, the camera lifted over the line by arc metres at the middle
+// of it, so it flies over the walls and the racks and never through one. The orbit of the end is worked out again from where they are.
+const RAD = PI / 180;
+function fly(a: Cam, b: Cam, t: number, o: Cam, arc = 0) {
+  const pos = (c: Cam) => [c.x + c.d * Math.sin(c.yaw * RAD) * Math.cos(c.pitch * RAD), c.y - c.d * Math.sin(c.pitch * RAD), c.z + c.d * Math.cos(c.yaw * RAD) * Math.cos(c.pitch * RAD)];
+  const pa = pos(a);
+  const pb = pos(b);
+  const tx = lerp(a.x, b.x, t);
+  const ty = lerp(a.y, b.y, t);
+  const tz = lerp(a.z, b.z, t);
+  const px = lerp(pa[0], pb[0], t);
+  const py = lerp(pa[1], pb[1], t) + arc * Math.sin(PI * t);
+  const pz = lerp(pa[2], pb[2], t);
+  const dx = px - tx;
+  const dy = py - ty;
+  const dz = pz - tz;
+  const d = Math.hypot(dx, dy, dz);
+  o.x = tx;
+  o.y = ty;
+  o.z = tz;
+  o.d = d;
+  o.yaw = Math.atan2(dx, dz) / RAD;
+  o.pitch = -Math.asin(dy / d) / RAD;
+  o.sx = lerp(a.sx, b.sx, t);
+  o.sy = lerp(a.sy, b.sy, t);
+  o.shadow = lerp(a.shadow, b.shadow, t);
+  o.fov = lerp(a.fov, b.fov, t);
+  return o;
+}
 const tc = { follow: cam(), reach: cam(), at: cam(), n1: cam(), n2: cam(), s2: cam(), a: mk(), b: mk() };
 
 // A flight eases at both ends, smoother than the smoothstep of the rest of the scene so it leaves and arrives without a jolt.
@@ -428,7 +459,7 @@ export function najamCam(u: number, out: Cam = cam()): Cam {
   // N1 and the first flight, from the high view down to the dock
   mix(HIGH_FAR, HIGH, ease(clamp01(k / N_SUB.N1[1])), tc.n1);
   mix(DOCK_A, DOCK_B, ease(clamp01((k - N_SUB.N2[0]) / (N_SUB.N2[1] - N_SUB.N2[0]))), tc.n2);
-  mix(tc.n1, tc.n2, within(k, N_FLIGHT.dock), tc.s2);
+  fly(tc.n1, tc.n2, within(k, N_FLIGHT.dock), tc.s2);
   // N3 and the second flight, the follow rests on the middle of the two X50s, a little of their way, and comes in a few metres over the
   // shot, the reach shot is the same place with the top beam in it
   const f = tc.follow;
@@ -439,9 +470,9 @@ export function najamCam(u: number, out: Cam = cam()): Cam {
   look(f, lerp(35, 32.5, ease(clamp01((k - 0.552) / 0.148))), 5.6, -2 + 0.2 * (mid + 2), 2.1);
   look(r, 32, 5.8, -0.5, 2.34);
   mix(f, r, ease(clamp01((k - 0.69) / 0.032)), tc.at);
-  mix(tc.s2, tc.at, within(k, N_FLIGHT.aisle), tc.s2);
+  fly(tc.s2, tc.at, within(k, N_FLIGHT.aisle), tc.s2, 3);
   // the third flight, up to the high view of N4
-  mix(tc.s2, HIGH4, within(k, N_FLIGHT.high), out);
+  fly(tc.s2, HIGH4, within(k, N_FLIGHT.high), out);
   out.y += HALL_Y;
   return out;
 }

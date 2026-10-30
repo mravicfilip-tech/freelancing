@@ -1,0 +1,175 @@
+// A lorry with a plain white box trailer and no brand on it, built from boxes baked into a few geometries so three of them cost a dozen
+// draws. Two bodies, the way an articulated lorry is, a trailer with its rear at the origin and a tractor with its fifth wheel at the
+// origin, both facing +x. The trailer is hollow with its bed at 1.2 m, the height of the hall's platform, its rear doors hinged on two
+// groups that fold back against the sides and swing shut, and its own pallets inside, so a forklift drives in from the dock. The tractor is a cab
+// over in light grey. The plan that places them and works out the angle between them is najamdock.ts.
+import { useMemo, type MutableRefObject, type ReactNode } from 'react';
+import * as THREE from 'three';
+import { mergeGeometries } from 'three/examples/jsm/utils/BufferGeometryUtils.js';
+import { K } from './kit';
+import { beamFlange, beamWeb, black, cabGrey, mergeBoxes, rackGrey, trailerWhite, tyre } from './najamkit';
+import type { BoxItem } from './props';
+
+export const BED = 1.2;
+// the trailer's length and the places along it, the tractor's fifth wheel and the trailer's axles, the pivot of the pair
+export const TRAILER_L = 9.8;
+export const AXLE_X = 3.7;
+export const PIVOT_X = 8.5;
+
+export type LorryApi = { trailer: THREE.Group; tractor: THREE.Group; doorA: THREE.Group; doorB: THREE.Group };
+
+const wheelSet = (xs: number[], zs: number[], r: number, w: number) => {
+  const tyres: THREE.BufferGeometry[] = [];
+  const hubs: THREE.BufferGeometry[] = [];
+  for (const x of xs)
+    for (const z of zs) {
+      const t = new THREE.CylinderGeometry(r, r, w, 18);
+      t.rotateX(Math.PI / 2);
+      t.translate(x, r, z);
+      tyres.push(t);
+      const h = new THREE.CylinderGeometry(r * 0.58, r * 0.58, 0.02, 14);
+      h.rotateX(Math.PI / 2);
+      h.translate(x, r, z + Math.sign(z) * (w / 2 + 0.005));
+      hubs.push(h);
+    }
+  return { tyres, hubs };
+};
+const cat = (g: THREE.BufferGeometry[]) => mergeGeometries(g, false);
+
+let built: ReturnType<typeof build> | undefined;
+function build() {
+  // the trailer, a hollow box with the rear open, ribs on the sides, the chassis under the bed and the rear frame
+  const white: BoxItem[] = [
+    [4.9, 2.575, -1.27, 9.8, 2.75, 0.06],
+    [4.9, 2.575, 1.27, 9.8, 2.75, 0.06],
+    [9.77, 2.575, 0, 0.06, 2.75, 2.5],
+    [4.9, 3.98, 0, 9.9, 0.08, 2.64],
+  ];
+  const grey: BoxItem[] = [
+    [4.9, BED - 0.06, 0, 9.8, 0.12, 2.6],
+    [4.9, 0.95, 0, 9.6, 0.2, 1.2],
+    [0.02, 2.6, -1.3, 0.1, 2.75, 0.1],
+    [0.02, 2.6, 1.3, 0.1, 2.75, 0.1],
+    [0.02, 3.95, 0, 0.1, 0.1, 2.7],
+    [0.02, BED + 0.04, 0, 0.1, 0.1, 2.7],
+    [4.9, 3.99, 0, 9.9, 0.04, 2.7],
+  ];
+  const ribs: BoxItem[] = [];
+  for (let x = 0.9; x < 9.6; x += 1.35) for (const s of [-1, 1]) ribs.push([x, 2.6, s * 1.31, 0.06, 2.65, 0.03]);
+  const dark: BoxItem[] = [
+    [0.35, 0.55, 0, 0.12, 0.14, 2.3],
+    [0.35, 0.8, -1.05, 0.1, 0.5, 0.1],
+    [0.35, 0.8, 1.05, 0.1, 0.5, 0.1],
+    [6.6, 0.6, -1.0, 0.14, 1.2, 0.14],
+    [6.6, 0.6, 1.0, 0.14, 1.2, 0.14],
+    [5.9, 0.55, -1.12, 0.05, 0.6, 0.55],
+    [5.9, 0.55, 1.12, 0.05, 0.6, 0.55],
+  ];
+  const lights: BoxItem[] = [
+    [0.04, 1.4, -1.0, 0.04, 0.1, 0.22],
+    [0.04, 1.4, 1.0, 0.04, 0.1, 0.22],
+    [3, 1.35, -1.33, 0.2, 0.06, 0.04],
+    [3, 1.35, 1.33, 0.2, 0.06, 0.04],
+    [7.5, 1.35, -1.33, 0.2, 0.06, 0.04],
+    [7.5, 1.35, 1.33, 0.2, 0.06, 0.04],
+  ];
+  const tw = wheelSet([2.4, 3.7, 5.0], [-1.12, 1.12], 0.5, 0.36);
+
+  // the tractor in a frame with the fifth wheel at the origin, x - 12.3 from the frame the first Najam lorry was drawn in
+  const T = (x: number) => x - 12.3;
+  const tGrey: BoxItem[] = [[T(13.7), 0.95, 0, 6.2, 0.3, 1.0], [T(12.3), 1.3, 0, 1.4, 0.12, 1.5], [T(17.0), 0.55, 0, 0.3, 0.4, 2.3]];
+  const tCab: BoxItem[] = [[T(15.5), 2.6, 0, 2.8, 2.8, 2.5], [T(16.0), 4.15, 0, 1.9, 0.5, 2.3]];
+  const tGlass: BoxItem[] = [[T(16.92), 2.95, 0, 0.04, 1.1, 2.2], [T(15.6), 3.0, -1.26, 1.6, 0.9, 0.03], [T(15.6), 3.0, 1.26, 1.6, 0.9, 0.03]];
+  const tGrille: BoxItem[] = [[T(16.94), 1.7, -0.85, 0.05, 0.22, 0.4], [T(16.94), 1.7, 0.85, 0.05, 0.22, 0.4], [T(16.94), 1.7, 0, 0.05, 0.5, 0.9]];
+  const tWeb: BoxItem[] = [[T(15.0), 1.1, -1.25, 1.2, 0.12, 0.3], [T(15.0), 1.1, 1.25, 1.2, 0.12, 0.3], [T(12.9), 0.85, -1.2, 1.5, 0.7, 0.4], [T(12.9), 0.85, 1.2, 1.5, 0.7, 0.4]];
+  const tBlack: BoxItem[] = [[T(14.1), 3.2, -1.3, 0.12, 0.3, 0.12], [T(14.1), 3.2, 1.3, 0.12, 0.3, 0.12], [T(14.2), 4.2, 1.18, 0.1, 1.5, 0.1]];
+  const rear = wheelSet([T(11.0), T(12.3)], [-1.0, 1.0], 0.5, 0.36);
+  const front = wheelSet([T(16.0)], [-1.05, 1.05], 0.5, 0.36);
+
+  return {
+    white: mergeBoxes(white),
+    grey: mergeBoxes(grey),
+    ribs: mergeBoxes(ribs),
+    dark: mergeBoxes(dark),
+    lights: mergeBoxes(lights),
+    tyres: cat(tw.tyres),
+    hubs: cat(tw.hubs),
+    tGrey: mergeBoxes(tGrey),
+    tCab: mergeBoxes(tCab),
+    tGlass: mergeBoxes(tGlass),
+    tGrille: mergeBoxes(tGrille),
+    tWeb: mergeBoxes(tWeb),
+    tBlack: mergeBoxes(tBlack),
+    tTyres: cat([...rear.tyres, ...front.tyres]),
+    tHubs: cat([...rear.hubs, ...front.hubs]),
+    door: mergeBoxes([[0.65, 2.55, 0, 1.3, 2.6, 0.05], [0.65, 0.35, 0.04, 1.2, 0.04, 0.03]]),
+  };
+}
+
+// One rear door of the trailer, hinged at its own group, the panel running along +x from the hinge when it stands folded back.
+const Door = ({ g }: { g: (o: THREE.Group | null) => void }) => {
+  const geo = (built ??= build()).door;
+  return (
+    <group ref={g}>
+      <mesh geometry={geo} material={trailerWhite} castShadow />
+    </group>
+  );
+};
+
+export function Lorry({ apiRef, children }: { apiRef: MutableRefObject<LorryApi | null>; children?: ReactNode }) {
+  const b = useMemo(() => (built ??= build()), []);
+  const parts = useMemo(() => ({ trailer: null as THREE.Group | null, tractor: null as THREE.Group | null, doorA: null as THREE.Group | null, doorB: null as THREE.Group | null }), []);
+  const sync = () => {
+    if (parts.trailer && parts.tractor && parts.doorA && parts.doorB) apiRef.current = { trailer: parts.trailer, tractor: parts.tractor, doorA: parts.doorA, doorB: parts.doorB };
+  };
+  return (
+    <group>
+      <group
+        ref={(g) => {
+          parts.trailer = g;
+          sync();
+        }}
+      >
+        <mesh geometry={b.white} material={trailerWhite} receiveShadow />
+        <mesh geometry={b.grey} material={rackGrey} castShadow receiveShadow />
+        <mesh geometry={b.ribs} material={beamFlange} />
+        <mesh geometry={b.dark} material={black} castShadow />
+        <mesh geometry={b.lights} material={beamWeb} />
+        <mesh geometry={b.tyres} material={tyre} castShadow />
+        <mesh geometry={b.hubs} material={beamWeb} />
+        {children}
+        <group position={[0.03, 0, -1.36]}>
+          <Door
+            g={(o) => {
+              parts.doorA = o;
+              sync();
+            }}
+          />
+        </group>
+        <group position={[0.03, 0, 1.36]}>
+          <Door
+            g={(o) => {
+              parts.doorB = o;
+              sync();
+            }}
+          />
+        </group>
+      </group>
+      <group
+        ref={(g) => {
+          parts.tractor = g;
+          sync();
+        }}
+      >
+        <mesh geometry={b.tGrey} material={rackGrey} castShadow />
+        <mesh geometry={b.tCab} material={cabGrey} castShadow receiveShadow />
+        <mesh geometry={b.tGlass} material={K.vanGlass} />
+        <mesh geometry={b.tGrille} material={beamFlange} />
+        <mesh geometry={b.tWeb} material={beamWeb} castShadow />
+        <mesh geometry={b.tBlack} material={black} />
+        <mesh geometry={b.tTyres} material={tyre} castShadow />
+        <mesh geometry={b.tHubs} material={beamWeb} />
+      </group>
+    </group>
+  );
+}

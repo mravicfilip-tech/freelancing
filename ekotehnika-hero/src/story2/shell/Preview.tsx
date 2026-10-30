@@ -1,5 +1,5 @@
 // The panel Filip picks with on localhost, a small fixed square at the bottom right with two rows of buttons. Scroll is the feel of the
-// story clock, 0 Today and 1 to 3 from a low speed cap to a high one. Najam is 0 Today, production's grid of forklifts, and 1 Close,
+// story clock, 0 Today, 1 to 3 from a low speed cap to a high one, and 4 to 6 the lock, which holds the page to the clock. Najam is 0 Today, production's grid of forklifts, and 1 Close,
 // 2 Aisle end and 3 Wide, the three cameras of the warehouse story. A click writes ?feel and ?najam into the URL and reloads, since the
 // spans of the story change with the choice, after saving the beat and k the page was on so it lands on the same frame (preview.ts).
 // It shows on the dev server, which is what npm run live runs, or with ?preview in the URL, and renders nothing on a production page.

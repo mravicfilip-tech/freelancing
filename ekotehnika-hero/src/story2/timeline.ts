@@ -1,8 +1,13 @@
 // Storyline 2, from studio/clients/ekotehnika/briefs/hero-rebuild/storyline-2-plan.md and Filip's voice over.
-// One pinned story of 14,500px, then the products range and the footer as normal page sections.
+// One pinned story of 13,000px, 14,500px with the warehouse Najam (?najam=1 to 3, see preview.ts), then the products range and the footer as normal page sections.
 // Beats marked hold are "stop scroll" moments, the scene rests while the text and tiles fill the open space.
 
-export const LENGTH = 14500;
+import { NAJAM } from './preview';
+
+// Najam 0 is production's Najam, the grid of forklifts that fills row by row, N 900px and T and AT where they were. Najam 1, 2 and 3
+// are the warehouse story of round 6, N 2,400px and T and AT 1,500px later. Every beat index stays either way.
+export const WAREHOUSE = NAJAM > 0;
+export const LENGTH = WAREHOUSE ? 14500 : 13000;
 
 export type Section = 'hero' | 'kompanija' | 'prodaja' | 'servis' | 'najam' | 'automatizacija';
 
@@ -28,9 +33,11 @@ export const TIMELINE: BeatSpan[] = [
   { id: 'B', section: 'prodaja', start: 7600, end: 8000, note: 'Camera zooms into a black part of the forklift' },
   { id: 'S', section: 'servis', start: 8000, end: 10000, hold: true, note: 'The X50 lit on the black ground, then from k 0.5 the servis map, Čurug and Vrčin and their roads' },
   { id: 'L', section: 'servis', start: 10000, end: 10600, note: 'A very large fork across the frame lifts the next section up' },
-  { id: 'N', section: 'najam', start: 10600, end: 13000, hold: true, note: 'Najam as one rent story, a working warehouse in four sub beats, see N_SUB' },
-  { id: 'T', section: 'najam', start: 13000, end: 13400, note: 'The grid drops away, the dark floor rises, dotted paths draw' },
-  { id: 'AT', section: 'automatizacija', start: 13400, end: 14500, hold: true, note: 'Small robots carry boxes out and back along dotted paths' },
+  WAREHOUSE
+    ? { id: 'N', section: 'najam', start: 10600, end: 13000, hold: true, note: 'Najam as one rent story, a working warehouse in four sub beats, see N_SUB' }
+    : { id: 'N', section: 'najam', start: 10600, end: 11500, hold: true, note: 'Many forklifts ready for rent, a grid filling row by row' },
+  { id: 'T', section: 'najam', start: WAREHOUSE ? 13000 : 11500, end: WAREHOUSE ? 13400 : 11900, note: 'The grid drops away, the dark floor rises, dotted paths draw' },
+  { id: 'AT', section: 'automatizacija', start: WAREHOUSE ? 13400 : 11900, end: WAREHOUSE ? 14500 : 13000, hold: true, note: 'Small robots carry boxes out and back along dotted paths' },
 ];
 
 // The servis map, the second half of S, round 5. Not a beat of its own, so every beat index and every u in the scenes stays,

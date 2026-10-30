@@ -10,6 +10,15 @@ import { useEffect, useRef, useState } from 'react';
 import gsap from 'gsap';
 import { useScrollStory, clamp01 } from '../scroll/useScrollStory';
 import { LENGTH, TIMELINE, beatAt } from './timeline';
+import { RETURN } from './preview';
+
+// The progress the page lands on after a switch of the panel reloaded it, from the beat id and k it left, with this page's spans.
+const RESTORE = (() => {
+  const r = RETURN;
+  if (!r) return null;
+  const b = TIMELINE.find((x) => x.id === r.id);
+  return b ? (b.start + (b.end - b.start) * Math.min(1, Math.max(0, r.k))) / LENGTH : null;
+})();
 
 export type StoryClock = {
   beat: { current: number };
@@ -28,7 +37,7 @@ export const stillClock = (beat: number, k = 1): StoryClock => ({
 });
 
 export function useStoryClock(reduced: boolean) {
-  const { stageRef, progress, goTo } = useScrollStory({ length: LENGTH, reduced, smoothing: 0.09 });
+  const { stageRef, progress, goTo } = useScrollStory({ length: LENGTH, reduced, smoothing: 0.09, restore: RESTORE });
   const beat = useRef(0);
   const k = useRef(0);
   const pos = useRef(0);

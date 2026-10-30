@@ -14,6 +14,7 @@ import { BoxSet, type BoxItem } from './props';
 import { labelTexture } from './warehouse';
 import { G, K, ease, lam, lit, range, rng, uOf } from './kit';
 import { N_SUB } from '../../timeline';
+import { NAJAM } from '../../preview';
 import { HALL, PALLETS, d12At, h30At, isHeroSlot, levelY, palletAt, r16AAt, r16BAt, x50AAt, x50BAt, type Pose } from './najamplan';
 
 // ---- materials --------------------------------------------------------------------------------------------------------
@@ -510,7 +511,8 @@ export default function Najam({ clock }: SceneProps) {
   useFrame(() => {
     const k = Math.min(Math.max(uOf(clock) - 12, 0), 1);
     // the wall sinks as the camera comes down to the follow, 0.5 to 0.535, and stands again as it goes back up, 0.776 to 0.79
-    const down = ease(range(k, N_SUB.N3[0], 0.535)) * (1 - ease(range(k, 0.776, N_SUB.N3[1])));
+    // (Najam 3, Wide, looks from high above and keeps it standing)
+    const down = NAJAM === 3 ? 0 : ease(range(k, N_SUB.N3[0], 0.535)) * (1 - ease(range(k, 0.776, N_SUB.N3[1])));
     if (dock.current) {
       dock.current.scale.y = Math.max(1 - down, 0.001);
       dock.current.visible = down < 0.998;

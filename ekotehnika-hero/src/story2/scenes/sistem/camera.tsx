@@ -9,6 +9,7 @@ import type { SceneProps } from '../../clock';
 import { BP, NP, WH_C, routeAt, truckS, AISLES } from './route';
 import { focusAt, toWorld } from './atplan';
 import { najamCam, type Cam } from './najamplan';
+import { NAJAM } from '../../preview';
 import { DARK_BG, PAPER, ease, isDark, lerp, range, rad, softTexture, uOf } from './kit';
 
 export type CamState = { target: THREE.Vector3; d: number; shadow: number };
@@ -135,16 +136,27 @@ export function poseAt(u: number, pos: number, out: Pose, w = 1920, h = 1080): P
     out.shadow = 8;
     orbit(t, out.d, out.yaw, out.pitch, out.pos);
   } else if (u < 13) {
-    // Najam, the warehouse. The rental floor was a hold, the warehouse's camera is a pure function of k like the rest, see najamCam.
-    const c = najamCam(u, najamPose);
-    t.set(NP.x + c.x, c.y, NP.z + c.z);
-    out.d = c.d;
-    out.yaw = c.yaw;
-    out.pitch = c.pitch;
-    out.sx = c.sx;
-    out.sy = c.sy;
-    out.shadow = c.shadow;
-    out.fov = c.fov;
+    if (NAJAM === 0) {
+      // Najam 0, production's, the rental floor as a hold, seen from the pose T starts from
+      t.set(NP.x - 0.5, 0.9, NP.z);
+      out.d = n.d;
+      out.yaw = 90;
+      out.pitch = -24;
+      out.sx = n.sx;
+      out.sy = n.sy;
+      out.shadow = 18;
+    } else {
+      // Najam 1 to 3, the warehouse. The camera is a pure function of k like the rest, see najamCam, with one of three cameras for N3.
+      const c = najamCam(u, najamPose, NAJAM);
+      t.set(NP.x + c.x, c.y, NP.z + c.z);
+      out.d = c.d;
+      out.yaw = c.yaw;
+      out.pitch = c.pitch;
+      out.sx = c.sx;
+      out.sy = c.sy;
+      out.shadow = c.shadow;
+      out.fov = c.fov;
+    }
     orbit(t, out.d, out.yaw, out.pitch, out.pos);
   } else {
     // T and AT. The depot camera glides down the aisle to about 4 m and then follows the order, three quarter view, the

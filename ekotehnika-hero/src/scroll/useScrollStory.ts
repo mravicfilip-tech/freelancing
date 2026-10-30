@@ -6,7 +6,8 @@
 // flick plays the beats through at a steady pace. The page scroll itself is never capped.
 //
 // ?feel=0 is the old per frame follow with no cap. ?feel=1, 2 and 3 cap the clock at 1500, 2500 and 4000 story px a
-// second. No parameter means 2. The parameter is read once, when the module loads.
+// second. No parameter means 2. The parameter is read once, when the module loads, by story2/preview.ts, which also holds the
+// panel's way back, a page that a switch reloaded lands on the frame it left (restore below).
 //
 // With reduced motion there is no Lenis, no pin and no scrub. goTo(p) sets a still frame.
 
@@ -14,16 +15,13 @@ import { useLayoutEffect, useRef } from 'react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import Lenis from 'lenis';
+import { FEEL } from '../story2/preview';
 
 gsap.registerPlugin(ScrollTrigger);
 
 let lenis: Lenis | null = null;
 
 const FEEL_CAPS = [0, 1500, 2500, 4000];
-const FEEL = (() => {
-  const n = Number(new URLSearchParams(window.location.search).get('feel') ?? 2);
-  return Number.isInteger(n) && n >= 0 && n < FEEL_CAPS.length ? n : 2;
-})();
 // Seconds the speed cap stays lifted after goTo, the 1.4 s jump plus the time the follow takes to catch up.
 const JUMP_HOLD = 1.8;
 
@@ -49,9 +47,11 @@ export type ScrollStory = {
   snap?: number[];
   // a second, smoothed progress that eases toward the scroll, for camera moves
   smoothing?: number;
+  // progress, 0 to 1, to land on at once when the story starts, with no animation, for a page that a switch reloaded
+  restore?: number | null;
 };
 
-export function useScrollStory({ length, reduced, snap, smoothing = 0.08 }: ScrollStory) {
+export function useScrollStory({ length, reduced, snap, smoothing = 0.08, restore = null }: ScrollStory) {
   const stageRef = useRef<HTMLDivElement>(null);
   const progress = useRef(0);
   const raw = useRef(0);
@@ -86,6 +86,20 @@ export function useScrollStory({ length, reduced, snap, smoothing = 0.08 }: Scro
         },
       });
     }, stage);
+    // a reload from the panel lands on the frame it left, straight there, the clock and the page scroll both
+    if (restore !== null && stRef.current) {
+      const st = stRef.current;
+      raw.current = restore;
+      progress.current = restore;
+      const y = st.start + (st.end - st.start) * restore;
+      if (restore > 0) {
+        // the pin spacer is in, so measure the page again before asking for a scroll that far down
+        ScrollTrigger.refresh();
+        lenis?.resize();
+        window.scrollTo(0, y);
+        lenis?.scrollTo(y, { immediate: true, force: true });
+      }
+    }
     // The old factor per frame was smoothing * 2.2 at 60 fps. The same follow as a rate per second, so a frame of any
     // length moves the same share of the distance.
     const rate = -60 * Math.log(1 - Math.min(smoothing * 2.2, 0.999));

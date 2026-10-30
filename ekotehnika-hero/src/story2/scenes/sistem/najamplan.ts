@@ -390,23 +390,51 @@ const mix = (a: Cam, b: Cam, t: number, o: Cam) => {
   o.fov = lerp(a.fov, b.fov, t);
   return o;
 };
-const tc = { follow: cam(), reach: cam(), at: cam(), out: cam(), a: mk(), b: mk(), r: mk() };
+const tc = { follow: cam(), reach: cam(), at: cam(), out: cam(), a: mk(), b: mk(), r: mk(), w: cam(), p: cam() };
 
-export function najamCam(u: number, out: Cam = cam()): Cam {
+// Najam 3, Wide. A high three quarter view over the whole hall, the hall about twice the area on screen of the N4 view, filling the right
+// two thirds of the frame, so the docks, the lorry, the racks and every moving truck read at once. For k 0.74 to 0.77 a short push in
+// to the top beam where the fourth pallet lands, and back out to the N4 view by k 0.79.
+const WIDE: Cam = { x: 2, y: 0, z: -2, d: 94, yaw: 52, pitch: -31, sx: 0.12, sy: 0.04, shadow: 56, fov: 28 };
+const PUSH: Cam = { x: 1.3, y: 3.0, z: 4.5, d: 34, yaw: 62, pitch: -26, sx: 0.2, sy: -0.03, shadow: 30, fov: 28 };
+
+// Najam 1, Close. The first camera of round 6, 2.7 m up and 15 m behind and beside the X50s, rising with the reach truck's lift to see the
+// pallet land on the top beam. The racks stand behind the words here, so the shell lays a panel behind them, see shell.css.
+const CLOSE = { z: AZ - 0.5, sx: 0.15, sy: 0, shadow: 20, fov: 28 };
+function close(o: Cam, tx: number, ty: number, d: number, yaw: number, pitch: number) {
+  return Object.assign(o, CLOSE, { x: tx, y: ty, d, yaw, pitch });
+}
+
+// variant is 1 Close, 2 Aisle end, the default, or 3 Wide, see preview.ts
+export function najamCam(u: number, out: Cam = cam(), variant = 2): Cam {
   const k = clamp01(u - 12);
   const into = ease(clamp01((k - N_SUB.N3[0]) / 0.048));
   const back = ease(clamp01((k - 0.772) / (N_SUB.N3[1] - 0.772)));
   const hand = ease(clamp01((k - 0.94) / 0.06));
   const f = tc.follow;
   const r = tc.reach;
-  // the follow rests on the middle of the two X50s, a little of their way, and comes in a few metres over the shot, the reach shot is
-  // the same place with the top beam in it
   x50AAt(k, tc.a);
   x50BAt(k, tc.b);
   const mid = (tc.a.x + tc.b.x) / 2;
-  look(f, lerp(35, 32.5, ease(clamp01((k - 0.5) / 0.22))), 5.6, -2 + 0.2 * (mid + 2), 2.1);
-  look(r, 32, 5.8, -0.5, 2.34);
-  mix(f, r, ease(clamp01((k - 0.695) / 0.047)), tc.at);
+  if (variant === 3) {
+    mix(HIGH, WIDE, into, tc.w);
+    mix(tc.w, PUSH, ease(clamp01((k - 0.738) / 0.024)), tc.p);
+    mix(tc.p, HIGH4, ease(clamp01((k - 0.768) / (N_SUB.N3[1] - 0.768))), out);
+    return hand > 0 ? mix(out, T_START, hand, out) : out;
+  }
+  if (variant === 1) {
+    // behind and beside the trucks, on the middle of the two X50s, then on the reach truck, its target as high as the forks
+    r16BAt(k, tc.r);
+    close(f, mid, 0.9, 15, 84, -8);
+    close(r, SLOTS[3].x - 0.5, 1.6 + 0.5 * (tc.r.lift - CARRY), 14, 90, -6);
+    mix(f, r, ease(clamp01((k - 0.695) / 0.047)), tc.at);
+  } else {
+    // the follow rests on the middle of the two X50s, a little of their way, and comes in a few metres over the shot, the reach shot is
+    // the same place with the top beam in it
+    look(f, lerp(35, 32.5, ease(clamp01((k - 0.5) / 0.22))), 5.6, -2 + 0.2 * (mid + 2), 2.1);
+    look(r, 32, 5.8, -0.5, 2.34);
+    mix(f, r, ease(clamp01((k - 0.695) / 0.047)), tc.at);
+  }
   // in from the high view of N2 and out to the high view of N4, each eased at the edge of N3
   mix(tc.at, HIGH4, back, tc.out);
   mix(HIGH, tc.out, into, out);

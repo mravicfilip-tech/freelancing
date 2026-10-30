@@ -4,7 +4,7 @@
 // instanced and cheap like warehouse.tsx, the trucks are the real Linde models. The hall's walls, floor markings and yard are
 // najamhall.tsx, the lorries najamlorry.tsx, and the hall's metres, with everything that moves, najamplan.ts. Every pose is a pure
 // function of the story clock, so a frozen clock always draws the same picture and scrolling back plays it backwards.
-import { useLayoutEffect, useMemo, useRef } from 'react';
+import { useMemo, useRef } from 'react';
 import { useFrame } from '@react-three/fiber';
 import * as THREE from 'three';
 import type { SceneProps } from '../../clock';
@@ -13,8 +13,9 @@ import { SPEC, Truck, type ModelName, type TruckApi } from './models';
 import { BoxSet, type BoxItem } from './props';
 import { ease, range, rng, uOf } from './kit';
 import { HALL, HALL_Y, PALLETS, X50_PAL, d12At, h30At, isHeroSlot, levelY, palletAt, r16AAt, r16BAt, x50AAt, x50BAt, type Pose } from './najamplan';
-import { CHARGING, DOCK_OUT, Hall, PARKED, PARK_Z, Yard, loadedPallet, newSets, PalletSet } from './najamhall';
-import { BED, Lorry, type LorryApi } from './najamlorry';
+import { CHARGING, Hall, PARKED, PARK_Z, Yard, loadedPallet, newSets, PalletSet } from './najamhall';
+import { AXLE_X, BED, Lorry, type LorryApi } from './najamlorry';
+import { C_FROM, C_IN_TRAILER, DOCK_PALLET_COUNT, LORRY_COUNT, dockAAt, dockBAt, dockCAt, dockPalletAt, kLong, lorryAt, mkLorry } from './najamdock';
 import { Load, Plates, beamFlange, beamWeb, labelMat, loadMats, palletBase, rackGrey, wrapBand, wrapShell } from './najamkit';
 
 // ---- the racks --------------------------------------------------------------------------------------------------------
@@ -184,6 +185,10 @@ const MOVERS: MoverDef[] = [
   { name: 'r16', at: r16BAt },
   { name: 'd12', at: d12At, carry: [1.0, 1] },
   { name: 'h30d', at: h30At, carry: [1.1, 2] },
+  // the forklifts of the docks, rented ones, see najamdock.ts
+  { name: 'x50', at: dockAAt },
+  { name: 'x50', at: dockBAt },
+  { name: 'x50', at: dockCAt, from: C_FROM },
 ];
 
 function Mover({ clock, def }: SceneProps & { def: MoverDef }) {
@@ -254,26 +259,90 @@ function Movers({ clock }: SceneProps) {
 }
 
 
-// The lorry at the first dock, standing with its rear on the bumpers and its tractor in line, the doors folded back. The pose of every
-// lorry in the story is a function of k, najamdock.ts, once the lorries move.
-function Lorries() {
-  const api = useRef<LorryApi | null>(null);
-  const sets = useMemo(() => {
-    const r = rng(910);
-    const s = newSets();
-    [0.9, 1.9, 2.9, 3.9, 4.9, 5.9].forEach((x) => loadedPallet(s, r, x, 0, true, BED + X50_PAL));
-    return s;
-  }, []);
-  useLayoutEffect(() => {
-    const a = api.current;
-    if (!a) return;
-    a.trailer.position.set(DOCK_OUT, 0, HALL.docks[0]);
-    a.tractor.position.set(DOCK_OUT + 8.5, 0, HALL.docks[0]);
+// The lorries, three of them, each a trailer and a tractor placed every frame from najamdock.ts. The trailer carries the pallets that are
+// still in it, the third lorry's carries none, and the second one the pallet the forklift sets down in N4, which stands in the trailer from
+// that moment so it goes with it when the lorry pulls away.
+const IN_TRAILER: number[][] = [[2.9, 3.9, 4.9, 5.9], [2.9, 3.9, 4.9, 5.9, 6.9, 7.9, 8.9], []];
+function Lorries({ clock }: SceneProps) {
+  const apis = useRef<(LorryApi | null)[]>([]);
+  const last = useRef<THREE.Group>(null);
+  const p = useMemo(() => mkLorry(), []);
+  const sets = useMemo(
+    () =>
+      IN_TRAILER.map((xs, i) => {
+        const r = rng(910 + i);
+        const s = newSets();
+        xs.forEach((x) => loadedPallet(s, r, x, 0, true, BED + X50_PAL));
+        return s;
+      }),
+    [],
+  );
+  useFrame(() => {
+    const k = kLong(uOf(clock));
+    for (let i = 0; i < LORRY_COUNT; i++) {
+      const a = apis.current[i];
+      if (!a) continue;
+      lorryAt(i, k, p);
+      a.trailer.visible = a.tractor.visible = p.shown;
+      a.trailer.position.set(p.ax - Math.cos(p.psi) * AXLE_X, 0, p.az - Math.sin(p.psi) * AXLE_X);
+      a.trailer.rotation.y = -p.psi;
+      a.tractor.position.set(p.px, 0, p.pz);
+      a.tractor.rotation.y = -p.theta;
+      a.doorA.rotation.y = (-Math.PI / 2) * p.close;
+      a.doorB.rotation.y = (Math.PI / 2) * p.close;
+    }
+    if (last.current) last.current.visible = k >= C_IN_TRAILER.from;
   });
   return (
-    <Lorry apiRef={api}>
-      <PalletSet s={sets} />
-    </Lorry>
+    <group>
+      {sets.map((s, i) => (
+        <Lorry
+          key={i}
+          apiRef={{
+            get current() {
+              return apis.current[i] ?? null;
+            },
+            set current(v) {
+              apis.current[i] = v;
+            },
+          }}
+        >
+          <PalletSet s={s} />
+          {i === 1 && (
+            <group ref={last} position={[C_IN_TRAILER.x, BED + X50_PAL, 0]}>
+              <Load h={1.05} colour={2} />
+            </group>
+          )}
+        </Lorry>
+      ))}
+    </group>
+  );
+}
+
+// The three pallets the forklifts of the docks move, from the trailer of lorry 1 to the wall lane and the corner, and the one on the forks
+// of the third forklift until it is set down in lorry 2.
+function DockLoads({ clock }: SceneProps) {
+  const refs = useRef<(THREE.Group | null)[]>([]);
+  const q = useMemo(() => ({ x: 0, y: 0, z: 0, th: 0, shown: true }), []);
+  useFrame(() => {
+    const k = Math.min(Math.max(uOf(clock) - 12, 0), 1);
+    for (let i = 0; i < DOCK_PALLET_COUNT; i++) {
+      const g = refs.current[i];
+      if (!g) continue;
+      dockPalletAt(i, k, q);
+      g.visible = q.shown;
+      g.position.set(q.x, q.y, q.z);
+      g.rotation.y = -q.th;
+    }
+  });
+  return (
+    <group>
+      {Array.from({ length: DOCK_PALLET_COUNT }, (_, i) => (
+        <group key={i} ref={(g) => { refs.current[i] = g; }}>
+          <Load h={1.05} colour={(i + 1) % 3} />
+        </group>
+      ))}
+    </group>
   );
 }
 
@@ -300,17 +369,12 @@ export default function Najam({ clock }: SceneProps) {
     <group position={[NP.x, 0, NP.z]}>
       <group ref={hall}>
         <Yard />
-        <Lorries />
+        <Lorries clock={clock} />
         <group position={[0, HALL_Y, 0]}>
           <Hall dock={dock} />
           <Racks />
           <Movers clock={clock} />
-          {/* the rented forklifts of the docks stand at their bays, one on the apron at the first door and one in the corner by the far wall */}
-          {[[10.6, HALL.docks[0]], [9.2, -14.5]].map(([x, z], i) => (
-            <group key={`w${i}`} position={[x, 0, z]}>
-              <Truck name="x50" />
-            </group>
-          ))}
+          <DockLoads clock={clock} />
           {PARKED.map(([name, x, th], i) => (
             <group key={i} position={[x, 0, PARK_Z]} rotation={[0, -th, 0]}>
               <Truck name={name} />

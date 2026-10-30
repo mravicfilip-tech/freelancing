@@ -13,7 +13,7 @@ import type { ModelName } from './models';
 import { BoxSet, Hedge, Kerb, Trees, type BoxItem, type TreeSpec } from './props';
 import { K, rng } from './kit';
 import { HALL } from './najamplan';
-import { Load, Slats, apron, arrow, beamFlange, beamWeb, black, columnMat, darkGrey, doorMat, glazing, hatch, line, lineFaint, lineWhite, loadMats, palletBase, rackGrey, roadMat, roofMat, slab, wallBase, wallMat, wrapBand, wrapShell, type SlatItem } from './najamkit';
+import { Load, Slats, apron, arrow, beamFlange, beamWeb, black, columnMat, darkGrey, doorMat, glazing, hatch, line, lineFaint, lineWhite, lipMat, loadMats, palletBase, rackGrey, roadMat, roofMat, slab, wallBase, wallMat, wrapBand, wrapShell, type SlatItem } from './najamkit';
 
 // ---- the hall's measures ----------------------------------------------------------------------------------------------
 
@@ -121,22 +121,21 @@ export function Hall({ dock }: { dock: React.RefObject<THREE.Group | null> }) {
     lip.push([BACK_X + 2.1, WALL_H + 0.1, MIDZ, 0.1, 0.5, lenZ]);
     const lenX = PX1 - PX0;
     wall.push([(PX0 + PX1) / 2 + 0.15, WALL_H / 2, HALL.sideZ - 0.15, lenX - 0.3, WALL_H, 0.3]);
-    for (let x = BACK_X + 1.5; x < HALL.dockX - 5; x += 6) {
+    for (let x = BACK_X + 1.5; x < -5; x += 6) {
       cols.push([x, WALL_H / 2, HALL.sideZ + 0.2, 0.4, WALL_H, 0.4]);
-      glass.push([x + 3, 7.5, HALL.sideZ + 0.01, 4.8, 1.4, 0.05]);
     }
+    for (let x = BACK_X + 4.5; x < HALL.dockX - 5; x += 6) glass.push([x, 7.5, HALL.sideZ + 0.01, 4.8, 1.4, 0.05]);
     beam.push([(PX0 + PX1) / 2, WALL_H + 0.05, HALL.sideZ + 0.05, lenX, 0.5, 0.7]);
     roof.push([(PX0 + PX1) / 2, WALL_H + 0.3, HALL.sideZ + 0.8, lenX, 0.2, 2.2]);
     lip.push([(PX0 + PX1) / 2, WALL_H + 0.1, HALL.sideZ + 1.9, lenX, 0.5, 0.1]);
-    // the corner column. The long wall's last column stands 8 m short of the dock wall, so the camera of N2 at the first door does not look
-    // past a column 0.4 m wide into the words, and the beam runs on over the last bay as it does over any bay
+    // the corner column. The long wall's columns stop at x -6, the last 20 m before the dock wall are plain panel under the beam, so the
+    // camera of N2 at the first door does not look past a column into the words
     cols.push([BACK_X + 0.5, WALL_H / 2, HALL.sideZ + 0.2, 0.5, WALL_H, 0.5]);
 
     // the near walls, a low plinth with a cap. The dock wall stands in piers between the doors, the front wall runs the length of the hall.
     const plinth: BoxItem[] = [];
     const cap: BoxItem[] = [];
     const door: BoxItem[] = [];
-    const groove: BoxItem[] = [];
     const frame: BoxItem[] = [];
     const bumper: BoxItem[] = [];
     const lev: BoxItem[] = [];
@@ -150,15 +149,12 @@ export function Hall({ dock }: { dock: React.RefObject<THREE.Group | null> }) {
     }
     plinth.push([(BACK_X + PX1) / 2, PLINTH / 2, FRONT_Z + 0.15, PX1 - BACK_X, PLINTH, 0.3]);
     cap.push([(BACK_X + PX1) / 2, PLINTH + 0.04, FRONT_Z + 0.15, PX1 - BACK_X, 0.08, 0.4]);
-    HALL.docks.forEach((z, i) => {
+    HALL.docks.forEach((z) => {
       // the door frame, two posts and a head, in the rack grey
       frame.push([HALL.dockX + 0.2, DOOR_H / 2, z - DOOR_W / 2 - 0.06, 0.4, DOOR_H, 0.12], [HALL.dockX + 0.2, DOOR_H / 2, z + DOOR_W / 2 + 0.06, 0.4, DOOR_H, 0.12], [HALL.dockX + 0.2, DOOR_H + 0.06, z, 0.4, 0.12, DOOR_W + 0.24]);
-      // the first door is rolled up for the lorry, the others are shut sectional doors with their joints, the door over the lorry bay
-      // of the fourth is shut too
-      if (i > 0) {
-        door.push([HALL.dockX + 0.2, DOOR_H / 2, z, 0.1, DOOR_H, DOOR_W]);
-        for (let g = 1; g < 6; g++) groove.push([HALL.dockX + 0.26, (DOOR_H / 6) * g, z, 0.03, 0.04, DOOR_W - 0.1]);
-      } else door.push([HALL.dockX + 0.2, DOOR_H + 0.1, z, 0.1, 0.2, DOOR_W]);
+      // every door is rolled up, a working dock, with its slat in the head of the frame, so the camera of N2 looks through the doors it
+      // does not work at and a lorry can back onto any of them
+      door.push([HALL.dockX + 0.2, DOOR_H + 0.1, z, 0.1, 0.2, DOOR_W]);
       // bumpers on the outside of the wall, down the platform's edge, and a dock leveller on the floor inside
       for (const s of [-1.35, 1.35]) bumper.push([PX1 + 0.15, -0.35, z + s, 0.3, 0.5, 0.3]);
       lev.push([HALL.dockX - 1.2, 0.04, z, 2.4, 0.08, 2.4]);
@@ -305,7 +301,7 @@ export function Hall({ dock }: { dock: React.RefObject<THREE.Group | null> }) {
     const cabinGlass: BoxItem[] = [[cx + 0.96, 1.75, cz - 1.2, 0.04, 0.8, 1.6], [cx + 0.96, 1.75, cz + 0.5, 0.04, 0.8, 0.8]];
     const cabinDoor: BoxItem[] = [[cx + 0.96, 1.05, cz + 1.6, 0.05, 2.1, 0.9]];
     const cabinStep: BoxItem[] = [[cx + 1.25, 0.1, cz + 1.6, 0.55, 0.2, 1.2], [cx + 1.13, 0.25, cz + 1.6, 0.3, 0.1, 1.2]];
-    return { platform, kerb, wall, cols, beam, roof, lip, glass, plinth, cap, door, groove, frame, bumper, lev, joints, marks, slats, pal, empties, chargers, lamps, wrap, wrapMast, cabin, cabinRoof, cabinGlass, cabinDoor, cabinStep };
+    return { platform, kerb, wall, cols, beam, roof, lip, glass, plinth, cap, door, frame, bumper, lev, joints, marks, slats, pal, empties, chargers, lamps, wrap, wrapMast, cabin, cabinRoof, cabinGlass, cabinDoor, cabinStep };
   }, []);
   return (
     <group>
@@ -315,7 +311,7 @@ export function Hall({ dock }: { dock: React.RefObject<THREE.Group | null> }) {
       <BoxSet items={d.cols} mat={columnMat} cast />
       <BoxSet items={d.beam} mat={beamFlange} />
       <BoxSet items={d.roof} mat={roofMat} />
-      <BoxSet items={d.lip} mat={beamWeb} />
+      <BoxSet items={d.lip} mat={lipMat} />
       <BoxSet items={d.glass} mat={glazing} receive={false} />
       {/* the near walls stand for the high views and sink into the floor while the camera is low in the yard, outside them, in N3 */}
       <group ref={dock}>
@@ -323,7 +319,6 @@ export function Hall({ dock }: { dock: React.RefObject<THREE.Group | null> }) {
         <BoxSet items={d.cap} mat={wallBase} />
         <BoxSet items={d.frame} mat={columnMat} />
         <BoxSet items={d.door} mat={doorMat} />
-        <BoxSet items={d.groove} mat={beamFlange} receive={false} />
         <BoxSet items={d.bumper} mat={black} />
         <BoxSet items={d.lev} mat={beamWeb} />
       </group>

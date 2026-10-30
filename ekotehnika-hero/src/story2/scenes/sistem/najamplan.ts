@@ -358,7 +358,7 @@ export const HALL_Y = 1.2;
 // The camera of N as one pose in the units of the Rig in camera.tsx, a target in hall metres, an orbit distance, a yaw and pitch in
 // degrees, the lens shift as a share of the frame and a field of view. Four holds and three flights between them, see N_FLIGHT.
 //   N1  a high three quarter view over the docks and the aisles, pushing in a little as the lorry turns in
-//   N2  down at dock 1 from the staging floor, 5.5 m up and 17 m from the door, looking down 18 degrees with the picture shifted down, so
+//   N2  down at dock 1 from the staging floor, 11 m up and 20 m from the door, looking down 32 degrees, so the far wall's top lies under the top row with the picture shifted down, so
 //       the apron and the work lie under the words, with a slow drift toward the door. The racks stand outside the frame on the left
 //       and the dock wall on the right, the trailer shows only its open rear, so a forklift goes out of sight in it and comes back
 //   N3  outside the dock wall at about 5.6 m over the yard, looking down the work aisle with a narrow lens and the picture shifted so the
@@ -368,8 +368,8 @@ export const HALL_Y = 1.2;
 export type Cam = { x: number; y: number; z: number; d: number; yaw: number; pitch: number; sx: number; sy: number; shadow: number; fov: number };
 const cam = (): Cam => ({ x: 0, y: 0, z: 0, d: 0, yaw: 0, pitch: 0, sx: 0, sy: 0, shadow: 0, fov: 28 });
 
-const HIGH_FAR: Cam = { x: 8, y: 0, z: -1, d: 150, yaw: 50, pitch: -30, sx: 0.0, sy: 0.4, shadow: 70, fov: 28 };
-const HIGH: Cam = { x: 8, y: 0, z: -1, d: 140, yaw: 50, pitch: -30, sx: 0.0, sy: 0.4, shadow: 70, fov: 28 };
+const HIGH_FAR: Cam = { x: 14, y: 0, z: -2, d: 146, yaw: 50, pitch: -30, sx: 0.0, sy: 0.34, shadow: 70, fov: 28 };
+const HIGH: Cam = { x: 14, y: 0, z: -2, d: 136, yaw: 50, pitch: -30, sx: 0.0, sy: 0.34, shadow: 70, fov: 28 };
 // N4 keeps the bottom band of the frame clear for the term cells, so the hall stands higher in it. T starts from this pose.
 export const HIGH4: Cam = { x: 3, y: 0, z: -3, d: 118, yaw: 50, pitch: -30, sx: 0.17, sy: 0.04, shadow: 60, fov: 28 };
 
@@ -388,8 +388,8 @@ function eye(o: Cam, c: [number, number, number], t: [number, number, number], l
 }
 const DOCK_LENS = { sx: 0.0, sy: 0.42, shadow: 24, fov: 36 };
 const DOCK_AT: [number, number, number] = [13.0, 0.3, HALL.docks[0] + 1.3];
-const DOCK_A = eye(cam(), [9.0, 5.5, 5.5], DOCK_AT, DOCK_LENS);
-const DOCK_B = eye(cam(), [9.6, 5.2, 3.5], DOCK_AT, DOCK_LENS);
+const DOCK_A = eye(cam(), [8.5, 11.0, 6.5], DOCK_AT, DOCK_LENS);
+const DOCK_B = eye(cam(), [9.0, 10.6, 4.8], DOCK_AT, DOCK_LENS);
 
 // Both N3 shots look down the work aisle from outside the hall, at about 5.6 m, 32 to 36 m out, through the narrow lens, so the nearest
 // truck is 28 m away and the whole of it stands over the bottom band, and the picture is shifted right so the aisle and its racks lie

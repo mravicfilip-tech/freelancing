@@ -12,6 +12,7 @@ import { bakeStatic } from './bake';
 import { modelUrl, type ModelName } from './models';
 import { NP } from './route';
 import { BoxSet, type BoxItem } from './props';
+import { WAREHOUSE } from '../../timeline';
 import { G, K, blobMaterial, ease, lam, lerp, range, uOf } from './kit';
 
 const COLS = 5;
@@ -35,10 +36,17 @@ const WALL_H = 16;
 const wallMat = lam(G.pale, { emissive: new THREE.Color().setScalar(0.56) });
 const wallBase = lam(G.light, { emissive: new THREE.Color().setScalar(0.46) });
 
-// The floor, one plane that runs out to the fog, so no edge shows anywhere.
+// The floor, one plane that runs out to the fog, so no edge shows anywhere. In Najam 2 the warehouse of najam.tsx has walls of its own and
+// the end wall stands only from T, rising out of the floor as the aisle's walls do, so the hall of N is a cutaway with no 16 m slab behind it.
 export function Depot({ clock }: SceneProps) {
+  const wallRef = useRef<THREE.Group>(null);
+  useFrame(() => {
+    if (!WAREHOUSE || !wallRef.current) return;
+    const r = ease(range(uOf(clock), 13.05, 13.6));
+    wallRef.current.scale.y = Math.max(r, 0.001);
+    wallRef.current.visible = r > 0.002;
+  });
   const floor = useMemo(() => lam(FLOOR, { emissive: new THREE.Color(FLOOR).multiplyScalar(0.12) }), []);
-  void clock;
   const wall = useMemo(() => {
     const x = NP.x - WALL_A;
     const w: BoxItem[] = [[x - 0.1, WALL_H / 2, NP.z, 0.2, WALL_H, 160]];
@@ -50,8 +58,10 @@ export function Depot({ clock }: SceneProps) {
       <mesh rotation={[-Math.PI / 2, 0, 0]} position={[NP.x - 60, 0, NP.z]} material={floor} receiveShadow>
         <planeGeometry args={[520, 520]} />
       </mesh>
-      <BoxSet items={wall.w} mat={wallMat} />
-      <BoxSet items={wall.band} mat={wallBase} />
+      <group ref={wallRef}>
+        <BoxSet items={wall.w} mat={wallMat} />
+        <BoxSet items={wall.band} mat={wallBase} />
+      </group>
     </group>
   );
 }

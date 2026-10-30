@@ -182,21 +182,14 @@ function World({ clock }: SceneProps) {
           <Depot clock={clock} />
         </Place>
       )}
-      {/* Najam 0 is production's, the grid of forklifts from the cut under the L curtain to the end of T. Najam 1 to 3 are the warehouse of
-          najam.tsx to the end of N, and the grid set is T's alone, from u 13 */}
+      {/* Najam 0 is production's, the grid of forklifts from the cut under the L curtain to the end of T. Najam 2 is the warehouse of
+          najam.tsx, from the cut to the end of T where it sinks into the floor, and the grid set is not shown in it at all */}
       {WAREHOUSE ? (
-        <>
-          {need(11, 12) && (
-            <Place clock={clock} from={11.5} to={13.0}>
-              <Najam clock={clock} />
-            </Place>
-          )}
-          {need(13, 13) && (
-            <Place clock={clock} from={13.0} to={14.0}>
-              <Grid clock={clock} />
-            </Place>
-          )}
-        </>
+        need(11, 13) && (
+          <Place clock={clock} from={11.5} to={14.0}>
+            <Najam clock={clock} />
+          </Place>
+        )
       ) : (
         need(11, 13) && (
           <Place clock={clock} from={11.5} to={14.0}>

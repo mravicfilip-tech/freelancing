@@ -11,6 +11,7 @@ import { DARK_BG, PAPER, ease, lerp, range, rng, uOf } from './kit';
 import { darkTopAt } from './darkTop';
 import { BACK_FROM, BACK_TO, NEAR, forkX } from './forkTip';
 import { gridXs } from '../../shell/Grid';
+import { WAREHOUSE } from '../../timeline';
 
 const TAN = Math.tan((28 / 2) * (Math.PI / 180));
 
@@ -199,8 +200,34 @@ type Cell = { x: [number, number]; top: number; open: (u: number) => number };
 // cut sits on a drawn line at 2560 as at 1920 (round 4 item 9, it stopped at 972 whatever the width).
 const CELLS: Cell[] = [{ x: [0, 0], top: 136, open: (u) => ease(range(u, 4.95, 5.12)) * (1 - ease(range(u, 5.9, 6.0))) }];
 
+// A light haze of the ground colour over the upper part of the frame, for the Najam story. Clear from the term row up to the middle of the frame,
+// then rising to 55 percent at the top rule, so whatever lies far behind the title, the lede and the facts reads soft, and the near work
+// below them stays crisp. A texture of one column, drawn once. It lies under the band over the top row, which hides its top.
+let hazeTex: THREE.Texture | undefined;
+function hazeTexture() {
+  if (hazeTex) return hazeTex;
+  const c = document.createElement('canvas');
+  c.width = 4;
+  c.height = 256;
+  const g = c.getContext('2d')!;
+  const grd = g.createLinearGradient(0, 0, 0, 256);
+  // the frame is 900 px, the top rule at 136 and the haze gone by 640
+  grd.addColorStop(0, 'rgba(255,255,255,0.55)');
+  grd.addColorStop(136 / 900, 'rgba(255,255,255,0.55)');
+  grd.addColorStop(300 / 900, 'rgba(255,255,255,0.4)');
+  grd.addColorStop(460 / 900, 'rgba(255,255,255,0.18)');
+  grd.addColorStop(640 / 900, 'rgba(255,255,255,0)');
+  grd.addColorStop(1, 'rgba(255,255,255,0)');
+  g.fillStyle = grd;
+  g.fillRect(0, 0, 4, 256);
+  hazeTex = new THREE.CanvasTexture(c);
+  hazeTex.colorSpace = THREE.SRGBColorSpace;
+  return hazeTex;
+}
+
 export default function Overlay({ clock }: SceneProps) {
   const root = useOverlayRoot();
+  const haze = useRef<THREE.Mesh>(null);
   const size = useThree((s) => s.size);
   const fade = useRef<THREE.Mesh>(null);
   const maskGroup = useRef<THREE.Group>(null);
@@ -225,6 +252,12 @@ export default function Overlay({ clock }: SceneProps) {
     // The overlay's unit is half a screen height only at the lens it was drawn for, 28 degrees. Najam looks through other lenses, 36 and 18,
     // where the band over the top row, scaled for 28, stood in the frame as a white rectangle behind the lede and the CTA.
     root.scale.setScalar(Math.tan(((camera as THREE.PerspectiveCamera).fov / 2) * (Math.PI / 180)));
+    // the haze of the Najam story, from the cut under the L curtain to the end of T, where the iris of the roof closes
+    if (haze.current) {
+      const on = WAREHOUSE && u >= 11.9 && u < 13.4;
+      haze.current.visible = on;
+      (haze.current.material as THREE.MeshBasicMaterial).opacity = on ? 1 - ease(range(u, 13.0, 13.4)) : 0;
+    }
     // Black for the push into the forklift, a hard edged shutter. The camera has already filled the frame with the dark mast, the
     // shutter rolls up from the bottom edge and covers the frame by u 9.9. Servis then opens on plain black while its text
     // rises, and the shutter leaves in one hard cut at u 10.125 as the text lands, so no frame is half black and half floor
@@ -295,6 +328,10 @@ export default function Overlay({ clock }: SceneProps) {
   return createPortal(
     <>
       <group ref={maskGroup}>
+      <mesh ref={haze} visible={false} renderOrder={23}>
+        <planeGeometry args={[aspect * 2 + 0.2, 2]} />
+        <meshBasicMaterial map={hazeTexture()} transparent depthTest={false} depthWrite={false} toneMapped={false} />
+      </mesh>
       {/* The band over the top row draws after the fork and the curtain, so no steel ever crosses into the top row. */}
       <mesh ref={maskTop} position={[0, 1 - topH / 2, 0]} scale={[1, 1, 1]} renderOrder={25}>
         <planeGeometry args={[aspect * 2 + 0.2, topH]} />

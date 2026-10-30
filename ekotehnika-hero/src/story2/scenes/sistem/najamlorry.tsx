@@ -6,7 +6,7 @@
 import { useMemo, type MutableRefObject, type ReactNode } from 'react';
 import * as THREE from 'three';
 import { mergeGeometries } from 'three/examples/jsm/utils/BufferGeometryUtils.js';
-import { K } from './kit';
+import { BRAND, K, brandPaths, brandView } from './kit';
 import { beamFlange, beamWeb, black, cabGrey, mergeBoxes, rackGrey, trailerWhite, tyre } from './najamkit';
 import type { BoxItem } from './props';
 
@@ -16,7 +16,7 @@ export const TRAILER_L = 9.8;
 export const AXLE_X = 3.7;
 export const PIVOT_X = 8.5;
 
-export type LorryApi = { trailer: THREE.Group; tractor: THREE.Group; doorA: THREE.Group; doorB: THREE.Group };
+export type LorryApi = { trailer: THREE.Group; tractor: THREE.Group; doorA: THREE.Group; doorB: THREE.Group; curtain: THREE.Group };
 
 const wheelSet = (xs: number[], zs: number[], r: number, w: number) => {
   const tyres: THREE.BufferGeometry[] = [];
@@ -43,12 +43,38 @@ const wheelSet = (xs: number[], zs: number[], r: number, w: number) => {
 };
 const cat = (g: THREE.BufferGeometry[]) => mergeGeometries(g, false);
 
+// The EKOTEHNIKA wordmark of public/brand/ekotehnika.svg as supplied, its grey letters and its red mark, every path of the file filled in its own colour
+// into a canvas, on a clear ground so it prints on the white of the trailer. 5.5 m wide on the side of every trailer.
+export const LOGO_W = 5.5;
+let logoMat: THREE.MeshBasicMaterial | undefined;
+let logoGeo: THREE.PlaneGeometry | undefined;
+function logo() {
+  if (logoMat && logoGeo) return { mat: logoMat, geo: logoGeo };
+  const view = brandView(BRAND.wordmark);
+  const W = 2048;
+  const H = Math.round((W * view[3]) / view[2]);
+  const c = document.createElement('canvas');
+  c.width = W;
+  c.height = H;
+  const g = c.getContext('2d')!;
+  g.scale(W / view[2], H / view[3]);
+  g.translate(-view[0], -view[1]);
+  for (const p of brandPaths(BRAND.wordmark)) {
+    g.fillStyle = p.fill;
+    g.fill(new Path2D(p.d));
+  }
+  const t = new THREE.CanvasTexture(c);
+  t.colorSpace = THREE.SRGBColorSpace;
+  t.anisotropy = 8;
+  logoMat = new THREE.MeshBasicMaterial({ map: t, transparent: true, toneMapped: false, polygonOffset: true, polygonOffsetFactor: -2, depthWrite: false });
+  logoGeo = new THREE.PlaneGeometry(LOGO_W, (LOGO_W * view[3]) / view[2]);
+  return { mat: logoMat, geo: logoGeo };
+}
+
 let built: ReturnType<typeof build> | undefined;
 function build() {
   // the trailer, a hollow box with the rear open, ribs on the sides, the chassis under the bed and the rear frame
   const white: BoxItem[] = [
-    [4.9, 2.575, -1.27, 9.8, 2.75, 0.06],
-    [4.9, 2.575, 1.27, 9.8, 2.75, 0.06],
     [9.77, 2.575, 0, 0.06, 2.75, 2.5],
     [4.9, 3.98, 0, 9.9, 0.08, 2.64],
   ];
@@ -64,8 +90,10 @@ function build() {
     [3.7, 1.09, -1.13, 3.5, 0.08, 0.64],
     [3.7, 1.09, 1.13, 3.5, 0.08, 0.64],
   ];
-  const ribs: BoxItem[] = [];
-  for (let x = 0.9; x < 9.6; x += 1.35) for (const s of [-1, 1]) ribs.push([x, 2.6, s * 1.31, 0.06, 2.65, 0.03]);
+  // a side, a plain panel with its ribs outside it, in a frame with its front end at the origin and the rear at x minus 9.8, z out of the trailer. The
+  // near side of the first lorry draws back like the curtain of a curtain sider, the far side stands
+  const sideRibs: BoxItem[] = [];
+  for (let x = 0.9; x < 9.6; x += 1.35) sideRibs.push([x - 9.8, 2.6, 0.04, 0.06, 2.65, 0.03]);
   const dark: BoxItem[] = [
     [0.35, 0.55, 0, 0.12, 0.14, 2.3],
     [0.35, 0.8, -1.05, 0.1, 0.5, 0.1],
@@ -98,8 +126,9 @@ function build() {
 
   return {
     white: mergeBoxes(white),
+    side: mergeBoxes([[-4.9, 2.575, 0, 9.8, 2.75, 0.06]]),
+    sideRibs: mergeBoxes(sideRibs),
     grey: mergeBoxes(grey),
-    ribs: mergeBoxes(ribs),
     dark: mergeBoxes(dark),
     lights: mergeBoxes(lights),
     tyres: cat(tw.tyres),
@@ -118,6 +147,19 @@ function build() {
   };
 }
 
+// One long side of a trailer, its panel, its ribs and the wordmark on the outside of the ribs, the logo reading from left to right as seen from
+// outside. The near side (z out of the trailer is +z) hangs from the front end so it can draw back, the far side from the rear turned half a turn.
+function TrailerSide({ b, front = false, group }: { b: ReturnType<typeof build>; front?: boolean; group?: (o: THREE.Group | null) => void }) {
+  const l = logo();
+  return (
+    <group ref={group} position={front ? [TRAILER_L, 0, 1.27] : [0, 0, -1.27]} rotation={[0, front ? 0 : Math.PI, 0]}>
+      <mesh geometry={b.side} material={trailerWhite} receiveShadow />
+      <mesh geometry={b.sideRibs} material={beamFlange} />
+      <mesh geometry={l.geo} material={l.mat} position={[-TRAILER_L / 2, 2.6, 0.062]} renderOrder={2} />
+    </group>
+  );
+}
+
 // One rear door of the trailer, hinged at its own group, the panel running along +x from the hinge when it stands folded back.
 const Door = ({ g }: { g: (o: THREE.Group | null) => void }) => {
   const geo = (built ??= build()).door;
@@ -130,9 +172,9 @@ const Door = ({ g }: { g: (o: THREE.Group | null) => void }) => {
 
 export function Lorry({ apiRef, children }: { apiRef: MutableRefObject<LorryApi | null>; children?: ReactNode }) {
   const b = useMemo(() => (built ??= build()), []);
-  const parts = useMemo(() => ({ trailer: null as THREE.Group | null, tractor: null as THREE.Group | null, doorA: null as THREE.Group | null, doorB: null as THREE.Group | null }), []);
+  const parts = useMemo(() => ({ trailer: null as THREE.Group | null, tractor: null as THREE.Group | null, doorA: null as THREE.Group | null, doorB: null as THREE.Group | null, curtain: null as THREE.Group | null }), []);
   const sync = () => {
-    if (parts.trailer && parts.tractor && parts.doorA && parts.doorB) apiRef.current = { trailer: parts.trailer, tractor: parts.tractor, doorA: parts.doorA, doorB: parts.doorB };
+    if (parts.trailer && parts.tractor && parts.doorA && parts.doorB && parts.curtain) apiRef.current = { trailer: parts.trailer, tractor: parts.tractor, doorA: parts.doorA, doorB: parts.doorB, curtain: parts.curtain };
   };
   return (
     <group>
@@ -143,8 +185,9 @@ export function Lorry({ apiRef, children }: { apiRef: MutableRefObject<LorryApi 
         }}
       >
         <mesh geometry={b.white} material={trailerWhite} receiveShadow />
+        <TrailerSide b={b} front group={(o) => { parts.curtain = o; sync(); }} />
+        <TrailerSide b={b} />
         <mesh geometry={b.grey} material={rackGrey} castShadow receiveShadow />
-        <mesh geometry={b.ribs} material={beamFlange} />
         <mesh geometry={b.dark} material={black} castShadow />
         <mesh geometry={b.lights} material={beamWeb} />
         <mesh geometry={b.tyres} material={tyre} castShadow />

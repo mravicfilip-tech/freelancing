@@ -288,6 +288,7 @@ function Lorries({ clock }: SceneProps) {
       a.trailer.rotation.y = -p.psi;
       a.tractor.position.set(p.px, 0, p.pz);
       a.tractor.rotation.y = -p.theta;
+      a.curtain.scale.x = Math.max(1 - 0.9 * p.open, 0.001);
       a.doorA.rotation.y = (-Math.PI / 2) * p.close;
       a.doorB.rotation.y = (Math.PI / 2) * p.close;
     }
@@ -347,26 +348,28 @@ function DockLoads({ clock }: SceneProps) {
 }
 
 export default function Najam({ clock }: SceneProps) {
-  const dock = useRef<THREE.Group>(null);
   const hall = useRef<THREE.Group>(null);
-  const far = useRef<THREE.Group>(null);
+  const doors = useRef<(THREE.Group | null)[]>([]);
+  const roofHatch = useRef<THREE.Group>(null);
+  const roof = useRef<THREE.Group>(null);
   useFrame(() => {
     const u = uOf(clock);
     const k = Math.min(Math.max(u - 12, 0), 1);
-    // the near walls sink as the camera flies down to the aisle, in the second flight, and stand again in the third
-    const down = ease(range(k, 0.43, 0.5)) * (1 - ease(range(k, 0.8, 0.86)));
-    if (dock.current) {
-      dock.current.scale.y = Math.max(1 - down, 0.001);
-      dock.current.visible = down < 0.998;
+    // the dock doors roll up into their heads, door 1 as the camera of the first flight arrives, door 3 for the second lorry
+    const open = [ease(range(k, 0.2, 0.27)), 0, ease(range(k, 0.62, 0.7)), 0];
+    open.forEach((o, i) => {
+      const g = doors.current[i];
+      if (g) g.scale.y = Math.max(1 - 0.96 * o, 0.04);
+    });
+    // the roof light over the dock end draws aside in the third flight, 0.74 to 0.78, for the camera to rise through, and closes behind it
+    if (roofHatch.current) roofHatch.current.scale.x = Math.max(1 - ease(range(k, 0.735, 0.775)) * (1 - ease(range(k, 0.86, 0.9))), 0.001);
+    // T, the roof draws in on itself like an iris while the camera dives, then the whole hall sinks as the walls and racks of the aisle rise
+    const iris = ease(range(u, 13.0, 13.3));
+    if (roof.current) {
+      roof.current.scale.set(Math.max(1 - iris, 0.001), 1, Math.max(1 - iris, 0.001));
+      roof.current.visible = iris < 0.998;
     }
-    // the far walls sink in the first flight, before the camera stands over dock 1, and stand again in the second, before it reaches the aisle
-    const gone2 = ease(range(k, 0.2, 0.265)) * (1 - ease(range(k, 0.44, 0.52)));
-    if (far.current) {
-      far.current.scale.y = Math.max(1 - gone2, 0.001);
-      far.current.visible = gone2 < 0.998;
-    }
-    // T, the whole hall sinks into the floor while the walls and racks of the aisle rise out of it
-    const gone = ease(range(u, 13.0, 13.45));
+    const gone = ease(range(u, 13.2, 13.6));
     if (hall.current) {
       hall.current.scale.y = Math.max(1 - gone, 0.001);
       hall.current.visible = gone < 0.998;
@@ -378,7 +381,7 @@ export default function Najam({ clock }: SceneProps) {
         <Yard />
         <Lorries clock={clock} />
         <group position={[0, HALL_Y, 0]}>
-          <Hall dock={dock} far={far} />
+          <Hall doors={doors} roofHatch={roofHatch} roof={roof} />
           <Racks />
           <Movers clock={clock} />
           <DockLoads clock={clock} />

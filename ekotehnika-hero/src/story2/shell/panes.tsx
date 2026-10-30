@@ -348,6 +348,30 @@ export function NPane() {
   );
 }
 
+// Najam, the terms pane of N3 and N4. The same spec row as the facts of N, four cells of a figure and a label, and the cell of the
+// term the pallets have reached is drawn like the active Prodaja tab, a 2px ink rule along its bottom and the figure and label in
+// ink, the others in text grey. With reduced motion there is no loop and the pane stays as it is rendered, 72 lit.
+export function NTPane() {
+  const c = najam.terms;
+  return (
+    <div className="s2-pane s2-nt" data-term={c.cells.length - 1}>
+      <div className="blk stack" style={{ ...between(1, 3), top: 168 }}>
+        <Marker m={markers.n} order={0} />
+        <TitleLines lines={c.title} order={1} className="s2-title-s" />
+        <Fill text={c.text} />
+      </div>
+      <SpecRow className="blk at-bottom" facts={c.cells} spans={[3, 3, 3, 3]} order={3} style={between(1, 5)} lit={c.cells.length - 1} />
+    </div>
+  );
+}
+
+// Light term i on the terms pane, -1 lights none. The loop in the shell calls it from the story clock as each pallet is set down,
+// see N_PALLETS in timeline.ts, so the mark moves on scrolling down and back the same way scrolling up.
+export function setTerm(root: HTMLElement, i: number) {
+  root.setAttribute('data-term', String(i));
+  root.querySelectorAll<HTMLElement>('.cell').forEach((cell, j) => cell.toggleAttribute('data-lit', j === i));
+}
+
 // Three equal boxes, each starting on its own vertical, the first on the first, the second on the second and the third on the third.
 // A cell's own left line is its start, so the first two columns are a pitch less the 24px gap and the last takes the rest.
 const THIRDS = 'calc(var(--x2) - var(--x1) - 24px) calc(var(--x3) - var(--x2) - 24px) 1fr';

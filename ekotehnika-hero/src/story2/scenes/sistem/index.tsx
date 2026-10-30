@@ -1,7 +1,7 @@
 // Sistem, the 3D studio telling storyline 2. One R3F canvas, dpr capped at 1.5. The real Linde forklift in a bright
 // white and grey site (low poly trees, hedges, lamp posts, the company building, vans), the yard from above, the
 // warehouse as a lit model with racks and wrapped pallets, a precise side elevation schematic of the X50 on the dark
-// servis ground, a steel fork tine, the rental depot floor and the automation floor with robots at true scale on system
+// servis ground, a steel fork tine, the Najam warehouse, the rental depot floor and the automation floor with robots at true scale on system
 // routes. Every pose is a pure function of the story clock, so a frozen clock (?at=<beat>&k=<0 to 1>) always draws the
 // same picture. The one exception is the build in on load (props.tsx), timed from the first frame, which a frozen clock
 // and reduced motion skip.
@@ -14,6 +14,8 @@ import type { SceneProps } from '../../clock';
 import Schematic from './schematic';
 import { Dust, Lights, Rig, type CamState } from './camera';
 import Grid, { Depot } from './grid';
+import Najam from './najam';
+import { WAREHOUSE } from '../../timeline';
 import { SPEC, Truck, type TruckApi } from './models';
 import { GROUND, uOf } from './kit';
 import Outdoor from './outdoor';
@@ -180,10 +182,27 @@ function World({ clock }: SceneProps) {
           <Depot clock={clock} />
         </Place>
       )}
-      {need(11, 13) && (
-        <Place clock={clock} from={11.5} to={14.0}>
-          <Grid clock={clock} />
-        </Place>
+      {/* Najam 0 is production's, the grid of forklifts from the cut under the L curtain to the end of T. Najam 1 to 3 are the warehouse of
+          najam.tsx to the end of N, and the grid set is T's alone, from u 13 */}
+      {WAREHOUSE ? (
+        <>
+          {need(11, 12) && (
+            <Place clock={clock} from={11.5} to={13.0}>
+              <Najam clock={clock} />
+            </Place>
+          )}
+          {need(13, 13) && (
+            <Place clock={clock} from={13.0} to={14.0}>
+              <Grid clock={clock} />
+            </Place>
+          )}
+        </>
+      ) : (
+        need(11, 13) && (
+          <Place clock={clock} from={11.5} to={14.0}>
+            <Grid clock={clock} />
+          </Place>
+        )
       )}
       {need(12, 14) && (
         <Place clock={clock} from={12.9} to={15.1}>

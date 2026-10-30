@@ -8,6 +8,8 @@ import { track } from '../../../story/scenes/sistem/tracks';
 import type { SceneProps } from '../../clock';
 import { BP, NP, WH_C, routeAt, truckS, AISLES } from './route';
 import { focusAt, toWorld } from './atplan';
+import { najamCam, type Cam } from './najamplan';
+import { NAJAM } from '../../preview';
 import { DARK_BG, PAPER, ease, isDark, lerp, range, rad, softTexture, uOf } from './kit';
 
 export type CamState = { target: THREE.Vector3; d: number; shadow: number };
@@ -41,9 +43,10 @@ const AT_D = 11.8;
 const AT_YAW = [80, 74];
 const AT_PITCH = -16;
 const AT_SX = 0.22;
-// The rental floor runs across the whole width with its bays, the fifteen trucks standing on the lower part of the frame.
+// The rental floor of T runs across the whole width with its bays, the fifteen trucks standing on the lower part of the frame.
 // The hall's end wall stands behind the last bay row and its foot lands on the grid rule under the spec row (y 543 at 1080),
 // so the title, lede and spec row sit on the wall itself. Nothing is masked or faded, the camera only places the world.
+// N is the Najam warehouse of najam.tsx now and has its own camera, najamCam in najamplan.ts, which ends on this pose.
 const N_D = 52;
 const N_SY = 0.305;
 const nShift = (_w: number, _h: number) => ({ sx: 0, sy: N_SY, d: N_D });
@@ -55,9 +58,10 @@ const orbit = (t: THREE.Vector3, d: number, yawDeg: number, pitchDeg: number, ou
   return out.set(t.x + d * Math.sin(y) * Math.cos(p), t.y - d * Math.sin(p), t.z + d * Math.cos(y) * Math.cos(p));
 };
 
-export type Pose = { pos: THREE.Vector3; yaw: number; pitch: number; sx: number; sy: number; target: THREE.Vector3; d: number; shadow: number };
+export type Pose = { pos: THREE.Vector3; yaw: number; pitch: number; sx: number; sy: number; target: THREE.Vector3; d: number; shadow: number; fov: number };
 
 const tmp = { t: new THREE.Vector3(), p0: new THREE.Vector3() };
+const najamPose: Cam = { x: 0, y: 0, z: 0, d: 0, yaw: 0, pitch: 0, sx: 0, sy: 0, shadow: 0, fov: 28 };
 
 export function poseAt(u: number, pos: number, out: Pose, w = 1920, h = 1080): Pose {
   const n = nShift(w, h);
@@ -65,6 +69,7 @@ export function poseAt(u: number, pos: number, out: Pose, w = 1920, h = 1080): P
   out.sx = 0;
   out.sy = 0;
   out.shadow = 10;
+  out.fov = 28;
   if (u < 6) {
     const rp = routeAt(truckS(pos));
     t.set(rp.x + O_OX(u), O_OY(u), rp.z);
@@ -131,13 +136,27 @@ export function poseAt(u: number, pos: number, out: Pose, w = 1920, h = 1080): P
     out.shadow = 8;
     orbit(t, out.d, out.yaw, out.pitch, out.pos);
   } else if (u < 13) {
-    t.set(NP.x - 0.5, 0.9, NP.z);
-    out.d = n.d;
-    out.yaw = 90;
-    out.pitch = -24;
-    out.sx = n.sx;
-    out.sy = n.sy;
-    out.shadow = 18;
+    if (NAJAM === 0) {
+      // Najam 0, production's, the rental floor as a hold, seen from the pose T starts from
+      t.set(NP.x - 0.5, 0.9, NP.z);
+      out.d = n.d;
+      out.yaw = 90;
+      out.pitch = -24;
+      out.sx = n.sx;
+      out.sy = n.sy;
+      out.shadow = 18;
+    } else {
+      // Najam 1 to 3, the warehouse. The camera is a pure function of k like the rest, see najamCam, with one of three cameras for N3.
+      const c = najamCam(u, najamPose, NAJAM);
+      t.set(NP.x + c.x, c.y, NP.z + c.z);
+      out.d = c.d;
+      out.yaw = c.yaw;
+      out.pitch = c.pitch;
+      out.sx = c.sx;
+      out.sy = c.sy;
+      out.shadow = c.shadow;
+      out.fov = c.fov;
+    }
     orbit(t, out.d, out.yaw, out.pitch, out.pos);
   } else {
     // T and AT. The depot camera glides down the aisle to about 4 m and then follows the order, three quarter view, the
@@ -162,7 +181,7 @@ export function Rig({ clock, state }: SceneProps & { state: React.MutableRefObje
   const camera = useThree((s) => s.camera) as THREE.PerspectiveCamera;
   const size = useThree((s) => s.size);
   const scene = useThree((s) => s.scene);
-  const pose = useMemo<Pose>(() => ({ pos: new THREE.Vector3(), yaw: 0, pitch: 0, sx: 0, sy: 0, target: new THREE.Vector3(), d: 10, shadow: 10 }), []);
+  const pose = useMemo<Pose>(() => ({ pos: new THREE.Vector3(), yaw: 0, pitch: 0, sx: 0, sy: 0, target: new THREE.Vector3(), d: 10, shadow: 10, fov: 28 }), []);
   const euler = useMemo(() => new THREE.Euler(0, 0, 0, 'YXZ'), []);
   const last = useRef({ sx: 9, sy: 9, w: 0, h: 0 });
 
@@ -183,6 +202,11 @@ export function Rig({ clock, state }: SceneProps & { state: React.MutableRefObje
       l.w = size.width;
       l.h = size.height;
       camera.setViewOffset(size.width, size.height, -pose.sx * size.width, -pose.sy * size.height, size.width, size.height);
+    }
+    // the lens, 28 degrees everywhere but the Najam warehouse, which looks down its aisle through a narrower one
+    if (Math.abs(camera.fov - pose.fov) > 1e-4) {
+      camera.fov = pose.fov;
+      camera.updateProjectionMatrix();
     }
     state.current.target.copy(pose.target);
     state.current.d = pose.d;

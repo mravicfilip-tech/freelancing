@@ -119,6 +119,7 @@ export function SpecRow({
   order = 4,
   className = '',
   style,
+  lit,
 }: {
   facts: SpecFact[];
   spans: number[];
@@ -126,6 +127,8 @@ export function SpecRow({
   order?: number;
   className?: string;
   style?: CSSProperties;
+  // the cell drawn lit, for a row that works as a selector, the Najam terms. The shell moves the mark on from the story clock.
+  lit?: number;
 }) {
   const total = spans.reduce((a, b) => a + b, 0);
   return (
@@ -149,7 +152,7 @@ export function SpecRow({
           </>
         );
         return (
-          <div className="cell" style={template ? undefined : { gridColumn: `span ${spans[i]}` }} key={f.label}>
+          <div className="cell" style={template ? undefined : { gridColumn: `span ${spans[i]}` }} data-lit={lit === i ? '' : undefined} key={`${f.figure}|${f.label}`}>
             {body}
           </div>
         );

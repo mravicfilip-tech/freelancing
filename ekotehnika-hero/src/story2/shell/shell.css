@@ -1006,38 +1006,6 @@
   }
 }
 
-/* ---- Najam 1, Close. The racks stand behind the words in that camera, so the text block and the term row each sit on a flat panel in
-   the light grey of the README, square, no shadow, on the grid lines. The shell measures them, see measure in StoryShell. ---- */
-.s2-panels {
-  position: absolute;
-  inset: 0;
-  z-index: 4;
-  visibility: hidden;
-  pointer-events: none;
-}
-
-.pn-text,
-.pn-terms {
-  position: absolute;
-  background: var(--light-grey);
-}
-
-/* from the top rule to 32px under the line, between the first and third verticals */
-.pn-text {
-  left: var(--x1);
-  width: calc(var(--x3) - var(--x1));
-  top: 136px;
-  height: var(--pt-h, 0px);
-}
-
-/* behind the term row, between the first and fifth verticals */
-.pn-terms {
-  left: var(--x1);
-  width: calc(var(--x5) - var(--x1));
-  top: var(--pr-top, 0px);
-  height: var(--pr-h, 0px);
-}
-
 /* ---- the preview panel, localhost only, see shell/Preview.tsx ---- */
 .pv {
   position: fixed;

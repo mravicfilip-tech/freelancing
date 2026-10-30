@@ -13,8 +13,6 @@ import { SPEC, Truck, type ModelName, type TruckApi } from './models';
 import { BoxSet, type BoxItem } from './props';
 import { labelTexture } from './warehouse';
 import { G, K, ease, lam, lit, range, rng, uOf } from './kit';
-import { N_SUB } from '../../timeline';
-import { NAJAM } from '../../preview';
 import { HALL, PALLETS, d12At, h30At, isHeroSlot, levelY, palletAt, r16AAt, r16BAt, x50AAt, x50BAt, type Pose } from './najamplan';
 
 // ---- materials --------------------------------------------------------------------------------------------------------
@@ -508,30 +506,38 @@ function Movers({ clock }: SceneProps) {
 
 export default function Najam({ clock }: SceneProps) {
   const dock = useRef<THREE.Group>(null);
+  const hall = useRef<THREE.Group>(null);
   useFrame(() => {
-    const k = Math.min(Math.max(uOf(clock) - 12, 0), 1);
-    // the wall sinks as the camera comes down to the follow, 0.5 to 0.535, and stands again as it goes back up, 0.776 to 0.79
-    // (Najam 3, Wide, looks from high above and keeps it standing)
-    const down = NAJAM === 3 ? 0 : ease(range(k, N_SUB.N3[0], 0.535)) * (1 - ease(range(k, 0.776, N_SUB.N3[1])));
+    const u = uOf(clock);
+    const k = Math.min(Math.max(u - 12, 0), 1);
+    // the wall sinks as the camera flies down to the aisle, in the second flight, and stands again in the third
+    const down = ease(range(k, 0.43, 0.5)) * (1 - ease(range(k, 0.8, 0.86)));
     if (dock.current) {
       dock.current.scale.y = Math.max(1 - down, 0.001);
       dock.current.visible = down < 0.998;
     }
+    // T, the whole hall sinks into the floor while the walls and racks of the aisle rise out of it
+    const gone = ease(range(u, 13.0, 13.45));
+    if (hall.current) {
+      hall.current.scale.y = Math.max(1 - gone, 0.001);
+      hall.current.visible = gone < 0.998;
+    }
   });
   return (
     <group position={[NP.x, 0, NP.z]}>
-      <Hall dock={dock} />
-      <Racks />
-      <group position={[HALL.dockX + WALL_T + 0.35, 0, HALL.docks[0]]}>
-        <Lorry />
-      </group>
-      <Movers clock={clock} />
-      {PARKED.map(([name, x, th], i) => (
-        <group key={i} position={[x, 0, PARK_Z]} rotation={[0, -th, 0]}>
-          <Truck name={name} />
+      <group ref={hall}>
+        <Hall dock={dock} />
+        <Racks />
+        <group position={[HALL.dockX + WALL_T + 0.35, 0, HALL.docks[0]]}>
+          <Lorry />
         </group>
-      ))}
+        <Movers clock={clock} />
+        {PARKED.map(([name, x, th], i) => (
+          <group key={i} position={[x, 0, PARK_Z]} rotation={[0, -th, 0]}>
+            <Truck name={name} />
+          </group>
+        ))}
+      </group>
     </group>
   );
 }
-

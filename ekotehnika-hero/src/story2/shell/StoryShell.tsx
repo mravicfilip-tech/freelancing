@@ -8,8 +8,7 @@
 // With reduced motion there is no pin and no loop, each hold beat is a still screen with every part at its end state.
 import { Component, Suspense, useEffect, useMemo, useRef, type ComponentType, type CSSProperties, type ReactNode } from 'react';
 import { stillClock, useStoryClock, type SceneProps } from '../clock';
-import { LENGTH, NAJAM_TERMS, N_PALLETS, SERVIS_MAP, TIMELINE, WAREHOUSE, type BeatSpan } from '../timeline';
-import { NAJAM } from '../preview';
+import { LENGTH, NAJAM_TERMS, N_PALLETS, N_SWAP, SERVIS_MAP, TIMELINE, WAREHOUSE, type BeatSpan } from '../timeline';
 import { Preview } from './Preview';
 import { HeroFrame } from '../../ui/HeroFrame';
 import { Grid, RULE_TOP, paintMarks, ruleMarks } from './Grid';
@@ -35,12 +34,12 @@ const LAYERS: LayerDef[] = [
   { id: 'S', Pane: SPane, dark: true, still: 0.3 },
   // the servis map, the second half of S, on a span of its own (SERVIS_MAP in timeline.ts)
   { id: 'SM', Pane: SMPane, dark: true, still: 0.75 },
-  // Najam 0 is today's, the grid of forklifts and its text. Najam 1 to 3 show today's text over N1 and N2, then the terms pane on a span
-  // of its own over N3 and N4 (NAJAM_TERMS in timeline.ts)
+  // Najam 0 is today's, the grid of forklifts and its text. Najam 2 shows today's text over N1, N2 and the first two flights, then the
+  // terms pane on a span of its own to the end of N (NAJAM_TERMS in timeline.ts)
   ...(WAREHOUSE
     ? [
         { id: 'N', Pane: NPane, dark: false, still: 0.2 },
-        { id: 'NT', Pane: NTPane, dark: false, still: 0.79 },
+        { id: 'NT', Pane: NTPane, dark: false, still: 0.7 },
       ]
     : [{ id: 'N', Pane: NPane, dark: false, still: 0.95 }]),
   { id: 'AT', Pane: ATPane, dark: true, still: 0.5 },
@@ -48,8 +47,9 @@ const LAYERS: LayerDef[] = [
 
 // Where the text leaves, as a share of its beat. P holds its four models to the end of the hold.
 // S hands the black stage to the servis map in one cut half way through its 2000px, the map holds to the fork's dock.
-// N shows today's text over N1 and N2 and leaves as N3 begins, the terms pane then holds to the end of N.
-const LEAVE: Record<string, [number, number]> = { AT: [1.01, 1.02], S: [0.49, 0.51], SM: [1.01, 1.02], ...(WAREHOUSE ? { N: [0.48, 0.5], NT: [1.01, 1.02] } : {}) };
+// N shows today's text to the end of the second flight, 120px before the camera arrives at the aisle, and gives the screen to the terms
+// pane at that moment, which then holds to the end of N.
+const LEAVE: Record<string, [number, number]> = { AT: [1.01, 1.02], S: [0.49, 0.51], SM: [1.01, 1.02], ...(WAREHOUSE ? { N: [N_SWAP - 0.001, N_SWAP + 0.001], NT: [1.01, 1.02] } : {}) };
 
 // Prodaja steps one model per 0.22 of the hold, at k 0.06, 0.28, 0.50 and 0.72, the last one held to the end.
 const P_FIRST = 0.06;
@@ -74,8 +74,8 @@ const HOLDS = TIMELINE.filter((b) => b.hold);
 // scroll, one or two wheel ticks (Filip 2026-10-12, video round 4, "this animation is happening too fast"), so they run over
 // 0.36 of the hold, twice the old pace, which is 1.45 times the slower pace every beat has now.
 // S and its map take the same 250 to 300px for their text as the other holds, though S is 2000px long now.
-// N is 2,400px now and its text keeps the 225px it took when N was 900, the terms pane takes about 270px of its 1,200.
-const SLOW: Record<string, number> = { C1: 1.45, S: 0.5, SM: 0.9, ...(WAREHOUSE ? { N: 0.375, NT: 0.9 } : {}) };
+// N is 4,000px now and its text keeps the 375px it took when N was 900, the terms pane takes about 330px of its 1,920.
+const SLOW: Record<string, number> = { C1: 1.45, S: 0.5, SM: 0.9, ...(WAREHOUSE ? { N: 0.094, NT: 0.69 } : {}) };
 
 // The story's sections that have a link in the top nav, by the data-ch of that link, see HeroFrame.
 const CHAPTER: Record<string, string> = { prodaja: 'prodaja', servis: 'servis', najam: 'najam' };
@@ -190,8 +190,6 @@ export function StoryShell({ Scene, tone, reduced, darkLayers, darkTop = DARK_TO
   const isDark = (l: LayerDef) => (darkLayers ? darkLayers.includes(l.id) : l.dark);
   const heroRef = useRef<HTMLDivElement>(null);
   const gridRef = useRef<HTMLDivElement>(null);
-  // Najam 1, Close, lays two flat panels behind the terms pane, the racks stand behind its words in that camera
-  const panelsRef = useRef<HTMLDivElement>(null);
   // the servis map is part of S and the terms pane is part of N, so their stills are frames of S and N
   const stills = useMemo(() => LAYERS.map((l) => stillClock(TIMELINE.findIndex((b) => b.id === (l.id === 'SM' ? 'S' : l.id === 'NT' ? 'N' : l.id)), l.still)), []);
   const heroStill = useMemo(() => stillClock(0, 0.5), []);
@@ -250,19 +248,6 @@ export function StoryShell({ Scene, tone, reduced, darkLayers, darkTop = DARK_TO
 
     // the plus marks at every crossing of a vertical with a block rule, from the rules as laid out
     const measure = () => {
-      // the panels of Najam 1, the text block from the top rule to 32px under its last line, and the term row, both on grid lines
-      const pan = panelsRef.current;
-      const nt = stage.querySelector<HTMLElement>('[data-layer="NT"]');
-      const stack = nt?.querySelector<HTMLElement>('.blk.stack');
-      const row = nt?.querySelector<HTMLElement>('.spec');
-      if (pan && stack && row) {
-        const sr0 = stage.getBoundingClientRect();
-        const a = stack.getBoundingClientRect();
-        const b = row.getBoundingClientRect();
-        pan.style.setProperty('--pt-h', `${(a.bottom - sr0.top + 32 - RULE_TOP).toFixed(1)}px`);
-        pan.style.setProperty('--pr-top', `${(b.top - sr0.top).toFixed(1)}px`);
-        pan.style.setProperty('--pr-h', `${b.height.toFixed(1)}px`);
-      }
       for (const G of groups) if (G.wrap) paintMarks(G.wrap, ruleMarks(G.el, stage));
       // Najam comes in behind the L fork as it backs out, so each of its parts rises once the tip has passed its left edge
       const sr = stage.getBoundingClientRect();
@@ -330,7 +315,6 @@ export function StoryShell({ Scene, tone, reduced, darkLayers, darkTop = DARK_TO
           G.el.style.visibility = on ? 'visible' : 'hidden';
           G.el.style.setProperty('--lv', on ? 'visible' : 'hidden');
           if (G.wrap) G.wrap.style.visibility = on ? 'visible' : 'hidden';
-          if (G.id === 'NT' && panelsRef.current) panelsRef.current.style.visibility = on ? 'visible' : 'hidden';
           // Prodaja shows no model while its beat is off screen, so the first one comes in again next time. A model the
           // visitor picked stays picked, and is hidden with its pane, see .p-fig in shell.css.
           if (!on && G.id === 'P' && G.tabs && !G.tabs.hasAttribute('data-pick')) setTab(G.tabs, -1);
@@ -532,12 +516,6 @@ export function StoryShell({ Scene, tone, reduced, darkLayers, darkTop = DARK_TO
         <div className="s2-scene" aria-hidden="true">
           {mountScene(Scene, clock)}
         </div>
-        {NAJAM === 1 && (
-          <div className="s2-panels" ref={panelsRef} aria-hidden="true">
-            <i className="pn-text" />
-            <i className="pn-terms" />
-          </div>
-        )}
         <Grid rootRef={gridRef} />
         {LAYERS.map((l) => (
           <section className="s2-layer" data-layer={l.id} data-ink={ink(tone, isDark(l))} key={l.id} style={{ visibility: 'hidden', '--lv': 'hidden' } as CSSProperties}>

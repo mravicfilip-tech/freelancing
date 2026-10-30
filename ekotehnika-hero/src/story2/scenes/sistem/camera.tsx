@@ -46,7 +46,8 @@ const AT_SX = 0.22;
 // The rental floor of T runs across the whole width with its bays, the fifteen trucks standing on the lower part of the frame.
 // The hall's end wall stands behind the last bay row and its foot lands on the grid rule under the spec row (y 543 at 1080),
 // so the title, lede and spec row sit on the wall itself. Nothing is masked or faded, the camera only places the world.
-// N is the Najam warehouse of najam.tsx now and has its own camera, najamCam in najamplan.ts, which ends on this pose.
+// Najam 0 keeps the floor and this pose. Najam 2 has the warehouse of najam.tsx and its own camera, najamCam in najamplan.ts, which ends
+// on the high view that T starts from.
 const N_D = 52;
 const N_SY = 0.305;
 const nShift = (_w: number, _h: number) => ({ sx: 0, sy: N_SY, d: N_D });
@@ -146,8 +147,8 @@ export function poseAt(u: number, pos: number, out: Pose, w = 1920, h = 1080): P
       out.sy = n.sy;
       out.shadow = 18;
     } else {
-      // Najam 1 to 3, the warehouse. The camera is a pure function of k like the rest, see najamCam, with one of three cameras for N3.
-      const c = najamCam(u, najamPose, NAJAM);
+      // Najam 2, the warehouse. The camera is a pure function of k like the rest, see najamCam, four holds and three flights.
+      const c = najamCam(u, najamPose);
       t.set(NP.x + c.x, c.y, NP.z + c.z);
       out.d = c.d;
       out.yaw = c.yaw;
@@ -160,18 +161,32 @@ export function poseAt(u: number, pos: number, out: Pose, w = 1920, h = 1080): P
     orbit(t, out.d, out.yaw, out.pitch, out.pos);
   } else {
     // T and AT. The depot camera glides down the aisle to about 4 m and then follows the order, three quarter view, the
-    // robot in columns 7 to 12, the left half of the frame is the hall's own floor and end wall.
-    const e = ease(range(u, 13.1, 14.0));
+    // robot in columns 7 to 12, the left half of the frame is the hall's own floor and end wall. Najam 0 starts from the pose of its
+    // rental floor and Najam 2 from the high view the hall ended on, the move into the aisle is all of T in one, the hall sinking
+    // into its floor as the walls and racks of the aisle rise out of it, see najam.tsx and aisle.tsx.
     const k = Math.min(Math.max(u - 14, 0), 1);
     const f = focusAt(k);
     const [fx, , fz] = toWorld(f.a, f.b);
-    out.d = lerp(n.d, AT_D, e);
-    out.yaw = lerp(90, lerp(AT_YAW[0], AT_YAW[1], ease(k)), e);
-    out.pitch = lerp(-24, AT_PITCH, e);
-    t.set(lerp(NP.x - 0.5, fx, e), lerp(0.9, 0.8, e), lerp(0, fz, e));
-    out.sx = lerp(n.sx, AT_SX, e);
-    out.sy = lerp(n.sy, 0.02, e);
-    out.shadow = lerp(18, 14, e);
+    let e: number;
+    let from: Pose;
+    if (NAJAM === 0) {
+      e = ease(range(u, 13.1, 14.0));
+      from = { pos: tmp.p0, yaw: 90, pitch: -24, sx: n.sx, sy: n.sy, target: tmp.t.set(NP.x - 0.5, 0.9, 0), d: n.d, shadow: 18, fov: 28 };
+      out.d = lerp(from.d, AT_D, e);
+    } else {
+      e = ease(range(u, 13.0, 14.0));
+      const c = najamCam(13, najamPose);
+      from = { pos: tmp.p0, yaw: c.yaw, pitch: c.pitch, sx: c.sx, sy: c.sy, target: tmp.t.set(NP.x + c.x, c.y, NP.z + c.z), d: c.d, shadow: c.shadow, fov: c.fov };
+      // the fall from 118 m to 12 m runs on the logarithm of the distance, so its last half is not a few frames
+      out.d = Math.exp(lerp(Math.log(from.d), Math.log(AT_D), e));
+    }
+    out.yaw = lerp(from.yaw, lerp(AT_YAW[0], AT_YAW[1], ease(k)), e);
+    out.pitch = lerp(from.pitch, AT_PITCH, e);
+    t.set(lerp(from.target.x, fx, e), lerp(from.target.y, 0.8, e), lerp(from.target.z, fz, e));
+    out.sx = lerp(from.sx, AT_SX, e);
+    out.sy = lerp(from.sy, 0.02, e);
+    out.shadow = lerp(from.shadow, 14, e);
+    out.fov = lerp(from.fov, 28, e);
     orbit(t, out.d, out.yaw, out.pitch, out.pos);
   }
   return out;

@@ -222,6 +222,9 @@ export default function Overlay({ clock }: SceneProps) {
 
   useFrame(() => {
     const u = uOf(clock);
+    // The overlay's unit is half a screen height only at the lens it was drawn for, 28 degrees. Najam looks through other lenses, 36 and 18,
+    // where the band over the top row, scaled for 28, stood in the frame as a white rectangle behind the lede and the CTA.
+    root.scale.setScalar(Math.tan(((camera as THREE.PerspectiveCamera).fov / 2) * (Math.PI / 180)));
     // Black for the push into the forklift, a hard edged shutter. The camera has already filled the frame with the dark mast, the
     // shutter rolls up from the bottom edge and covers the frame by u 9.9. Servis then opens on plain black while its text
     // rises, and the shutter leaves in one hard cut at u 10.125 as the text lands, so no frame is half black and half floor

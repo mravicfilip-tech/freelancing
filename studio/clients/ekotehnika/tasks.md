@@ -41,7 +41,7 @@ Task format
   - [x] Filip picks the Skladište camera, 2 Aisle end, with fixes to the timing, the floor lines and a complete hall
   - [x] Najam 2 finished, flights of 500px or more, the hall complete, Dolazak, Istovar and Otprema built, T without the grid
   - [x] Filip looks at Najam 2 on localhost, rejects the cutaway and the readability, asks for a better storyboard and to execute it
-  - [ ] Najam storyboard second version built, closed building, in through the dock door, out through the roof, EKOTEHNIKA on the trailers
+  - [x] Najam storyboard second version built, closed building, in through the dock door, out through the roof, EKOTEHNIKA on the trailers, board refs/r6-najam-v2.jpg
   - [ ] Filip accepts the new Najam, then it becomes the default
 
 - ekotehnika-11 Client sees the site all white and not loading on production. Link https://ekotehnika-hero.vercel.app

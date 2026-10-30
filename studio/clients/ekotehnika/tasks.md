@@ -31,7 +31,8 @@ Task format
   - [x] The real EKOTEHNIKA logo on the building
   - [x] Their VW Caddy in its wrap in place of the four made up vans
   - [x] Even scroll, three feels on localhost
-  - [ ] Filip picks a feel
+  - [x] Lock the scroll so nothing can be rushed past, Filip's ask, Lock 1300 px/s is the default, 4 slow and 6 fast on the switcher
+  - [ ] Filip tries the lock and picks 4, 5 or 6
   - [x] Filip answers the rent scope, Najam only
   - [ ] Filip answers the deadline and the short term rent line
   - [x] Filip says yes to the Najam beat table

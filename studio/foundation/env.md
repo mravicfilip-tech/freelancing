@@ -43,6 +43,10 @@ so the lesson outlives the context window.
   cap returns a 402 that blocks production too.
 - A git deploy of a commit an agent authored is refused. Deploy with
   `node studio/scripts/deploy.mjs --dir <project>`, which uploads a copy with no git history.
+- A Vercel project linked to the freelancing repo builds the repo root on every merge to `main`, and the root is the Remittix
+  app. On 29 October a Remittix merge put Remittix on ekotehnika-hero.vercel.app for three days. A client site lives in its
+  own repo with its own Vercel project, Ekotehnika in mravicfilip-tech/ekotehnika on the project ekotehnika, and no client
+  project stays linked to the freelancing repo.
 - Turn off git deploys for agent branches in each project's `vercel.json`.
 
 ```json

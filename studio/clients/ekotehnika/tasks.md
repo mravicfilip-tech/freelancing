@@ -25,6 +25,12 @@ Task format
 
 ## In progress
 
+- ekotehnika-13 The Ekotehnika link showed the Remittix site, own repo and a new Vercel link. Link https://ekotehnika.vercel.app
+  - [x] Find why, the old project ekotehnika-hero built the freelancing repo root on a Remittix merge to main on 29 October
+  - [x] Push the current site to mravicfilip-tech/ekotehnika and deploy it to the new project ekotehnika
+  - [ ] Filip decides on the old link, roll it back to the 14 October Ekotehnika build and unlink it from GitHub, or retire it
+  - [ ] Filip decides whether the freelancing repo stays public
+
 - ekotehnika-12 Round 6, the client's notes, logo on the building, their service vans, Najam as a rent story, even scroll. Notes in briefs/round6/client-notes.md, plan in briefs/round6/plan.md
   - [x] Write down the client's four notes and get the van files from their Drive
   - [x] Plan the round, the Najam beat table for Filip

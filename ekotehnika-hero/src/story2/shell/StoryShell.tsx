@@ -8,7 +8,7 @@
 // With reduced motion there is no pin and no loop, each hold beat is a still screen with every part at its end state.
 import { Component, Suspense, useEffect, useMemo, useRef, type ComponentType, type CSSProperties, type ReactNode } from 'react';
 import { stillClock, useStoryClock, type SceneProps } from '../clock';
-import { LENGTH, NAJAM_TERMS, N_PALLETS, N_SWAP, SERVIS_MAP, TIMELINE, WAREHOUSE, type BeatSpan } from '../timeline';
+import { LENGTH, NAJAM_TERMS, N_LEAVE, N_PALLETS, SERVIS_MAP, TIMELINE, WAREHOUSE, type BeatSpan } from '../timeline';
 import { Preview } from './Preview';
 import { HeroFrame } from '../../ui/HeroFrame';
 import { Grid, RULE_TOP, paintMarks, ruleMarks } from './Grid';
@@ -34,8 +34,8 @@ const LAYERS: LayerDef[] = [
   { id: 'S', Pane: SPane, dark: true, still: 0.3 },
   // the servis map, the second half of S, on a span of its own (SERVIS_MAP in timeline.ts)
   { id: 'SM', Pane: SMPane, dark: true, still: 0.75 },
-  // Najam 0 is today's, the grid of forklifts and its text. Najam 2 shows today's text over N1, N2 and the first two flights, then the
-  // terms pane on a span of its own to the end of N (NAJAM_TERMS in timeline.ts)
+  // Najam 0 is today's, the grid of forklifts and its text. Najam 2 shows today's text over N1, N2 and the first part of the flight in,
+  // then no words while the camera goes through the door, then the terms pane on a span of its own to the end of N (NAJAM_TERMS in timeline.ts)
   ...(WAREHOUSE
     ? [
         { id: 'N', Pane: NPane, dark: false, still: 0.2 },
@@ -47,9 +47,9 @@ const LAYERS: LayerDef[] = [
 
 // Where the text leaves, as a share of its beat. P holds its four models to the end of the hold.
 // S hands the black stage to the servis map in one cut half way through its 2000px, the map holds to the fork's dock.
-// N shows today's text to the end of the second flight, 120px before the camera arrives at the aisle, and gives the screen to the terms
-// pane at that moment, which then holds to the end of N.
-const LEAVE: Record<string, [number, number]> = { AT: [1.01, 1.02], S: [0.49, 0.51], SM: [1.01, 1.02], ...(WAREHOUSE ? { N: [N_SWAP - 0.001, N_SWAP + 0.001], NT: [1.01, 1.02] } : {}) };
+// N shows today's text until the camera of the flight in has started across the yard, 50px of leave, see N_LEAVE in timeline.ts, and the
+// terms pane takes the screen when the camera stands inside, which then holds to the end of N.
+const LEAVE: Record<string, [number, number]> = { AT: [1.01, 1.02], S: [0.49, 0.51], SM: [1.01, 1.02], ...(WAREHOUSE ? { N: [N_LEAVE[0], N_LEAVE[1]], NT: [1.01, 1.02] } : {}) };
 
 // Prodaja steps one model per 0.22 of the hold, at k 0.06, 0.28, 0.50 and 0.72, the last one held to the end.
 const P_FIRST = 0.06;

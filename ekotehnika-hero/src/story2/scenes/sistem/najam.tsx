@@ -8,6 +8,7 @@ import { useMemo, useRef } from 'react';
 import { useFrame } from '@react-three/fiber';
 import * as THREE from 'three';
 import type { SceneProps } from '../../clock';
+import { N_FLIGHT, N_SUB, planK } from '../../timeline';
 import { NP } from './route';
 import { SPEC, Truck, type ModelName, type TruckApi } from './models';
 import { BoxSet, type BoxItem } from './props';
@@ -199,7 +200,7 @@ function Mover({ clock, def }: SceneProps & { def: MoverDef }) {
   const p = useMemo<Pose>(() => ({ x: 0, z: 0, th: 0, lift: 0, roll: 0, reach: 0 }), []);
   const reach = def.name === 'r16';
   useFrame(() => {
-    const k = Math.min(Math.max(uOf(clock) - 12, 0), 1);
+    const k = planK(Math.min(Math.max(uOf(clock) - 12, 0), 1));
     def.at(k, p);
     if (g.current) {
       place(g.current, p);
@@ -235,7 +236,7 @@ function Movers({ clock }: SceneProps) {
   const pallets = useRef<(THREE.Group | null)[]>([]);
   const q = useMemo(() => ({ x: 0, y: 0, z: 0, th: 0 }), []);
   useFrame(() => {
-    const k = Math.min(Math.max(uOf(clock) - 12, 0), 1);
+    const k = planK(Math.min(Math.max(uOf(clock) - 12, 0), 1));
     PALLETS.forEach((_, i) => {
       const g = pallets.current[i];
       if (!g) return;
@@ -326,7 +327,7 @@ function DockLoads({ clock }: SceneProps) {
   const refs = useRef<(THREE.Group | null)[]>([]);
   const q = useMemo(() => ({ x: 0, y: 0, z: 0, th: 0, shown: true }), []);
   useFrame(() => {
-    const k = Math.min(Math.max(uOf(clock) - 12, 0), 1);
+    const k = planK(Math.min(Math.max(uOf(clock) - 12, 0), 1));
     for (let i = 0; i < DOCK_PALLET_COUNT; i++) {
       const g = refs.current[i];
       if (!g) continue;
@@ -352,9 +353,10 @@ export default function Najam({ clock }: SceneProps) {
   const doors = useRef<(THREE.Group | null)[]>([]);
   const roofHatch = useRef<THREE.Group>(null);
   const roof = useRef<THREE.Group>(null);
+  const signFade = useRef(1);
   useFrame(() => {
     const u = uOf(clock);
-    const k = Math.min(Math.max(u - 12, 0), 1);
+    const k = planK(Math.min(Math.max(u - 12, 0), 1));
     // the dock doors roll up into their heads, door 1 as the camera of the first flight arrives, door 3 for the second lorry
     const open = [ease(range(k, 0.2, 0.27)), 0, ease(range(k, 0.62, 0.7)), 0];
     open.forEach((o, i) => {
@@ -364,6 +366,11 @@ export default function Najam({ clock }: SceneProps) {
     // the roof light over the dock end draws aside in the third flight, 0.735 to 0.775, for the camera to rise through, and closes behind it as soon as
     // the camera is over the roof, 0.79 to 0.815, so the camera never looks down a dark gap
     if (roofHatch.current) roofHatch.current.scale.x = Math.max(1 - ease(range(k, 0.735, 0.775)) * (1 - ease(range(k, 0.79, 0.815))), 0.001);
+    // the wordmark on the long wall is drawn out as the third flight starts, while the camera is still inside, and drawn in again over the last
+    // 0.025 of the flight, as the high view of N4 arrives, since between them every part of the building passes behind the title of the terms
+    const kk = Math.min(Math.max(u - 12, 0), 1);
+    const away = ease(range(kk, N_FLIGHT.high[0], N_FLIGHT.high[0] + 0.01)) * (1 - ease(range(kk, N_SUB.N4[0] - 0.025, N_SUB.N4[0])));
+    signFade.current = u >= 13 ? 1 : 1 - away;
     // T, the roof draws in on itself like an iris while the camera dives, then the whole hall sinks as the walls and racks of the aisle rise
     const iris = ease(range(u, 13.0, 13.3));
     if (roof.current) {
@@ -382,7 +389,7 @@ export default function Najam({ clock }: SceneProps) {
         <Yard />
         <Lorries clock={clock} />
         <group position={[0, HALL_Y, 0]}>
-          <Hall doors={doors} roofHatch={roofHatch} roof={roof} />
+          <Hall doors={doors} roofHatch={roofHatch} roof={roof} signFade={signFade} />
           <Racks />
           <Movers clock={clock} />
           <DockLoads clock={clock} />

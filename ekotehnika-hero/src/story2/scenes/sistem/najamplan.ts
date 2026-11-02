@@ -3,14 +3,15 @@
 // pure function of k of N, the same idea as atplan.ts for the robots, so a frozen clock always draws the same picture and scrolling
 // back plays it backwards. Kept free of three so the shell and a plain node check can read it.
 //
-// N3 is k 0.55 to 0.75 of N, 800px, and it all happens in the last aisle, the one on the open side of the hall, so looking down it from
-// the staging floor the racks stand to the right and the left of the frame is floor and the far wall, which is where the text lies.
+// N3 is 800px, k 0.55 to 0.75 of the plan's clock, planK in timeline.ts, and it all happens in the last aisle, the one on the open side of the
+// hall, so looking down it from the staging floor the racks stand to the right and the left of the frame is floor and the far wall, which is
+// where the text lies.
 // Two X50s with a pallet each wait at the mouth of the aisle and rack theirs on the first beam one after the other, a reach truck
 // puts a third on the second beam and a second reach truck lifts the fourth to the top beam. A D12 and an H30 cross the cross aisle
 // at the end of the hall with a pallet each. No truck runs faster than 0.03 m per story px, no mast lifts faster than 0.015 m per
-// story px, see the check in the commit. The four pallets are set down at N_PALLETS (timeline.ts), the lit term cell in the shell
+// story px, see the check in the commit. The four pallets are set down at N_PLAN_PALLETS (timeline.ts), the lit term cell in the shell
 // reads the same marks.
-import { N_FLIGHT, N_PALLETS, N_SUB } from '../../timeline';
+import { N_FLIGHT, N_PLAN_PALLETS, N_SUB, planK } from '../../timeline';
 
 const PI = Math.PI;
 const rad = (d: number) => (d * PI) / 180;
@@ -255,7 +256,7 @@ function reachTruck(t: Lift) {
   ]);
   return { x: t.slot.x, lift, out };
 }
-const R16_A = reachTruck({ slot: SLOTS[2], rise: [0.5824, 0.6685], reach: [0.6685, 0.6905], set: [0.6905, 0.7], back: [0.7, 0.7225], settle: N_SUB.N3[1] });
+const R16_A = reachTruck({ slot: SLOTS[2], rise: [0.5824, 0.6685], reach: [0.6685, 0.6905], set: [0.6905, 0.7], back: [0.7, 0.7225], settle: 0.75 });
 const R16_B = reachTruck({ slot: SLOTS[3], rise: [0.6142, 0.7075], reach: [0.7075, 0.729], set: [0.729, 0.735], back: [0.735, 0.757], settle: 0.757 });
 
 // ---- trucks that cross the end of the hall ----------------------------------------------------------------------------
@@ -318,10 +319,10 @@ export type PalletPose = { x: number; y: number; z: number; th: number };
 // before N3 and with all four racked after it, and sets down at its mark in N_PALLETS, shared with the shell.
 type Carry = { by: (k: number, o: Pose) => Pose; kind: 'x50' | 'r16'; drop: number; to: Spot };
 export const PALLETS: Carry[] = [
-  { by: x50AAt, kind: 'x50', drop: N_PALLETS[0], to: SLOTS[0] },
-  { by: x50BAt, kind: 'x50', drop: N_PALLETS[1], to: SLOTS[1] },
-  { by: r16AAt, kind: 'r16', drop: N_PALLETS[2], to: SLOTS[2] },
-  { by: r16BAt, kind: 'r16', drop: N_PALLETS[3], to: SLOTS[3] },
+  { by: x50AAt, kind: 'x50', drop: N_PLAN_PALLETS[0], to: SLOTS[0] },
+  { by: x50BAt, kind: 'x50', drop: N_PLAN_PALLETS[1], to: SLOTS[1] },
+  { by: r16AAt, kind: 'r16', drop: N_PLAN_PALLETS[2], to: SLOTS[2] },
+  { by: r16BAt, kind: 'r16', drop: N_PLAN_PALLETS[3], to: SLOTS[3] },
 ];
 
 const px = mk();
@@ -364,8 +365,8 @@ export const HALL_Y = 1.2;
 //   N3  inside the hall at the dock end of the work aisle, 6 m up, looking down it with the picture shifted so the racks and the trucks lie
 //       right of the third vertical and the left of the frame is the floor and the long wall of the hall
 //   N4  the high view again over the closed building, held a little higher in the frame for the term cells, which is where T starts
-//   Flight 1 straight down from the high view to the yard. Flight 2 on a spline, in through the open side of the trailer behind the second
-//   forklift, out of its rear and through the door into the hall, along the staging floor to the aisle. Flight 3 on a spline, up to the roof
+//   Flight 1 straight down from the high view to the yard. Flight 2 on a spline, across the yard in a long curve, through the open door of
+//   dock 1 on its axis and along the dock wall inside to the aisle. Flight 3 on a spline, up to the roof
 //   light over the dock end, out through it and away to the high view.
 export type Cam = { x: number; y: number; z: number; d: number; yaw: number; pitch: number; sx: number; sy: number; shadow: number; fov: number };
 const cam = (): Cam => ({ x: 0, y: 0, z: 0, d: 0, yaw: 0, pitch: 0, sx: 0, sy: 0, shadow: 0, fov: 28 });
@@ -388,7 +389,8 @@ function eye(o: Cam, c: [number, number, number], t: [number, number, number], l
   o.pitch = -(Math.asin(dy / o.d) * 180) / PI;
   return Object.assign(o, lens);
 }
-const DOCK_LENS = { sx: 0.24, sy: 0.3, shadow: 30, fov: 36 };
+// one lens for N2, the flight in and N3, 35 degrees, so the flight in never changes the lens, and the flight down to N2 brings it in from the 28 of the high view
+const DOCK_LENS = { sx: 0.24, sy: 0.335, shadow: 30, fov: 35 };
 const DOCK_AT: [number, number, number] = [17.0, 1.0, HALL.docks[0] + 0.55];
 const DOCK_A = eye(cam(), [34.1, 4.1, 4.7], DOCK_AT, DOCK_LENS);
 const DOCK_B = eye(cam(), [32.5, 3.8, 3.4], DOCK_AT, DOCK_LENS);
@@ -424,7 +426,7 @@ const mix = (a: Cam, b: Cam, t: number, o: Cam) => {
 // and its target are. With no vias the flight is a straight line.
 const RAD = PI / 180;
 type V3 = [number, number, number];
-type Via = { cam: V3[]; tgt: V3[]; sy?: number[] };
+type Via = { cam: V3[]; tgt: V3[]; sx?: number[]; sy?: number[] };
 const spline = (pts: V3[], t: number): V3 => {
   const n = pts.length - 1;
   if (n === 1) return [lerp(pts[0][0], pts[1][0], t), lerp(pts[0][1], pts[1][1], t), lerp(pts[0][2], pts[1][2], t)];
@@ -437,15 +439,20 @@ const spline = (pts: V3[], t: number): V3 => {
   const p3 = pts[Math.min(i + 2, n)];
   return [0, 1, 2].map((c) => 0.5 * (2 * p1[c] + (-p0[c] + p2[c]) * u + (2 * p0[c] - 5 * p1[c] + 4 * p2[c] - p3[c]) * u * u + (-p0[c] + 3 * p1[c] - 3 * p2[c] + p3[c]) * u * u * u)) as V3;
 };
-// the second flight, in at the side of the trailer of dock 1, along its floor behind the second forklift, through the door and over the
-// staging floor to the mouth of the work aisle
+// The flight in, from the yard in front of dock 1 to the mouth of the work aisle, one calm move on one lens. The camera starts where N2 ends,
+// 15 m out and 4 m up, glides across the yard toward the door in a long curve that comes onto the axis of the door 6 m before it, goes
+// through the doorway on that axis at 2.4 m, the middle of the opening, and runs on 3 m past it before it bends to the wall and rises to the
+// 6 m of the aisle shot, while the target sweeps down the staging floor to the aisle, so the view turns 55 degrees in all, over the whole
+// flight, and never fast. The glide of the flight takes it from rest to rest, and withinIn holds it back at the start so the lorry of dock 1
+// has pulled away before the camera is across the yard. It stays 6 m or more from every lorry, forklift and pallet all through, see the
+// check in the commit. The lens shift comes down to nothing for the doorway so the door lies in the middle of the picture, and rises to the
+// shift of the aisle shot after it.
+// The target and the lens shift have a point for each point of the camera.
 const VIA_AISLE: Via = {
-  cam: [[30, 2.8, -3.2], [25, 2.4, -8.6], [22.4, 2.4, -10.5], [19.6, 2.6, -10.7], [16.6, 2.7, -10.6], [9.5, 5.6, -7.5], [11.0, 6.4, -1.0]],
-  // it looks down at the forklift from the trailer on and follows it to the corner of the dock wall, so the racks are behind the camera and
-  // the dock wall and the corner are what stands behind the words, and the picture is pushed down by the lens shift at the middle of the flight,
-  // the forklift and the pallets low in the frame
-  tgt: [[19.5, 1.0, -11.0], [17.5, 1.0, -11.4], [14.5, 0.7, -11.55], [11.0, 0.3, -12.2], [12.8, 0.4, -13.2], [13.2, 0.4, -13.6], [14.0, 2.0, 2.0]],
-  sy: [0.5, 0.58, 0.6, 0.6, 0.5, 0.35, 0.15],
+  cam: [[29.8, 3.9, 0.9], [26.6, 3.8, -2.4], [23.6, 3.5, -5.6], [20.9, 3.1, -8.6], [18.4, 2.7, -10.9], [15.8, 2.5, -11.55], [12.6, 2.4, -11.5], [11.4, 2.8, -8.8], [12.9, 4.0, -3.4], [13.3, 5.5, 3.4]],
+  tgt: [[17.0, 1.2, -11.0], [16.4, 1.3, -11.3], [15.6, 1.4, -11.5], [14.5, 1.5, -11.55], [10.5, 1.4, -11.55], [6.0, 1.3, -11.55], [2.0, 1.3, -10.4], [-2.5, 1.2, -6.6], [-6.5, 1.1, -0.5], [-8.8, 1.0, 4.8]],
+  sx: [0.2, 0.15, 0.1, 0.05, 0.0, 0.0, 0.0, 0.03, 0.1, 0.17],
+  sy: [0.3, 0.24, 0.17, 0.1, 0.04, 0.0, 0.0, 0.0, 0.02, 0.03],
 };
 // the third flight, up under the roof light over the dock end, through it, over the roof and away to the high view
 const VIA_HIGH: Via = {
@@ -469,7 +476,7 @@ function fly(a: Cam, b: Cam, t: number, o: Cam, via?: Via) {
   o.d = d;
   o.yaw = Math.atan2(dx, dz) / RAD;
   o.pitch = -Math.asin(dy / d) / RAD;
-  o.sx = lerp(a.sx, b.sx, t);
+  o.sx = via?.sx ? spline([[a.sx, 0, 0], ...via.sx.map((v) => [v, 0, 0] as V3), [b.sx, 0, 0]], t)[0] : lerp(a.sx, b.sx, t);
   o.sy = via?.sy ? spline([[a.sy, 0, 0], ...via.sy.map((v) => [v, 0, 0] as V3), [b.sy, 0, 0]], t)[0] : lerp(a.sy, b.sy, t);
   o.shadow = lerp(a.shadow, b.shadow, t);
   o.fov = lerp(a.fov, b.fov, t);
@@ -480,11 +487,16 @@ const tc = { follow: cam(), reach: cam(), at: cam(), n1: cam(), n2: cam(), s2: c
 // A flight eases at both ends, smoother than the smoothstep of the rest of the scene so it leaves and arrives without a jolt.
 const glide = (t: number) => t * t * t * (t * (t * 6 - 15) + 10);
 const within = (k: number, w: readonly [number, number]) => glide(clamp01((k - w[0]) / (w[1] - w[0])));
+// the flight in leaves slowly, so the camera is still across the yard while the lorry pulls away, and arrives at the door at the middle of the
+// scroll, the glide of the whole flight with its first half stretched by the power
+const withinIn = (k: number, w: readonly [number, number]) => glide(Math.pow(clamp01((k - w[0]) / (w[1] - w[0])), 1.15));
 
 // The hall's camera at k of N, hall metres in x and z and y over the platform. The poses are made of the holds and blended by the flights
-// in order, so a frozen clock always draws the same frame and scrolling back flies the same way.
+// in order, so a frozen clock always draws the same frame and scrolling back flies the same way. The flights and the first two holds run on
+// the story's k, the poses of N3 follow the trucks of the plan and run on pk, the plan's clock, see planK in timeline.ts.
 export function najamCam(u: number, out: Cam = cam()): Cam {
   const k = clamp01(u - 12);
+  const pk = planK(k);
   // N1 and the first flight, from the high view down to the dock
   mix(HIGH_FAR, HIGH, ease(clamp01(k / N_SUB.N1[1])), tc.n1);
   mix(DOCK_A, DOCK_B, ease(clamp01((k - N_SUB.N2[0]) / (N_SUB.N2[1] - N_SUB.N2[0]))), tc.n2);
@@ -493,13 +505,13 @@ export function najamCam(u: number, out: Cam = cam()): Cam {
   // shot, the reach shot is the same place with the top beam in it
   const f = tc.follow;
   const r = tc.reach;
-  x50AAt(k, tc.a);
-  x50BAt(k, tc.b);
+  x50AAt(pk, tc.a);
+  x50BAt(pk, tc.b);
   const mid = (tc.a.x + tc.b.x) / 2;
-  look(f, lerp(13.3, 12.6, ease(clamp01((k - 0.552) / 0.148))), 6.0, -10.1 + 0.2 * (mid + 10.1), 1.0);
+  look(f, lerp(13.3, 12.6, ease(clamp01((pk - 0.552) / 0.148))), 6.0, -10.1 + 0.2 * (mid + 10.1), 1.0);
   look(r, 12.4, 6.2, -8.6, 1.5);
-  mix(f, r, ease(clamp01((k - 0.69) / 0.032)), tc.at);
-  fly(tc.s2, tc.at, within(k, N_FLIGHT.aisle), tc.s2, VIA_AISLE);
+  mix(f, r, ease(clamp01((pk - 0.69) / 0.032)), tc.at);
+  fly(tc.s2, tc.at, withinIn(k, N_FLIGHT.aisle), tc.s2, VIA_AISLE);
   // the third flight, up to the high view of N4
   fly(tc.s2, HIGH4, within(k, N_FLIGHT.high), out, VIA_HIGH);
   out.y += HALL_Y;

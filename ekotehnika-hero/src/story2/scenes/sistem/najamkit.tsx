@@ -41,6 +41,23 @@ export const cabGrey = lam(G.light, { emissive: lit(G.light).multiplyScalar(0.4)
 export const tyre = lam('#111111');
 export const darkGrey = lam(G.dark);
 
+// The building seen from outside, one material for each part so every face and edge of it is a step of tone and not a line. The cladding is the
+// LMH pale grey, lit a little under the roof so the roof stays the lightest thing and the walls turn away from it, the pilasters and the
+// corner posts are the light grey one step down, the plinth is the concrete light grey with less light on it, the coping is the medium grey and
+// the frames, the seals and the bumpers of the docks are the dark ones. The faces that stand behind the words of N2 and N4 stay the pale
+// cladding and the light grey, nothing darker than the light grey is used above the doors. The joints are the one unlit material, a faint
+// medium grey line, so they read at any angle.
+export const claddingMat = lam(G.pale, { emissive: new THREE.Color().setScalar(0.46) });
+export const pilasterMat = lam(G.light, { emissive: new THREE.Color().setScalar(0.44) });
+export const plinthMat = lam(G.light, { emissive: new THREE.Color().setScalar(0.26) });
+export const copingMat = lam(G.mid, { emissive: new THREE.Color().setScalar(0.3) });
+export const frameMat = lam(G.dark, { emissive: lit(G.dark).multiplyScalar(0.55) });
+export const leafMat = lam(G.mid, { emissive: lit(G.mid).multiplyScalar(0.45) });
+export const underMat = lam(G.light, { emissive: new THREE.Color().setScalar(0.34) });
+export const skylightMat = lam(G.light, { emissive: new THREE.Color().setScalar(0.5) });
+export const officeGlass = lam(G.graphite, { emissive: new THREE.Color().setScalar(0.22) });
+export const jointLine = new THREE.MeshBasicMaterial({ color: G.mid, opacity: 0.42, transparent: true, toneMapped: false, depthWrite: false });
+
 // ---- labels -----------------------------------------------------------------------------------------------------------
 
 // Shipping and rack labels, the white plates of the Prodaja racks, built once.

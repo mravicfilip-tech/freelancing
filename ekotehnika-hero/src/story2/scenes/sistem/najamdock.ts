@@ -2,13 +2,19 @@
 // so a frozen clock draws the same picture and scrolling back runs it backwards. Three lorries and three forklifts, in the beats of the
 // table in briefs/round6/plan.md.
 //   N1  lorry 1 turns in from the yard road, passes dock 1, stops and backs onto it in an arc. The rented forklifts stand at their bays.
-//   N2  forklift A drives into the trailer, lifts the first pallet, backs out and sets it in the wall lane. Forklift B follows it in from
-//       the far side of the apron and brings the second out to the far corner. Lorry 1 shuts its doors and pulls away.
-//   N3  lorry 2 turns in and backs onto dock 3, out of sight of the aisle camera, from the second flight on.
+//   N2  forklift A drives into the trailer, lifts the first pallet, backs out and turns right into the first aisle to set it down at its mouth.
+//       Forklift B follows it in from the far side of the apron and brings the second out the same way, deeper in the aisle. Neither pallet
+//       is within 10 m of the line the camera takes through the door. Lorry 1 shuts its doors as the second forklift is
+//       clear of the trailer, at the end of N2, and pulls away across the first part of the flight in, so the door of dock 1 is an open door
+//       when the camera arrives at it and the camera never has a lorry within 6 m.
+//   N3  lorry 2 turns in and backs onto dock 3, out of sight of the aisle camera, once the camera stands inside.
 //   N4  forklift C carries a pallet into lorry 2 and sets it down, backs out, the doors close and the lorry pulls away down the yard
 //       road, and lorry 3 turns in from the road and starts to back onto dock 4 as T takes the screen.
-// The lorries run on past k 1, to 1.1 in T, which is 400px more, so the hall does not stop them mid way as it sinks. No truck runs faster
-// than 0.03 m per story px and no lorry faster than 0.05 m per px, see the check in the commit. Kept free of three.
+// Every k here is a k of the plan, planK in timeline.ts, and the flight in through the door is 820 story px for 520 of the plan, so a truck
+// that moves in it covers its way in 1.6 times the scroll its marks say. The lorries run on past k 1, to 1.1 in T, which is 400px more, so the
+// hall does not stop them mid way as it sinks. No truck runs faster than 0.03 m per story px, except the second forklift of the docks that
+// takes 0.035, and no lorry faster than 0.05 m per px, see the check in the commit. Kept free of three.
+import { planK } from '../../timeline';
 import { HALL, X50_FWD, X50_PAL, mk, pace, route, type Pose, type Route, type Way } from './najamplan';
 
 const PI = Math.PI;
@@ -140,16 +146,17 @@ function lorryPlan(dock: number, p: { south?: boolean; north?: boolean; curtain?
   };
 }
 
-// Lorry 1 comes in with the story and goes after N2, lorry 2 backs onto dock 3 in N2 and N3 and loads in N4, lorry 3 starts for dock 4 in N3
-// and backs on as T opens. The stops between the legs are a hold of 40px or so.
+// Lorry 1 comes in with the story, shuts its doors as the unloading ends and pulls away across the first half of the flight in, lorry 2 backs
+// onto dock 3 in N3 and loads in N4, lorry 3 starts for dock 4 in N3 and backs on as T opens. The stops between the legs are a hold of 40px or
+// so. Lorry 1 runs 34 m of its way out, at 0.05 m per px at the most, which clears the door of dock 1 by 15 m while the camera is still in the yard.
 const LORRIES: LorryPlan[] = [
-  lorryPlan(0, { lead: 10, go: [0, 0.08], stop: 0.085, back: [0.085, 0.25], north: true, curtain: [0.2, 0.27, 0.52, 0.56], shut: [0.55, 0.58], away: [0.57, 0.9], run: 24, far: 45.3 }),
-  lorryPlan(2, { lead: 10, go: [0.44, 0.52], stop: 0.53, back: [0.53, 0.72], shut: [0.935, 0.95], away: [0.955, 1.1], run: 14, far: 17, from: 0.44 }),
+  lorryPlan(0, { lead: 10, go: [0, 0.08], stop: 0.085, back: [0.085, 0.25], north: true, curtain: [0.2, 0.27, 0.405, 0.42], shut: [0.405, 0.42], away: [0.415, 0.53], run: 24, far: 34 }),
+  lorryPlan(2, { lead: 10, go: [0.55, 0.62], stop: 0.625, back: [0.625, 0.76], shut: [0.935, 0.95], away: [0.955, 1.1], run: 14, far: 17, from: 0.55 }),
   lorryPlan(0, { south: true, lead: 34, go: [0.62, 0.88], stop: 0.9, back: [0.9, 1.1], shut: [2, 2], away: [2, 2.1], run: 4, far: 1, from: 0.62 }),
 ];
 export const LORRY_COUNT = LORRIES.length;
 // the k of N for a position u of the story, which runs on past 1 through T, 400px for a tenth, so the lorries do not stop as the hall sinks
-export const kLong = (u: number) => (u < 13 ? clamp01(u - 12) : 1 + Math.min(u - 13, 1) * 0.1);
+export const kLong = (u: number) => (u < 13 ? planK(clamp01(u - 12)) : 1 + Math.min(u - 13, 1) * 0.1);
 
 const sh = (t: number) => ease(clamp01(t));
 export function lorryAt(i: number, k: number, out: LorryPose = mkLorry()): LorryPose {
@@ -168,9 +175,7 @@ export function lorryAt(i: number, k: number, out: LorryPose = mkLorry()): Lorry
 const CARRY = 0.15;
 // A drive in, a lift, a back out, a turn and a set down, as one route with the fork height beside it. The route is its way points, s the
 // distance along it and lift the fork height, both against k. The keys of s are written as the leg a stop is at the end of, 1 for the
-// first leg and so on, 0 for the start and -1 for the end of the whole route. A turn is a quarter circle of 2.2 m.
-const R = 2.2;
-const BEND = 1.657 * R;
+// first leg and so on, 0 for the start and -1 for the end of the whole route. A turn is a quarter circle of 1.9 m.
 type Dock = { rt: Route; s: (k: number) => number; lift: (k: number) => number };
 
 function dockTrip(ways: Way[], s: [number, number][], lift: [number, number][]): Dock {
@@ -180,33 +185,42 @@ function dockTrip(ways: Way[], s: [number, number][], lift: [number, number][]):
 }
 
 // Forklift A waits on the apron at the first door. In to the first pallet of the trailer, lifts it, backs out to the middle of the apron,
-// turns right onto the wall lane and sets the pallet down on the middle place of the lane between the first two doors.
-const A_END = { x: 13.2, z: (Z[0] + Z[1]) / 2 };
-export const A_MARKS = { lift: [0.255, 0.268], set: [0.348, 0.358] } as const;
+// turns right through half a circle of 1.925 m onto the line of the first aisle and drives in along it, to set the pallet down 23 m from the
+// door. Forklift B does the same with the second, 6 m short of it. They are 10 m or more from the camera that goes through the door and
+// along the wall, since the door is the one frame of the flight where a forklift would fill the picture, and both are in the aisle, which the
+// aisle camera of N3, on the other side of the hall, never sees.
+const U = 1.925;
+const BU = 1.657 * U;
+const PUT_X = [-12, -6];
+export const A_MARKS = { lift: [0.255, 0.268], set: [0.5, 0.51] } as const;
 const A = dockTrip(
   [
     { x: 10.6, z: Z[0], th: 0 },
     { x: REAR_X + 0.9 - X50_FWD, z: Z[0], th: 0, dir: -1 },
-    { x: 11.0, z: Z[0], th: 0, mo: BEND },
-    { x: A_END.x, z: Z[0] + R, th: 90, mi: BEND },
-    { x: A_END.x, z: A_END.z - X50_FWD, th: 90 },
+    { x: 11.0, z: Z[0], th: 0, mo: BU },
+    { x: 11.0 + U, z: Z[0] + U, th: 90, mi: BU, mo: BU },
+    { x: 11.0, z: Z[0] + 2 * U, th: 180, mi: BU },
+    { x: PUT_X[0] + X50_FWD, z: Z[0] + 2 * U, th: 180 },
   ],
-  [[0, 0], [0.215, 0], [0.255, 1], [0.268, 1], [0.304, 2], [0.348, -1]],
+  [[0, 0], [0.215, 0], [0.255, 1], [0.268, 1], [0.3, 2], [0.5, -1]],
   [[0, 0], [A_MARKS.lift[0], 0], [A_MARKS.lift[1], CARRY], [A_MARKS.set[0], CARRY], [A_MARKS.set[1], 0]],
 );
 
 // Forklift B waits at its bay in the corner by the far wall. Round an S curve onto the door's line once A has left it, in to the second pallet,
-// lifts it, backs out and turns left to the far corner of the wall, where it sets the pallet down. It finishes in the second flight.
-export const B_MARKS = { lift: [0.418, 0.43], set: [0.522, 0.532] } as const;
+// lifts it, backs out, and takes the same way into the aisle as A, to set the pallet down deeper in. It is out of the trailer when the doors
+// shut and finishes as the flight in ends.
+export const B_MARKS = { lift: [0.355, 0.367], set: [0.51, 0.52] } as const;
 const B = dockTrip(
   [
     { x: 9.2, z: -14.5, th: 0 },
     { x: 13.0, z: Z[0], th: 0 },
     { x: REAR_X + 1.9 - X50_FWD, z: Z[0], th: 0, dir: -1 },
-    { x: 11.0, z: Z[0], th: 0, mo: BEND },
-    { x: 13.2, z: Z[0] - R, th: 270, mi: BEND },
+    { x: 11.0, z: Z[0], th: 0, mo: BU },
+    { x: 11.0 + U, z: Z[0] + U, th: 90, mi: BU, mo: BU },
+    { x: 11.0, z: Z[0] + 2 * U, th: 180, mi: BU },
+    { x: PUT_X[1] + X50_FWD, z: Z[0] + 2 * U, th: 180 },
   ],
-  [[0, 0], [0.34, 0], [0.418, 2], [0.43, 2], [0.486, 3], [0.522, -1]],
+  [[0, 0], [0.33, 0], [0.355, 2], [0.367, 2], [0.405, 3], [0.51, -1]],
   [[0, 0], [B_MARKS.lift[0], 0], [B_MARKS.lift[1], CARRY], [B_MARKS.set[0], CARRY], [B_MARKS.set[1], 0]],
 );
 
@@ -248,8 +262,8 @@ export const dockCAt = dockOf(C);
 export type DockPallet = { x: number; y: number; z: number; th: number; shown: boolean };
 type Mover = { by: (k: number, o: Pose) => Pose; rest?: { x: number; z: number }; lift: number; set: number; to: { x: number; z: number; th: number }; hide?: boolean };
 const DOCK_PALLETS: Mover[] = [
-  { by: dockAAt, rest: { x: REAR_X + 0.9, z: Z[0] }, lift: A_MARKS.lift[0], set: A_MARKS.set[1], to: { x: A_END.x, z: A_END.z, th: rad(90) } },
-  { by: dockBAt, rest: { x: REAR_X + 1.9, z: Z[0] }, lift: B_MARKS.lift[0], set: B_MARKS.set[1], to: { x: 13.2, z: Z[0] - R - X50_FWD, th: rad(270) } },
+  { by: dockAAt, rest: { x: REAR_X + 0.9, z: Z[0] }, lift: A_MARKS.lift[0], set: A_MARKS.set[1], to: { x: PUT_X[0], z: Z[0] + 2 * U, th: rad(180) } },
+  { by: dockBAt, rest: { x: REAR_X + 1.9, z: Z[0] }, lift: B_MARKS.lift[0], set: B_MARKS.set[1], to: { x: PUT_X[1], z: Z[0] + 2 * U, th: rad(180) } },
   { by: dockCAt, lift: -1, set: C_MARKS.set[1], to: { x: REAR_X + 1.9, z: Z[2], th: 0 }, hide: true },
 ];
 export const DOCK_PALLET_COUNT = DOCK_PALLETS.length;

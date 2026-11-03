@@ -43,3 +43,9 @@ so the lesson outlives the context window.
 ```json
 { "git": { "deploymentEnabled": { "claude/*": false } } }
 ```
+
+## Google Sheets
+
+- The Sheets connector treats an apostrophe at the very start of a cell as a text marker and drops it, so a
+  cell that opens with a quoted phrase loses its opening quote. Start every cell with a plain word, such as
+  "The line 'X' says", never with the quote itself (AHAI QA sheet, 2026-11-03).

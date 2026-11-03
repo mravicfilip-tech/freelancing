@@ -21,7 +21,7 @@ import { HALL, HALL_Y, PALLETS, X50_PAL, d12At, h30At, hallInside, isHeroSlot, l
 import { CHARGING, DOOR_H, Hall, PARKED, PARK_Z, Yard, loadedPallet, newSets, PalletSet } from './najamhall';
 import { AXLE_X, BED, CURTAIN_UP, Lorry, type LorryApi } from './najamlorry';
 import { C_FROM, C_IN_TRAILER, DOCK_PALLET_COUNT, LORRY_COUNT, dockAAt, dockBAt, dockCAt, dockPalletAt, kLong, lorryAt, mkLorry } from './najamdock';
-import { Load, Plates, beamFlange, beamWeb, labelMat, loadMats, palletBase, rackGrey, wrapBand, wrapShell } from './najamkit';
+import { Load, Plates, line, beamFlange, beamWeb, labelMat, loadMats, palletBase, rackGrey, wrapBand, wrapShell } from './najamkit';
 
 // ---- the racks --------------------------------------------------------------------------------------------------------
 
@@ -394,6 +394,8 @@ export default function Najam({ clock }: SceneProps) {
     const swapped = u >= T_SWAP;
     if (inside.current) inside.current.visible = !swapped;
     if (floor.current) floor.current.visible = !swapped;
+    // the floor's markings stay in the aisle, lighter, so the floor under the words of AT is a fine pattern and not a blank field
+    line.opacity = swapped ? 0.3 : 0.62;
     // No haze in the hall. The world's fog starts 40 m or so from the lens, which is the far wall of the hall, so inside it is pushed out of reach,
     // and it comes back as the camera goes out of the door or over the roof
     const fog = scene.fog as THREE.Fog | null;

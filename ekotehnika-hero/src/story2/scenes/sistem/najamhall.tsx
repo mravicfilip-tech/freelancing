@@ -159,6 +159,16 @@ export function Hall({ doors, roofHatch, inside, signFade }: HallRefs) {
       x0 = lx + 0.9;
     });
     roofS.push([(x0 + PX1) / 2, WALL_H + 0.2, MIDZ, PX1 - x0, 0.4, lenZ]);
+    // the roof membrane, a seam every 1.5 m along z and a lap every 5 m along x between the roof lights, so a roof seen from above is a surface with a
+    // grain and not a plain white plane (round 7)
+    const seams: BoxItem[] = [];
+    let sx0 = PX0 + 1.2;
+    [...lightsX, PX1 + 0.9].forEach((lx) => {
+      const xe = Math.min(lx - 1.2, PX1 - 1.2);
+      for (let x = sx0 + 0.75; x < xe; x += 1.5) seams.push([x, WALL_H + 0.41, MIDZ, 0.05, 0.01, lenZ - 2.4]);
+      for (let z = PZ0 + 5; z < PZ1 - 2; z += 5) seams.push([(sx0 + xe) / 2, WALL_H + 0.41, z, xe - sx0, 0.01, 0.05]);
+      sx0 = lx + 1.2;
+    });
     const lights = lightsX.map((lx) => [[lx, WALL_H + 0.16, MIDZ, 1.8, 0.1, lenZ - 0.6] as BoxItem]);
     // the roof lights stand in a raised curb of the light grey, a frame round each pane, so they read as glazed strips and not as a seam, and a
     // gutter runs along the foot of the parapet with a drain of the medium grey every 12 m
@@ -193,7 +203,7 @@ export function Hall({ doors, roofHatch, inside, signFade }: HallRefs) {
     const unitFans: BoxItem[] = [];
     const unitCurbs: BoxItem[] = [];
     const louvres: BoxItem[] = [];
-    ([[-19.5, 12, 3.4, 2.0, 1.7], [-9, 5, 2.6, 1.7, 1.5], [7, -9, 3.0, 1.9, 1.6], [-1, 12, 2.2, 2.2, 1.3], [9, 10, 2.4, 1.5, 1.3], [-3, -6, 1.6, 1.6, 2.4]] as const).forEach(([x, z, w, dd, h]) => {
+    ([[-19.5, 12, 3.4, 2.0, 1.7], [-9, 5, 2.6, 1.7, 1.5], [7, -9, 3.0, 1.9, 1.6], [-1, 12, 2.2, 2.2, 1.3], [9, 10, 2.4, 1.5, 1.3], [-3, -6, 1.6, 1.6, 2.4], [-10, -9, 2.4, 1.6, 1.4], [-20, -4, 2.0, 1.8, 1.5], [-2, 2, 2.6, 1.8, 1.6], [7.5, -3, 2.2, 1.6, 1.4]] as const).forEach(([x, z, w, dd, h]) => {
       units.push([x, WALL_H + 0.4 + h / 2, z, w, h, dd]);
       unitFans.push([x, WALL_H + 0.4 + h + 0.03, z, w * 0.6, 0.06, dd * 0.6]);
       unitCurbs.push([x, WALL_H + 0.5, z, w + 0.3, 0.2, dd + 0.3]);
@@ -341,7 +351,7 @@ export function Hall({ doors, roofHatch, inside, signFade }: HallRefs) {
     const cabinGlass: BoxItem[] = [[cx + 0.96, 1.75, cz - 1.2, 0.04, 0.8, 1.6], [cx + 0.96, 1.75, cz + 0.5, 0.04, 0.8, 0.8]];
     const cabinDoor: BoxItem[] = [[cx + 0.96, 1.05, cz + 1.6, 0.05, 2.1, 0.9]];
     const cabinStep: BoxItem[] = [[cx + 1.25, 0.1, cz + 1.6, 0.55, 0.2, 1.2], [cx + 1.13, 0.25, cz + 1.6, 0.3, 0.1, 1.2]];
-    return { platform, kerb, wall, cols, roofS, lights, curb, roofTrim, drains, para, paraCap, units, unitFans, unitCurbs, louvres, trusses, ceilLamps, door, lev, joints, marks, slats, pal, empties, chargers, lamps, cabin, cabinRoof, cabinGlass, cabinDoor, cabinStep };
+    return { platform, kerb, wall, cols, roofS, seams, lights, curb, roofTrim, drains, para, paraCap, units, unitFans, unitCurbs, louvres, trusses, ceilLamps, door, lev, joints, marks, slats, pal, empties, chargers, lamps, cabin, cabinRoof, cabinGlass, cabinDoor, cabinStep };
   }, []);
   return (
     <group>
@@ -372,6 +382,7 @@ export function Hall({ doors, roofHatch, inside, signFade }: HallRefs) {
       {/* the roof, with the roof lights and the units on it, the trusses and lamps under it. The last roof light is a hatch on a hinge along its east edge */}
       <group>
         <BoxSet items={d.roofS} mat={roofMat} />
+        <BoxSet items={d.seams} mat={jointLine} receive={false} />
         <BoxSet items={d.para} mat={wallMat} />
         <BoxSet items={d.paraCap} mat={copingMat} receive={false} />
         <BoxSet items={d.curb} mat={pilasterMat} receive={false} />
@@ -390,10 +401,11 @@ export function Hall({ doors, roofHatch, inside, signFade }: HallRefs) {
           <BoxSet items={[[-0.9, 0, 0, 1.8, 0.1, PZ1 - PZ0 - 0.6]]} mat={skylightMat} receive={false} />
         </group>
       </group>
+      {/* the floor's markings stay in the aisle, a floor with its lanes, arrows and bays and not a blank field */}
+      <BoxSet items={d.joints} mat={lineFaint} receive={false} />
+      <BoxSet items={d.marks} mat={line} receive={false} />
+      <Slats items={d.slats} mat={line} />
       <group ref={inside}>
-        <BoxSet items={d.joints} mat={lineFaint} receive={false} />
-        <BoxSet items={d.marks} mat={line} receive={false} />
-        <Slats items={d.slats} mat={line} />
         <PalletSet s={d.pal} />
         <BoxSet items={d.empties} mat={palletBase} cast />
         <BoxSet items={d.chargers} mat={darkGrey} cast />

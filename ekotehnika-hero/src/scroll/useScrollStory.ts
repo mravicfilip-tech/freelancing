@@ -6,9 +6,11 @@
 // flick plays the beats through at a steady pace. The page scroll itself is never capped.
 //
 // ?feel=0 is the old per frame follow with no cap. ?feel=1, 2 and 3 cap the clock at 1500, 2500 and 4000 story px a
-// second. ?feel=4, 5 and 6 cap it at 900, 1300 and 1800 and also lock the page to it, see holdWheel below. No parameter
-// means 5. The parameter is read once, when the module loads, by story2/preview.ts, which also holds the
-// panel's way back, a page that a switch reloaded lands on the frame it left (restore below).
+// second. ?feel=4, 5 and 6 cap it at 900, 1300 and 1800 and also lock the page to it, see holdWheel below. ?feel=7 is 5
+// with stops, a point in each section where its words have arrived, at which the clock waits while the wheel is still being
+// turned (round 7, Filip's "us skipping content is not what we want"). No parameter means 7. The parameter is read once, when
+// the module loads, by story2/preview.ts, which also holds the panel's way back, a page that a switch reloaded lands on the
+// frame it left (restore below).
 //
 // With reduced motion there is no Lenis, no pin and no scrub. goTo(p) sets a still frame.
 
@@ -22,14 +24,26 @@ gsap.registerPlugin(ScrollTrigger);
 
 let lenis: Lenis | null = null;
 
-const FEEL_CAPS = [0, 1500, 2500, 4000, 900, 1300, 1800];
-// Feels 4 to 6 hold the page to the story clock, the wheel can put the page's scroll target no more than LEAD px ahead of
+const FEEL_CAPS = [0, 1500, 2500, 4000, 900, 1300, 1800, 1300];
+// Feels 4 to 7 hold the page to the story clock, the wheel can put the page's scroll target no more than LEAD px ahead of
 // the clock or behind it. Pin px and story px are 1 to 1.
 const LOCKED = FEEL >= 4;
 const LEAD = 120;
+// Feel 7 stops at the points in STOPS (story2/stops.ts). A clock within ZONE px of a stop is at it. The wheel holds there until no wheel
+// event has come for GAP ms, so a hand that keeps turning, or a trackpad that keeps coasting, never carries the clock on, and the next
+// gesture does.
+const STOPPING = FEEL === 7;
+const ZONE = 4;
+const GAP = 350;
 
-// What the lock looks at, the pinned story that is on the page now.
-let lock: { st: ScrollTrigger; progress: { current: number }; length: number; jumpUntil: { current: number } } | null = null;
+// What the lock looks at, the pinned story that is on the page now, and the story pixels it stops at.
+let lock: { st: ScrollTrigger; progress: { current: number }; length: number; jumpUntil: { current: number }; stops: number[] } | null = null;
+
+// The state of the stops. hold is the stop the clock is waiting at, wheel events are dropped while it is set. pass is the stop a gesture
+// began on, which that gesture carries the clock past. lastWheel is when the last wheel event came, dropped ones included.
+let hold: number | null = null;
+let pass: number | null = null;
+let lastWheel = -Infinity;
 
 // Lenis asks this for every wheel event before it moves the scroll target. The part of the delta past the lead is dropped,
 // never queued, so when the hand stops the page stops within LEAD px of the clock. Inside the pin only, and the lock lets go
@@ -39,20 +53,47 @@ function holdWheel(data: VirtualScrollData) {
   const event = data.event;
   if (!lock || !lenis || !LOCKED || !event.type.includes('wheel') || (event as WheelEvent).ctrlKey) return true;
   const d = data.deltaY;
-  if (d === 0 || gsap.ticker.time <= lock.jumpUntil.current) return true;
-  const { st, progress, length } = lock;
+  if (d === 0 || gsap.ticker.time <= lock.jumpUntil.current) {
+    // a jump from goTo ignores the stops and lets the next gesture start clean
+    hold = pass = null;
+    return true;
+  }
+  const { st, progress, length, stops } = lock;
   const at = st.start + progress.current * length;
   const target = lenis.targetScroll;
   let next = target + d;
   if (d > 0 && at < st.end - 0.5) next = Math.min(next, Math.max(at + LEAD, target));
   else if (d < 0 && at > st.start + 0.5) next = Math.max(next, Math.min(at - LEAD, target));
-  if (next === target) {
-    // Lenis lets the browser scroll on its own when it gets no delta, so the event is stopped here.
-    if (event.cancelable) event.preventDefault();
-    return false;
+  if (STOPPING && stops.length) {
+    const now = performance.now();
+    const gap = now - lastWheel;
+    lastWheel = now;
+    // no wheel event for GAP ms, this is a new gesture
+    if (gap >= GAP) hold = pass = null;
+    if (hold !== null) return drop(event);
+    const pos = at - st.start;
+    const here = stops.find((s) => Math.abs(s - pos) <= ZONE);
+    if (here !== undefined) {
+      // a gesture that begins on a stop carries on past it, one that arrives at a stop with the wheel still turning waits there
+      if (gap >= GAP) pass = here;
+      else if (pass !== here) {
+        hold = here;
+        return drop(event);
+      }
+    } else pass = null;
+    // the clock may not be taken past the next stop in the direction of the wheel, so it arrives there and waits
+    const beyond = d > 0 ? stops.find((s) => s > pos + ZONE) : [...stops].reverse().find((s) => s < pos - ZONE);
+    if (beyond !== undefined) next = d > 0 ? Math.min(next, st.start + beyond) : Math.max(next, st.start + beyond);
   }
+  if (next === target) return drop(event);
   data.deltaY = next - target;
   return true;
+}
+
+// Lenis lets the browser scroll on its own when it gets no delta, so the event is stopped here.
+function drop(event: Event) {
+  if (event.cancelable) event.preventDefault();
+  return false;
 }
 // Seconds the speed cap stays lifted after goTo, the 1.4 s jump plus the time the follow takes to catch up.
 const JUMP_HOLD = 1.8;
@@ -81,9 +122,11 @@ export type ScrollStory = {
   smoothing?: number;
   // progress, 0 to 1, to land on at once when the story starts, with no animation, for a page that a switch reloaded
   restore?: number | null;
+  // story pixels where the clock waits while the wheel is still turned, ascending, used by feel 7 only (story2/stops.ts)
+  stops?: number[];
 };
 
-export function useScrollStory({ length, reduced, snap, smoothing = 0.08, restore = null }: ScrollStory) {
+export function useScrollStory({ length, reduced, snap, smoothing = 0.08, restore = null, stops }: ScrollStory) {
   const stageRef = useRef<HTMLDivElement>(null);
   const progress = useRef(0);
   const raw = useRef(0);
@@ -118,7 +161,8 @@ export function useScrollStory({ length, reduced, snap, smoothing = 0.08, restor
         },
       });
     }, stage);
-    if (stRef.current) lock = { st: stRef.current, progress, length, jumpUntil };
+    if (stRef.current) lock = { st: stRef.current, progress, length, jumpUntil, stops: stops ?? [] };
+    hold = pass = null;
     // a reload from the panel lands on the frame it left, straight there, the clock and the page scroll both
     if (restore !== null && stRef.current) {
       const st = stRef.current;
@@ -176,6 +220,7 @@ export function useScrollStory({ length, reduced, snap, smoothing = 0.08, restor
     }
     const y = st.start + (st.end - st.start) * p;
     jumpUntil.current = gsap.ticker.time + JUMP_HOLD;
+    hold = pass = null;
     if (lenis) lenis.scrollTo(y, { duration: 1.4 });
     else window.scrollTo({ top: y, behavior: 'smooth' });
   };

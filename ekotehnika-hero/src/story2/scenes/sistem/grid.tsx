@@ -36,15 +36,12 @@ const WALL_H = 16;
 const wallMat = lam(G.pale, { emissive: new THREE.Color().setScalar(0.56) });
 const wallBase = lam(G.light, { emissive: new THREE.Color().setScalar(0.46) });
 
-// The floor, one plane that runs out to the fog, so no edge shows anywhere. In Najam 2 the warehouse of najam.tsx has walls of its own and
-// the end wall stands only from T, rising out of the floor as the aisle's walls do, so the hall of N is a cutaway with no 16 m slab behind it.
-export function Depot({ clock }: SceneProps) {
+// The floor, one plane that runs out to the fog, so no edge shows anywhere. In Najam 2 the warehouse of najam.tsx has walls and a floor of its own, and
+// its back wall is the end wall of the aisle, so the end wall here is not drawn at all, round 7 (it used to rise out of the floor by its scale).
+export function Depot(_: SceneProps) {
   const wallRef = useRef<THREE.Group>(null);
   useFrame(() => {
-    if (!WAREHOUSE || !wallRef.current) return;
-    const r = ease(range(uOf(clock), 13.05, 13.6));
-    wallRef.current.scale.y = Math.max(r, 0.001);
-    wallRef.current.visible = r > 0.002;
+    if (wallRef.current) wallRef.current.visible = !WAREHOUSE;
   });
   const floor = useMemo(() => lam(FLOOR, { emissive: new THREE.Color(FLOOR).multiplyScalar(0.12) }), []);
   const wall = useMemo(() => {

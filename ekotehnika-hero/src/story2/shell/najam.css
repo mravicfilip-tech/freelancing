@@ -1,0 +1,29 @@
+/* Najam, the terms pane NT, round 7. The four terms are four cards stacked under the line in the left column, between the first vertical and the
+   third. A card is a row, the figure at the 40px of the spec row and the label at its 14px, and the lit card is drawn like the active Prodaja tab, a
+   2px ink rule along its bottom wiping in from the left in 600ms, the figure and label in ink, the others in text grey. The colour and the rule come
+   from the .s2-nt .cell rules of shell.css, this file sets the shape and takes the rule's right edge back from the next vertical, since a card's rule
+   runs the width of the list and not on to a neighbour. */
+.s2-nt .nt-list {
+  /* the rules of a block run the whole cell and the text inside pads its own, like the tab list of Prodaja */
+  align-self: stretch;
+  display: flex;
+  flex-direction: column;
+  margin-top: 8px;
+  border-top: 1px solid var(--line);
+}
+
+.s2-nt .nt-list .cell {
+  position: relative;
+  display: flex;
+  flex-direction: row;
+  align-items: baseline;
+  gap: 16px;
+  /* 24px in from the line on both sides, and 14px over and under the 40px figure, 68px a card with its hairline */
+  padding: 14px 24px;
+  border-left: 0;
+  border-bottom: 1px solid var(--line);
+}
+
+.s2-nt .nt-list .cell:not(:last-child)::before {
+  right: 0;
+}

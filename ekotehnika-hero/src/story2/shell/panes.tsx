@@ -3,6 +3,7 @@
 import { useEffect, useLayoutEffect, useRef, useState, type ReactNode } from 'react';
 import { automatizacija, kompanija, markers, najam, prodaja, servis } from '../copy';
 import { Btn, Fill, Marker, SpecRow, TitleLines, between, type SpecFact } from './ui';
+import './najam.css';
 
 // Show tab i on the Prodaja pane, for the loop that steps with k and for a click. -1 shows no model yet. Each cut out
 // is in one of three states, wait (off to the right, ready to come in), on, and gone (off to the left), see .p-fig in
@@ -348,9 +349,11 @@ export function NPane() {
   );
 }
 
-// Najam, the terms pane of N3 and N4. The same spec row as the facts of N, four cells of a figure and a label, and the cell of the
-// term the pallets have reached is drawn like the active Prodaja tab, a 2px ink rule along its bottom and the figure and label in
-// ink, the others in text grey. With reduced motion there is no loop and the pane stays as it is rendered, 72 lit.
+// Najam, the terms pane of N3 and N4. The title and the line, and under the line the four terms as four cards stacked in the left column, between
+// the first vertical and the third, so the scene keeps the right two thirds. A card is a row, the figure at the size of the facts of N and the word
+// meseci at the size of their labels, and the card of the term the pallets have reached is drawn like the active Prodaja tab, a 2px ink rule along
+// its bottom and the figure and label in ink, the others in text grey. The styles are najam.css. With reduced motion there is no loop and the pane
+// stays as it is rendered, 72 lit.
 export function NTPane() {
   const c = najam.terms;
   return (
@@ -359,8 +362,19 @@ export function NTPane() {
         <Marker m={markers.n} order={0} />
         <TitleLines lines={c.title} order={1} className="s2-title-s" />
         <Fill text={c.text} />
+        <div className="nt-list" data-rule="t">
+          {c.cells.map((cell, i) => (
+            <div className="cell" data-rule="b" data-lit={i === c.cells.length - 1 ? '' : undefined} key={cell.figure}>
+              <b className="fig" data-wipe={3 + i * 2}>
+                {cell.figure}
+              </b>
+              <span className="lab" data-wipe={4 + i * 2}>
+                {cell.label}
+              </span>
+            </div>
+          ))}
+        </div>
       </div>
-      <SpecRow className="blk at-bottom" facts={c.cells} spans={[3, 3, 3, 3]} order={3} style={between(1, 5)} lit={c.cells.length - 1} />
     </div>
   );
 }

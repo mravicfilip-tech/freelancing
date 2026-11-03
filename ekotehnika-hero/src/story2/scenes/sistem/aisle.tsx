@@ -1,8 +1,11 @@
 // The automation aisle, T and AT. A real hall seen from about 4 m, a drive aisle with a charger at one end and a pick station
 // at the other, shelf units stored in bays on the right, fixed pallet racks behind them, and C-Matic 10 robots at true scale.
 // One order runs across the AT hold, see atplan.ts. In T the najam depot floor leads into this aisle, the walls, racks and units
-// rise from the same floor and the lane lines draw on down it. Nothing fades. The only system graphic is a 1px path line drawn
-// just ahead of the active robot and gone behind it, and a calm outline on the target bay, both in the info blue.
+// rise from the same floor and the lane lines draw on down it. Nothing fades. The system graphics are the info blue ones, a calm outline on the
+// target bay and the active robot's route, which lies on the floor whole and faint from the start of the move and fills in solid behind the robot as
+// it travels, a progress bar (round 7, it used to be a short line drawn just ahead of the robot). In Najam 2 the aisle stands in the hall of
+// najam.tsx, on its platform 1.2 m up, and nothing of it rises, grows or draws on, it is all there from the moment the Najam hall's inside is swapped out
+// while the roof is shut, so the camera only moves, see T_SWAP in timeline.ts.
 import { useLayoutEffect, useMemo, useRef } from 'react';
 import { useFrame, useThree } from '@react-three/fiber';
 import * as THREE from 'three';
@@ -11,6 +14,8 @@ import { LineSegmentsGeometry } from 'three/examples/jsm/lines/LineSegmentsGeome
 import { LineMaterial } from 'three/examples/jsm/lines/LineMaterial.js';
 import type { SceneProps } from '../../clock';
 import { ATP } from './route';
+import { WAREHOUSE, T_SWAP } from '../../timeline';
+import { HALL_Y } from './najamplan';
 import { Truck } from './models';
 import { BoxSet, type BoxItem } from './props';
 import { labelTexture } from './warehouse';
@@ -357,6 +362,7 @@ export default function Aisle({ clock }: SceneProps) {
   const wallsRef = useRef<THREE.Group>(null);
   const racksRef = useRef<THREE.Group>(null);
   const fixedRef = useRef<THREE.Group>(null);
+  const root = useRef<THREE.Group>(null);
   const robotRefs = useRef<(THREE.Group | null)[]>([]);
   const unitRefs = useRef<(THREE.Group | null)[]>([]);
   const staticRefs = useRef<(THREE.Group | null)[]>([]);
@@ -377,15 +383,37 @@ export default function Aisle({ clock }: SceneProps) {
   }, []);
 
   const pathMat = useMemo(() => new LineMaterial({ color: new THREE.Color(INFO).getHex(), linewidth: 1, transparent: true, opacity: 1, toneMapped: false, depthWrite: false }), []);
+  const faintMat = useMemo(() => new LineMaterial({ color: new THREE.Color(INFO).getHex(), linewidth: 1, transparent: true, opacity: 0.3, toneMapped: false, depthWrite: false }), []);
   const hlMat = useMemo(() => new LineMaterial({ color: new THREE.Color(INFO).getHex(), linewidth: 1, transparent: true, opacity: 1, toneMapped: false, depthWrite: false }), []);
-  const NSEG = 64;
-  const path = useMemo(() => {
+  // The route of the active robot, its way points from the plan with the stops taken out, as straight legs. The robot goes along a leg
+  // with an ease, so the share of a leg it has done is the share of its own pose between the two ends.
+  const legs = useMemo(() => {
+    const out: { k0: number; k1: number; a0: number; b0: number; a1: number; b1: number }[] = [];
+    for (let i = 0; i < ACTIVE.length - 1; i++) {
+      const [k0, a0, b0] = ACTIVE[i];
+      const [k1, a1, b1] = ACTIVE[i + 1];
+      if (Math.hypot(a1 - a0, b1 - b0) > 1e-4) out.push({ k0, k1, a0, b0, a1, b1 });
+    }
+    return out;
+  }, []);
+  const NSEG = legs.length;
+  const segLine = (mat: LineMaterial, fill: boolean) => {
     const g = new LineSegmentsGeometry();
-    g.setPositions(new Float32Array(NSEG * 6));
-    const l = new LineSegments2(g, pathMat);
+    const arr = new Float32Array(NSEG * 6);
+    if (fill)
+      legs.forEach((l, i) => {
+        const [x0, , z0] = toWorld(l.a0, l.b0, 0.03);
+        const [x1, , z1] = toWorld(l.a1, l.b1, 0.03);
+        arr.set([x0, 0.03, z0, x1, 0.03, z1], i * 6);
+      });
+    g.setPositions(arr);
+    const l = new LineSegments2(g, mat);
     l.frustumCulled = false;
     return l;
-  }, [pathMat]);
+  };
+  // the whole route, faint, and the part the robot has done, solid
+  const faint = useMemo(() => segLine(faintMat, true), [faintMat, legs]);
+  const path = useMemo(() => segLine(pathMat, false), [pathMat, legs]);
   const hlLine = useMemo(() => {
     const g = new LineSegmentsGeometry();
     const h = 0.66;
@@ -411,26 +439,32 @@ export default function Aisle({ clock }: SceneProps) {
     const u = uOf(clock);
     const k = Math.min(Math.max(u - 14, 0), 1);
     pathMat.resolution.set(size.width * dpr, size.height * dpr);
+    faintMat.resolution.set(size.width * dpr, size.height * dpr);
     hlMat.resolution.set(size.width * dpr, size.height * dpr);
-    pathMat.linewidth = hlMat.linewidth = Math.max(1, size.height / 900) * dpr;
+    faintMat.linewidth = Math.max(1.5, size.height / 600) * dpr;
+    pathMat.linewidth = Math.max(2.5, size.height / 360) * dpr;
+    hlMat.linewidth = Math.max(1, size.height / 900) * dpr;
 
-    // T, the najam floor leads into the aisle, the lane lines draw on down the hall, the walls, racks and units rise from the floor
-    const draw = ease(range(u, 13.15, 13.75));
+    // T, Najam 0, the najam floor leads into the aisle, the lane lines draw on down the hall, the walls, racks and units rise from the floor. Najam 2
+    // has all of it from the swap, see the head of this file
+    if (root.current) root.current.visible = !WAREHOUSE || u >= T_SWAP;
+    const draw = WAREHOUSE ? 1 : ease(range(u, 13.15, 13.75));
     if (linesRef.current) {
       linesRef.current.scale.x = Math.max(draw, 0.001);
       linesRef.current.visible = draw > 0.002;
     }
+    // the walls of the aisle are the hall's own in Najam 2
     const wall = ease(range(u, 13.1, 13.7));
     if (wallsRef.current) {
       wallsRef.current.scale.y = Math.max(wall, 0.001);
-      wallsRef.current.visible = wall > 0.002;
+      wallsRef.current.visible = !WAREHOUSE && wall > 0.002;
     }
-    const rk = ease(range(u, 13.2, 13.8));
+    const rk = WAREHOUSE ? 1 : ease(range(u, 13.2, 13.8));
     if (racksRef.current) {
       racksRef.current.scale.y = Math.max(rk, 0.001);
       racksRef.current.visible = rk > 0.002;
     }
-    const fx = ease(range(u, 13.5, 13.9));
+    const fx = WAREHOUSE ? 1 : ease(range(u, 13.5, 13.9));
     if (fixedRef.current) {
       fixedRef.current.scale.y = Math.max(fx, 0.001);
       fixedRef.current.visible = fx > 0.002;
@@ -439,11 +473,11 @@ export default function Aisle({ clock }: SceneProps) {
     statics.forEach((s, i) => {
       const g = staticRefs.current[i];
       if (!g) return;
-      const r = ease(range(u, 13.3 + s.a * 0.012, 13.55 + s.a * 0.012));
+      const r = WAREHOUSE ? 1 : ease(range(u, 13.3 + s.a * 0.012, 13.55 + s.a * 0.012));
       g.scale.y = Math.max(r, 0.001);
       g.visible = r > 0.002;
     });
-    const grow = ease(range(u, 13.7, 13.95));
+    const grow = WAREHOUSE ? 1 : ease(range(u, 13.7, 13.95));
 
     // the robots
     const poses = bots.map((kf) => poseOf(kf, k));
@@ -469,54 +503,39 @@ export default function Aisle({ clock }: SceneProps) {
       const [x, , z] = toWorld(a, b);
       g.position.set(x, riding ? rp.lift : 0, z);
       g.rotation.y = yawOf(h);
-      const r = ease(range(u, 13.4 + m.slot[0] * 0.012, 13.65 + m.slot[0] * 0.012));
+      const r = WAREHOUSE ? 1 : ease(range(u, 13.4 + m.slot[0] * 0.012, 13.65 + m.slot[0] * 0.012));
       g.scale.y = Math.max(r, 0.001);
       g.visible = r > 0.002;
     });
 
-    // the path, drawn from the active robot along the next 5 m of its route, and nothing behind it
+    // the route of the active robot as a progress bar. The whole route lies on the floor from the first frame of AT, faint, and fills in solid behind
+    // the robot as it goes along it, to where it stands, and there is nothing drawn ahead of it but the faint route
     {
       const geo = path.geometry as LineSegmentsGeometry & { attributes: { instanceStart: THREE.InterleavedBufferAttribute } };
       const arr = geo.attributes.instanceStart.data.array as Float32Array;
-      const pts: [number, number][] = [];
-      const t1 = Math.min(k + 0.3, 1);
-      for (let i = 0; i <= 90; i++) {
-        const p = poseOf(ACTIVE, k + ((t1 - k) * i) / 90);
-        pts.push([p.a, p.b]);
-      }
-      // trim to 5 m along the route
-      let acc = 0;
-      const keep: [number, number][] = [pts[0]];
-      for (let i = 1; i < pts.length; i++) {
-        const d = Math.hypot(pts[i][0] - pts[i - 1][0], pts[i][1] - pts[i - 1][1]);
-        if (d < 1e-5) continue;
-        if (acc + d > 5) {
-          const t = (5 - acc) / d;
-          keep.push([pts[i - 1][0] + (pts[i][0] - pts[i - 1][0]) * t, pts[i - 1][1] + (pts[i][1] - pts[i - 1][1]) * t]);
-          break;
-        }
-        acc += d;
-        keep.push(pts[i]);
-      }
-      // the line starts at the robot's front edge, so it reads as running ahead of it
-      const on = ease(range(u, 14.0, 14.04)) * (k < 0.92 ? 1 : 0);
-      for (let i = 0; i < NSEG; i++) {
-        const s = Math.min(i, keep.length - 2);
-        const p = keep[Math.max(s, 0)];
-        const q = keep[Math.min(s + 1, keep.length - 1)];
-        const live = on > 0.5 && i < keep.length - 1 && keep.length > 1;
-        const [px, , pz] = toWorld(p[0], p[1], 0.03);
-        const [qx, , qz] = toWorld(q[0], q[1], 0.03);
+      const cur = poses[0];
+      legs.forEach((l, i) => {
+        // how far along the leg the robot is, the share of its own pose between the two ends
+        const len = Math.hypot(l.a1 - l.a0, l.b1 - l.b0);
+        const f = k >= l.k1 ? 1 : k <= l.k0 ? 0 : Math.min(Math.hypot(cur.a - l.a0, cur.b - l.b0) / len, 1);
+        const [x0, , z0] = toWorld(l.a0, l.b0, 0.03);
+        const [x1, , z1] = toWorld(l.a0 + (l.a1 - l.a0) * f, l.b0 + (l.b1 - l.b0) * f, 0.03);
+        const live = f > 1e-4;
         const o = i * 6;
-        arr[o] = live ? px : 0;
+        arr[o] = live ? x0 : 0;
         arr[o + 1] = live ? 0.03 : -20;
-        arr[o + 2] = live ? pz : 0;
-        arr[o + 3] = live ? qx : 0;
+        arr[o + 2] = live ? z0 : 0;
+        arr[o + 3] = live ? x1 : 0;
         arr[o + 4] = live ? 0.03 : -20;
-        arr[o + 5] = live ? qz : 0;
-      }
+        arr[o + 5] = live ? z1 : 0;
+      });
       geo.attributes.instanceStart.data.needsUpdate = true;
-      path.visible = on > 0.5;
+      // both come in with the words of AT, over 40px of scroll
+      const on = ease(range(u, 14.0, 14.04));
+      faint.visible = on > 0.001;
+      path.visible = on > 0.001;
+      faintMat.opacity = 0.3 * on;
+      pathMat.opacity = on;
     }
     // the target bay, outlined and lightly tinted until its unit is lifted
     if (hl.current) {
@@ -532,7 +551,7 @@ export default function Aisle({ clock }: SceneProps) {
     const box = boxRef.current;
     const au = unitRefs.current[0];
     if (pg && box && au) {
-      const rise = ease(range(u, 13.85, 13.98));
+      const rise = WAREHOUSE ? 1 : ease(range(u, 13.85, 13.98));
       const reach = ease(range(k, ...PICK.reach));
       const pull = ease(range(k, ...PICK.pull));
       const turn = ease(range(k, ...PICK.turn));
@@ -574,7 +593,7 @@ export default function Aisle({ clock }: SceneProps) {
   const [sx, , sz] = toWorld(STATION.a + 1.6, 2.2);
 
   return (
-    <group>
+    <group ref={root} position={[0, WAREHOUSE ? HALL_Y : 0, 0]}>
       {/* floor lines, drawn on down the hall */}
       <group ref={linesRef} position={[ATP.x, 0, ATP.z]}>
         <group>
@@ -638,6 +657,7 @@ export default function Aisle({ clock }: SceneProps) {
           <Truck name="cmatic10" />
         </group>
       ))}
+      <primitive object={faint} />
       <primitive object={path} />
       <group ref={hl}>
         <primitive object={hlLine} />

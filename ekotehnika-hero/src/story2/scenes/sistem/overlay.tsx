@@ -12,6 +12,8 @@ import { darkTopAt } from './darkTop';
 import { BACK_FROM, BACK_TO, NEAR, forkX } from './forkTip';
 import { gridXs } from '../../shell/Grid';
 import { WAREHOUSE } from '../../timeline';
+import { NP } from './route';
+import { HALL_Y, hallInside } from './najamplan';
 
 const TAN = Math.tan((28 / 2) * (Math.PI / 180));
 
@@ -200,7 +202,8 @@ type Cell = { x: [number, number]; top: number; open: (u: number) => number };
 // cut sits on a drawn line at 2560 as at 1920 (round 4 item 9, it stopped at 972 whatever the width).
 const CELLS: Cell[] = [{ x: [0, 0], top: 136, open: (u) => ease(range(u, 4.95, 5.12)) * (1 - ease(range(u, 5.9, 6.0))) }];
 
-// A light haze of the ground colour over the upper part of the frame, for the Najam story. Clear from the term row up to the middle of the frame,
+// A light haze of the ground colour over the upper part of the frame, for the Najam story, only while the camera is outside the hall, since the
+// racks and the floor inside looked faded and white under it (round 7). Clear from the bottom of the frame up to the middle of it,
 // then rising to 55 percent at the top rule, so whatever lies far behind the title, the lede and the facts reads soft, and the near work
 // below them stays crisp. A texture of one column, drawn once. It lies under the band over the top row, which hides its top.
 let hazeTex: THREE.Texture | undefined;
@@ -228,7 +231,6 @@ function hazeTexture() {
 export default function Overlay({ clock }: SceneProps) {
   const root = useOverlayRoot();
   const haze = useRef<THREE.Mesh>(null);
-  const termHaze = useRef<THREE.Mesh>(null);
   const size = useThree((s) => s.size);
   const fade = useRef<THREE.Mesh>(null);
   const maskGroup = useRef<THREE.Group>(null);
@@ -253,18 +255,14 @@ export default function Overlay({ clock }: SceneProps) {
     // The overlay's unit is half a screen height only at the lens it was drawn for, 28 degrees. Najam looks through other lenses, 36 and 18,
     // where the band over the top row, scaled for 28, stood in the frame as a white rectangle behind the lede and the CTA.
     root.scale.setScalar(Math.tan(((camera as THREE.PerspectiveCamera).fov / 2) * (Math.PI / 180)));
-    // the haze of the Najam story, from the cut under the L curtain to the end of T, where the iris of the roof closes
+    // the haze of the Najam story, from the cut under the L curtain to the start of T, and only while the camera is outside the hall. It goes as the
+    // camera comes in at the door, or at the roof light, and is gone in the aisle. The terms are in the left column now, so no veil lies under them
     if (haze.current) {
-      const on = WAREHOUSE && u >= 11.9 && u < 13.4;
-      haze.current.visible = on;
-      (haze.current.material as THREE.MeshBasicMaterial).opacity = on ? 1 - ease(range(u, 13.0, 13.4)) : 0;
-    }
-    // the term row's haze, a plain veil from the row's top rule to the bottom edge, drawn while the terms are on, so a floor line or a rack
-    // edge never lies behind a figure or a label of the row. Its top edge sits on the drawn rule at 720 of 900, the way the band over the top row does
-    if (termHaze.current) {
-      const op = WAREHOUSE && u >= 12.5 && u < 13.4 ? 0.62 * ease(range(u, 12.5, 12.55)) * (1 - ease(range(u, 13.0, 13.4))) : 0;
-      termHaze.current.visible = op > 0.001;
-      (termHaze.current.material as THREE.MeshBasicMaterial).opacity = op;
+      const p = camera.position;
+      const out = 1 - hallInside(p.x - NP.x, p.y - HALL_Y, p.z - NP.z, 12);
+      const op = WAREHOUSE && u >= 11.9 && u < 13.4 ? out * (1 - ease(range(u, 13.0, 13.4))) : 0;
+      haze.current.visible = op > 0.001;
+      (haze.current.material as THREE.MeshBasicMaterial).opacity = op;
     }
     // Black for the push into the forklift, a hard edged shutter. The camera has already filled the frame with the dark mast, the
     // shutter rolls up from the bottom edge and covers the frame by u 9.9. Servis then opens on plain black while its text
@@ -339,10 +337,6 @@ export default function Overlay({ clock }: SceneProps) {
       <mesh ref={haze} visible={false} renderOrder={23}>
         <planeGeometry args={[aspect * 2 + 0.2, 2]} />
         <meshBasicMaterial map={hazeTexture()} transparent depthTest={false} depthWrite={false} toneMapped={false} />
-      </mesh>
-      <mesh ref={termHaze} visible={false} position={[0, -0.8, 0]} renderOrder={23}>
-        <planeGeometry args={[aspect * 2 + 0.2, 0.4]} />
-        <meshBasicMaterial color="#ffffff" transparent opacity={0} depthTest={false} depthWrite={false} toneMapped={false} />
       </mesh>
       {/* The band over the top row draws after the fork and the curtain, so no steel ever crosses into the top row. */}
       <mesh ref={maskTop} position={[0, 1 - topH / 2, 0]} scale={[1, 1, 1]} renderOrder={25}>

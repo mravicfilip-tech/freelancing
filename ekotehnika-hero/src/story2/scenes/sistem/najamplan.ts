@@ -358,22 +358,22 @@ export const HALL_Y = 1.2;
 
 // The camera of N as one pose in the units of the Rig in camera.tsx, a target in hall metres, an orbit distance, a yaw and pitch in
 // degrees, the lens shift as a share of the frame and a field of view. Four holds and three flights between them, see N_FLIGHT.
-//   N1  a high three quarter view of the closed building from the dock side, pushing in a little as the lorry turns in
-//   N2  in the yard beside the lorry at dock 1, 5 m up and 20 m out, looking at the open side of its trailer and the door it stands at,
+//   N1  a high three quarter view of the closed building from the dock side, pushing in a little as the lorry comes in through the gate
+//   N2  Istovar, in the yard 4 m up and 15 m out from the rear of the trailer at dock 1, looking at the open trailer and the door it stands at,
 //       the picture shifted down so the trailer and the forklifts lie under the facts row and the plain facade over the doors fills the
 //       word zone. A slow drift toward the door
 //   N3  inside the hall at the dock end of the work aisle, 6 m up, looking down it with the picture shifted so the racks and the trucks lie
 //       right of the third vertical and the left of the frame is the floor and the long wall of the hall
-//   N4  the high view again over the closed building, held a little higher in the frame for the term cells, which is where T starts
+//   N4  the high view again over the closed building, held a little higher in the frame, which is where T starts
 //   Flight 1 straight down from the high view to the yard. Flight 2 on a spline, across the yard in a long curve, through the open door of
-//   dock 1 on its axis and along the dock wall inside to the aisle. Flight 3 on a spline, up to the roof
-//   light over the dock end, out through it and away to the high view.
+//   dock 1 on its axis and along the dock wall inside to the aisle. Flight 3 on a spline, up under the roof light over the dock end, out
+//   through it, always looking down at the building, and away to the high view. T runs the same road the other way, tTrack.
 export type Cam = { x: number; y: number; z: number; d: number; yaw: number; pitch: number; sx: number; sy: number; shadow: number; fov: number };
 const cam = (): Cam => ({ x: 0, y: 0, z: 0, d: 0, yaw: 0, pitch: 0, sx: 0, sy: 0, shadow: 0, fov: 28 });
 
 const HIGH_FAR: Cam = { x: 14, y: 0, z: -2, d: 146, yaw: 50, pitch: -30, sx: 0.0, sy: 0.34, shadow: 70, fov: 28 };
 const HIGH: Cam = { x: 14, y: 0, z: -2, d: 136, yaw: 50, pitch: -30, sx: 0.0, sy: 0.34, shadow: 70, fov: 28 };
-// N4 keeps the bottom band of the frame clear for the term cells, so the hall stands higher in it. T starts from this pose.
+// N4 keeps the hall a little higher in the frame, in the right two thirds beside the term cards. T starts from this pose.
 export const HIGH4: Cam = { x: 3, y: 0, z: -3, d: 118, yaw: 50, pitch: -30, sx: 0.2, sy: -0.06, shadow: 60, fov: 28 };
 
 // A camera from where it stands to what it looks at, both in hall metres over the platform.
@@ -390,13 +390,14 @@ function eye(o: Cam, c: [number, number, number], t: [number, number, number], l
   return Object.assign(o, lens);
 }
 // one lens for N2, the flight in and N3, 35 degrees, so the flight in never changes the lens, and the flight down to N2 brings it in from the 28 of the high view
-const DOCK_LENS = { sx: 0.24, sy: 0.335, shadow: 30, fov: 35 };
-const DOCK_AT: [number, number, number] = [17.0, 1.0, HALL.docks[0] + 0.55];
-const DOCK_A = eye(cam(), [34.1, 4.1, 4.7], DOCK_AT, DOCK_LENS);
-const DOCK_B = eye(cam(), [32.5, 3.8, 3.4], DOCK_AT, DOCK_LENS);
+// Istovar is seen from 15 m, the lorry's cab and trailer 8 m from the camera at the nearest, the forklifts that come out of the door and into the
+// trailer 2.2 m high, about 200px in the frame of 900. The target is the rear of the trailer where the forklifts go in and out.
+const DOCK_LENS = { sx: 0.24, sy: 0.38, shadow: 30, fov: 35 };
+const DOCK_AT: [number, number, number] = [17.2, 1.2, HALL.docks[0] + 0.15];
+const DOCK_A = eye(cam(), [28.6, 4.4, 0.6], DOCK_AT, DOCK_LENS);
+const DOCK_B = eye(cam(), [26.4, 4.0, -2.6], DOCK_AT, DOCK_LENS);
 
-// Both N3 shots look down the work aisle from inside the hall at its dock end, 6 m up, so the nearest truck is 15 m away and its mast over the
-// bottom band of the term cells, and the picture is shifted right so the aisle and its racks lie right of the third vertical. The camera sits
+// Both N3 shots look down the work aisle from inside the hall at its dock end, 6 m up, so the nearest truck is 15 m away, and the picture is shifted right so the aisle and its racks lie right of the third vertical. The camera sits
 // at xc, h metres up, and looks at a point of the aisle at height ty.
 const SHOT = { z: AZ - 0.3, yaw: 87, sx: 0.2, sy: 0.03, shadow: 30, fov: 35 };
 function look(o: Cam, xc: number, h: number, tx: number, ty: number) {
@@ -426,7 +427,7 @@ const mix = (a: Cam, b: Cam, t: number, o: Cam) => {
 // and its target are. With no vias the flight is a straight line.
 const RAD = PI / 180;
 type V3 = [number, number, number];
-type Via = { cam: V3[]; tgt: V3[]; sx?: number[]; sy?: number[] };
+type Via = { cam: V3[]; tgt: V3[]; sx?: number[]; sy?: number[]; even?: boolean };
 const spline = (pts: V3[], t: number): V3 => {
   const n = pts.length - 1;
   if (n === 1) return [lerp(pts[0][0], pts[1][0], t), lerp(pts[0][1], pts[1][1], t), lerp(pts[0][2], pts[1][2], t)];
@@ -440,7 +441,7 @@ const spline = (pts: V3[], t: number): V3 => {
   return [0, 1, 2].map((c) => 0.5 * (2 * p1[c] + (-p0[c] + p2[c]) * u + (2 * p0[c] - 5 * p1[c] + 4 * p2[c] - p3[c]) * u * u + (-p0[c] + 3 * p1[c] - 3 * p2[c] + p3[c]) * u * u * u)) as V3;
 };
 // The flight in, from the yard in front of dock 1 to the mouth of the work aisle, one calm move on one lens. The camera starts where N2 ends,
-// 15 m out and 4 m up, glides across the yard toward the door in a long curve that comes onto the axis of the door 6 m before it, goes
+// 12 m out and 4 m up, glides across the yard toward the door in a long curve that comes onto the axis of the door 6 m before it, goes
 // through the doorway on that axis at 2.4 m, the middle of the opening, and runs on 3 m past it before it bends to the wall and rises to the
 // 6 m of the aisle shot, while the target sweeps down the staging floor to the aisle, so the view turns 55 degrees in all, over the whole
 // flight, and never fast. The glide of the flight takes it from rest to rest, and withinIn holds it back at the start so the lorry of dock 1
@@ -449,22 +450,69 @@ const spline = (pts: V3[], t: number): V3 => {
 // shift of the aisle shot after it.
 // The target and the lens shift have a point for each point of the camera.
 const VIA_AISLE: Via = {
-  cam: [[29.8, 3.9, 0.9], [26.6, 3.8, -2.4], [23.6, 3.5, -5.6], [20.9, 3.1, -8.6], [18.4, 2.7, -10.9], [15.8, 2.5, -11.55], [12.6, 2.4, -11.5], [11.4, 2.8, -8.8], [12.9, 4.0, -3.4], [13.3, 5.5, 3.4]],
-  tgt: [[17.0, 1.2, -11.0], [16.4, 1.3, -11.3], [15.6, 1.4, -11.5], [14.5, 1.5, -11.55], [10.5, 1.4, -11.55], [6.0, 1.3, -11.55], [2.0, 1.3, -10.4], [-2.5, 1.2, -6.6], [-6.5, 1.1, -0.5], [-8.8, 1.0, 4.8]],
-  sx: [0.2, 0.15, 0.1, 0.05, 0.0, 0.0, 0.0, 0.03, 0.1, 0.17],
-  sy: [0.3, 0.24, 0.17, 0.1, 0.04, 0.0, 0.0, 0.0, 0.02, 0.03],
+  cam: [[23.6, 3.5, -5.6], [20.9, 3.1, -8.6], [18.4, 2.7, -10.9], [15.8, 2.5, -11.55], [12.6, 2.4, -11.5], [11.4, 2.8, -8.8], [12.9, 4.0, -3.4], [13.3, 5.5, 3.4]],
+  tgt: [[15.6, 1.4, -11.5], [14.5, 1.5, -11.55], [10.5, 1.4, -11.55], [6.0, 1.3, -11.55], [2.0, 1.3, -10.4], [-2.5, 1.2, -6.6], [-6.5, 1.1, -0.5], [-8.8, 1.0, 4.8]],
+  sx: [0.1, 0.05, 0.0, 0.0, 0.0, 0.03, 0.1, 0.17],
+  sy: [0.17, 0.1, 0.04, 0.0, 0.0, 0.0, 0.02, 0.03],
 };
+// The way through the roof light over the dock end, which the third flight takes up and T takes down, in hall metres over the platform. The
+// camera rises out of the hall in the middle of the light, and from there the road to the high view leaves in long steps that grow, so the flight
+// is paced by the length of its path and not by the spline's own parameter, which would spend a third of it on the last 8 m. The roof is 10.4 m high. The camera looks down at the building all
+// the way, 30 to 50 degrees, so the roof, its lights and the yard around it fill the frame and the view never turns to the sky. Out is the way
+// up from the aisle shot and the way down is the same points the other way round.
+const ROOF_LIGHT = 12.0;
+// A stop of the road, where the camera stands and the way it looks, a yaw and a pitch in degrees and the distance to what it looks at, from
+// which the target is worked out. Over the roof the camera looks down at 9 to 31 degrees, and not steeply, so the frame always holds
+// the roof lights and units across the hall, the building's edges, the yard and the road round it and never a plain stretch of roof, and inside it looks down the hall.
+type Stop = { c: V3; yaw: number; pitch: number; d: number; sy: number };
+const along = (w: Stop): V3 => [w.c[0] - w.d * Math.sin(w.yaw * RAD) * Math.cos(w.pitch * RAD), w.c[1] + w.d * Math.sin(w.pitch * RAD), w.c[2] - w.d * Math.cos(w.yaw * RAD) * Math.cos(w.pitch * RAD)];
+// from the high view in to the roof light, and through it
+const ROAD: Stop[] = [
+  { c: [60.0, 54.0, 52.0], yaw: 49, pitch: -31, d: 90, sy: -0.06 },
+  { c: [41.0, 43.0, 36.0], yaw: 47, pitch: -29, d: 80, sy: -0.05 },
+  { c: [26.0, 30.0, 22.0], yaw: 46, pitch: -25, d: 70, sy: -0.04 },
+  { c: [16.5, 19.5, 11.5], yaw: 55, pitch: -19, d: 60, sy: -0.02 },
+  { c: [ROOF_LIGHT, 13.0, 7.0], yaw: 70, pitch: -11, d: 60, sy: 0.0 },
+  { c: [ROOF_LIGHT, 10.2, 7.0], yaw: 80, pitch: -9, d: 45, sy: 0.02 },
+];
+// and on inside to the dock end of the aisle, T's last two, and the one third flight's first, up from the aisle shot
+const T_IN: Stop[] = [
+  { c: [11.6, 7.6, 5.0], yaw: 83, pitch: -10, d: 30, sy: 0.03 },
+  { c: [10.4, 5.8, 2.6], yaw: 82, pitch: -13, d: 20, sy: 0.03 },
+];
+const OUT_IN: Stop = { c: [12.3, 8.2, 7.2], yaw: 85, pitch: -16, d: 24, sy: 0.03 };
+const viaOf = (ws: Stop[], even = true): Via => ({ cam: ws.map((w) => w.c), tgt: ws.map(along), sx: ws.map(() => 0.2), sy: ws.map((w) => w.sy), even });
 // the third flight, up under the roof light over the dock end, through it, over the roof and away to the high view
-const VIA_HIGH: Via = {
-  cam: [[13.0, 7.2, 7.4], [12.2, 11.6, 7.4], [12.0, 15.0, 7.2], [18.0, 24.0, 12.0], [35, 38, 32]],
-  // it tilts up to the ceiling and the sky before it rises through the roof light, and only over the roof looks down at the building
-  tgt: [[-4.0, 8.4, 7.4], [6.0, 18.0, 7.4], [2.0, 21.0, 7.4], [8.0, 6.0, 4.0], [8, 0, 0]],
-  // the lens shift keeps the trucks above the term row while the camera tilts up
-  sy: [-0.55, -0.2, -0.05, -0.1, -0.06],
+const VIA_HIGH: Via = viaOf([OUT_IN, ...ROAD.slice().reverse()]);
+
+// The parameter of a spline at a share of its cost, from a table of 240 steps built once for each flight and its two ends. A metre of the path costs
+// three times as much under 7 m of height, the hall and the roof light, as it does over 13 m, so the camera takes its time through the roof and
+// then climbs away over the rest, and the share of the scroll it gets in the roof is about a sixth of the flight.
+const cost = (y: number) => 1 + 2 * clamp01((13 - y) / 6);
+const lengths = new Map<string, number[]>();
+const evenT = (key: string, pts: V3[], f: number) => {
+  let tab = lengths.get(key);
+  if (!tab) {
+    tab = [0];
+    let prev = spline(pts, 0);
+    for (let i = 1; i <= 240; i++) {
+      const q = spline(pts, i / 240);
+      tab.push(tab[i - 1] + Math.hypot(q[0] - prev[0], q[1] - prev[1], q[2] - prev[2]) * cost((q[1] + prev[1]) / 2));
+      prev = q;
+    }
+    lengths.set(key, tab);
+  }
+  const want = clamp01(f) * tab[240];
+  let i = 0;
+  while (i < 239 && tab[i + 1] < want) i++;
+  return (i + (tab[i + 1] > tab[i] ? (want - tab[i]) / (tab[i + 1] - tab[i]) : 0)) / 240;
 };
 function fly(a: Cam, b: Cam, t: number, o: Cam, via?: Via) {
   const pos = (c: Cam): V3 => [c.x + c.d * Math.sin(c.yaw * RAD) * Math.cos(c.pitch * RAD), c.y - c.d * Math.sin(c.pitch * RAD), c.z + c.d * Math.cos(c.yaw * RAD) * Math.cos(c.pitch * RAD)];
-  const [px, py, pz] = spline([pos(a), ...(via?.cam ?? []), pos(b)], t);
+  const cams = [pos(a), ...(via?.cam ?? []), pos(b)];
+  // at the two ends the path is its first and last point whatever the pace, and the first point of the third flight moves with the story before it
+  if (via?.even && t > 0 && t < 1) t = evenT(cams.map((c) => c.map((v) => v.toFixed(2)).join()).join('|'), cams, t);
+  const [px, py, pz] = spline(cams, t);
   const [tx, ty, tz] = spline([[a.x, a.y, a.z], ...(via?.tgt ?? []), [b.x, b.y, b.z]], t);
   const dx = px - tx;
   const dy = py - ty;
@@ -517,3 +565,23 @@ export function najamCam(u: number, out: Cam = cam()): Cam {
   out.y += HALL_Y;
   return out;
 }
+
+// T, the dive from the high view of N4 down to the pose the automation aisle starts from, end, in hall metres like the rest. It is the third flight's
+// road the other way round, down to the roof light over the dock end, in through it and down to the dock end of the aisle, on one lens, one
+// calm move paced along its length and eased at both ends, so it is a flight of the whole of T and not a few frames. The hall stands all the
+// way and the camera only moves, see najam.tsx for the roof light that draws aside and the inside that is swapped while the roof is shut.
+const VIA_T: Via = viaOf([...ROAD, ...T_IN]);
+export function najamT(t: number, end: Cam, out: Cam = cam()): Cam {
+  fly(HIGH4, end, glide(clamp01(t)), out, VIA_T);
+  out.y += HALL_Y;
+  return out;
+}
+
+// How far inside the hall a point is, 1 in it and 0 out of it, in hall metres with y over the platform. It runs from the faces of the shell out
+// to reach metres beyond them, 3 m by default, so a camera that comes in at the door or the roof light is in the hall's air from its threshold and a
+// camera 3 m out is not. The haze of the story reads it with a reach of 12 m, so it is gone before the camera is at the door, and the world's fog
+// with 3. There is none inside.
+export const hallInside = (x: number, y: number, z: number, reach = 3) => {
+  const d = Math.min(HALL.dockX + 0.4 - x, x - (HALL.backX - 0.3), 15.9 - z, z - (HALL.sideZ - 0.3), 10.4 - y);
+  return clamp01((d + reach) / reach);
+};

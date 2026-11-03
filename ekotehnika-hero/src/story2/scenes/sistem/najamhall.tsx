@@ -103,9 +103,11 @@ export const wallLaneZ = (gap: number, slot: number) => (HALL.docks[gap] + HALL.
 
 // ---- the hall ---------------------------------------------------------------------------------------------------------
 
-export type HallRefs = { doors: React.MutableRefObject<(THREE.Group | null)[]>; roofHatch: React.RefObject<THREE.Group | null>; roof: React.RefObject<THREE.Group | null>; signFade: React.MutableRefObject<number> };
+// inside is the group of what lies on the hall's floor and is swapped for the automation aisle's in T, its markings, the pallets in the lanes, the empty
+// stacks, the chargers and the office cabin
+export type HallRefs = { doors: React.MutableRefObject<(THREE.Group | null)[]>; roofHatch: React.RefObject<THREE.Group | null>; inside: React.RefObject<THREE.Group | null>; signFade: React.MutableRefObject<number> };
 
-export function Hall({ doors, roofHatch, roof, signFade }: HallRefs) {
+export function Hall({ doors, roofHatch, inside, signFade }: HallRefs) {
   const signGroup = useRef<THREE.Group>(null);
   const sign = useMemo(() => {
     const { parts, s, view } = wordmarkSign(SIGN_W, 0.25, 0.08);
@@ -306,7 +308,7 @@ export function Hall({ doors, roofHatch, roof, signFade }: HallRefs) {
         if (i === 3 && side === 1) continue;
         // the lanes of the first two docks stay empty, the camera of the flight in goes through the door of the first and along the wall past the
         // second, and a pallet in them would be within 6 m of it, the pallets that come off the lorry are set down in the aisle, see najamdock.ts
-        // of the others only the lane of the third dock on the side of the work aisle holds pallets, the lanes on its left lie under the term cells in N3
+        // of the others only the lane of the third dock on the side of the work aisle holds pallets, the lanes on its left lie under the term cards in N3
         if (i < 2 || (HALL.docks[i] > 0 && !(i === 2 && side < 0))) continue;
         const n = i === 0 ? 2 : side < 0 ? 3 : 2;
         for (let p = 0; p < n; p++) loadedPallet(pal, r, LANE_X0 + 0.8 + p * 1.3, laneZ(i, side), false);
@@ -351,7 +353,7 @@ export function Hall({ doors, roofHatch, roof, signFade }: HallRefs) {
       <BoxSet items={d.lev} mat={beamWeb} />
       <Facade />
       <Office />
-      {/* the doors roll up into their slat, hung from the head of the frame so each draws up as its scale falls */}
+      {/* the doors roll up into their slat, hung from the head of the frame so each slides up into the wall over it */}
       {HALL.docks.map((z, i) => (
         <group key={i} ref={(g) => { doors.current[i] = g; }} position={[HALL.dockX + 0.2, DOOR_H, z]}>
           <BoxSet items={[[0, -DOOR_H / 2, 0, 0.1, DOOR_H, DOOR_W]]} mat={leafMat} />
@@ -367,41 +369,41 @@ export function Hall({ doors, roofHatch, roof, signFade }: HallRefs) {
           ))}
         </group>
       </group>
-      {/* the roof, which an iris closes in T, with the roof lights and the units on it, the trusses and lamps under it */}
-      <group ref={roof} position={[(PX0 + PX1) / 2, 0, MIDZ]}>
-        <group position={[-(PX0 + PX1) / 2, 0, -MIDZ]}>
-          <BoxSet items={d.roofS} mat={roofMat} />
-          <BoxSet items={d.para} mat={wallMat} />
-          <BoxSet items={d.paraCap} mat={copingMat} receive={false} />
-          <BoxSet items={d.curb} mat={pilasterMat} receive={false} />
-          <BoxSet items={d.roofTrim} mat={plinthMat} receive={false} />
-          <BoxSet items={d.drains} mat={copingMat} receive={false} />
-          <BoxSet items={d.units} mat={wallMat} />
-          <BoxSet items={d.unitCurbs} mat={pilasterMat} receive={false} />
-          <BoxSet items={d.louvres} mat={pilasterMat} receive={false} />
-          <BoxSet items={d.unitFans} mat={plinthMat} receive={false} />
-          <BoxSet items={d.trusses} mat={wallMat} />
-          <BoxSet items={d.ceilLamps} mat={K.white} receive={false} />
-          {d.lights.slice(0, 4).map((l, i) => (
-            <BoxSet key={i} items={l} mat={skylightMat} receive={false} />
-          ))}
-          <group ref={roofHatch} position={[lightsAt(4), WALL_H + 0.16, MIDZ]}>
-            <BoxSet items={[[0, 0, 0, 1.8, 0.1, PZ1 - PZ0 - 0.6]]} mat={skylightMat} receive={false} />
-          </group>
+      {/* the roof, with the roof lights and the units on it, the trusses and lamps under it. The last roof light is a hatch on a hinge along its east edge */}
+      <group>
+        <BoxSet items={d.roofS} mat={roofMat} />
+        <BoxSet items={d.para} mat={wallMat} />
+        <BoxSet items={d.paraCap} mat={copingMat} receive={false} />
+        <BoxSet items={d.curb} mat={pilasterMat} receive={false} />
+        <BoxSet items={d.roofTrim} mat={plinthMat} receive={false} />
+        <BoxSet items={d.drains} mat={copingMat} receive={false} />
+        <BoxSet items={d.units} mat={wallMat} />
+        <BoxSet items={d.unitCurbs} mat={pilasterMat} receive={false} />
+        <BoxSet items={d.louvres} mat={pilasterMat} receive={false} />
+        <BoxSet items={d.unitFans} mat={plinthMat} receive={false} />
+        <BoxSet items={d.trusses} mat={wallMat} />
+        <BoxSet items={d.ceilLamps} mat={K.white} receive={false} />
+        {d.lights.slice(0, 4).map((l, i) => (
+          <BoxSet key={i} items={l} mat={skylightMat} receive={false} />
+        ))}
+        <group ref={roofHatch} position={[lightsAt(4) + 0.9, WALL_H + 0.16, MIDZ]}>
+          <BoxSet items={[[-0.9, 0, 0, 1.8, 0.1, PZ1 - PZ0 - 0.6]]} mat={skylightMat} receive={false} />
         </group>
       </group>
-      <BoxSet items={d.joints} mat={lineFaint} receive={false} />
-      <BoxSet items={d.marks} mat={line} receive={false} />
-      <Slats items={d.slats} mat={line} />
-      <PalletSet s={d.pal} />
-      <BoxSet items={d.empties} mat={palletBase} cast />
-      <BoxSet items={d.chargers} mat={darkGrey} cast />
-      <BoxSet items={d.lamps} mat={lineWhite} receive={false} />
-      <BoxSet items={d.cabin} mat={wallMat} cast />
-      <BoxSet items={d.cabinRoof} mat={roofMat} cast />
-      <BoxSet items={d.cabinGlass} mat={K.vanGlass} receive={false} />
-      <BoxSet items={d.cabinDoor} mat={doorMat} />
-      <BoxSet items={d.cabinStep} mat={beamFlange} />
+      <group ref={inside}>
+        <BoxSet items={d.joints} mat={lineFaint} receive={false} />
+        <BoxSet items={d.marks} mat={line} receive={false} />
+        <Slats items={d.slats} mat={line} />
+        <PalletSet s={d.pal} />
+        <BoxSet items={d.empties} mat={palletBase} cast />
+        <BoxSet items={d.chargers} mat={darkGrey} cast />
+        <BoxSet items={d.lamps} mat={lineWhite} receive={false} />
+        <BoxSet items={d.cabin} mat={wallMat} cast />
+        <BoxSet items={d.cabinRoof} mat={roofMat} cast />
+        <BoxSet items={d.cabinGlass} mat={K.vanGlass} receive={false} />
+        <BoxSet items={d.cabinDoor} mat={doorMat} />
+        <BoxSet items={d.cabinStep} mat={beamFlange} />
+      </group>
     </group>
   );
 }
@@ -603,7 +605,9 @@ const X_MOUTH = HALL.rackX0 + 0.4;
 // enough that the haze takes it and no edge or hedge shows at the horizon of N3, to 47 m out from the docks and 27 m behind the far wall to
 // 36 m in front of the near one. The yard road runs along z at x 34, 7 m wide,
 // through a gap in the hedge at each end and on to the edge of any frame, with a kerb on both sides outside the hedge.
-export const YARD = { x0: -400, x1: 47, z0: -27, z1: 36, road: 34, roadW: 7 };
+export const YARD = { x0: -400, x1: 47, z0: -27, z1: 36, road: 34, roadW: 8 };
+// the gate through the fence, a lorry that turns out of the yard swings its cab 1.1 m wide of its lane, so the barriers stand 7 m from the road's middle
+const GATE = 7;
 const WORLD = 420;
 
 export function Yard() {
@@ -647,8 +651,8 @@ export function Yard() {
     };
     run(YARD.x1 + 0.2, YARD.x1 + 0.2, YARD.z0, YARD.z1);
     for (const zz of [YARD.z0 - 0.05, YARD.z1 + 0.05]) {
-      run(YARD.road - 44, YARD.road - 4.5, zz, zz);
-      run(YARD.road + 4.5, YARD.x1 + 0.2, zz, zz);
+      run(YARD.road - 44, YARD.road - GATE - 0.3, zz, zz);
+      run(YARD.road + GATE + 0.3, YARD.x1 + 0.2, zz, zz);
     }
     // low buildings of the neighbours in the haze round the site, plain boxes of 6 to 14 m in the pale grey
     const near: BoxItem[] = [];
@@ -681,7 +685,7 @@ export function Yard() {
     return out;
   }, []);
 
-  const HG = 3.4;
+  const HG = GATE + 0.7;
   return (
     <group>
       <BoxSet items={y.paving} mat={apron} />
@@ -711,24 +715,24 @@ export function Yard() {
       {/* the gate on the south side of the yard, a gate house east of the road with its window to the road, two barriers with their arms
           raised and the hatching before them, and a second pair of barriers on the north side. The lamp posts stand along the road
           inside the yard and along its east side */}
-      <group position={[YARD.road + 6.2, 0, YARD.z1 - 3.4]} rotation={[0, Math.PI / 2, 0]}>
+      <group position={[YARD.road + GATE + 3.2, 0, YARD.z1 - 3.4]} rotation={[0, Math.PI / 2, 0]}>
         <GateHouse x={0} z={0} />
       </group>
-      <Barrier x={YARD.road - 3.6} z={YARD.z1 - 2.2} />
-      <Barrier x={YARD.road + 3.6} z={YARD.z1 - 2.2} />
-      <Barrier x={YARD.road - 3.6} z={YARD.z0 + 2.2} />
-      <Barrier x={YARD.road + 3.6} z={YARD.z0 + 2.2} />
+      <Barrier x={YARD.road - GATE} z={YARD.z1 - 2.2} />
+      <Barrier x={YARD.road + GATE} z={YARD.z1 - 2.2} />
+      <Barrier x={YARD.road - GATE} z={YARD.z0 + 2.2} />
+      <Barrier x={YARD.road + GATE} z={YARD.z0 + 2.2} />
       {[-20, 6, 22].map((z) => (
-        <LampPost key={z} x={YARD.road + 5.2} z={z} rot={Math.PI} />
+        <LampPost key={z} x={YARD.road + GATE + 1.3} z={z} rot={Math.PI} />
       ))}
       {[-18, 4, 26].map((z) => (
         <LampPost key={`e${z}`} x={YARD.x1 - 3} z={z} rot={Math.PI} />
       ))}
       {/* cars of the staff and a van of the service on the east side of the yard and by the gate house */}
-      <Van x={YARD.x1 - 7} z={-8} yaw={Math.PI / 2} />
-      <Van x={YARD.x1 - 7} z={-3.2} yaw={Math.PI / 2} />
-      <Van x={YARD.x1 - 7} z={12} yaw={Math.PI / 2} />
-      <Van x={YARD.road + 12} z={YARD.z1 - 4.5} yaw={Math.PI} />
+      <Van x={YARD.x1 - 3.5} z={-8} yaw={Math.PI / 2} />
+      <Van x={YARD.x1 - 3.5} z={-3.2} yaw={Math.PI / 2} />
+      <Van x={YARD.x1 - 3.5} z={12} yaw={Math.PI / 2} />
+      <Van x={YARD.road + 9.5} z={YARD.z1 - 8} yaw={Math.PI} />
     </group>
   );
 }

@@ -1,19 +1,23 @@
 // The docks of the Najam hall as one plan, in hall metres, the same idea as najamplan.ts for the aisle, every pose a pure function of k of N
 // so a frozen clock draws the same picture and scrolling back runs it backwards. Three lorries and three forklifts, in the beats of the
 // table in briefs/round6/plan.md.
-//   N1  lorry 1 turns in from the yard road, passes dock 1, stops and backs onto it in an arc. The rented forklifts stand at their bays.
-//   N2  forklift A drives into the trailer, lifts the first pallet, backs out and turns right into the first aisle to set it down at its mouth.
-//       Forklift B follows it in from the far side of the apron and brings the second out the same way, deeper in the aisle. Neither pallet
-//       is within 10 m of the line the camera takes through the door. Lorry 1 shuts its doors as the second forklift is
-//       clear of the trailer, at the end of N2, and pulls away across the first part of the flight in, so the door of dock 1 is an open door
-//       when the camera arrives at it and the camera never has a lorry within 6 m.
-//   N3  lorry 2 turns in and backs onto dock 3, out of sight of the aisle camera, once the camera stands inside.
-//   N4  forklift C carries a pallet into lorry 2 and sets it down, backs out, the doors close and the lorry pulls away down the yard
-//       road, and lorry 3 turns in from the road and starts to back onto dock 4 as T takes the screen.
-// Every k here is a k of the plan, planK in timeline.ts, and the flight in through the door is 820 story px for 520 of the plan, so a truck
-// that moves in it covers its way in 1.6 times the scroll its marks say. The lorries run on past k 1, to 1.1 in T, which is 400px more, so the
-// hall does not stop them mid way as it sinks. No truck runs faster than 0.03 m per story px, except the second forklift of the docks that
-// takes 0.035, and no lorry faster than 0.05 m per px, see the check in the commit. Kept free of three.
+//   N1  lorry 1 comes in through the north gate of the yard on the south bound lane, drives past dock 1, stops and backs onto it in one
+//       smooth arc. The rented forklifts stand at their bays.
+//   N2  Istovar, 900px. Forklift A drives into the trailer, lifts the first pallet, backs out and turns right into the first aisle to set it
+//       down at its mouth. Forklift B follows it in from the far side of the apron and brings the second out the same way, deeper in the
+//       aisle. Both trips in and out of the trailer happen in N2, in front of the camera, and neither pallet is within 10 m of the line the
+//       camera takes through the door. Lorry 1 shuts its doors as the second forklift is clear of the trailer, at the end of N2, and pulls away
+//       across the first part of the flight in, so the door of dock 1 is an open door when the camera arrives at it and the camera never has
+//       a lorry within 6 m.
+//   N3  lorry 2 comes in through the north gate and backs onto dock 3, out of sight of the aisle camera, once the camera stands inside.
+//   N4  forklift C carries a pallet into lorry 2 and sets it down, backs out, the doors close and the lorry pulls away onto the north bound
+//       lane and out of the north gate, and lorry 3 comes down the south bound lane and starts to back onto dock 4 as T takes the screen.
+// The lorries drive on the right, so the three of them come in on the south bound lane and the two that leave go out on the north bound one,
+// and no lorry ever crosses another's way. No two lorries come within 1.5 m of each other and none within 1.5 m of the barriers, the lamp posts
+// and the vans of the yard, see the check in the commit.
+// Every k here is a k of the plan, planK in timeline.ts, and Istovar and the flight in play 1.6 times as long in the scroll as their marks
+// say. The lorries run on past k 1, to 1.1 in T, so the yard does not stop them mid way as the camera dives. No truck runs faster than 0.03 m per
+// story px, except the second forklift of the docks that takes 0.035, and no lorry faster than 0.05 m per px. Kept free of three.
 import { planK } from '../../timeline';
 import { HALL, X50_FWD, X50_PAL, mk, pace, route, type Pose, type Route, type Way } from './najamplan';
 
@@ -32,9 +36,10 @@ const Z = HALL.docks;
 export const REAR_X = HALL.dockX + 0.4 + 0.35;
 const AXLE = 3.7;
 const PIVOT = 8.5;
-// the lanes of the yard road, a lorry drives on the right, so north bound on the east lane and south bound on the west one
-const NORTH = 35.75;
-const SOUTH = 32.25;
+// the lanes of the yard road, a lorry drives on the right, so north bound on the east lane and south bound on the west one. The road is 8 m wide and
+// the lanes 4.5 m apart, so two lorries that pass each other on it have 1.9 m between them
+export const NORTH = 36.25;
+export const SOUTH = 31.75;
 const TURN = 7;
 
 // ---- the lorries ------------------------------------------------------------------------------------------------------
@@ -44,42 +49,43 @@ const TURN = 7;
 export type LorryPose = { ax: number; az: number; psi: number; px: number; pz: number; theta: number; close: number; open: number; shown: boolean };
 export const mkLorry = (): LorryPose => ({ ax: 0, az: 0, psi: 0, px: 0, pz: 0, theta: 0, close: 0, open: 0, shown: true });
 
-// Turning in. Drives along the road past the dock's row, stops 7 m beyond it, and backs a quarter circle of 7 m radius to face the dock, then
-// straight on to the bumpers. lead is how far before the stop it starts. From the south on the north bound lane, or from the north.
-function arrival(dock: number, lead: number, south = false) {
+// Turning in. Drives down the road past the dock's row, stops one radius beyond it, and backs one quarter circle to face the dock, then
+// straight on to the bumpers, so the cab swings out once and comes back once. lead is how far before the stop it starts. From the north on the
+// south bound lane, or from the south on the north bound one.
+function arrival(dock: number, lead: number, south = false, turn = TURN) {
   const z0 = Z[dock];
   const ways: Way[] = south
     ? [
-        // coming down the road from the north end of the yard on the south bound lane, stops 7 m past the dock and backs north to it
-        { x: SOUTH, z: z0 + TURN - lead, th: 90 },
-        { x: SOUTH, z: z0 + TURN, th: 90, dir: -1, mo: 1.657 * TURN },
-        { x: SOUTH - TURN, z: z0, th: 0, dir: -1, mi: 1.657 * TURN },
+        // coming down the road from the north gate on the south bound lane, stops a radius past the dock and backs north to it
+        { x: SOUTH, z: z0 + turn - lead, th: 90 },
+        { x: SOUTH, z: z0 + turn, th: 90, dir: -1, mo: 1.657 * turn },
+        { x: SOUTH - turn, z: z0, th: 0, dir: -1, mi: 1.657 * turn },
         { x: REAR_X + AXLE, z: z0, th: 0 },
       ]
     : [
-        { x: NORTH, z: z0 - TURN + lead, th: 270 },
-        { x: NORTH, z: z0 - TURN, th: 270, dir: -1, mo: 1.657 * TURN },
-        { x: NORTH - TURN, z: z0, th: 0, dir: -1, mi: 1.657 * TURN },
+        { x: NORTH, z: z0 - turn + lead, th: 270 },
+        { x: NORTH, z: z0 - turn, th: 270, dir: -1, mo: 1.657 * turn },
+        { x: NORTH - turn, z: z0, th: 0, dir: -1, mi: 1.657 * turn },
         { x: REAR_X + AXLE, z: z0, th: 0 },
       ];
   return { rt: route(ways), rev: 1 };
 }
-// Pulling away. Drives straight out from the dock and turns onto the road with a 7 m radius, right onto the south bound lane or left, the north bound
-// one, and runs on down the road.
-function departure(dock: number, run: number, north = false) {
+// Pulling away. Drives straight out from the dock and turns onto the road with a quarter circle, right onto the south bound lane or left, the
+// north bound one, and runs on down the road.
+function departure(dock: number, run: number, north = false, turn = TURN) {
   const z0 = Z[dock];
   const ways: Way[] = north
     ? [
         { x: REAR_X + AXLE, z: z0, th: 0 },
-        { x: NORTH - TURN, z: z0, th: 0, mo: 1.657 * TURN },
-        { x: NORTH, z: z0 - TURN, th: 270, mi: 1.657 * TURN },
-        { x: NORTH, z: z0 - TURN - run, th: 270 },
+        { x: NORTH - turn, z: z0, th: 0, mo: 1.657 * turn },
+        { x: NORTH, z: z0 - turn, th: 270, mi: 1.657 * turn },
+        { x: NORTH, z: z0 - turn - run, th: 270 },
       ]
     : [
         { x: REAR_X + AXLE, z: z0, th: 0 },
-        { x: SOUTH - TURN, z: z0, th: 0, mo: 1.657 * TURN },
-        { x: SOUTH, z: z0 + TURN, th: 90, mi: 1.657 * TURN },
-        { x: SOUTH, z: z0 + TURN + run, th: 90 },
+        { x: SOUTH - turn, z: z0, th: 0, mo: 1.657 * turn },
+        { x: SOUTH, z: z0 + turn, th: 90, mi: 1.657 * turn },
+        { x: SOUTH, z: z0 + turn + run, th: 90 },
       ];
   return { rt: route(ways), rev: 99 };
 }
@@ -87,17 +93,20 @@ function departure(dock: number, run: number, north = false) {
 const tmp = { x: 0, z: 0, th: 0, roll: 0 };
 const tmp2 = { x: 0, z: 0, th: 0, roll: 0 };
 
-// The pose at a distance s along a route. rev is the leg the lorry reverses from, so the tractor's heading is the way its pivot moves, turned
-// round once it backs. The pivot is taken a little ahead in the direction of travel, one sided so the stop between the two legs reads right.
-function poseOn(r: { rt: Route; rev: number }, s: number, out: LorryPose) {
+// The angle between the tractor and its trailer, as a function of the distance s along a route. The raw angle is the way the pivot moves, turned
+// round once the lorry backs. It jumps wherever the bend of the route jumps, 25 degrees at the end of a turn, and 33 at the moment a lorry that was
+// driving forward starts to back with the lorry standing still, which read as the cab swinging left and then right. So the angle is a raw one that a
+// tractor follows with a lag, 1.2 m of travel while the lorry drives forward, so the cab still leads the trailer round every bend, and 3 m once it
+// backs, which turns the jump into one calm swing out and one calm swing back. In reverse only three quarters of it is drawn, a cab that stays closer
+// to the trailer's line, since the cab and the trailer are one body at the pivot and the angle only shows how the cab sits.
+const LAG = [1.2, 3];
+const SWING = [1, 0.75];
+type Rt = { rt: Route; rev: number; art?: Float32Array };
+const rawAngle = (r: Rt, s: number) => {
   const back = s >= r.rt.at[r.rev] - 1e-9;
   r.rt.pose(s, tmp);
-  out.ax = tmp.x;
-  out.az = tmp.z;
-  out.psi = tmp.th;
+  const psi = tmp.th;
   const L = PIVOT - AXLE;
-  out.px = tmp.x + Math.cos(tmp.th) * L;
-  out.pz = tmp.z + Math.sin(tmp.th) * L;
   const d = 0.2;
   let a = back ? s : Math.max(0, s - d);
   let b = back ? Math.min(r.rt.len, s + d) : s;
@@ -112,14 +121,45 @@ function poseOn(r: { rt: Route; rev: number }, s: number, out: LorryPose) {
   r.rt.pose(b, tmp2);
   const pbx = tmp2.x + Math.cos(tmp2.th) * L;
   const pbz = tmp2.z + Math.sin(tmp2.th) * L;
-  const h = Math.atan2(pbz - paz, pbx - pax) + (back ? PI : 0);
-  out.theta = out.psi + wrap(h - out.psi);
+  return wrap(Math.atan2(pbz - paz, pbx - pax) + (back ? PI : 0) - psi);
+};
+const ART_STEP = 0.1;
+function articulation(r: Rt, s: number) {
+  if (!r.art) {
+    const n = Math.ceil(r.rt.len / ART_STEP) + 1;
+    const a = new Float32Array(n);
+    const rev = r.rt.at[r.rev] ?? Infinity;
+    let g = rawAngle(r, 0);
+    for (let i = 0; i < n; i++) {
+      const raw = rawAngle(r, i * ART_STEP);
+      const m = i * ART_STEP < rev - 1e-9 ? 0 : 1;
+      g += (raw - g) * (1 - Math.exp(-ART_STEP / LAG[m]));
+      a[i] = g * SWING[m];
+    }
+    r.art = a;
+  }
+  const f = Math.min(Math.max(s, 0), r.rt.len) / ART_STEP;
+  const i = Math.min(Math.floor(f), r.art.length - 2);
+  return r.art[i] + (r.art[i + 1] - r.art[i]) * (f - i);
+}
+
+// The pose at a distance s along a route. The trailer's axle and heading come from the route and the tractor stands at the pivot, a hitch 4.8 m
+// ahead of the axles, turned by the angle above.
+function poseOn(r: Rt, s: number, out: LorryPose) {
+  r.rt.pose(s, tmp);
+  out.ax = tmp.x;
+  out.az = tmp.z;
+  out.psi = tmp.th;
+  const L = PIVOT - AXLE;
+  out.px = tmp.x + Math.cos(tmp.th) * L;
+  out.pz = tmp.z + Math.sin(tmp.th) * L;
+  out.theta = out.psi + articulation(r, s);
 }
 
 type LorryPlan = {
-  arrive: { rt: Route; rev: number };
+  arrive: Rt;
   arriveS: (k: number) => number;
-  leave: { rt: Route; rev: number };
+  leave: Rt;
   leaveS: (k: number) => number;
   // k the doors start to shut and the k they are shut
   shut: [number, number];
@@ -130,9 +170,9 @@ type LorryPlan = {
   to: number;
 };
 
-function lorryPlan(dock: number, p: { south?: boolean; north?: boolean; curtain?: [number, number, number, number]; lead: number; go: [number, number]; stop: number; back: [number, number]; shut: [number, number]; away: [number, number]; run: number; far: number; from?: number }): LorryPlan {
-  const arrive = arrival(dock, p.lead, p.south);
-  const leave = departure(dock, p.run, p.north);
+function lorryPlan(dock: number, p: { south?: boolean; north?: boolean; turn?: number; out?: number; curtain?: [number, number, number, number]; lead: number; go: [number, number]; stop: number; back: [number, number]; shut: [number, number]; away: [number, number]; run: number; far: number; from?: number }): LorryPlan {
+  const arrive = arrival(dock, p.lead, p.south, p.turn);
+  const leave = departure(dock, p.run, p.north, p.out ?? p.turn);
   const at = arrive.rt.at;
   return {
     arrive,
@@ -146,16 +186,17 @@ function lorryPlan(dock: number, p: { south?: boolean; north?: boolean; curtain?
   };
 }
 
-// Lorry 1 comes in with the story, shuts its doors as the unloading ends and pulls away across the first half of the flight in, lorry 2 backs
-// onto dock 3 in N3 and loads in N4, lorry 3 starts for dock 4 in N3 and backs on as T opens. The stops between the legs are a hold of 40px or
-// so. Lorry 1 runs 34 m of its way out, at 0.05 m per px at the most, which clears the door of dock 1 by 15 m while the camera is still in the yard.
+// Lorry 1 comes in through the north gate with the story, shuts its doors as the unloading ends and pulls away across the first half of the
+// flight in, lorry 2 comes in and backs onto dock 3 in N3 and loads in N4 and leaves by the north gate, lorry 3 comes in through the north gate and
+// goes down the road to the stop beside dock 4 at the end of N4 and backs on as T opens. The stops between the legs are a hold of 40px or so. Lorry 1
+// runs 34 m of its way out, at 0.05 m per px at the most, which clears the door of dock 1 by 15 m while the camera is still in the yard.
 const LORRIES: LorryPlan[] = [
-  lorryPlan(0, { lead: 10, go: [0, 0.08], stop: 0.085, back: [0.085, 0.25], north: true, curtain: [0.2, 0.27, 0.405, 0.42], shut: [0.405, 0.42], away: [0.415, 0.53], run: 24, far: 34 }),
-  lorryPlan(2, { lead: 10, go: [0.55, 0.62], stop: 0.625, back: [0.625, 0.76], shut: [0.935, 0.95], away: [0.955, 1.1], run: 14, far: 17, from: 0.55 }),
-  lorryPlan(0, { south: true, lead: 34, go: [0.62, 0.88], stop: 0.9, back: [0.9, 1.1], shut: [2, 2], away: [2, 2.1], run: 4, far: 1, from: 0.62 }),
+  lorryPlan(0, { south: true, north: true, turn: 8, out: 8, lead: 26, go: [0, 0.13], stop: 0.135, back: [0.135, 0.25], curtain: [0.2, 0.27, 0.412, 0.423], shut: [0.412, 0.423], away: [0.423, 0.5], run: 24, far: 34 }),
+  lorryPlan(2, { south: true, north: true, out: 8, lead: 26, go: [0.55, 0.62], stop: 0.625, back: [0.625, 0.76], shut: [0.935, 0.95], away: [0.955, 1.1], run: 20, far: 40, from: 0.55 }),
+  lorryPlan(3, { south: true, lead: 34, go: [0.72, 0.9], stop: 0.905, back: [0.905, 1.1], shut: [2, 2], away: [2, 2.1], run: 4, far: 1, from: 0.72 }),
 ];
 export const LORRY_COUNT = LORRIES.length;
-// the k of N for a position u of the story, which runs on past 1 through T, 400px for a tenth, so the lorries do not stop as the hall sinks
+// the k of N for a position u of the story, which runs on past 1 through T, 600px for a tenth, so the lorries do not stop as the camera dives
 export const kLong = (u: number) => (u < 13 ? planK(clamp01(u - 12)) : 1 + Math.min(u - 13, 1) * 0.1);
 
 const sh = (t: number) => ease(clamp01(t));
@@ -192,7 +233,7 @@ function dockTrip(ways: Way[], s: [number, number][], lift: [number, number][]):
 const U = 1.925;
 const BU = 1.657 * U;
 const PUT_X = [-12, -6];
-export const A_MARKS = { lift: [0.255, 0.268], set: [0.5, 0.51] } as const;
+export const A_MARKS = { lift: [0.31, 0.318], set: [0.5, 0.51] } as const;
 const A = dockTrip(
   [
     { x: 10.6, z: Z[0], th: 0 },
@@ -202,14 +243,14 @@ const A = dockTrip(
     { x: 11.0, z: Z[0] + 2 * U, th: 180, mi: BU },
     { x: PUT_X[0] + X50_FWD, z: Z[0] + 2 * U, th: 180 },
   ],
-  [[0, 0], [0.215, 0], [0.255, 1], [0.268, 1], [0.3, 2], [0.5, -1]],
+  [[0, 0], [0.285, 0], [0.31, 1], [0.318, 1], [0.345, 2], [0.5, -1]],
   [[0, 0], [A_MARKS.lift[0], 0], [A_MARKS.lift[1], CARRY], [A_MARKS.set[0], CARRY], [A_MARKS.set[1], 0]],
 );
 
 // Forklift B waits at its bay in the corner by the far wall. Round an S curve onto the door's line once A has left it, in to the second pallet,
 // lifts it, backs out, and takes the same way into the aisle as A, to set the pallet down deeper in. It is out of the trailer when the doors
 // shut and finishes as the flight in ends.
-export const B_MARKS = { lift: [0.355, 0.367], set: [0.51, 0.52] } as const;
+export const B_MARKS = { lift: [0.38, 0.39], set: [0.51, 0.52] } as const;
 const B = dockTrip(
   [
     { x: 9.2, z: -14.5, th: 0 },
@@ -220,7 +261,7 @@ const B = dockTrip(
     { x: 11.0, z: Z[0] + 2 * U, th: 180, mi: BU },
     { x: PUT_X[1] + X50_FWD, z: Z[0] + 2 * U, th: 180 },
   ],
-  [[0, 0], [0.33, 0], [0.355, 2], [0.367, 2], [0.405, 3], [0.51, -1]],
+  [[0, 0], [0.335, 0], [0.38, 2], [0.39, 2], [0.412, 3], [0.51, -1]],
   [[0, 0], [B_MARKS.lift[0], 0], [B_MARKS.lift[1], CARRY], [B_MARKS.set[0], CARRY], [B_MARKS.set[1], 0]],
 );
 

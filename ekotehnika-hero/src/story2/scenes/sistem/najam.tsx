@@ -4,18 +4,22 @@
 // instanced and cheap like warehouse.tsx, the trucks are the real Linde models. The hall's walls, floor markings and yard are
 // najamhall.tsx, the lorries najamlorry.tsx, and the hall's metres, with everything that moves, najamplan.ts. Every pose is a pure
 // function of the story clock, so a frozen clock always draws the same picture and scrolling back plays it backwards.
+// Nothing here is ever scaled, squashed or sunk to get it out of the way, round 7. The doors roll up by sliding into their lintel, the roof
+// light tilts up on its hinge, the lorry's curtain rolls up behind a clip at the roof line and a mast stage slides up, and in T the camera
+// alone goes from the high view through the roof light into the hall, which stays where it is. The inside the camera leaves, the racks, the
+// trucks and the floor markings, is swapped for the automation aisle's while the roof is shut and nothing can see it, see T_SWAP.
 import { useMemo, useRef } from 'react';
-import { useFrame } from '@react-three/fiber';
+import { useFrame, useThree } from '@react-three/fiber';
 import * as THREE from 'three';
 import type { SceneProps } from '../../clock';
-import { N_FLIGHT, N_SUB, planK } from '../../timeline';
+import { N_FLIGHT, N_SUB, T_SWAP, planK } from '../../timeline';
 import { NP } from './route';
 import { SPEC, Truck, type ModelName, type TruckApi } from './models';
 import { BoxSet, type BoxItem } from './props';
 import { ease, range, rng, uOf } from './kit';
-import { HALL, HALL_Y, PALLETS, X50_PAL, d12At, h30At, isHeroSlot, levelY, palletAt, r16AAt, r16BAt, x50AAt, x50BAt, type Pose } from './najamplan';
-import { CHARGING, Hall, PARKED, PARK_Z, Yard, loadedPallet, newSets, PalletSet } from './najamhall';
-import { AXLE_X, BED, Lorry, type LorryApi } from './najamlorry';
+import { HALL, HALL_Y, PALLETS, X50_PAL, d12At, h30At, hallInside, isHeroSlot, levelY, palletAt, r16AAt, r16BAt, x50AAt, x50BAt, type Pose } from './najamplan';
+import { CHARGING, DOOR_H, Hall, PARKED, PARK_Z, Yard, loadedPallet, newSets, PalletSet } from './najamhall';
+import { AXLE_X, BED, CURTAIN_UP, Lorry, type LorryApi } from './najamlorry';
 import { C_FROM, C_IN_TRAILER, DOCK_PALLET_COUNT, LORRY_COUNT, dockAAt, dockBAt, dockCAt, dockPalletAt, kLong, lorryAt, mkLorry } from './najamdock';
 import { Load, Plates, beamFlange, beamWeb, labelMat, loadMats, palletBase, rackGrey, wrapBand, wrapShell } from './najamkit';
 
@@ -143,7 +147,7 @@ const place = (g: THREE.Group, p: Pose) => {
   g.rotation.y = -p.th;
 };
 
-// The carriage of the reach truck, a backrest and two tines on the front of its mast, and the upper stage of the mast that rises
+// The carriage of the reach truck, a backrest and two tines on the front of its mast, and the upper stage of the mast that slides up
 // with it to the top beam, since the model's mast stands 3 m. In the frame of the model, which faces -x.
 const MAST_TOP = 2.95;
 function ReachCarriage({ carriage, stage }: { carriage: React.RefObject<THREE.Group | null>; stage: React.RefObject<THREE.Group | null> }) {
@@ -211,9 +215,9 @@ function Mover({ clock, def }: SceneProps & { def: MoverDef }) {
     // the carriage and the upper stage of the mast, in the model's frame which faces -x
     carriage.current?.position.set(-p.reach, p.lift, 0);
     if (stage.current) {
+      // the stage is one rigid section 1 m long that slides up the mast, its top on the top of the carriage
       const top = p.lift + 1.1;
-      stage.current.position.set(0, MAST_TOP, 0);
-      stage.current.scale.y = Math.max(top - MAST_TOP, 0.001);
+      stage.current.position.set(0, top - 1.0, 0);
       stage.current.visible = top > MAST_TOP + 0.05;
     }
   });
@@ -289,7 +293,8 @@ function Lorries({ clock }: SceneProps) {
       a.trailer.rotation.y = -p.psi;
       a.tractor.position.set(p.px, 0, p.pz);
       a.tractor.rotation.y = -p.theta;
-      a.curtain.scale.x = Math.max(1 - 0.9 * p.open, 0.001);
+      // the near side rolls up behind the roof line, where it is clipped, see najamlorry.tsx
+      a.curtain.position.y = CURTAIN_UP * p.open;
       a.doorA.rotation.y = (-Math.PI / 2) * p.close;
       a.doorB.rotation.y = (Math.PI / 2) * p.close;
     }
@@ -348,48 +353,64 @@ function DockLoads({ clock }: SceneProps) {
   );
 }
 
+// The roof light over the dock end, a hatch on a hinge that tilts up 75 degrees for the camera to go through and lies down again behind it. In
+// the third flight it opens as the flight starts, while the camera is still in the hall, and closes once the camera is 14 m over the roof. In T it opens
+// as the camera comes down to the roof and stays open, the camera goes in through it and never sees it again.
+const HATCH_UP = 1.3;
+const FLIGHT_OPEN = [0, 0.02] as const;
+const FLIGHT_SHUT = [0.037, 0.05] as const;
+const T_OPEN = [13.5, 13.6] as const;
+
 export default function Najam({ clock }: SceneProps) {
-  const hall = useRef<THREE.Group>(null);
   const doors = useRef<(THREE.Group | null)[]>([]);
   const roofHatch = useRef<THREE.Group>(null);
-  const roof = useRef<THREE.Group>(null);
+  // the inside of the hall, the racks, the trucks and the floor markings, and the inside of the hall's own floor, see Hall
+  const inside = useRef<THREE.Group>(null);
+  const floor = useRef<THREE.Group>(null);
   const signFade = useRef(1);
+  const scene = useThree((st) => st.scene);
+  const camera = useThree((st) => st.camera);
   useFrame(() => {
     const u = uOf(clock);
     const k = planK(Math.min(Math.max(u - 12, 0), 1));
-    // the dock doors roll up into their heads, door 1 as the camera of the first flight arrives, door 3 for the second lorry
+    // the dock doors roll up into their lintels, door 1 as the camera of the first flight arrives, door 3 for the second lorry. A door is hung
+    // from the head of its frame and slides up inside the wall over it, which is 0.4 m thick and closed behind the skin
     const open = [ease(range(k, 0.2, 0.27)), 0, ease(range(k, 0.62, 0.7)), 0];
     open.forEach((o, i) => {
       const g = doors.current[i];
-      if (g) g.scale.y = Math.max(1 - 0.96 * o, 0.04);
+      if (g) g.position.y = DOOR_H + DOOR_H * 0.96 * o;
     });
-    // the roof light over the dock end draws aside in the third flight, 0.735 to 0.775, for the camera to rise through, and closes behind it as soon as
-    // the camera is over the roof, 0.79 to 0.815, so the camera never looks down a dark gap
-    if (roofHatch.current) roofHatch.current.scale.x = Math.max(1 - ease(range(k, 0.735, 0.775)) * (1 - ease(range(k, 0.79, 0.815))), 0.001);
+    // the roof light, see HATCH_UP
+    const kk = Math.min(Math.max(u - 12, 0), 1);
+    const f0 = N_FLIGHT.high[0];
+    const hatch = u < 13 ? ease(range(kk, f0 + FLIGHT_OPEN[0], f0 + FLIGHT_OPEN[1])) * (1 - ease(range(kk, f0 + FLIGHT_SHUT[0], f0 + FLIGHT_SHUT[1]))) : ease(range(u, T_OPEN[0], T_OPEN[1]));
+    if (roofHatch.current) roofHatch.current.rotation.z = -hatch * HATCH_UP;
     // the wordmark on the long wall is drawn out as the third flight starts, while the camera is still inside, and drawn in again over the last
     // 0.025 of the flight, as the high view of N4 arrives, since between them every part of the building passes behind the title of the terms
-    const kk = Math.min(Math.max(u - 12, 0), 1);
-    const away = ease(range(kk, N_FLIGHT.high[0], N_FLIGHT.high[0] + 0.01)) * (1 - ease(range(kk, N_SUB.N4[0] - 0.025, N_SUB.N4[0])));
+    const away = ease(range(kk, f0, f0 + 0.01)) * (1 - ease(range(kk, N_SUB.N4[0] - 0.025, N_SUB.N4[0])));
     signFade.current = u >= 13 ? 1 : 1 - away;
-    // T, the roof draws in on itself like an iris while the camera dives, then the whole hall sinks as the walls and racks of the aisle rise
-    const iris = ease(range(u, 13.0, 13.3));
-    if (roof.current) {
-      roof.current.scale.set(Math.max(1 - iris, 0.001), 1, Math.max(1 - iris, 0.001));
-      roof.current.visible = iris < 0.998;
-    }
-    const gone = ease(range(u, 13.2, 13.6));
-    if (hall.current) {
-      hall.current.scale.y = Math.max(1 - gone, 0.001);
-      hall.current.visible = gone < 0.998;
+    // T, while the roof is shut and the camera is high over it nothing can see the inside, so the inside of the Najam hall goes and the automation
+    // aisle's comes, see aisle.tsx. The shell of the hall, its floor, walls, roof and doors, stays for the aisle to stand in
+    const swapped = u >= T_SWAP;
+    if (inside.current) inside.current.visible = !swapped;
+    if (floor.current) floor.current.visible = !swapped;
+    // No haze in the hall. The world's fog starts 40 m or so from the lens, which is the far wall of the hall, so inside it is pushed out of reach,
+    // and it comes back as the camera goes out of the door or over the roof
+    const fog = scene.fog as THREE.Fog | null;
+    if (fog) {
+      const p = camera.position;
+      const f = hallInside(p.x - NP.x, p.y - HALL_Y, p.z - NP.z);
+      fog.near += (600 - fog.near) * f;
+      fog.far += (900 - fog.far) * f;
     }
   });
   return (
     <group position={[NP.x, 0, NP.z]}>
-      <group ref={hall}>
-        <Yard />
-        <Lorries clock={clock} />
-        <group position={[0, HALL_Y, 0]}>
-          <Hall doors={doors} roofHatch={roofHatch} roof={roof} signFade={signFade} />
+      <Yard />
+      <Lorries clock={clock} />
+      <group position={[0, HALL_Y, 0]}>
+        <Hall doors={doors} roofHatch={roofHatch} inside={floor} signFade={signFade} />
+        <group ref={inside}>
           <Racks />
           <Movers clock={clock} />
           <DockLoads clock={clock} />

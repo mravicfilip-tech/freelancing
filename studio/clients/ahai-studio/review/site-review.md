@@ -16,6 +16,11 @@ Claude reads the sheet, fixes what it can, and marks each row done or not done.
 | Drive folders | The Google Drive connector is connected, folders not opened yet |
 | Site source code | Unknown repo. Not in Filip's GitHub list and not in his Vercel team, so fixes need the repo added |
 
+## How rows are written
+
+- Every row Claude writes gives the problem in plain terms and then ideas to solve it, with options where the fix is copy or layout. Filip's rule from 2026-11-03.
+- Status uses the sheet's own dropdown, Seen, In progress or Done. Priority uses Urgent, Mid or Low.
+
 ## Pages
 
 Baseline shots taken 2026-11-03 at 1440 wide, desktop only since the client README names no phone width.

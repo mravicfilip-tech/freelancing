@@ -29,9 +29,9 @@ Task format
   - [ ] Four preloader versions on the switcher
   - [ ] Fade as the only text animation
   - [ ] The term cards at the bottom of the left column, rules inside the column
-  - [ ] Clean lane arrows in Automatizacija
-  - [ ] Into the warehouse from where the racks already read
-  - [ ] Detailed trucks in the yard from above
+  - [x] Clean lane arrows in Automatizacija
+  - [x] Into the warehouse from where the racks already read
+  - [x] Detailed trucks in the yard from above
   - [ ] Filip picks a preloader
 
 - ekotehnika-14 Round 7, Filip's review of the whole site, loader, text animation, scroll, Prodaja into the warehouse, Najam and Automatizacija. Notes in briefs/round7/notes.md

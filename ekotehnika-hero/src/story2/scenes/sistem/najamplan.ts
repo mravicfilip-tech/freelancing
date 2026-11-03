@@ -510,7 +510,8 @@ const evenT = (key: string, pts: V3[], f: number) => {
 function fly(a: Cam, b: Cam, t: number, o: Cam, via?: Via) {
   const pos = (c: Cam): V3 => [c.x + c.d * Math.sin(c.yaw * RAD) * Math.cos(c.pitch * RAD), c.y - c.d * Math.sin(c.pitch * RAD), c.z + c.d * Math.cos(c.yaw * RAD) * Math.cos(c.pitch * RAD)];
   const cams = [pos(a), ...(via?.cam ?? []), pos(b)];
-  if (via?.even) t = evenT(cams.map((c) => c.map((v) => v.toFixed(2)).join()).join('|'), cams, t);
+  // at the two ends the path is its first and last point whatever the pace, and the first point of the third flight moves with the story before it
+  if (via?.even && t > 0 && t < 1) t = evenT(cams.map((c) => c.map((v) => v.toFixed(2)).join()).join('|'), cams, t);
   const [px, py, pz] = spline(cams, t);
   const [tx, ty, tz] = spline([[a.x, a.y, a.z], ...(via?.tgt ?? []), [b.x, b.y, b.z]], t);
   const dx = px - tx;

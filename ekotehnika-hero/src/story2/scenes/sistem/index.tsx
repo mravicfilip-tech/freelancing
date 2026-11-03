@@ -1,4 +1,4 @@
-// Sistem, the 3D studio telling storyline 2. One R3F canvas, dpr capped at 1.5. The real Linde forklift in a bright
+// Sistem, the 3D studio telling storyline 2. One R3F canvas, dpr capped at 1.25 and let down to 1 when the frame rate sags. The real Linde forklift in a bright
 // white and grey site (low poly trees, hedges, lamp posts, the company building, vans), the yard from above, the
 // warehouse as a lit model with racks and wrapped pallets, a precise side elevation schematic of the X50 on the dark
 // servis ground, a steel fork tine, the Najam warehouse, the rental depot floor and the automation floor with robots at true scale on system
@@ -6,8 +6,8 @@
 // same picture. The one exception is the build in on load (props.tsx), timed from the first frame, which a frozen clock
 // and reduced motion skip.
 import { Suspense, useEffect, useRef, useState } from 'react';
-import { Canvas, useFrame, useThree } from '@react-three/fiber';
-import { Environment } from '@react-three/drei';
+import { Canvas, addEffect, useFrame, useThree } from '@react-three/fiber';
+import { Environment, PerformanceMonitor, useProgress } from '@react-three/drei';
 import * as THREE from 'three';
 import { track } from '../../../story/scenes/sistem/tracks';
 import type { SceneProps } from '../../clock';
@@ -20,10 +20,18 @@ import { SPEC, Truck, type TruckApi } from './models';
 import { GROUND, uOf } from './kit';
 import Outdoor from './outdoor';
 import { introClock } from './props';
+import { DEBUG_FPS, perf } from '../../perf';
+import { setAssets } from './intro';
 import Overlay from './overlay';
 import Aisle from './aisle';
 import { routeAt, truckS } from './route';
 import Warehouse from './warehouse';
+
+// The models and textures the scene asks for, counted by three's loading manager, are passed to the preloader (intro.ts). The models
+// start loading as this module loads, see models.tsx, so the counter is read from here and not from a component.
+const feedAssets = (s: { progress: number; active: boolean; total: number }) => setAssets(s.progress, s.active, s.total);
+feedAssets(useProgress.getState());
+useProgress.subscribe(feedAssets);
 
 // Forks low while driving, raised in front of the building and set down again for the road.
 const HERO_LIFT = track([[0, 0.12], [1.6, 0.12], [2.15, 1.55], [2.85, 1.55], [3.25, 0.15], [12, 0.15]]);
@@ -207,11 +215,82 @@ function World({ clock }: SceneProps) {
   );
 }
 
+// The renderer's side of ?debug=fps (story2/perf.ts). R3F runs the frame's effects first, then every useFrame callback, then the one
+// gl.render call, so the gap from the effect to the call is the JS of the scene's useFrame work, and the call itself is the draw. After
+// the draw the renderer's own counters give the calls and triangles of the frame, shadow pass included. Nothing is wrapped without the
+// parameter. A frozen clock draws on demand, so with the parameter it also asks for a frame every frame, and a shot of one beat then
+// measures the same work a scrolled page does there.
+function Probe({ clock }: SceneProps) {
+  const gl = useThree((s) => s.gl);
+  const invalidate = useThree((s) => s.invalidate);
+  useEffect(() => {
+    if (!DEBUG_FPS) return;
+    let from = 0;
+    let id = 0;
+    const again = () => {
+      invalidate();
+      id = requestAnimationFrame(again);
+    };
+    if (clock.still) id = requestAnimationFrame(again);
+    const off = addEffect(() => {
+      from = performance.now();
+    });
+    const draw = gl.render.bind(gl);
+    gl.render = (scene, camera) => {
+      const t = performance.now();
+      if (from) perf.scene.add(t - from);
+      draw(scene, camera);
+      perf.draw.add(performance.now() - t);
+      perf.calls = gl.info.render.calls;
+      perf.tris = gl.info.render.triangles;
+      perf.dpr = gl.getPixelRatio();
+    };
+    return () => {
+      off();
+      cancelAnimationFrame(id);
+      gl.render = draw;
+    };
+  }, [gl, invalidate, clock]);
+  return null;
+}
+
+// The key light's shadow map was 2048 by 2048, four times the pixels of the 1024 map that holds the same shadow over the 20 or so metres
+// its frustum covers (camera.tsx sizes the frustum to the view), 1 to 2cm a texel. Round 7, Filip, "feels like 15 FPS". The light is
+// resized here, once, where the renderer is set up, and its map is thrown away so three allocates the smaller one.
+const SHADOW_MAP = 1024;
+function Tune() {
+  const scene = useThree((s) => s.scene);
+  useEffect(() => {
+    const fit = () =>
+      scene.traverse((o) => {
+        const l = o as THREE.DirectionalLight;
+        if (l.isDirectionalLight && l.castShadow && l.shadow.mapSize.x > SHADOW_MAP) {
+          l.shadow.mapSize.set(SHADOW_MAP, SHADOW_MAP);
+          l.shadow.map?.dispose();
+          l.shadow.map = null;
+        }
+      });
+    fit();
+    // a light that mounts a moment later is caught too
+    const id = window.setTimeout(fit, 600);
+    return () => window.clearTimeout(id);
+  }, [scene]);
+  return null;
+}
+
+// The device pixel ratio is capped at DPR_MAX, and drops to 1 when the frame rate sags (drei's PerformanceMonitor measures it, a decline
+// lowers the cap, a lasting recovery lifts it, and after two flips it stays down). A 1.5 cap drew 2.25 times the pixels of 1.
+const DPR_MAX = 1.25;
+
 export default function Scene({ clock }: SceneProps) {
+  const [cap, setCap] = useState(DPR_MAX);
   return (
     <div style={{ position: 'absolute', inset: 0, background: GROUND }} aria-hidden="true">
-      <Canvas shadows="soft" dpr={[1, 1.5]} frameloop={clock.still ? 'demand' : 'always'} camera={{ fov: 28, near: 0.1, far: 280, position: [0, 2, 12] }} gl={{ antialias: true }}>
+      <Canvas shadows="soft" dpr={[1, cap]} frameloop={clock.still ? 'demand' : 'always'} camera={{ fov: 28, near: 0.1, far: 280, position: [0, 2, 12] }} gl={{ antialias: true, powerPreference: 'high-performance' }}>
         <World clock={clock} />
+        <Tune />
+        {!clock.still && <PerformanceMonitor flipflops={2} onDecline={() => setCap(1)} onIncline={() => setCap(DPR_MAX)} onFallback={() => setCap(1)} />}
+        <Probe clock={clock} />
       </Canvas>
     </div>
   );

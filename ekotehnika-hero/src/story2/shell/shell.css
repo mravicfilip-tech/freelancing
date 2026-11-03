@@ -411,25 +411,56 @@
   color: var(--fg);
 }
 
-/* The rise, round 5, see reveal.ts. A part with text splits into words and letters, and each letter rises out of its own mask
-   at the baseline, the padding gives carons and descenders room inside the mask. With no JS every letter sits at 0. */
-[data-rise] .rw {
-  display: inline-block;
-  white-space: nowrap;
+/* The text arrival, round 7, see reveal.ts. A part with text is split into words, each in a mask .rl around a box .rc, and the shell sets
+   --tp, 0 to 1, on every .rc of a line together, so a line arrives as one piece. A part with none of its own, an icon, a button or a
+   counting figure, takes --tp on itself. data-text on the root picks one of four looks, and data-done on a part, set when its arrival
+   has finished, lifts the look off it for good. With no JS every part shows its end state. */
+[data-rise] .rl {
+  display: inline;
 }
 
-[data-rise] .rl {
+[data-rise] .rc {
   display: inline-block;
+}
+
+/* 1 Fade, each line fades in while it drifts up 12px */
+html[data-text='1'] [data-wipe]:not([data-done]) .rc,
+html[data-text='1'] [data-wipe]:not([data-rise]):not([data-done]) {
+  opacity: var(--tp, 1);
+  transform: translateY(calc((1 - var(--tp, 1)) * 12px));
+}
+
+/* 2 Line mask, each whole line slides up out of a mask of its own. The mask clips at its box, the padding gives carons and descenders
+   room, and the same words sit in the same places as the plain text. A part with no text slides up out of the mask of its box. */
+html[data-text='2'] [data-rise] .rl {
+  display: inline-block;
+  white-space: nowrap;
   overflow: clip;
   padding: 0.1em 0.04em 0.16em 0;
   margin: -0.1em -0.04em -0.16em 0;
 }
 
-/* --y runs from 1, under the mask, to 0, in place. Under means a whole letter box plus the mask's 0.16em of padding and a
-   margin, so no ascender peeks through the bottom of its mask while it waits. */
-[data-rise] .rc {
-  display: inline-block;
-  transform: translateY(calc(var(--y, 0) * (100% + 0.3em)));
+html[data-text='2'] [data-wipe]:not([data-done]) .rc {
+  transform: translateY(calc((1 - var(--tp, 1)) * (100% + 0.3em)));
+}
+
+html[data-text='2'] [data-wipe]:not([data-rise]):not([data-done]) {
+  transform: translateY(calc((1 - var(--tp, 1)) * 100%));
+  clip-path: inset(0 0 calc((1 - var(--tp, 1)) * 100%) 0);
+}
+
+/* 3 Blur, each line goes from 8px of blur and no opacity to sharp */
+html[data-text='3'] [data-wipe]:not([data-done]) .rc,
+html[data-text='3'] [data-wipe]:not([data-rise]):not([data-done]) {
+  opacity: var(--tp, 1);
+  filter: blur(calc((1 - var(--tp, 1)) * 8px));
+}
+
+/* 4 Wipe, each line is uncovered by a clip running left to right. --tp of a word is the share of it the front has passed. The clip is
+   taller than the box so no ascender or descender is cut. */
+html[data-text='4'] [data-wipe]:not([data-done]) .rc,
+html[data-text='4'] [data-wipe]:not([data-rise]):not([data-done]) {
+  clip-path: inset(-0.3em calc((1 - var(--tp, 1)) * 100%) -0.3em 0);
 }
 
 /* ---- data rows, A6 ---- */
@@ -1045,4 +1076,93 @@
   background: var(--ink);
   border-color: var(--ink);
   color: var(--white);
+}
+
+/* ---- the frame readout of ?debug=fps, see Fps.tsx. Review chrome, it never shows without the parameter ---- */
+.fps {
+  position: fixed;
+  left: 8px;
+  bottom: 8px;
+  z-index: 9998;
+  margin: 0;
+  padding: 8px 12px;
+  background: rgb(0 0 0 / 0.82);
+  color: #fff;
+  font: 12px/16px ui-monospace, Menlo, Consolas, monospace;
+  pointer-events: none;
+  white-space: pre;
+}
+
+/* ---- the preloader, round 7, see Preloader.tsx. The white ground, the two logos as supplied at the size of the top row, and one thin
+   ink line under them that fills with the real loading. It lifts off the top once, 700ms on the plan's wipe curve, with a hairline on its
+   lower edge like the rules of the grid, and the page is already arriving under it. index.html holds a copy of the still sheet for the
+   first paint, #boot, keep the two the same size. ---- */
+.pl {
+  position: fixed;
+  inset: 0;
+  z-index: 9990;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--white);
+}
+
+.pl[data-out] {
+  animation: pl-lift 700ms cubic-bezier(0.7, 0, 0.2, 1) forwards;
+}
+
+.pl[data-out]::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 1px;
+  background: var(--ink);
+}
+
+@keyframes pl-lift {
+  to {
+    transform: translateY(-100%);
+  }
+}
+
+.pl-in {
+  display: flex;
+  flex-direction: column;
+  gap: 48px;
+  width: 350px;
+}
+
+.pl-logos {
+  display: flex;
+  align-items: center;
+  gap: 30px;
+}
+
+.pl-logos img {
+  display: block;
+  flex: none;
+  width: 160px;
+}
+
+.pl-logos img:first-child {
+  height: 96px;
+}
+
+.pl-logos img:last-child {
+  height: auto;
+}
+
+.pl-bar {
+  height: 2px;
+  background: rgb(34 34 34 / 0.12);
+}
+
+.pl-bar i {
+  display: block;
+  height: 100%;
+  background: var(--ink);
+  transform: scaleX(0);
+  transform-origin: 0 50%;
 }

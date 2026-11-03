@@ -11,6 +11,7 @@ import gsap from 'gsap';
 import { useScrollStory, clamp01 } from '../scroll/useScrollStory';
 import { LENGTH, TIMELINE, beatAt } from './timeline';
 import { RETURN } from './preview';
+import { STOPS } from './stops';
 
 // The progress the page lands on after a switch of the panel reloaded it, from the beat id and k it left, with this page's spans.
 const RESTORE = (() => {
@@ -37,7 +38,7 @@ export const stillClock = (beat: number, k = 1): StoryClock => ({
 });
 
 export function useStoryClock(reduced: boolean) {
-  const { stageRef, progress, goTo } = useScrollStory({ length: LENGTH, reduced, smoothing: 0.09, restore: RESTORE });
+  const { stageRef, progress, goTo } = useScrollStory({ length: LENGTH, reduced, smoothing: 0.09, restore: RESTORE, stops: STOPS });
   const beat = useRef(0);
   const k = useRef(0);
   const pos = useRef(0);
@@ -47,9 +48,12 @@ export function useStoryClock(reduced: boolean) {
 
   useEffect(() => {
     if (reduced) return;
-    // A read only handle for timing checks, ?debug=clock.
+    // A read only handle for timing checks and the stops, ?debug=clock.
     const debug = new URLSearchParams(window.location.search).get('debug') === 'clock';
-    if (debug) Object.defineProperty(window, '__storyPos', { get: () => pos.current, configurable: true });
+    if (debug) {
+      Object.defineProperty(window, '__storyPos', { get: () => pos.current, configurable: true });
+      (window as { __stops?: number[] }).__stops = STOPS;
+    }
     // Shots and reviews can freeze the clock on one keyframe, ?at=<beatId>&k=<0 to 1>.
     const q = new URLSearchParams(window.location.search);
     const at = TIMELINE.findIndex((b) => b.id === q.get('at'));
@@ -77,7 +81,10 @@ export function useStoryClock(reduced: boolean) {
     gsap.ticker.add(tick);
     return () => {
       gsap.ticker.remove(tick);
-      if (debug) delete (window as { __storyPos?: number }).__storyPos;
+      if (debug) {
+        delete (window as { __storyPos?: number }).__storyPos;
+        delete (window as { __stops?: number[] }).__stops;
+      }
     };
   }, [reduced, progress, clock]);
 

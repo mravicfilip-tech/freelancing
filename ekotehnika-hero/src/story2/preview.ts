@@ -1,6 +1,9 @@
-// The two things Filip picks on localhost, read once from the URL and shared by the scroll clock, the shell and the scene.
+// The three things Filip picks on localhost, read once from the URL and shared by the scroll clock, the shell and the scene.
 //   ?feel=N   how the story clock follows the scroll, 0 Today, 1, 2 and 3 cap the clock, 4 Lock slow, 5 Lock and 6 Lock fast cap it
-//             lower and also hold the page to the clock, 5 is the default (scroll/useScrollStory.ts)
+//             lower and also hold the page to the clock, and 7 Stops is Lock 5 with a stop at every section, so holding the wheel
+//             parks the clock where the words of a section have arrived. 7 is the default (scroll/useScrollStory.ts, story2/stops.ts)
+//   ?text=N   how the text of every pane arrives, line by line, 1 Fade, 2 Line mask, 3 Blur and 4 Wipe, 1 is the default (shell/reveal.ts).
+//             Round 7 took the word by word rise away
 //   ?najam=N  which Najam, 0 Today is production's grid of forklifts, 2 New is the warehouse story of round 6 (timeline.ts,
 //             scenes/sistem/najamplan.ts). The number 2 stays from the three cameras Filip chose between, 1 and 3 are gone
 // The panel that sets them (shell/Preview.tsx) shows on the dev server, which is what npm run live runs, or with ?preview in the URL.
@@ -11,11 +14,14 @@ const pick = (name: string, fallback: number, allowed: number[]) => {
   return allowed.includes(n) ? n : fallback;
 };
 
-export const FEEL = pick('feel', 5, [0, 1, 2, 3, 4, 5, 6]);
+export const FEEL = pick('feel', 7, [0, 1, 2, 3, 4, 5, 6, 7]);
+export const TEXT = pick('text', 1, [1, 2, 3, 4]);
 export const NAJAM = pick('najam', 0, [0, 2]);
 export const PREVIEW = Boolean(import.meta.env.DEV) || params.has('preview');
 
-export const FEELS = ['Today', '1', '2', '3', 'Lock slow', 'Lock', 'Lock fast'];
+export const FEELS = ['Today', '1', '2', '3', 'Lock slow', 'Lock', 'Lock fast', 'Stops'];
+// the text animations the panel offers, by their number in the URL
+export const TEXTS: [number, string][] = [[1, 'Fade'], [2, 'Line mask'], [3, 'Blur'], [4, 'Wipe']];
 // the Najams the panel offers, by their number in the URL
 export const NAJAMS: [number, string][] = [[0, 'Today'], [2, 'New']];
 

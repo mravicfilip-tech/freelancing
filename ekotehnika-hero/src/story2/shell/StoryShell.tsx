@@ -10,15 +10,19 @@ import { Component, Suspense, useEffect, useMemo, useRef, type ComponentType, ty
 import { stillClock, useStoryClock, type SceneProps } from '../clock';
 import { LENGTH, NAJAM_TERMS, N_LEAVE, N_PALLETS, SERVIS_MAP, TIMELINE, WAREHOUSE, type BeatSpan } from '../timeline';
 import { Preview } from './Preview';
+import { Fps } from './Fps';
+import { DEBUG_FPS, perf } from '../perf';
 import { HeroFrame } from '../../ui/HeroFrame';
 import { Grid, RULE_TOP, paintMarks, ruleMarks } from './Grid';
 import { ATPane, C1Pane, NPane, NTPane, PPane, RPane, SPane, setTab, setTerm } from './panes';
 import { AfterStory } from './sections';
 import { COUNT_DONE, FILL_FROM, FILL_TO, HERO_SECONDS, WIPE_DONE, WIPE_SHARE, clamp01, formatCount, outCubic, range } from './motion';
 import { prepRise, setRise, type Rise } from './reveal';
+import { SLOW } from '../stops';
 import { forkBackFrom, forkBackTo, forkLiftFrom, forkLiftTopPx, forkPassesPx, forkTipPx } from '../scenes/sistem/forkTip';
 import { SMPane } from './map/ServisMap';
-import { INTRO_SKIP, introStart, markIntroStart } from '../scenes/sistem/intro';
+import { INTRO_SKIP, markIntroStart, revealAt } from '../scenes/sistem/intro';
+import { Preloader } from './Preloader';
 import './shell.css';
 
 export type Tone = 'light' | 'dark';
@@ -55,9 +59,10 @@ const LEAVE: Record<string, [number, number]> = { AT: [1.01, 1.02], S: [0.49, 0.
 const P_FIRST = 0.06;
 const P_STEP = 0.22;
 const LEAVE_DEFAULT: [number, number] = [0.86, 1];
-// the hero block starts this long after the street does, as the road is drawing, and plays anyway after HERO_WAIT_MS
-const HERO_AFTER_MS = 350;
+// the top row and the hero block start when the preloader lets go, and play anyway after HERO_WAIT_MS
 const HERO_WAIT_MS = 10000;
+// story pixels between one hero part and the next, 60ms at the 120px the hero block takes for 1.6s
+const HERO_STEP_PX = (120 * 0.06) / HERO_SECONDS;
 // the beat that comes in behind the L fork's tip, see scenes/sistem/forkTip.ts
 const BEHIND_FORK = 'N';
 
@@ -69,13 +74,6 @@ const DARK_TOP: [number, number][] = [
 ];
 
 const HOLDS = TIMELINE.filter((b) => b.hold);
-
-// Beats whose text reveals over more of the hold than WIPE_DONE, by the factor given. C1's wipes and counts took about 144px of
-// scroll, one or two wheel ticks (Filip 2026-10-12, video round 4, "this animation is happening too fast"), so they run over
-// 0.36 of the hold, twice the old pace, which is 1.45 times the slower pace every beat has now.
-// S and its map take the same 250 to 300px for their text as the other holds, though S is 2000px long now.
-// N is 4,000px now and its text keeps the 375px it took when N was 900, the terms pane takes about 330px of its 1,920.
-const SLOW: Record<string, number> = { C1: 1.45, S: 0.5, SM: 0.9, ...(WAREHOUSE ? { N: 0.094, NT: 0.69 } : {}) };
 
 // The story's sections that have a link in the top nav, by the data-ch of that link, see HeroFrame.
 const CHAPTER: Record<string, string> = { prodaja: 'prodaja', servis: 'servis', najam: 'najam' };
@@ -264,17 +262,19 @@ export function StoryShell({ Scene, tone, reduced, darkLayers, darkTop = DARK_TO
 
     let lastTone = '';
     let lastGround = '';
-    let lastGrid = '';
+    let lastGrid = -1;
+    let smK = -1;
     let id = 0;
 
     const loop = () => {
+      const jsFrom = DEBUG_FPS ? performance.now() : 0;
       const pos = clock.pos.current;
-      // the top row plays on real time from load. The hero block and the grid wait for the street to start building in, then
-      // rise with it, so the text never stands finished on an empty white stage (round 5). If the scene has not drawn after
+      // The top row, the hero block and the grid play on real time from the moment the preloader lets go (Preloader.tsx), the same moment
+      // the scene's build in is timed from, so the buttons, the text and the street arrive as one move and the text never stands finished
+      // on an empty white stage (round 5), nor starts before the page is shown (round 7). If the preloader has not let go after
       // HERO_WAIT_MS, a failed or very slow canvas, they play anyway.
       const now = performance.now();
-      const heroT = clamp01((now - t0) / 1000 / HERO_SECONDS);
-      const s0 = INTRO_SKIP ? t0 : introStart() >= 0 ? introStart() + HERO_AFTER_MS : now - t0 > HERO_WAIT_MS ? t0 + HERO_WAIT_MS : Infinity;
+      const s0 = INTRO_SKIP ? t0 : revealAt() >= 0 ? revealAt() : now - t0 > HERO_WAIT_MS ? t0 + HERO_WAIT_MS : Infinity;
       const blockT = clamp01((now - s0) / 1000 / HERO_SECONDS);
 
       for (const G of groups) {
@@ -285,8 +285,10 @@ export function StoryShell({ Scene, tone, reduced, darkLayers, darkTop = DARK_TO
         const slow = SLOW[G.id] ?? 1;
         const budget = isHero ? 120 : WIPE_DONE * slow * len;
         const dur = budget * WIPE_SHARE;
-        const stagger = (budget - dur) / G.maxOrder;
-        const ht = G.id === 'H' ? blockT : heroT;
+        // The hero parts follow each other by HERO_STEP_PX, about 60ms of the hero's 1.6s, the same step as the lines inside a part
+        // (reveal.ts), so the top row and the hero text arrive as one move. A pane's parts share what is left of its budget.
+        const stagger = isHero ? HERO_STEP_PX : (budget - dur) / G.maxOrder;
+        const ht = blockT;
         const u = isHero ? Math.max(ht * budget, (pos / len) * (budget / WIPE_DONE)) : pos - G.span.start;
         const k = isHero ? Math.max(k0, FILL_TO * ht) : k0;
         let on: boolean;
@@ -298,7 +300,7 @@ export function StoryShell({ Scene, tone, reduced, darkLayers, darkTop = DARK_TO
           // the terms pane is gone on the frame T starts, at k 1 of its own span, where the others hold their last pixel
           on = k >= 0 && (k < 1 || (G.id !== 'NT' && k === 1)) && k < (G.leave[0] + G.leave[1]) / 2;
         }
-        // the hero block stays off until the street starts building in, its grey lede included, see s0 above
+        // the hero block stays off until the preloader lets go, its grey lede included, see s0 above
         if (G.id === 'H' && s0 === Infinity) on = false;
         // Najam turns on as the fork starts backing out of L, cut at the blade's tip, so it draws on behind the steel and no frame
         // is an empty page (round 5, Filip's note 3). Its layout is unchanged.
@@ -328,8 +330,11 @@ export function StoryShell({ Scene, tone, reduced, darkLayers, darkTop = DARK_TO
         // behind its load and no steel ever crosses the type, not even before the blade comes into the frame. The sheet drops
         // under the page grid, so the grid lines still draw over it, and it is cut at the top rule so it never crosses the top row.
         if (G.id === 'SM') {
-          const kk = clamp01(k).toFixed(4);
-          if (G.el.style.getPropertyValue('--k') !== kk) G.el.style.setProperty('--k', kk);
+          const kk = Math.round(clamp01(k) * 10000);
+          if (kk !== smK) {
+            smK = kk;
+            G.el.style.setProperty('--k', (kk / 10000).toFixed(4));
+          }
           const h = stage.clientHeight;
           const load = pos >= forkLiftFrom;
           const push = load ? Math.min(0, forkLiftTopPx(pos, h) - h) : 0;
@@ -399,7 +404,8 @@ export function StoryShell({ Scene, tone, reduced, darkLayers, darkTop = DARK_TO
         if (gp > h.end && gp - h.end < 150) go = Math.max(go, 1 - 0.6 * range(gp - h.end, 0, 150));
         if (gp < h.start && h.start - gp < 120) go = Math.min(go, 0.4 * ((h.start - gp) / 120));
       }
-      const gk = `${Math.round(go * 100)}|${Math.round(draw * 200)}`;
+      // a number, not a string, so no string is made every frame
+      const gk = Math.round(go * 100) * 1000 + Math.round(draw * 200);
       if (gk !== lastGrid) {
         lastGrid = gk;
         grid.style.setProperty('--go', go.toFixed(2));
@@ -419,7 +425,8 @@ export function StoryShell({ Scene, tone, reduced, darkLayers, darkTop = DARK_TO
       }
 
       // dark span, the grid and the frame turn white, the Linde logo stays as supplied and the Ekotehnika wordmark turns white
-      const dark = tone === 'dark' || darkTop.some(([a, b]) => pos >= a && pos < b);
+      let dark = tone === 'dark';
+      for (let i = 0; i < darkTop.length && !dark; i++) dark = pos >= darkTop[i][0] && pos < darkTop[i][1];
       const t = dark ? 'white' : 'ink';
       if (t !== lastTone) {
         lastTone = t;
@@ -435,6 +442,7 @@ export function StoryShell({ Scene, tone, reduced, darkLayers, darkTop = DARK_TO
         lastGround = ground;
         sceneEl.style.background = ground;
       }
+      if (DEBUG_FPS) perf.shell.add(performance.now() - jsFrom);
       id = requestAnimationFrame(loop);
     };
     id = requestAnimationFrame(loop);
@@ -512,6 +520,7 @@ export function StoryShell({ Scene, tone, reduced, darkLayers, darkTop = DARK_TO
 
   return (
     <div className="s2" data-tone={tone}>
+      <Preloader webgl={HAS_GL} />
       <div ref={stageRef} className="s2-stage" role="region" aria-label="Ekotehnika, Linde viljuškari">
         <div className="s2-scene" aria-hidden="true">
           {mountScene(Scene, clock)}
@@ -526,6 +535,7 @@ export function StoryShell({ Scene, tone, reduced, darkLayers, darkTop = DARK_TO
       </div>
       <AfterStory />
       <Preview clock={clock} />
+      <Fps />
     </div>
   );
 }

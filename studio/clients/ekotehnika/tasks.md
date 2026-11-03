@@ -29,7 +29,8 @@ Task format
   - [x] Transcribe Filip's 8 minute review and pull the frames he points at
   - [x] Preloader, four text animations, stops in the scroll, frame rate, the Prodaja corner cross
   - [ ] Prodaja into the warehouse without the empty roof view
-  - [ ] Najam and Automatizacija fixes, notes 6 to 14
+  - [x] Najam and Automatizacija fixes, notes 6 to 14
+  - [ ] The move into Automatizacija still passes near white frames over the roof and the empty aisle floor, T k 0.5 to 0.75
   - [ ] Filip picks a text animation
 
 - ekotehnika-13 The Ekotehnika link showed the Remittix site, own repo and a new Vercel link. Link https://ekotehnika.vercel.app

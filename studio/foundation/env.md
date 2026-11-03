@@ -41,8 +41,12 @@ so the lesson outlives the context window.
 
 - 100 deploys a day across the account. Git previews of every linked project count, and hitting the
   cap returns a 402 that blocks production too.
-- A git deploy of a commit an agent authored is refused. Deploy with
+- A git deploy of a commit an agent authored was refused on the freelancing repo's projects. Deploy with
   `node studio/scripts/deploy.mjs --dir <project>`, which uploads a copy with no git history.
+- That refusal does not hold on the project ekotehnika. A push to `main` of mravicfilip-tech/ekotehnika goes to production
+  at ekotehnika.vercel.app in about 5 seconds, whoever authored it. On 3 November three agent pushes went live that way,
+  two about 3 minutes before Filip's ship line and one with none. Push to that `main` only after his ship line for the
+  build, and make the preview with the CLI from a copy outside the repo.
 - A Vercel project linked to the freelancing repo builds the repo root on every merge to `main`, and the root is the Remittix
   app. On 29 October a Remittix merge put Remittix on ekotehnika-hero.vercel.app for three days. A client site lives in its
   own repo with its own Vercel project, Ekotehnika in mravicfilip-tech/ekotehnika on the project ekotehnika, and no client

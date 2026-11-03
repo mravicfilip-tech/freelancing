@@ -29,8 +29,10 @@ Task format
   - [x] Both addresses open Google Maps in a new tab
   - [x] The second centre reads Čuruška 45, Žabalj, +381 63 950 444
   - [x] The hover underline runs under whole words on the address and the number
+  - [x] Preview https://ekotehnika-2pinrpg60-filip-mravic-s-projects.vercel.app
   - [ ] Filip says whether the label, the map pin and the line "iz Vrčina i Čuruga" move to Žabalj
-  - [ ] Preview, then production on Filip's ship line
+  - [ ] Filip says keep or roll back. The push to the ekotehnika repo put the fix on production with no ship line, the
+    approved build to roll back to is https://ekotehnika-2ewm5h426-filip-mravic-s-projects.vercel.app
 
 - ekotehnika-15 Round 8, the preloader versions, Fade text, the term cards at the bottom, the floor arrows, a shorter start into the warehouse, detailed yard trucks. Notes in briefs/round8/notes.md. Preview https://ekotehnika-1jljqu1ns-filip-mravic-s-projects.vercel.app/?preview
   - [x] Four preloader versions on the switcher

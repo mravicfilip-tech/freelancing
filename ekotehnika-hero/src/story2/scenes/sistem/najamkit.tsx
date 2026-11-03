@@ -1,7 +1,7 @@
 // What the Najam hall, its yard and its lorries are made of, the materials, the instanced plates and turned slats, the loaded pallet and
 // the labels. najam.tsx holds the racks, the trucks and the lorries, najamhall.tsx the hall and the yard around it. Everything is
 // light ground and the LMH greys with the red of the Linde trucks, the same set as warehouse.tsx and nothing brought in from outside.
-import { useLayoutEffect, useRef } from 'react';
+import { useLayoutEffect, useMemo, useRef } from 'react';
 import * as THREE from 'three';
 import { mergeGeometries } from 'three/examples/jsm/utils/BufferGeometryUtils.js';
 import { labelTexture } from './warehouse';
@@ -35,6 +35,17 @@ export const roadMat = lam(G.mid, { emissive: lit(G.mid).multiplyScalar(0.45) })
 export const line = new THREE.MeshBasicMaterial({ color: G.mid, opacity: 0.62, transparent: true, toneMapped: false, depthWrite: false });
 export const lineFaint = new THREE.MeshBasicMaterial({ color: G.light, opacity: 0.7, transparent: true, toneMapped: false, depthWrite: false });
 export const lineWhite = new THREE.MeshBasicMaterial({ color: G.white, toneMapped: false, depthWrite: false });
+// The markings of the hall's floor, round 8. Each is one opaque colour and never a transparent one, since where two transparent bars cross
+// or an arrow's shaft meets its head the tones add and leave a darker joint, which Filip read as a flaw in the arrows. The colour is the tone
+// the old transparent bar had over the white slab, lerped towards the grey by how strong the marking is, see floorMarkTone. The slab joints
+// are the paler one and stay as they are.
+const SLAB = new THREE.Color(G.white);
+export const floorMark = new THREE.MeshBasicMaterial({ color: new THREE.Color(G.white).lerp(new THREE.Color(G.mid), 0.62), toneMapped: false });
+export const floorJoint = new THREE.MeshBasicMaterial({ color: new THREE.Color(G.white).lerp(new THREE.Color(G.light), 0.7), toneMapped: false });
+/** How strongly the floor's markings show, 0.62 in the hall and 0.3 under the words of the automation aisle. */
+export function floorMarkTone(strength: number) {
+  floorMark.color.copy(SLAB).lerp(new THREE.Color(G.mid), strength);
+}
 export const black = lam(G.black);
 export const trailerWhite = lam(G.white, { emissive: lit(G.white).multiplyScalar(0.5) });
 export const cabGrey = lam(G.light, { emissive: lit(G.light).multiplyScalar(0.4) });
@@ -104,20 +115,49 @@ export function Slats({ items, mat, cast = false, receive = false }: { items: Sl
   );
 }
 
-// An arrow lying on the floor, a shaft and a head of two bars, pointing along +x turned by yaw, for lane and aisle markings.
-export function arrow(x: number, z: number, yaw: number, len = 1.8, y = 0.03): SlatItem[] {
-  const c = Math.cos(yaw);
-  const s = Math.sin(yaw);
-  const at = (dx: number, dz: number) => [x + dx * c + dz * s, y, z - dx * s + dz * c] as const;
-  const head = len * 0.3;
-  const out: SlatItem[] = [];
-  const sh = at(-head * 0.15, 0);
-  out.push([sh[0], y, sh[2], len * 0.8, 0.01, 0.14, yaw]);
-  for (const side of [-1, 1]) {
-    const p = at(len * 0.5 - head * 0.5, side * head * 0.45);
-    out.push([p[0], y, p[2], head * 1.25, 0.01, 0.14, yaw + side * 0.78]);
-  }
-  return out;
+// A lane arrow lying on the floor, a position, a turn about the y axis in radians (pointing along +x at 0) and the length from tail to tip.
+export type ArrowItem = [x: number, z: number, yaw: number, len: number];
+
+// One floor arrow of the kind painted in a warehouse, a single outline of seven corners with the shaft and the head in it together, so it is
+// one flat shape with nothing laid over anything. Unit length from the tail at -0.5 to the tip at 0.5, a shaft 0.13 wide and a head 0.5 wide
+// and 0.36 long that starts where the shaft ends, so the head is wider than the shaft and the two have no gap and no overlap.
+const ARROW_SHAFT = 0.13;
+const ARROW_HEAD_W = 0.5;
+const ARROW_HEAD_L = 0.36;
+export function arrowGeometry() {
+  const s = ARROW_SHAFT / 2;
+  const h = ARROW_HEAD_W / 2;
+  const neck = 0.5 - ARROW_HEAD_L;
+  const shape = new THREE.Shape();
+  shape.moveTo(-0.5, -s);
+  shape.lineTo(neck, -s);
+  shape.lineTo(neck, -h);
+  shape.lineTo(0.5, 0);
+  shape.lineTo(neck, h);
+  shape.lineTo(neck, s);
+  shape.lineTo(-0.5, s);
+  shape.closePath();
+  const g = new THREE.ShapeGeometry(shape);
+  // the shape is drawn in x and y, lay it on the floor facing up
+  g.rotateX(-Math.PI / 2);
+  return g;
+}
+
+/** An arrow for the Arrows component, pointing along +x turned by yaw, for lane and aisle markings. */
+export const arrow = (x: number, z: number, yaw: number, len = 1.8): ArrowItem => [x, z, yaw, len];
+
+// Many floor arrows of one opaque material in one draw. The turn is about the y axis, the length scales the arrow in the floor's plane only.
+export function Arrows({ items, mat, y = 0.036 }: { items: ArrowItem[]; mat: THREE.Material; y?: number }) {
+  const ref = useRef<THREE.InstancedMesh>(null);
+  const geo = useMemo(() => arrowGeometry(), []);
+  useLayoutEffect(() => {
+    const m = new THREE.Matrix4();
+    const q = new THREE.Quaternion();
+    const e = new THREE.Euler();
+    items.forEach(([x, z, yaw, len], i) => ref.current!.setMatrixAt(i, m.compose(new THREE.Vector3(x, y, z), q.setFromEuler(e.set(0, yaw, 0)), new THREE.Vector3(len, 1, len))));
+    ref.current!.instanceMatrix.needsUpdate = true;
+  }, [items, y]);
+  return <instancedMesh key={items.length} ref={ref} args={[geo, mat, Math.max(items.length, 1)]} count={items.length} frustumCulled={false} />;
 }
 
 // Diagonal hatching over a rectangle, bars every pitch metres at 45 degrees, kept inside the rectangle by cutting each bar to it.

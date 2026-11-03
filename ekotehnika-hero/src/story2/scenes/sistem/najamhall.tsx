@@ -15,7 +15,7 @@ import { BoxSet, Hedge, Kerb, LampPost, Trees, Van, type BoxItem, type TreeSpec 
 import { Barrier, GateHouse } from './yard';
 import { K, lam, lit, rng, wordmarkSign } from './kit';
 import { HALL } from './najamplan';
-import { Slats, apron, arrow, beamFlange, beamWeb, black, claddingMat, copingMat, darkGrey, doorMat, frameMat, hatch, jointLine, leafMat, line, lineFaint, lineWhite, loadMats, officeGlass, palletBase, pilasterMat, plinthMat, rackGrey, roadMat, roofMat, skylightMat, slab, underMat, wallBase, wallMat, wrapBand, wrapShell, type SlatItem } from './najamkit';
+import { Arrows, Slats, apron, arrow, beamFlange, beamWeb, black, claddingMat, copingMat, darkGrey, doorMat, floorJoint, floorMark, frameMat, hatch, jointLine, leafMat, line, lineWhite, loadMats, officeGlass, palletBase, pilasterMat, plinthMat, rackGrey, roadMat, roofMat, skylightMat, slab, underMat, wallBase, wallMat, wrapBand, wrapShell, type ArrowItem, type SlatItem } from './najamkit';
 
 // ---- the hall's measures ----------------------------------------------------------------------------------------------
 
@@ -235,6 +235,7 @@ export function Hall({ doors, roofHatch, inside, signFade }: HallRefs) {
 
     const marks: BoxItem[] = [];
     const slats: SlatItem[] = [];
+    const arrows: ArrowItem[] = [];
     const hl = (x0: number, x1: number, z: number, t = 0.1) => marks.push([(x0 + x1) / 2, 0.03, z, x1 - x0, 0.01, t]);
     const vl = (x: number, z0: number, z1: number, t = 0.1) => marks.push([x, 0.03, (z0 + z1) / 2, t, 0.01, z1 - z0]);
     const rect = (x0: number, x1: number, z0: number, z1: number) => {
@@ -256,15 +257,15 @@ export function Hall({ doors, roofHatch, inside, signFade }: HallRefs) {
       hl(BACK_X, X_MOUTH, za + 2.3);
       dashH(BACK_X + 0.4, X_MOUTH, za);
       for (let x = -4; x > BACK_X + 3; x -= 9) {
-        slats.push(...arrow(x, za - 1.15, Math.PI));
-        slats.push(...arrow(x - 4.5, za + 1.15, 0));
+        arrows.push(arrow(x, za - 1.15, Math.PI));
+        arrows.push(arrow(x - 4.5, za + 1.15, 0));
       }
     });
     // the cross aisle behind the last bay, two edges and an arrow down the middle every 6 m, and the hatched keep clear at the walls
     const back = HALL.rackX0 - HALL.bays * HALL.bay;
     vl(back - 0.9, PZ0 + 0.2, PZ1 - 0.2);
     vl(back - 5.4, PZ0 + 0.2, PZ1 - 0.2);
-    for (let z = HALL.sideZ + 3; z < FRONT_Z - 2; z += 6) slats.push(...arrow(back - 3.15, z, z % 12 < 6 ? Math.PI / 2 : -Math.PI / 2));
+    for (let z = HALL.sideZ + 3; z < FRONT_Z - 2; z += 6) arrows.push(arrow(back - 3.15, z, z % 12 < 6 ? Math.PI / 2 : -Math.PI / 2));
     slats.push(...hatch(back - 5.4, back - 0.9, PZ0 + 0.3, PZ0 + 1.5, 0.8), ...hatch(back - 5.4, back - 0.9, PZ1 - 1.5, PZ1 - 0.3, 0.8));
     // the hatched walkway along the dock wall, 1.2 m wide with an edge line on each side and a bar every 0.7 m
     vl(7.0, PZ0 + 0.2, PZ1 - 0.2);
@@ -275,7 +276,7 @@ export function Hall({ doors, roofHatch, inside, signFade }: HallRefs) {
       hl(DOCK_LANE_X, HALL.dockX - 0.05, z - 1.9);
       hl(DOCK_LANE_X, HALL.dockX - 0.05, z + 1.9);
       dashV(DOCK_LANE_X, z - 1.9, z + 1.9, 0.5, 0.35);
-      slats.push(...arrow(DOCK_LANE_X + 1.6, z, 0, 1.8));
+      arrows.push(arrow(DOCK_LANE_X + 1.6, z, 0, 1.8));
     });
     // the wall lane between the doors, a cell for each pallet
     for (let g = 0; g < 3; g++) {
@@ -290,7 +291,7 @@ export function Hall({ doors, roofHatch, inside, signFade }: HallRefs) {
         if (i === 3 && side === 1) continue;
         const zc = laneZ(i, side);
         rect(LANE_X0, LANE_X1, zc - LANE_W / 2, zc + LANE_W / 2);
-        slats.push(...arrow(LANE_X1 - 0.6, zc, Math.PI, 1.0));
+        arrows.push(arrow(LANE_X1 - 0.6, zc, Math.PI, 1.0));
       }
     });
     // the far corner of the wall lane, where the second pallet of the lorry is set down
@@ -351,7 +352,7 @@ export function Hall({ doors, roofHatch, inside, signFade }: HallRefs) {
     const cabinGlass: BoxItem[] = [[cx + 0.96, 1.75, cz - 1.2, 0.04, 0.8, 1.6], [cx + 0.96, 1.75, cz + 0.5, 0.04, 0.8, 0.8]];
     const cabinDoor: BoxItem[] = [[cx + 0.96, 1.05, cz + 1.6, 0.05, 2.1, 0.9]];
     const cabinStep: BoxItem[] = [[cx + 1.25, 0.1, cz + 1.6, 0.55, 0.2, 1.2], [cx + 1.13, 0.25, cz + 1.6, 0.3, 0.1, 1.2]];
-    return { platform, kerb, wall, cols, roofS, seams, lights, curb, roofTrim, drains, para, paraCap, units, unitFans, unitCurbs, louvres, trusses, ceilLamps, door, lev, joints, marks, slats, pal, empties, chargers, lamps, cabin, cabinRoof, cabinGlass, cabinDoor, cabinStep };
+    return { platform, kerb, wall, cols, roofS, seams, lights, curb, roofTrim, drains, para, paraCap, units, unitFans, unitCurbs, louvres, trusses, ceilLamps, door, lev, joints, marks, slats, arrows, pal, empties, chargers, lamps, cabin, cabinRoof, cabinGlass, cabinDoor, cabinStep };
   }, []);
   return (
     <group>
@@ -402,9 +403,11 @@ export function Hall({ doors, roofHatch, inside, signFade }: HallRefs) {
         </group>
       </group>
       {/* the floor's markings stay in the aisle, a floor with its lanes, arrows and bays and not a blank field */}
-      <BoxSet items={d.joints} mat={lineFaint} receive={false} />
-      <BoxSet items={d.marks} mat={line} receive={false} />
-      <Slats items={d.slats} mat={line} />
+      {/* every marking of the hall's floor is one opaque colour, so bars that cross and an arrow's shaft and head never stack their tones */}
+      <BoxSet items={d.joints} mat={floorJoint} receive={false} />
+      <BoxSet items={d.marks} mat={floorMark} receive={false} />
+      <Slats items={d.slats} mat={floorMark} />
+      <Arrows items={d.arrows} mat={floorMark} />
       <group ref={inside}>
         <PalletSet s={d.pal} />
         <BoxSet items={d.empties} mat={palletBase} cast />

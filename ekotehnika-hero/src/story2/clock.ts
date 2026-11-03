@@ -48,9 +48,12 @@ export function useStoryClock(reduced: boolean) {
 
   useEffect(() => {
     if (reduced) return;
-    // A read only handle for timing checks, ?debug=clock.
+    // A read only handle for timing checks and the stops, ?debug=clock.
     const debug = new URLSearchParams(window.location.search).get('debug') === 'clock';
-    if (debug) Object.defineProperty(window, '__storyPos', { get: () => pos.current, configurable: true });
+    if (debug) {
+      Object.defineProperty(window, '__storyPos', { get: () => pos.current, configurable: true });
+      (window as { __stops?: number[] }).__stops = STOPS;
+    }
     // Shots and reviews can freeze the clock on one keyframe, ?at=<beatId>&k=<0 to 1>.
     const q = new URLSearchParams(window.location.search);
     const at = TIMELINE.findIndex((b) => b.id === q.get('at'));
@@ -78,7 +81,10 @@ export function useStoryClock(reduced: boolean) {
     gsap.ticker.add(tick);
     return () => {
       gsap.ticker.remove(tick);
-      if (debug) delete (window as { __storyPos?: number }).__storyPos;
+      if (debug) {
+        delete (window as { __storyPos?: number }).__storyPos;
+        delete (window as { __stops?: number[] }).__stops;
+      }
     };
   }, [reduced, progress, clock]);
 

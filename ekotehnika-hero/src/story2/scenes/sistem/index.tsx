@@ -7,7 +7,7 @@
 // and reduced motion skip.
 import { Suspense, useEffect, useRef, useState } from 'react';
 import { Canvas, addEffect, useFrame, useThree } from '@react-three/fiber';
-import { Environment } from '@react-three/drei';
+import { Environment, useProgress } from '@react-three/drei';
 import * as THREE from 'three';
 import { track } from '../../../story/scenes/sistem/tracks';
 import type { SceneProps } from '../../clock';
@@ -21,10 +21,17 @@ import { GROUND, uOf } from './kit';
 import Outdoor from './outdoor';
 import { introClock } from './props';
 import { DEBUG_FPS, perf } from '../../perf';
+import { setAssets } from './intro';
 import Overlay from './overlay';
 import Aisle from './aisle';
 import { routeAt, truckS } from './route';
 import Warehouse from './warehouse';
+
+// The models and textures the scene asks for, counted by three's loading manager, are passed to the preloader (intro.ts). The models
+// start loading as this module loads, see models.tsx, so the counter is read from here and not from a component.
+const feedAssets = (s: { progress: number; active: boolean; total: number }) => setAssets(s.progress, s.active, s.total);
+feedAssets(useProgress.getState());
+useProgress.subscribe(feedAssets);
 
 // Forks low while driving, raised in front of the building and set down again for the road.
 const HERO_LIFT = track([[0, 0.12], [1.6, 0.12], [2.15, 1.55], [2.85, 1.55], [3.25, 0.15], [12, 0.15]]);

@@ -8,6 +8,7 @@ import { useGLTF } from '@react-three/drei';
 import * as THREE from 'three';
 import { Pallet } from '../../../r3f/Forklift';
 import { blobMaterial } from './kit';
+import { LOADER_ON } from './loader';
 
 export type ModelName = 'x50' | 'h30d' | 'r16' | 'n20' | 'mt15c' | 'd12' | 'cmatic10' | 'cmatichp';
 
@@ -64,7 +65,16 @@ export const SPEC: Record<ModelName, Spec> = {
 };
 
 export const modelUrl = (n: ModelName) => `/models/linde/${n}.glb`;
-(Object.keys(SPEC) as ModelName[]).forEach((n) => useGLTF.preload(modelUrl(n)));
+// The X50 is the first set and starts loading as this module loads. The other seven wait for the preloader's first set to be in (loader.ts), so
+// the first frames of the loader have the whole connection, and start at once when no preloader plays.
+useGLTF.preload(modelUrl('x50'));
+let rest = false;
+export function preloadRest() {
+  if (rest) return;
+  rest = true;
+  (Object.keys(SPEC) as ModelName[]).forEach((n) => useGLTF.preload(modelUrl(n)));
+}
+if (!LOADER_ON) preloadRest();
 
 const tuned = new WeakSet<THREE.Object3D>();
 function tune(root: THREE.Object3D) {
@@ -99,7 +109,8 @@ export function prepare(gltfScene: THREE.Object3D, name: ModelName) {
   return scene;
 }
 
-export type TruckApi = { set: (lift: number, roll: number) => void; root: THREE.Group };
+// load is the group the carried pallet stands in and carton the carton on that pallet, both null on a truck with no load. The preloader moves and hides them.
+export type TruckApi = { set: (lift: number, roll: number) => void; root: THREE.Group; load: THREE.Group | null; carton: THREE.Group | null };
 
 type Props = { name: ModelName; apiRef?: MutableRefObject<TruckApi | null>; load?: boolean } & ThreeElements['group'];
 
@@ -109,6 +120,7 @@ export function Truck({ name, apiRef, load = false, children, ...group }: Props)
   const root = useRef<THREE.Group>(null);
   const blob = useMemo(() => blobMaterial(0.34), []);
   const loadRef = useRef<THREE.Group>(null);
+  const cartonRef = useRef<THREE.Group | null>(null);
   const built = useMemo(() => {
     const scene = prepare(gltf.scene, name);
     const wheels = spec.wheels.map((w) => ({ obj: scene.getObjectByName(w.node), r: w.r })).filter((w): w is { obj: THREE.Object3D; r: number } => !!w.obj);
@@ -121,6 +133,8 @@ export function Truck({ name, apiRef, load = false, children, ...group }: Props)
     const { wheels, fork, forkY } = built;
     apiRef.current = {
       root: root.current!,
+      load: loadRef.current,
+      carton: cartonRef.current,
       set(lift, roll) {
         for (const w of wheels) w.obj.rotation.z = (spec.spin * roll) / w.r;
         if (fork) fork.position.y = forkY + lift;
@@ -139,7 +153,7 @@ export function Truck({ name, apiRef, load = false, children, ...group }: Props)
         <primitive object={built.scene} />
         {load && spec.load && (
           <group ref={loadRef} position={spec.load}>
-            <Pallet />
+            <Pallet cartonRef={cartonRef} />
           </group>
         )}
         {children}

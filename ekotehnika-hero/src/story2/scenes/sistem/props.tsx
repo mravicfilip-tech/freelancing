@@ -11,6 +11,7 @@ import { RoundedBox } from '@react-three/drei';
 import { G, K, blobMaterial, clamp01, lam, lerp, lit, poolMaterial, rad, rng } from './kit';
 import { SIDE, vanSkins } from './vanWrap';
 import { INTRO_SKIP, introStart, markIntroStart } from './intro';
+import { LOADER_ON } from './loader';
 
 // ---- geometry helpers ---------------------------------------------------------------------------------------
 
@@ -55,7 +56,9 @@ function tint(parts: Part[], smooth = false) {
 // place once its model is ready (index.tsx). Nothing fades. A frozen clock (?at=) or reduced motion skips it, so a
 // shot always shows the final pose.
 // The start is shared with the shell through intro.ts, so the hero text rises with the street.
-const SKIP = INTRO_SKIP;
+// Round 8, the preloader is the scene itself and the street is already built when it shows (loader.ts), so on a page that plays one the build in
+// is skipped too, as it is under a frozen clock. The loader's own camera move to the hero takes its place.
+const SKIP = INTRO_SKIP || LOADER_ON;
 
 /** Seconds since the scene's first frame, Infinity when the build in is skipped. */
 export function introClock() {

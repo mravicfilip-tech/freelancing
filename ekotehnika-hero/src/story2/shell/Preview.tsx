@@ -1,7 +1,7 @@
 // The panel Filip picks with on localhost, a small fixed square at the bottom right with three rows of buttons. Scroll is the feel of the
 // story clock, 0 Today, 1 to 3 from a low speed cap to a high one, 4 to 6 the lock, which holds the page to the clock, and 7 Stops, the lock
 // with a stop at every section. Najam is 0 Today, production's grid of forklifts, and 2 New, the warehouse story of round 6. Loader is the
-// preloader that plays on load, 1 Viljuška, 2 Nacrt, 3 Paleta and 4 Ruta. A click writes ?feel, ?najam and ?loader into the URL and reloads,
+// preloader that plays on load, 1 Utovar, 2 Regal and 3 Kutija. A click writes ?feel, ?najam and ?loader into the URL and reloads,
 // since the spans of the story change with the choice, after saving the beat and k the page was on so it lands on the same frame
 // (preview.ts). A click on the loader that is already picked reloads too, so the preloader plays again.
 // It shows on the dev server, which is what npm run live runs, or with ?preview in the URL, and renders nothing on a production page.

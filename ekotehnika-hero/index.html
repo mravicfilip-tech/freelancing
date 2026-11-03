@@ -11,9 +11,13 @@
     <link rel="preload" href="/fonts/daxline/DaxlinePro-Regular.woff2" as="font" type="font/woff2" crossorigin />
     <link rel="preload" href="/fonts/daxline/DaxlinePro-Light.woff2" as="font" type="font/woff2" crossorigin />
     <link rel="preload" href="/fonts/geist/geist-digits.woff2" as="font" type="font/woff2" crossorigin />
-    <!-- The plain white sheet for the first paint, before the script has loaded. shell/Preloader.tsx takes its place on its first render and
-         removes this, and the preloader version it draws starts from an empty white sheet too, so there is no jump. A page that is not the
-         story, a frozen shot (?at=) or a visitor with reduced motion never shows it. -->
+    <!-- The first set of the preloader, the X50 model and the environment map, asked for with the page so they arrive while the script loads. The
+         other seven models wait until the first set is in (story2/scenes/sistem/loader.ts). -->
+    <link rel="preload" href="/models/linde/x50.glb" as="fetch" crossorigin />
+    <link rel="preload" href="/hdri/studio_small_03_1k.hdr" as="fetch" crossorigin />
+    <!-- The plain white sheet for the first paint, before the script has loaded. It holds until the preloader's first set is in, the X50 model, the
+         environment and the fonts, and shell/Preloader.tsx removes it in the frame the scene has drawn, so no frame of the loader is an empty
+         page. A page that is not the story, a frozen shot (?at=) or a visitor with reduced motion never shows it. -->
     <style>
       #boot {
         position: fixed;

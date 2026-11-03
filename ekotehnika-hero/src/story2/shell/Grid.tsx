@@ -21,6 +21,12 @@ export function gridXs(w: number): number[] {
 
 export type Mark = { i: number; y: number };
 
+// The rows of a list that end on the third vertical with a label right up against it, the Prodaja tab list, get no mark on that vertical.
+// The range at the end of a row, "N20 do N25 C", ran into the plus at the corner of the cut out's frame (round 7, Filip, "get rid of this
+// cross here on this corner"). The other marks of the list and the marks of the frame's own rules stay.
+const NO_MARK_ON_X3 = '.tabs';
+const X3 = 2;
+
 // A plus mark for every crossing of a vertical line with a block rule. A block rule is an element marked data-rule, t for a
 // rule on its top edge, b for one on its bottom edge, tb for both. The pixel row of a rule is its box edge rounded, so a mark
 // lands on the very pixel the rule is painted on. The top and bottom grid rules have their own marks and are left out.
@@ -34,6 +40,7 @@ export function ruleMarks(scope: HTMLElement, stage: HTMLElement): Mark[] {
     const r = el.getBoundingClientRect();
     if (!r.width) return;
     const sides = el.dataset.rule ?? '';
+    const bare = el.closest(NO_MARK_ON_X3) !== null;
     const rows: number[] = [];
     if (sides.includes('t')) rows.push(Math.round(r.top - s.top));
     if (sides.includes('b')) rows.push(Math.round(r.bottom - s.top) - 1);
@@ -43,6 +50,7 @@ export function ruleMarks(scope: HTMLElement, stage: HTMLElement): Mark[] {
       if (skip.includes(y)) continue;
       xs.forEach((x, i) => {
         const k = `${i}|${y}`;
+        if (bare && i === X3) return;
         if (x >= a - 0.5 && x <= b + 0.5 && !seen.has(k)) {
           seen.add(k);
           out.push({ i, y });

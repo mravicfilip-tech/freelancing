@@ -1,0 +1,40 @@
+# language en 1.00
+[   3.3-  11.3] So hello, we're gonna be doing a review on the whole website.
+[  13.3-  22.3] So the loading effect here, as you can see, like this is taking a while. First the buttons come in, then this, then the whole scenery.
+[  22.3-  32.3] Like this is honestly too slow, so maybe we need like a content loader, like a preloader, something to help make this transition.
+[  33.3-  43.3] And yeah, I don't want the text effect to be like this, so it comes down from the bottom word by word.
+[  43.3-  51.3] Maybe we just do Faden or something more professional, maybe not Faden, but something different.
+[  52.3-  59.3] This is really bad, maybe you can suggest three, four text animations.
+[  60.3-  66.3] But yeah, anyways, okay, we're scrolling, we begin to scroll, okay.
+[  67.3-  82.7] I think we can maybe somehow reduce the speed of the scroll, or make the scroll smoother, because right now the scroll isn't smooth.
+[  82.7- 100.7] Like it feels like 15 FPS when we're scrolling, but it also is, like we can also skip, like if I start scrolling really quick, see, like this, I'm just holding my scroll wheel down.
+[ 101.7- 120.8] Like it's going really, really fast, so even if I go into this version, where the scroll is slow, still fast, right?
+[ 121.8- 131.4] So we need to kind of stop this, so because like if we do this, we can skip through a lot of the animation and a lot of the content.
+[ 132.4- 137.4] And us skipping content is not what we want, but everything here is good.
+[ 138.4- 144.4] If we can only just get rid of this cross here on this corner, that would be cool.
+[ 145.4- 157.8] Okay, this scenery, like you see how this corner and everything here is cut, and then this transition here and this scene hole here.
+[ 158.8- 163.8] This is like to me honestly unpolished and bad.
+[ 164.8- 170.8] Like we should maybe start something like this, and then the lines are going here.
+[ 174.3- 177.3] Okay, we're scrolling, everything's coming up.
+[ 178.3- 179.3] Okay, cool.
+[ 180.3- 183.3] This section is cool, this is cool.
+[ 184.3- 186.3] And then we're moving here.
+[ 187.3- 188.3] Okay.
+[ 189.3- 190.3] This is cool.
+[ 191.3- 193.3] Let's check this again.
+[ 194.3- 206.3] You see how this bug here with the truck, like it goes left and then it goes right and then it hits, it goes through the pole here.
+[ 207.3- 216.3] Like either we move this pole somewhere else, like where my cursor is here, or I don't know, figure it out.
+[ 217.3- 238.7] Then see here where my cursor is, like we're not seeing the truck's construction and how this truck loadout and everything happens so fast.
+[ 239.7- 241.7] Like we just kind of skip through the animation.
+[ 242.7- 247.7] Then here it looks like we have things faded and whited, I don't know why.
+[ 248.7- 265.7] Then here on this section, like I think we should move these cards to the left side of here and then we should kind of like do it differently here because like this part of the scene has just got, I don't know.
+[ 266.7- 284.6] And then, okay, we're doing, like you see, also like this transition, like after we hit 72 months and we scroll past the 72 months trigger point, like this here blank screen.
+[ 286.6- 288.6] Like this is just a mistake, honestly.
+[ 289.6- 308.1] Like we should fix this and then these two trucks hitting each other, like I don't know why this truck is so parked up close here.
+[ 309.1- 322.1] And then this squash animation, like things are squashed here, like this shouldn't happen, we shouldn't squash elements.
+[ 323.1- 434.8] And then maybe this path of this guy and this progress should be like a progress bar, the line is already cut where the movement is going to be, so it feels like progress bar, so on and so forth.
+[ 450.0- 455.0] Like he has a line here, like I don't know why he has a line here, really, in front of him.
+[ 458.1- 462.1] Okay, it's showing the movement, but it should be like a progress bar to show movement.
+[ 463.1- 477.6] And yeah, the rest of the website is okay, just fix up the animations here and the scroll and what I told you and how this should all look like.
+[ 478.6- 482.6] Like you see how we get this level of view?
+[ 482.6- 492.6] We kind of just, I don't know, cut scene transition here, like this doesn't feel smooth, it doesn't feel finished out and ironed out, so yeah.

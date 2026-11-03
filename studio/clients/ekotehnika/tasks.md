@@ -41,7 +41,7 @@ Task format
   - [ ] Filip looks at the preview, picks Stops or Anchors
   - [x] Production on Filip's "send all of this production", the preview promoted and the ekotehnika repo pushed, 3 November
   - [x] The Najam band's blur, lost by the minifier on production, fixed on a preview
-  - [ ] The blur fix to production on Filip's ship line
+  - [x] The blur fix and Kutija as the default preloader to production, Filip's "send to production", 3 November
 
 - ekotehnika-16 UX Fix Lokacija, the servis centres' addresses open Google Maps and the second centre gets its real address and number, the client's ticket of 3 November
   - [x] Both addresses open Google Maps in a new tab
@@ -66,7 +66,7 @@ Task format
   - [x] On production at https://ekotehnika.vercel.app, the preview promoted on Filip's "send to produciton", 3 November
   - [x] The floating box at the Automatizacija pick station fixed, preview https://ekotehnika-jz5f5ely6-filip-mravic-s-projects.vercel.app
   - [x] The box fix on production at https://ekotehnika.vercel.app, Filip's "send to production", 3 November
-  - [ ] Filip picks a preloader
+  - [x] Filip picks a preloader, 3 Kutija, 3 November
 
 - ekotehnika-14 Round 7, Filip's review of the whole site, loader, text animation, scroll, Prodaja into the warehouse, Najam and Automatizacija. Notes in briefs/round7/notes.md
   - [x] Transcribe Filip's 8 minute review and pull the frames he points at

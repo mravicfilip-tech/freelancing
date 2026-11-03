@@ -6,8 +6,8 @@
 //             scrolls freely and settles on the next stop (scroll/useScrollStory.ts, story2/stops.ts)
 //   ?najam=N  which Najam, 2 is the warehouse story Filip picked in round 8 and the default, 0 is the old grid of forklifts, kept
 //             reachable by URL only (timeline.ts, scenes/sistem/najamplan.ts)
-//   ?loader=N which preloader plays on load, 1 Utovar, 2 Regal and 3 Kutija, all three the story's own scene (scenes/sistem/loader.ts), 1 is
-//             the default until Filip picks (shell/Preloader.tsx)
+//   ?loader=N which preloader plays on load, 1 Utovar, 2 Regal and 3 Kutija, all three the story's own scene (scenes/sistem/loader.ts), 3 is
+//             the default, Filip's pick of 3 November, "go with option 3 for preloader" (shell/Preloader.tsx)
 //             The text of the panes has no switch any more, Fade is the one animation (shell/reveal.ts, Filip, round 8)
 // The panel that sets them (shell/Preview.tsx) shows on the dev server, which is what npm run live runs, or with ?preview in the URL.
 // Without either the page behaves as the defaults say. Kept free of react and three so every module can import it.
@@ -18,7 +18,7 @@ const pick = (name: string, fallback: number, allowed: number[]) => {
 };
 
 export const FEEL = pick('feel', 7, [4, 5, 6, 7, 8, 9, 10]);
-export const LOADER = pick('loader', 1, [1, 2, 3]);
+export const LOADER = pick('loader', 3, [1, 2, 3]);
 export const NAJAM = pick('najam', 2, [0, 2]);
 export const PREVIEW = Boolean(import.meta.env.DEV) || params.has('preview');
 

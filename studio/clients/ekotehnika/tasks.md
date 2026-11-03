@@ -39,7 +39,9 @@ Task format
   - [x] A second swipe the same way on a trip carries on to the next anchor, one queued at most
   - [ ] Filip picks 8, 9 or 10
   - [ ] Filip looks at the preview, picks Stops or Anchors
-  - [ ] Production on Filip's ship line, then the ekotehnika repo push
+  - [x] Production on Filip's "send all of this production", the preview promoted and the ekotehnika repo pushed, 3 November
+  - [x] The Najam band's blur, lost by the minifier on production, fixed on a preview
+  - [ ] The blur fix to production on Filip's ship line
 
 - ekotehnika-16 UX Fix Lokacija, the servis centres' addresses open Google Maps and the second centre gets its real address and number, the client's ticket of 3 November
   - [x] Both addresses open Google Maps in a new tab

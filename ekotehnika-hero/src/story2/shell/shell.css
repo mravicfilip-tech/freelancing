@@ -878,8 +878,9 @@ html:root [data-wipe]:not([data-rise]):not([data-done]) {
   height: 408px;
   pointer-events: none;
   background: rgb(255 255 255 / 0.72);
-  backdrop-filter: blur(16px);
+  /* the prefixed line first, the minifier keeps the last of the two and drops the other, and Chrome reads only the plain one */
   -webkit-backdrop-filter: blur(16px);
+  backdrop-filter: blur(16px);
 }
 
 /* Every spec row, N, C1 and AT, has a 20px solid icon above each figure and a 40px figure, for a clearer order. --cap is where

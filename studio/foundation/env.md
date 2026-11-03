@@ -51,6 +51,9 @@ so the lesson outlives the context window.
   app. On 29 October a Remittix merge put Remittix on ekotehnika-hero.vercel.app for three days. A client site lives in its
   own repo with its own Vercel project, Ekotehnika in mravicfilip-tech/ekotehnika on the project ekotehnika, and no client
   project stays linked to the freelancing repo.
+- The production CSS minifier keeps only the last of a plain and a `-webkit-` pair of the same property and drops the other, so
+  write the `-webkit-` line first. On 3 November `backdrop-filter` then `-webkit-backdrop-filter` shipped the Najam band with no
+  blur in Chrome, while the dev server, which does not minify, showed it. Check a style like that in `vite build` output.
 - Turn off git deploys for agent branches in each project's `vercel.json`.
 
 ```json

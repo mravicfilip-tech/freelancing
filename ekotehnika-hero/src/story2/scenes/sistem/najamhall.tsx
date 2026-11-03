@@ -308,7 +308,7 @@ export function Hall({ doors, roofHatch, inside, signFade }: HallRefs) {
         if (i === 3 && side === 1) continue;
         // the lanes of the first two docks stay empty, the camera of the flight in goes through the door of the first and along the wall past the
         // second, and a pallet in them would be within 6 m of it, the pallets that come off the lorry are set down in the aisle, see najamdock.ts
-        // of the others only the lane of the third dock on the side of the work aisle holds pallets, the lanes on its left lie under the term cells in N3
+        // of the others only the lane of the third dock on the side of the work aisle holds pallets, the lanes on its left lie under the term cards in N3
         if (i < 2 || (HALL.docks[i] > 0 && !(i === 2 && side < 0))) continue;
         const n = i === 0 ? 2 : side < 0 ? 3 : 2;
         for (let p = 0; p < n; p++) loadedPallet(pal, r, LANE_X0 + 0.8 + p * 1.3, laneZ(i, side), false);

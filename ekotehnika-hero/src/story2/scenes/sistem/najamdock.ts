@@ -191,12 +191,12 @@ function lorryPlan(dock: number, p: { south?: boolean; north?: boolean; turn?: n
 // goes down the road to the stop beside dock 4 at the end of N4 and backs on as T opens. The stops between the legs are a hold of 40px or so. Lorry 1
 // runs 34 m of its way out, at 0.05 m per px at the most, which clears the door of dock 1 by 15 m while the camera is still in the yard.
 const LORRIES: LorryPlan[] = [
-  lorryPlan(0, { south: true, north: true, turn: 8, out: 8, lead: 26, go: [0, 0.13], stop: 0.135, back: [0.135, 0.25], curtain: [0.2, 0.27, 0.416, 0.428], shut: [0.416, 0.428], away: [0.423, 0.5], run: 24, far: 34 }),
+  lorryPlan(0, { south: true, north: true, turn: 8, out: 8, lead: 26, go: [0, 0.13], stop: 0.135, back: [0.135, 0.25], curtain: [0.2, 0.27, 0.412, 0.423], shut: [0.412, 0.423], away: [0.423, 0.5], run: 24, far: 34 }),
   lorryPlan(2, { south: true, north: true, out: 8, lead: 26, go: [0.55, 0.62], stop: 0.625, back: [0.625, 0.76], shut: [0.935, 0.95], away: [0.955, 1.1], run: 20, far: 40, from: 0.55 }),
   lorryPlan(3, { south: true, lead: 34, go: [0.72, 0.9], stop: 0.905, back: [0.905, 1.1], shut: [2, 2], away: [2, 2.1], run: 4, far: 1, from: 0.72 }),
 ];
 export const LORRY_COUNT = LORRIES.length;
-// the k of N for a position u of the story, which runs on past 1 through T, 400px for a tenth, so the lorries do not stop as the hall sinks
+// the k of N for a position u of the story, which runs on past 1 through T, 600px for a tenth, so the lorries do not stop as the camera dives
 export const kLong = (u: number) => (u < 13 ? planK(clamp01(u - 12)) : 1 + Math.min(u - 13, 1) * 0.1);
 
 const sh = (t: number) => ease(clamp01(t));
@@ -250,7 +250,7 @@ const A = dockTrip(
 // Forklift B waits at its bay in the corner by the far wall. Round an S curve onto the door's line once A has left it, in to the second pallet,
 // lifts it, backs out, and takes the same way into the aisle as A, to set the pallet down deeper in. It is out of the trailer when the doors
 // shut and finishes as the flight in ends.
-export const B_MARKS = { lift: [0.385, 0.397], set: [0.51, 0.52] } as const;
+export const B_MARKS = { lift: [0.38, 0.39], set: [0.51, 0.52] } as const;
 const B = dockTrip(
   [
     { x: 9.2, z: -14.5, th: 0 },
@@ -261,7 +261,7 @@ const B = dockTrip(
     { x: 11.0, z: Z[0] + 2 * U, th: 180, mi: BU },
     { x: PUT_X[1] + X50_FWD, z: Z[0] + 2 * U, th: 180 },
   ],
-  [[0, 0], [0.335, 0], [0.385, 2], [0.397, 2], [0.42, 3], [0.51, -1]],
+  [[0, 0], [0.335, 0], [0.38, 2], [0.39, 2], [0.412, 3], [0.51, -1]],
   [[0, 0], [B_MARKS.lift[0], 0], [B_MARKS.lift[1], CARRY], [B_MARKS.set[0], CARRY], [B_MARKS.set[1], 0]],
 );
 

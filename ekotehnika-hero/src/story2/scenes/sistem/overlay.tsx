@@ -259,7 +259,7 @@ export default function Overlay({ clock }: SceneProps) {
     // camera comes in at the door, or at the roof light, and is gone in the aisle. The terms are in the left column now, so no veil lies under them
     if (haze.current) {
       const p = camera.position;
-      const out = 1 - hallInside(p.x - NP.x, p.y - HALL_Y, p.z - NP.z);
+      const out = 1 - hallInside(p.x - NP.x, p.y - HALL_Y, p.z - NP.z, 12);
       const op = WAREHOUSE && u >= 11.9 && u < 13.4 ? out * (1 - ease(range(u, 13.0, 13.4))) : 0;
       haze.current.visible = op > 0.001;
       (haze.current.material as THREE.MeshBasicMaterial).opacity = op;

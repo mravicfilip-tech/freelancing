@@ -441,7 +441,8 @@ export default function Aisle({ clock }: SceneProps) {
     pathMat.resolution.set(size.width * dpr, size.height * dpr);
     faintMat.resolution.set(size.width * dpr, size.height * dpr);
     hlMat.resolution.set(size.width * dpr, size.height * dpr);
-    pathMat.linewidth = faintMat.linewidth = Math.max(1.5, size.height / 600) * dpr;
+    faintMat.linewidth = Math.max(1.5, size.height / 600) * dpr;
+    pathMat.linewidth = Math.max(2.5, size.height / 360) * dpr;
     hlMat.linewidth = Math.max(1, size.height / 900) * dpr;
 
     // T, Najam 0, the najam floor leads into the aisle, the lane lines draw on down the hall, the walls, racks and units rise from the floor. Najam 2

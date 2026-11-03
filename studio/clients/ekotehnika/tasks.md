@@ -25,7 +25,7 @@ Task format
 
 ## In progress
 
-- ekotehnika-15 Round 8, the preloader versions, Fade text, the term cards at the bottom, the floor arrows, a shorter start into the warehouse, detailed yard trucks. Notes in briefs/round8/notes.md
+- ekotehnika-15 Round 8, the preloader versions, Fade text, the term cards at the bottom, the floor arrows, a shorter start into the warehouse, detailed yard trucks. Notes in briefs/round8/notes.md. Preview https://ekotehnika-1jljqu1ns-filip-mravic-s-projects.vercel.app/?preview
   - [x] Four preloader versions on the switcher
   - [x] Fade as the only text animation
   - [x] The term cards at the bottom of the left column, rules inside the column
@@ -34,6 +34,9 @@ Task format
   - [x] Detailed trucks in the yard from above
   - [x] Filip looks at four preloaders and rejects all four as out of style
   - [x] Three preloaders built from the site's own models, cartons and racks
+  - [x] Najam 2 the default, Scroll 4 to 7 kept, all three loaders kept, Filip 3 November
+  - [x] Ekotehnika repo updated and a Vercel preview made on the project ekotehnika
+  - [ ] Production on ekotehnika.vercel.app, the agent deploy was blocked, Filip promotes the preview
   - [ ] Filip picks a preloader
 
 - ekotehnika-14 Round 7, Filip's review of the whole site, loader, text animation, scroll, Prodaja into the warehouse, Najam and Automatizacija. Notes in briefs/round7/notes.md

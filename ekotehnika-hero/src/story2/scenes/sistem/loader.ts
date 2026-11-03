@@ -116,18 +116,23 @@ export const goAt = (version: number, full: number) => {
   return smooth((full - a) / (b - a));
 };
 
-// A debug hook for tuning a version without waiting for it, ?lfreeze=<p>,<full>, the loading held at p (0 to 1) and the seconds since it was
-// done at full (negative for before). The shell holds the page there and never lets go. Not shown anywhere and not a setting.
-export const FREEZE = (() => {
+// A debug hook for tuning a version without waiting for it and for stepping one frame at a time, ?lfreeze=<p>,<full>,<t>, the loading held at p
+// (0 to 1), the seconds since it was done at full (negative for before) and the loader's own clock at t seconds. The shell holds the page there and
+// never lets go, and the numbers can be changed from the console through window.__lfreeze, which a shot of the timeline does between frames. The
+// mouse is held at mx and my the same way. Not shown anywhere and not a setting.
+export type Freeze = { p: number; full: number; t: number | null; mx: number; my: number };
+export const FREEZE: Freeze | null = (() => {
   if (typeof window === 'undefined') return null;
   const raw = new URLSearchParams(window.location.search).get('lfreeze');
   if (!raw) return null;
-  const [p, f] = raw.split(',').map(Number);
-  return { p: Number.isFinite(p) ? p : 0.5, full: Number.isFinite(f) ? f : -1 };
+  const [p, f, t] = raw.split(',').map(Number);
+  const z: Freeze = { p: Number.isFinite(p) ? p : 0.5, full: Number.isFinite(f) ? f : -1, t: Number.isFinite(t) ? t : null, mx: 0, my: 0 };
+  (window as unknown as { __lfreeze: Freeze }).__lfreeze = z;
+  return z;
 })();
 
-/** Where the bay of Regal stands, metres, the middle of its two rack bays at the foot of the rack. It is on the bare ground in front of the street, behind the hero's camera and 17 m left of the truck, so no frame of the story ever shows it. */
-export const BAY = { x: -17, z: 9 };
+/** Where the bay of Regal stands, metres, the middle of its two rack bays at the foot of the rack. It is on the bare ground in front of the street, behind the hero's camera and 11 m left of the truck, so no frame of the story ever shows it. */
+export const BAY = { x: -11, z: 9 };
 
 /** The seconds the page waits for the loading before it lets go whatever is missing, 10 under the shell's own HERO_WAIT_MS. ?llimit=<seconds> is for timing a build on a slow renderer. */
 export const LIMIT_S = (() => {

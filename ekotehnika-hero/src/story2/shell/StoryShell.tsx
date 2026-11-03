@@ -23,6 +23,7 @@ import { forkBackFrom, forkBackTo, forkLiftFrom, forkLiftTopPx, forkPassesPx, fo
 import { SMPane } from './map/ServisMap';
 import { INTRO_SKIP, markIntroStart, revealAt } from '../scenes/sistem/intro';
 import { Preloader } from './Preloader';
+import { loader } from '../scenes/sistem/loader';
 import './shell.css';
 
 export type Tone = 'light' | 'dark';
@@ -274,7 +275,9 @@ export function StoryShell({ Scene, tone, reduced, darkLayers, darkTop = DARK_TO
       // on an empty white stage (round 5), nor starts before the page is shown (round 7). If the preloader has not let go after
       // HERO_WAIT_MS, a failed or very slow canvas, they play anyway.
       const now = performance.now();
-      const s0 = INTRO_SKIP ? t0 : revealAt() >= 0 ? revealAt() : now - t0 > HERO_WAIT_MS ? t0 + HERO_WAIT_MS : Infinity;
+      // While a preloader plays it owns the moment, and the fallback waits for its own time limit and its closing move as well (loader.ts).
+      const heroWait = loader.live ? HERO_WAIT_MS + 6000 : HERO_WAIT_MS;
+      const s0 = INTRO_SKIP ? t0 : revealAt() >= 0 ? revealAt() : now - t0 > heroWait ? t0 + heroWait : Infinity;
       const blockT = clamp01((now - s0) / 1000 / HERO_SECONDS);
 
       for (const G of groups) {

@@ -18,7 +18,7 @@ import { Pallet } from '../../../r3f/Forklift';
 import { Truck, preloadRest, type TruckApi } from './models';
 import { MARK_H, MARK_W, useWordmark } from './wordmark';
 import { BoxSet, type BoxItem } from './props';
-import { Load, Plates, beamFlange, beamWeb, labelMat, rackGrey, slab } from './najamkit';
+import { Load, Plates, beamFlange, beamWeb, labelMat, rackGrey } from './najamkit';
 import { BAY, STAGES, isFirst, loader, onFirst, onStage, setStage } from './loader';
 import { carried } from './loadercam';
 import { blobMaterial, ease, range, rng } from './kit';
@@ -468,10 +468,7 @@ function Bay() {
   });
   return (
     <group position={[BAY.x, 0, BAY.z]}>
-      {/* the slab the bay stands on, the hall's own floor tone, and the rack with its loads */}
-      <mesh position={[0, 0.02, 1.6]} material={slab} receiveShadow>
-        <boxGeometry args={[11.5, 0.04, 7.6]} />
-      </mesh>
+      {/* the bay stands on the story's own ground, with no slab of its own, so no edge of one is in the hero's frame when the camera lands */}
       <Rack />
       <Loads />
       <group ref={truck} position={[COLUMN, 0, TRUCK_Z]} rotation={[0, PI / 2, 0]}>

@@ -155,19 +155,19 @@ export function Preloader({ webgl }: { webgl: boolean }) {
           // once the loading is done, so the picture is whole when the closing move starts
           shown = Math.max(shown, shown + (goal - shown) * (1 - Math.exp(-(letGo ? 12 : 4) * dt)));
           if (letGo && shown > 0.995) shown = 1;
-          loader.t = (now - tShow) / 1000;
+          loader.t = FREEZE && FREEZE.t !== null ? FREEZE.t : (now - tShow) / 1000;
           loader.p = FREEZE ? FREEZE.p : shown;
           // the closing move is timed from the moment the loading is whole, shown has reached 1
           const whole = letGo && shown >= 1 ? (now - letGo) / 1000 : -1;
           loader.full = FREEZE ? FREEZE.full : whole;
           loader.go = loader.full >= 0 ? goAt(loader.version, loader.full) : 0;
-          if (!FREEZE && loader.full >= 0 && !revealed && loader.full >= (REVEAL_S[loader.version] ?? 0.5)) {
+          if (loader.full >= 0 && !revealed && loader.full >= (REVEAL_S[loader.version] ?? 0.5)) {
             revealed = true;
             markReveal(now);
           }
           const k = 1 - Math.exp(-6 * dt);
-          loader.mx += ((moved ? tx : 0) - loader.mx) * k;
-          loader.my += ((moved ? ty : 0) - loader.my) * k;
+          loader.mx = FREEZE ? FREEZE.mx : loader.mx + ((moved ? tx : 0) - loader.mx) * k;
+          loader.my = FREEZE ? FREEZE.my : loader.my + ((moved ? ty : 0) - loader.my) * k;
           // the share loaded, at the foot of the left column where the page's own coordinate label stands, written when the whole number changes
           const n = Math.round(Math.min(1, loader.p) * 100);
           if (n !== figureNow && figure.current) {
@@ -205,10 +205,16 @@ export function Preloader({ webgl }: { webgl: boolean }) {
           <span>%</span>
         </p>
       )}
-      {/* a page with no WebGL shows the two logos as supplied on the white sheet */}
+      {/* a page with no WebGL shows the two logos as supplied on the white sheet, in the page's own top row markup so they stand where the page's own do */}
       <div className="pl-logos" aria-hidden="true">
-        <img src="/brand/linde-mh.svg" width={160} height={96} alt="" />
-        <img src="/brand/ekotehnika.svg" width={160} height={33} alt="" />
+        <div className="hf-top">
+          <span className="hf-logo">
+            <img src="/brand/linde-mh.svg" width={160} height={96} alt="" />
+            <span className="hf-wm">
+              <img className="wm-ink" src="/brand/ekotehnika.svg" width={160} height={33} alt="" />
+            </span>
+          </span>
+        </div>
       </div>
       <span className="sr-only">Učitavanje</span>
     </div>

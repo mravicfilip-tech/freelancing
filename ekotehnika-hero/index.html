@@ -11,17 +11,14 @@
     <link rel="preload" href="/fonts/daxline/DaxlinePro-Regular.woff2" as="font" type="font/woff2" crossorigin />
     <link rel="preload" href="/fonts/daxline/DaxlinePro-Light.woff2" as="font" type="font/woff2" crossorigin />
     <link rel="preload" href="/fonts/geist/geist-digits.woff2" as="font" type="font/woff2" crossorigin />
-    <!-- The still preloader sheet for the first paint, before the script has loaded. shell/Preloader.tsx takes its place on its first render and
-         removes this, so the two must stay the same size, see .pl in shell/shell.css. A page that is not the story, a frozen shot (?at=) or
-         a visitor with reduced motion never shows it. -->
+    <!-- The plain white sheet for the first paint, before the script has loaded. shell/Preloader.tsx takes its place on its first render and
+         removes this, and the preloader version it draws starts from an empty white sheet too, so there is no jump. A page that is not the
+         story, a frozen shot (?at=) or a visitor with reduced motion never shows it. -->
     <style>
       #boot {
         position: fixed;
         inset: 0;
         z-index: 9990;
-        display: flex;
-        align-items: center;
-        justify-content: center;
         background: #fff;
         /* if the script never runs the sheet does not hide the page for good */
         animation: boot-gone 0s linear 15s forwards;
@@ -31,30 +28,6 @@
           visibility: hidden;
         }
       }
-      #boot .pl-in {
-        display: flex;
-        flex-direction: column;
-        gap: 48px;
-        width: 350px;
-      }
-      #boot .pl-logos {
-        display: flex;
-        align-items: center;
-        gap: 30px;
-      }
-      #boot img {
-        display: block;
-        flex: none;
-        width: 160px;
-        height: auto;
-      }
-      #boot img:first-child {
-        height: 96px;
-      }
-      #boot .pl-bar {
-        height: 2px;
-        background: rgb(34 34 34 / 0.12);
-      }
       @media (prefers-reduced-motion: reduce) {
         #boot {
           display: none;
@@ -63,15 +36,7 @@
     </style>
   </head>
   <body>
-    <div id="boot" aria-hidden="true">
-      <div class="pl-in">
-        <div class="pl-logos">
-          <img src="/brand/linde-mh.svg" width="160" height="96" alt="" />
-          <img src="/brand/ekotehnika.svg" width="160" height="33" alt="" />
-        </div>
-        <div class="pl-bar"></div>
-      </div>
-    </div>
+    <div id="boot" aria-hidden="true"></div>
     <script>
       if (/[?&](at|gate|servismap|story|story2|board)(=|&|$)/.test(location.search)) document.getElementById('boot').remove();
     </script>

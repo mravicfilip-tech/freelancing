@@ -349,11 +349,12 @@ export function NPane() {
   );
 }
 
-// Najam, the terms pane of N3 and N4. The title and the line, and under the line the four terms as four cards stacked in the left column, between
-// the first vertical and the third, so the scene keeps the right two thirds. A card is a row, the figure at the size of the facts of N and the word
-// meseci at the size of their labels, and the card of the term the pallets have reached is drawn like the active Prodaja tab, a 2px ink rule along
-// its bottom and the figure and label in ink, the others in text grey. The styles are najam.css. With reduced motion there is no loop and the pane
-// stays as it is rendered, 72 lit.
+// Najam, the terms pane of N3 and N4. The title and the line stand at the top of the left column and the four terms stand at its foot, four cards
+// stacked on the bottom rule above the coordinates row, in the first cell of the grid between the first vertical and the second (round 8, Filip,
+// "Don't need these lines", "Move this below where i marked"). Their rules and plus marks stay inside that column, nothing runs on across the
+// scene. A card is a row, the figure at the size of the facts of N and the word meseci at the size of their labels, and the card of the term the
+// pallets have reached is drawn like the active Prodaja tab, a 2px ink rule along its bottom and the figure and label in ink, the others in text
+// grey. The styles are najam.css. With reduced motion there is no loop and the pane stays as it is rendered, 72 lit.
 export function NTPane() {
   const c = najam.terms;
   return (
@@ -362,18 +363,18 @@ export function NTPane() {
         <Marker m={markers.n} order={0} />
         <TitleLines lines={c.title} order={1} className="s2-title-s" />
         <Fill text={c.text} />
-        <div className="nt-list" data-rule="t">
-          {c.cells.map((cell, i) => (
-            <div className="cell" data-rule="b" data-lit={i === c.cells.length - 1 ? '' : undefined} key={cell.figure}>
-              <b className="fig" data-wipe={3 + i * 2}>
-                {cell.figure}
-              </b>
-              <span className="lab" data-wipe={4 + i * 2}>
-                {cell.label}
-              </span>
-            </div>
-          ))}
-        </div>
+      </div>
+      <div className="blk nt-list" data-rule="t" style={between(1, 2)}>
+        {c.cells.map((cell, i) => (
+          <div className="cell" data-rule="b" data-lit={i === c.cells.length - 1 ? '' : undefined} key={cell.figure}>
+            <b className="fig" data-wipe={3 + i * 2}>
+              {cell.figure}
+            </b>
+            <span className="lab" data-wipe={4 + i * 2}>
+              {cell.label}
+            </span>
+          </div>
+        ))}
       </div>
     </div>
   );

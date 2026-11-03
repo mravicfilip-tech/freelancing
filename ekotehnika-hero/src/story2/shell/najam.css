@@ -1,14 +1,16 @@
-/* Najam, the terms pane NT, round 7. The four terms are four cards stacked under the line in the left column, between the first vertical and the
-   third. A card is a row, the figure at the 40px of the spec row and the label at its 14px, and the lit card is drawn like the active Prodaja tab, a
-   2px ink rule along its bottom wiping in from the left in 600ms, the figure and label in ink, the others in text grey. The colour and the rule come
-   from the .s2-nt .cell rules of shell.css, this file sets the shape and takes the rule's right edge back from the next vertical, since a card's rule
-   runs the width of the list and not on to a neighbour. */
+/* Najam, the terms pane NT, rounds 7 and 8. The four terms are four cards stacked at the foot of the left column, standing on its bottom rule above
+   the coordinates row, between the first vertical and the second. Filip took the rules off the scene, "Don't need these lines", so the list is exactly
+   one cell wide and its rules, its plus marks and the lit card's rule never reach past the second vertical. A card is a row, the figure at the 40px of
+   the spec row and the label at its 14px, and the lit card is drawn like the active Prodaja tab, a 2px ink rule along its bottom wiping in from the left
+   in 600ms, the figure and label in ink, the others in text grey. The colour and the rule come from the .s2-nt .cell rules of shell.css, this file sets
+   the shape and keeps the rule's right edge on the list's own edge, the second vertical, since the rule of a card runs the width of the list and not on
+   to a neighbour. */
 .s2-nt .nt-list {
-  /* the rules of a block run the whole cell and the text inside pads its own, like the tab list of Prodaja */
-  align-self: stretch;
+  /* the bottom rule of the grid is the pixel row 65 up from the foot, the last card's hairline sits on it like the spec row of Automatizacija */
+  bottom: 64px;
   display: flex;
   flex-direction: column;
-  margin-top: 8px;
+  /* the rules of the list run the whole cell and the text inside pads its own, like the tab list of Prodaja */
   border-top: 1px solid var(--line);
 }
 
@@ -24,6 +26,7 @@
   border-bottom: 1px solid var(--line);
 }
 
+/* the same specificity as the shell.css rule that runs a card's rule on to the next vertical, so it is named the same way */
 .s2-nt .nt-list .cell:not(:last-child)::before {
   right: 0;
 }

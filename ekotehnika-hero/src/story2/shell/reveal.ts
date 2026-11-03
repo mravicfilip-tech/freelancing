@@ -1,29 +1,21 @@
 // The load in of every part marked data-wipe. Round 7 took out the Rise of round 5, letters and words coming up from under a mask
 // word by word, which Filip rejected (taste 2026-11-03 10:20, "so it comes down from the bottom word by word", "something more
-// professional"). In its place the text arrives a line at a time, in one of four ways he picks on the panel with ?text=N
-// (preview.ts), 1 is the default.
-//   1 Fade       each line fades in while it drifts up 12px
-//   2 Line mask  each whole line slides up out of its own mask as one piece, the words of a line never part
-//   3 Blur       each line goes from 8px of blur and no opacity to sharp
-//   4 Wipe       each line is uncovered by a clip running left to right across it
-// Lines follow each other by LINE_STEP of the part's own progress, about 60ms at the pace of the hero block, and they are the lines
-// as laid out, so a paragraph that wraps is told apart line by line. A part with no text of its own, an icon, a button or a counting
-// figure, arrives whole in the same way, as one line. Nothing about a word is animated on its own, a word is only the unit the
-// browser can break a line at. The look lives in shell.css under html[data-text], this file sets one number, --tp from 0 to 1, on
-// each unit. With none of the driving JS running, which is the reduced motion case, no data-text is set and every part shows its end
-// state.
-import { TEXT } from '../preview';
+// professional"). Round 7 then put four line level looks on the panel, and in round 8 he picked the first, "Use 01 Fade animation"
+// (taste 2026-11-03 13:15). Fade is the only text animation now, Line mask, Blur and Wipe and the ?text switch are gone.
+// Each line fades in while it drifts up 12px. Lines follow each other by LINE_STEP of the part's own progress, about 60ms at the pace
+// of the hero block, and they are the lines as laid out, so a paragraph that wraps is told apart line by line. A part with no text of
+// its own, an icon, a button or a counting figure, arrives whole in the same way, as one line. Nothing about a word is animated on its
+// own, a word is only the unit the browser can break a line at. The look lives in shell.css under [data-wipe], this file sets one
+// number, --tp from 0 to 1, on each unit. With none of the driving JS running, which is the reduced motion case, no --tp is set and
+// every part shows its end state.
 
 // the share of a part's progress between the start of one line and the start of the next
 const LINE_STEP = 0.0625;
 // no more than this much of the progress is spent waiting for the last line to start, so a long paragraph still ends together
 const STEP_BUDGET = 0.6;
 
-if (typeof document !== 'undefined' && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) document.documentElement.dataset.text = String(TEXT);
-
-// A unit is one word or one inline image, in its mask. line is the line of the part it sits on, fa and fb the share of that line's
-// width its left and right edges are at, for the wipe.
-type Unit = { c: HTMLElement; line: number; fa: number; fb: number };
+// A unit is one word or one inline image, in a box of its own. line is the line of the part it sits on.
+type Unit = { c: HTMLElement; line: number };
 export type Rise = { el: HTMLElement; units: Unit[]; lines: number; last: number; done: boolean; width: number };
 
 // The text nodes of a part and the inline images in its text (the flags in the hero marker), in reading order, leaving out
@@ -42,16 +34,12 @@ function pieces(el: HTMLElement): (Text | Element)[] {
   return out;
 }
 
-// A unit in its mask. The mask only clips in Line mask, see .rl in shell.css, the other three let the drift, the blur and the clip
-// of their own show past the box.
-const mask = (inner: Node) => {
-  const l = document.createElement('span');
-  l.className = 'rl';
+// A unit in its box, the box the drift moves, see .rc in shell.css.
+const box = (inner: Node) => {
   const c = document.createElement('span');
   c.className = 'rc';
   c.appendChild(inner);
-  l.appendChild(c);
-  return l;
+  return c;
 };
 
 // Which line each unit sits on, from where the browser laid it out. offsetTop ignores the transform a unit is in the middle of, so a
@@ -60,31 +48,14 @@ const mask = (inner: Node) => {
 function measure(R: Rise) {
   let line = -1;
   let edge = -Infinity;
-  let from = 0;
-  const close = (to: number) => {
-    let a = Infinity;
-    let b = -Infinity;
-    for (let i = from; i < to; i++) {
-      a = Math.min(a, R.units[i].c.offsetLeft);
-      b = Math.max(b, R.units[i].c.offsetLeft + R.units[i].c.offsetWidth);
-    }
-    const w = Math.max(1, b - a);
-    for (let i = from; i < to; i++) {
-      R.units[i].fa = (R.units[i].c.offsetLeft - a) / w;
-      R.units[i].fb = (R.units[i].c.offsetLeft + R.units[i].c.offsetWidth - a) / w;
-    }
-    from = to;
-  };
-  R.units.forEach((u, i) => {
+  R.units.forEach((u) => {
     const bottom = u.c.offsetTop + u.c.offsetHeight;
     if (line < 0 || Math.abs(bottom - edge) > Math.max(4, u.c.offsetHeight * 0.5)) {
-      if (line >= 0) close(i);
       line++;
       edge = bottom;
     }
     u.line = line;
   });
-  if (R.units.length) close(R.units.length);
   R.lines = Math.max(1, line + 1);
   R.width = R.el.offsetWidth;
   R.last = -1;
@@ -116,7 +87,7 @@ export function prepRise(el: HTMLElement): Rise {
         if (!(t instanceof Text)) {
           const at = document.createComment('');
           t.parentNode!.insertBefore(at, t);
-          at.replaceWith(mask(t));
+          at.replaceWith(box(t));
           continue;
         }
         const sr = document.createElement('span');
@@ -126,7 +97,7 @@ export function prepRise(el: HTMLElement): Rise {
         for (const part of (t.nodeValue ?? '').split(/(\s+)/)) {
           if (!part) continue;
           if (/^\s+$/.test(part)) vis.appendChild(document.createTextNode(part));
-          else vis.appendChild(mask(document.createTextNode(part)));
+          else vis.appendChild(box(document.createTextNode(part)));
         }
         t.parentNode!.insertBefore(sr, t);
         sr.appendChild(t);
@@ -136,7 +107,7 @@ export function prepRise(el: HTMLElement): Rise {
     }
   }
   if (el.hasAttribute('data-rise')) {
-    R.units = Array.from(el.querySelectorAll<HTMLElement>('.rc')).map((c) => ({ c, line: 0, fa: 0, fb: 1 }));
+    R.units = Array.from(el.querySelectorAll<HTMLElement>('.rc')).map((c) => ({ c, line: 0 }));
     measure(R);
     // the fonts change the width of every word, lay the lines out again when they are in
     document.fonts?.ready.then(() => measure(R));
@@ -170,9 +141,6 @@ export function setRise(R: Rise, p: number) {
   const span = 1 - (R.lines - 1) * step;
   for (let i = 0; i < n; i++) {
     const U = R.units[i];
-    const lp = outCubic(clamp01((p - U.line * step) / span));
-    // the wipe's front runs across the line, a word is uncovered by the share of it the front has passed
-    const t = TEXT === 4 ? clamp01((lp - U.fa) / Math.max(0.0001, U.fb - U.fa)) : lp;
-    U.c.style.setProperty('--tp', t.toFixed(3));
+    U.c.style.setProperty('--tp', outCubic(clamp01((p - U.line * step) / span)).toFixed(3));
   }
 }

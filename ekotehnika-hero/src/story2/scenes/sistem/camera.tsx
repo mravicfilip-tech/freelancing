@@ -100,7 +100,7 @@ export function poseAt(u: number, pos: number, out: Pose, w = 1920, h = 1080): P
     // eased move on one lens to the aisle pose, the target running from the middle of the hall to the aisle truck, the distance from 20 m
     // to 13 and the pitch from straight down to the aisle's. The floor is bare white while the camera waits, so the turn of the view
     // from the hall's width across the frame to its length across it (yaw 90 to 0) is made then, unseen, and the tilt is only a tilt.
-    // The hall builds as the camera comes, see entry.ts and Warehouse. From 8.42 the pose is held, and the flight round the end starts at 8.5.
+    // The hall builds as the camera comes, see entry.ts and Warehouse. From 8.3 the pose is held, and the flight round the end starts at 8.5.
     const e = ease(range(u, SWING[0], SWING[1]));
     const x1 = T1X(pos);
     t.set(lerp(WH_C.x, x1 + 0.4, e), lerp(0, 1.3, e), lerp(WH_C.z, AISLES[1], e));

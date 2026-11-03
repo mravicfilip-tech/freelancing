@@ -35,6 +35,8 @@ Task format
   - [x] Footer with the Ekotehnika logo only
   - [x] Feel 8 Anchors on the switcher
   - [x] Anchors at a third of the speed, 600 story px a second, Filip 3 November
+  - [x] Keys go anchor to anchor, 9 Glide and 10 Magnet on the switcher
+  - [ ] Filip picks 8, 9 or 10
   - [ ] Filip looks at the preview, picks Stops or Anchors
   - [ ] Production on Filip's ship line, then the ekotehnika repo push
 

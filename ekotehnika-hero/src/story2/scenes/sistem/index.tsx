@@ -1,4 +1,4 @@
-// Sistem, the 3D studio telling storyline 2. One R3F canvas, dpr capped at 1.5. The real Linde forklift in a bright
+// Sistem, the 3D studio telling storyline 2. One R3F canvas, dpr capped at 1.25 and let down to 1 when the frame rate sags. The real Linde forklift in a bright
 // white and grey site (low poly trees, hedges, lamp posts, the company building, vans), the yard from above, the
 // warehouse as a lit model with racks and wrapped pallets, a precise side elevation schematic of the X50 on the dark
 // servis ground, a steel fork tine, the Najam warehouse, the rental depot floor and the automation floor with robots at true scale on system
@@ -7,7 +7,7 @@
 // and reduced motion skip.
 import { Suspense, useEffect, useRef, useState } from 'react';
 import { Canvas, addEffect, useFrame, useThree } from '@react-three/fiber';
-import { Environment, useProgress } from '@react-three/drei';
+import { Environment, PerformanceMonitor, useProgress } from '@react-three/drei';
 import * as THREE from 'three';
 import { track } from '../../../story/scenes/sistem/tracks';
 import type { SceneProps } from '../../clock';
@@ -254,11 +254,42 @@ function Probe({ clock }: SceneProps) {
   return null;
 }
 
+// The key light's shadow map was 2048 by 2048, four times the pixels of the 1024 map that holds the same shadow over the 20 or so metres
+// its frustum covers (camera.tsx sizes the frustum to the view), 1 to 2cm a texel. Round 7, Filip, "feels like 15 FPS". The light is
+// resized here, once, where the renderer is set up, and its map is thrown away so three allocates the smaller one.
+const SHADOW_MAP = 1024;
+function Tune() {
+  const scene = useThree((s) => s.scene);
+  useEffect(() => {
+    const fit = () =>
+      scene.traverse((o) => {
+        const l = o as THREE.DirectionalLight;
+        if (l.isDirectionalLight && l.castShadow && l.shadow.mapSize.x > SHADOW_MAP) {
+          l.shadow.mapSize.set(SHADOW_MAP, SHADOW_MAP);
+          l.shadow.map?.dispose();
+          l.shadow.map = null;
+        }
+      });
+    fit();
+    // a light that mounts a moment later is caught too
+    const id = window.setTimeout(fit, 600);
+    return () => window.clearTimeout(id);
+  }, [scene]);
+  return null;
+}
+
+// The device pixel ratio is capped at DPR_MAX, and drops to 1 when the frame rate sags (drei's PerformanceMonitor measures it, a decline
+// lowers the cap, a lasting recovery lifts it, and after two flips it stays down). A 1.5 cap drew 2.25 times the pixels of 1.
+const DPR_MAX = 1.25;
+
 export default function Scene({ clock }: SceneProps) {
+  const [cap, setCap] = useState(DPR_MAX);
   return (
     <div style={{ position: 'absolute', inset: 0, background: GROUND }} aria-hidden="true">
-      <Canvas shadows="soft" dpr={[1, 1.5]} frameloop={clock.still ? 'demand' : 'always'} camera={{ fov: 28, near: 0.1, far: 280, position: [0, 2, 12] }} gl={{ antialias: true }}>
+      <Canvas shadows="soft" dpr={[1, cap]} frameloop={clock.still ? 'demand' : 'always'} camera={{ fov: 28, near: 0.1, far: 280, position: [0, 2, 12] }} gl={{ antialias: true, powerPreference: 'high-performance' }}>
         <World clock={clock} />
+        <Tune />
+        {!clock.still && <PerformanceMonitor flipflops={2} onDecline={() => setCap(1)} onIncline={() => setCap(DPR_MAX)} onFallback={() => setCap(1)} />}
         <Probe clock={clock} />
       </Canvas>
     </div>

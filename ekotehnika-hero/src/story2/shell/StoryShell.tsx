@@ -262,7 +262,8 @@ export function StoryShell({ Scene, tone, reduced, darkLayers, darkTop = DARK_TO
 
     let lastTone = '';
     let lastGround = '';
-    let lastGrid = '';
+    let lastGrid = -1;
+    let smK = -1;
     let id = 0;
 
     const loop = () => {
@@ -329,8 +330,11 @@ export function StoryShell({ Scene, tone, reduced, darkLayers, darkTop = DARK_TO
         // behind its load and no steel ever crosses the type, not even before the blade comes into the frame. The sheet drops
         // under the page grid, so the grid lines still draw over it, and it is cut at the top rule so it never crosses the top row.
         if (G.id === 'SM') {
-          const kk = clamp01(k).toFixed(4);
-          if (G.el.style.getPropertyValue('--k') !== kk) G.el.style.setProperty('--k', kk);
+          const kk = Math.round(clamp01(k) * 10000);
+          if (kk !== smK) {
+            smK = kk;
+            G.el.style.setProperty('--k', (kk / 10000).toFixed(4));
+          }
           const h = stage.clientHeight;
           const load = pos >= forkLiftFrom;
           const push = load ? Math.min(0, forkLiftTopPx(pos, h) - h) : 0;
@@ -400,7 +404,8 @@ export function StoryShell({ Scene, tone, reduced, darkLayers, darkTop = DARK_TO
         if (gp > h.end && gp - h.end < 150) go = Math.max(go, 1 - 0.6 * range(gp - h.end, 0, 150));
         if (gp < h.start && h.start - gp < 120) go = Math.min(go, 0.4 * ((h.start - gp) / 120));
       }
-      const gk = `${Math.round(go * 100)}|${Math.round(draw * 200)}`;
+      // a number, not a string, so no string is made every frame
+      const gk = Math.round(go * 100) * 1000 + Math.round(draw * 200);
       if (gk !== lastGrid) {
         lastGrid = gk;
         grid.style.setProperty('--go', go.toFixed(2));
@@ -420,7 +425,8 @@ export function StoryShell({ Scene, tone, reduced, darkLayers, darkTop = DARK_TO
       }
 
       // dark span, the grid and the frame turn white, the Linde logo stays as supplied and the Ekotehnika wordmark turns white
-      const dark = tone === 'dark' || darkTop.some(([a, b]) => pos >= a && pos < b);
+      let dark = tone === 'dark';
+      for (let i = 0; i < darkTop.length && !dark; i++) dark = pos >= darkTop[i][0] && pos < darkTop[i][1];
       const t = dark ? 'white' : 'ink';
       if (t !== lastTone) {
         lastTone = t;

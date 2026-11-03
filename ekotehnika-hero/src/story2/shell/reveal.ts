@@ -24,7 +24,7 @@ if (typeof document !== 'undefined' && !window.matchMedia('(prefers-reduced-moti
 // A unit is one word or one inline image, in its mask. line is the line of the part it sits on, fa and fb the share of that line's
 // width its left and right edges are at, for the wipe.
 type Unit = { c: HTMLElement; line: number; fa: number; fb: number };
-export type Rise = { el: HTMLElement; units: Unit[]; lines: number; last: string; done: boolean; width: number };
+export type Rise = { el: HTMLElement; units: Unit[]; lines: number; last: number; done: boolean; width: number };
 
 // The text nodes of a part and the inline images in its text (the flags in the hero marker), in reading order, leaving out
 // any part nested inside it that rises on its own.
@@ -87,7 +87,7 @@ function measure(R: Rise) {
   if (R.units.length) close(R.units.length);
   R.lines = Math.max(1, line + 1);
   R.width = R.el.offsetWidth;
-  R.last = '';
+  R.last = -1;
 }
 
 // One resize watcher for every part, a change of width can move where a paragraph breaks. The first report of an observed part is its
@@ -107,7 +107,7 @@ const watcher =
 // as one string, and the words beside it are hidden from assistive tech.
 export function prepRise(el: HTMLElement): Rise {
   const whole = el.classList.contains('btn') || el.hasAttribute('data-count');
-  const R: Rise = { el, units: [], lines: 1, last: '', done: false, width: 0 };
+  const R: Rise = { el, units: [], lines: 1, last: -1, done: false, width: 0 };
   if (!el.hasAttribute('data-rise') && !whole) {
     const nodes = pieces(el);
     if (nodes.some((n) => n.nodeType === Node.TEXT_NODE)) {
@@ -151,7 +151,8 @@ const clamp01 = (t: number) => Math.min(1, Math.max(0, t));
 
 // p runs 0 to 1 over the load in of this part
 export function setRise(R: Rise, p: number) {
-  const key = String(Math.round(p * 400));
+  // a number and not a string, this runs for every part on screen every frame
+  const key = Math.round(p * 400);
   if (key === R.last) return;
   R.last = key;
   const done = p >= 1;

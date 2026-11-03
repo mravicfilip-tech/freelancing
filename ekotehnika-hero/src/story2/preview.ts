@@ -1,9 +1,10 @@
 // The things Filip picks on localhost, read once from the URL and shared by the scroll clock, the shell and the scene.
-//   ?feel=N   how the story clock follows the scroll, 0 Today, 1, 2 and 3 cap the clock, 4 Lock slow, 5 Lock and 6 Lock fast cap it
-//             lower and also hold the page to the clock, and 7 Stops is Lock 5 with a stop at every section, so holding the wheel
-//             parks the clock where the words of a section have arrived. 7 is the default (scroll/useScrollStory.ts, story2/stops.ts)
-//   ?najam=N  which Najam, 0 Today is production's grid of forklifts, 2 New is the warehouse story of round 6 (timeline.ts,
-//             scenes/sistem/najamplan.ts). The number 2 stays from the three cameras Filip chose between, 1 and 3 are gone
+//   ?feel=N   how the story clock follows the scroll, 4 Lock slow, 5 Lock and 6 Lock fast cap the clock and hold the page to it, and
+//             7 Stops is Lock 5 with a stop at every section, so holding the wheel parks the clock where the words of a section have
+//             arrived. 7 is the default. Filip kept these four in round 8, 0 to 3 are off the panel and the URL (scroll/useScrollStory.ts,
+//             story2/stops.ts)
+//   ?najam=N  which Najam, 2 is the warehouse story Filip picked in round 8 and the default, 0 is the old grid of forklifts, kept
+//             reachable by URL only (timeline.ts, scenes/sistem/najamplan.ts)
 //   ?loader=N which preloader plays on load, 1 Utovar, 2 Regal and 3 Kutija, all three the story's own scene (scenes/sistem/loader.ts), 1 is
 //             the default until Filip picks (shell/Preloader.tsx)
 //             The text of the panes has no switch any more, Fade is the one animation (shell/reveal.ts, Filip, round 8)
@@ -15,16 +16,14 @@ const pick = (name: string, fallback: number, allowed: number[]) => {
   return allowed.includes(n) ? n : fallback;
 };
 
-export const FEEL = pick('feel', 7, [0, 1, 2, 3, 4, 5, 6, 7]);
+export const FEEL = pick('feel', 7, [4, 5, 6, 7]);
 export const LOADER = pick('loader', 1, [1, 2, 3]);
-export const NAJAM = pick('najam', 0, [0, 2]);
+export const NAJAM = pick('najam', 2, [0, 2]);
 export const PREVIEW = Boolean(import.meta.env.DEV) || params.has('preview');
 
 export const FEELS = ['Today', '1', '2', '3', 'Lock slow', 'Lock', 'Lock fast', 'Stops'];
 // the preloaders the panel offers, by their number in the URL
 export const LOADERS: [number, string][] = [[1, 'Utovar'], [2, 'Regal'], [3, 'Kutija']];
-// the Najams the panel offers, by their number in the URL
-export const NAJAMS: [number, string][] = [[0, 'Today'], [2, 'New']];
 
 // Where the story was when a switch reloaded the page, a beat id and k of that beat, so the page can land on the same frame
 // whatever the spans of the new choice are. Taken once, at load.

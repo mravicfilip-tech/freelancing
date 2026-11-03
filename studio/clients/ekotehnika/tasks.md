@@ -27,7 +27,7 @@ Task format
 
 - ekotehnika-14 Round 7, Filip's review of the whole site, loader, text animation, scroll, Prodaja into the warehouse, Najam and Automatizacija. Notes in briefs/round7/notes.md
   - [x] Transcribe Filip's 8 minute review and pull the frames he points at
-  - [ ] Preloader, four text animations, stops in the scroll, frame rate, the Prodaja corner cross
+  - [x] Preloader, four text animations, stops in the scroll, frame rate, the Prodaja corner cross
   - [ ] Prodaja into the warehouse without the empty roof view
   - [ ] Najam and Automatizacija fixes, notes 6 to 14
   - [ ] Filip picks a text animation

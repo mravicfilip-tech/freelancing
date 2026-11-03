@@ -25,6 +25,13 @@ Task format
 
 ## In progress
 
+- ekotehnika-16 UX Fix Lokacija, the servis centres' addresses open Google Maps and the second centre gets its real address and number, the client's ticket of 3 November
+  - [x] Both addresses open Google Maps in a new tab
+  - [x] The second centre reads Čuruška 45, Žabalj, +381 63 950 444
+  - [x] The hover underline runs under whole words on the address and the number
+  - [ ] Filip says whether the label, the map pin and the line "iz Vrčina i Čuruga" move to Žabalj
+  - [ ] Preview, then production on Filip's ship line
+
 - ekotehnika-15 Round 8, the preloader versions, Fade text, the term cards at the bottom, the floor arrows, a shorter start into the warehouse, detailed yard trucks. Notes in briefs/round8/notes.md. Preview https://ekotehnika-1jljqu1ns-filip-mravic-s-projects.vercel.app/?preview
   - [x] Four preloader versions on the switcher
   - [x] Fade as the only text animation

@@ -2,7 +2,8 @@
 // Sources are src/content.ts, the hero brief and the competitive analysis in
 // studio/clients/ekotehnika/briefs. A line marked // dummy is new, written for this story, Filip to correct.
 // Titles are written as lines, so each line can sit in its own wipe mask. No colons or dashes in a headline.
-// Every link stays on ekotehnika.rs or is a tel or mailto link. The country wording is Srbija i Crna Gora.
+// Every link stays on ekotehnika.rs or is a tel or mailto link, except the servis centres' addresses, which open Google
+// Maps at the client's ask. The country wording is Srbija i Crna Gora.
 import { SITE, hero, pillars, trust } from '../content';
 
 export type Cta = { label: string; href: string };
@@ -128,16 +129,22 @@ export const servis = {
   dataTel: hero.service.tel,
 };
 
+// a Google Maps search for one address, the Maps URL form that needs no key
+const mapsOf = (q: string) => `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(q)}`;
+
 // The servis map, round 5, Filip 14 October, "Curug and Vrcin are the two service locations that pick ups cover the whole map
 // of Serbia". No numbers, the site has none for the service area.
 export const servisMap = {
   title: ['Dva servisna centra,', 'cela Srbija.'], // dummy, from Filip's ask
   text: 'Servisna vozila iz Vrčina i Čuruga dolaze do vas, gde god da radi vaš viljuškar.', // dummy, from the trust strip, "sa servisnim vozilima širom Srbije"
   // each centre with its address and a number to call, Filip 14 October, "the service locations with their address / phone
-  // numbers for contact". Both call the one service line until Čurug has its own.
+  // numbers for contact". The address opens Google Maps in a new tab, the client's ticket "UX Fix Lokacija" of 3 November,
+  // "Povezati njihove adrese tako da otvara google maps".
   bases: [
-    { id: 'vrcin', label: 'Vrčin', line: 'Servisni centar i sedište firme', address: 'Moše Pijade 17b, 11224 Vrčin', phone: hero.service }, // analysis, the contact page
-    { id: 'curug', label: 'Čurug', line: 'Servisni centar', address: 'Moše Pijade 17b, 11224 Vrčin', phone: hero.service }, // dummy, Filip's second location, the Vrčin address for now (Filip 14 October), its own address and number to come from Filip
+    { id: 'vrcin', label: 'Vrčin', line: 'Servisni centar i sedište firme', address: 'Moše Pijade 17b, 11224 Vrčin', maps: mapsOf('Moše Pijade 17b, 11224 Vrčin, Srbija'), phone: hero.service }, // analysis, the contact page
+    // the address and number from the same ticket, "Adresa nije curug: Čuruška 45, Žabalj +381 63 950 444". On OpenStreetMap
+    // the building sits in Žabalj town, 21230, about 10km south of Čurug. The label stays Čurug until Filip says otherwise.
+    { id: 'curug', label: 'Čurug', line: 'Servisni centar', address: 'Čuruška 45, Žabalj', maps: mapsOf('Čuruška 45, 21230 Žabalj, Srbija'), phone: { label: 'Servis', number: '+381 63 950 444', tel: 'tel:+38163950444' } },
   ],
   cover: 'Servisna vozila širom Srbije', // trust strip
   cta: servis.cta,

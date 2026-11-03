@@ -131,7 +131,9 @@ export function SMPane() {
               {b.line}
             </span>
             <address className="sm-adr">
-              <span data-wipe={9 + i}>{b.address}</span>
+              <a className="sm-maps" href={b.maps} target="_blank" rel="noopener noreferrer" aria-label={`${b.address}, otvori u Google mapama`} data-cta="maps" data-wipe={9 + i}>
+                {b.address}
+              </a>
               <a href={b.phone.tel} data-cta="call-service" data-wipe={10 + i}>
                 {b.phone.number}
               </a>

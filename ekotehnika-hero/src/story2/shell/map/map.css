@@ -111,7 +111,14 @@
   text-decoration: none;
 }
 
-.sm-adr a:hover {
+/* the address opens Google Maps, it keeps the grey of the line and takes the same underline on hover as the number */
+.sm-adr a.sm-maps {
+  color: inherit;
+}
+
+/* the Fade splits a line into word boxes, .rc, and an underline does not reach into a box, so each word takes its own */
+.sm-adr a:hover,
+.sm-adr a:hover .rc {
   text-decoration: underline;
   text-underline-offset: 4px;
 }

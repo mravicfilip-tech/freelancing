@@ -25,7 +25,7 @@ Task format
 
 ## In progress
 
-- ekotehnika-17 Client tickets of 3 November, copy for Prodaja, Automatizacija, Kompanija and the hero, Najam scroll back and readability, the footer logo, a scroll with anchors. Notes in briefs/round9/notes.md. Preview https://ekotehnika-1067djpcn-filip-mravic-s-projects.vercel.app/?preview
+- ekotehnika-17 Client tickets of 3 November, copy for Prodaja, Automatizacija, Kompanija and the hero, Najam scroll back and readability, the footer logo, a scroll with anchors. Notes in briefs/round9/notes.md. Preview https://ekotehnika-f1kwmjcgp-filip-mravic-s-projects.vercel.app/?preview
   - [x] Prodaja button, Posetite prodavnicu
   - [x] Automatizacija title, line and three facts
   - [x] Kompanija title without 1997

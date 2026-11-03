@@ -25,6 +25,13 @@ Task format
 
 ## In progress
 
+- ahai-studio-2 AHAI website review. Live site https://akaistudioagg.vercel.app. Log in `review/site-review.md`
+  - [x] Baseline shots of all 14 pages at 1440
+  - [ ] Connect the Google Sheets and Google Drive connectors on claude.ai
+  - [ ] Get the site repo added to the session
+  - [ ] Read the team's comments in the review sheet
+  - [ ] Fix each comment and mark its row done or not done
+
 ## Review
 
 - ahai-studio-1 Ahai Studio offer from Profitable Skills module 2. Notes in `briefs/offer/notes.md`

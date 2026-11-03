@@ -10,6 +10,7 @@ import { BP, NP, WH_C, routeAt, truckS, AISLES } from './route';
 import { focusAt, toWorld } from './atplan';
 import { HALL_Y, najamCam, najamT, type Cam } from './najamplan';
 import { NAJAM } from '../../preview';
+import { SWING } from './entry';
 import { DARK_BG, PAPER, ease, isDark, lerp, range, rad, softTexture, uOf } from './kit';
 
 export type CamState = { target: THREE.Vector3; d: number; shadow: number };
@@ -94,39 +95,36 @@ export function poseAt(u: number, pos: number, out: Pose, w = 1920, h = 1080): P
     out.sy = lerp(-0.12, 0, e);
     out.shadow = 45;
     orbit(t, out.d, out.yaw, out.pitch, out.pos);
-  } else if (u < 8) {
-    const e = ease(range(u, 7.5, 8));
-    t.set(lerp(WH_C.x, ISO.x, e), lerp(0, ISO.y, e), lerp(WH_C.z, ISO.z, e));
-    out.d = lerp(20, ISO.d, e);
-    out.yaw = lerp(90, ISO.yaw, e);
-    out.pitch = lerp(-90, ISO.pitch, e);
-    out.shadow = 45;
+  } else if (u < 8.5) {
+    // P and the start of A, one move. The camera holds the top down view Z ended on while the words of P are up, then tilts down in one
+    // eased move on one lens to the aisle pose, the target running from the middle of the hall to the aisle truck, the distance from 20 m
+    // to 13 and the pitch from straight down to the aisle's. The floor is bare white while the camera waits, so the turn of the view
+    // from the hall's width across the frame to its length across it (yaw 90 to 0) is made then, unseen, and the tilt is only a tilt.
+    // The hall builds as the camera comes, see entry.ts and Warehouse. From 8.42 the pose is held, and the flight round the end starts at 8.5.
+    const e = ease(range(u, SWING[0], SWING[1]));
+    const x1 = T1X(pos);
+    t.set(lerp(WH_C.x, x1 + 0.4, e), lerp(0, 1.3, e), lerp(WH_C.z, AISLES[1], e));
+    out.d = lerp(20, 13, e);
+    out.yaw = lerp(90, 0, ease(range(u, 7.1, 7.7)));
+    out.pitch = lerp(-90, A_PITCH(8.5), e);
+    out.shadow = lerp(45, 14, e);
     orbit(t, out.d, out.yaw, out.pitch, out.pos);
   } else if (u < 10) {
     const x1 = T1X(pos);
     out.shadow = 14;
-    if (u < 8.5) {
-      const e = ease(range(u, 8, 8.3));
-      t.set(lerp(ISO.x, x1 + 0.4, e), lerp(ISO.y, 1.3, e), lerp(ISO.z, AISLES[1], e));
-      out.d = lerp(ISO.d, 13, e);
-      out.yaw = A_YAW(u);
-      out.pitch = A_PITCH(u);
-      orbit(t, out.d, out.yaw, out.pitch, out.pos);
-    } else {
-      // free flight, out along the side, round the end of the aisle and in
-      t.set(x1 + 0.4, 1.3, AISLES[1]);
-      orbit(t, 13, 0, A_PITCH(8.5), tmp.p0);
-      const e = ease(range(u, 8.5, 8.75));
-      const endX = 176;
-      const x = u < 8.75 ? lerp(tmp.p0.x, endX, e) : x1 + A_SEP(u);
-      const y = u < 8.75 ? lerp(tmp.p0.y, A_Y(8.75), e) : A_Y(u);
-      const z = lerp(tmp.p0.z, AISLES[1], e);
-      out.pos.set(x, y, z);
-      out.yaw = A_YAW(u);
-      out.pitch = A_PITCH(u);
-      t.set(x1, 1.3, AISLES[1]);
-      out.d = 10;
-    }
+    // free flight, out along the side, round the end of the aisle and in
+    t.set(x1 + 0.4, 1.3, AISLES[1]);
+    orbit(t, 13, 0, A_PITCH(8.5), tmp.p0);
+    const e = ease(range(u, 8.5, 8.75));
+    const endX = 176;
+    const x = u < 8.75 ? lerp(tmp.p0.x, endX, e) : x1 + A_SEP(u);
+    const y = u < 8.75 ? lerp(tmp.p0.y, A_Y(8.75), e) : A_Y(u);
+    const z = lerp(tmp.p0.z, AISLES[1], e);
+    out.pos.set(x, y, z);
+    out.yaw = A_YAW(u);
+    out.pitch = A_PITCH(u);
+    t.set(x1, 1.3, AISLES[1]);
+    out.d = 10;
   } else if (u < 11.52) {
     // the X50 schematic in three quarter perspective, on the right of the frame. The cut to the rental floor sits at 11.52, under
     // the light curtain that covers the whole frame from L k 0.5, so the floor is there when the fork's tip starts uncovering it

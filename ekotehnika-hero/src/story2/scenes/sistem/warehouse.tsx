@@ -1,6 +1,7 @@
-// The warehouse as a lit model. A roof that gives way, racks of light that rise from a clean floor, aisles with
-// ceiling strips, and three indoor trucks at work. The same building is the roof in Z, the cutaway in P and
-// the aisle in A and B.
+// The warehouse as a lit model. A roof that gives way, racks of light that come in along their lines onto a clean floor, aisles with
+// ceiling strips, and five indoor trucks at work. The same building is the roof in Z, the clean floor in P and
+// the aisle in A and B. The build of the hall in A is timed by entry.ts and nothing in it is scaled, the floor lines draw on and every
+// rack, pallet, wall and truck moves in from outside the frame to its place.
 import { useLayoutEffect, useMemo, useRef } from 'react';
 import { useFrame, useThree } from '@react-three/fiber';
 import { useGLTF } from '@react-three/drei';
@@ -17,6 +18,7 @@ import { AISLES, WH } from './route';
 import { G, K, ease, lam, lerp, lit, range, rng, uOf } from './kit';
 import { BoxSet, type BoxItem } from './props';
 import { Roof, roofMaterials, type RoofSlopes, type RoofSpec } from './roof';
+import { FAR_FRAME, FAR_LOAD, LINES, NEAR_FRAME, NEAR_LOAD, ROW_STAGGER, TRUCKS_IN, WAIT_X, WAIT_Y, WAIT_Z, WALLS_IN, toGo } from './entry';
 
 const BAY = 2.7;
 const BAYS = 17;
@@ -83,7 +85,9 @@ const wrapBand = new THREE.MeshLambertMaterial({ color: lit(G.white), emissive: 
 const palletBase = lam(G.dark);
 const loadMats = [G.white, G.pale, G.light].map((c) => lam(c, { emissive: lit(c).multiplyScalar(0.3) }));
 
-function Row({ z, index, group }: { z: number; index: number; group: (g: THREE.Group | null) => void }) {
+// A row is two groups at the same place, the rack frames with their beams and labels and the pallets with their wrap and labels. The
+// two come in one after the other, see Warehouse.
+function Row({ z, index, frame, load }: { z: number; index: number; frame: (g: THREE.Group | null) => void; load: (g: THREE.Group | null) => void }) {
   const d = useMemo(() => {
     const r = rng(100 + index);
     const up: BoxItem[] = [];
@@ -141,27 +145,35 @@ function Row({ z, index, group }: { z: number; index: number; group: (g: THREE.G
     return { up, plate, guard, brace, web, flange, base, shell, bands, loads, rackLabels, loadLabels };
   }, [index]);
   return (
-    <group ref={group} position={[0, 0, z]}>
-      <BoxSet items={d.up} mat={rackGrey} cast />
-      <BoxSet items={d.plate} mat={beamFlange} receive={false} />
-      <BoxSet items={d.guard} mat={beamWeb} cast />
-      <BoxSet items={d.brace} mat={rackGrey} />
-      <BoxSet items={d.web} mat={beamWeb} cast />
-      <BoxSet items={d.flange} mat={beamFlange} />
-      <BoxSet items={d.base} mat={palletBase} cast />
-      {d.loads.map((l, i) => (
-        <BoxSet key={i} items={l} mat={loadMats[i]} cast />
-      ))}
-      <BoxSet items={d.shell} mat={wrapShell} receive={false} />
-      <BoxSet items={d.bands} mat={wrapBand} receive={false} />
-      {[0, 1].map((v) => (
-        <group key={v}>
-          <Plates items={d.rackLabels[v][0]} face={1} mat={labelMat(v)} />
-          <Plates items={d.rackLabels[v][1]} face={-1} mat={labelMat(v)} />
-          <Plates items={d.loadLabels[v][0]} face={1} mat={labelMat(v + 2)} />
-          <Plates items={d.loadLabels[v][1]} face={-1} mat={labelMat(v + 2)} />
-        </group>
-      ))}
+    <group position={[0, 0, z]}>
+      <group ref={frame}>
+        <BoxSet items={d.up} mat={rackGrey} cast />
+        <BoxSet items={d.plate} mat={beamFlange} receive={false} />
+        <BoxSet items={d.guard} mat={beamWeb} cast />
+        <BoxSet items={d.brace} mat={rackGrey} />
+        <BoxSet items={d.web} mat={beamWeb} cast />
+        <BoxSet items={d.flange} mat={beamFlange} />
+        {[0, 1].map((v) => (
+          <group key={v}>
+            <Plates items={d.rackLabels[v][0]} face={1} mat={labelMat(v)} />
+            <Plates items={d.rackLabels[v][1]} face={-1} mat={labelMat(v)} />
+          </group>
+        ))}
+      </group>
+      <group ref={load}>
+        <BoxSet items={d.base} mat={palletBase} cast />
+        {d.loads.map((l, i) => (
+          <BoxSet key={i} items={l} mat={loadMats[i]} cast />
+        ))}
+        <BoxSet items={d.shell} mat={wrapShell} receive={false} />
+        <BoxSet items={d.bands} mat={wrapBand} receive={false} />
+        {[0, 1].map((v) => (
+          <group key={v}>
+            <Plates items={d.loadLabels[v][0]} face={1} mat={labelMat(v + 2)} />
+            <Plates items={d.loadLabels[v][1]} face={-1} mat={labelMat(v + 2)} />
+          </group>
+        ))}
+      </group>
     </group>
   );
 }
@@ -193,56 +205,85 @@ function WarehouseRoof({ slopes }: { slopes: RoofSlopes }) {
   return <Roof spec={ROOF} mats={mats} slopes={slopes} outline={false} />;
 }
 
-function Walls({ groupRef }: { groupRef: React.MutableRefObject<THREE.Group | null> }) {
+const WALLS: { x: number; z: number; w: number; d: number; y0: number; h: number }[] = (() => {
   const t = 0.4;
-  const parts: { x: number; z: number; w: number; d: number; y0: number; h: number }[] = [
+  return [
     { x: WH.x0 - t / 2 + 0.2, z: (WH.z0 + AISLES[1] - 2.2) / 2, w: t, d: AISLES[1] - 2.2 - WH.z0, y0: 0, h: WH.eave },
     { x: WH.x0 - t / 2 + 0.2, z: (WH.z1 + AISLES[1] + 2.2) / 2, w: t, d: WH.z1 - AISLES[1] - 2.2, y0: 0, h: WH.eave },
     { x: WH.x0 - t / 2 + 0.2, z: AISLES[1], w: t, d: 4.4, y0: 4.8, h: WH.eave - 4.8 },
     { x: (WH.x0 + WH.x1) / 2, z: WH.z0 - t / 2 + 0.2, w: WH.x1 - WH.x0, d: t, y0: 0, h: WH.eave },
   ];
+})();
+
+// The walls, four parts, the far wall and the end wall either side of the door and over it. Each part is wrapped in a group of its own
+// that the warehouse lowers onto the outline the floor draws for it.
+function Walls({ partRefs }: { partRefs: React.MutableRefObject<(THREE.Group | null)[]> }) {
+  const parts = WALLS;
   return (
-    <group ref={groupRef}>
+    <>
       {parts.map((p, i) => (
-        <group key={i} position={[p.x, p.y0 + p.h / 2, p.z]}>
-          <mesh material={K.silhouette} castShadow receiveShadow>
-            <boxGeometry args={[p.w, p.h, p.d]} />
-          </mesh>
-          <lineSegments material={new THREE.LineBasicMaterial({ color: C.ink, transparent: true, opacity: 0.5, toneMapped: false })}>
-            <edgesGeometry args={[new THREE.BoxGeometry(p.w, p.h, p.d)]} />
-          </lineSegments>
+        <group key={i} ref={(g) => { partRefs.current[i] = g; }}>
+          <group position={[p.x, p.y0 + p.h / 2, p.z]}>
+            <mesh material={K.silhouette} castShadow receiveShadow>
+              <boxGeometry args={[p.w, p.h, p.d]} />
+            </mesh>
+            <lineSegments material={new THREE.LineBasicMaterial({ color: C.ink, transparent: true, opacity: 0.5, toneMapped: false })}>
+              <edgesGeometry args={[new THREE.BoxGeometry(p.w, p.h, p.d)]} />
+            </lineSegments>
+          </group>
         </group>
       ))}
-    </group>
+    </>
   );
 }
 
+// The hall's outline on the floor, thin lines that draw on from the middle outward as A begins, then the rack rows' own outlines, the
+// floor lines of the aisles and the foot of the walls. They are boxes 5 to 7 cm wide, a line and not a plane, and they stay down for good,
+// the racks, the walls and the trucks then come in along them.
+const LINE_Y = 0.03;
+const ROW_HALF = 0.68;
+const RACK_X1 = RACK_X0 + BAYS * BAY;
+
 function Floor({ clock }: SceneProps) {
   const lane = useMemo(() => new THREE.MeshBasicMaterial({ color: G.mid, toneMapped: false }), []);
-  // Nothing of the warehouse shows in P, the cut out is the only object. The floor runs out past any frame, so the roof's
-  // opening shows a floor and never an edge, and the lane lines draw on along the aisles as A begins.
+  // Nothing of the warehouse shows in P, the floor is the only object. It runs out past any frame, so the view never shows an edge, and
+  // the lines draw on along the aisles from the end of the words of P, when the camera has begun to tilt.
   const lanes = useRef<THREE.Group>(null);
   useFrame(() => {
-    const d = ease(range(uOf(clock), 8.0, 8.4));
+    const d = ease(range(uOf(clock), LINES[0], LINES[1]));
     if (lanes.current) {
       lanes.current.scale.x = Math.max(d, 0.001);
       lanes.current.visible = d > 0.002;
     }
   });
+  // every line as centre x, z, length along x, length along z, in a group at the middle of the hall's length
+  const cx = (WH.x0 + WH.x1) / 2;
+  const lines = useMemo(() => {
+    const out: { key: string; x: number; z: number; w: number; d: number; y: number }[] = [];
+    const run = WH.x1 - WH.x0 - 0.5;
+    for (const z of AISLES) for (const dz of [-1.55, 1.55]) out.push({ key: `a${z}${dz}`, x: 0, z: z + dz, w: run, d: 0.07, y: LINE_Y });
+    for (const z of ROWS) {
+      const rx = (RACK_X0 + RACK_X1) / 2 - cx;
+      for (const dz of [-ROW_HALF, ROW_HALF]) out.push({ key: `r${z}${dz}`, x: rx, z: z + dz, w: RACK_X1 - RACK_X0, d: 0.05, y: 0.022 });
+      for (const ex of [RACK_X0, RACK_X1]) out.push({ key: `e${z}${ex}`, x: ex - cx, z, w: 0.05, d: 2 * ROW_HALF, y: 0.022 });
+    }
+    // the foot of the far wall and of the end wall with the door left open, the part over the door has none
+    for (const p of WALLS)
+      if (p.y0 === 0) out.push({ key: `w${p.x}${p.z}`, x: p.x - cx, z: p.z, w: p.w > p.d ? p.w : 0.05, d: p.w > p.d ? 0.05 : p.d, y: 0.022 });
+    return out;
+  }, [cx]);
   return (
     <group>
       <mesh rotation={[-Math.PI / 2, 0, 0]} position={[(WH.x0 + WH.x1) / 2, 0.012, (WH.z0 + WH.z1) / 2]} receiveShadow>
         <planeGeometry args={[600, 600]} />
         <meshLambertMaterial color={lit(C.white)} toneMapped={false} />
       </mesh>
-      <group ref={lanes} position={[(WH.x0 + WH.x1) / 2, 0, 0]}>
-        {AISLES.map((z) =>
-          [-1.55, 1.55].map((dz) => (
-            <mesh key={`${z}${dz}`} position={[0, 0.03, z + dz]} material={lane}>
-              <boxGeometry args={[WH.x1 - WH.x0 - 0.5, 0.01, 0.07]} />
-            </mesh>
-          ))
-        )}
+      <group ref={lanes} position={[cx, 0, 0]}>
+        {lines.map((l) => (
+          <mesh key={l.key} position={[l.x, l.y, l.z]} material={lane}>
+            <boxGeometry args={[l.w, 0.01, l.d]} />
+          </mesh>
+        ))}
       </group>
     </group>
   );
@@ -266,7 +307,7 @@ const T5X = track([[0, 160], [5300, 160], [6400, 156], [8000, 146], [12000, 146]
 // The T02 move. One truck of the warehouse is drawn again as a precise wireframe on top of its lit self, the half from
 // the mast back to the front. A clip plane sweeps the wireframe in from the front and sweeps it back out the same way as the
 // camera drops into the aisle for A, so the lines are drawn and erased, never faded. Lines are 1px fat lines from the hard edges of the real model.
-function WireTruck({ clock, name, x }: SceneProps & { name: 'r16'; x: (pos: number) => number }) {
+function WireTruck({ clock, name, x, wait }: SceneProps & { name: 'r16'; x: (pos: number) => number; wait: (u: number) => number }) {
   const gltf = useGLTF(modelUrl(name)) as unknown as { scene: THREE.Group };
   const spec = SPEC[name];
   const size = useThree((s) => s.size);
@@ -313,9 +354,10 @@ function WireTruck({ clock, name, x }: SceneProps & { name: 'r16'; x: (pos: numb
     mat.opacity = 0.6;
     // the clip plane in world space, sweeping from the nose to the middle of the truck
     const sweep = ease(range(u, 8.12, 8.5)) * (1 - ease(range(u, 8.6, 8.9)));
-    const cut = x(clock.pos.current) + lerp(reach.hi + 0.1, reach.lo + (reach.hi - reach.lo) * 0.36, sweep);
+    // the truck drives in through the open end while the wire starts, so the plane runs with it
+    const cut = x(clock.pos.current) + wait(u) + lerp(reach.hi + 0.1, reach.lo + (reach.hi - reach.lo) * 0.36, sweep);
     plane.constant = -cut;
-    const roll = x(clock.pos.current);
+    const roll = x(clock.pos.current) + wait(u);
     wheels.forEach((_w, i) => {
       const g = wg.current[i];
       if (g) g.rotation.z = (spec.spin * roll) / spec.wheels[i].r;
@@ -335,11 +377,16 @@ function WireTruck({ clock, name, x }: SceneProps & { name: 'r16'; x: (pos: numb
   );
 }
 
+// How far east of its place a truck still stands, the trucks drive in through the open end of the hall as A begins. The ones that face
+// east back in, which reach trucks do, and the wheels turn the way they roll.
+const truckWait = (u: number) => WAIT_X * toGo(u, TRUCKS_IN[0], TRUCKS_IN[1]);
+
 export default function Warehouse({ clock }: SceneProps) {
   const roofNear = useRef<THREE.Group>(null);
   const roofFar = useRef<THREE.Group>(null);
-  const walls = useRef<THREE.Group | null>(null);
-  const rows = useRef<(THREE.Group | null)[]>([]);
+  const walls = useRef<(THREE.Group | null)[]>([]);
+  const frames = useRef<(THREE.Group | null)[]>([]);
+  const loads = useRef<(THREE.Group | null)[]>([]);
   const inner = useRef<THREE.Group>(null);
   const trucks = useRef<THREE.Group>(null);
   const apiRefs = useMemo(() => Array.from({ length: 5 }, () => ({ current: null as TruckApi | null })), []);
@@ -359,23 +406,34 @@ export default function Warehouse({ clock }: SceneProps) {
       roofFar.current.visible = !gone;
       roofFar.current.position.z = -slide * 10;
     }
-    // The interior waits for A. P shows the cut out and nothing of the building, the walls, racks and trucks rise
-    // from the clean floor as the camera drops toward the aisle.
-    if (inner.current) inner.current.visible = u > 8.001 && u < 10.4;
-    if (trucks.current) {
-      trucks.current.visible = u > 8.001 && u < 10.4;
-      trucks.current.scale.y = Math.max(ease(range(u, 8.05, 8.3)), 0.001);
-    }
-    const wallRise = ease(range(u, 8.0, 8.25));
-    if (walls.current) walls.current.scale.y = Math.max(wallRise, 0.001);
-    ROWS.forEach((z, i) => {
-      const g = rows.current[i];
+    // The interior waits for A. P shows the clean floor and nothing of the building. Once the floor lines are drawing, the racks, the
+    // walls and the trucks come in from outside the frame to their lines, see entry.ts. Nothing is scaled and nothing fades.
+    const on = u > 7.9 && u < 10.4;
+    if (inner.current) inner.current.visible = on;
+    if (trucks.current) trucks.current.visible = on;
+    WALLS.forEach((_w, i) => {
+      const g = walls.current[i];
       if (!g) return;
-      // the near side rows stay down while the camera runs the aisle, so the view into the racks is open
-      const rise = NEAR(z) ? ease(range(u, 8.7, 8.9)) : ease(range(u, 8.02 + i * 0.04, 8.28 + i * 0.04));
-      const s = Math.max(rise, 0.001);
-      g.scale.y = s;
-      g.visible = s > 0.002;
+      const wg = toGo(u, WALLS_IN[0] + i * ROW_STAGGER, WALLS_IN[1] + i * ROW_STAGGER);
+      g.position.y = WAIT_Y * wg;
+      g.visible = wg < 0.999;
+    });
+    ROWS.forEach((z, i) => {
+      const f = frames.current[i];
+      const l = loads.current[i];
+      if (!f || !l) return;
+      // the near side rows stay out while the camera runs the aisle, so the view into the racks is open, and slide in along z later
+      const near = NEAR(z);
+      const j = near ? i - 3 : i;
+      const [f0, f1] = near ? NEAR_FRAME : FAR_FRAME;
+      const [l0, l1] = near ? NEAR_LOAD : FAR_LOAD;
+      const fg = toGo(u, f0 + j * ROW_STAGGER, f1 + j * ROW_STAGGER);
+      const lg = toGo(u, l0 + j * ROW_STAGGER, l1 + j * ROW_STAGGER);
+      // the pallets wait further out than the frames, so they come in behind them along the beams
+      f.position.set(near ? 0 : WAIT_X * fg, 0, near ? WAIT_Z * fg : 0);
+      l.position.set(near ? 0 : WAIT_X * lg * 1.5, 0, near ? WAIT_Z * lg * 1.5 : 0);
+      f.visible = fg < 0.999;
+      l.visible = lg < 0.999;
     });
     const place = (i: number, x: number, z: number, yaw: number, lift: number, roll: number) => {
       const g = gs.current[i];
@@ -384,11 +442,12 @@ export default function Warehouse({ clock }: SceneProps) {
       g.rotation.y = yaw;
       apiRefs[i].current?.set(lift, roll);
     };
-    const x1 = T1X(pos);
-    const x2 = T2X(pos);
-    const x3 = T3X(pos);
-    const x4 = T4X(pos);
-    const x5 = T5X(pos);
+    const w = truckWait(u);
+    const x1 = T1X(pos) + w;
+    const x2 = T2X(pos) + w;
+    const x3 = T3X(pos) + w;
+    const x4 = T4X(pos) + w;
+    const x5 = T5X(pos) + w;
     place(0, x1, AISLES[1], 0, 0, x1);
     place(1, x2, AISLES[0], Math.PI, 0, 158 - x2);
     place(2, x3, AISLES[2], 0, 0, x3);
@@ -401,15 +460,15 @@ export default function Warehouse({ clock }: SceneProps) {
       <Floor clock={clock} />
       <WarehouseRoof slopes={{ near: roofNear, far: roofFar }} />
       <group ref={inner}>
-        <Walls groupRef={walls} />
+        <Walls partRefs={walls} />
         <Door />
         {ROWS.map((z, i) => (
-          <Row key={z} z={z} index={i} group={(g) => (rows.current[i] = g)} />
+          <Row key={z} z={z} index={i} frame={(g) => (frames.current[i] = g)} load={(g) => (loads.current[i] = g)} />
         ))}
         <group ref={trucks}>
           <group ref={(g) => { gs.current[0] = g; }}>
             <Truck name="r16" apiRef={apiRefs[0]} />
-            <WireTruck clock={clock} name="r16" x={T1X} />
+            <WireTruck clock={clock} name="r16" x={T1X} wait={truckWait} />
           </group>
           <group ref={(g) => { gs.current[1] = g; }}>
             <Truck name="n20" load apiRef={apiRefs[1]} />

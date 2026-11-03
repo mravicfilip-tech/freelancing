@@ -55,7 +55,12 @@ const ANCHORING = FEEL >= 8;
 const GLIDING = FEEL === 9;
 const MAGNET = FEEL === 10;
 const DWELL = 1200;
-const RISE_AFTER = 250;
+const RISE_AFTER = 300;
+// On a trip a second gesture the same way carries the trip on past its anchor to the next one, so the story does not stop there (Filip
+// 3 November, "fix weak spot", a swipe on a four second trip did nothing). A gesture is new after QUEUE_GAP ms with no wheel event, a
+// second flick of a mouse, or on a rising delta, a trackpad swipe starting over. The trip may run no more than one anchor past the
+// next one ahead of the clock, so a burst of swipes plays the anchors one after the other and never throws the story to its end.
+const QUEUE_GAP = 200;
 // the shortest glide, in seconds, so a short hop does not twitch
 const GLIDE_MIN = 0.9;
 
@@ -68,18 +73,51 @@ let hold: number | null = null;
 let pass: number | null = null;
 let lastWheel = -Infinity;
 
-// The state of the anchors. trip is the story pixel the clock is on its way to and dir its direction, from the anchor it left. landed
-// is when the clock last reached its anchor, lastAbs the size of the last wheel delta and peak the largest since then.
+// The state of the anchors. trip is the story pixel the clock is on its way to and dir its direction. landed is when the clock last
+// reached its anchor and gestureAt when the gesture that set the trip began. lastAbs is the size of the last wheel delta and peak the
+// largest since landing.
 let trip: number | null = null;
 let dir = 0;
-let from = 0;
 let landed = -Infinity;
+let gestureAt = -Infinity;
 let lastAbs = 0;
 let peak = 0;
-// feel 9, the trip as a timed curve, story pixels and ticker seconds. feel 10, the direction the wheel last went, kept until a settle
-// starts from it.
-let glide: { from: number; to: number; t0: number; dur: number } | null = null;
+// feel 9, the trip as a curve from p0 at speed v0, story pixels a second, to p1 at rest, over dur ticker seconds from t0. A trip
+// carried on past its anchor starts its new curve at the speed the old one had, so it never slows at the anchor it passes. feel 10,
+// the direction the wheel last went, kept until a settle starts from it.
+type Glide = { p0: number; v0: number; p1: number; t0: number; dur: number };
+let glide: Glide | null = null;
 let magnetDir = 0;
+
+// Where a glide is and how fast it moves at ticker time, a cubic from p0 and v0 to p1 at rest.
+function glideAt(g: Glide, time: number) {
+  const t = Math.min(1, Math.max(0, (time - g.t0) / g.dur));
+  const t2 = t * t;
+  const t3 = t2 * t;
+  const pos = (2 * t3 - 3 * t2 + 1) * g.p0 + (t3 - 2 * t2 + t) * g.dur * g.v0 + (3 * t2 - 2 * t3) * g.p1;
+  const vel = ((6 * t2 - 6 * t) * g.p0 + (3 * t2 - 4 * t + 1) * g.dur * g.v0 + (6 * t - 6 * t2) * g.p1) / g.dur;
+  return { t, pos, vel };
+}
+
+// The anchors, the top of the story, its stops and its end, in story pixels.
+const anchorsOf = () => [0, ...lock!.stops, lock!.length];
+// The next anchor past pos in direction d.
+function anchorAfter(pos: number, d: number) {
+  const a = anchorsOf();
+  return d > 0 ? a.find((s) => s > pos + ZONE) : [...a].reverse().find((s) => s < pos - ZONE);
+}
+// The nearest anchor in direction d, the one the clock has just left included, where a trip turned back goes.
+function anchorBack(pos: number, d: number) {
+  const a = anchorsOf();
+  return d > 0 ? a.find((s) => s >= pos - ZONE) : [...a].reverse().find((s) => s <= pos + ZONE);
+}
+// The anchor a trip in direction d may be carried on to, one past the next anchor ahead of the clock at pos, or none.
+function anchorOn(pos: number, d: number) {
+  if (trip === null) return undefined;
+  const ahead = anchorAfter(pos, d);
+  if (ahead === undefined || Math.abs(trip - ahead) > ZONE) return undefined;
+  return anchorAfter(trip, d);
+}
 
 // Lenis asks this for every wheel event before it moves the scroll target. The part of the delta past the lead is dropped,
 // never queued, so when the hand stops the page stops within LEAD px of the clock. Inside the pin only, and the lock lets go
@@ -148,7 +186,7 @@ function holdWheel(data: VirtualScrollData) {
 
 // Feel 8. at is the clock and target the page's scroll target, both in page pixels.
 function anchorWheel(data: VirtualScrollData, d: number, at: number, target: number) {
-  const { st, length, stops } = lock!;
+  const { st } = lock!;
   const event = data.event;
   const now = performance.now();
   const gap = now - lastWheel;
@@ -165,40 +203,50 @@ function anchorWheel(data: VirtualScrollData, d: number, at: number, target: num
   }
   const pos = at - st.start;
   if (trip !== null) {
-    // on the way, a fresh gesture the other way turns back to the anchor the trip left, anything else is dropped
-    if (Math.sign(d) !== dir && (gap >= GAP || rising)) return go(data, from, trip, d, target, st.start, pos);
+    // on the way, a fresh gesture the other way turns back to the nearest anchor that way
+    if (Math.sign(d) !== dir && (gap >= GAP || rising)) {
+      const back = anchorBack(pos, d);
+      return back === undefined ? drop(event) : go(data, back, d, target, st.start, pos, false);
+    }
+    // a fresh gesture the same way carries the trip on to the next anchor, anything else is dropped
+    if (Math.sign(d) === dir && (gap >= QUEUE_GAP || (rising && now - gestureAt > RISE_AFTER))) {
+      const on = anchorOn(pos, dir);
+      if (on !== undefined) return go(data, on, d, target, st.start, pos, true);
+    }
     return drop(event);
   }
-  const fresh = gap >= GAP || (rising && now - landed > RISE_AFTER) || (steady && now - landed > DWELL);
+  const fresh = gap >= GAP || (rising && now - gestureAt > RISE_AFTER) || (steady && now - landed > DWELL);
   if (!fresh) return drop(event);
   // at the end of the story a fresh gesture down leaves it for the page below
   if (d > 0 && at >= st.end - 0.5) return true;
-  const anchors = [0, ...stops, length];
-  const next = d > 0 ? anchors.find((s) => s > pos + ZONE) : [...anchors].reverse().find((s) => s < pos - ZONE);
+  const next = anchorAfter(pos, d);
   if (next === undefined) return true;
-  return go(data, next, pos, d, target, st.start, pos);
+  return go(data, next, d, target, st.start, pos, false);
 }
 
-// Sets the trip to the anchor at story pixel to, leaving the one at story pixel leaving, by moving the page's scroll target
-// there. The clock follows the target at the feel's top speed, or along the glide in feel 9, see the tick below. clock is where
-// the clock is now, in story pixels.
-function go(data: VirtualScrollData, to: number, leaving: number, d: number, target: number, start: number, clock: number) {
+// Sets the trip to the anchor at story pixel to by moving the page's scroll target there. The clock follows the target at the feel's
+// top speed, or along the glide in feel 9, see the tick below. clock is where the clock is now, in story pixels, and carry keeps the
+// glide's speed, for a trip carried on past its anchor.
+function go(data: VirtualScrollData, to: number, d: number, target: number, start: number, clock: number, carry: boolean) {
   data.deltaY = start + to - target;
   if (data.deltaY === 0) return drop(data.event);
-  begin(to, leaving, d, clock);
+  begin(to, d, clock, carry);
   return true;
 }
 
-function begin(to: number, leaving: number, d: number, clock: number) {
+function begin(to: number, d: number, clock: number, carry: boolean) {
+  const now = gsap.ticker.time;
+  const v0 = carry && glide ? glideAt(glide, now).vel : 0;
   trip = to;
-  from = leaving;
   dir = Math.sign(d);
-  glide = GLIDING ? { from: clock, to, t0: gsap.ticker.time, dur: Math.max(GLIDE_MIN, Math.abs(to - clock) / FEEL_CAPS[FEEL]) } : null;
+  gestureAt = performance.now();
+  glide = GLIDING ? { p0: clock, v0, p1: to, t0: now, dur: Math.max(GLIDE_MIN, Math.abs(to - clock) / FEEL_CAPS[FEEL]) } : null;
 }
 
 // The keys of feels 8 to 10, the arrows, Page Up, Page Down and Space, Shift and Space going up. Inside the story they take the clock to
-// the next anchor, a key the other way on a trip turns it back. Outside it, or leaving it at either end, they scroll the page as always.
-// A key typed into a field, Space on a link or a button, and a key with a modifier are left alone.
+// the next anchor, a key the same way on a trip carries it on to the next one, a key the other way turns it back. A key held down
+// repeats only at rest. Outside the story, or leaving it at either end, they scroll the page as always. A key typed into a field, Space
+// on a link or a button, and a key with a modifier are left alone.
 function anchorKey(e: KeyboardEvent) {
   if (!lock || !lenis || e.defaultPrevented || e.altKey || e.ctrlKey || e.metaKey || !lock.stops.length) return;
   const el = e.target as HTMLElement | null;
@@ -209,25 +257,25 @@ function anchorKey(e: KeyboardEvent) {
   const d =
     e.key === 'ArrowDown' || e.key === 'PageDown' || (space && !e.shiftKey) ? 1 : e.key === 'ArrowUp' || e.key === 'PageUp' || (space && e.shiftKey) ? -1 : 0;
   if (!d) return;
-  const { st, progress, length, stops } = lock;
+  const { st, progress, length } = lock;
   const target = lenis.targetScroll;
   if (target > st.end + 0.5 || target < st.start - 0.5) return;
   const pos = progress.current * length;
   if ((d > 0 && pos >= length - 0.5) || (d < 0 && pos <= 0.5)) return;
   e.preventDefault();
   if (trip !== null) {
-    if (d !== dir) {
-      lenis.scrollTo(st.start + from);
-      begin(from, trip, d, pos);
+    const to = d !== dir ? anchorBack(pos, d) : e.repeat ? undefined : anchorOn(pos, d);
+    if (to !== undefined) {
+      lenis.scrollTo(st.start + to);
+      begin(to, d, pos, d === dir);
     }
     return;
   }
-  const anchors = [0, ...stops, length];
-  const next = d > 0 ? anchors.find((s) => s > pos + ZONE) : [...anchors].reverse().find((s) => s < pos - ZONE);
+  const next = anchorAfter(pos, d);
   if (next === undefined) return;
   magnetDir = 0;
   lenis.scrollTo(st.start + next);
-  begin(next, pos, d, pos);
+  begin(next, d, pos, false);
 }
 
 // Lenis lets the browser scroll on its own when it gets no delta, so the event is stopped here.
@@ -328,10 +376,10 @@ export function useScrollStory({ length, reduced, snap, smoothing = 0.08, restor
         if (Math.abs(raw.current - progress.current) < 0.00005) progress.current = raw.current;
         return;
       }
-      // feel 9, a trip runs on its curve, half a cosine, and the follow waits until it has landed
+      // feel 9, a trip runs on its curve, and the follow waits until it has landed
       if (GLIDING && glide) {
-        const t = clamp01((time - glide.t0) / glide.dur);
-        progress.current = (glide.from + (glide.to - glide.from) * (0.5 - 0.5 * Math.cos(Math.PI * t))) / length;
+        const { t, pos } = glideAt(glide, time);
+        progress.current = pos / length;
         if (t >= 1) {
           glide = trip = null;
           landed = performance.now();

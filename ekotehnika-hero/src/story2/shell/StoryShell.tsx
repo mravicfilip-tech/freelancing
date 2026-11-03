@@ -18,6 +18,7 @@ import { ATPane, C1Pane, NPane, NTPane, PPane, RPane, SPane, setTab, setTerm } f
 import { AfterStory } from './sections';
 import { COUNT_DONE, FILL_FROM, FILL_TO, HERO_SECONDS, WIPE_DONE, WIPE_SHARE, clamp01, formatCount, outCubic, range } from './motion';
 import { prepRise, setRise, type Rise } from './reveal';
+import { SLOW } from '../stops';
 import { forkBackFrom, forkBackTo, forkLiftFrom, forkLiftTopPx, forkPassesPx, forkTipPx } from '../scenes/sistem/forkTip';
 import { SMPane } from './map/ServisMap';
 import { INTRO_SKIP, introStart, markIntroStart } from '../scenes/sistem/intro';
@@ -60,6 +61,8 @@ const LEAVE_DEFAULT: [number, number] = [0.86, 1];
 // the hero block starts this long after the street does, as the road is drawing, and plays anyway after HERO_WAIT_MS
 const HERO_AFTER_MS = 350;
 const HERO_WAIT_MS = 10000;
+// story pixels between one hero part and the next, 60ms at the 120px the hero block takes for 1.6s
+const HERO_STEP_PX = (120 * 0.06) / HERO_SECONDS;
 // the beat that comes in behind the L fork's tip, see scenes/sistem/forkTip.ts
 const BEHIND_FORK = 'N';
 
@@ -71,13 +74,6 @@ const DARK_TOP: [number, number][] = [
 ];
 
 const HOLDS = TIMELINE.filter((b) => b.hold);
-
-// Beats whose text reveals over more of the hold than WIPE_DONE, by the factor given. C1's wipes and counts took about 144px of
-// scroll, one or two wheel ticks (Filip 2026-10-12, video round 4, "this animation is happening too fast"), so they run over
-// 0.36 of the hold, twice the old pace, which is 1.45 times the slower pace every beat has now.
-// S and its map take the same 250 to 300px for their text as the other holds, though S is 2000px long now.
-// N is 4,000px now and its text keeps the 375px it took when N was 900, the terms pane takes about 330px of its 1,920.
-const SLOW: Record<string, number> = { C1: 1.45, S: 0.5, SM: 0.9, ...(WAREHOUSE ? { N: 0.094, NT: 0.69 } : {}) };
 
 // The story's sections that have a link in the top nav, by the data-ch of that link, see HeroFrame.
 const CHAPTER: Record<string, string> = { prodaja: 'prodaja', servis: 'servis', najam: 'najam' };
@@ -288,7 +284,9 @@ export function StoryShell({ Scene, tone, reduced, darkLayers, darkTop = DARK_TO
         const slow = SLOW[G.id] ?? 1;
         const budget = isHero ? 120 : WIPE_DONE * slow * len;
         const dur = budget * WIPE_SHARE;
-        const stagger = (budget - dur) / G.maxOrder;
+        // The hero parts follow each other by HERO_STEP_PX, about 60ms of the hero's 1.6s, the same step as the lines inside a part
+        // (reveal.ts), so the top row and the hero text arrive as one move. A pane's parts share what is left of its budget.
+        const stagger = isHero ? HERO_STEP_PX : (budget - dur) / G.maxOrder;
         const ht = G.id === 'H' ? blockT : heroT;
         const u = isHero ? Math.max(ht * budget, (pos / len) * (budget / WIPE_DONE)) : pos - G.span.start;
         const k = isHero ? Math.max(k0, FILL_TO * ht) : k0;

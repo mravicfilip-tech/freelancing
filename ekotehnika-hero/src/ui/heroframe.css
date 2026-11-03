@@ -26,18 +26,11 @@
 
 /* ---- shared parts, the block wipe and the buttons, used by the shell as well ---- */
 
-/* The rise, in place of the block wipe Filip rejected on 2026-10-13, see story2/shell/reveal.ts. A part with text rises letter by
-   letter inside it. A part with none of its own, an icon, a button or a counting figure, rises whole, moved down by --wy and
-   clipped by the same amount at its bottom, so it comes up out of the mask of its own box. With no JS, which is reduced motion,
-   --wy is unset and every part shows. */
+/* The text arrival, round 7, see story2/shell/reveal.ts and the four looks under html[data-text] in shell.css. A part is one line
+   to the shell unless its text wraps, then each line arrives on its own. The box is let alone here, the looks clip where they need
+   to. With no JS, which is reduced motion, no data-text is set and every part shows. */
 [data-wipe] {
   position: relative;
-  overflow: hidden;
-}
-
-[data-wipe]:not([data-rise]) {
-  transform: translateY(var(--wy, 0%));
-  clip-path: inset(0 0 var(--wy, 0%) 0);
 }
 
 /* ---- buttons. One look for the whole site, the split with an icon cell and the border that draws on, cell 2D on the review

@@ -318,7 +318,8 @@ export function Forklift({ apiRef, paint = M.paint, lift = 0.1, children, ...gro
 }
 
 // A pallet with one taped carton, bottom at the origin. Slatted like a real Euro pallet.
-export function Pallet({ wrap = true, ...group }: { wrap?: boolean } & ThreeElements['group']) {
+// cartonRef is the carton's own group, so the preloader can hold the carton back while its own cartons settle onto the pallet (story2/scenes/sistem/loaderscene.tsx).
+export function Pallet({ wrap = true, cartonRef, ...group }: { wrap?: boolean; cartonRef?: MutableRefObject<THREE.Group | null> } & ThreeElements['group']) {
   return (
     <group {...group}>
       {[-0.42, 0, 0.42].map((z) => (
@@ -339,7 +340,7 @@ export function Pallet({ wrap = true, ...group }: { wrap?: boolean } & ThreeElem
         </mesh>
       ))}
       {wrap && (
-        <group position={[0, 0.14, 0]}>
+        <group position={[0, 0.14, 0]} ref={cartonRef}>
           <RoundedBox args={[1.08, 0.78, 0.86]} radius={0.025} position={[0, 0.39, 0]} material={M.card} castShadow receiveShadow />
           <mesh position={[0, 0.39, 0]} material={M.tape}>
             <boxGeometry args={[1.1, 0.79, 0.1]} />

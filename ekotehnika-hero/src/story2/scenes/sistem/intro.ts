@@ -39,10 +39,12 @@ export function markReveal(now: number) {
 
 // What the models and textures the scene asks for have got to, fed from drei's loading counter by the scene (sistem/index.tsx) and read by
 // the preloader. seen is true once the scene has asked for anything at all, before that a progress of 0 means nothing has started.
-export const assets = { progress: 0, active: false, seen: false };
+export const assets = { progress: 0, active: false, seen: false, loaded: 0, total: 0 };
 
-export function setAssets(progress: number, active: boolean, total: number) {
+export function setAssets(progress: number, active: boolean, total: number, loaded = 0) {
   assets.progress = progress;
   assets.active = active;
+  assets.loaded = loaded;
+  assets.total = total;
   if (total > 0) assets.seen = true;
 }

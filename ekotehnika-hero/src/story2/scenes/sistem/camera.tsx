@@ -11,6 +11,8 @@ import { focusAt, toWorld } from './atplan';
 import { HALL_Y, najamCam, najamT, type Cam } from './najamplan';
 import { NAJAM } from '../../preview';
 import { SWING } from './entry';
+import { loader } from './loader';
+import { loaderPose } from './loadercam';
 import { DARK_BG, PAPER, ease, isDark, lerp, range, rad, softTexture, uOf } from './kit';
 
 export type CamState = { target: THREE.Vector3; d: number; shadow: number };
@@ -223,6 +225,11 @@ export function Rig({ clock, state }: SceneProps & { state: React.MutableRefObje
   useFrame(() => {
     const u = uOf(clock);
     poseAt(u, clock.pos.current, pose, size.width, size.height);
+    // While a preloader plays, its own pose is laid over the hero's and blended back to it by the one move that hands the page over (loadercam.ts)
+    if (loader.live) {
+      loader.frames++;
+      if (loader.version > 0) loaderPose(pose);
+    }
     camera.position.copy(pose.pos);
     euler.set(rad(pose.pitch), rad(pose.yaw), 0);
     camera.quaternion.setFromEuler(euler);

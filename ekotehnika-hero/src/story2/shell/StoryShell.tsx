@@ -10,6 +10,8 @@ import { Component, Suspense, useEffect, useMemo, useRef, type ComponentType, ty
 import { stillClock, useStoryClock, type SceneProps } from '../clock';
 import { LENGTH, NAJAM_TERMS, N_LEAVE, N_PALLETS, SERVIS_MAP, TIMELINE, WAREHOUSE, type BeatSpan } from '../timeline';
 import { Preview } from './Preview';
+import { Fps } from './Fps';
+import { DEBUG_FPS, perf } from '../perf';
 import { HeroFrame } from '../../ui/HeroFrame';
 import { Grid, RULE_TOP, paintMarks, ruleMarks } from './Grid';
 import { ATPane, C1Pane, NPane, NTPane, PPane, RPane, SPane, setTab, setTerm } from './panes';
@@ -268,6 +270,7 @@ export function StoryShell({ Scene, tone, reduced, darkLayers, darkTop = DARK_TO
     let id = 0;
 
     const loop = () => {
+      const jsFrom = DEBUG_FPS ? performance.now() : 0;
       const pos = clock.pos.current;
       // the top row plays on real time from load. The hero block and the grid wait for the street to start building in, then
       // rise with it, so the text never stands finished on an empty white stage (round 5). If the scene has not drawn after
@@ -435,6 +438,7 @@ export function StoryShell({ Scene, tone, reduced, darkLayers, darkTop = DARK_TO
         lastGround = ground;
         sceneEl.style.background = ground;
       }
+      if (DEBUG_FPS) perf.shell.add(performance.now() - jsFrom);
       id = requestAnimationFrame(loop);
     };
     id = requestAnimationFrame(loop);
@@ -526,6 +530,7 @@ export function StoryShell({ Scene, tone, reduced, darkLayers, darkTop = DARK_TO
       </div>
       <AfterStory />
       <Preview clock={clock} />
+      <Fps />
     </div>
   );
 }

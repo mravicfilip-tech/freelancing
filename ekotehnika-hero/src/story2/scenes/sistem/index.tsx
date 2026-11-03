@@ -6,7 +6,7 @@
 // same picture. The one exception is the build in on load (props.tsx), timed from the first frame, which a frozen clock
 // and reduced motion skip.
 import { Suspense, useEffect, useRef, useState } from 'react';
-import { Canvas, useFrame, useThree } from '@react-three/fiber';
+import { Canvas, addEffect, useFrame, useThree } from '@react-three/fiber';
 import { Environment } from '@react-three/drei';
 import * as THREE from 'three';
 import { track } from '../../../story/scenes/sistem/tracks';
@@ -20,6 +20,7 @@ import { SPEC, Truck, type TruckApi } from './models';
 import { GROUND, uOf } from './kit';
 import Outdoor from './outdoor';
 import { introClock } from './props';
+import { DEBUG_FPS, perf } from '../../perf';
 import Overlay from './overlay';
 import Aisle from './aisle';
 import { routeAt, truckS } from './route';
@@ -207,11 +208,42 @@ function World({ clock }: SceneProps) {
   );
 }
 
+// The renderer's side of ?debug=fps (story2/perf.ts). R3F runs the frame's effects first, then every useFrame callback, then the one
+// gl.render call, so the gap from the effect to the call is the JS of the scene's useFrame work, and the call itself is the draw. After
+// the draw the renderer's own counters give the calls and triangles of the frame, shadow pass included. Nothing is wrapped without the
+// parameter.
+function Probe() {
+  const gl = useThree((s) => s.gl);
+  useEffect(() => {
+    if (!DEBUG_FPS) return;
+    let from = 0;
+    const off = addEffect(() => {
+      from = performance.now();
+    });
+    const draw = gl.render.bind(gl);
+    gl.render = (scene, camera) => {
+      const t = performance.now();
+      if (from) perf.scene.add(t - from);
+      draw(scene, camera);
+      perf.draw.add(performance.now() - t);
+      perf.calls = gl.info.render.calls;
+      perf.tris = gl.info.render.triangles;
+      perf.dpr = gl.getPixelRatio();
+    };
+    return () => {
+      off();
+      gl.render = draw;
+    };
+  }, [gl]);
+  return null;
+}
+
 export default function Scene({ clock }: SceneProps) {
   return (
     <div style={{ position: 'absolute', inset: 0, background: GROUND }} aria-hidden="true">
       <Canvas shadows="soft" dpr={[1, 1.5]} frameloop={clock.still ? 'demand' : 'always'} camera={{ fov: 28, near: 0.1, far: 280, position: [0, 2, 12] }} gl={{ antialias: true }}>
         <World clock={clock} />
+        <Probe />
       </Canvas>
     </div>
   );

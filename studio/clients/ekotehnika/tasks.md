@@ -25,6 +25,15 @@ Task format
 
 ## In progress
 
+- ekotehnika-15 Round 8, the preloader versions, Fade text, the term cards at the bottom, the floor arrows, a shorter start into the warehouse, detailed yard trucks. Notes in briefs/round8/notes.md
+  - [ ] Four preloader versions on the switcher
+  - [ ] Fade as the only text animation
+  - [ ] The term cards at the bottom of the left column, rules inside the column
+  - [ ] Clean lane arrows in Automatizacija
+  - [ ] Into the warehouse from where the racks already read
+  - [ ] Detailed trucks in the yard from above
+  - [ ] Filip picks a preloader
+
 - ekotehnika-14 Round 7, Filip's review of the whole site, loader, text animation, scroll, Prodaja into the warehouse, Najam and Automatizacija. Notes in briefs/round7/notes.md
   - [x] Transcribe Filip's 8 minute review and pull the frames he points at
   - [x] Preloader, four text animations, stops in the scroll, frame rate, the Prodaja corner cross

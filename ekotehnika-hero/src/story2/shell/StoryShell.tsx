@@ -8,7 +8,7 @@
 // With reduced motion there is no pin and no loop, each hold beat is a still screen with every part at its end state.
 import { Component, Suspense, useEffect, useMemo, useRef, type ComponentType, type CSSProperties, type ReactNode } from 'react';
 import { stillClock, useStoryClock, type SceneProps } from '../clock';
-import { LENGTH, NAJAM_TERMS, N_LEAVE, N_PALLETS, SERVIS_MAP, TIMELINE, WAREHOUSE, type BeatSpan } from '../timeline';
+import { LENGTH, NAJAM_TERMS, N_LEAVE, N_PALLETS, N_SUB, SERVIS_MAP, TIMELINE, WAREHOUSE, type BeatSpan } from '../timeline';
 import { Preview } from './Preview';
 import { Fps } from './Fps';
 import { DEBUG_FPS, perf } from '../perf';
@@ -136,6 +136,8 @@ type Group = {
   fills: { el: HTMLElement; letters: HTMLElement[]; on: number }[];
   // the plus marks at this group's block rules, drawn into .s2-plus
   wrap: HTMLElement | null;
+  // a ground under the grid lines that comes and goes with the group, Najam's frosted band only, see .n-ground in shell.css
+  ground: HTMLElement | null;
   tabs: HTMLElement | null;
   terms: HTMLElement | null;
   persistent: boolean;
@@ -166,6 +168,7 @@ function collect(id: string, el: HTMLElement, span: BeatSpan, opts: Partial<Grou
     wipes,
     fills,
     wrap: null,
+    ground: null,
     tabs: el.querySelector<HTMLElement>('.s2-p'),
     terms: el.querySelector<HTMLElement>('.s2-nt'),
     persistent: false,
@@ -215,6 +218,8 @@ export function StoryShell({ Scene, tone, reduced, darkLayers, darkTop = DARK_TO
       const span = el.dataset.layer === 'SM' ? SERVIS_MAP : el.dataset.layer === 'NT' ? NAJAM_TERMS : TIMELINE.find((b) => b.id === el.dataset.layer)!;
       groups.push(collect(span.id, el, span, { leave: LEAVE[span.id] ?? LEAVE_DEFAULT }));
     });
+    const nGround = stage.querySelector<HTMLElement>('.n-ground');
+    for (const G of groups) if (G.id === 'N') G.ground = nGround;
     // each group draws the plus marks at its own block rules into a wrapper of its own, shown with the group
     for (const G of groups) {
       if (G.persistent) continue;
@@ -313,6 +318,7 @@ export function StoryShell({ Scene, tone, reduced, darkLayers, darkTop = DARK_TO
         if (G.id === BEHIND_FORK && cut !== G.el.style.clipPath) {
           G.el.style.clipPath = cut;
           if (G.wrap) G.wrap.style.clipPath = cut;
+          if (G.ground) G.ground.style.clipPath = cut;
         }
         const vis = on ? 'v' : 'h';
         if (vis !== G.el.dataset.vis) {
@@ -320,6 +326,7 @@ export function StoryShell({ Scene, tone, reduced, darkLayers, darkTop = DARK_TO
           G.el.style.visibility = on ? 'visible' : 'hidden';
           G.el.style.setProperty('--lv', on ? 'visible' : 'hidden');
           if (G.wrap) G.wrap.style.visibility = on ? 'visible' : 'hidden';
+          if (G.ground) G.ground.style.visibility = on ? 'visible' : 'hidden';
           // Prodaja shows no model while its beat is off screen, so the first one comes in again next time. A model the
           // visitor picked stays picked, and is hidden with its pane, see .p-fig in shell.css.
           if (!on && G.id === 'P' && G.tabs && !G.tabs.hasAttribute('data-pick')) setTab(G.tabs, -1);
@@ -367,8 +374,10 @@ export function StoryShell({ Scene, tone, reduced, darkLayers, darkTop = DARK_TO
             }
           }
         }
-        // scroll fill, letter by letter
-        const f = range(k, FILL_FROM, FILL_TO);
+        // scroll fill, letter by letter. Najam's line fills by the end of N1, where the clock stops for its words. At FILL_TO of its
+        // 4,640px it was a quarter inked at the first Najam stop and half at the second (the client's ticket of 3 November, "Nije
+        // pregledno").
+        const f = WAREHOUSE && G.id === 'N' ? range(k, FILL_FROM * (SLOW.N ?? 1), N_SUB.N1[1]) : range(k, FILL_FROM, FILL_TO);
         for (const F of G.fills) {
           const n = Math.round(f * F.letters.length);
           if (n !== F.on) {
@@ -528,6 +537,7 @@ export function StoryShell({ Scene, tone, reduced, darkLayers, darkTop = DARK_TO
         <div className="s2-scene" aria-hidden="true">
           {mountScene(Scene, clock)}
         </div>
+        {WAREHOUSE ? <div className="n-ground" aria-hidden="true" style={{ visibility: 'hidden' }} /> : null}
         <Grid rootRef={gridRef} />
         {LAYERS.map((l) => (
           <section className="s2-layer" data-layer={l.id} data-ink={ink(tone, isDark(l))} key={l.id} style={{ visibility: 'hidden', '--lv': 'hidden' } as CSSProperties}>

@@ -25,6 +25,18 @@ Task format
 
 ## In progress
 
+- ekotehnika-17 Client tickets of 3 November, copy for Prodaja, Automatizacija, Kompanija and the hero, Najam scroll back and readability, the footer logo, a scroll with anchors. Notes in briefs/round9/notes.md
+  - [x] Prodaja button, Posetite prodavnicu
+  - [x] Automatizacija title, line and three facts
+  - [x] Kompanija title without 1997
+  - [x] Hero partner line and "na jednom mestu" gone
+  - [x] Scrolling back up from Najam works on a trackpad
+  - [x] Najam words on a frosted band, the line fills by the first stop
+  - [x] Footer with the Ekotehnika logo only
+  - [x] Feel 8 Anchors on the switcher
+  - [ ] Filip looks at the preview, picks Stops or Anchors
+  - [ ] Production on Filip's ship line, then the ekotehnika repo push
+
 - ekotehnika-16 UX Fix Lokacija, the servis centres' addresses open Google Maps and the second centre gets its real address and number, the client's ticket of 3 November
   - [x] Both addresses open Google Maps in a new tab
   - [x] The second centre reads Čuruška 45, Žabalj, +381 63 950 444

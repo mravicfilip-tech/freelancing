@@ -8,7 +8,8 @@
 // ?feel=0 is the old per frame follow with no cap. ?feel=1, 2 and 3 cap the clock at 1500, 2500 and 4000 story px a
 // second. ?feel=4, 5 and 6 cap it at 900, 1300 and 1800 and also lock the page to it, see holdWheel below. ?feel=7 is 5
 // with stops, a point in each section where its words have arrived, at which the clock waits while the wheel is still being
-// turned (round 7, Filip's "us skipping content is not what we want"). No parameter means 7. The parameter is read once, when
+// turned (round 7, Filip's "us skipping content is not what we want"). ?feel=8 carries the clock from anchor to anchor, one gesture
+// a trip, see ANCHORING. No parameter means 7. The parameter is read once, when
 // the module loads, by story2/preview.ts, which also holds the panel's way back, a page that a switch reloaded lands on the
 // frame it left (restore below).
 //
@@ -24,7 +25,7 @@ gsap.registerPlugin(ScrollTrigger);
 
 let lenis: Lenis | null = null;
 
-const FEEL_CAPS = [0, 1500, 2500, 4000, 900, 1300, 1800, 1300];
+const FEEL_CAPS = [0, 1500, 2500, 4000, 900, 1300, 1800, 1300, 1800];
 // Feels 4 to 7 hold the page to the story clock, the wheel can put the page's scroll target no more than LEAD px ahead of
 // the clock or behind it. Pin px and story px are 1 to 1.
 const LOCKED = FEEL >= 4;
@@ -36,6 +37,16 @@ const STOPPING = FEEL === 7;
 const ZONE = 4;
 const GAP = 350;
 
+// Feel 8, anchors, the client's ticket of 3 November, "Testirati scroll sa anchorima". The anchors are the stops, with the top and the
+// end of the story. One gesture carries the clock to the next anchor in its direction at the feel's top speed, so every frame on the
+// way still plays, and the wheel is dropped on the way. A gesture the other way turns the trip back. At the anchor the next gesture
+// starts after GAP ms of quiet, on a rising delta, the hand starting over while a trackpad still coasts, or after DWELL ms there of
+// a wheel turning steadily, so no device is ever held at an anchor for good. A swipe dying down is never steady, so one swipe makes
+// one trip.
+const ANCHORING = FEEL === 8;
+const DWELL = 1200;
+const RISE_AFTER = 250;
+
 // What the lock looks at, the pinned story that is on the page now, and the story pixels it stops at.
 let lock: { st: ScrollTrigger; progress: { current: number }; length: number; jumpUntil: { current: number }; stops: number[] } | null = null;
 
@@ -44,6 +55,15 @@ let lock: { st: ScrollTrigger; progress: { current: number }; length: number; ju
 let hold: number | null = null;
 let pass: number | null = null;
 let lastWheel = -Infinity;
+
+// The state of the anchors. trip is the story pixel the clock is on its way to and dir its direction, from the anchor it left. landed
+// is when the clock last reached its anchor, lastAbs the size of the last wheel delta and peak the largest since then.
+let trip: number | null = null;
+let dir = 0;
+let from = 0;
+let landed = -Infinity;
+let lastAbs = 0;
+let peak = 0;
 
 // Lenis asks this for every wheel event before it moves the scroll target. The part of the delta past the lead is dropped,
 // never queued, so when the hand stops the page stops within LEAD px of the clock. Inside the pin only, and the lock lets go
@@ -55,7 +75,7 @@ function holdWheel(data: VirtualScrollData) {
   const d = data.deltaY;
   if (d === 0 || gsap.ticker.time <= lock.jumpUntil.current) {
     // a jump from goTo ignores the stops and lets the next gesture start clean
-    hold = pass = null;
+    hold = pass = trip = null;
     return true;
   }
   const { st, progress, length, stops } = lock;
@@ -64,7 +84,14 @@ function holdWheel(data: VirtualScrollData) {
   let next = target + d;
   if (d > 0 && at < st.end - 0.5) next = Math.min(next, Math.max(at + LEAD, target));
   else if (d < 0 && at > st.start + 0.5) next = Math.max(next, Math.min(at - LEAD, target));
-  if (STOPPING && stops.length) {
+  if (ANCHORING && stops.length) return anchorWheel(data, d, at, target);
+  if (STOPPING && stops.length && d < 0) {
+    // Going back up the stops do not hold, the words above have been read. A trackpad that keeps coasting never leaves the GAP of
+    // quiet a stop waits for, so it held the page at the first Najam stop for good, the client's ticket of 3 November, "Ne može
+    // se skrolovati nazad iz ove sekcije".
+    lastWheel = performance.now();
+    hold = pass = null;
+  } else if (STOPPING && stops.length) {
     const now = performance.now();
     const gap = now - lastWheel;
     lastWheel = now;
@@ -87,6 +114,50 @@ function holdWheel(data: VirtualScrollData) {
   }
   if (next === target) return drop(event);
   data.deltaY = next - target;
+  return true;
+}
+
+// Feel 8. at is the clock and target the page's scroll target, both in page pixels.
+function anchorWheel(data: VirtualScrollData, d: number, at: number, target: number) {
+  const { st, length, stops } = lock!;
+  const event = data.event;
+  const now = performance.now();
+  const gap = now - lastWheel;
+  const abs = Math.abs(d);
+  const rising = abs > lastAbs * 1.3 + 2;
+  peak = Math.max(peak, abs);
+  const steady = abs > 2 && abs >= peak * 0.7;
+  lastWheel = now;
+  lastAbs = abs;
+  // past the end of the story the page scrolls freely, and on the way back up it comes to rest on the end
+  if (target > st.end + 0.5) {
+    if (d < 0) data.deltaY = Math.max(d, st.end - target);
+    return true;
+  }
+  const pos = at - st.start;
+  if (trip !== null) {
+    // on the way, a fresh gesture the other way turns back to the anchor the trip left, anything else is dropped
+    if (Math.sign(d) !== dir && (gap >= GAP || rising)) return go(data, from, trip, d, target, st.start);
+    return drop(event);
+  }
+  const fresh = gap >= GAP || (rising && now - landed > RISE_AFTER) || (steady && now - landed > DWELL);
+  if (!fresh) return drop(event);
+  // at the end of the story a fresh gesture down leaves it for the page below
+  if (d > 0 && at >= st.end - 0.5) return true;
+  const anchors = [0, ...stops, length];
+  const next = d > 0 ? anchors.find((s) => s > pos + ZONE) : [...anchors].reverse().find((s) => s < pos - ZONE);
+  if (next === undefined) return true;
+  return go(data, next, pos, d, target, st.start);
+}
+
+// Sets the trip to the anchor at story pixel to, leaving the one at story pixel leaving, by moving the page's scroll target
+// there. The clock follows the target at the feel's top speed, see the tick below.
+function go(data: VirtualScrollData, to: number, leaving: number, d: number, target: number, start: number) {
+  data.deltaY = start + to - target;
+  if (data.deltaY === 0) return drop(data.event);
+  trip = to;
+  from = leaving;
+  dir = Math.sign(d);
   return true;
 }
 
@@ -162,7 +233,7 @@ export function useScrollStory({ length, reduced, snap, smoothing = 0.08, restor
       });
     }, stage);
     if (stRef.current) lock = { st: stRef.current, progress, length, jumpUntil, stops: stops ?? [] };
-    hold = pass = null;
+    hold = pass = trip = null;
     // a reload from the panel lands on the frame it left, straight there, the clock and the page scroll both
     if (restore !== null && stRef.current) {
       const st = stRef.current;
@@ -200,6 +271,12 @@ export function useScrollStory({ length, reduced, snap, smoothing = 0.08, restor
       }
       progress.current += step;
       if (Math.abs(goal - progress.current) < 0.00005) progress.current = goal;
+      // feel 8, the clock has caught up with the page's target, the trip is over and the clock is on its anchor
+      if (ANCHORING && trip !== null && Math.abs(goal - progress.current) * length <= ZONE) {
+        trip = null;
+        landed = performance.now();
+        peak = 0;
+      }
     };
     gsap.ticker.add(tick);
     document.fonts?.ready.then(() => ScrollTrigger.refresh());
@@ -220,7 +297,7 @@ export function useScrollStory({ length, reduced, snap, smoothing = 0.08, restor
     }
     const y = st.start + (st.end - st.start) * p;
     jumpUntil.current = gsap.ticker.time + JUMP_HOLD;
-    hold = pass = null;
+    hold = pass = trip = null;
     if (lenis) lenis.scrollTo(y, { duration: 1.4 });
     else window.scrollTo({ top: y, behavior: 'smooth' });
   };

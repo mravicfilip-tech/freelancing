@@ -350,8 +350,8 @@ export function Footer() {
       <div className="sx-row sx-r2">
         <RowLines xs={[1, 3, 4, 5]} />
         <div className="sx-c sx-brand" style={{ gridColumn: '1 / 7' }}>
+          {/* the Ekotehnika logo only, Filip 3 November, "footer leave only ekotehnika logo" */}
           <a className="sx-logos" href={`${SITE}/`}>
-            <img src="/brand/linde-mh.svg" width={160} height={96} alt="Linde Material Handling" />
             <img src="/brand/ekotehnika.svg" width={160} height={33} alt="Ekotehnika, početna strana" />
           </a>
         </div>

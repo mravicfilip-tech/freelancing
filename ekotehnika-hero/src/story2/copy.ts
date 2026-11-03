@@ -28,16 +28,16 @@ export const frame = {
 };
 
 export const hero2 = {
-  marker: hero.kicker,
-  // Two lines of the brief headline, the first at display size and the second as the lede under it.
+  // Two lines of the brief headline, the first at display size and the second as the lede under it. The lede ends at servis, the
+  // client's ticket of 3 November struck "na jednom mestu". The Linde partner line over the title is gone by the same ticket.
   title: hero.headline[0],
-  lede: hero.headline[1],
+  lede: 'Prodaja, najam i servis.',
   quote: hero.quote,
 };
 
 export const kompanija = {
   c1: {
-    title: ['Od 1997. na terenu', 'širom Srbije.'], // dummy, built from the trust strip
+    title: ['Logistička i', 'intralogistička rešenja'], // the client's ticket of 3 November, "Repeticija 1997", 1997 is the first figure
     text: 'Zvanični Linde partner za Srbiju i Crnu Goru, sa servisnim vozilima širom Srbije.', // trust strip and kicker
     facts: [
       { figure: '1997', label: 'Godina osnivanja' }, // analysis, founded 1997 as a repair shop, label dummy
@@ -64,7 +64,7 @@ export const kompanija = {
 export const prodaja = {
   title: ['Prodaja Linde', 'viljuškara'], // dummy
   text: '96 Linde modela, ponuda po vašoj meri.', // pillars, novi
-  cta: { label: pillars[0].cta, href: pillars[0].href } satisfies Cta,
+  cta: { label: 'Posetite prodavnicu', href: pillars[0].href } satisfies Cta, // the client's ticket of 3 November, to the models on ekotehnika.rs
   callouts: ['Raspon modela', 'Nosivost', 'Na slici'], // dummy
   tabs: [
     {
@@ -175,13 +175,14 @@ export const najam = {
 };
 
 export const automatizacija = {
-  title: ['Automatizacija', 'skladišta'], // dummy
-  text: 'Mali roboti nose kutije, a vi radite posao.', // dummy, the offer line until Ekotehnika gives the real one
+  // the client's copy, ticket of 3 November, "Copy Fix Sekcija"
+  title: ['Automatizacija', 'bez kompromisa'],
+  text: 'Autonomni roboti preuzimaju transport robe, smanjuju rutinski rad i ubrzavaju skladišne procese.',
   cta: { label: hero.quote.label, href: hero.quote.href } satisfies Cta,
   facts: [
-    { figure: 'Non-stop', label: 'Rad bez pauze' }, // dummy, no invented figure
-    { figure: 'Palete', label: 'Prevoz po skladištu' }, // dummy
-    { figure: 'Kutije', label: 'Do mesta isporuke' }, // dummy
+    { figure: '24/7', label: 'Rad bez pauze' },
+    { figure: 'Bez vozača', label: 'Automatski transport' },
+    { figure: 'Efikasnost', label: 'Konstantan rad skladišta' },
   ] satisfies Fact[],
 };
 

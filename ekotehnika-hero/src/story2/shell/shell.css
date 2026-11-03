@@ -866,6 +866,22 @@ html:root [data-wipe]:not([data-rise]):not([data-done]) {
   top: 376px;
 }
 
+/* Najam's words stand on a frosted band, the client's ticket of 3 November, "Nije pregledno, rešiti možda nekom transparentnom
+   blurovanom pozadinom". It runs the stage's width from the top rule to the foot of the fact row, 136px to 544px, the hall
+   blurred behind it and lightened, under the grid lines so they stay sharp. The shell shows it and cuts it behind the fork with
+   the Najam words, see ground in StoryShell. */
+.n-ground {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 136px;
+  height: 408px;
+  pointer-events: none;
+  background: rgb(255 255 255 / 0.72);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+}
+
 /* Every spec row, N, C1 and AT, has a 20px solid icon above each figure and a 40px figure, for a clearer order. --cap is where
    the cap top of the figure sits under its box top, so the gap from the icon to the cap top is exactly 32px. The stack gap of
    6px is in the sum. */

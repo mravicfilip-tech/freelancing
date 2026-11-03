@@ -183,10 +183,11 @@ function World({ clock }: SceneProps) {
         </Place>
       )}
       {/* Najam 0 is production's, the grid of forklifts from the cut under the L curtain to the end of T. Najam 2 is the warehouse of
-          najam.tsx, from the cut to the end of T where it sinks into the floor, and the grid set is not shown in it at all */}
+          najam.tsx, from the cut on. It stays through AT, since its hall is the hall the automation aisle stands in, and the grid set is
+          not shown in it at all */}
       {WAREHOUSE ? (
-        need(11, 13) && (
-          <Place clock={clock} from={11.5} to={14.0}>
+        need(11, 14) && (
+          <Place clock={clock} from={11.5} to={15.1}>
             <Najam clock={clock} />
           </Place>
         )

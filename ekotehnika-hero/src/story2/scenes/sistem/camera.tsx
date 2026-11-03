@@ -8,7 +8,7 @@ import { track } from '../../../story/scenes/sistem/tracks';
 import type { SceneProps } from '../../clock';
 import { BP, NP, WH_C, routeAt, truckS, AISLES } from './route';
 import { focusAt, toWorld } from './atplan';
-import { najamCam, type Cam } from './najamplan';
+import { HALL_Y, najamCam, najamT, type Cam } from './najamplan';
 import { NAJAM } from '../../preview';
 import { DARK_BG, PAPER, ease, isDark, lerp, range, rad, softTexture, uOf } from './kit';
 
@@ -63,6 +63,7 @@ export type Pose = { pos: THREE.Vector3; yaw: number; pitch: number; sx: number;
 
 const tmp = { t: new THREE.Vector3(), p0: new THREE.Vector3() };
 const najamPose: Cam = { x: 0, y: 0, z: 0, d: 0, yaw: 0, pitch: 0, sx: 0, sy: 0, shadow: 0, fov: 28 };
+const najamEnd: Cam = { x: 0, y: 0, z: 0, d: 0, yaw: 0, pitch: 0, sx: 0, sy: 0, shadow: 0, fov: 28 };
 
 export function poseAt(u: number, pos: number, out: Pose, w = 1920, h = 1080): Pose {
   const n = nShift(w, h);
@@ -162,24 +163,41 @@ export function poseAt(u: number, pos: number, out: Pose, w = 1920, h = 1080): P
   } else {
     // T and AT. The depot camera glides down the aisle to about 4 m and then follows the order, three quarter view, the
     // robot in columns 7 to 12, the left half of the frame is the hall's own floor and end wall. Najam 0 starts from the pose of its
-    // rental floor and Najam 2 from the high view the hall ended on, the move into the aisle is all of T in one, the hall sinking
-    // into its floor as the walls and racks of the aisle rise out of it, see najam.tsx and aisle.tsx.
+    // rental floor and glides there. Najam 2 starts from the high view the hall ended on and T is one move on one lens, down to the roof light
+    // over the dock end, through it and down to the dock end of the aisle, najamT in najamplan.ts. The hall stays where it is, the aisle's
+    // floor, racks and robots are the hall's inside from there on, 1.2 m up on the hall's platform, see najam.tsx and aisle.tsx.
     const k = Math.min(Math.max(u - 14, 0), 1);
     const f = focusAt(k);
     const [fx, , fz] = toWorld(f.a, f.b);
-    let e: number;
-    let from: Pose;
-    if (NAJAM === 0) {
-      e = ease(range(u, 13.1, 14.0));
-      from = { pos: tmp.p0, yaw: 90, pitch: -24, sx: n.sx, sy: n.sy, target: tmp.t.set(NP.x - 0.5, 0.9, 0), d: n.d, shadow: 18, fov: 28 };
-      out.d = lerp(from.d, AT_D, e);
-    } else {
-      e = ease(range(u, 13.0, 14.0));
-      const c = najamCam(13, najamPose);
-      from = { pos: tmp.p0, yaw: c.yaw, pitch: c.pitch, sx: c.sx, sy: c.sy, target: tmp.t.set(NP.x + c.x, c.y, NP.z + c.z), d: c.d, shadow: c.shadow, fov: c.fov };
-      // the fall from 118 m to 12 m runs on the logarithm of the distance, so its last half is not a few frames
-      out.d = Math.exp(lerp(Math.log(from.d), Math.log(AT_D), e));
+    if (NAJAM !== 0) {
+      out.yaw = lerp(AT_YAW[0], AT_YAW[1], ease(k));
+      if (u < 14) {
+        // the lens, shift and light of the aisle at k 0, in hall metres, which is where the move ends
+        const end = Object.assign(najamEnd, { x: -f.a, y: 0.8, z: -f.b, d: AT_D, yaw: AT_YAW[0], pitch: AT_PITCH, sx: AT_SX, sy: 0.02, shadow: 14, fov: 28 });
+        const c = najamT(range(u, 13, 14), end, najamPose);
+        t.set(NP.x + c.x, c.y, NP.z + c.z);
+        out.d = c.d;
+        out.yaw = c.yaw;
+        out.pitch = c.pitch;
+        out.sx = c.sx;
+        out.sy = c.sy;
+        out.shadow = c.shadow;
+        out.fov = c.fov;
+      } else {
+        t.set(fx, 0.8 + HALL_Y, fz);
+        out.d = AT_D;
+        out.pitch = AT_PITCH;
+        out.sx = AT_SX;
+        out.sy = 0.02;
+        out.shadow = 14;
+        out.fov = 28;
+      }
+      orbit(t, out.d, out.yaw, out.pitch, out.pos);
+      return out;
     }
+    const e = ease(range(u, 13.1, 14.0));
+    const from: Pose = { pos: tmp.p0, yaw: 90, pitch: -24, sx: n.sx, sy: n.sy, target: tmp.t.set(NP.x - 0.5, 0.9, 0), d: n.d, shadow: 18, fov: 28 };
+    out.d = lerp(from.d, AT_D, e);
     out.yaw = lerp(from.yaw, lerp(AT_YAW[0], AT_YAW[1], ease(k)), e);
     out.pitch = lerp(from.pitch, AT_PITCH, e);
     t.set(lerp(from.target.x, fx, e), lerp(from.target.y, 0.8, e), lerp(from.target.z, fz, e));

@@ -4,6 +4,7 @@
 // groups that fold back against the sides and swing shut, and its own pallets inside, so a forklift drives in from the dock. The tractor is a cab
 // over in light grey. The plan that places them and works out the angle between them is najamdock.ts.
 import { useMemo, type MutableRefObject, type ReactNode } from 'react';
+import { useThree } from '@react-three/fiber';
 import * as THREE from 'three';
 import { mergeGeometries } from 'three/examples/jsm/utils/BufferGeometryUtils.js';
 import { BRAND, K, brandPaths, brandView } from './kit';
@@ -15,6 +16,10 @@ export const BED = 1.2;
 export const TRAILER_L = 9.8;
 export const AXLE_X = 3.7;
 export const PIVOT_X = 8.5;
+// The near side of the trailer is a curtain that rolls up behind the roof line. It slides up CURTAIN_UP, the height of the panel and a little over, and
+// the part above the roof line, 3.95 m, is clipped away, so it is never squashed, it only goes in behind the roof as a shutter does.
+export const CURTAIN_UP = 2.9;
+const ROOF_LINE = 3.95;
 
 export type LorryApi = { trailer: THREE.Group; tractor: THREE.Group; doorA: THREE.Group; doorB: THREE.Group; curtain: THREE.Group };
 
@@ -146,13 +151,28 @@ function build() {
 
 // One long side of a trailer, its panel, its ribs and the wordmark on the outside of the ribs, the logo reading from left to right as seen from
 // outside. The near side (z out of the trailer is +z) hangs from the front end so it can draw back, the far side from the rear turned half a turn.
+// The clip and the materials of the curtain, clones of the side's own with the one plane that cuts what has rolled above the roof line
+const curtainClip = [new THREE.Plane(new THREE.Vector3(0, -1, 0), ROOF_LINE)];
+let curtainMats: { white: THREE.Material; ribs: THREE.Material; logo: THREE.Material } | undefined;
+function curtain() {
+  if (curtainMats) return curtainMats;
+  const clip = <M extends THREE.Material>(m: M) => {
+    const c = m.clone() as M;
+    c.clippingPlanes = curtainClip;
+    return c;
+  };
+  curtainMats = { white: clip(trailerWhite), ribs: clip(beamFlange), logo: clip(logo().mat) };
+  return curtainMats;
+}
+
 function TrailerSide({ b, front = false, group }: { b: ReturnType<typeof build>; front?: boolean; group?: (o: THREE.Group | null) => void }) {
   const l = logo();
+  const m = front ? curtain() : { white: trailerWhite, ribs: beamFlange, logo: l.mat };
   return (
     <group ref={group} position={front ? [TRAILER_L, 0, 1.27] : [0, 0, -1.27]} rotation={[0, front ? 0 : Math.PI, 0]}>
-      <mesh geometry={b.side} material={trailerWhite} receiveShadow />
-      <mesh geometry={b.sideRibs} material={beamFlange} />
-      <mesh geometry={l.geo} material={l.mat} position={[-TRAILER_L / 2, 2.6, 0.062]} renderOrder={2} />
+      <mesh geometry={b.side} material={m.white} receiveShadow />
+      <mesh geometry={b.sideRibs} material={m.ribs} />
+      <mesh geometry={l.geo} material={m.logo} position={[-TRAILER_L / 2, 2.6, 0.062]} renderOrder={2} />
     </group>
   );
 }
@@ -168,6 +188,8 @@ const Door = ({ g }: { g: (o: THREE.Group | null) => void }) => {
 };
 
 export function Lorry({ apiRef, children }: { apiRef: MutableRefObject<LorryApi | null>; children?: ReactNode }) {
+  // the clip plane of the curtain needs the renderer to allow clipping planes on a material
+  useThree((st) => (st.gl.localClippingEnabled = true));
   const b = useMemo(() => (built ??= build()), []);
   const parts = useMemo(() => ({ trailer: null as THREE.Group | null, tractor: null as THREE.Group | null, doorA: null as THREE.Group | null, doorB: null as THREE.Group | null, curtain: null as THREE.Group | null }), []);
   const sync = () => {

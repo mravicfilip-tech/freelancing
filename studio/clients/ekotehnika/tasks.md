@@ -36,7 +36,7 @@ Task format
   - [x] Three preloaders built from the site's own models, cartons and racks
   - [x] Najam 2 the default, Scroll 4 to 7 kept, all three loaders kept, Filip 3 November
   - [x] Ekotehnika repo updated and a Vercel preview made on the project ekotehnika
-  - [ ] Production on ekotehnika.vercel.app, the agent deploy was blocked, Filip promotes the preview
+  - [x] On production at https://ekotehnika.vercel.app, the preview promoted on Filip's "send to produciton", 3 November
   - [ ] Filip picks a preloader
 
 - ekotehnika-14 Round 7, Filip's review of the whole site, loader, text animation, scroll, Prodaja into the warehouse, Najam and Automatizacija. Notes in briefs/round7/notes.md

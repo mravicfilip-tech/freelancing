@@ -26,9 +26,9 @@
 
 /* ---- shared parts, the block wipe and the buttons, used by the shell as well ---- */
 
-/* The text arrival, round 7, see story2/shell/reveal.ts and the four looks under html[data-text] in shell.css. A part is one line
-   to the shell unless its text wraps, then each line arrives on its own. The box is let alone here, the looks clip where they need
-   to. With no JS, which is reduced motion, no data-text is set and every part shows. */
+/* The text arrival, see story2/shell/reveal.ts and the Fade look in shell.css. A part is one line to the shell unless its text wraps,
+   then each line arrives on its own. The box is let alone here. With no JS, which is reduced motion, no --tp is set and every part
+   shows. */
 [data-wipe] {
   position: relative;
 }

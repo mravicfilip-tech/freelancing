@@ -411,56 +411,19 @@
   color: var(--fg);
 }
 
-/* The text arrival, round 7, see reveal.ts. A part with text is split into words, each in a mask .rl around a box .rc, and the shell sets
-   --tp, 0 to 1, on every .rc of a line together, so a line arrives as one piece. A part with none of its own, an icon, a button or a
-   counting figure, takes --tp on itself. data-text on the root picks one of four looks, and data-done on a part, set when its arrival
-   has finished, lifts the look off it for good. With no JS every part shows its end state. */
-[data-rise] .rl {
-  display: inline;
-}
-
+/* The text arrival, see reveal.ts. A part with text is split into words, each in a box .rc, and the shell sets --tp, 0 to 1, on every .rc
+   of a line together, so a line arrives as one piece. A part with none of its own, an icon, a button or a counting figure, takes --tp on
+   itself. Fade is the one look (Filip, round 8, "Use 01 Fade animation"), each line fades in while it drifts up 12px, and data-done on a
+   part, set when its arrival has finished, lifts the look off it for good. With no JS no --tp is set and every part shows its end state.
+   html:root keeps the weight the look had when it sat under html[data-text], so no rule of a button or a title outbids it. */
 [data-rise] .rc {
   display: inline-block;
 }
 
-/* 1 Fade, each line fades in while it drifts up 12px */
-html[data-text='1'] [data-wipe]:not([data-done]) .rc,
-html[data-text='1'] [data-wipe]:not([data-rise]):not([data-done]) {
+html:root [data-wipe]:not([data-done]) .rc,
+html:root [data-wipe]:not([data-rise]):not([data-done]) {
   opacity: var(--tp, 1);
   transform: translateY(calc((1 - var(--tp, 1)) * 12px));
-}
-
-/* 2 Line mask, each whole line slides up out of a mask of its own. The mask clips at its box, the padding gives carons and descenders
-   room, and the same words sit in the same places as the plain text. A part with no text slides up out of the mask of its box. */
-html[data-text='2'] [data-rise] .rl {
-  display: inline-block;
-  white-space: nowrap;
-  overflow: clip;
-  padding: 0.1em 0.04em 0.16em 0;
-  margin: -0.1em -0.04em -0.16em 0;
-}
-
-html[data-text='2'] [data-wipe]:not([data-done]) .rc {
-  transform: translateY(calc((1 - var(--tp, 1)) * (100% + 0.3em)));
-}
-
-html[data-text='2'] [data-wipe]:not([data-rise]):not([data-done]) {
-  transform: translateY(calc((1 - var(--tp, 1)) * 100%));
-  clip-path: inset(0 0 calc((1 - var(--tp, 1)) * 100%) 0);
-}
-
-/* 3 Blur, each line goes from 8px of blur and no opacity to sharp */
-html[data-text='3'] [data-wipe]:not([data-done]) .rc,
-html[data-text='3'] [data-wipe]:not([data-rise]):not([data-done]) {
-  opacity: var(--tp, 1);
-  filter: blur(calc((1 - var(--tp, 1)) * 8px));
-}
-
-/* 4 Wipe, each line is uncovered by a clip running left to right. --tp of a word is the share of it the front has passed. The clip is
-   taller than the box so no ascender or descender is cut. */
-html[data-text='4'] [data-wipe]:not([data-done]) .rc,
-html[data-text='4'] [data-wipe]:not([data-rise]):not([data-done]) {
-  clip-path: inset(-0.3em calc((1 - var(--tp, 1)) * 100%) -0.3em 0);
 }
 
 /* ---- data rows, A6 ---- */

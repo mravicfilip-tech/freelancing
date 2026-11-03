@@ -29,6 +29,7 @@ Task format
   - [x] Baseline shots of all 14 pages at 1440
   - [x] Connect the Google Sheets and Google Drive connectors on claude.ai
   - [x] Log the 5 baseline flags in the sheet as rows 1 to 5
+  - [x] Log the hero, problem section and team size rows, 6 to 20
   - [ ] Get the site repo added to the session
   - [ ] Read the team's comments in the review sheet
   - [ ] Fix each comment and mark its row done or not done

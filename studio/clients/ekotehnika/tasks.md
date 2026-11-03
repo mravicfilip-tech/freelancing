@@ -37,6 +37,8 @@ Task format
   - [x] Najam 2 the default, Scroll 4 to 7 kept, all three loaders kept, Filip 3 November
   - [x] Ekotehnika repo updated and a Vercel preview made on the project ekotehnika
   - [x] On production at https://ekotehnika.vercel.app, the preview promoted on Filip's "send to produciton", 3 November
+  - [x] The floating box at the Automatizacija pick station fixed, preview https://ekotehnika-jz5f5ely6-filip-mravic-s-projects.vercel.app
+  - [ ] Production still has the floating box build, the promote of the fix waits on Filip's word
   - [ ] Filip picks a preloader
 
 - ekotehnika-14 Round 7, Filip's review of the whole site, loader, text animation, scroll, Prodaja into the warehouse, Najam and Automatizacija. Notes in briefs/round7/notes.md

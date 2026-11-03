@@ -34,6 +34,7 @@ Task format
   - [x] Najam words on a frosted band, the line fills by the first stop
   - [x] Footer with the Ekotehnika logo only
   - [x] Feel 8 Anchors on the switcher
+  - [x] Anchors at a third of the speed, 600 story px a second, Filip 3 November
   - [ ] Filip looks at the preview, picks Stops or Anchors
   - [ ] Production on Filip's ship line, then the ekotehnika repo push
 

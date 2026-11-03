@@ -25,7 +25,8 @@ gsap.registerPlugin(ScrollTrigger);
 
 let lenis: Lenis | null = null;
 
-const FEEL_CAPS = [0, 1500, 2500, 4000, 900, 1300, 1800, 1300, 1800];
+// Feel 8 travels at 600, a third of the 1800 it had, Filip 3 November, "reduce the scroll speed between anchors by like 300%".
+const FEEL_CAPS = [0, 1500, 2500, 4000, 900, 1300, 1800, 1300, 600];
 // Feels 4 to 7 hold the page to the story clock, the wheel can put the page's scroll target no more than LEAD px ahead of
 // the clock or behind it. Pin px and story px are 1 to 1.
 const LOCKED = FEEL >= 4;

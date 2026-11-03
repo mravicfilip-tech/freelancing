@@ -427,6 +427,7 @@ export default function Aisle({ clock }: SceneProps) {
   }, [hlMat]);
 
   const pickPos = useMemo(() => new THREE.Vector3(), []);
+  const boxWorld = useMemo(() => new THREE.Vector3(), []);
   const tmp = useMemo(() => ({ v: new THREE.Vector3(), w: new THREE.Vector3(), c: new THREE.Vector3(), t: new THREE.Vector3(), s: new THREE.Vector3(), q: new THREE.Quaternion(), r: new THREE.Quaternion(), flip: new THREE.Quaternion().setFromAxisAngle(new THREE.Vector3(0, 1, 0), PI) }), []);
 
   useLayoutEffect(() => {
@@ -568,13 +569,17 @@ export default function Aisle({ clock }: SceneProps) {
       // the box in the person's frame, on the unit, pulled to the chest, then down onto the cart
       const inHands = tmp.c.copy(HOLD).lerp(SET, set);
       const held = pg.localToWorld(tmp.w.copy(inHands));
-      box.position.copy(onUnit).lerp(held, pull);
+      // The box's place is worked out in the world, and the box lives in the aisle's root, which stands HALL_Y up inside the
+      // Najam hall, so it is brought into the root's frame or it floats that far over the unit and the cart (Filip, round 8).
+      boxWorld.copy(onUnit).lerp(held, pull);
+      box.position.copy(boxWorld);
+      box.parent?.worldToLocal(box.position);
       tmp.q.copy(au.getWorldQuaternion(tmp.q));
       tmp.r.copy(pg.getWorldQuaternion(tmp.r)).multiply(tmp.flip);
       box.quaternion.copy(tmp.q).slerp(tmp.r, pull);
       box.visible = rise > 0.002 && (au.visible || pull > 0);
       // the hands hold the two sides of the box on its near half, or hang
-      const local = pg.worldToLocal(tmp.t.copy(box.position));
+      const local = pg.worldToLocal(tmp.t.copy(boxWorld));
       [1, -1].forEach((side, i) => {
         const s = tmp.s.copy(ARM.shoulder);
         s.z *= side;

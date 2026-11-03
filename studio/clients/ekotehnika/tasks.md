@@ -26,9 +26,9 @@ Task format
 ## In progress
 
 - ekotehnika-15 Round 8, the preloader versions, Fade text, the term cards at the bottom, the floor arrows, a shorter start into the warehouse, detailed yard trucks. Notes in briefs/round8/notes.md
-  - [ ] Four preloader versions on the switcher
-  - [ ] Fade as the only text animation
-  - [ ] The term cards at the bottom of the left column, rules inside the column
+  - [x] Four preloader versions on the switcher
+  - [x] Fade as the only text animation
+  - [x] The term cards at the bottom of the left column, rules inside the column
   - [x] Clean lane arrows in Automatizacija
   - [x] Into the warehouse from where the racks already read
   - [x] Detailed trucks in the yard from above

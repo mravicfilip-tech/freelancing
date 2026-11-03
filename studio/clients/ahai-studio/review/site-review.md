@@ -12,8 +12,8 @@ Claude reads the sheet, fixes what it can, and marks each row done or not done.
 | What | State on 2026-11-03 |
 |---|---|
 | Live site | Reachable from a cloud session, all 14 pages return 200 |
-| Review sheet | Not readable or writable yet. It needs the Google Sheets connector on claude.ai |
-| Drive folders | Not readable yet. They need the Google Drive connector |
+| Review sheet | Connected through the Google Sheets connector. Sheet AHAI Website QA, tab QA. Columns ID, Page, Section, Issue, Screenshots, Priority (Urgent, Mid, Low), Status (Seen, In progress, Done), Comment |
+| Drive folders | The Google Drive connector is connected, folders not opened yet |
 | Site source code | Unknown repo. Not in Filip's GitHub list and not in his Vercel team, so fixes need the repo added |
 
 ## Pages
@@ -39,7 +39,11 @@ Baseline shots taken 2026-11-03 at 1440 wide, desktop only since the client READ
 
 ## First flags from the baseline
 
-Seen while taking the baseline, before the team's comments. Not a full review.
+Seen while taking the baseline, before the team's comments. Not a full review. Written to the sheet as rows 1 to 5
+on 2026-11-03, status Seen.
+
+- Bracketed placeholder text shows on all 14 pages, 3 to 17 per page.
+- The Process placeholders run to week 8 while the offer promises launch in six weeks.
 
 - The case study pages for Karrier One and Alpha Neural show bracketed placeholder text to visitors, such as "[What this cost them before the project".
 - Karrier One, Alpha Neural and CONF3RENCE were done through AKKA Studio, per Serg's note, yet they read as AHAI work, and AKKA appears in "Teams we've designed for" as if it were a client. The offer says work is credited to whoever did it.

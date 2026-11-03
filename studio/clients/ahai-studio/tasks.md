@@ -27,7 +27,8 @@ Task format
 
 - ahai-studio-2 AHAI website review. Live site https://akaistudioagg.vercel.app. Log in `review/site-review.md`
   - [x] Baseline shots of all 14 pages at 1440
-  - [ ] Connect the Google Sheets and Google Drive connectors on claude.ai
+  - [x] Connect the Google Sheets and Google Drive connectors on claude.ai
+  - [x] Log the 5 baseline flags in the sheet as rows 1 to 5
   - [ ] Get the site repo added to the session
   - [ ] Read the team's comments in the review sheet
   - [ ] Fix each comment and mark its row done or not done

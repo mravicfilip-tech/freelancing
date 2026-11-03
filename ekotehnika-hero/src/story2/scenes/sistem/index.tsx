@@ -211,12 +211,20 @@ function World({ clock }: SceneProps) {
 // The renderer's side of ?debug=fps (story2/perf.ts). R3F runs the frame's effects first, then every useFrame callback, then the one
 // gl.render call, so the gap from the effect to the call is the JS of the scene's useFrame work, and the call itself is the draw. After
 // the draw the renderer's own counters give the calls and triangles of the frame, shadow pass included. Nothing is wrapped without the
-// parameter.
-function Probe() {
+// parameter. A frozen clock draws on demand, so with the parameter it also asks for a frame every frame, and a shot of one beat then
+// measures the same work a scrolled page does there.
+function Probe({ clock }: SceneProps) {
   const gl = useThree((s) => s.gl);
+  const invalidate = useThree((s) => s.invalidate);
   useEffect(() => {
     if (!DEBUG_FPS) return;
     let from = 0;
+    let id = 0;
+    const again = () => {
+      invalidate();
+      id = requestAnimationFrame(again);
+    };
+    if (clock.still) id = requestAnimationFrame(again);
     const off = addEffect(() => {
       from = performance.now();
     });
@@ -232,9 +240,10 @@ function Probe() {
     };
     return () => {
       off();
+      cancelAnimationFrame(id);
       gl.render = draw;
     };
-  }, [gl]);
+  }, [gl, invalidate, clock]);
   return null;
 }
 
@@ -243,7 +252,7 @@ export default function Scene({ clock }: SceneProps) {
     <div style={{ position: 'absolute', inset: 0, background: GROUND }} aria-hidden="true">
       <Canvas shadows="soft" dpr={[1, 1.5]} frameloop={clock.still ? 'demand' : 'always'} camera={{ fov: 28, near: 0.1, far: 280, position: [0, 2, 12] }} gl={{ antialias: true }}>
         <World clock={clock} />
-        <Probe />
+        <Probe clock={clock} />
       </Canvas>
     </div>
   );

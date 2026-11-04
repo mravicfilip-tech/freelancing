@@ -10,3 +10,4 @@ Notes queue. Each note is written here as it comes, no code is touched, and the 
 | 4 | "Make sure the scrolling experience smoother, right now we're either skipping the animations or rushing past content" | none | Planned, lines 4 and 5 |
 | 5 | "Make sure we make this A GIGA BLAST experience on mobile" | none | Planned, line 6 |
 | 6 | "Don't make things transparently blurred, it needs to be pure white" | none | Planned, line 3 |
+| 7 | "Things that are too cramped", three marked screenshots, Kompanija's facts, the Najam sheet, the servis centres | refs not filed, shown in chat | Done, facts as rows, centres side by side, Najam over its two stops |

@@ -29,7 +29,7 @@ Task format
   - [x] Shoot what a phone gets today, every screen breaks at 390
   - [x] Three ways weighed, the same live story reframed picked
   - [x] Filip answers, "yes, go with defaults, start with hero and kompanija", 4 November. Test phones and the deadline still open
-  - [ ] The hero and Kompanija on a tall screen, the top row at the Linde minimum, a bar at the foot, the words on a sheet, tall camera poses, the Kutija loader shot
+  - [x] The hero and Kompanija on a tall screen, the top row at the Linde minimum, a bar at the foot, the words on a sheet that grows to fit, tall camera poses, the Kutija loader shot
   - [x] A swipe moves one anchor on a touch screen, the page holds still under the finger, a sideways swipe and a tap do nothing
   - [ ] One beat on a real phone, the hero and Kompanija
   - [ ] Prodaja, then the rest of the beats and the sections after the story
@@ -47,7 +47,7 @@ Task format
   - [x] Anchors at a third of the speed, 600 story px a second, Filip 3 November
   - [x] Keys go anchor to anchor, 9 Glide and 10 Magnet on the switcher
   - [x] A second swipe the same way on a trip carries on to the next anchor, one queued at most
-  - [ ] Filip picks 8, 9 or 10
+  - [x] Filip picks 6 Lock fast and 3 Kutija, the switcher removed, 4 November
   - [ ] Filip looks at the preview, picks Stops or Anchors
   - [x] Production on Filip's "send all of this production", the preview promoted and the ekotehnika repo pushed, 3 November
   - [x] The Najam band's blur, lost by the minifier on production, fixed on a preview

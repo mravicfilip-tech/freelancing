@@ -1017,47 +1017,6 @@ html:root [data-wipe]:not([data-rise]):not([data-done]) {
   }
 }
 
-/* ---- the preview panel, localhost only, see shell/Preview.tsx ---- */
-.pv {
-  position: fixed;
-  right: 16px;
-  bottom: 16px;
-  z-index: 9999;
-  display: grid;
-  grid-template-columns: auto auto;
-  align-items: center;
-  gap: 8px 12px;
-  padding: 8px 12px;
-  background: var(--white);
-  border: 1px solid var(--ink);
-  color: var(--ink);
-  font: 500 14px/20px var(--font);
-}
-
-.pv-row {
-  display: flex;
-  gap: 4px;
-}
-
-.pv button {
-  min-width: 28px;
-  height: 28px;
-  padding: 0 8px;
-  border: 1px solid var(--line);
-  border-radius: 0;
-  background: var(--white);
-  color: var(--ink);
-  font: inherit;
-  cursor: pointer;
-  box-shadow: none;
-}
-
-.pv button[aria-pressed='true'] {
-  background: var(--ink);
-  border-color: var(--ink);
-  color: var(--white);
-}
-
 /* ---- the frame readout of ?debug=fps, see Fps.tsx. Review chrome, it never shows without the parameter ---- */
 .fps {
   position: fixed;
@@ -1235,12 +1194,6 @@ html:root [data-wipe]:not([data-rise]):not([data-done]) {
   .s2-r .rlist .line {
     font-size: 14px;
     line-height: 20px;
-  }
-
-  /* review chrome on the dev server, kept above the bar */
-  .pv {
-    right: 8px;
-    bottom: 72px;
   }
 }
 

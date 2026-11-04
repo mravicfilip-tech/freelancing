@@ -28,6 +28,7 @@ import './trip.css';
 import { TextColumn } from './TextColumn';
 import { TapStory } from './TapStory';
 import { MSCROLL } from '../preview';
+import { isTall } from '../tall';
 
 export type Tone = 'light' | 'dark';
 
@@ -57,6 +58,9 @@ const LAYERS: LayerDef[] = [
 // S hands the black stage to the servis map in one cut half way through its 2000px, the map holds to the fork's dock.
 // N shows today's text until the camera of the flight in has started across the yard, 50px of leave, see N_LEAVE in timeline.ts, and the
 // terms pane takes the screen when the camera stands inside, which then holds to the end of N.
+// the fork's beat, L, which a phone crosses with a fade to white
+const L_SPAN = TIMELINE.find((b) => b.id === 'L')!;
+
 // Najam's span and the point between its first two stops where a tall screen changes from its title, line and button to its facts
 const N_SPLIT = (() => {
   const n = TIMELINE.find((b) => b.id === 'N')!;
@@ -266,7 +270,8 @@ export function StoryShell({ Scene, tone, reduced, darkLayers, darkTop = DARK_TO
       const sr = stage.getBoundingClientRect();
       for (const G of groups)
         if (G.id === BEHIND_FORK)
-          for (const W of G.wipes) W.at = forkPassesPx(W.el.getBoundingClientRect().left - sr.left, stage.clientWidth, stage.clientHeight);
+          for (const W of G.wipes)
+            W.at = isTall(stage.clientWidth, stage.clientHeight) ? NaN : forkPassesPx(W.el.getBoundingClientRect().left - sr.left, stage.clientWidth, stage.clientHeight);
       placeBar();
     };
     measure();
@@ -279,6 +284,7 @@ export function StoryShell({ Scene, tone, reduced, darkLayers, darkTop = DARK_TO
     let lastGround = '';
     let lastPast = false;
     let lastNsub = '';
+    let lastVvb = -1;
     let lastGrid = -1;
     let smK = -1;
     let id = 0;
@@ -286,6 +292,19 @@ export function StoryShell({ Scene, tone, reduced, darkLayers, darkTop = DARK_TO
     const loop = () => {
       const jsFrom = DEBUG_FPS ? performance.now() : 0;
       const pos = clock.pos.current;
+      const tallNow = isTall(stage.clientWidth, stage.clientHeight);
+      // On a phone the stage is the tallest the screen gets (100lvh) and the pin holds that height, so when the browser shows its own bars the
+      // stage runs on under them. --vvb is how far, and every words sheet stands that much higher, so it always sits on the bar (Filip, 4 November,
+      // "sections like 2nd screenshot should always be hugging bottom").
+      if (tallNow) {
+        const vv = window.visualViewport;
+        const seen = vv ? vv.offsetTop + vv.height : window.innerHeight;
+        const gap = Math.max(0, Math.round(stage.getBoundingClientRect().bottom - seen));
+        if (gap !== lastVvb) {
+          lastVvb = gap;
+          stage.style.setProperty('--vvb', `${gap}px`);
+        }
+      }
       // The top row, the hero block and the grid play on real time from the moment the preloader lets go (Preloader.tsx), the same moment
       // the scene's build in is timed from, so the buttons, the text and the street arrive as one move and the text never stands finished
       // on an empty white stage (round 5), nor starts before the page is shown (round 7). If the preloader has not let go after
@@ -323,8 +342,9 @@ export function StoryShell({ Scene, tone, reduced, darkLayers, darkTop = DARK_TO
         if (G.id === 'H' && s0 === Infinity) on = false;
         // Najam turns on as the fork starts backing out of L, cut at the blade's tip, so it draws on behind the steel and no frame
         // is an empty page (round 5, Filip's note 3). Its layout is unchanged.
-        const behind = G.id === BEHIND_FORK && pos >= forkBackFrom && pos < forkBackTo;
-        if (G.id === BEHIND_FORK && pos >= forkBackFrom && k < 0) on = true;
+        // a phone has no fork, so Najam comes in on its own k and is not cut at a tip (overlay.tsx)
+        const behind = !tallNow && G.id === BEHIND_FORK && pos >= forkBackFrom && pos < forkBackTo;
+        if (!tallNow && G.id === BEHIND_FORK && pos >= forkBackFrom && k < 0) on = true;
         const cut = behind ? `inset(0 0 0 ${Math.max(0, forkTipPx(pos, stage.clientWidth, stage.clientHeight)).toFixed(1)}px)` : '';
         if (G.id === BEHIND_FORK && cut !== G.el.style.clipPath) {
           G.el.style.clipPath = cut;
@@ -356,8 +376,12 @@ export function StoryShell({ Scene, tone, reduced, darkLayers, darkTop = DARK_TO
             smK = kk;
             G.el.style.setProperty('--k', (kk / 10000).toFixed(4));
           }
+          // a phone has no fork to lift the map away, so the map and its words fade out with the white the scene fades to (overlay.tsx)
+          const op = tallNow && pos >= L_SPAN.start ? 1 - outCubic(range((pos - L_SPAN.start) / (L_SPAN.end - L_SPAN.start), 0.2, 0.45)) : 1;
+          const ops = op >= 1 ? '' : op.toFixed(3);
+          if (G.el.style.opacity !== ops) G.el.style.opacity = ops;
           const h = stage.clientHeight;
-          const load = pos >= forkLiftFrom;
+          const load = !tallNow && pos >= forkLiftFrom;
           const push = load ? Math.min(0, forkLiftTopPx(pos, h) - h) : 0;
           const shift = push ? `translateY(${push.toFixed(1)}px)` : '';
           const pane = G.el.firstElementChild as HTMLElement | null;

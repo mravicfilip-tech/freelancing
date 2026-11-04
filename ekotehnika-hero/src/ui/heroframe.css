@@ -857,7 +857,8 @@
      goes with the hero words. ---- */
   .hf-bottom {
     top: 56%;
-    bottom: 64px;
+    /* --vvb, how far the stage runs on under the browser's own bars, so the hero block always sits on the bar (StoryShell) */
+    bottom: calc(64px + var(--vvb, 0px));
     left: 0;
     right: 0;
     width: auto;

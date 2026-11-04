@@ -330,12 +330,21 @@ export default function Overlay({ clock }: SceneProps) {
     const settle = 16 / size.height;
     const yEdge = k < 0.5 ? lerp(-1.8, dock, ease(range(k, 0, 0.5))) : dock - settle * ease(range(k, 0.5, 0.56));
     if (forkRef.current) {
-      forkRef.current.visible = u >= 11 && k < 0.9;
+      forkRef.current.visible = !tall && u >= 11 && k < 0.9;
       forkRef.current.position.set(forkX(k, size.width, size.height) + ox * near, (yEdge + oy) * near, 0.02);
     }
     // The light ground the tine lifted. Once the tine backs out its right edge is cut at the blade's tip, so Najam's world comes
     // in behind the tip and the frame is never one plain page. It sits 0.01 behind the masks, so its x is scaled out by as much.
-    if (curtain.current) {
+    // A phone has no fork (Filip, 4 November, "remove scene from the fist screenshot, dont need that on mobile"). A white ground fades in over the
+    // servis frame and out over Najam's, and the cut between their worlds at 11.52 falls while it covers the whole frame.
+    if (curtain.current && tall) {
+      const o = ease(range(k, 0.2, 0.45)) * (1 - ease(range(k, 0.6, 0.85)));
+      curtain.current.visible = u >= 11 && u < 12 && o > 0.001;
+      (curtain.current.material as THREE.MeshBasicMaterial).opacity = o;
+      curtain.current.scale.x = 2 * aspect + 1;
+      curtain.current.position.set(ox, 1.2 - 5 + oy, -0.01);
+    } else if (curtain.current) {
+      (curtain.current.material as THREE.MeshBasicMaterial).opacity = 1;
       const left = -aspect - 0.5;
       const right = k < BACK_FROM ? aspect + 0.5 : ((forkX(k, size.width, size.height) + 3.462) / near) * (1 + 0.01 * TAN);
       curtain.current.visible = u >= 11 && k < BACK_TO + 0.02 && right > left;

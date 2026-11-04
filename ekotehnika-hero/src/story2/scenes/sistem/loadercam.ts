@@ -5,17 +5,20 @@
 // never cuts across a corner. A gentle parallax follows the mouse and fades out as the move starts, nothing in it blocks the page.
 import type { Pose } from './camera';
 import { BAY, loader } from './loader';
-import { lerp, rad } from './kit';
+import { ease, lerp, rad, range } from './kit';
 import { TALL, isTall } from '../../tall';
 
 // The tall screen's framing, shared with camera.tsx. The lens is 28 degrees vertical, so a frame a metres wide per metre high sees a*T2 metres
 // across per metre of distance, and T2 high. fitD is the distance at which a subject ws metres across fills 80 percent of the width and hs
 // metres high fills the band between the logo row and the sheet, whichever of the two asks for more. It is a pure function of the stage size.
 const T2 = 2 * Math.tan(rad(14));
-export const fitD = (ws: number, hs: number, w: number, h: number) => {
-  const band = (TALL.sheet * h - TALL.top) / h;
+export const fitD = (ws: number, hs: number, w: number, h: number, top: number = TALL.top) => {
+  const band = (TALL.sheet * h - top) / h;
   return Math.max(ws / (0.8 * T2 * (w / h)), hs / (band * T2));
 };
+/** Where the band for the subject starts, in px from the top. The row of logos is TALL.top high on the first screen and slides away as the story
+ * leaves the hero, so the band eases up to TALL.topStory across the start of D1, u 1.0 to 1.15. The hero and the Kutija loader keep the row. */
+export const bandTop = (u: number) => lerp(TALL.top, TALL.topStory, ease(range(u, 1.0, 1.15)));
 /** The lens shift that puts the middle of the subject at TALL.subject of the stage height, a share of the height, negative is up. */
 export const TALL_SY = TALL.subject - 0.5;
 

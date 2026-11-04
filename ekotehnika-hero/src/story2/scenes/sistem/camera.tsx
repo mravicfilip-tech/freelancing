@@ -12,7 +12,7 @@ import { HALL_Y, najamCam, najamT, type Cam } from './najamplan';
 import { NAJAM } from '../../preview';
 import { SWING } from './entry';
 import { loader } from './loader';
-import { fitD, loaderPose } from './loadercam';
+import { bandTop, fitD, loaderPose } from './loadercam';
 import { TALL, isTall } from '../../tall';
 import { DARK_BG, PAPER, ease, isDark, lerp, range, rad, softTexture, uOf } from './kit';
 
@@ -56,16 +56,40 @@ const T2T = 2 * Math.tan(rad(14));
 function tallOutdoor(u: number, rpx: number, rpz: number, out: Pose, w: number, h: number) {
   out.target.set(rpx + TO_OX(u), TO_OY(u), rpz);
   const bottom = Math.min(TALL.sheet * h, h - TALL.bar - TO_SHEET(u));
-  const band = Math.max(bottom - TALL.top, 1) / h;
-  out.d = Math.max(fitD(TO_W(u), TO_H(u), w, h), TO_H(u) / (band * T2T));
+  // past the hero the row of logos is gone and the band starts higher, bandTop. The subjects of D1 to R grow a tenth with it, so they use the room.
+  const top = bandTop(u);
+  const fit = lerp(1, 0.9, ease(range(u, 1.0, 1.15)));
+  const band = Math.max(bottom - top, 1) / h;
+  out.d = Math.max(fitD(TO_W(u) * fit, TO_H(u) * fit, w, h, top), (TO_H(u) * fit) / (band * T2T));
   out.yaw = O_YAW(u);
   out.pitch = O_PITCH(u);
   out.sx = 0;
-  const side = (TALL.top + bottom) / 2 / h - 0.5;
-  const td = (TALL.top + 8) / h + BACK / (2 * Math.tan(rad(14)) * out.d) - 0.5;
+  const side = (top + bottom) / 2 / h - 0.5;
+  const td = (top + 8 + 16 * (1 - top / TALL.top)) / h + BACK / (2 * Math.tan(rad(14)) * out.d) - 0.5;
   out.sy = lerp(side, td, TO_TD(u));
   out.shadow = u < 4 ? 9 : u < 5 ? 22 : 30;
 }
+
+// The tall frame past the hero, u 1.15 on. The band runs from the top edge to the sheet, and the subject of a beat stands in the middle of it, so the
+// lens shift is sy and sx is 0. tallD is the distance at which a subject ws metres across and hs metres up fills 85 percent of the width and 92 percent
+// of the band, whichever asks for more. Najam and the aisle keep their own camera and only widen the lens, tallFov, so the camera stays on the path
+// through the door and the roof light and never ends outside a wall.
+const tallBandOf = (_w: number, h: number) => {
+  const bottom = Math.min(TALL.sheet * h, h - TALL.bar);
+  return { sy: (TALL.topStory + bottom) / 2 / h - 0.5, band: (bottom - TALL.topStory) / h };
+};
+const tallD = (ws: number, hs: number, w: number, h: number) => Math.max(ws / (0.85 * T2T * (w / h)), hs / (0.92 * tallBandOf(w, h).band * T2T));
+// The hall seen from above, 18 m across, and the forklift in the aisle seen from the side, about 3.6 m by 3.6 m with its forks.
+const hallD = (w: number, h: number) => tallD(18, 0, w, h);
+const aisleD = (w: number, h: number) => tallD(3.6, 3.6, w, h);
+// the forklift seen from behind is 1.8 m across and 3.6 m high
+const BEHIND = 1.8;
+const tallFov = (fov: number, k: number) => (2 * Math.atan(Math.tan(rad(fov / 2)) * k)) / rad(1);
+const K_NAJAM = 2.2;
+const K_AT = 1.8;
+const tallK = (u: number) => lerp(K_NAJAM, K_AT, ease(range(u, 13, 14)));
+// the X50 schematic with its dimension lines, about 6.5 m across and 4.5 m up
+const xD = (w: number, h: number) => tallD(6.5, 4.5, w, h);
 
 const A_YAW = track([[8, ISO_YAW], [8.3, 0], [8.5, 0], [8.75, 90], [10, 90]]);
 const A_PITCH = track([[8, ISO_PITCH], [8.3, -10], [8.5, -9], [8.75, -3], [9, -3], [10, -1]]);
@@ -136,7 +160,11 @@ export function poseAt(u: number, pos: number, out: Pose, w = 1920, h = 1080): P
     let d0 = 56;
     let sx0 = 0.22;
     let sy0 = -0.12;
+    let d1 = 20;
+    let sy1 = 0;
     if (isTall(w, h)) {
+      d1 = hallD(w, h);
+      sy1 = tallBandOf(w, h).sy;
       tallOutdoor(6, rp.x, rp.z, out, w, h);
       x0 = t.x;
       y0 = t.y;
@@ -145,11 +173,11 @@ export function poseAt(u: number, pos: number, out: Pose, w = 1920, h = 1080): P
       sy0 = out.sy;
     }
     t.set(lerp(x0, WH_C.x, e), lerp(y0, 0, e), lerp(rp.z, WH_C.z, e));
-    out.d = lerp(d0, 20, e);
+    out.d = lerp(d0, d1, e);
     out.yaw = 90;
     out.pitch = -90;
     out.sx = lerp(sx0, 0, e);
-    out.sy = lerp(sy0, 0, e);
+    out.sy = lerp(sy0, sy1, e);
     out.shadow = 45;
     orbit(t, out.d, out.yaw, out.pitch, out.pos);
   } else if (u < 8.5) {
@@ -162,6 +190,10 @@ export function poseAt(u: number, pos: number, out: Pose, w = 1920, h = 1080): P
     const x1 = T1X(pos);
     t.set(lerp(WH_C.x, x1 + 0.4, e), lerp(0, 1.3, e), lerp(WH_C.z, AISLES[1], e));
     out.d = lerp(20, 13, e);
+    if (isTall(w, h)) {
+      out.d = lerp(hallD(w, h), aisleD(w, h), e);
+      out.sy = tallBandOf(w, h).sy;
+    }
     out.yaw = lerp(90, 0, ease(range(u, 7.1, 7.7)));
     out.pitch = lerp(-90, A_PITCH(8.5), e);
     out.shadow = lerp(45, 14, e);
@@ -171,10 +203,14 @@ export function poseAt(u: number, pos: number, out: Pose, w = 1920, h = 1080): P
     out.shadow = 14;
     // free flight, out along the side, round the end of the aisle and in
     t.set(x1 + 0.4, 1.3, AISLES[1]);
-    orbit(t, 13, 0, A_PITCH(8.5), tmp.p0);
+    const tall = isTall(w, h);
+    orbit(t, tall ? aisleD(w, h) : 13, 0, A_PITCH(8.5), tmp.p0);
     const e = ease(range(u, 8.5, 8.75));
     const endX = 176;
-    const x = u < 8.75 ? lerp(tmp.p0.x, endX, e) : x1 + A_SEP(u);
+    // on a tall screen the forklift stands in a narrow frame, so the camera stays further behind it, sep, and eases in to the push into its black part
+    const sepT = tallD(BEHIND, 3.6, w, h);
+    const sep = tall ? (u < 9 ? Math.max(A_SEP(u), sepT) : lerp(sepT, A_SEP(10), ease(range(u, 9, 10)))) : A_SEP(u);
+    const x = u < 8.75 ? lerp(tmp.p0.x, endX, e) : x1 + sep;
     const y = u < 8.75 ? lerp(tmp.p0.y, A_Y(8.75), e) : A_Y(u);
     const z = lerp(tmp.p0.z, AISLES[1], e);
     out.pos.set(x, y, z);
@@ -182,6 +218,19 @@ export function poseAt(u: number, pos: number, out: Pose, w = 1920, h = 1080): P
     out.pitch = A_PITCH(u);
     t.set(x1, 1.3, AISLES[1]);
     out.d = 10;
+    if (tall) {
+      // look at the forklift all the way round the end, so it stays in the middle of the band
+      const tx = x1 + 0.4 * (1 - e);
+      const dx = x - tx;
+      const dy = y - 1.3;
+      const dz = z - AISLES[1];
+      const dist = Math.hypot(dx, dy, dz);
+      t.set(tx, 1.3, AISLES[1]);
+      out.yaw = Math.atan2(dx, dz) / rad(1);
+      out.pitch = -Math.asin(dy / dist) / rad(1);
+      out.d = dist;
+      out.sy = tallBandOf(w, h).sy;
+    }
   } else if (u < 11.52) {
     // the X50 schematic in three quarter perspective, on the right of the frame. The cut to the rental floor sits at 11.52, under
     // the light curtain that covers the whole frame from L k 0.5, so the floor is there when the fork's tip starts uncovering it
@@ -191,6 +240,11 @@ export function poseAt(u: number, pos: number, out: Pose, w = 1920, h = 1080): P
     out.pitch = -26;
     out.sx = 0.15;
     out.shadow = 8;
+    if (isTall(w, h)) {
+      out.d = xD(w, h);
+      out.sx = 0;
+      out.sy = tallBandOf(w, h).sy;
+    }
     orbit(t, out.d, out.yaw, out.pitch, out.pos);
   } else if (u < 13) {
     if (NAJAM === 0) {
@@ -213,6 +267,12 @@ export function poseAt(u: number, pos: number, out: Pose, w = 1920, h = 1080): P
       out.sy = c.sy;
       out.shadow = c.shadow;
       out.fov = c.fov;
+    }
+    // a tall screen keeps the camera where it is and widens the lens, the subject in the middle of the band
+    if (isTall(w, h)) {
+      out.sx = 0;
+      out.sy = tallBandOf(w, h).sy;
+      out.fov = tallFov(out.fov, K_NAJAM);
     }
     orbit(t, out.d, out.yaw, out.pitch, out.pos);
   } else {
@@ -246,6 +306,11 @@ export function poseAt(u: number, pos: number, out: Pose, w = 1920, h = 1080): P
         out.sy = 0.02;
         out.shadow = 14;
         out.fov = 28;
+      }
+      if (isTall(w, h)) {
+        out.sx = 0;
+        out.sy = tallBandOf(w, h).sy;
+        out.fov = tallFov(out.fov, tallK(u));
       }
       orbit(t, out.d, out.yaw, out.pitch, out.pos);
       return out;
@@ -326,6 +391,9 @@ export function Lights({ clock, state }: SceneProps & { state: React.MutableRefO
   const rim = useRef<THREE.DirectionalLight>(null);
   const hemi = useRef<THREE.HemisphereLight>(null);
   const shadowSize = useRef(0);
+  // a tall screen is a phone, which draws the key light's shadow map at 1024 and not 2048, for its frame rate
+  const size = useThree((s) => s.size);
+  const map = isTall(size.width, size.height) ? 1024 : 2048;
   useFrame(() => {
     const u = uOf(clock);
     const s = state.current;
@@ -357,7 +425,7 @@ export function Lights({ clock, state }: SceneProps & { state: React.MutableRefO
   });
   return (
     <>
-      <directionalLight ref={key} castShadow intensity={3} shadow-mapSize={[2048, 2048]} shadow-bias={-0.0004} shadow-normalBias={0.03} />
+      <directionalLight key={map} ref={key} castShadow intensity={3} shadow-mapSize={[map, map]} shadow-bias={-0.0004} shadow-normalBias={0.03} />
       <directionalLight ref={rim} intensity={0.5} color="#ffffff" />
       <hemisphereLight ref={hemi} args={['#ffffff', PAPER.shade, 1.1]} />
     </>

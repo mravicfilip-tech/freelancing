@@ -24,7 +24,8 @@ export const NAJAM = pick('najam', 2, [0, 2]);
 // the story and it settles on the next stop when the finger lets go. 3 Column, the scene stays in the top half and the words of every section
 // scroll under it as one column, the scene gliding to the section being read. 4 Tap, a tap on the right of the scene or a swipe goes on, a
 // tap on the left goes back, a bar of segments at the top shows the stops. Briefs/mobile/round3.md. A screen held upright only.
-export const MSCROLL = pick('m', 1, [1, 2, 3, 4]);
+// 2 Free is the default, Filip 4 November, "let me see v2 on production just that". The others answer to ?m for testing only.
+export const MSCROLL = pick('m', 2, [1, 2, 3, 4]);
 
 // Where the story was, a beat id and k of that beat, put in session storage by a test so the page lands on that frame. Taken once, at load.
 const KEY = 'story2-return';

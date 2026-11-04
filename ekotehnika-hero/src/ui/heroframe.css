@@ -636,6 +636,22 @@
     margin-left: 0;
   }
 
+  /* Past the hero, the stage carries data-past (StoryShell), and the row slides up and away in 400ms, back again when the story is
+     scrolled to the hero. The row is hidden once it is out, so its links leave the tab order, and shown again at the start of the way back. */
+  .hf-top {
+    transition:
+      transform 400ms var(--ease-wipe),
+      visibility 0s;
+  }
+
+  .s2-stage[data-past] .hf-top {
+    transform: translateY(-120px);
+    visibility: hidden;
+    transition:
+      transform 400ms var(--ease-wipe),
+      visibility 0s 400ms;
+  }
+
   /* ---- the bar at the foot, TALL.bar, 64px, white, a 1px rule on its top that sits on the row of the grid's bottom rule. The menu and
      the call are 48px squares, the quote takes the rest. ---- */
   .hf-bar {
@@ -836,8 +852,8 @@
   }
 
   /* ---- the hero block is the words sheet of this beat, from 56 percent of the stage height (TALL.sheet) down to the bar. The ground
-     is 72 percent white with a 16px blur like the frosted band of Najam. The prefixed line goes first, the production minifier keeps only
-     the last of the pair and Chrome reads only the plain one. The sheet is the block itself, so it comes and goes with the hero words. ---- */
+     is pure white, opaque, with no blur (Filip, 4 November, "it needs to be pure white"). The sheet is the block itself, so it comes and
+     goes with the hero words. ---- */
   .hf-bottom {
     top: 56%;
     bottom: 64px;
@@ -846,9 +862,7 @@
     width: auto;
     gap: 8px;
     padding: 0 16px;
-    background: rgb(255 255 255 / 0.72);
-    -webkit-backdrop-filter: blur(16px);
-    backdrop-filter: blur(16px);
+    background: var(--white);
   }
 
   /* the rule on the sheet's top edge, the marker row has the height of the other beats' marker rows so every title starts at one line */
@@ -890,5 +904,12 @@
 @media (max-aspect-ratio: 4/5) and (max-height: 667px) {
   .hf-quote {
     display: none;
+  }
+}
+
+@media (max-aspect-ratio: 4/5) and (prefers-reduced-motion: reduce) {
+  .hf-top,
+  .s2-stage[data-past] .hf-top {
+    transition: none;
   }
 }

@@ -610,3 +610,162 @@
     transition: none;
   }
 }
+
+/* ---- the tall screen, the phone version, studio/clients/ekotehnika/briefs/mobile/plan.md. A screen with its width at most 4/5 of its
+   height, the same rule as story2/tall.ts. Proizvodi, the closing and the footer are one column with a 16px margin. Nothing above this
+   line changes on a wide screen. ---- */
+@media (max-aspect-ratio: 4/5) {
+  .sx {
+    --x1: 16px;
+    --x2: 16px;
+    --x3: round(nearest, 50cqw, 1px);
+    --x4: round(nearest, calc(100cqw - 16px), 1px);
+    --x5: var(--x4);
+  }
+
+  /* ---- Proizvodi, the title block and then every model in one column. The verticals stand at 16px and 16px from the right edge, the
+     plus marks, which were placed for four columns, are not drawn. ---- */
+  .sx-products {
+    padding: 0 0 48px;
+  }
+
+  .sx-products > .sx-vl-full:nth-child(2),
+  .sx-products > .sx-vl-full:nth-child(3),
+  .sx-products > .sx-vl-full:nth-child(4),
+  .sx-products .sx-p {
+    display: none;
+  }
+
+  .sx-frame {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: none;
+    grid-auto-rows: auto;
+    padding: 0 16px;
+  }
+
+  .sx-left {
+    grid-column: 1;
+    grid-row: auto;
+    gap: 16px;
+    padding: 24px 12px 32px;
+  }
+
+  .sx-left .sx-title {
+    margin-top: 24px;
+    font-size: clamp(40px, calc((100cqw - 56px) / 3.9), 64px);
+  }
+
+  .sx-left .sx-lede {
+    margin: 0 0 24px;
+    font-size: 16px;
+    line-height: 24px;
+  }
+
+  .sx-cell,
+  .sx-cell-lead {
+    grid-column: 1;
+    grid-row: auto;
+    min-height: 300px;
+  }
+
+  .sx-cell-lead {
+    min-height: 340px;
+  }
+
+  .sx-cell:not(:first-child)::after {
+    content: '';
+    position: absolute;
+    z-index: 1;
+    pointer-events: none;
+    left: 0;
+    right: 0;
+    top: 0;
+    height: 2px;
+    background: linear-gradient(180deg, var(--hd) 0 1px, var(--hl) 1px 2px);
+  }
+
+  /* ---- the closing, the words first and the four photos under them, two by two, each in its place with no slide ---- */
+  .sx-closing {
+    --pad: 32px;
+  }
+
+  .sx-cframe {
+    height: auto;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 8px;
+    padding: 0 16px;
+  }
+
+  .sx-cframe > .sx-rule,
+  .sx-cframe > .sx-vl,
+  .sx-cframe > .sx-p {
+    display: none;
+  }
+
+  .sx-mid {
+    position: static;
+    grid-column: 1 / -1;
+    width: auto;
+    padding: 16px 0 24px;
+  }
+
+  .sx-mid .sx-ctitle {
+    font-size: clamp(36px, calc((100cqw - 32px) / 6.5), 56px);
+  }
+
+  .sx-mid .sx-clede {
+    margin: 16px 0 24px;
+    font-size: 16px;
+    line-height: 24px;
+  }
+
+  .sx-ph,
+  .sx-ph-l,
+  .sx-ph-r {
+    position: static;
+    width: auto !important;
+    height: auto;
+    aspect-ratio: 1;
+    transform: none;
+  }
+
+  /* ---- the footer, the two numbers, the address and the nav one under the other, the building across the width, and 64px under the
+     last line so the bar at the foot never covers it ---- */
+  .sx-footer {
+    padding-bottom: 64px;
+  }
+
+  .sx-row {
+    grid-template-columns: minmax(0, 1fr);
+    column-gap: 0;
+    padding: 0 16px;
+  }
+
+  .sx-row > .sx-c,
+  .sx-base > p,
+  .sx-site {
+    grid-column: 1 !important;
+  }
+
+  .sx-footer .sx-vl,
+  .sx-footer .sx-p {
+    display: none;
+  }
+
+  .sx-c {
+    padding: 24px 0 24px 12px;
+  }
+
+  .sx-r2 .sx-c {
+    padding-top: 24px;
+  }
+
+  .sx-num {
+    font-size: clamp(28px, 8cqw, 40px);
+  }
+
+  .sx-base p {
+    padding: 16px 0 16px 12px;
+  }
+}

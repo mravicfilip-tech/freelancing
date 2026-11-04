@@ -1371,3 +1371,23 @@ html:root [data-wipe]:not([data-rise]):not([data-done]) {
     display: none;
   }
 }
+
+/* Phone round 3, more air in every sheet, 20px at the sides and 16px between blocks, and a section's button the full width of its sheet. */
+@media (max-aspect-ratio: 4/5) {
+  .s2-c1,
+  .s2-r,
+  .s2-n,
+  .s2-nt,
+  .s2-at {
+    gap: 16px;
+    padding: 0 20px;
+  }
+
+  .s2-layer .btn {
+    align-self: stretch;
+  }
+
+  .s2-layer .btn .btn-t {
+    flex: 1;
+  }
+}

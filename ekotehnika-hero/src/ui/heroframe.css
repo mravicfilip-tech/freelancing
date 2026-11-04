@@ -913,3 +913,36 @@
     transition: none;
   }
 }
+
+/* Filip, 4 November, "the primary button on bottom bar is squashed". On a tall screen the menu and the call are plain icons with no box, and the
+   quote button takes the rest of the bar at full height with its label centred, without the black plus cell that took a fifth of it at 390px.
+   Phone round 3, briefs/mobile/round3.md. */
+@media (max-aspect-ratio: 4/5) {
+  .hf[data-tone] .hf-bar :is(.hf-bar-menu, .hf-bar-call) {
+    --b-bg: transparent;
+    --c-bg: transparent;
+    --line-c: transparent;
+    width: 44px;
+  }
+
+  .hf-bar {
+    gap: 4px;
+    padding: 0 12px 0 8px;
+  }
+
+  .hf-bar .hf-bar-quote {
+    min-height: 48px;
+    padding: 0;
+    margin-left: 4px;
+  }
+
+  .hf-bar .hf-bar-quote .btn-x {
+    display: none;
+  }
+
+  .hf-bar .hf-bar-quote .btn-t {
+    justify-content: center;
+    padding: 0 16px;
+    font-size: 16px;
+  }
+}

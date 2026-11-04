@@ -19,7 +19,7 @@ import { useLayoutEffect, useRef } from 'react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import Lenis, { type VirtualScrollData } from 'lenis';
-import { FEEL } from '../story2/preview';
+import { FEEL, MSCROLL } from '../story2/preview';
 import { isTall } from '../story2/tall';
 
 gsap.registerPlugin(ScrollTrigger);
@@ -261,6 +261,12 @@ function begin(to: number, d: number, clock: number, carry: boolean, swipe = fal
 // [data-lenis-prevent] scroll the way the browser does. The browser decides on the first move whether a touch scrolls, so the choice is made there.
 const TOUCH_CAP = FEEL_CAPS[8];
 const SWIPE = 24;
+// The phone pathway 2, Free (preview.ts, MSCROLL). The finger scrolls the page as on any page, with the phone's own momentum, the story follows
+// at FREE_CAP, and once the page has come to rest the story settles on the next stop in the direction it was going, as feel 10 does with a wheel.
+// freeTouch is set by the first touch, so a mouse on the same page keeps its feel.
+const FREE = MSCROLL === 2;
+const FREE_CAP = 1000;
+let freeTouch = false;
 let touch: { x: number; y: number; held: boolean | null } | null = null;
 // the top speed of the trip under way when a swipe set it, null for the feel's own
 let tripCap: number | null = null;
@@ -272,6 +278,7 @@ function touchStart(e: TouchEvent) {
     return;
   }
   touch = { x: e.touches[0].clientX, y: e.touches[0].clientY, held: null };
+  if (FREE) freeTouch = true;
 }
 
 function touchMove(e: TouchEvent) {
@@ -288,7 +295,7 @@ function touchMove(e: TouchEvent) {
     const inside = target <= st.end + 0.5 && target >= st.start - 0.5;
     // the finger going up takes the story on, and from the end of the story that leaves it for the page below
     const leaving = dy < 0 && progress.current * length >= length - 0.5;
-    touch.held = inside && !leaving && Math.abs(dy) >= Math.abs(dx) && gsap.ticker.time > jumpUntil.current;
+    touch.held = !FREE && inside && !leaving && Math.abs(dy) >= Math.abs(dx) && gsap.ticker.time > jumpUntil.current;
   }
   if (touch.held && e.cancelable) e.preventDefault();
 }
@@ -461,6 +468,15 @@ export function useScrollStory({ length, reduced, snap, smoothing = 0.08, restor
     hold = pass = trip = glide = tripCap = null;
     tripFlag(false);
     if (ANCHORING) window.addEventListener('keydown', anchorKey);
+    // pathway 2, the page's own scroll under a finger counts as the hand moving, for the settle in the tick
+    const offFree =
+      FREE && lenis
+        ? lenis.on('scroll', (l: Lenis) => {
+            if (!freeTouch || trip !== null) return;
+            lastWheel = performance.now();
+            if (l.direction) magnetDir = l.direction;
+          })
+        : null;
     if (LOCKED) {
       window.addEventListener('touchstart', touchStart, { passive: true });
       window.addEventListener('touchmove', touchMove, { passive: false });
@@ -512,7 +528,7 @@ export function useScrollStory({ length, reduced, snap, smoothing = 0.08, restor
       const dt = Math.min(deltaTime / 1000, 0.1);
       let step = (goal - progress.current) * (1 - Math.exp(-rate * dt));
       if (time > jumpUntil.current) {
-        const max = ((tripCap ?? cap) * dt) / length;
+        const max = ((tripCap ?? (freeTouch ? FREE_CAP : cap)) * dt) / length;
         step = Math.max(-max, Math.min(max, step));
       }
       progress.current += step;
@@ -527,7 +543,7 @@ export function useScrollStory({ length, reduced, snap, smoothing = 0.08, restor
         peak = 0;
       }
       // feel 10, the hand stopped GAP ms ago and the clock has caught up between two anchors, so it carries on to the next one
-      if (MAGNET && magnetDir !== 0 && trip === null && caught && lenis && st && lock && performance.now() - lastWheel > GAP) {
+      if ((MAGNET || freeTouch) && magnetDir !== 0 && trip === null && caught && lenis && st && lock && performance.now() - lastWheel > GAP) {
         const pos = progress.current * length;
         const anchors = [0, ...lock.stops, length];
         const next = anchors.some((s) => Math.abs(s - pos) <= ZONE)
@@ -551,6 +567,7 @@ export function useScrollStory({ length, reduced, snap, smoothing = 0.08, restor
       window.removeEventListener('touchmove', touchMove);
       window.removeEventListener('touchend', touchEnd);
       window.removeEventListener('touchcancel', touchCancel);
+      offFree?.();
       lock = null;
       stRef.current = null;
       ctx.revert();

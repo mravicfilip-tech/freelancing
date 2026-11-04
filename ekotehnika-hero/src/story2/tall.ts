@@ -6,7 +6,9 @@ export const TALL_QUERY = '(max-aspect-ratio: 4/5)';
 export const isTall = (w: number, h: number) => w > 0 && h > 0 && w / h <= TALL_RATIO;
 
 // The tall frame. The two logos stand at the top at their 160 by 96px screen minimum, the wordmark as wide and 30px away (LMH co-branding
-// guideline 1.3), in a row top px high. A bar of bar px with the menu, the Hitan servis call and the quote button stands at the foot. The words
-// of a beat stand on a frosted sheet that starts at sheet, a share of the stage height, and runs down to the bar. The camera keeps what matters in
-// the band between the logos and the sheet, its middle at subject, a share of the stage height from the top.
-export const TALL = { top: 120, bar: 64, sheet: 0.56, subject: 0.34 } as const;
+// guideline 1.3), in a row top px high, on the hero only. Past the hero the stage carries data-past, the row slides away and the scene runs to
+// the top edge, so the band starts at topStory (the phone round plan of 4 November, line 1). A bar of bar px with the menu, the Hitan servis
+// call and the quote button stands at the foot. The words of a beat stand on a pure white sheet, no blur (taste 2026-11-04 15:20), that
+// stands on the bar, starts at sheet, a share of the stage height, and grows up until its words fit. The camera keeps what matters in the
+// band between the top and the sheet.
+export const TALL = { top: 120, topStory: 0, bar: 64, sheet: 0.56, subject: 0.34 } as const;

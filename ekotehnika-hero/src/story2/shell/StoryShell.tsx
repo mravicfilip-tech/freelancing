@@ -267,6 +267,7 @@ export function StoryShell({ Scene, tone, reduced, darkLayers, darkTop = DARK_TO
 
     let lastTone = '';
     let lastGround = '';
+    let lastPast = false;
     let lastGrid = -1;
     let smK = -1;
     let id = 0;
@@ -445,6 +446,13 @@ export function StoryShell({ Scene, tone, reduced, darkLayers, darkTop = DARK_TO
         hf.dataset.toneBottom = t;
         grid.dataset.tone = t;
         plus.dataset.tone = t;
+      }
+      // Past the hero, on the stage as data-past. On a tall screen the row of logos slides away there and the scene runs to the top edge,
+      // the phone round plan of 4 November, line 1 (tall.ts, heroframe.css). Desktop has no rule on it.
+      const past = pos >= TIMELINE[0].end;
+      if (past !== lastPast) {
+        lastPast = past;
+        stage.toggleAttribute('data-past', past);
       }
       // with no scene drawn, no WebGL or a scene still loading, the dark span gets its black ground from the page, so its white
       // text never sits on white

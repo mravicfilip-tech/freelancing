@@ -585,3 +585,310 @@
     transform: scaleX(1);
   }
 }
+
+/* ---- the tall screen, the phone version, studio/clients/ekotehnika/briefs/mobile/plan.md. Any screen with its width at most 4/5 of
+   its height, the same rule as story2/tall.ts, TALL there is the numbers used here. Nothing above this line changes on a wide screen,
+   and the bar and the menu sheet are not drawn there. The stage is 100svh high, so the bar sits above a mobile toolbar. ---- */
+.hf-bar,
+.hf-menu {
+  display: none;
+}
+
+@media (max-aspect-ratio: 4/5) {
+  /* The frame no longer makes a stacking context of its own, so the menu sheet can stand over the plus marks of the stage (z 25). Its
+     parts that sat at the frame's level, 20, keep it. */
+  .hf {
+    z-index: auto;
+  }
+
+  .hf-top,
+  .hf-bottom {
+    z-index: 20;
+  }
+
+  .hf-skip {
+    left: 16px;
+    top: 8px;
+    z-index: 40;
+  }
+
+  /* ---- top row, TALL.top, 120px. The Linde logo at its 160 by 96px and the wordmark 160px wide, 30px apart, the LMH co-branding
+     guideline screen minimum, never shrunk. Left edge 16px, the pair centred when the screen is under 382px wide. The nav, the two
+     phone buttons and the quote button are in the menu sheet and the bar. ---- */
+  .hf-top {
+    top: 0;
+    left: 16px;
+    right: 16px;
+    height: 120px;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    column-gap: 0;
+  }
+
+  .hf-top .hf-nav,
+  .hf-top .hf-actions,
+  .hf-coords {
+    display: none;
+  }
+
+  .hf-top .hf-wm {
+    margin-left: 0;
+  }
+
+  /* ---- the bar at the foot, TALL.bar, 64px, white, a 1px rule on its top that sits on the row of the grid's bottom rule. The menu and
+     the call are 48px squares, the quote takes the rest. ---- */
+  .hf-bar {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 30;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    height: 64px;
+    padding: 0 16px;
+    background: var(--white);
+    color: var(--black);
+    pointer-events: auto;
+  }
+
+  .hf-bar::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: -1px;
+    height: 1px;
+    background: var(--grey-light);
+  }
+
+  .hf-bar .btn {
+    align-self: center;
+    flex: none;
+  }
+
+  /* the bar is always on white, so the dark tone of the servis beat does not turn its buttons */
+  .hf[data-tone] .hf-bar .btn-secondary {
+    --b-bg: #fcfcfc;
+    --b-fg: var(--black);
+    --c-bg: #f4f4f4;
+    --c-fg: var(--black);
+    --d-stroke: var(--black);
+    --line-c: rgb(0 0 0 / 0.125);
+  }
+
+  .hf[data-tone] .hf-bar .btn-primary {
+    --b-bg: var(--lmh-red);
+    --b-fg: var(--white);
+    --c-bg: var(--black);
+    --c-fg: var(--white);
+  }
+
+  /* an icon only square, 48px, until there is room for the word beside the icon */
+  .hf-bar-menu,
+  .hf-bar-call {
+    width: 48px;
+    padding: 0;
+  }
+
+  .hf-bar-menu .btn-t,
+  .hf-bar-call .btn-t {
+    display: none;
+  }
+
+  .hf-bar-menu {
+    --glyph: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3E%3Cpath d='M2 4h16v2H2zM2 9h16v2H2zM2 14h16v2H2z'/%3E%3C/svg%3E");
+  }
+
+  .hf-bar .hf-bar-quote {
+    flex: 1 1 0;
+    min-width: 0;
+  }
+
+  .hf-bar-quote .btn-t {
+    flex: 1;
+    padding: 0 12px;
+  }
+
+  @media (min-width: 440px) {
+    .hf-bar-menu,
+    .hf-bar-call {
+      width: auto;
+      padding: 0 calc(48px + 1px) 0 0;
+    }
+
+    .hf-bar-menu .btn-t,
+    .hf-bar-call .btn-t {
+      display: inline-flex;
+      padding: 0 16px;
+    }
+
+    .hf-bar .hf-bar-quote {
+      flex: 0 1 auto;
+      margin-left: auto;
+    }
+  }
+
+  /* ---- the menu sheet, over the whole stage, the six links of the nav and both phone numbers ---- */
+  .hf-menu:not([hidden]) {
+    position: absolute;
+    inset: 0;
+    z-index: 40;
+    display: flex;
+    flex-direction: column;
+    padding: 0 16px 16px;
+    overflow-y: auto;
+    background: var(--white);
+    color: var(--black);
+    pointer-events: auto;
+  }
+
+  .hf-menu-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex: none;
+    height: 72px;
+  }
+
+  .hf-menu-name {
+    font: 500 14px/20px var(--font);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+
+  .hf-menu-close {
+    align-self: center;
+    width: 48px;
+    padding: 0;
+    --glyph: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3E%3Cpath d='M5 3.6l5 5 5-5 1.4 1.4-5 5 5 5-1.4 1.4-5-5-5 5L3.6 15l5-5-5-5z'/%3E%3C/svg%3E");
+  }
+
+  .hf-menu-close .btn-t {
+    display: none;
+  }
+
+  .hf-menu-links {
+    flex: none;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    border-bottom: 1px solid var(--grey-light);
+  }
+
+  .hf-menu-links li {
+    border-top: 1px solid var(--grey-light);
+  }
+
+  .hf-menu-links a {
+    display: flex;
+    align-items: center;
+    min-height: 56px;
+    padding: 0 12px;
+    color: inherit;
+    font-size: 24px;
+    font-weight: 400;
+    line-height: 32px;
+    letter-spacing: -0.01em;
+  }
+
+  .hf-menu-links a[aria-current='page'] {
+    text-decoration: underline 2px;
+    text-underline-offset: 6px;
+  }
+
+  .hf-menu-calls {
+    flex: none;
+    display: flex;
+    flex-direction: column;
+    margin-top: auto;
+    padding-top: 16px;
+  }
+
+  .hf-menu-calls a {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    min-height: 56px;
+    padding: 4px 12px;
+    color: inherit;
+  }
+
+  .hf-menu-calls .lab {
+    font: 500 14px/20px var(--font);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--grey-dark);
+  }
+
+  .hf-menu-calls .num {
+    font-size: 24px;
+    font-weight: 350;
+    line-height: 32px;
+    font-variant-numeric: lining-nums tabular-nums;
+  }
+
+  .hf-menu a:focus-visible {
+    outline: 2px solid var(--black);
+    outline-offset: -2px;
+  }
+
+  /* ---- the hero block is the words sheet of this beat, from 56 percent of the stage height (TALL.sheet) down to the bar. The ground
+     is 72 percent white with a 16px blur like the frosted band of Najam. The prefixed line goes first, the production minifier keeps only
+     the last of the pair and Chrome reads only the plain one. The sheet is the block itself, so it comes and goes with the hero words. ---- */
+  .hf-bottom {
+    top: 56%;
+    bottom: 64px;
+    left: 0;
+    right: 0;
+    width: auto;
+    gap: 8px;
+    padding: 0 16px;
+    background: rgb(255 255 255 / 0.72);
+    -webkit-backdrop-filter: blur(16px);
+    backdrop-filter: blur(16px);
+  }
+
+  /* the rule on the sheet's top edge, the marker row has the height of the other beats' marker rows so every title starts at one line */
+  .hf-bottom .s2-marker {
+    min-height: 33px;
+    padding: 12px 12px 0;
+    margin-bottom: 8px;
+  }
+
+  /* sized to the width, the line is 6.1em wide. Its box is the sheet less 16px each side and 12px in from the rule at each end. */
+  .hf-bottom .hf-h1 {
+    margin: 0 0 0 12px;
+    font-size: min(calc((100cqw - 56px) / 6.1), 96px);
+  }
+
+  .hf-bottom .hf-lede {
+    margin-left: 12px;
+    max-width: none;
+    font-size: 20px;
+    line-height: 28px;
+    text-wrap: initial;
+  }
+
+  .hf-quote {
+    margin: 12px 0 0 12px;
+  }
+}
+
+/* The pair is 350px wide, so on a screen under 382px it has no 16px at each side and is centred. */
+@media (max-aspect-ratio: 4/5) and (max-width: 381px) {
+  .hf-top {
+    left: 0;
+    right: 0;
+    justify-content: center;
+  }
+}
+
+/* the sheet is 0.44 of the stage less the bar, under 230px on a screen under 668px high, and there the quote button is in the bar only */
+@media (max-aspect-ratio: 4/5) and (max-height: 667px) {
+  .hf-quote {
+    display: none;
+  }
+}

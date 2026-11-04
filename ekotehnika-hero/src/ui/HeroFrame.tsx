@@ -8,9 +8,10 @@
 // the type flips data-tone on the root through rootRef, so no React render runs per frame. The shell also drives the
 // white wordmark on the dark span and the hero block through the class names below.
 
-import { type MouseEvent, type Ref } from 'react';
+import { useEffect, useRef, useState, type MouseEvent, type Ref } from 'react';
 import { hero, SITE } from '../content';
 import { frame, hero2 } from '../story2/copy';
+import { TALL_QUERY } from '../story2/tall';
 import { BtnInner, Fill } from '../story2/shell/ui';
 import './heroframe.css';
 
@@ -40,7 +41,70 @@ function skip(e: MouseEvent<HTMLAnchorElement>) {
   }
 }
 
+// The menu sheet of the tall layout, the phone version, briefs/mobile/plan.md. It stands over the whole stage with the six links of the nav
+// and both phone numbers. Escape and the close button shut it, focus goes to the close button on opening, stays inside the sheet while it is
+// open and returns to the menu button on closing. On a screen that is not tall the bar and the sheet are display none, see heroframe.css.
+function useMenu() {
+  const [open, setOpen] = useState(false);
+  const button = useRef<HTMLButtonElement>(null);
+  const sheet = useRef<HTMLDivElement>(null);
+  const close = useRef<HTMLButtonElement>(null);
+
+  useEffect(() => {
+    if (!open) return;
+    const el = sheet.current;
+    close.current?.focus();
+    const key = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        e.preventDefault();
+        setOpen(false);
+        return;
+      }
+      if (e.key !== 'Tab' || !el) return;
+      const items = Array.from(el.querySelectorAll<HTMLElement>('a[href], button:not([disabled])'));
+      if (!items.length) return;
+      const first = items[0];
+      const last = items[items.length - 1];
+      const at = document.activeElement;
+      if (!el.contains(at)) {
+        e.preventDefault();
+        first.focus();
+      } else if (e.shiftKey && at === first) {
+        e.preventDefault();
+        last.focus();
+      } else if (!e.shiftKey && at === last) {
+        e.preventDefault();
+        first.focus();
+      }
+    };
+    // the story behind the sheet must not scroll while the sheet is up, a wheel or a thumb on it goes nowhere
+    const hold = (e: Event) => e.preventDefault();
+    document.addEventListener('keydown', key);
+    el?.addEventListener('wheel', hold, { passive: false });
+    el?.addEventListener('touchmove', hold, { passive: false });
+    return () => {
+      document.removeEventListener('keydown', key);
+      el?.removeEventListener('wheel', hold);
+      el?.removeEventListener('touchmove', hold);
+      button.current?.focus({ preventScroll: true });
+    };
+  }, [open]);
+
+  // turned to a screen that is not tall, the sheet is shut
+  useEffect(() => {
+    const mq = window.matchMedia(TALL_QUERY);
+    const on = () => {
+      if (!mq.matches) setOpen(false);
+    };
+    mq.addEventListener('change', on);
+    return () => mq.removeEventListener('change', on);
+  }, []);
+
+  return { open, setOpen, button, sheet, close };
+}
+
 export function HeroFrame({ tone, toneBottom, rootRef }: { tone: FrameTone; toneBottom?: FrameTone; rootRef?: Ref<HTMLDivElement> }) {
+  const menu = useMenu();
   return (
     <div className="hf" ref={rootRef} data-tone={tone} data-tone-bottom={toneBottom ?? tone}>
       <a className="hf-skip" href="#sadrzaj" onClick={skip}>
@@ -103,6 +167,53 @@ export function HeroFrame({ tone, toneBottom, rootRef }: { tone: FrameTone; tone
         <a className="btn btn-secondary hf-quote" href={hero2.quote.href} data-cta="quote" data-wipe="3">
           <BtnInner>{hero2.quote.label}</BtnInner>
         </a>
+      </div>
+
+      {/* The bar at the foot of a tall screen, 64px, the menu, the Hitan servis call and the quote. Not drawn on any other screen. */}
+      <div className="hf-bar">
+        <button
+          type="button"
+          className="btn btn-secondary hf-bar-menu"
+          ref={menu.button}
+          aria-expanded={menu.open}
+          aria-controls="hf-menu"
+          aria-label="Meni"
+          onClick={() => menu.setOpen(true)}
+        >
+          <BtnInner>Meni</BtnInner>
+        </button>
+        <a className="btn btn-secondary btn-phone hf-bar-call" href={hero.service.tel} data-cta="call-service" aria-label={`${hero.service.label}, ${hero.service.number}`}>
+          <BtnInner>{hero.service.label}</BtnInner>
+        </a>
+        <a className="btn btn-primary hf-bar-quote" href={hero.quote.href} data-cta="quote">
+          <BtnInner>{hero.quote.label}</BtnInner>
+        </a>
+      </div>
+
+      <div className="hf-menu" id="hf-menu" ref={menu.sheet} role="dialog" aria-modal="true" aria-label="Meni" hidden={!menu.open}>
+        <div className="hf-menu-head">
+          <span className="hf-menu-name">Meni</span>
+          <button type="button" className="btn btn-secondary hf-menu-close" ref={menu.close} aria-label="Zatvori meni" onClick={() => menu.setOpen(false)}>
+            <BtnInner>Zatvori</BtnInner>
+          </button>
+        </div>
+        <ul className="hf-menu-links">
+          {links.map((l) => (
+            <li key={l.label}>
+              <a href={`${SITE}${l.href}`} aria-current={l.current ? 'page' : undefined}>
+                {l.label}
+              </a>
+            </li>
+          ))}
+        </ul>
+        <div className="hf-menu-calls">
+          {[hero.sales, hero.service].map((p) => (
+            <a href={p.tel} data-cta={p === hero.sales ? 'call-sales' : 'call-service'} key={p.tel}>
+              <span className="lab">{p.label}</span>
+              <span className="num">{p.number}</span>
+            </a>
+          ))}
+        </div>
       </div>
     </div>
   );

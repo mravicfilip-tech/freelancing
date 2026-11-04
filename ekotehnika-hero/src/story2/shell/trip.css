@@ -1,0 +1,57 @@
+/* The phone round plan of 4 November, line 6, tall screens only.
+   While a swipe moves the story (html[data-trip], set by scroll/useScrollStory.ts) the words and their sheet leave at once and come back with a
+   fade once the move has landed, so text never rides over a moving scene and the scene has the whole screen while it moves.
+   The rail, six short marks at the right edge, one for each numbered section, the one on screen drawn long and in ink, set by StoryShell. */
+.s2-rail {
+  display: none;
+}
+
+@media (max-aspect-ratio: 4/5) {
+  .s2-layer,
+  .hf-bottom {
+    transition: opacity 360ms 60ms;
+  }
+
+  html[data-trip] .s2-layer,
+  html[data-trip] .hf-bottom {
+    opacity: 0;
+    transition: opacity 120ms;
+  }
+
+  .s2-rail {
+    position: absolute;
+    top: 28%;
+    right: 6px;
+    z-index: 12;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    color: var(--black);
+    transform: translateY(-50%);
+    transition: opacity 300ms;
+    pointer-events: none;
+  }
+
+  .s2-rail[data-tone='white'] {
+    color: var(--white);
+  }
+
+  .s2-rail[data-at='-1'] {
+    opacity: 0;
+  }
+
+  .s2-rail i {
+    display: block;
+    width: 3px;
+    height: 12px;
+    background: currentColor;
+    opacity: 0.28;
+    transition: height 300ms, opacity 300ms;
+  }
+
+  .s2-rail i[data-on] {
+    height: 28px;
+    opacity: 1;
+  }
+}

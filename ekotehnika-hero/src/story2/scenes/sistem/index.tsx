@@ -29,6 +29,7 @@ import Overlay from './overlay';
 import Aisle from './aisle';
 import { routeAt, truckS } from './route';
 import Warehouse from './warehouse';
+import { isTall } from '../../tall';
 
 // The models and textures the scene asks for, counted by three's loading manager, are passed to the preloader (intro.ts). The models
 // start loading as this module loads, see models.tsx, so the counter is read from here and not from a component.
@@ -252,12 +253,15 @@ function Tune() {
 // The device pixel ratio is capped at DPR_MAX, and drops to 1 when the frame rate sags (drei's PerformanceMonitor measures it, a decline
 // lowers the cap, a lasting recovery lifts it, and after two flips it stays down). A 1.5 cap drew 2.25 times the pixels of 1.
 const DPR_MAX = 1.25;
+// A screen held upright at load draws lighter, no antialias pass and plain shadows in place of soft ones, so a phone keeps its frame rate
+// (the phone round plan of 4 November, line 5). The pixel ratio cap and the frame rate monitor stay as they are.
+const LIGHT = typeof window !== 'undefined' && isTall(window.innerWidth, window.innerHeight);
 
 export default function Scene({ clock }: SceneProps) {
   const [cap, setCap] = useState(DPR_MAX);
   return (
     <div style={{ position: 'absolute', inset: 0, background: GROUND }} aria-hidden="true">
-      <Canvas shadows="soft" dpr={[1, cap]} frameloop={clock.still ? 'demand' : 'always'} camera={{ fov: 28, near: 0.1, far: 280, position: [0, 2, 12] }} gl={{ antialias: true, powerPreference: 'high-performance' }}>
+      <Canvas shadows={LIGHT ? true : 'soft'} dpr={[1, cap]} frameloop={clock.still ? 'demand' : 'always'} camera={{ fov: 28, near: 0.1, far: 280, position: [0, 2, 12] }} gl={{ antialias: !LIGHT, powerPreference: 'high-performance' }}>
         <World clock={clock} />
         <Tune />
         {!clock.still && <PerformanceMonitor flipflops={2} onDecline={() => setCap(1)} onIncline={() => setCap(DPR_MAX)} onFallback={() => setCap(1)} />}

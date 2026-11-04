@@ -4,6 +4,7 @@ import { useEffect, useLayoutEffect, useRef, useState, type ReactNode } from 're
 import { automatizacija, kompanija, markers, najam, prodaja, servis } from '../copy';
 import { Btn, Fill, Marker, SpecRow, TitleLines, between, type SpecFact } from './ui';
 import './najam.css';
+import './tall-ps.css';
 
 // Show tab i on the Prodaja pane, for the loop that steps with k and for a click. -1 shows no model yet. Each cut out
 // is in one of three states, wait (off to the right, ready to come in), on, and gone (off to the left), see .p-fig in
@@ -138,15 +139,46 @@ export function PPane() {
     setPick(i);
     if (root.current) setTab(root.current, i);
   };
+  // A tall screen has the cut out in the band above the sheet, edge to edge, so its leaders are placed from the box the image really
+  // fills, read from the layout, see .s2-p .p-fig img in tall-ps.css. A wide screen keeps placeLeaders and its fixed fit.
+  const placeTall = (st: HTMLElement) => {
+    const s = st.getBoundingClientRect();
+    st.querySelectorAll<HTMLElement>('.p-fig').forEach((fig) => {
+      const img = fig.querySelector<HTMLImageElement>('img');
+      const [nw, nh] = prodaja.tabs[Number(fig.dataset.i)].size;
+      if (!img) return;
+      const k = Math.min(img.offsetWidth / nw, img.offsetHeight / nh);
+      const ox = img.offsetLeft + (img.offsetWidth - nw * k) / 2;
+      const oy = img.offsetTop + (img.offsetHeight - nh * k) / 2;
+      const mid = (v: number) => Math.round(v - 0.5) + 0.5;
+      for (const key of CALLS) {
+        const call = fig.querySelector<HTMLElement>(`.p-call-${key}`);
+        const lead = fig.querySelector<HTMLElement>(`.p-lead-${key}`);
+        const dot = fig.querySelector<HTMLElement>(`.p-dot-${key}`);
+        if (!call || !lead || !dot) continue;
+        const x1 = mid(ox + prodaja.tabs[Number(fig.dataset.i)][key][0] * k);
+        const y1 = mid(oy + prodaja.tabs[Number(fig.dataset.i)][key][1] * k);
+        const r = call.getBoundingClientRect();
+        lead.style.setProperty('--x0', String(x1));
+        lead.style.setProperty('--y0', String(mid(key === 'a' ? r.bottom - s.top - 1 : r.top - s.top)));
+        lead.style.setProperty('--x1', String(x1));
+        lead.style.setProperty('--y1', String(y1));
+        dot.style.left = `${x1}px`;
+        dot.style.top = `${y1}px`;
+      }
+    });
+  };
+  // the same line as TALL_QUERY in ../tall.ts
+  const place = (st: HTMLElement) => (window.matchMedia('(max-aspect-ratio: 4/5)').matches ? placeTall(st) : placeLeaders(st));
   // the leader lines and the rings are placed from the fitted image, again whenever the stage or the fonts change
   useLayoutEffect(() => {
     const el = stage.current;
-    if (el) placeLeaders(el);
+    if (el) place(el);
   }, []);
   useEffect(() => {
     const el = stage.current;
     if (!el) return;
-    const run = () => placeLeaders(el);
+    const run = () => place(el);
     const ro = new ResizeObserver(run);
     ro.observe(el);
     document.fonts?.ready.then(run);
@@ -156,48 +188,79 @@ export function PPane() {
       window.clearTimeout(settle);
     };
   }, []);
+  // On a tall screen the four ranges are a row of chips that scrolls sideways. When the loop or a pick changes the model the chip of it
+  // is brought to the middle of the row, with the row's own scroll and never the page's.
+  useEffect(() => {
+    const el = root.current;
+    const row = el?.querySelector<HTMLElement>('.tabs');
+    if (!el || !row) return;
+    const follow = () => {
+      if (row.scrollWidth <= row.clientWidth) return;
+      const t = row.querySelector<HTMLElement>('[role="tab"][aria-selected="true"]');
+      if (t) row.scrollTo({ left: t.offsetLeft - (row.clientWidth - t.offsetWidth) / 2, behavior: 'smooth' });
+    };
+    const mo = new MutationObserver(follow);
+    mo.observe(el, { attributes: true, attributeFilter: ['data-tab'] });
+    // the layer is hidden and has no size until its beat comes on, so the row follows again when it gets one
+    const ro = new ResizeObserver(follow);
+    ro.observe(row);
+    // the story's touch handling skips what is inside data-lenis-prevent, so it is set on a tall screen only and a wide screen's wheel is untouched
+    const tall = window.matchMedia('(max-aspect-ratio: 4/5)');
+    const mark = () => row.toggleAttribute('data-lenis-prevent', tall.matches);
+    mark();
+    tall.addEventListener('change', mark);
+    return () => {
+      mo.disconnect();
+      ro.disconnect();
+      tall.removeEventListener('change', mark);
+    };
+  }, []);
   return (
     <div className="s2-pane s2-p" ref={root} data-tab={pick ?? 0} data-pick={pick ?? undefined}>
-      <div className="blk stack" style={{ ...between(1, 3), top: 168 }}>
-        <Marker m={markers.p} order={0} />
-        <TitleLines lines={c.title} order={1} />
-        <Fill text={c.text} />
-      </div>
-      {/* the tab list and its button sit at the bottom of the left column, the rules run from the first to the third vertical */}
-      <div className="blk stack lb" style={between(1, 3)}>
-        <div className="tabs" role="tablist" aria-label="Vrste viljuškara" aria-orientation="vertical" data-rule="t">
-          {c.tabs.map((t, i) => (
-            <button
-              type="button"
-              role="tab"
-              className="tab"
-              id={`p-tab-${i}`}
-              aria-controls={`p-panel-${i}`}
-              aria-selected={i === (pick ?? 0)}
-              tabIndex={i === (pick ?? 0) ? 0 : -1}
-              data-i={i}
-              data-wipe={2 + i}
-              data-rule="b"
-              key={t.name}
-              onClick={() => choose(i)}
-              onKeyDown={(e) => {
-                const d = e.key === 'ArrowDown' || e.key === 'ArrowRight' ? 1 : e.key === 'ArrowUp' || e.key === 'ArrowLeft' ? -1 : 0;
-                if (!d) return;
-                e.preventDefault();
-                const n = (i + d + c.tabs.length) % c.tabs.length;
-                choose(n);
-                root.current?.querySelector<HTMLElement>(`[data-i="${n}"][role="tab"]`)?.focus();
-              }}
-            >
-              <span className="tab-n">{String(i + 1).padStart(2, '0')}</span>
-              <span className="tab-name">{t.name}</span>
-              <span className="tab-range">{t.range.replace('Linde ', '')}</span>
-            </button>
-          ))}
+      {/* the sheet of a tall screen, a plain box with no layout of its own on a wide one, see tall-ps.css */}
+      <div className="p-sheet">
+        <div className="blk stack" style={{ ...between(1, 3), top: 168 }}>
+          <Marker m={markers.p} order={0} />
+          <TitleLines lines={c.title} order={1} />
+          <Fill text={c.text} />
         </div>
-        <Btn href={c.cta.href} order={6} cta="quote">
-          {c.cta.label}
-        </Btn>
+        {/* the tab list and its button sit at the bottom of the left column, the rules run from the first to the third vertical. On a tall
+            screen the list is a row of chips. */}
+        <div className="blk stack lb" style={between(1, 3)}>
+          <div className="tabs" role="tablist" aria-label="Vrste viljuškara" aria-orientation="vertical" data-rule="t">
+            {c.tabs.map((t, i) => (
+              <button
+                type="button"
+                role="tab"
+                className="tab"
+                id={`p-tab-${i}`}
+                aria-controls={`p-panel-${i}`}
+                aria-selected={i === (pick ?? 0)}
+                tabIndex={i === (pick ?? 0) ? 0 : -1}
+                data-i={i}
+                data-wipe={2 + i}
+                data-rule="b"
+                key={t.name}
+                onClick={() => choose(i)}
+                onKeyDown={(e) => {
+                  const d = e.key === 'ArrowDown' || e.key === 'ArrowRight' ? 1 : e.key === 'ArrowUp' || e.key === 'ArrowLeft' ? -1 : 0;
+                  if (!d) return;
+                  e.preventDefault();
+                  const n = (i + d + c.tabs.length) % c.tabs.length;
+                  choose(n);
+                  root.current?.querySelector<HTMLElement>(`[data-i="${n}"][role="tab"]`)?.focus();
+                }}
+              >
+                <span className="tab-n">{String(i + 1).padStart(2, '0')}</span>
+                <span className="tab-name">{t.name}</span>
+                <span className="tab-range">{t.range.replace('Linde ', '')}</span>
+              </button>
+            ))}
+          </div>
+          <Btn href={c.cta.href} order={6} cta="quote">
+            {c.cta.label}
+          </Btn>
+        </div>
       </div>
       <div className="p-stage" style={between(3, 5)} ref={stage}>
         {c.tabs.map((t, i) => (
@@ -235,21 +298,24 @@ export function SPane() {
   const c = servis;
   return (
     <div className="s2-pane s2-s">
-      <div className="blk stack" style={{ ...between(1, 3), top: 168 }}>
-        <Marker m={markers.s} order={0} />
-        <TitleLines lines={c.title} order={1} />
-        <Fill text={c.text} />
-        <Btn href={c.cta.href} order={5} cta="quote">
-          {c.cta.label}
-        </Btn>
-      </div>
-      <div className="dataline blk at-bottom" style={between(1, 3)} data-rule="tb">
-        <span className="lab" data-wipe={6}>
-          {c.dataLabel}
-        </span>
-        <a className="num" href={c.dataTel} data-cta="call-service" data-wipe={7}>
-          {c.dataNumber}
-        </a>
+      {/* the sheet of a tall screen, a plain box with no layout of its own on a wide one, see tall-ps.css */}
+      <div className="s-sheet">
+        <div className="blk stack" style={{ ...between(1, 3), top: 168 }}>
+          <Marker m={markers.s} order={0} />
+          <TitleLines lines={c.title} order={1} />
+          <Fill text={c.text} />
+          <Btn href={c.cta.href} order={5} cta="quote">
+            {c.cta.label}
+          </Btn>
+        </div>
+        <div className="dataline blk at-bottom" style={between(1, 3)} data-rule="tb">
+          <span className="lab" data-wipe={6}>
+            {c.dataLabel}
+          </span>
+          <a className="num" href={c.dataTel} data-cta="call-service" data-wipe={7}>
+            {c.dataNumber}
+          </a>
+        </div>
       </div>
     </div>
   );

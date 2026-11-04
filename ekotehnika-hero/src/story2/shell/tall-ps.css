@@ -1,0 +1,276 @@
+/* The tall screen for Prodaja, Servis and the Servis map, phone round 2 (studio/clients/ekotehnika/briefs/mobile/round-plan.md, line 2).
+   The same pattern as C1 and R in shell.css, the subject in the band above, the words on a sheet that stands on the 64px bar, starts at 56
+   percent of the stage height and grows up until its words fit. Everything here is inside the one media query, so a wide screen is not
+   touched. The sheet is pure opaque, no blur (taste 2026-11-04 15:20). Prodaja's is white. Servis and its map are a dark beat with white
+   words, so their sheet is pure black and not white, which keeps the words on the ground they have on a wide screen.
+   The wrappers .p-sheet, .s-sheet and .sm-sheet have no style on a wide screen, so they add no box there and the blocks inside stand where
+   they did, on the pane. */
+@media (max-aspect-ratio: 4/5) {
+  /* ---- the pane is a column that stands on the bar, the band above and the sheet at the foot ---- */
+  .s2-pane.s2-p,
+  .s2-pane.s2-s,
+  .s2-pane.sm-pane {
+    inset: 0 0 64px 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+  }
+
+  .p-sheet,
+  .s-sheet,
+  .sm-sheet {
+    position: relative;
+    flex: none;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    /* 44 percent of the stage less the bar puts its top at 56 percent, and it grows up to leave the band 160px at the least */
+    min-height: calc(44svh - 64px);
+    max-height: calc(100svh - 64px - 160px);
+    padding: 0 16px 16px;
+    background: #fff;
+  }
+
+  .s-sheet,
+  .sm-sheet {
+    background: #000;
+  }
+
+  /* the blocks are laid out in the flow, so the inline left, top and width of between(a, b) are let go, as on C1 and R */
+  :is(.p-sheet, .s-sheet, .sm-sheet) > .blk {
+    position: static;
+    left: auto !important;
+    top: auto !important;
+    width: auto !important;
+    bottom: auto;
+  }
+
+  :is(.p-sheet, .s-sheet, .sm-sheet) .stack {
+    gap: 8px;
+  }
+
+  :is(.p-sheet, .s-sheet, .sm-sheet) .stack > .s2-marker {
+    margin: 0;
+    padding: 12px 12px 0;
+  }
+
+  :is(.p-sheet, .s-sheet, .sm-sheet) .stack > :is(.s2-title, .s2-lede, .btn) {
+    margin-left: 12px;
+    margin-right: 12px;
+  }
+
+  :is(.p-sheet, .s-sheet, .sm-sheet) .s2-title {
+    font-size: var(--tt);
+  }
+
+  :is(.p-sheet, .s-sheet, .sm-sheet) .s2-lede {
+    max-width: none;
+    font-size: 16px;
+    line-height: 24px;
+    text-wrap: initial;
+  }
+
+  /* ---- Prodaja, the four ranges are a row of chips that scrolls sideways under the thumb. The row runs to both screen edges and its
+     chips start 16px in. The shell hands a touch on it to the browser, see data-lenis-prevent in PPane. ---- */
+  .s2-p .tabs {
+    flex-direction: row;
+    align-self: stretch;
+    gap: 8px;
+    width: auto;
+    margin: 0 -16px;
+    padding: 0 16px;
+    border-top: 0;
+    overflow-x: auto;
+    overscroll-behavior-x: contain;
+    scroll-snap-type: x proximity;
+    scroll-padding: 0 16px;
+    scrollbar-width: none;
+    pointer-events: auto;
+  }
+
+  .s2-p .tabs::-webkit-scrollbar {
+    display: none;
+  }
+
+  .s2-p .tab {
+    flex: none;
+    display: flex;
+    height: 44px;
+    padding: 0 16px;
+    border: 1px solid var(--line);
+    scroll-snap-align: start;
+    white-space: nowrap;
+  }
+
+  .s2-p .tab[aria-selected='true'] {
+    border-color: var(--fg);
+  }
+
+  /* the number and the range are in the callout of the cut out, so a chip is its name */
+  .s2-p .tab-n,
+  .s2-p .tab-range {
+    display: none;
+  }
+
+  /* ---- Prodaja, the cut out. The band above the sheet is the stage, the range across the top, the capacity and the model across the
+     foot, the cut out between them as wide as the band, edge to edge between the first and the last line. The leaders drop straight from
+     the rows to the rings, placed by placeTall in PPane from the box the image fills. ---- */
+  .s2-p .p-stage {
+    position: relative;
+    order: -1;
+    flex: 1 1 0;
+    min-height: 0;
+    left: auto !important;
+    top: auto;
+    width: auto !important;
+    height: auto;
+    container-type: size;
+  }
+
+  .s2-p .p-fig img {
+    left: var(--x1);
+    top: 84px;
+    width: calc(var(--x4) - var(--x1));
+    height: calc(100% - 168px);
+    translate: 48px 0;
+  }
+
+  .s2-p .p-fig[data-st='on'] img {
+    translate: 0 0;
+  }
+
+  .s2-p .p-fig[data-st='gone'] img {
+    translate: -48px 0;
+  }
+
+  .s2-p .p-call {
+    gap: 2px;
+    padding: 12px 12px 0;
+  }
+
+  .s2-p .p-call b {
+    font-size: clamp(18px, 5.2cqw, 24px);
+  }
+
+  .s2-p .p-call-a {
+    left: var(--x1);
+    top: 12px;
+    width: calc(var(--x4) - var(--x1));
+    height: 68px;
+  }
+
+  .s2-p .p-call-a.is-right {
+    padding-left: 12px;
+  }
+
+  .s2-p .p-call-b,
+  .s2-p .p-call-c {
+    height: 68px;
+    bottom: 0;
+  }
+
+  .s2-p .p-call-b {
+    left: var(--x1);
+    width: calc(var(--x3) - var(--x1));
+  }
+
+  .s2-p .p-call-c {
+    left: var(--x3);
+    width: calc(var(--x4) - var(--x3));
+  }
+
+  /* ---- Servis, the schematic is in the scene above. The number to call stands in the sheet's foot on one row with its label, and wraps
+     under it when the row is too narrow. The number is a 44px target. ---- */
+  .s2-s .dataline.blk {
+    position: static;
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0 16px;
+    padding: 8px 12px;
+  }
+
+  .s2-s .dataline .num {
+    display: flex;
+    align-items: center;
+    min-height: 44px;
+    margin: 0;
+    padding: 0;
+    font-size: clamp(22px, 6.2cqw, 30px);
+  }
+
+  /* ---- the Servis map, the two centres stacked under the button, each with its name and role, and its address and number as two 44px
+     targets side by side. The point left of each name is left out, the map has the names. ---- */
+  .sm-pane .sm-bases {
+    grid-template-columns: 1fr;
+  }
+
+  .sm-pane .sm-bases li {
+    row-gap: 0;
+    padding: 8px 12px 0;
+  }
+
+  .sm-pane .sm-bases li + li {
+    border-left: 0;
+    border-top: 1px solid var(--line);
+  }
+
+  .sm-pane .sm-bases .sm-dot {
+    display: none;
+  }
+
+  .sm-pane .sm-bases-live li {
+    grid-template-columns: auto 1fr;
+    align-items: baseline;
+    column-gap: 12px;
+  }
+
+  .sm-pane .sm-bases .fig {
+    font-size: 28px;
+  }
+
+  .sm-pane .sm-bases .line {
+    font-size: 14px;
+    line-height: 20px;
+  }
+
+  .sm-pane .sm-adr {
+    grid-column: 1 / -1;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0 16px;
+    margin-top: 0;
+    font-size: 14px;
+    line-height: 20px;
+  }
+
+  .sm-pane .sm-adr a {
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+  }
+
+  /* ---- the map is the band, the whole width of the stage. Serbia is taller than it is wide, so where the band is shorter than the
+     map the map's foot is cut, the 70 units of its 764 under the southern roads hold nothing but the grey border lines of the neighbours.
+     It stands at the top, 12px down, and it draws on with k as on a wide screen. ---- */
+  .sm-pane .sm-fig-live {
+    position: relative;
+    order: -1;
+    flex: 1 1 0;
+    min-height: 0;
+    left: auto !important;
+    top: auto;
+    bottom: auto;
+    width: auto !important;
+    padding-top: 12px;
+    place-items: start center;
+  }
+
+  .sm-pane .sm-live {
+    --mh: min(calc(100cqw * 764 / 659), calc(100cqh * 764 / 694));
+  }
+}

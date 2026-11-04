@@ -6,6 +6,18 @@
 import type { Pose } from './camera';
 import { BAY, loader } from './loader';
 import { lerp, rad } from './kit';
+import { TALL, isTall } from '../../tall';
+
+// The tall screen's framing, shared with camera.tsx. The lens is 28 degrees vertical, so a frame a metres wide per metre high sees a*T2 metres
+// across per metre of distance, and T2 high. fitD is the distance at which a subject ws metres across fills 80 percent of the width and hs
+// metres high fills the band between the logo row and the sheet, whichever of the two asks for more. It is a pure function of the stage size.
+const T2 = 2 * Math.tan(rad(14));
+export const fitD = (ws: number, hs: number, w: number, h: number) => {
+  const band = (TALL.sheet * h - TALL.top) / h;
+  return Math.max(ws / (0.8 * T2 * (w / h)), hs / (band * T2));
+};
+/** The lens shift that puts the middle of the subject at TALL.subject of the stage height, a share of the height, negative is up. */
+export const TALL_SY = TALL.subject - 0.5;
 
 // Where the carried stack of V1 and V3 stands in the world now, set by the scene's own frame each time it places it. Metres along x, and the
 // height the forks have lifted it to, so the camera keeps looking at the load while a truck drives on with it.
@@ -15,7 +27,8 @@ export const carried = { x: 1.15, lift: 0.12 };
 const PAN = 7;
 const TILT = 3;
 
-export function loaderPose(out: Pose) {
+export function loaderPose(out: Pose, w = 1920, h = 1080) {
+  const tall = isTall(w, h);
   const v = loader.version;
   const go = loader.go;
   let x = 0;
@@ -37,6 +50,10 @@ export function loaderPose(out: Pose) {
     pitch = -9;
     sy = 0;
     shadow = 8;
+    if (tall) {
+      d = fitD(2.6, 2.2, w, h);
+      sy = TALL_SY;
+    }
   } else if (v === 2) {
     // Regal, the bay from the aisle, a little off square
     x = BAY.x + 0.9;
@@ -46,6 +63,10 @@ export function loaderPose(out: Pose) {
     yaw = 34;
     pitch = -7;
     shadow = 11;
+    if (tall) {
+      d = fitD(5.2, 4, w, h);
+      sy = TALL_SY;
+    }
   } else {
     // Kutija, the carton large in the frame, from the front right
     x = carried.x;
@@ -54,6 +75,11 @@ export function loaderPose(out: Pose) {
     yaw = 28;
     pitch = -7;
     shadow = 7;
+    // the carton and its pallet about 1.4 m across, centred in the band, a longer stand because the frame sees little across
+    if (tall) {
+      d = fitD(1.5, 1.5, w, h);
+      sy = TALL_SY;
+    }
   }
   // the mouse, eased by the shell, Kutija turns its carton instead of the camera
   const follow = v === 3 ? 0 : 1 - go;

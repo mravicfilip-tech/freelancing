@@ -4,6 +4,7 @@
 // truck. It sits over the scene and under the text and runs unbroken, the text layer sits on top of it. The shell drives
 // --draw, --go and --rot from the story clock and switches data-tone on the dark span.
 import type { CSSProperties, Ref } from 'react';
+import { TALL_QUERY, isTall } from '../tall';
 
 // The five vertical lines, as the left offset of each inside the stage. They are the --x1 to --x5 values of the stage,
 // rounded to whole pixels, so the lines and the plus marks are placed from the very same numbers.
@@ -13,8 +14,20 @@ export const GRID_X = ['var(--x1)', 'var(--x2)', 'var(--x3)', 'var(--x4)', 'var(
 export const RULE_TOP = 136;
 export const RULE_BOTTOM = 64;
 
+// On a tall screen, the phone version, the top row is TALL.top high, so its rule is 16px higher, and the bar at the foot starts on the same
+// row as the bottom rule did, see the tall block at the end of shell.css.
+const RULE_TOP_TALL = 120;
+
 // The five vertical lines in whole stage pixels for a stage this wide, the same numbers as --x1 to --x5 in shell.css.
-export function gridXs(w: number): number[] {
+// A tall stage draws three lines, at 16, in the middle and 16 from the right edge. The five stay five numbers, so a block that sits
+// between(a, b) still lands, and the two that would double a line sit on it. Lines 1 and 2 are the left one, 4 and 5 the right one, line 3 is
+// the middle as it is on a wide screen. So between(1, 3) is the left half, between(3, 5) the right half and between(1, 5) the width. The CSS
+// of the stage sets the same numbers, and the lines that would be drawn twice are not drawn, see data-i below. h is the stage height, and
+// with it a tall stage is told by the shape rule of tall.ts. Without it the numbers are the wide ones.
+const tallXs = (w: number) => [16, 16, Math.round(w / 2), w - 16, w - 16];
+
+export function gridXs(w: number, h?: number): number[] {
+  if (h !== undefined && isTall(w, h)) return tallXs(w);
   const gx = (w - 96 - 264) / 12 + 24;
   return [48, Math.round(48 + 3 * gx), Math.round(48 + 6 * gx), Math.round(48 + 9 * gx), Math.round(w - 48)];
 }
@@ -32,8 +45,10 @@ const X3 = 2;
 // lands on the very pixel the rule is painted on. The top and bottom grid rules have their own marks and are left out.
 export function ruleMarks(scope: HTMLElement, stage: HTMLElement): Mark[] {
   const s = stage.getBoundingClientRect();
-  const xs = gridXs(stage.clientWidth);
-  const skip = [RULE_TOP, Math.round(s.height) - RULE_BOTTOM - 1];
+  // the tall layout is told by the same media query the CSS uses, so the marks and the lines cannot disagree at the edge of the rule
+  const tall = window.matchMedia(TALL_QUERY).matches;
+  const xs = tall ? tallXs(stage.clientWidth) : gridXs(stage.clientWidth);
+  const skip = [tall ? RULE_TOP_TALL : RULE_TOP, Math.round(s.height) - RULE_BOTTOM - 1];
   const seen = new Set<string>();
   const out: Mark[] = [];
   scope.querySelectorAll<HTMLElement>('[data-rule]').forEach((el) => {
@@ -49,7 +64,8 @@ export function ruleMarks(scope: HTMLElement, stage: HTMLElement): Mark[] {
     for (const y of rows) {
       if (skip.includes(y)) continue;
       xs.forEach((x, i) => {
-        const k = `${i}|${y}`;
+        // keyed on the pixel, a tall stage has lines that sit on one another and must give one mark
+        const k = `${x}|${y}`;
         if (bare && i === X3) return;
         if (x >= a - 0.5 && x <= b + 0.5 && !seen.has(k)) {
           seen.add(k);
@@ -86,7 +102,7 @@ export function Grid({ rootRef }: { rootRef?: Ref<HTMLDivElement> }) {
       <div className="s2-grid" aria-hidden="true" ref={rootRef}>
         <div className="s2-lines">
           {GRID_X.map((x, i) => (
-            <div className="gv" style={{ left: x }} key={i}>
+            <div className="gv" style={{ left: x }} data-i={i} key={i}>
               <i className="gs gs-top" />
               <i className="gs gs-ma" />
               <i className="gs gs-mb" />
@@ -109,7 +125,7 @@ export function Grid({ rootRef }: { rootRef?: Ref<HTMLDivElement> }) {
           holds the marks at block rules, the shell fills it from the rules on screen */}
       <div className="s2-plus" aria-hidden="true">
         {(['top', 'bottom'] as const).flatMap((row) =>
-          GRID_X.map((x, i) => <i className={`gp gp-${row}`} style={{ left: x }} key={`${row}${i}`} />),
+          GRID_X.map((x, i) => <i className={`gp gp-${row}`} style={{ left: x }} data-i={i} key={`${row}${i}`} />),
         )}
         <div className="gpg" />
       </div>

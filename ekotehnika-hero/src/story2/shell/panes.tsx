@@ -85,12 +85,13 @@ export function C1Pane() {
         <TitleLines lines={c.title} order={1} className="s2-title-s" />
         <Fill text={c.text} />
       </div>
-      {/* the cell lines sit on the third and fourth vertical and on the right edge, the first two facts share the first cell */}
+      {/* the cell lines sit on the third and fourth vertical and on the right edge, the first two facts share the first cell. A tall screen sets
+          --c1-cols in shell.css for three equal cells, with it unset the columns are these. */}
       <SpecRow
         className="blk at-bottom"
         facts={facts}
         spans={[1, 1, 1]}
-        template={SPLIT('--x3', '--x4')}
+        template={`var(--c1-cols, ${SPLIT('--x3', '--x4')})`}
         order={2}
         style={between(3, 5)}
       />

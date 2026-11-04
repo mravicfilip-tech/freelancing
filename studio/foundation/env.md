@@ -54,6 +54,10 @@ so the lesson outlives the context window.
 - The production CSS minifier keeps only the last of a plain and a `-webkit-` pair of the same property and drops the other, so
   write the `-webkit-` line first. On 3 November `backdrop-filter` then `-webkit-backdrop-filter` shipped the Najam band with no
   blur in Chrome, while the dev server, which does not minify, showed it. Check a style like that in `vite build` output.
+- rsync is not installed in cloud sessions. On 4 November a `which rsync && rsync ...; echo synced` step skipped the copy, printed
+  synced anyway, and a Vercel preview went out with the old build under a link said to hold new work. Copy with `cp -a`, end the
+  copy step with a check that fails loudly (a file the change adds exists, `diff -rq` is empty), and list the deployment's files
+  through the Vercel API before sending the link.
 - Turn off git deploys for agent branches in each project's `vercel.json`.
 
 ```json

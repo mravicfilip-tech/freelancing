@@ -1331,3 +1331,43 @@ html:root [data-wipe]:not([data-rise]):not([data-done]) {
     line-height: 20px;
   }
 }
+
+/* Filip, 4 November, "Things that are too cramped", Kompanija's facts in one row and Najam's two by two. On a tall screen they are rows,
+   the figure at the left and its label at the right on one line, 12px over and under, a rule between, so no label wraps in a narrow cell. */
+@media (max-aspect-ratio: 4/5) {
+  .s2-c1 .spec,
+  .s2-n .n-row {
+    grid-template-columns: 1fr !important;
+  }
+
+  .s2-c1 .spec .cell,
+  .s2-n .n-row .cell {
+    flex-direction: row;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 16px;
+    padding: 12px;
+    border-left: 0;
+    box-shadow: none;
+  }
+
+  .s2-c1 .spec .cell + .cell,
+  .s2-n .n-row .cell + .cell {
+    border-top: 1px solid var(--line);
+  }
+
+  .s2-c1 .spec .lab,
+  .s2-n .n-row .lab {
+    text-align: right;
+  }
+
+  .s2-n .stack {
+    gap: 12px;
+  }
+
+  /* Najam's words over its two stops, the line and the button at the first, the four facts at the second (StoryShell, data-nsub) */
+  .s2-stage[data-nsub='1'] .s2-n .n-row,
+  .s2-stage[data-nsub='2'] .s2-n .n-side {
+    display: none;
+  }
+}

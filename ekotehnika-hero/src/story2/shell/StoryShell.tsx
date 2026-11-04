@@ -54,6 +54,12 @@ const LAYERS: LayerDef[] = [
 // S hands the black stage to the servis map in one cut half way through its 2000px, the map holds to the fork's dock.
 // N shows today's text until the camera of the flight in has started across the yard, 50px of leave, see N_LEAVE in timeline.ts, and the
 // terms pane takes the screen when the camera stands inside, which then holds to the end of N.
+// Najam's span and the point between its first two stops where a tall screen changes from its title, line and button to its facts
+const N_SPLIT = (() => {
+  const n = TIMELINE.find((b) => b.id === 'N')!;
+  const len = n.end - n.start;
+  return [n.start, n.start + ((N_SUB.N1[1] + N_SUB.N2[0]) / 2) * len, n.end];
+})();
 // The six numbered sections of the rail on a tall screen, by beat, the hero has none
 const RAIL: Record<string, number> = { D1: 0, C1: 0, D2: 0, F: 1, R: 1, Z: 1, P: 2, A: 2, B: 2, S: 3, L: 3, N: 4, T: 5, AT: 5 };
 const LEAVE: Record<string, [number, number]> = { AT: [1.01, 1.02], S: [0.49, 0.51], SM: [1.01, 1.02], ...(WAREHOUSE ? { N: [N_LEAVE[0], N_LEAVE[1]], NT: [1.01, 1.02] } : {}) };
@@ -272,6 +278,7 @@ export function StoryShell({ Scene, tone, reduced, darkLayers, darkTop = DARK_TO
     let lastTone = '';
     let lastGround = '';
     let lastPast = false;
+    let lastNsub = '';
     let lastGrid = -1;
     let smK = -1;
     let id = 0;
@@ -457,6 +464,15 @@ export function StoryShell({ Scene, tone, reduced, darkLayers, darkTop = DARK_TO
       if (past !== lastPast) {
         lastPast = past;
         stage.toggleAttribute('data-past', past);
+      }
+      // Najam's two stops on a tall screen, the lorry arriving and the dock, as data-nsub 1 and 2 on the stage. A phone shows Najam's title,
+      // line and button at the first and its title and four facts at the second, so neither sheet is cramped (Filip, 4 November, "Things
+      // that are too cramped"). The switch falls half way between the two stops, while a swipe has the words hidden (shell.css).
+      const nsub = WAREHOUSE && pos >= N_SPLIT[0] && pos < N_SPLIT[2] ? (pos < N_SPLIT[1] ? '1' : '2') : '';
+      if (nsub !== lastNsub) {
+        lastNsub = nsub;
+        if (nsub) stage.dataset.nsub = nsub;
+        else delete stage.dataset.nsub;
       }
       // the rail of a tall screen, the numbered section on screen, -1 on the hero (trip.css)
       const rail = railRef.current;

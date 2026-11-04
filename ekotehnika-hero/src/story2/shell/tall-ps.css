@@ -274,3 +274,35 @@
     --mh: min(calc(100cqw * 764 / 659), calc(100cqh * 764 / 694));
   }
 }
+
+/* Filip, 4 November, "Things that are too cramped", the two servis centres. On a tall screen they stand side by side, each its name, its line,
+   its address and its number one under the other, in place of the address and the number squeezed onto one line. */
+@media (max-aspect-ratio: 4/5) {
+  .sm-pane .sm-bases {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .sm-pane .sm-bases li,
+  .sm-pane .sm-bases-live li {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 4px;
+    padding: 12px 12px 4px;
+  }
+
+  .sm-pane .sm-bases li + li {
+    border-top: 0;
+    border-left: 1px solid var(--line);
+  }
+
+  .sm-pane .sm-bases .fig {
+    font-size: 24px;
+  }
+
+  .sm-pane .sm-adr {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0;
+  }
+}

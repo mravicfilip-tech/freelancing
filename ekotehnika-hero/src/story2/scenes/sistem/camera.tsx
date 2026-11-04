@@ -46,9 +46,9 @@ const TO_TD = track([[0, 0], [4, 0], [5, 1], [6, 1]]);
 const BACK = 2.7;
 
 // The words sheet stands on the bar and grows up over the scene until its words fit (shell.css), so on a short screen the band for the subject
-// ends higher than TALL.sheet. Kompanija's sheet is about 250px, its marker, two title lines, its line and the facts, and the camera makes
+// ends higher than TALL.sheet. Kompanija's sheet is about 320px, its marker, two title lines, its line and three rows of facts, and the camera makes
 // room for it while its words are up, easing in and out with the move into C1 and out of it.
-const TO_SHEET = track([[0, 0], [1.4, 0], [2, 250], [2.85, 250], [3.5, 0], [6, 0]]);
+const TO_SHEET = track([[0, 0], [1.4, 0], [2, 320], [2.85, 320], [3.5, 0], [6, 0]]);
 const T2T = 2 * Math.tan(rad(14));
 
 // The same outdoor pose for a tall screen, u 0 to 6. rpx and rpz are where the truck stands, which Z holds at the end of R. Side on, the

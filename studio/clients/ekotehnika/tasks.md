@@ -25,7 +25,7 @@ Task format
 
 ## In progress
 
-- ekotehnika-18 The phone version of the site. Plan in briefs/mobile/plan.md. Preview https://ekotehnika-5tcpjibz3-filip-mravic-s-projects.vercel.app
+- ekotehnika-18 The phone version of the site. Plan in briefs/mobile/plan.md. Preview https://ekotehnika-j8441nyl6-filip-mravic-s-projects.vercel.app, pathways ?m=1, 2 and 4
   - [x] Shoot what a phone gets today, every screen breaks at 390
   - [x] Three ways weighed, the same live story reframed picked
   - [x] Filip answers, "yes, go with defaults, start with hero and kompanija", 4 November. Test phones and the deadline still open

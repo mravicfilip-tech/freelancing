@@ -1117,6 +1117,11 @@ html:root [data-wipe]:not([data-rise]):not([data-done]) {
     background: var(--white);
   }
 
+  /* past the hero the row of logos has gone, so the sheet may grow up to 16px under the top edge */
+  .s2-stage[data-past] .s2-layer:has(> .s2-c1, > .s2-r, > .s2-n, > .s2-nt, > .s2-at) {
+    max-height: calc(100% - 16px - 64px);
+  }
+
   /* Najam's band is the layer here, the sheet, so the desktop band is not drawn */
   .n-ground {
     display: none;

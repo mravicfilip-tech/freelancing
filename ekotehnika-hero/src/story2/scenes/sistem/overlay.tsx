@@ -15,6 +15,7 @@ import { WAREHOUSE } from '../../timeline';
 import { NP } from './route';
 import { HALL_Y, hallInside } from './najamplan';
 import { TALL, isTall } from '../../tall';
+import { bandTop } from './loadercam';
 
 const TAN = Math.tan((28 / 2) * (Math.PI / 180));
 
@@ -252,6 +253,7 @@ export default function Overlay({ clock }: SceneProps) {
   // high and the words stand on the shell's frosted sheet, so the band follows the row and the cell of R stays off (tall.ts).
   const tall = isTall(size.width, size.height);
   const topH = ((tall ? TALL.top : 136) * 2) / size.height;
+  const topHFor = (u: number) => ((tall ? bandTop(u) : 136) * 2) / size.height;
 
   useFrame(() => {
     const u = uOf(clock);
@@ -264,7 +266,8 @@ export default function Overlay({ clock }: SceneProps) {
       const p = camera.position;
       const out = 1 - hallInside(p.x - NP.x, p.y - HALL_Y, p.z - NP.z, 12);
       const op = WAREHOUSE && u >= 11.9 && u < 13.4 ? out * (1 - ease(range(u, 13.0, 13.4))) : 0;
-      haze.current.visible = op > 0.001;
+      // on a tall screen the words stand on the white sheet, so no haze lies over the scene
+      haze.current.visible = op > 0.001 && !tall;
       (haze.current.material as THREE.MeshBasicMaterial).opacity = op;
     }
     // Black for the push into the forklift, a hard edged shutter. The camera has already filled the frame with the dark mast, the
@@ -285,7 +288,14 @@ export default function Overlay({ clock }: SceneProps) {
     // The masks take the ground of the beat. The band over the top row goes dark on the same story pixels the shell turns
     // the top row's ink light, from the one span in darkTop.ts, and back to light under the fork's light ground, a hard step each way.
     const mc = darkTopAt(clock.pos.current) ? mixCol.set(DARK_BG) : lightCol;
-    if (maskTop.current) (maskTop.current.material as THREE.MeshBasicMaterial).color.copy(mc);
+    if (maskTop.current) {
+      (maskTop.current.material as THREE.MeshBasicMaterial).color.copy(mc);
+      // on a tall screen the band follows the row of logos, which slides away past the hero, so it eases to nothing with the camera's band (bandTop)
+      const bh = topHFor(u);
+      maskTop.current.visible = bh > 0.0005;
+      maskTop.current.scale.y = Math.max(bh / topH, 1e-4);
+      maskTop.current.position.y = 1 - bh / 2;
+    }
     CELLS.forEach((c, i) => {
       const m = cells.current[i];
       if (!m) return;
@@ -330,7 +340,9 @@ export default function Overlay({ clock }: SceneProps) {
       const right = k < BACK_FROM ? aspect + 0.5 : ((forkX(k, size.width, size.height) + 3.462) / near) * (1 + 0.01 * TAN);
       curtain.current.visible = u >= 11 && k < BACK_TO + 0.02 && right > left;
       curtain.current.scale.x = Math.max(right - left, 1e-4);
-      curtain.current.position.set(ox + (left + right) / 2, (k < 0.5 ? yEdge + rule - dock : rule) - 5 + oy, -0.01);
+      // with no row of logos on a tall screen, the light ground the tine lifted runs on up to the top edge once it has docked
+      const top = k < 0.5 ? yEdge + rule - dock : tall ? 1 : rule;
+      curtain.current.position.set(ox + (left + right) / 2, top - 5 + oy, -0.01);
     }
   });
 

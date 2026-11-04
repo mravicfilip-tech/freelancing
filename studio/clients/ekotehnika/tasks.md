@@ -25,7 +25,7 @@ Task format
 
 ## In progress
 
-- ekotehnika-18 The phone version of the site. Plan in briefs/mobile/plan.md. Production with 2 Free, from https://ekotehnika-h6ids0bzj-filip-mravic-s-projects.vercel.app, Filip's "let me see v2 on production", 4 November
+- ekotehnika-18 The phone version of the site. Plan in briefs/mobile/plan.md. Production with 2 Free, from https://ekotehnika-h6ids0bzj-filip-mravic-s-projects.vercel.app, Filip's "let me see v2 on production", 4 November. Preview https://ekotehnika-nnyuqn15d-filip-mravic-s-projects.vercel.app, the bar fixed, no white gaps, 2x scene, no rail
   - [x] Shoot what a phone gets today, every screen breaks at 390
   - [x] Three ways weighed, the same live story reframed picked
   - [x] Filip answers, "yes, go with defaults, start with hero and kompanija", 4 November. Test phones and the deadline still open

@@ -25,7 +25,7 @@ Task format
 
 ## In progress
 
-- ekotehnika-18 The phone version of the site. Plan in briefs/mobile/plan.md. Preview https://ekotehnika-5x9v0rklr-filip-mravic-s-projects.vercel.app, the earlier link held the old build
+- ekotehnika-18 The phone version of the site. Plan in briefs/mobile/plan.md. Preview https://ekotehnika-6ig7ns6su-filip-mravic-s-projects.vercel.app
   - [x] Shoot what a phone gets today, every screen breaks at 390
   - [x] Three ways weighed, the same live story reframed picked
   - [x] Filip answers, "yes, go with defaults, start with hero and kompanija", 4 November. Test phones and the deadline still open
@@ -36,9 +36,10 @@ Task format
   - [x] Preview link on Filip's phone
   - [x] Lock fast, no switcher and the phone hero and Kompanija on production, Filip's "send to production", 4 November, the ekotehnika repo matches
   - [x] Notes 1 to 6 and the round plan, briefs/mobile/round-plan.md, Filip's "Go" to every line on its default, 4 November
-  - [ ] Every screen redesigned for a tall screen, Prodaja, Servis and the map, the fork, Najam and the terms, the dive, Automatizacija, the sections after the story
-  - [ ] The row of logos slides away past the hero, the ground behind words pure white on phones and on the desktop Najam band
-  - [ ] Swipes glide, more stops on a phone, words fade in once a move has landed, a rail of the six sections
+  - [x] Every screen redesigned for a tall screen, Prodaja, Servis and the map, the fork, Najam and the terms, the dive, Automatizacija, the sections after the story, checked at 390 by 844 only
+  - [x] The row of logos slides away past the hero, the ground behind words pure white on phones and on the desktop Najam band
+  - [x] Swipes glide, more stops on a phone, words fade in once a move has landed, a rail of the six sections
+  - [ ] Left by the deadline, 360 by 640, 390 by 664 and tablet checks, the fork docking at the top edge, the lens in Najam, the dive and Automatizacija tuned by eye
   - [ ] A lighter render on a phone, measured on Filip's iPhone
 
 - ekotehnika-17 Client tickets of 3 November, copy for Prodaja, Automatizacija, Kompanija and the hero, Najam scroll back and readability, the footer logo, a scroll with anchors. Notes in briefs/round9/notes.md. Preview https://ekotehnika-qda88p139-filip-mravic-s-projects.vercel.app/?preview

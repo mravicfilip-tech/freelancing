@@ -51,3 +51,19 @@ function stops() {
 
 /** The stops in story pixels, ascending. */
 export const STOPS = stops();
+
+// The anchors of a tall screen, the phone round plan of 4 November, line 4. A swipe goes one anchor, so on a phone there is one wherever words arrive,
+// the stops above, and one more wherever a long move ends, so a swipe never carries the story across a whole section. The run down the warehouse
+// aisle ends where A does, the fork has lifted Servis away where L ends, and the camera has left the dock for the racks where Najam's second
+// window ends.
+function tallStops() {
+  const out = [...STOPS, at('A').end, at('L').end];
+  if (WAREHOUSE) {
+    const n = at('N');
+    out.push(n.start + N_SUB.N2[1] * (n.end - n.start));
+  }
+  return [...new Set(out.map((s) => Math.round(s)))].filter((s) => s > 0 && s < at('AT').end - 1).sort((a, b) => a - b);
+}
+
+/** The anchors of a tall screen in story pixels, ascending. */
+export const TALL_STOPS = tallStops();

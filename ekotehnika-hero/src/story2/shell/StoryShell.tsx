@@ -24,6 +24,7 @@ import { INTRO_SKIP, markIntroStart, revealAt } from '../scenes/sistem/intro';
 import { Preloader } from './Preloader';
 import { loader } from '../scenes/sistem/loader';
 import './shell.css';
+import './trip.css';
 
 export type Tone = 'light' | 'dark';
 
@@ -53,6 +54,8 @@ const LAYERS: LayerDef[] = [
 // S hands the black stage to the servis map in one cut half way through its 2000px, the map holds to the fork's dock.
 // N shows today's text until the camera of the flight in has started across the yard, 50px of leave, see N_LEAVE in timeline.ts, and the
 // terms pane takes the screen when the camera stands inside, which then holds to the end of N.
+// The six numbered sections of the rail on a tall screen, by beat, the hero has none
+const RAIL: Record<string, number> = { D1: 0, C1: 0, D2: 0, F: 1, R: 1, Z: 1, P: 2, A: 2, B: 2, S: 3, L: 3, N: 4, T: 5, AT: 5 };
 const LEAVE: Record<string, [number, number]> = { AT: [1.01, 1.02], S: [0.49, 0.51], SM: [1.01, 1.02], ...(WAREHOUSE ? { N: [N_LEAVE[0], N_LEAVE[1]], NT: [1.01, 1.02] } : {}) };
 
 // Prodaja steps one model per 0.22 of the hold, at k 0.06, 0.28, 0.50 and 0.72, the last one held to the end.
@@ -190,6 +193,7 @@ export function StoryShell({ Scene, tone, reduced, darkLayers, darkTop = DARK_TO
   const { stageRef, clock } = useStoryClock(reduced);
   const isDark = (l: LayerDef) => (darkLayers ? darkLayers.includes(l.id) : l.dark);
   const heroRef = useRef<HTMLDivElement>(null);
+  const railRef = useRef<HTMLDivElement>(null);
   const gridRef = useRef<HTMLDivElement>(null);
   // the servis map is part of S and the terms pane is part of N, so their stills are frames of S and N
   const stills = useMemo(() => LAYERS.map((l) => stillClock(TIMELINE.findIndex((b) => b.id === (l.id === 'SM' ? 'S' : l.id === 'NT' ? 'N' : l.id)), l.still)), []);
@@ -454,6 +458,17 @@ export function StoryShell({ Scene, tone, reduced, darkLayers, darkTop = DARK_TO
         lastPast = past;
         stage.toggleAttribute('data-past', past);
       }
+      // the rail of a tall screen, the numbered section on screen, -1 on the hero (trip.css)
+      const rail = railRef.current;
+      if (rail) {
+        const b = TIMELINE.find((t) => pos >= t.start && pos < t.end) ?? TIMELINE[TIMELINE.length - 1];
+        const at = String(RAIL[b.id] ?? -1);
+        if (rail.dataset.at !== at) {
+          rail.dataset.at = at;
+          rail.querySelectorAll('i').forEach((el, i) => el.toggleAttribute('data-on', String(i) === at));
+        }
+        if (rail.dataset.tone !== lastTone) rail.dataset.tone = lastTone;
+      }
       // with no scene drawn, no WebGL or a scene still loading, the dark span gets its black ground from the page, so its white
       // text never sits on white
       const ground = dark && sceneEl && !sceneEl.firstElementChild ? '#000' : '';
@@ -550,6 +565,11 @@ export function StoryShell({ Scene, tone, reduced, darkLayers, darkTop = DARK_TO
             <l.Pane />
           </section>
         ))}
+        <div className="s2-rail" ref={railRef} data-at="-1" aria-hidden="true">
+          {Array.from({ length: 6 }, (_, i) => (
+            <i key={i} />
+          ))}
+        </div>
         <HeroFrame tone={frameTone} rootRef={heroRef} />
       </div>
       <AfterStory />

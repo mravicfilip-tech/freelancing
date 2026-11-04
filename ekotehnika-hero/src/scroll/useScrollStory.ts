@@ -20,6 +20,7 @@ import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import Lenis, { type VirtualScrollData } from 'lenis';
 import { FEEL } from '../story2/preview';
+import { isTall } from '../story2/tall';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -65,7 +66,7 @@ const QUEUE_GAP = 200;
 const GLIDE_MIN = 0.9;
 
 // What the lock looks at, the pinned story that is on the page now, and the story pixels it stops at.
-let lock: { st: ScrollTrigger; progress: { current: number }; length: number; jumpUntil: { current: number }; stops: number[] } | null = null;
+let lock: { st: ScrollTrigger; progress: { current: number }; length: number; jumpUntil: { current: number }; stops: number[]; tallStops: number[] } | null = null;
 
 // The state of the stops. hold is the stop the clock is waiting at, wheel events are dropped while it is set. pass is the stop a gesture
 // began on, which that gesture carries the clock past. lastWheel is when the last wheel event came, dropped ones included.
@@ -99,8 +100,14 @@ function glideAt(g: Glide, time: number) {
   return { t, pos, vel };
 }
 
-// The anchors, the top of the story, its stops and its end, in story pixels.
-const anchorsOf = () => [0, ...lock!.stops, lock!.length];
+// The anchors, the top of the story, its stops and its end, in story pixels. A tall screen has more of them (stops.ts, TALL_STOPS).
+const anchorsOf = () => [0, ...(isTall(window.innerWidth, window.innerHeight) ? lock!.tallStops : lock!.stops), lock!.length];
+
+// While a swipe moves the story the words are hidden and fade back in once the move has landed, so text never rides over a moving scene
+// (shell/trip.css, the phone round plan of 4 November, line 6).
+function tripFlag(on: boolean) {
+  if (typeof document !== 'undefined') document.documentElement.toggleAttribute('data-trip', on);
+}
 // The next anchor past pos in direction d.
 function anchorAfter(pos: number, d: number) {
   const a = anchorsOf();
@@ -130,6 +137,7 @@ function holdWheel(data: VirtualScrollData) {
   if (d === 0 || gsap.ticker.time <= lock.jumpUntil.current) {
     // a jump from goTo ignores the stops and lets the next gesture start clean
     hold = pass = trip = glide = tripCap = null;
+    tripFlag(false);
     return true;
   }
   const { st, progress, length, stops } = lock;
@@ -234,13 +242,16 @@ function go(data: VirtualScrollData, to: number, d: number, target: number, star
   return true;
 }
 
-function begin(to: number, d: number, clock: number, carry: boolean) {
+// A swipe always glides, a soft start and a soft landing at the anchors' pace, whatever the feel (the phone round plan, line 4).
+function begin(to: number, d: number, clock: number, carry: boolean, swipe = false) {
   const now = gsap.ticker.time;
   const v0 = carry && glide ? glideAt(glide, now).vel : 0;
   trip = to;
   dir = Math.sign(d);
   gestureAt = performance.now();
-  glide = GLIDING ? { p0: clock, v0, p1: to, t0: now, dur: Math.max(GLIDE_MIN, Math.abs(to - clock) / FEEL_CAPS[FEEL]) } : null;
+  const pace = swipe ? TOUCH_CAP : FEEL_CAPS[FEEL];
+  glide = GLIDING || swipe ? { p0: clock, v0, p1: to, t0: now, dur: Math.max(GLIDE_MIN, Math.abs(to - clock) / pace) } : null;
+  if (swipe) tripFlag(true);
 }
 
 // Touch, the phone version (briefs/mobile/plan.md). On a touch screen the story moves by anchors in every locked feel, one swipe for one stop
@@ -297,7 +308,7 @@ function touchEnd(e: TouchEvent) {
   const carry = trip !== null && d === dir;
   magnetDir = 0;
   lenis.scrollTo(st.start + to);
-  begin(to, d, pos, carry);
+  begin(to, d, pos, carry, true);
   tripCap = TOUCH_CAP;
 }
 
@@ -376,9 +387,11 @@ export type ScrollStory = {
   restore?: number | null;
   // story pixels where the clock waits while the wheel is still turned, ascending, used by feel 7 only (story2/stops.ts)
   stops?: number[];
+  // the anchors of a tall screen, ascending, more than the stops (story2/stops.ts, TALL_STOPS)
+  tallStops?: number[];
 };
 
-export function useScrollStory({ length, reduced, snap, smoothing = 0.08, restore = null, stops }: ScrollStory) {
+export function useScrollStory({ length, reduced, snap, smoothing = 0.08, restore = null, stops, tallStops }: ScrollStory) {
   const stageRef = useRef<HTMLDivElement>(null);
   const progress = useRef(0);
   const raw = useRef(0);
@@ -413,8 +426,9 @@ export function useScrollStory({ length, reduced, snap, smoothing = 0.08, restor
         },
       });
     }, stage);
-    if (stRef.current) lock = { st: stRef.current, progress, length, jumpUntil, stops: stops ?? [] };
+    if (stRef.current) lock = { st: stRef.current, progress, length, jumpUntil, stops: stops ?? [], tallStops: tallStops ?? stops ?? [] };
     hold = pass = trip = glide = tripCap = null;
+    tripFlag(false);
     if (ANCHORING) window.addEventListener('keydown', anchorKey);
     if (LOCKED) {
       window.addEventListener('touchstart', touchStart, { passive: true });
@@ -446,13 +460,14 @@ export function useScrollStory({ length, reduced, snap, smoothing = 0.08, restor
         if (Math.abs(raw.current - progress.current) < 0.00005) progress.current = raw.current;
         return;
       }
-      // feel 9, a trip runs on its curve, and the follow waits until it has landed
-      if (GLIDING && glide) {
+      // feel 9 and every swipe, a trip runs on its curve, and the follow waits until it has landed
+      if (glide) {
         const { t, pos } = glideAt(glide, time);
         progress.current = pos / length;
         if (t >= 1) {
           glide = trip = null;
           tripCap = null;
+          tripFlag(false);
           landed = performance.now();
           peak = 0;
         }
@@ -476,6 +491,7 @@ export function useScrollStory({ length, reduced, snap, smoothing = 0.08, restor
       if ((ANCHORING || tripCap !== null) && trip !== null && caught) {
         trip = null;
         tripCap = null;
+        tripFlag(false);
         landed = performance.now();
         peak = 0;
       }
@@ -520,6 +536,7 @@ export function useScrollStory({ length, reduced, snap, smoothing = 0.08, restor
     const y = st.start + (st.end - st.start) * p;
     jumpUntil.current = gsap.ticker.time + JUMP_HOLD;
     hold = pass = trip = glide = tripCap = null;
+    tripFlag(false);
     magnetDir = 0;
     if (lenis) lenis.scrollTo(y, { duration: 1.4 });
     else window.scrollTo({ top: y, behavior: 'smooth' });

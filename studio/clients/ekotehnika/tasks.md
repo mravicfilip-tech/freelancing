@@ -25,6 +25,14 @@ Task format
 
 ## In progress
 
+- ekotehnika-18 The phone version of the site. Plan in briefs/mobile/plan.md
+  - [x] Shoot what a phone gets today, every screen breaks at 390
+  - [x] Three ways weighed, the same live story reframed picked
+  - [ ] Filip answers the six questions at the foot of the plan
+  - [ ] One beat on a real phone, the hero and Kompanija
+  - [ ] Prodaja, then the rest of the beats and the sections after the story
+  - [ ] Preview link on Filip's phone
+
 - ekotehnika-17 Client tickets of 3 November, copy for Prodaja, Automatizacija, Kompanija and the hero, Najam scroll back and readability, the footer logo, a scroll with anchors. Notes in briefs/round9/notes.md. Preview https://ekotehnika-qda88p139-filip-mravic-s-projects.vercel.app/?preview
   - [x] Prodaja button, Posetite prodavnicu
   - [x] Automatizacija title, line and three facts

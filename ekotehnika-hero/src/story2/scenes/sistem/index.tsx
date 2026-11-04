@@ -253,18 +253,21 @@ function Tune() {
 // The device pixel ratio is capped at DPR_MAX, and drops to 1 when the frame rate sags (drei's PerformanceMonitor measures it, a decline
 // lowers the cap, a lasting recovery lifts it, and after two flips it stays down). A 1.5 cap drew 2.25 times the pixels of 1.
 const DPR_MAX = 1.25;
-// A screen held upright at load draws lighter, no antialias pass and plain shadows in place of soft ones, so a phone keeps its frame rate
-// (the phone round plan of 4 November, line 5). The pixel ratio cap and the frame rate monitor stay as they are.
+// A screen held upright at load draws plain shadows in place of soft ones, so a phone keeps its frame rate (the phone round plan of 4 November,
+// line 5). Its pixel ratio is capped at 2 and never drops under 1.5, with antialias, since a phone's screen is 3 times as dense and 1.25 or 1
+// with no antialias looked soft and jagged on Filip's iPhone ("Quality on mobile graphics is so squashed", 4 November).
 const LIGHT = typeof window !== 'undefined' && isTall(window.innerWidth, window.innerHeight);
+const DPR_TOP = LIGHT ? 2 : DPR_MAX;
+const DPR_LOW = LIGHT ? 1.5 : 1;
 
 export default function Scene({ clock }: SceneProps) {
-  const [cap, setCap] = useState(DPR_MAX);
+  const [cap, setCap] = useState(DPR_TOP);
   return (
     <div style={{ position: 'absolute', inset: 0, background: GROUND }} aria-hidden="true">
-      <Canvas shadows={LIGHT ? true : 'soft'} dpr={[1, cap]} frameloop={clock.still ? 'demand' : 'always'} camera={{ fov: 28, near: 0.1, far: 280, position: [0, 2, 12] }} gl={{ antialias: !LIGHT, powerPreference: 'high-performance' }}>
+      <Canvas shadows={LIGHT ? true : 'soft'} dpr={[1, cap]} frameloop={clock.still ? 'demand' : 'always'} camera={{ fov: 28, near: 0.1, far: 280, position: [0, 2, 12] }} gl={{ antialias: true, powerPreference: 'high-performance' }}>
         <World clock={clock} />
         <Tune />
-        {!clock.still && <PerformanceMonitor flipflops={2} onDecline={() => setCap(1)} onIncline={() => setCap(DPR_MAX)} onFallback={() => setCap(1)} />}
+        {!clock.still && <PerformanceMonitor flipflops={2} onDecline={() => setCap(DPR_LOW)} onIncline={() => setCap(DPR_TOP)} onFallback={() => setCap(DPR_LOW)} />}
         <Probe clock={clock} />
       </Canvas>
     </div>

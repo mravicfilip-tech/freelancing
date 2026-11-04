@@ -588,7 +588,8 @@
 
 /* ---- the tall screen, the phone version, studio/clients/ekotehnika/briefs/mobile/plan.md. Any screen with its width at most 4/5 of
    its height, the same rule as story2/tall.ts, TALL there is the numbers used here. Nothing above this line changes on a wide screen,
-   and the bar and the menu sheet are not drawn there. The stage is 100svh high, so the bar sits above a mobile toolbar. ---- */
+   and the bar and the menu sheet are not drawn there. The stage is 100dvh high and the bar is fixed to the screen, so it sits at the foot
+   of what the phone shows whatever the browser's own bars do. ---- */
 .hf-bar,
 .hf-menu {
   display: none;
@@ -655,7 +656,7 @@
   /* ---- the bar at the foot, TALL.bar, 64px, white, a 1px rule on its top that sits on the row of the grid's bottom rule. The menu and
      the call are 48px squares, the quote takes the rest. ---- */
   .hf-bar {
-    position: absolute;
+    position: fixed;
     left: 0;
     right: 0;
     bottom: 0;
@@ -686,7 +687,7 @@
   }
 
   /* the bar is always on white, so the dark tone of the servis beat does not turn its buttons */
-  .hf[data-tone] .hf-bar .btn-secondary {
+  .hf-bar .btn-secondary {
     --b-bg: #fcfcfc;
     --b-fg: var(--black);
     --c-bg: #f4f4f4;
@@ -695,7 +696,7 @@
     --line-c: rgb(0 0 0 / 0.125);
   }
 
-  .hf[data-tone] .hf-bar .btn-primary {
+  .hf-bar .btn-primary {
     --b-bg: var(--lmh-red);
     --b-fg: var(--white);
     --c-bg: var(--black);
@@ -918,7 +919,7 @@
    quote button takes the rest of the bar at full height with its label centred, without the black plus cell that took a fifth of it at 390px.
    Phone round 3, briefs/mobile/round3.md. */
 @media (max-aspect-ratio: 4/5) {
-  .hf[data-tone] .hf-bar :is(.hf-bar-menu, .hf-bar-call) {
+  .hf-bar :is(.hf-bar-menu, .hf-bar-call) {
     --b-bg: transparent;
     --c-bg: transparent;
     --line-c: transparent;
@@ -944,5 +945,28 @@
     justify-content: center;
     padding: 0 16px;
     font-size: 16px;
+  }
+}
+
+/* Filip, 4 November, on a 440px iPhone, "controllers are fucked in bottom". From 440px wide a rule above showed the words Meni and Hitan servis
+   in the bar's 44px squares and stopped the quote button from stretching. On every tall screen the menu and the call are icons only and the
+   quote takes the rest. The bar is off while the menu sheet is open. */
+@media (max-aspect-ratio: 4/5) {
+  .hf-bar :is(.hf-bar-menu, .hf-bar-call) {
+    width: 44px;
+    padding: 0;
+  }
+
+  .hf-bar :is(.hf-bar-menu, .hf-bar-call) .btn-t {
+    display: none;
+  }
+
+  .hf-bar .hf-bar-quote {
+    flex: 1 1 0;
+    margin-left: 4px;
+  }
+
+  .hf-bar[data-menu] {
+    display: none;
   }
 }

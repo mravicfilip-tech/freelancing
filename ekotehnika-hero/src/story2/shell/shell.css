@@ -1037,7 +1037,8 @@ html:root [data-wipe]:not([data-rise]):not([data-done]) {
 @media (max-aspect-ratio: 4/5) {
   /* The stage is the small viewport high, so nothing sits under a mobile browser's toolbar. */
   .s2-stage {
-    height: 100svh;
+    /* the screen the phone shows now, so no white gap opens under the bar when the browser hides its own bars */
+    height: 100dvh;
     /* Five numbers for three lines, at 16, in the middle and 16 from the right edge. Lines 1 and 2 are the left one, 4 and 5 the right one,
        3 the middle as on a wide screen, so between(1, 3) is the left half, between(3, 5) the right half and between(1, 5) the width. The
        same numbers as gridXs in Grid.tsx. */
@@ -1389,5 +1390,28 @@ html:root [data-wipe]:not([data-rise]):not([data-done]) {
 
   .s2-layer .btn .btn-t {
     flex: 1;
+  }
+}
+
+/* Filip, 4 November, on his iPhone. "we have white space", the sheet of a beat is as tall as its words, so no gap opens between the words and
+   the facts on a tall phone. And the four term chips stack the figure over meseci on the phone. The cards' wide screen rule ships in another
+   stylesheet that loads later on a built page and won at the same weight, laying the chips out in a row past the edge of the screen, so these
+   rules carry the stage's class as well. */
+@media (max-aspect-ratio: 4/5) {
+  .s2-stage .s2-layer:has(> .s2-c1, > .s2-r, > .s2-n, > .s2-nt, > .s2-at) {
+    min-height: 0;
+  }
+
+  .s2-stage .s2-nt > .nt-list .cell {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 2px;
+    min-height: 56px;
+    padding: 8px;
+    border: 1px solid var(--line);
+  }
+
+  .s2-stage .s2-nt > .nt-list .cell .fig {
+    font-size: 24px;
   }
 }

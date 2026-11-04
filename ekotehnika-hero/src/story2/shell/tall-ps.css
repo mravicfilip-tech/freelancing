@@ -25,9 +25,10 @@
     display: flex;
     flex-direction: column;
     gap: 12px;
-    /* 44 percent of the stage less the bar puts its top at 56 percent, and it grows up to leave the band 160px at the least */
-    min-height: calc(44svh - 64px);
-    max-height: calc(100svh - 64px - 160px);
+    /* as tall as its words and no taller, so no white gap opens inside it (Filip, 4 November, "we have white space"), and it leaves the band
+       160px at the least. dvh, the screen the phone shows now, as the stage is. */
+    min-height: 0;
+    max-height: calc(100dvh - 64px - 160px);
     padding: 0 16px 16px;
     background: #fff;
   }

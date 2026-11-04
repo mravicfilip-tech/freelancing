@@ -9,6 +9,7 @@
 // white wordmark on the dark span and the hero block through the class names below.
 
 import { useEffect, useRef, useState, type MouseEvent, type Ref } from 'react';
+import { createPortal } from 'react-dom';
 import { hero, SITE } from '../content';
 import { frame, hero2 } from '../story2/copy';
 import { TALL_QUERY } from '../story2/tall';
@@ -169,8 +170,11 @@ export function HeroFrame({ tone, toneBottom, rootRef }: { tone: FrameTone; tone
         </a>
       </div>
 
-      {/* The bar at the foot of a tall screen, 64px, the menu, the Hitan servis call and the quote. Not drawn on any other screen. */}
-      <div className="hf-bar">
+      {/* The bar at the foot of a tall screen, 64px, the menu, the Hitan servis call and the quote. Not drawn on any other screen. It is drawn into
+          the body and fixed to the screen, so it stays at the foot of what the phone shows wherever the page is and whatever the browser's own
+          bars do (Filip, 4 November, "Bottom part is not sticky"). It hides while the menu sheet is open. */}
+      {typeof document === 'undefined' ? null : createPortal(
+      <div className="hf-bar" data-menu={menu.open ? '' : undefined}>
         <button
           type="button"
           className="btn btn-secondary hf-bar-menu"
@@ -188,7 +192,9 @@ export function HeroFrame({ tone, toneBottom, rootRef }: { tone: FrameTone; tone
         <a className="btn btn-primary hf-bar-quote" href={hero.quote.href} data-cta="quote">
           <BtnInner>{hero.quote.label}</BtnInner>
         </a>
-      </div>
+      </div>,
+      document.body,
+      )}
 
       <div className="hf-menu" id="hf-menu" ref={menu.sheet} role="dialog" aria-modal="true" aria-label="Meni" hidden={!menu.open}>
         <div className="hf-menu-head">

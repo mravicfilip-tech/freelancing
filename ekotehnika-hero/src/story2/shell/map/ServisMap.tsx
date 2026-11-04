@@ -112,35 +112,38 @@ export function SMPane() {
   const c = servisMap;
   return (
     <div className="s2-pane sm-pane">
-      <div className="blk stack" style={{ ...between(1, 3), top: 168 }}>
-        <Marker m={markers.s} order={0} />
-        <TitleLines lines={c.title} order={1} />
-        <Fill text={c.text} />
-        <Btn href={c.cta.href} order={5} cta="quote">
-          {c.cta.label}
-        </Btn>
+      {/* the sheet of a tall screen, a plain box with no layout of its own on a wide one, see map.css */}
+      <div className="sm-sheet">
+        <div className="blk stack" style={{ ...between(1, 3), top: 168 }}>
+          <Marker m={markers.s} order={0} />
+          <TitleLines lines={c.title} order={1} />
+          <Fill text={c.text} />
+          <Btn href={c.cta.href} order={5} cta="quote">
+            {c.cta.label}
+          </Btn>
+        </div>
+        <ul className="sm-bases sm-bases-live blk at-bottom" style={between(1, 3)} data-rule="t">
+          {c.bases.map((b, i) => (
+            <li key={b.id}>
+              <i className="p-dot sm-dot" aria-hidden="true" data-wipe={7 + i} />
+              <b className="fig" data-wipe={7 + i}>
+                {b.label}
+              </b>
+              <span className="line" data-wipe={8 + i}>
+                {b.line}
+              </span>
+              <address className="sm-adr">
+                <a className="sm-maps" href={b.maps} target="_blank" rel="noopener noreferrer" aria-label={`${b.address}, otvori u Google mapama`} data-cta="maps" data-wipe={9 + i}>
+                  {b.address}
+                </a>
+                <a href={b.phone.tel} data-cta="call-service" data-wipe={10 + i}>
+                  {b.phone.number}
+                </a>
+              </address>
+            </li>
+          ))}
+        </ul>
       </div>
-      <ul className="sm-bases sm-bases-live blk at-bottom" style={between(1, 3)} data-rule="t">
-        {c.bases.map((b, i) => (
-          <li key={b.id}>
-            <i className="p-dot sm-dot" aria-hidden="true" data-wipe={7 + i} />
-            <b className="fig" data-wipe={7 + i}>
-              {b.label}
-            </b>
-            <span className="line" data-wipe={8 + i}>
-              {b.line}
-            </span>
-            <address className="sm-adr">
-              <a className="sm-maps" href={b.maps} target="_blank" rel="noopener noreferrer" aria-label={`${b.address}, otvori u Google mapama`} data-cta="maps" data-wipe={9 + i}>
-                {b.address}
-              </a>
-              <a href={b.phone.tel} data-cta="call-service" data-wipe={10 + i}>
-                {b.phone.number}
-              </a>
-            </address>
-          </li>
-        ))}
-      </ul>
       <figure className="sm-fig sm-fig-live" style={between(3, 5)} aria-label="Mapa Srbije sa servisnim centrima u Vrčinu i Čurugu">
         <ServisMap />
       </figure>

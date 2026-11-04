@@ -1,1 +1,97 @@
-/* The phone pathway TapStory, see TapStory.tsx */
+/* The phone pathway TapStory, see TapStory.tsx. Tall screens only, desktop never shows any of it. */
+.tap-hit,
+.tap-bar,
+.tap-hint {
+  display: none;
+}
+
+@media (max-aspect-ratio: 4/5) {
+  /* The section rail gives way to the segments on this pathway. */
+  .s2-stage[data-m='4'] .s2-rail {
+    display: none;
+  }
+
+  /* The layer that takes the tap (8, a number between the grid and the words by design). Over the scene and the grid, under the words (z-index 10), so only empty scene reaches it, and it stops
+     above the bar at the foot (TALL.bar, 64px), which keeps its own taps. */
+  .tap-hit {
+    position: absolute;
+    inset: 0 0 64px;
+    z-index: 8;
+    display: block;
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  /* One segment for each stop, 16px in from each side, 4px apart, 2px high. Passed ones in ink, white on the dark Servis beat. */
+  .tap-bar {
+    --track: var(--grey-light);
+    --fill: var(--black);
+    position: absolute;
+    top: max(12px, env(safe-area-inset-top));
+    right: 16px;
+    left: 16px;
+    z-index: 30;
+    display: flex;
+    gap: 4px;
+    opacity: 0;
+    transition: opacity 400ms;
+    pointer-events: none;
+  }
+
+  /* past the hero only, the row of logos stands there before */
+  .s2-stage[data-past] .tap-bar {
+    opacity: 1;
+  }
+
+  .s2-grid[data-tone='white'] ~ .tap-bar {
+    --track: var(--grey-dark);
+    --fill: var(--white);
+  }
+
+  .tap-bar i {
+    --f: 0;
+    position: relative;
+    display: block;
+    flex: 1 1 0;
+    min-width: 0;
+    height: 2px;
+    overflow: hidden;
+    background: var(--track);
+  }
+
+  /* the fill follows the clock, so it has no transition of its own */
+  .tap-bar i::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: var(--fill);
+    transform: scaleX(var(--f));
+    transform-origin: left;
+  }
+
+  /* The hint, pure white and opaque, ink words at 14px. Fade is the one animation. */
+  .tap-hint {
+    position: absolute;
+    top: 32px;
+    left: 50%;
+    z-index: 30;
+    display: block;
+    margin: 0;
+    padding: 8px 16px;
+    border-radius: 999px;
+    background: var(--white);
+    color: var(--black);
+    font-family: var(--font);
+    font-size: 14px;
+    line-height: 20px;
+    white-space: nowrap;
+    transform: translateX(-50%);
+    opacity: 0;
+    transition: opacity 400ms;
+    pointer-events: none;
+  }
+
+  .tap-hint[data-show] {
+    opacity: 1;
+  }
+}

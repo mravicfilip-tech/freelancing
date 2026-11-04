@@ -12,7 +12,8 @@ import { HALL_Y, najamCam, najamT, type Cam } from './najamplan';
 import { NAJAM } from '../../preview';
 import { SWING } from './entry';
 import { loader } from './loader';
-import { loaderPose } from './loadercam';
+import { TALL_SY, fitD, loaderPose } from './loadercam';
+import { TALL, isTall } from '../../tall';
 import { DARK_BG, PAPER, ease, isDark, lerp, range, rad, softTexture, uOf } from './kit';
 
 export type CamState = { target: THREE.Vector3; d: number; shadow: number };
@@ -29,6 +30,32 @@ const O_YAW = track([[0, 0], [4, 0], [5, 90], [6, 90]]);
 const O_PITCH = track([[0, -7], [2, -7], [3, -8], [4, -8], [5, -90], [6, -90]]);
 const O_SX = track([[0, 0.236], [1.4, 0.236], [2, 0.24], [2.85, 0.24], [3.5, 0.12], [4, 0.1], [5, 0.22], [6, 0.22]]);
 const O_SY = track([[0, -0.105], [1, -0.105], [1.6, 0], [2, 0.002], [2.85, 0.002], [3.5, 0], [4, 0], [5, 0.12], [5.6, 0.1], [6, -0.12]]);
+
+// The tall screen's outdoor channels (briefs/mobile/plan.md). Yaw and pitch are the desktop's, so the moves are the same moves. The lens shift sx is
+// 0 and the subject stands at the middle of the frame across. Ws and Hs are the metres across and up the subject needs, fitD turns them into a
+// distance for the screen at hand. OX and OY place the target on the subject. Side on, the lens shift puts the middle of the subject at TALL.subject.
+// Top down, the subject is the X50 and the path ahead of it, and the lens shift puts the rear of the truck just under the logo row, so the path
+// ahead fills the band down to the sheet. TD blends the two over the flip.
+// H the X50 with its carton, D1 the X50 on the road, C1 the X50 under the building and its sign, D2 the drive on, F the flip, R the S path.
+const TO_W = track([[0, 4.9], [1.4, 4.9], [2, 4.9], [2.85, 4.9], [3.5, 4.9], [4, 4.9], [5, 7], [6, 7]]);
+const TO_H = track([[0, 3.2], [1.4, 3.2], [2, 5.4], [2.85, 5.4], [3.5, 3.2], [4, 3.2], [5, 10], [6, 10]]);
+const TO_OX = track([[0, -0.4], [4, -0.4], [5, 0]]);
+const TO_OY = track([[0, 1.1], [1.4, 1.1], [2, 2.6], [2.85, 2.6], [3.5, 1.1], [4, 1.1], [5, 0], [6, 0]]);
+const TO_TD = track([[0, 0], [4, 0], [5, 1], [6, 1]]);
+// Top down the truck drives toward the bottom of the frame, so the path ahead lies under it. BACK is how far the rear of the X50 and its load reaches behind the target.
+const BACK = 2.7;
+
+// The same outdoor pose for a tall screen, u 0 to 6. rpx and rpz are where the truck stands, which Z holds at the end of R.
+function tallOutdoor(u: number, rpx: number, rpz: number, out: Pose, w: number, h: number) {
+  out.target.set(rpx + TO_OX(u), TO_OY(u), rpz);
+  out.d = fitD(TO_W(u), TO_H(u), w, h);
+  out.yaw = O_YAW(u);
+  out.pitch = O_PITCH(u);
+  out.sx = 0;
+  const td = (TALL.top + 8) / h + BACK / (2 * Math.tan(rad(14)) * out.d) - 0.5;
+  out.sy = lerp(TALL_SY, td, TO_TD(u));
+  out.shadow = u < 4 ? 9 : u < 5 ? 22 : 30;
+}
 
 const A_YAW = track([[8, ISO_YAW], [8.3, 0], [8.5, 0], [8.75, 90], [10, 90]]);
 const A_PITCH = track([[8, ISO_PITCH], [8.3, -10], [8.5, -9], [8.75, -3], [9, -3], [10, -1]]);
@@ -77,24 +104,42 @@ export function poseAt(u: number, pos: number, out: Pose, w = 1920, h = 1080): P
   out.fov = 28;
   if (u < 6) {
     const rp = routeAt(truckS(pos));
-    t.set(rp.x + O_OX(u), O_OY(u), rp.z);
-    out.d = O_D(u);
-    out.yaw = O_YAW(u);
-    out.pitch = O_PITCH(u);
-    out.sx = O_SX(u);
-    out.sy = O_SY(u);
-    out.shadow = u < 4 ? 9 : u < 5 ? 22 : 30;
+    if (isTall(w, h)) {
+      tallOutdoor(u, rp.x, rp.z, out, w, h);
+    } else {
+      t.set(rp.x + O_OX(u), O_OY(u), rp.z);
+      out.d = O_D(u);
+      out.yaw = O_YAW(u);
+      out.pitch = O_PITCH(u);
+      out.sx = O_SX(u);
+      out.sy = O_SY(u);
+      out.shadow = u < 4 ? 9 : u < 5 ? 22 : 30;
+    }
     orbit(t, out.d, out.yaw, out.pitch, out.pos);
   } else if (u < 7) {
     const e = ease(u - 6);
     const rp = routeAt(truckS(4700));
     // ends 20 m over the floor, which at 1920 by 1080 frames the hall's 18 m width and nothing beyond its walls
-    t.set(lerp(rp.x, WH_C.x, e), 0, lerp(rp.z, WH_C.z, e));
-    out.d = lerp(56, 20, e);
+    // a tall screen starts from the end of its own R and not the desktop's, so the hand over at u 6 is continuous, and meets the desktop's pose at u 7
+    let x0 = rp.x;
+    let y0 = 0;
+    let d0 = 56;
+    let sx0 = 0.22;
+    let sy0 = -0.12;
+    if (isTall(w, h)) {
+      tallOutdoor(6, rp.x, rp.z, out, w, h);
+      x0 = t.x;
+      y0 = t.y;
+      d0 = out.d;
+      sx0 = out.sx;
+      sy0 = out.sy;
+    }
+    t.set(lerp(x0, WH_C.x, e), lerp(y0, 0, e), lerp(rp.z, WH_C.z, e));
+    out.d = lerp(d0, 20, e);
     out.yaw = 90;
     out.pitch = -90;
-    out.sx = lerp(0.22, 0, e);
-    out.sy = lerp(-0.12, 0, e);
+    out.sx = lerp(sx0, 0, e);
+    out.sy = lerp(sy0, 0, e);
     out.shadow = 45;
     orbit(t, out.d, out.yaw, out.pitch, out.pos);
   } else if (u < 8.5) {
@@ -228,7 +273,7 @@ export function Rig({ clock, state }: SceneProps & { state: React.MutableRefObje
     // While a preloader plays, its own pose is laid over the hero's and blended back to it by the one move that hands the page over (loadercam.ts)
     if (loader.live) {
       loader.frames++;
-      if (loader.version > 0) loaderPose(pose);
+      if (loader.version > 0) loaderPose(pose, size.width, size.height);
     }
     camera.position.copy(pose.pos);
     euler.set(rad(pose.pitch), rad(pose.yaw), 0);

@@ -129,7 +129,7 @@ function holdWheel(data: VirtualScrollData) {
   const d = data.deltaY;
   if (d === 0 || gsap.ticker.time <= lock.jumpUntil.current) {
     // a jump from goTo ignores the stops and lets the next gesture start clean
-    hold = pass = trip = glide = null;
+    hold = pass = trip = glide = tripCap = null;
     return true;
   }
   const { st, progress, length, stops } = lock;
@@ -243,6 +243,68 @@ function begin(to: number, d: number, clock: number, carry: boolean) {
   glide = GLIDING ? { p0: clock, v0, p1: to, t0: now, dur: Math.max(GLIDE_MIN, Math.abs(to - clock) / FEEL_CAPS[FEEL]) } : null;
 }
 
+// Touch, the phone version (briefs/mobile/plan.md). On a touch screen the story moves by anchors in every locked feel, one swipe for one stop
+// at TOUCH_CAP, the pace Filip set for the anchors. A swipe the same way on a trip carries it on to the next anchor and a swipe the other way
+// turns it back, as the wheel does in feels 8 to 10. Inside the story the page does not scroll under the finger, so the story never trails
+// behind it and the mobile browser's address bar stays put. A swipe on from the end of the story, a sideways swipe, a pinch and a touch inside
+// [data-lenis-prevent] scroll the way the browser does. The browser decides on the first move whether a touch scrolls, so the choice is made there.
+const TOUCH_CAP = FEEL_CAPS[8];
+const SWIPE = 24;
+let touch: { x: number; y: number; held: boolean | null } | null = null;
+// the top speed of the trip under way when a swipe set it, null for the feel's own
+let tripCap: number | null = null;
+
+function touchStart(e: TouchEvent) {
+  const el = e.target as Element | null;
+  if (!lock || !lenis || e.touches.length !== 1 || el?.closest?.('[data-lenis-prevent]')) {
+    touch = null;
+    return;
+  }
+  touch = { x: e.touches[0].clientX, y: e.touches[0].clientY, held: null };
+}
+
+function touchMove(e: TouchEvent) {
+  if (!touch || !lock || !lenis) return;
+  if (e.touches.length !== 1) {
+    touch = null;
+    return;
+  }
+  if (touch.held === null) {
+    const dx = e.touches[0].clientX - touch.x;
+    const dy = e.touches[0].clientY - touch.y;
+    const { st, progress, length, jumpUntil } = lock;
+    const target = lenis.targetScroll;
+    const inside = target <= st.end + 0.5 && target >= st.start - 0.5;
+    // the finger going up takes the story on, and from the end of the story that leaves it for the page below
+    const leaving = dy < 0 && progress.current * length >= length - 0.5;
+    touch.held = inside && !leaving && Math.abs(dy) >= Math.abs(dx) && gsap.ticker.time > jumpUntil.current;
+  }
+  if (touch.held && e.cancelable) e.preventDefault();
+}
+
+function touchEnd(e: TouchEvent) {
+  const t = touch;
+  touch = null;
+  const end = e.changedTouches[0];
+  if (!t || !t.held || !end || !lock || !lenis) return;
+  const dy = t.y - end.clientY;
+  if (Math.abs(dy) < SWIPE) return;
+  const d = Math.sign(dy);
+  const { st, progress, length } = lock;
+  const pos = progress.current * length;
+  const to = trip === null ? anchorAfter(pos, d) : d !== dir ? anchorBack(pos, d) : anchorOn(pos, d);
+  if (to === undefined) return;
+  const carry = trip !== null && d === dir;
+  magnetDir = 0;
+  lenis.scrollTo(st.start + to);
+  begin(to, d, pos, carry);
+  tripCap = TOUCH_CAP;
+}
+
+function touchCancel() {
+  touch = null;
+}
+
 // The keys of feels 8 to 10, the arrows, Page Up, Page Down and Space, Shift and Space going up. Inside the story they take the clock to
 // the next anchor, a key the same way on a trip carries it on to the next one, a key the other way turns it back. A key held down
 // repeats only at rest. Outside the story, or leaving it at either end, they scroll the page as always. A key typed into a field, Space
@@ -289,6 +351,8 @@ const JUMP_HOLD = 1.8;
 // One Lenis for the page, driven by the GSAP ticker so ScrollTrigger and Lenis share a clock.
 function startLenis() {
   if (lenis) return lenis;
+  // a mobile browser's address bar sliding in and out changes the height, which would make ScrollTrigger measure the pin again mid scroll
+  ScrollTrigger.config({ ignoreMobileResize: true });
   lenis = new Lenis({ lerp: 0.085, wheelMultiplier: 0.9, virtualScroll: holdWheel });
   lenis.on('scroll', ScrollTrigger.update);
   gsap.ticker.add((t) => lenis?.raf(t * 1000));
@@ -350,8 +414,14 @@ export function useScrollStory({ length, reduced, snap, smoothing = 0.08, restor
       });
     }, stage);
     if (stRef.current) lock = { st: stRef.current, progress, length, jumpUntil, stops: stops ?? [] };
-    hold = pass = trip = glide = null;
+    hold = pass = trip = glide = tripCap = null;
     if (ANCHORING) window.addEventListener('keydown', anchorKey);
+    if (LOCKED) {
+      window.addEventListener('touchstart', touchStart, { passive: true });
+      window.addEventListener('touchmove', touchMove, { passive: false });
+      window.addEventListener('touchend', touchEnd, { passive: true });
+      window.addEventListener('touchcancel', touchCancel, { passive: true });
+    }
     // a reload from the panel lands on the frame it left, straight there, the clock and the page scroll both
     if (restore !== null && stRef.current) {
       const st = stRef.current;
@@ -382,6 +452,7 @@ export function useScrollStory({ length, reduced, snap, smoothing = 0.08, restor
         progress.current = pos / length;
         if (t >= 1) {
           glide = trip = null;
+          tripCap = null;
           landed = performance.now();
           peak = 0;
         }
@@ -395,15 +466,16 @@ export function useScrollStory({ length, reduced, snap, smoothing = 0.08, restor
       const dt = Math.min(deltaTime / 1000, 0.1);
       let step = (goal - progress.current) * (1 - Math.exp(-rate * dt));
       if (time > jumpUntil.current) {
-        const max = (cap * dt) / length;
+        const max = ((tripCap ?? cap) * dt) / length;
         step = Math.max(-max, Math.min(max, step));
       }
       progress.current += step;
       if (Math.abs(goal - progress.current) < 0.00005) progress.current = goal;
-      // feels 8 and 10, the clock has caught up with the page's target, the trip is over and the clock is on its anchor
+      // feels 8 and 10 and a swipe in any feel, the clock has caught up with the page's target, the trip is over and the clock is on its anchor
       const caught = Math.abs(goal - progress.current) * length <= ZONE;
-      if (ANCHORING && trip !== null && caught) {
+      if ((ANCHORING || tripCap !== null) && trip !== null && caught) {
         trip = null;
+        tripCap = null;
         landed = performance.now();
         peak = 0;
       }
@@ -428,6 +500,10 @@ export function useScrollStory({ length, reduced, snap, smoothing = 0.08, restor
     return () => {
       gsap.ticker.remove(tick);
       window.removeEventListener('keydown', anchorKey);
+      window.removeEventListener('touchstart', touchStart);
+      window.removeEventListener('touchmove', touchMove);
+      window.removeEventListener('touchend', touchEnd);
+      window.removeEventListener('touchcancel', touchCancel);
       lock = null;
       stRef.current = null;
       ctx.revert();
@@ -443,7 +519,7 @@ export function useScrollStory({ length, reduced, snap, smoothing = 0.08, restor
     }
     const y = st.start + (st.end - st.start) * p;
     jumpUntil.current = gsap.ticker.time + JUMP_HOLD;
-    hold = pass = trip = glide = null;
+    hold = pass = trip = glide = tripCap = null;
     magnetDir = 0;
     if (lenis) lenis.scrollTo(y, { duration: 1.4 });
     else window.scrollTo({ top: y, behavior: 'smooth' });

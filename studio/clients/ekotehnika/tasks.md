@@ -30,7 +30,7 @@ Task format
   - [x] Three ways weighed, the same live story reframed picked
   - [x] Filip answers, "yes, go with defaults, start with hero and kompanija", 4 November. Test phones and the deadline still open
   - [ ] The hero and Kompanija on a tall screen, the top row at the Linde minimum, a bar at the foot, the words on a sheet, tall camera poses, the Kutija loader shot
-  - [ ] A swipe moves one anchor on a touch screen
+  - [x] A swipe moves one anchor on a touch screen, the page holds still under the finger, a sideways swipe and a tap do nothing
   - [ ] One beat on a real phone, the hero and Kompanija
   - [ ] Prodaja, then the rest of the beats and the sections after the story
   - [ ] Preview link on Filip's phone

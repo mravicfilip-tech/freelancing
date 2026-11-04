@@ -44,7 +44,8 @@ export function TapStory(_props: SceneProps) {
     let shown = false;
     const loop = () => {
       id = requestAnimationFrame(loop);
-      const stops = storyStops();
+      // the stops past the hero only, the two of the hero would always stand full where the segments show
+      const stops = storyStops().filter((s) => s > TIMELINE[0].end);
       const pos = storyPos();
       if (!pos && pos !== 0) return;
       if (stops.length !== n) {
@@ -56,8 +57,8 @@ export function TapStory(_props: SceneProps) {
       const segs = bar.current?.children;
       if (!segs || segs.length !== n) return;
       for (let i = 0; i < n; i++) {
-        const from = i ? stops[i - 1] : 0;
-        const f = i && stops[i] > from ? Math.min(1, Math.max(0, (pos - from) / (stops[i] - from))) : 1;
+        const from = i ? stops[i - 1] : TIMELINE[0].end;
+        const f = stops[i] > from ? Math.min(1, Math.max(0, (pos - from) / (stops[i] - from))) : 1;
         const v = Math.round(f * 1000) / 1000;
         if (last[i] !== v) {
           last[i] = v;

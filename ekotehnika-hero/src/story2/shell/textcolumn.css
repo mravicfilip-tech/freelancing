@@ -1,1 +1,278 @@
-/* The phone pathway TextColumn, see TextColumn.tsx */
+/* The phone pathway TextColumn, see TextColumn.tsx and briefs/mobile/round3.md. ?m=3 on a tall screen only. The scene keeps the top half
+   of the stage and the words of every section stand under it as one column, from 50 percent of the height down to the 64px bar, on pure
+   white, scrolling like a normal page. A wide screen never draws it, and ?m=1 and the others never mount it. */
+.tc {
+  display: none;
+}
+
+@media (max-aspect-ratio: 4/5) {
+  /* The column is the only place the words are on this pathway, so the sheets of the beats and the hero's block are not drawn. The rail,
+     the bar and the row of logos stay. */
+  .s2-stage[data-m='3'] .s2-layer,
+  .s2-stage[data-m='3'] .hf-bottom {
+    display: none;
+  }
+
+  .tc {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 50%;
+    bottom: 64px;
+    /* over the plus marks of the stage (25), level with the bar (30), which comes later in the page and stands below the column's foot */
+    z-index: 30;
+    display: block;
+    overflow-x: hidden;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    -webkit-overflow-scrolling: touch;
+    touch-action: pan-y;
+    background: var(--white);
+    color: var(--black);
+    font-family: var(--font);
+    /* a hairline on its top edge, where the scene stops */
+    box-shadow: inset 0 1px 0 var(--grey-light);
+    /* the title scales with the width between 360 and 430px, never under 28px */
+    --tc-title: clamp(28px, 7.7vw, 34px);
+  }
+
+  .tc:focus {
+    outline: none;
+  }
+
+  /* ---- a block is one section's words, 20px at the sides, 16px between its parts, 24px from the line to the button ---- */
+  .tc-b {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 16px;
+    padding: 32px 20px 48px;
+    border-top: 1px solid var(--grey-light);
+  }
+
+  .tc-b:first-child {
+    padding-top: 32px;
+    border-top: 0;
+  }
+
+  /* the last block is tall enough for its top to pass a third of the column, so it can become the one being read */
+  .tc-last {
+    min-height: 67%;
+  }
+
+  .tc-mk {
+    display: flex;
+    justify-content: space-between;
+    margin: 0;
+    font: 500 14px/20px var(--font);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+
+  .tc-mk-n {
+    font-weight: 350;
+    letter-spacing: 0;
+    font-variant-numeric: lining-nums tabular-nums;
+    color: var(--grey-dark);
+  }
+
+  .tc-title {
+    margin: 0;
+    font-size: var(--tc-title);
+    font-weight: 400;
+    line-height: 1.05;
+    letter-spacing: -0.03em;
+  }
+
+  .tc-title span {
+    display: block;
+  }
+
+  .tc-title-l {
+    font-size: clamp(36px, 10.5vw, 48px);
+  }
+
+  .tc-lede {
+    margin: 0;
+    font-size: 16px;
+    line-height: 24px;
+  }
+
+  /* the button takes the width of the column, the label centred in the space the plus cell leaves */
+  .tc .btn.tc-btn {
+    display: flex;
+    align-self: stretch;
+    width: 100%;
+    margin-top: 8px;
+  }
+
+  .tc .tc-btn .btn-t {
+    flex: 1;
+    justify-content: center;
+    padding: 0 12px;
+  }
+
+  /* ---- fact rows, the figure at the left and its label at the right, a hairline between ---- */
+  .tc-rows {
+    display: flex;
+    flex-direction: column;
+    border-top: 1px solid var(--grey-light);
+  }
+
+  .tc-b > .tc-btn + .tc-rows,
+  .tc-b > .tc-lede + .tc-rows {
+    margin-top: 8px;
+  }
+
+  .tc-row {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 16px;
+    min-height: 56px;
+    padding: 16px 0;
+    border-bottom: 1px solid var(--grey-light);
+    color: inherit;
+    text-decoration: none;
+  }
+
+  .tc-fig {
+    flex: none;
+    max-width: 62%;
+    font-size: 24px;
+    font-weight: 350;
+    line-height: 1.1;
+    letter-spacing: -0.02em;
+    font-variant-numeric: lining-nums tabular-nums;
+  }
+
+  .tc-fig-s {
+    font-size: 20px;
+  }
+
+  .tc-lab {
+    min-width: 0;
+    font: 500 14px/20px var(--font);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    text-align: right;
+    color: var(--grey-dark);
+  }
+
+  /* a list item of Kompanija, the name over its line */
+  .tc-item {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    padding: 16px 0;
+    border-bottom: 1px solid var(--grey-light);
+  }
+
+  .tc-item b {
+    font-size: 20px;
+    font-weight: 400;
+    line-height: 28px;
+  }
+
+  .tc-item span {
+    font-size: 16px;
+    line-height: 24px;
+    color: var(--grey-dark);
+  }
+
+  /* ---- Prodaja, the four ranges as rows, the picked one in ink with the 2px rule under it, the cut out of it under the list ---- */
+  .tc-tab {
+    display: grid;
+    grid-template-columns: 28px minmax(0, 1fr) auto;
+    align-items: baseline;
+    column-gap: 8px;
+    min-height: 56px;
+    padding: 16px 0;
+    border: 0;
+    border-bottom: 1px solid var(--grey-light);
+    background: transparent;
+    font: 400 16px/24px var(--font);
+    text-align: left;
+    color: var(--grey-dark);
+    cursor: pointer;
+  }
+
+  .tc-tab[aria-selected='true'] {
+    color: var(--black);
+    box-shadow: 0 1px 0 0 var(--black);
+    border-bottom-color: var(--black);
+  }
+
+  .tc-tab-n {
+    font-size: 14px;
+    font-variant-numeric: lining-nums tabular-nums;
+  }
+
+  .tc-tab-range {
+    font-size: 14px;
+    font-variant-numeric: lining-nums tabular-nums;
+  }
+
+  .tc-fig-img {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 200px;
+    margin: 8px 0 0;
+    background: var(--white);
+  }
+
+  .tc-fig-img img {
+    display: block;
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+    animation: tc-fade 260ms ease-out;
+  }
+
+  @keyframes tc-fade {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+
+  /* ---- Servis map, a centre is its name, its line and two rows that are links ---- */
+  .tc-base {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    margin-top: 8px;
+  }
+
+  .tc-base-name {
+    font-size: 24px;
+    font-weight: 350;
+    line-height: 32px;
+    letter-spacing: -0.02em;
+  }
+
+  .tc-base-line {
+    margin-bottom: 8px;
+    font-size: 16px;
+    line-height: 24px;
+    color: var(--grey-dark);
+  }
+
+  .tc-adr {
+    align-items: center;
+    font-size: 16px;
+    line-height: 24px;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+    text-decoration-thickness: 1px;
+  }
+
+  .tc a:focus-visible,
+  .tc button:focus-visible {
+    outline: 2px solid var(--black);
+    outline-offset: 2px;
+  }
+}

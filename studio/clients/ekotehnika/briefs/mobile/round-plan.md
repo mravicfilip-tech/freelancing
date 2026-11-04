@@ -32,7 +32,7 @@ Kompanija are live, everything after them still shows the desktop layout on a ph
 
 ## Open
 
-- Deadline, not named yet.
+- Deadline, now, Filip 4 November, "Build all at once deadline is now". The builders were cut to the core of each slice, what is left is listed in their reports.
 - Test phones, Filip's iPhone, and one Android to be named.
 
 ## How it is built

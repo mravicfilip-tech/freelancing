@@ -866,10 +866,11 @@ html:root [data-wipe]:not([data-rise]):not([data-done]) {
   top: 376px;
 }
 
-/* Najam's words stand on a frosted band, the client's ticket of 3 November, "Nije pregledno, rešiti možda nekom transparentnom
-   blurovanom pozadinom". It runs the stage's width from the top rule to the foot of the fact row, 136px to 544px, the hall
-   blurred behind it and lightened, under the grid lines so they stay sharp. The shell shows it and cuts it behind the fork with
-   the Najam words, see ground in StoryShell. */
+/* Najam's words stand on a band, the client's ticket of 3 November, "Nije pregledno, rešiti možda nekom transparentnom
+   blurovanom pozadinom". Filip took the blur back on 4 November, "Don't make things transparently blurred, it needs to be pure
+   white", so the band is pure white, opaque, with no blur. It runs the stage's width from the top rule to the foot of the fact row,
+   136px to 544px, under the grid lines so they stay sharp. The shell shows it and cuts it behind the fork with the Najam words, see
+   ground in StoryShell. */
 .n-ground {
   position: absolute;
   left: 0;
@@ -877,10 +878,7 @@ html:root [data-wipe]:not([data-rise]):not([data-done]) {
   top: 136px;
   height: 408px;
   pointer-events: none;
-  background: rgb(255 255 255 / 0.72);
-  /* the prefixed line first, the minifier keeps the last of the two and drops the other, and Chrome reads only the plain one */
-  -webkit-backdrop-filter: blur(16px);
-  backdrop-filter: blur(16px);
+  background: var(--white);
 }
 
 /* Every spec row, N, C1 and AT, has a 20px solid icon above each figure and a 40px figure, for a clearer order. --cap is where
@@ -1082,6 +1080,18 @@ html:root [data-wipe]:not([data-rise]):not([data-done]) {
     top: calc(120px - 4px);
   }
 
+  /* Past the hero, the stage carries data-past (StoryShell) and the top rule and its plus marks slide up with the row of logos, the same
+     400ms, so nothing is drawn across the top of the scene. The verticals run on to the top edge. The bar's rule at the foot stays. */
+  .gh-top,
+  .gp-top {
+    transition: transform 400ms var(--ease-wipe);
+  }
+
+  .s2-stage[data-past] .gh-top,
+  .s2-stage[data-past] .gp-top {
+    transform: translateY(-136px);
+  }
+
   /* the rules run from the left line to the middle and on to the right one, so the first and the last stretch are not drawn */
   .hs:nth-child(1),
   .hs:nth-child(4) {
@@ -1093,9 +1103,9 @@ html:root [data-wipe]:not([data-rise]):not([data-done]) {
   }
 
   /* ---- the words sheet. A beat's layer is the sheet, from 56 percent of the stage height down to the bar, so it comes and goes with the
-     words. The prefixed line goes first, the minifier keeps the last of the pair and Chrome reads only the plain one. A layer whose pane is
+     words. A layer whose pane is
      not laid out for a tall screen yet is not in this list and keeps its place. ---- */
-  .s2-layer:has(> .s2-c1, > .s2-r) {
+  .s2-layer:has(> .s2-c1, > .s2-r, > .s2-n, > .s2-nt, > .s2-at) {
     /* it stands on the bar and starts at 56 percent, and on a short screen it grows up over the scene until its words fit, never into the
        row of logos, so no line of the client's copy is left out (Filip's plan, every beat readable at 390 and 360) */
     inset: auto 0 64px 0;
@@ -1103,15 +1113,22 @@ html:root [data-wipe]:not([data-rise]):not([data-done]) {
     max-height: calc(100% - 120px - 64px);
     display: flex;
     flex-direction: column;
-    background: rgb(255 255 255 / 0.72);
-    -webkit-backdrop-filter: blur(16px);
-    backdrop-filter: blur(16px);
+    /* pure white, opaque, no blur on every beat with words (Filip, 4 November, "it needs to be pure white") */
+    background: var(--white);
+  }
+
+  /* Najam's band is the layer here, the sheet, so the desktop band is not drawn */
+  .n-ground {
+    display: none;
   }
 
   /* ---- C1 and R, the words in a column under the marker's rule, the facts or the list at the foot on the bar's rule. The blocks are laid
      out in the flow, so the inline left, top and width of between(a, b) are let go, which is the one place !important is used. ---- */
   .s2-c1,
-  .s2-r {
+  .s2-r,
+  .s2-n,
+  .s2-nt,
+  .s2-at {
     position: relative;
     inset: auto;
     flex: 1 1 auto;
@@ -1122,7 +1139,10 @@ html:root [data-wipe]:not([data-rise]):not([data-done]) {
   }
 
   .s2-c1 > .blk,
-  .s2-r > .blk {
+  .s2-r > .blk,
+  .s2-n > .blk,
+  .s2-nt > .blk,
+  .s2-at > .blk {
     position: static;
     left: auto !important;
     top: auto !important;
@@ -1131,33 +1151,131 @@ html:root [data-wipe]:not([data-rise]):not([data-done]) {
   }
 
   .s2-c1 .stack,
-  .s2-r .stack {
+  .s2-r .stack,
+  .s2-n .stack,
+  .s2-nt .stack,
+  .s2-at .stack {
     gap: 8px;
   }
 
   .s2-c1 .stack > .s2-marker,
-  .s2-r .stack > .s2-marker {
+  .s2-r .stack > .s2-marker,
+  .s2-n .stack > .s2-marker,
+  .s2-nt .stack > .s2-marker,
+  .s2-at .stack > .s2-marker {
     margin: 0;
     padding: 12px 12px 0;
   }
 
   .s2-c1 .stack > :is(.s2-title, .s2-lede),
-  .s2-r .stack > :is(.s2-title, .s2-lede) {
+  .s2-r .stack > :is(.s2-title, .s2-lede),
+  .s2-n .stack > :is(.s2-title, .s2-lede, .btn),
+  .s2-nt .stack > :is(.s2-title, .s2-lede),
+  .s2-at .stack > :is(.s2-title, .s2-lede, .btn) {
     margin-left: 12px;
     margin-right: 12px;
   }
 
   .s2-c1 .lb .s2-title-s,
-  .s2-r .stack .s2-title-s {
+  .s2-r .stack .s2-title-s,
+  .s2-n .stack .s2-title,
+  .s2-nt .stack .s2-title,
+  .s2-at .stack .s2-title {
     font-size: var(--tt);
   }
 
   .s2-c1 .s2-lede,
-  .s2-r .s2-lede {
+  .s2-r .s2-lede,
+  .s2-n .s2-lede,
+  .s2-nt .s2-lede,
+  .s2-at .s2-lede {
     max-width: none;
     font-size: 16px;
     line-height: 24px;
     text-wrap: initial;
+  }
+
+  /* ---- Najam, N. The facts are two by two at the foot, a cell is the figure over its label, the icons are left out like C1's. The row's
+     inline template and the spans of its cells are let go. ---- */
+  .s2-n .n-row {
+    margin-top: auto;
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    column-gap: 0;
+  }
+
+  .s2-n .n-row .cell {
+    grid-column: auto !important;
+    gap: 2px;
+    padding: 8px 12px;
+  }
+
+  .s2-n .n-row .cell:nth-child(n + 3) {
+    border-top: 1px solid var(--line);
+  }
+
+  .s2-n .n-row .cell:nth-child(2n) {
+    padding-right: 12px;
+  }
+
+  .s2-n .n-row .ico {
+    display: none;
+  }
+
+  .s2-n .n-row .fig {
+    font-size: 24px;
+  }
+
+  /* ---- Najam, NT. The four terms are one row of four chips at the foot, each a box with the figure over meseci, the lit one has the 2px
+     ink rule along its foot and the figure and label in ink, as on a wide screen. najam.css lays the cards out as a column on a wide screen,
+     its rules are the same specificity, so these are written a level up. ---- */
+  .s2-nt > .nt-list.blk {
+    margin-top: auto;
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 8px;
+    border-top: 0;
+  }
+
+  .s2-nt > .nt-list .cell {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 2px;
+    min-height: 56px;
+    padding: 8px;
+    border: 1px solid var(--line);
+  }
+
+  .s2-nt > .nt-list .cell .fig {
+    font-size: 24px;
+  }
+
+  /* ---- Automatizacija, AT. The three facts are a compact list at the foot, a row each, the figure on the left and its label on the right,
+     with a hairline between the rows. ---- */
+  .s2-at .at-bottom {
+    margin-top: auto;
+    grid-template-columns: minmax(0, 1fr) !important;
+  }
+
+  .s2-at .at-bottom .cell {
+    display: grid;
+    grid-template-columns: 120px minmax(0, 1fr);
+    align-items: baseline;
+    column-gap: 12px;
+    padding: 8px 12px;
+    border-left: 0;
+    box-shadow: none;
+  }
+
+  .s2-at .at-bottom .cell:not(:first-child) {
+    border-top: 1px solid var(--line);
+  }
+
+  .s2-at .at-bottom .ico {
+    display: none;
+  }
+
+  .s2-at .at-bottom .fig {
+    font-size: 20px;
   }
 
   /* C1's facts, one compact row of three equal cells at the foot. The icons are left out. */
@@ -1200,7 +1318,10 @@ html:root [data-wipe]:not([data-rise]):not([data-done]) {
 /* The sheet is 0.44 of the stage less the bar, 244px at 700 high, 270px at 760 and 307px at 844. Under 800px high the text of the beats is 14px. */
 @media (max-aspect-ratio: 4/5) and (max-height: 799px) {
   .s2-c1 .s2-lede,
-  .s2-r .s2-lede {
+  .s2-r .s2-lede,
+  .s2-n .s2-lede,
+  .s2-nt .s2-lede,
+  .s2-at .s2-lede {
     font-size: 14px;
     line-height: 20px;
   }

@@ -300,7 +300,19 @@ function touchEnd(e: TouchEvent) {
   if (!t || !t.held || !end || !lock || !lenis) return;
   const dy = t.y - end.clientY;
   if (Math.abs(dy) < SWIPE) return;
-  const d = Math.sign(dy);
+  stepStop(Math.sign(dy));
+}
+
+/** The story's anchors in story pixels, the top, the stops and the end, the tall screen's when the screen is tall. For the phone pathways. */
+export const storyStops = () => (lock ? anchorsOf() : []);
+
+/** The story clock in story pixels, null while no story is pinned. */
+export const storyPos = () => (lock ? lock.progress.current * lock.length : null);
+
+/** Glides the story one stop on in direction d, 1 down the story and -1 back, as a swipe does. A step the same way on a trip carries it on to
+ *  the next stop, a step the other way turns it back. Does nothing at the ends. For the phone pathways (TapStory, TextColumn). */
+export function stepStop(d: number) {
+  if (!lock || !lenis || !d) return;
   const { st, progress, length } = lock;
   const pos = progress.current * length;
   const to = trip === null ? anchorAfter(pos, d) : d !== dir ? anchorBack(pos, d) : anchorOn(pos, d);
@@ -310,6 +322,25 @@ function touchEnd(e: TouchEvent) {
   lenis.scrollTo(st.start + to);
   begin(to, d, pos, carry, true);
   tripCap = TOUCH_CAP;
+}
+
+/** Glides the story to the stop at story pixel to, the way a swipe does. For the phone pathways. */
+export function glideTo(to: number) {
+  if (!lock || !lenis) return;
+  const { st, progress, length } = lock;
+  const pos = progress.current * length;
+  if (Math.abs(to - pos) <= ZONE) return;
+  const d = Math.sign(to - pos);
+  magnetDir = 0;
+  lenis.scrollTo(st.start + to);
+  begin(to, d, pos, trip !== null && d === dir, true);
+  tripCap = TOUCH_CAP;
+}
+
+/** Leaves the story for the page below it, for a pathway whose last step goes on. */
+export function leaveStory() {
+  if (!lock || !lenis) return;
+  lenis.scrollTo(lock.st.end + 2);
 }
 
 function touchCancel() {

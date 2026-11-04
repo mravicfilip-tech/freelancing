@@ -11,3 +11,4 @@ Notes queue. Each note is written here as it comes, no code is touched, and the 
 | 5 | "Make sure we make this A GIGA BLAST experience on mobile" | none | Planned, line 6 |
 | 6 | "Don't make things transparently blurred, it needs to be pure white" | none | Planned, line 3 |
 | 7 | "Things that are too cramped", three marked screenshots, Kompanija's facts, the Najam sheet, the servis centres | refs not filed, shown in chat | Done, facts as rows, centres side by side, Najam over its two stops |
+| 8 | "I'm not sure about the mobile scrolling experience, how content is pressed or showed", "Can we iterate on multiple pathways for scroll and just work on the content more so it is nice?", "the primary button on bottom bar is squashed" | none | Planned, round3.md |

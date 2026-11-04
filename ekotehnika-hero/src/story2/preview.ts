@@ -19,6 +19,12 @@ const pick = (name: string, fallback: number, allowed: number[]) => {
 export const FEEL = pick('feel', 6, [4, 5, 6, 7, 8, 9, 10]);
 export const LOADER = pick('loader', 3, [1, 2, 3]);
 export const NAJAM = pick('najam', 2, [0, 2]);
+// ?m=N, the phone pathway, how a screen held upright moves through the story, Filip 4 November, "Can we iterate on multiple pathways for
+// scroll". 1 Stops, a swipe glides to the next stop and the words come in once it lands, the one on production. 2 Free, the finger moves
+// the story and it settles on the next stop when the finger lets go. 3 Column, the scene stays in the top half and the words of every section
+// scroll under it as one column, the scene gliding to the section being read. 4 Tap, a tap on the right of the scene or a swipe goes on, a
+// tap on the left goes back, a bar of segments at the top shows the stops. Briefs/mobile/round3.md. A screen held upright only.
+export const MSCROLL = pick('m', 1, [1, 2, 3, 4]);
 
 // Where the story was, a beat id and k of that beat, put in session storage by a test so the page lands on that frame. Taken once, at load.
 const KEY = 'story2-return';

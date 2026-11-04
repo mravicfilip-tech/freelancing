@@ -25,6 +25,9 @@ import { Preloader } from './Preloader';
 import { loader } from '../scenes/sistem/loader';
 import './shell.css';
 import './trip.css';
+import { TextColumn } from './TextColumn';
+import { TapStory } from './TapStory';
+import { MSCROLL } from '../preview';
 
 export type Tone = 'light' | 'dark';
 
@@ -570,7 +573,7 @@ export function StoryShell({ Scene, tone, reduced, darkLayers, darkTop = DARK_TO
   return (
     <div className="s2" data-tone={tone}>
       <Preloader webgl={HAS_GL} />
-      <div ref={stageRef} className="s2-stage" role="region" aria-label="Ekotehnika, Linde viljuškari">
+      <div ref={stageRef} className="s2-stage" data-m={MSCROLL} role="region" aria-label="Ekotehnika, Linde viljuškari">
         <div className="s2-scene" aria-hidden="true">
           {mountScene(Scene, clock)}
         </div>
@@ -581,6 +584,8 @@ export function StoryShell({ Scene, tone, reduced, darkLayers, darkTop = DARK_TO
             <l.Pane />
           </section>
         ))}
+        {MSCROLL === 3 ? <TextColumn clock={clock} /> : null}
+        {MSCROLL === 4 ? <TapStory clock={clock} /> : null}
         <div className="s2-rail" ref={railRef} data-at="-1" aria-hidden="true">
           {Array.from({ length: 6 }, (_, i) => (
             <i key={i} />

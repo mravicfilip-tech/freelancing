@@ -41,6 +41,7 @@ Task format
   - [x] Swipes glide, more stops on a phone, words fade in once a move has landed, a rail of the six sections
   - [ ] Left by the deadline, 360 by 640, 390 by 664 and tablet checks, the fork docking at the top edge, the lens in Najam, the dive and Automatizacija tuned by eye
   - [x] Too cramped, Kompanija's facts, the Najam sheet and the servis centres given room, Najam's words over its two stops
+  - [x] Every phone screen on production, Filip's "send to production", 4 November, the ekotehnika repo matches
   - [ ] A lighter render on a phone, measured on Filip's iPhone
 
 - ekotehnika-17 Client tickets of 3 November, copy for Prodaja, Automatizacija, Kompanija and the hero, Najam scroll back and readability, the footer logo, a scroll with anchors. Notes in briefs/round9/notes.md. Preview https://ekotehnika-qda88p139-filip-mravic-s-projects.vercel.app/?preview

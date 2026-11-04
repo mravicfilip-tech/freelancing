@@ -611,6 +611,8 @@ function Office() {
 // the long roof lights along z, 1.8 m wide, the last one over the dock end of the hall opens in the third flight for the camera to leave through
 const LIGHTS_X = [-24, -15, -6, 3, 12];
 const lightsAt = (i: number) => LIGHTS_X[i];
+// the middle of the last one, the hatch, which a tall screen hinges on its west edge, see najam.tsx
+export const HATCH_X = LIGHTS_X[4];
 // the x where the aisles open on the staging floor
 const X_MOUTH = HALL.rackX0 + 0.4;
 

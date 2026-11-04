@@ -17,8 +17,9 @@ import { NP } from './route';
 import { SPEC, Truck, type ModelName, type TruckApi } from './models';
 import { BoxSet, type BoxItem } from './props';
 import { ease, range, rng, uOf } from './kit';
+import { isTall } from '../../tall';
 import { HALL, HALL_Y, PALLETS, X50_PAL, d12At, h30At, hallInside, isHeroSlot, levelY, palletAt, r16AAt, r16BAt, x50AAt, x50BAt, type Pose } from './najamplan';
-import { CHARGING, DOOR_H, Hall, PARKED, PARK_Z, Yard, loadedPallet, newSets, PalletSet } from './najamhall';
+import { CHARGING, DOOR_H, HATCH_X, Hall, PARKED, PARK_Z, Yard, loadedPallet, newSets, PalletSet } from './najamhall';
 import { AXLE_X, BED, CURTAIN_UP, Lorry, type LorryApi } from './najamlorry';
 import { C_FROM, C_IN_TRAILER, DOCK_PALLET_COUNT, LORRY_COUNT, dockAAt, dockBAt, dockCAt, dockPalletAt, kLong, lorryAt, mkLorry } from './najamdock';
 import { Load, Plates, floorMarkTone, line, beamFlange, beamWeb, labelMat, loadMats, palletBase, rackGrey, wrapBand, wrapShell } from './najamkit';
@@ -357,6 +358,8 @@ function DockLoads({ clock }: SceneProps) {
 // the third flight it opens as the flight starts, while the camera is still in the hall, and closes once the camera is 14 m over the roof. In T it opens
 // as the camera comes down to the roof and stays open, the camera goes in through it and never sees it again.
 const HATCH_UP = 1.3;
+// on a tall screen in T it swings on over and lies back on the roof to the west, out of the camera's way, see below
+const HATCH_BACK = 2.7;
 const FLIGHT_OPEN = [0, 0.02] as const;
 const FLIGHT_SHUT = [0.037, 0.05] as const;
 const T_OPEN = [13.5, 13.6] as const;
@@ -370,6 +373,7 @@ export default function Najam({ clock }: SceneProps) {
   const signFade = useRef(1);
   const scene = useThree((st) => st.scene);
   const camera = useThree((st) => st.camera);
+  const size = useThree((st) => st.size);
   useFrame(() => {
     const u = uOf(clock);
     const k = planK(Math.min(Math.max(u - 12, 0), 1));
@@ -384,7 +388,15 @@ export default function Najam({ clock }: SceneProps) {
     const kk = Math.min(Math.max(u - 12, 0), 1);
     const f0 = N_FLIGHT.high[0];
     const hatch = u < 13 ? ease(range(kk, f0 + FLIGHT_OPEN[0], f0 + FLIGHT_OPEN[1])) * (1 - ease(range(kk, f0 + FLIGHT_SHUT[0], f0 + FLIGHT_SHUT[1]))) : ease(range(u, T_OPEN[0], T_OPEN[1]));
-    if (roofHatch.current) roofHatch.current.rotation.z = -hatch * HATCH_UP;
+    // A tall screen dives in from the yard, see najamTTall, so its hatch hinges on the west edge, the same panel turned half a circle about its
+    // middle line along z, and in T it lies back on the roof, so the camera looks into the opening and not at the hatch's underside.
+    const h = roofHatch.current;
+    if (h) {
+      const west = isTall(size.width, size.height);
+      h.position.x = HATCH_X + (west ? -0.9 : 0.9);
+      h.rotation.y = west ? Math.PI : 0;
+      h.rotation.z = -hatch * (west && u >= 13 ? HATCH_BACK : HATCH_UP);
+    }
     // the wordmark on the long wall is drawn out as the third flight starts, while the camera is still inside, and drawn in again over the last
     // 0.025 of the flight, as the high view of N4 arrives, since between them every part of the building passes behind the title of the terms
     const away = ease(range(kk, f0, f0 + 0.01)) * (1 - ease(range(kk, N_SUB.N4[0] - 0.025, N_SUB.N4[0])));

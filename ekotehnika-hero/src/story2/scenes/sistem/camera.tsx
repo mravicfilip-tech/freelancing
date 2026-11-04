@@ -8,7 +8,7 @@ import { track } from '../../../story/scenes/sistem/tracks';
 import type { SceneProps } from '../../clock';
 import { BP, NP, WH_C, routeAt, truckS, AISLES } from './route';
 import { focusAt, toWorld } from './atplan';
-import { HALL_Y, najamCam, najamT, type Cam } from './najamplan';
+import { HALL_Y, najamCam, najamT, najamTTall, type Cam } from './najamplan';
 import { NAJAM } from '../../preview';
 import { SWING } from './entry';
 import { loader } from './loader';
@@ -73,7 +73,7 @@ function tallOutdoor(u: number, rpx: number, rpz: number, out: Pose, w: number, 
 // The tall frame past the hero, u 1.15 on. The band runs from the top edge to the sheet, and the subject of a beat stands in the middle of it, so the
 // lens shift is sy and sx is 0. tallD is the distance at which a subject ws metres across and hs metres up fills 85 percent of the width and 92 percent
 // of the band, whichever asks for more. Najam and the aisle keep their own camera and only widen the lens, tallFov, so the camera stays on the path
-// through the door and the roof light and never ends outside a wall.
+// through the door and never ends outside a wall. The dive of T between them has a road of its own, najamTTall.
 const tallBandOf = (_w: number, h: number) => {
   const bottom = Math.min(TALL.sheet * h, h - TALL.bar);
   return { sy: (TALL.topStory + bottom) / 2 / h - 0.5, band: (bottom - TALL.topStory) / h };
@@ -87,7 +87,6 @@ const BEHIND = 1.8;
 const tallFov = (fov: number, k: number) => (2 * Math.atan(Math.tan(rad(fov / 2)) * k)) / rad(1);
 const K_NAJAM = 2.2;
 const K_AT = 1.8;
-const tallK = (u: number) => lerp(K_NAJAM, K_AT, ease(range(u, 13, 14)));
 // the X50 schematic with its dimension lines, about 6.5 m across and 4.5 m up
 const xD = (w: number, h: number) => tallD(6.5, 4.5, w, h);
 
@@ -286,10 +285,13 @@ export function poseAt(u: number, pos: number, out: Pose, w = 1920, h = 1080): P
     const [fx, , fz] = toWorld(f.a, f.b);
     if (NAJAM !== 0) {
       out.yaw = lerp(AT_YAW[0], AT_YAW[1], ease(k));
+      const tall = isTall(w, h);
       if (u < 14) {
         // the lens, shift and light of the aisle at k 0, in hall metres, which is where the move ends
         const end = Object.assign(najamEnd, { x: -f.a, y: 0.8, z: -f.b, d: AT_D, yaw: AT_YAW[0], pitch: AT_PITCH, sx: AT_SX, sy: 0.02, shadow: 14, fov: 28 });
-        const c = najamT(range(u, 13, 14), end, najamPose);
+        // a tall screen dives on a road of its own, from the lens of N's last frame to that of AT's first, see najamTTall
+        if (tall) Object.assign(end, { sx: 0, sy: 0, fov: tallFov(28, K_AT) });
+        const c = tall ? najamTTall(range(u, 13, 14), tallFov(28, K_NAJAM), end, najamPose) : najamT(range(u, 13, 14), end, najamPose);
         t.set(NP.x + c.x, c.y, NP.z + c.z);
         out.d = c.d;
         out.yaw = c.yaw;
@@ -307,10 +309,14 @@ export function poseAt(u: number, pos: number, out: Pose, w = 1920, h = 1080): P
         out.shadow = 14;
         out.fov = 28;
       }
-      if (isTall(w, h)) {
+      if (tall && u >= 14) {
         out.sx = 0;
         out.sy = tallBandOf(w, h).sy;
-        out.fov = tallFov(out.fov, tallK(u));
+        out.fov = tallFov(out.fov, K_AT);
+      } else if (tall) {
+        // T has no words, so the band's shift goes over the first 0.3 of it and the building comes to the middle of the screen, and it comes back
+        // over the last 0.28 for the words of AT
+        out.sy = tallBandOf(w, h).sy * Math.max(1 - ease(range(u, 13, 13.3)), ease(range(u, 13.72, 14)));
       }
       orbit(t, out.d, out.yaw, out.pitch, out.pos);
       return out;

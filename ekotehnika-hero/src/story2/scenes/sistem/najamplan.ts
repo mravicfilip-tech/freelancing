@@ -427,7 +427,7 @@ const mix = (a: Cam, b: Cam, t: number, o: Cam) => {
 // and its target are. With no vias the flight is a straight line.
 const RAD = PI / 180;
 type V3 = [number, number, number];
-type Via = { cam: V3[]; tgt: V3[]; sx?: number[]; sy?: number[]; even?: boolean };
+type Via = { cam: V3[]; tgt: V3[]; sx?: number[]; sy?: number[]; even?: boolean; cost?: (y: number) => number };
 const spline = (pts: V3[], t: number): V3 => {
   const n = pts.length - 1;
   if (n === 1) return [lerp(pts[0][0], pts[1][0], t), lerp(pts[0][1], pts[1][1], t), lerp(pts[0][2], pts[1][2], t)];
@@ -490,14 +490,14 @@ const VIA_HIGH: Via = viaOf([OUT_IN, ...ROAD.slice().reverse()]);
 // then climbs away over the rest, and the share of the scroll it gets in the roof is about a sixth of the flight.
 const cost = (y: number) => 1 + 2 * clamp01((13 - y) / 6);
 const lengths = new Map<string, number[]>();
-const evenT = (key: string, pts: V3[], f: number) => {
+const evenT = (key: string, pts: V3[], f: number, price = cost) => {
   let tab = lengths.get(key);
   if (!tab) {
     tab = [0];
     let prev = spline(pts, 0);
     for (let i = 1; i <= 240; i++) {
       const q = spline(pts, i / 240);
-      tab.push(tab[i - 1] + Math.hypot(q[0] - prev[0], q[1] - prev[1], q[2] - prev[2]) * cost((q[1] + prev[1]) / 2));
+      tab.push(tab[i - 1] + Math.hypot(q[0] - prev[0], q[1] - prev[1], q[2] - prev[2]) * price((q[1] + prev[1]) / 2));
       prev = q;
     }
     lengths.set(key, tab);
@@ -511,7 +511,7 @@ function fly(a: Cam, b: Cam, t: number, o: Cam, via?: Via) {
   const pos = (c: Cam): V3 => [c.x + c.d * Math.sin(c.yaw * RAD) * Math.cos(c.pitch * RAD), c.y - c.d * Math.sin(c.pitch * RAD), c.z + c.d * Math.cos(c.yaw * RAD) * Math.cos(c.pitch * RAD)];
   const cams = [pos(a), ...(via?.cam ?? []), pos(b)];
   // at the two ends the path is its first and last point whatever the pace, and the first point of the third flight moves with the story before it
-  if (via?.even && t > 0 && t < 1) t = evenT(cams.map((c) => c.map((v) => v.toFixed(2)).join()).join('|'), cams, t);
+  if (via?.even && t > 0 && t < 1) t = evenT(cams.map((c) => c.map((v) => v.toFixed(2)).join()).join('|'), cams, t, via.cost);
   const [px, py, pz] = spline(cams, t);
   const [tx, ty, tz] = spline([[a.x, a.y, a.z], ...(via?.tgt ?? []), [b.x, b.y, b.z]], t);
   const dx = px - tx;
@@ -573,6 +573,31 @@ export function najamCam(u: number, out: Cam = cam()): Cam {
 const VIA_T: Via = viaOf([...ROAD, ...T_IN]);
 export function najamT(t: number, end: Cam, out: Cam = cam()): Cam {
   fly(HIGH4, end, glide(clamp01(t)), out, VIA_T);
+  out.y += HALL_Y;
+  return out;
+}
+
+// T on a tall screen. A phone's frame is narrow, so the road above, which looks across the roof at 9 to 31 degrees, fills it with plain roof and then
+// plain floor, and so does a camera that looks straight down at the white roof. This road of its own comes in over the yard to the dock end and looks
+// at the roof light over it across the dock face, so the lorries, the doors and the roof's edge stay in the frame until the camera is over the
+// parapet. The hatch opens while it comes, hinged on its west edge on a tall screen (najam.tsx), so the opening faces the camera, and the camera
+// swoops over the parapet and down through the light at 50 degrees, half a metre or more from either edge of it, and looks down the hall at once, so
+// the racks are in the frame a metre under the roof. The view turns from 50 to 80 degrees one way only. Each stop is where the camera is and the
+// point it looks at, hall metres. The lens is fov0 at the start and end's at the end, the lens shift is the shell's, see camera.tsx.
+const aim = (c: V3, g: V3): Stop => ({ c, yaw: Math.atan2(c[0] - g[0], c[2] - g[2]) / RAD, pitch: -Math.atan2(c[1] - g[1], Math.hypot(c[0] - g[0], c[2] - g[2])) / RAD, d: Math.hypot(c[0] - g[0], c[1] - g[1], c[2] - g[2]), sy: 0 });
+const T_TALL: Stop[] = [
+  aim([54, 46, 34], [8, 8, 0]),
+  aim([36, 30, 14], [12, 10.4, 1]),
+  aim([24, 18, 4.5], [12, 10.4, 1]),
+  aim([15.0, 13.5, 1.5], [8.71, 5.84, 0.16]),
+  aim([12.3, 10.3, 1.2], [4.98, 3.61, -0.09]),
+  aim([11.0, 7.4, 1.0], [2.3, 2.71, -0.54]),
+];
+const VIA_T_TALL: Via = { ...viaOf(T_TALL), sx: T_TALL.map(() => 0), sy: T_TALL.map(() => 0) };
+const tallFrom = cam();
+export function najamTTall(t: number, fov0: number, end: Cam, out: Cam = cam()): Cam {
+  Object.assign(tallFrom, HIGH4, { sx: 0, sy: 0, fov: fov0 });
+  fly(tallFrom, end, glide(clamp01(t)), out, VIA_T_TALL);
   out.y += HALL_Y;
   return out;
 }

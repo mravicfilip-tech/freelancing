@@ -14,6 +14,7 @@ import { gridXs } from '../../shell/Grid';
 import { WAREHOUSE } from '../../timeline';
 import { NP } from './route';
 import { HALL_Y, hallInside } from './najamplan';
+import { TALL, isTall } from '../../tall';
 
 const TAN = Math.tan((28 / 2) * (Math.PI / 180));
 
@@ -247,8 +248,10 @@ export default function Overlay({ clock }: SceneProps) {
   const mixCol = useMemo(() => new THREE.Color(), []);
   const lightCol = useMemo(() => new THREE.Color(PAPER.bg), []);
   const aspect = size.width / size.height;
-  // The top row is a plain band, 136px tall, ending on the top rule of the grid in a hard edge.
-  const topH = 272 / size.height;
+  // The top row is a plain band, 136px tall, ending on the top rule of the grid in a hard edge. On a tall screen the row of logos is TALL.top
+  // high and the words stand on the shell's frosted sheet, so the band follows the row and the cell of R stays off (tall.ts).
+  const tall = isTall(size.width, size.height);
+  const topH = ((tall ? TALL.top : 136) * 2) / size.height;
 
   useFrame(() => {
     const u = uOf(clock);
@@ -286,7 +289,7 @@ export default function Overlay({ clock }: SceneProps) {
     CELLS.forEach((c, i) => {
       const m = cells.current[i];
       if (!m) return;
-      const o = c.open(u);
+      const o = tall ? 0 : c.open(u);
       m.visible = o > 0.001;
       // px of this frame to half heights, x from the middle, y up from the middle
       const half = size.height / 2;

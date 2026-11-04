@@ -1051,11 +1051,13 @@ html:root [data-wipe]:not([data-rise]):not([data-done]) {
     --tt: clamp(24px, min(calc((100cqw - 56px) / 11.4), 5svh), 48px);
   }
 
-  /* ---- the grid, three verticals. The two that would be drawn on another are left out. ---- */
+  /* ---- the grid, the two verticals at the edges and no plus marks, Filip, 4 November, "remove the middle line and cross/x's", on mobile.
+     The middle one and the two that would be drawn on another are left out, and the marks with them, the ones of the grid and the ones at
+     the block rules. The rules still run edge to edge. ---- */
   .s2-grid .gv[data-i='1'],
+  .s2-grid .gv[data-i='2'],
   .s2-grid .gv[data-i='3'],
-  .s2-plus > .gp[data-i='1'],
-  .s2-plus > .gp[data-i='3'] {
+  .s2-plus {
     display: none;
   }
 

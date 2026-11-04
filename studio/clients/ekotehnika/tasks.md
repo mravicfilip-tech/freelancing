@@ -45,6 +45,8 @@ Task format
   - [ ] A lighter render on a phone, measured on Filip's iPhone
   - [x] The dive through the roof on a phone, a road of its own in over the yard and the dock face, the hatch hinged west and laid back, through the light and straight to the racks, desktop unchanged to the pixel
   - [x] The phone dive on production from https://ekotehnika-a15viblbx-filip-mravic-s-projects.vercel.app, Filip's "send to production", 4 November, the ekotehnika repo matches
+  - [x] No middle line and no plus marks on a phone, the two edge lines only, Filip's "remove the middle line and cross/x's", on mobile, 4 November
+  - [ ] The grid without its middle line and marks on production, after Filip opens its preview
 
 - ekotehnika-17 Client tickets of 3 November, copy for Prodaja, Automatizacija, Kompanija and the hero, Najam scroll back and readability, the footer logo, a scroll with anchors. Notes in briefs/round9/notes.md. Preview https://ekotehnika-qda88p139-filip-mravic-s-projects.vercel.app/?preview
   - [x] Prodaja button, Posetite prodavnicu

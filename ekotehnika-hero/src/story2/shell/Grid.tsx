@@ -19,7 +19,7 @@ export const RULE_BOTTOM = 64;
 const RULE_TOP_TALL = 120;
 
 // The five vertical lines in whole stage pixels for a stage this wide, the same numbers as --x1 to --x5 in shell.css.
-// A tall stage draws three lines, at 16, in the middle and 16 from the right edge. The five stay five numbers, so a block that sits
+// A tall stage draws two lines, at 16 and 16 from the right edge, and keeps the middle as a number only, see shell.css. The five stay five numbers, so a block that sits
 // between(a, b) still lands, and the two that would double a line sit on it. Lines 1 and 2 are the left one, 4 and 5 the right one, line 3 is
 // the middle as it is on a wide screen. So between(1, 3) is the left half, between(3, 5) the right half and between(1, 5) the width. The CSS
 // of the stage sets the same numbers, and the lines that would be drawn twice are not drawn, see data-i below. h is the stage height, and

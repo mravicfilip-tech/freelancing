@@ -1137,7 +1137,13 @@ html:root [data-wipe]:not([data-rise]):not([data-done]) {
      words. The prefixed line goes first, the minifier keeps the last of the pair and Chrome reads only the plain one. A layer whose pane is
      not laid out for a tall screen yet is not in this list and keeps its place. ---- */
   .s2-layer:has(> .s2-c1, > .s2-r) {
-    inset: 56% 0 64px 0;
+    /* it stands on the bar and starts at 56 percent, and on a short screen it grows up over the scene until its words fit, never into the
+       row of logos, so no line of the client's copy is left out (Filip's plan, every beat readable at 390 and 360) */
+    inset: auto 0 64px 0;
+    min-height: calc(44% - 64px);
+    max-height: calc(100% - 120px - 64px);
+    display: flex;
+    flex-direction: column;
     background: rgb(255 255 255 / 0.72);
     -webkit-backdrop-filter: blur(16px);
     backdrop-filter: blur(16px);
@@ -1147,6 +1153,9 @@ html:root [data-wipe]:not([data-rise]):not([data-done]) {
      out in the flow, so the inline left, top and width of between(a, b) are let go, which is the one place !important is used. ---- */
   .s2-c1,
   .s2-r {
+    position: relative;
+    inset: auto;
+    flex: 1 1 auto;
     display: flex;
     flex-direction: column;
     gap: 12px;
@@ -1241,21 +1250,5 @@ html:root [data-wipe]:not([data-rise]):not([data-done]) {
   .s2-r .s2-lede {
     font-size: 14px;
     line-height: 20px;
-  }
-}
-
-/* Under 1000px high the three rows of R do not fit with their lines, so each row is its label. */
-@media (max-aspect-ratio: 4/5) and (max-height: 999px) {
-  .s2-r .rlist .line {
-    display: none;
-  }
-}
-
-/* Under 760px high, 218px of sheet at 640, the marker, the title and the facts or the three labels take 213, so the line of text under the
-   title is left out. Its words are said again by the facts and the labels. */
-@media (max-aspect-ratio: 4/5) and (max-height: 759px) {
-  .s2-c1 .s2-lede,
-  .s2-r .s2-lede {
-    display: none;
   }
 }

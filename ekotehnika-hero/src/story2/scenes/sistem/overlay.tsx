@@ -294,7 +294,7 @@ export default function Overlay({ clock }: SceneProps) {
       // px of this frame to half heights, x from the middle, y up from the middle
       const half = size.height / 2;
       const x0 = (c.x[0] - size.width / 2) / half;
-      const right = gridXs(size.width)[2];
+      const right = gridXs(size.width, size.height)[2];
       const x1 = x0 + ((right - c.x[0]) / half) * o;
       const y0 = (half - c.top) / half;
       const y1 = -1;

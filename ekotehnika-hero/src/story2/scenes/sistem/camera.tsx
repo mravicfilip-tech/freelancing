@@ -12,7 +12,7 @@ import { HALL_Y, najamCam, najamT, type Cam } from './najamplan';
 import { NAJAM } from '../../preview';
 import { SWING } from './entry';
 import { loader } from './loader';
-import { TALL_SY, fitD, loaderPose } from './loadercam';
+import { fitD, loaderPose } from './loadercam';
 import { TALL, isTall } from '../../tall';
 import { DARK_BG, PAPER, ease, isDark, lerp, range, rad, softTexture, uOf } from './kit';
 
@@ -45,15 +45,25 @@ const TO_TD = track([[0, 0], [4, 0], [5, 1], [6, 1]]);
 // Top down the truck drives toward the bottom of the frame, so the path ahead lies under it. BACK is how far the rear of the X50 and its load reaches behind the target.
 const BACK = 2.7;
 
-// The same outdoor pose for a tall screen, u 0 to 6. rpx and rpz are where the truck stands, which Z holds at the end of R.
+// The words sheet stands on the bar and grows up over the scene until its words fit (shell.css), so on a short screen the band for the subject
+// ends higher than TALL.sheet. Kompanija's sheet is about 250px, its marker, two title lines, its line and the facts, and the camera makes
+// room for it while its words are up, easing in and out with the move into C1 and out of it.
+const TO_SHEET = track([[0, 0], [1.4, 0], [2, 250], [2.85, 250], [3.5, 0], [6, 0]]);
+const T2T = 2 * Math.tan(rad(14));
+
+// The same outdoor pose for a tall screen, u 0 to 6. rpx and rpz are where the truck stands, which Z holds at the end of R. Side on, the
+// subject is fitted into the band between the logo row and the sheet, and its middle stands at the middle of that band.
 function tallOutdoor(u: number, rpx: number, rpz: number, out: Pose, w: number, h: number) {
   out.target.set(rpx + TO_OX(u), TO_OY(u), rpz);
-  out.d = fitD(TO_W(u), TO_H(u), w, h);
+  const bottom = Math.min(TALL.sheet * h, h - TALL.bar - TO_SHEET(u));
+  const band = Math.max(bottom - TALL.top, 1) / h;
+  out.d = Math.max(fitD(TO_W(u), TO_H(u), w, h), TO_H(u) / (band * T2T));
   out.yaw = O_YAW(u);
   out.pitch = O_PITCH(u);
   out.sx = 0;
+  const side = (TALL.top + bottom) / 2 / h - 0.5;
   const td = (TALL.top + 8) / h + BACK / (2 * Math.tan(rad(14)) * out.d) - 0.5;
-  out.sy = lerp(TALL_SY, td, TO_TD(u));
+  out.sy = lerp(side, td, TO_TD(u));
   out.shadow = u < 4 ? 9 : u < 5 ? 22 : 30;
 }
 

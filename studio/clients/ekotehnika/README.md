@@ -59,7 +59,9 @@ Live site ekotehnika.rs, captured 8 October 2026 at 1440 by 900. Captures are in
 
 ## Widths
 
-1440
+1440, 390, 360
+
+The phone widths are Filip's yes of 4 November to the phone plan, briefs/mobile/plan.md. Any screen held upright, width at most 4/5 of its height, gets the tall layout.
 
 ## Sessions
 

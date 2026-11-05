@@ -28,7 +28,7 @@ Task format
 - ekotehnika-20 A back to top button, and the logo takes you to the first screen of this site and not ekotehnika.rs. Filip 5 November
   - [x] The button, a black square with an arrow up at the bottom right, from Proizvodi to the footer, over the bar on a phone
   - [x] The logos at the top and in the footer go to the first screen at once, no reload, a new tab opens the home page
-  - [ ] On production, after Filip opens its preview
+  - [ ] On production, after Filip opens its preview https://ekotehnika-7lzhtpeje-filip-mravic-s-projects.vercel.app
 
 - ekotehnika-19 Two scroll variants back on the switcher, 6 Lock fast and 9 Anchors, to compare. Filip 5 November. Preview https://ekotehnika-4em91av3r-filip-mravic-s-projects.vercel.app/?preview
   - [x] The switcher with 6 and 9, localhost and ?preview only, wide screens only, 6 the default, a click lands on the same frame

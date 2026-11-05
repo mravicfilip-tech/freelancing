@@ -143,8 +143,7 @@ const SLIDES = [
     lead: 'RTX Earn',
     payoff: 'Is LIVE!',
     body:
-      'Earn up to 22% APY on your crypto today! Get access to exclusive stablecoin yield ' +
-      'opportunities and put your crypto to work. Limited spaces available — claim your spot ' +
+      'Earn up to 22% APY on your crypto today! Limited spaces available — claim your spot ' +
       'before they’re gone!',
     cta: 'Join RTX Earn Now',
     /* Straight on to the Earn app. */

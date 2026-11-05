@@ -3,7 +3,6 @@ import { LangPicker } from './LangPicker';
 import { ThemeToggle } from './ThemeToggle';
 import { ChestSlide } from './ChestSlide';
 import { EarnSlide } from './EarnSlide';
-import { TesterSignup, TESTERS_HASH } from './TesterSignup';
 import { HeroPlanet } from '../HeroPlanet';
 import { Bars } from './Bars';
 import { useHeroEntrance } from './useHeroEntrance';
@@ -134,22 +133,22 @@ function Unit({ value, label }: { value: string; label: string }) {
   );
 }
 
-/** The hero graphic: one slide per visual. The call for RTX Earn testers opens the hero; then the
- *  corridors globe, the bars from the Figma design, and the chest, which draws itself in from its
- *  own line work. */
+/** The hero graphic: one slide per visual. RTX Earn's launch opens the hero; then the corridors
+ *  globe, the bars from the Figma design, and the chest, which draws itself in from its own line
+ *  work. */
 const SLIDES = [
   {
     id: 'earn',
-    label: 'RTX Earn testers wanted',
+    label: 'RTX Earn is live',
     lead: 'RTX Earn',
-    payoff: 'Testers Wanted.',
+    payoff: 'Is LIVE!',
     body:
-      'Get early access to RTX Earn — stablecoin yield pools you can deposit into and track ' +
-      'in one place. Try it before launch and help shape it.',
-    cta: 'Sign Up Now',
-    /* The sign-up opens on this hash (see TesterSignup), so the button is a plain link and the same
-       link opens the form from anywhere else too. */
-    href: TESTERS_HASH,
+      'Earn up to 22% APY on your crypto today! Get access to exclusive stablecoin yield ' +
+      'opportunities and put your crypto to work. Limited spaces available — claim your spot ' +
+      'before they’re gone!',
+    cta: 'Join RTX Earn Now',
+    /* Straight on to the Earn app. */
+    href: 'https://remittixearn.io',
   },
   {
     id: 'globe',
@@ -445,7 +444,6 @@ export function FigmaHero() {
         </div>
       </footer>
 
-      <TesterSignup />
     </section>
   );
 }

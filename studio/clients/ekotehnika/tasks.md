@@ -28,10 +28,11 @@ Task format
 - ekotehnika-20 A back to top button, and the logo takes you to the first screen of this site and not ekotehnika.rs. Filip 5 November
   - [x] The button, a black square with an arrow up at the bottom right, from Proizvodi to the footer, over the bar on a phone
   - [x] The logos at the top and in the footer go to the first screen at once, no reload, a new tab opens the home page
-  - [ ] On production, after Filip opens its preview https://ekotehnika-7lzhtpeje-filip-mravic-s-projects.vercel.app
+  - [x] On production from https://ekotehnika-7lzhtpeje-filip-mravic-s-projects.vercel.app, Filip's "send to production", 5 November, the ekotehnika repo matches
 
 - ekotehnika-19 Two scroll variants back on the switcher, 6 Lock fast and 9 Anchors, to compare. Filip 5 November. Preview https://ekotehnika-4em91av3r-filip-mravic-s-projects.vercel.app/?preview
   - [x] The switcher with 6 and 9, localhost and ?preview only, wide screens only, 6 the default, a click lands on the same frame
+  - [x] On production with the back to top button, so ekotehnika.vercel.app/?preview shows it, 5 November
   - [ ] Filip picks one by number
 
 - ekotehnika-18 The phone version of the site. Plan in briefs/mobile/plan.md. Production with 2 Free, from https://ekotehnika-h6ids0bzj-filip-mravic-s-projects.vercel.app, Filip's "let me see v2 on production", 4 November. Then the bar fixed, no white gaps, 2x scene and no rail on production from https://ekotehnika-nnyuqn15d-filip-mravic-s-projects.vercel.app, Filip's "send to production", 4 November

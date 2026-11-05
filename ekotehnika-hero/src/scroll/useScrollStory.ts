@@ -414,6 +414,31 @@ export function scrollToTop() {
   else window.scrollTo(0, 0);
 }
 
+/** Takes the page and the story clock to the top at once, the first screen of the story, with no trip and nothing played backwards on the way.
+ *  For the logos and the back to top button, Filip 5 November, "add back to top button and link the logo ... to take to home screen 1". */
+export function toTop() {
+  hold = pass = trip = glide = tripCap = null;
+  tripFlag(false);
+  magnetDir = 0;
+  if (lock) lock.progress.current = 0;
+  scrollToTop();
+}
+
+/** toTop, and the focus goes to the logos at the top once the row of logos has slid back in on a phone (400ms, shell.css), so a keyboard
+ *  goes on from the first screen and not from the link it left at the foot of the page. */
+export function toFirstScreen() {
+  toTop();
+  window.setTimeout(() => document.querySelector<HTMLElement>('.hf-logo')?.focus({ preventScroll: true }), 450);
+}
+
+/** The click of a link to the home page. A plain click on this page goes to the first screen, a click that asks for a new tab or window is
+ *  left to the browser, which opens the home page. */
+export function goHome(e: { button: number; metaKey: boolean; ctrlKey: boolean; shiftKey: boolean; altKey: boolean; preventDefault: () => void }) {
+  if (e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
+  e.preventDefault();
+  toFirstScreen();
+}
+
 export type ScrollStory = {
   length: number;
   reduced: boolean;

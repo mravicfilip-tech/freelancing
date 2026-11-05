@@ -14,6 +14,7 @@ import { hero, SITE } from '../content';
 import { frame, hero2 } from '../story2/copy';
 import { TALL_QUERY } from '../story2/tall';
 import { BtnInner, Fill } from '../story2/shell/ui';
+import { goHome } from '../scroll/useScrollStory';
 import './heroframe.css';
 
 export type FrameTone = 'ink' | 'white';
@@ -113,7 +114,9 @@ export function HeroFrame({ tone, toneBottom, rootRef }: { tone: FrameTone; tone
       </a>
 
       <header className="hf-top">
-        <a className="hf-logo" href={`${SITE}/`}>
+        {/* the logos go to this site's own first screen, not ekotehnika.rs, Filip 5 November, "link the logo to this vercel link to take to
+            home screen 1" */}
+        <a className="hf-logo" href="/" onClick={goHome}>
           <img src="/brand/linde-mh.svg" width={160} height={96} alt="Linde Material Handling" />
           {/* on a dark ground the wordmark crossfades to the white file, the Linde logo stays as supplied */}
           <span className="hf-wm">

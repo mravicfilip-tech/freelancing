@@ -1015,11 +1015,57 @@ html:root [data-wipe]:not([data-rise]):not([data-done]) {
   }
 }
 
-/* ---- the scroll switcher, the dev server or ?preview only, see shell/Preview.tsx ---- */
+/* ---- the back to top button, the icon cell of the buttons alone, 48px, an arrow up. It comes in once the story is over, see ToTop.tsx ---- */
+.btn.to-top {
+  --glyph: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3E%3Cpath d='M9 17V6.4l-4.3 4.3-1.4-1.4L10 2.6l6.7 6.7-1.4 1.4L11 6.4V17z'/%3E%3C/svg%3E");
+  position: fixed;
+  right: 24px;
+  bottom: 24px;
+  z-index: 30;
+  width: 48px;
+  padding: 0;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(8px);
+  transition:
+    --hp 260ms var(--ease-wipe),
+    opacity 200ms var(--ease-wipe),
+    transform 200ms var(--ease-wipe),
+    visibility 0s linear 200ms;
+}
+
+.btn.to-top .btn-t {
+  display: none;
+}
+
+.btn.to-top .btn-x {
+  width: 100%;
+}
+
+.btn.to-top[data-show] {
+  opacity: 1;
+  visibility: visible;
+  transform: none;
+  transition:
+    --hp 260ms var(--ease-wipe),
+    opacity 200ms var(--ease-wipe),
+    transform 200ms var(--ease-wipe),
+    visibility 0s;
+}
+
+/* on a phone it stands 16px over the bar at the foot */
+@media (max-aspect-ratio: 4/5) {
+  .btn.to-top {
+    right: 16px;
+    bottom: calc(64px + 16px);
+  }
+}
+
+/* ---- the scroll switcher, the dev server or ?preview only, see shell/Preview.tsx. Left of the back to top button. ---- */
 .pv {
   position: fixed;
-  right: 16px;
-  bottom: 16px;
+  right: 80px;
+  bottom: 24px;
   z-index: 9999;
   display: grid;
   grid-template-columns: auto auto;

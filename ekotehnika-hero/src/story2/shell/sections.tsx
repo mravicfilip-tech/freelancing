@@ -3,8 +3,8 @@
 // beside white at 40 percent, and plus marks in solid ink at every crossing. Copy from ../copy.ts, rules in sections.css.
 // AfterStory is what the story renders under its stage, the products first, then the footer.
 import { useLayoutEffect, useRef, type CSSProperties, type RefObject } from 'react';
-import { SITE } from '../../content';
 import { closing, footer, proizvodi } from '../copy';
+import { goHome } from '../../scroll/useScrollStory';
 import { prepRise, setRise, type Rise } from './reveal';
 import { Btn, Fill } from './ui';
 import './sections.css';
@@ -351,7 +351,8 @@ export function Footer() {
         <RowLines xs={[1, 3, 4, 5]} />
         <div className="sx-c sx-brand" style={{ gridColumn: '1 / 7' }}>
           {/* the Ekotehnika logo only, Filip 3 November, "footer leave only ekotehnika logo" */}
-          <a className="sx-logos" href={`${SITE}/`}>
+          {/* to this site's own first screen, like the logos at the top, Filip 5 November */}
+          <a className="sx-logos" href="/" onClick={goHome}>
             <img src="/brand/ekotehnika.svg" width={160} height={33} alt="Ekotehnika, početna strana" />
           </a>
         </div>

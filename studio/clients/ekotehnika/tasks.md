@@ -25,6 +25,10 @@ Task format
 
 ## In progress
 
+- ekotehnika-19 Two scroll variants back on the switcher, 6 Lock fast and 9 Anchors, to compare. Filip 5 November
+  - [x] The switcher with 6 and 9, localhost and ?preview only, wide screens only, 6 the default, a click lands on the same frame
+  - [ ] Filip picks one by number
+
 - ekotehnika-18 The phone version of the site. Plan in briefs/mobile/plan.md. Production with 2 Free, from https://ekotehnika-h6ids0bzj-filip-mravic-s-projects.vercel.app, Filip's "let me see v2 on production", 4 November. Then the bar fixed, no white gaps, 2x scene and no rail on production from https://ekotehnika-nnyuqn15d-filip-mravic-s-projects.vercel.app, Filip's "send to production", 4 November
   - [x] Shoot what a phone gets today, every screen breaks at 390
   - [x] Three ways weighed, the same live story reframed picked

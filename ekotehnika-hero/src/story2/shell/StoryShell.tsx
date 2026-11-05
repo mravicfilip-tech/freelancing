@@ -10,6 +10,7 @@ import { Component, Suspense, useEffect, useMemo, useRef, type ComponentType, ty
 import { stillClock, useStoryClock, type SceneProps } from '../clock';
 import { LENGTH, NAJAM_TERMS, N_LEAVE, N_PALLETS, N_SUB, SERVIS_MAP, TIMELINE, WAREHOUSE, type BeatSpan } from '../timeline';
 import { Fps } from './Fps';
+import { Preview } from './Preview';
 import { DEBUG_FPS, perf } from '../perf';
 import { HeroFrame } from '../../ui/HeroFrame';
 import { Grid, RULE_TOP, paintMarks, ruleMarks } from './Grid';
@@ -599,6 +600,7 @@ export function StoryShell({ Scene, tone, reduced, darkLayers, darkTop = DARK_TO
         <HeroFrame tone={frameTone} rootRef={heroRef} />
       </div>
       <AfterStory />
+      <Preview clock={clock} />
       <Fps />
     </div>
   );

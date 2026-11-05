@@ -25,7 +25,7 @@ Task format
 
 ## In progress
 
-- ekotehnika-19 Two scroll variants back on the switcher, 6 Lock fast and 9 Anchors, to compare. Filip 5 November
+- ekotehnika-19 Two scroll variants back on the switcher, 6 Lock fast and 9 Anchors, to compare. Filip 5 November. Preview https://ekotehnika-4em91av3r-filip-mravic-s-projects.vercel.app/?preview
   - [x] The switcher with 6 and 9, localhost and ?preview only, wide screens only, 6 the default, a click lands on the same frame
   - [ ] Filip picks one by number
 

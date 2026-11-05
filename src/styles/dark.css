@@ -207,15 +207,6 @@
   --ev-trace: rgb(144 146 244 / 26%);
   --ev-halo: rgb(144 146 244 / 16%);
 }
-/* The tester sign-up takes the hero's tokens already; only its warning red is a light-page red, too
-   deep to read on this ground, and the scrim has to darken a page that is already dark. */
-[data-theme='dark'] .ts {
-  --ts-danger: #ff8f7a;
-  box-shadow: 0 40px 80px -32px rgb(0 0 0 / 75%);
-}
-[data-theme='dark'] .ts::backdrop {
-  background: rgb(4 8 12 / 62%);
-}
 /* The countdown's own digits sit at the label tone, which is an aside on white and a whisper on
    black. They are the one number on the band that has to be read at a glance. */
 [data-theme='dark'] .fh__digits {

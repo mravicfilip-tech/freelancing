@@ -4,7 +4,36 @@ Filip, 18 November 2026. "We need to start working on the shop, the shop will be
 categories from their google drive that they gave us and use those products, start working on styling everything." "The ekotehnika scroll
 through page is just the homepage which will lead to the shop."
 
-Status. Kickoff questions sent, answers pending. Nothing built.
+Status. Filip answered the kickoff on 18 November, "yes, go with defaults", to the hardened questions. The answers are below and bind
+the build. Nothing is built yet.
+
+## The answers, binding
+
+1. Pages. Four kinds, no prices, no cart. Prodavnica with the 10 categories, a category page, a model page, and Kontakt, the form with the
+   model filled in. Posetite prodavnicu, Pogledajte modele, the seven product cards of Proizvodi, and Novi and Kontakt in the menu point into
+   it. Polovni, Najam and Servis in the menu stay on ekotehnika.rs.
+2. Products. All 89 series, one product each, the category names in the table below. A series with no cut out render shows its best photo.
+3. Text and specs. Each series is matched by hand to its ekotehnika.rs model page, and the Serbian description, nosivost and visina
+   podizanja come from there. Every model offers its English PDF as a download. A series with no match shows its name, category, pictures and
+   the PDF, and no numbers. The list of series with no match goes to Filip before the build.
+4. Rental and used. New trucks only. Each model has a second button, Pitajte za najam, to the same form. The old site's list of 84 rental
+   trucks is not rebuilt for now. Polovni stays on ekotehnika.rs.
+5. The form. Ime, Prezime, Firma, Telefon, Email, Interesuje vas (Kupovina, Najam, Servis), Model, Poruka, a consent box and a link to the
+   privacy text. Kupovina and Najam go to info@ekotehnika.rs, Servis to servis@ekotehnika.rs, through a server function and Resend unless
+   Filip names another service. Until the key arrives the form says plainly that it is a test and gives the address to write to instead.
+   Open, who writes the privacy text, Filip to name.
+6. Look. The homepage's language without the scroll story, the white ground, the grid lines, Daxline, the red button with its black plus
+   cell, the same header and footer, big type. One direction in words with one reference first, then the model page first at 1440 and 390.
+7. Baseline. Production today, bfa30ca0 on claude/awesome-faraday-lkhnn2 and 02aed4b on mravicfilip-tech/ekotehnika. The homepage changes
+   only in its links into the shop.
+8. Done. /uireview with no open sev 1 and a preview link Filip has opened. Open, the deadline, Filip to name.
+
+## For the next session
+
+- Start with the hand match of the 89 series to the ekotehnika.rs model pages and send Filip the list with no match, then the direction in
+  words. Neither needs code.
+- The session scratchpad of 4 to 5 November is gone, the deploy copy and its preview script with it. Rebuild them from the rules in
+  `studio/foundation/env.md`, Vercel Hobby, before the first preview.
 
 ## What the Drive holds
 

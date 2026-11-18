@@ -515,9 +515,24 @@
   padding: 32px 24px 48px;
 }
 
+/* the main picture fills the height the words beside it set, so both columns end together at any width, Filip 18 November, "reduce
+   this image size so we get rid of this space here" */
+.sp-model-pic {
+  display: flex;
+  flex-direction: column;
+}
+
+.sp-gal {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+}
+
 .sp-model-pic .sp-pic {
-  max-height: 800px;
-  margin: 24px auto 0;
+  flex: 1 1 auto;
+  min-height: 320px;
+  aspect-ratio: auto;
+  margin: 24px 0 0;
 }
 
 .sp-model-info {
@@ -1010,6 +1025,19 @@
 
 .sp-eq-only {
   color: var(--grey-dark);
+}
+
+/* the first 4 lines of a group, the rest behind a button, Filip 18 November, "reduce the amount of content too much info honestly" */
+.sp-eq-more {
+  margin-top: 12px;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: inherit;
+  font: 500 16px/24px var(--font);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  cursor: pointer;
 }
 
 /* the model's pictures, a row of thumbnails under the main frame, Filip 18 November, "moved above here and have gallery preview" */
@@ -1676,6 +1704,9 @@
   }
 
   .sp-model-pic .sp-pic {
+    flex: none;
+    min-height: 0;
+    aspect-ratio: 1;
     margin-top: 8px;
   }
 
@@ -1771,6 +1802,11 @@
 .sp-cell.sp-cap {
   height: 2px;
   padding: 0;
+}
+
+/* the closing rule draws its top marks only, its own bottom marks sat 2px under them and doubled every plus, Filip 18 November */
+.sp-cap > :is(.sp-p-bl, .sp-p-br) {
+  display: none;
 }
 
 @media (max-aspect-ratio: 4/5) {

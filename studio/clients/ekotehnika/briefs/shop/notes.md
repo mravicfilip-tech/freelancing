@@ -65,3 +65,10 @@ Round of 18 November, sent while the shop ran on his localhost. Planned and buil
 27. Kontakt, "this doesn't look good, even it out a bit". Screenshots mark the empty space under the form while the picture's column runs
     on. Built as the picture capped at 400px, its caption on one row, the name left and the figures right, and the message box growing so
     the form ends level with the picture's column.
+28. Kontakt, "fix this". Screenshot marks the rule under the page's two halves, over the footer.
+29. Oprema on the model page, "reduce the amount of content too much info honestly". Screenshot of the open first row, 14, 12, 5 and 4
+    lines.
+30. The model's main picture, "reduce this image size so we get rid of this space here". Screenshots mark the picture and the empty space
+    under the right column. Built as the main picture filling the height the right column sets, so both end together at any width.
+    28 found, the closing rule under a section is a 2px row that drew its own bottom marks 2px under its top marks, doubled on every page.
+    29 built as each open equipment group showing its first 4 lines and a Još N button for the rest.

@@ -325,6 +325,32 @@ export function SpecVersions({ spec }: { spec: Spec }) {
   );
 }
 
+// A group's lines, the first 4 and a button for the rest, Filip 18 November, "reduce the amount of content too much info honestly".
+const EQ_FIRST = 4;
+function EqList({ items }: { items: Spec['equipment'][number]['items'] }) {
+  const [all, setAll] = useState(false);
+  // a group of 5 shows all 5, a button for one line is not worth it
+  const cut = items.length > EQ_FIRST + 1;
+  const shown = all || !cut ? items : items.slice(0, EQ_FIRST);
+  return (
+    <>
+      <ul className="sp-list">
+        {shown.map((it, i) => (
+          <li key={i}>
+            {it.t}
+            {it.only ? <span className="sp-eq-only"> Samo {it.only.join(', ')}.</span> : null}
+          </li>
+        ))}
+      </ul>
+      {cut ? (
+        <button type="button" className="sp-eq-more" aria-expanded={all} onClick={() => setAll((x) => !x)}>
+          {all ? 'Manje' : `Još ${items.length - EQ_FIRST}`}
+        </button>
+      ) : null}
+    </>
+  );
+}
+
 // The equipment by group, each group a cell with its icon. On a wide screen the first row of groups is open when the page opens, on a
 // phone all are closed, Filip 18 November, "keep top row open always (but not on mobile)".
 export function SpecEquipment({ spec }: { spec: Spec }) {
@@ -342,14 +368,7 @@ export function SpecEquipment({ spec }: { spec: Spec }) {
               <span>{g.group}</span>
               <span className="sp-eq-n">{g.items.length}</span>
             </summary>
-            <ul className="sp-list">
-              {g.items.map((it, i) => (
-                <li key={i}>
-                  {it.t}
-                  {it.only ? <span className="sp-eq-only"> Samo {it.only.join(', ')}.</span> : null}
-                </li>
-              ))}
-            </ul>
+            <EqList items={g.items} />
           </details>
         </Cell>
       ))}

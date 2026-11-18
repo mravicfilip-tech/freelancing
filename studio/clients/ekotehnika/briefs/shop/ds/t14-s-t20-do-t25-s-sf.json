@@ -1,0 +1,1173 @@
+{
+ "slug": "t14-s-t20-do-t25-s-sf",
+ "datasheet": {
+  "name": "DS_T14S_T20_25_S_SF_BR1154_en_F_0417_view.pdf",
+  "id": "1OeGAh6c15Yn1rsgvDkc7q5LFXgX9x-mO"
+ },
+ "heading": "3 ECO-Mode up to 12% energy savings",
+ "range": "3 Stable 4 point configuration",
+ "capacity": "Capacity 1400, 2000 & 2500 kg                                      visibility",
+ "tagline": null,
+ "benefits": [],
+ "versions": [
+  "T14S",
+  "T20S",
+  "T25S",
+  "T20SF",
+  "T25SF"
+ ],
+ "vdi": [
+  {
+   "no": "1.1",
+   "section": "Characteristics",
+   "label": "Manufacturer",
+   "unit": "",
+   "values": [
+    "LINDE",
+    "LINDE",
+    "LINDE",
+    "LINDE",
+    "LINDE"
+   ],
+   "notes": [
+    [],
+    [],
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "1.2",
+   "section": "Characteristics",
+   "label": "Manufacturer‘s type designation",
+   "unit": "",
+   "values": [
+    "T14S",
+    "T20S",
+    "T25S",
+    "T20SF",
+    "T25SF"
+   ],
+   "notes": [
+    [],
+    [],
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "1.2a",
+   "section": "Characteristics",
+   "label": "Series",
+   "unit": "",
+   "values": [
+    "1154-00",
+    "1154-00",
+    "1154-00",
+    "1154-00",
+    "1154-00"
+   ],
+   "notes": [
+    [],
+    [],
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "1.3",
+   "section": "Characteristics",
+   "label": "Power unit",
+   "unit": "",
+   "values": [
+    "Battery",
+    "Battery",
+    "Battery",
+    "Battery",
+    "Battery"
+   ],
+   "notes": [
+    [],
+    [],
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "1.4",
+   "section": "Characteristics",
+   "label": "Operation",
+   "unit": "",
+   "values": [
+    "Stand on",
+    "Stand on",
+    "Stand on",
+    "Stand on",
+    "Stand on"
+   ],
+   "notes": [
+    [],
+    [],
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "1.5",
+   "section": "Characteristics",
+   "label": "Load capacity/Load",
+   "unit": "Q (t)",
+   "values": [
+    "1.4",
+    "2.0",
+    "2.5",
+    "2.0",
+    "2.5"
+   ],
+   "notes": [
+    [],
+    [],
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "1.6",
+   "section": "Characteristics",
+   "label": "Load centre distance c (mm)",
+   "unit": "",
+   "values": [
+    "600",
+    "600",
+    "800",
+    "600",
+    "800"
+   ],
+   "notes": [
+    [],
+    [],
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "1.8",
+   "section": "Characteristics",
+   "label": "Axle centre to fork face x (mm)",
+   "unit": "",
+   "values": [
+    "895 / 965",
+    "895 / 965",
+    "1345 / 1415",
+    "895 / 965",
+    "1345 / 1415"
+   ],
+   "notes": [
+    [
+     "1",
+     "2"
+    ],
+    [
+     "1",
+     "2"
+    ],
+    [
+     "1",
+     "2"
+    ],
+    [
+     "1",
+     "2"
+    ],
+    [
+     "1",
+     "2"
+    ]
+   ]
+  },
+  {
+   "no": "1.9",
+   "section": "Characteristics",
+   "label": "Wheelbase y (mm)",
+   "unit": "",
+   "values": [
+    "1533 / 1603",
+    "1533 / 1603",
+    "1983 / 2053",
+    "1533 / 1603",
+    "1983 / 2053"
+   ],
+   "notes": [
+    [
+     "1",
+     "2"
+    ],
+    [
+     "1",
+     "2"
+    ],
+    [
+     "1",
+     "2"
+    ],
+    [
+     "1",
+     "2"
+    ],
+    [
+     "1",
+     "2"
+    ]
+   ]
+  },
+  {
+   "no": "2.1",
+   "section": "Weights",
+   "label": "Service weight",
+   "unit": "(kg)",
+   "values": [
+    "800",
+    "848",
+    "944",
+    "848",
+    "944"
+   ],
+   "notes": [
+    [
+     "3",
+     "4"
+    ],
+    [
+     "3",
+     "4"
+    ],
+    [
+     "3",
+     "4"
+    ],
+    [
+     "3",
+     "4"
+    ],
+    [
+     "3",
+     "4"
+    ]
+   ]
+  },
+  {
+   "no": "2.2",
+   "section": "Weights",
+   "label": "Axle load with load, front/rear",
+   "unit": "(kg)",
+   "values": [
+    "881 / 1319",
+    "1057 / 1791",
+    "1426 / 2018",
+    "1057 / 1791",
+    "1426 / 2018"
+   ],
+   "notes": [
+    [
+     "3",
+     "4"
+    ],
+    [
+     "3",
+     "4"
+    ],
+    [
+     "3",
+     "4"
+    ],
+    [
+     "3",
+     "4"
+    ],
+    [
+     "3",
+     "4"
+    ]
+   ]
+  },
+  {
+   "no": "2.3",
+   "section": "Weights",
+   "label": "Axle load without load, front/rear",
+   "unit": "(kg)",
+   "values": [
+    "612 / 188",
+    "672 / 176",
+    "739 / 205",
+    "672 / 176",
+    "739 / 205"
+   ],
+   "notes": [
+    [
+     "3",
+     "4"
+    ],
+    [
+     "3",
+     "4"
+    ],
+    [
+     "3",
+     "4"
+    ],
+    [
+     "3",
+     "4"
+    ],
+    [
+     "3",
+     "4"
+    ]
+   ]
+  },
+  {
+   "no": "3.1",
+   "section": "Wheels/Tyres",
+   "label": "Tyres rubber, SE, pneumatic, polyurethane",
+   "unit": "",
+   "values": [
+    "V+P/P",
+    "V+P/P",
+    "V+P/P",
+    "V+P/P",
+    "V+P/P"
+   ],
+   "notes": [
+    [
+     "5"
+    ],
+    [
+     "5"
+    ],
+    [
+     "5"
+    ],
+    [
+     "5"
+    ],
+    [
+     "5"
+    ]
+   ]
+  },
+  {
+   "no": "3.2",
+   "section": "Wheels/Tyres",
+   "label": "Tyre size, front",
+   "unit": "",
+   "values": [
+    "Ø 230 x 90",
+    "Ø 254 x 102",
+    "Ø 254 x 102",
+    "Ø 254 x 102",
+    "Ø 254 x 102"
+   ],
+   "notes": [
+    [],
+    [],
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "3.3",
+   "section": "Wheels/Tyres",
+   "label": "Tyre size, rear",
+   "unit": "",
+   "values": [
+    "Ø 85 x 105 (2x Ø 85",
+    "Ø 85 x 105 (2x Ø 85",
+    "Ø 85 x 105 (2x Ø 85",
+    "Ø 85 x 105 (2x Ø 85",
+    "Ø 85 x 105 (2x Ø 85"
+   ],
+   "notes": [
+    [],
+    [],
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "3.5",
+   "section": "Wheels/Tyres",
+   "label": "Wheels, number front/rear (x = driven)",
+   "unit": "",
+   "values": [
+    "x 80) 6) 1x + 2 / 2 (1x + 2 /",
+    "x",
+    "x",
+    "x",
+    "x"
+   ],
+   "notes": [
+    [
+     "4",
+     "6"
+    ],
+    [
+     "80",
+     "6",
+     "6"
+    ],
+    [
+     "80",
+     "6",
+     "6"
+    ],
+    [
+     "80",
+     "6",
+     "6"
+    ],
+    [
+     "80",
+     "6"
+    ]
+   ]
+  },
+  {
+   "no": "3.6",
+   "section": "Wheels/Tyres",
+   "label": "Track width, front b10 (mm)",
+   "unit": "",
+   "values": [
+    "484",
+    "1x + 2 / 2 (1x + 2 / 4) 484",
+    "1x + 2 / 2 (1x + 2 / 4) 484",
+    "1x + 2 / 2 (1x + 2 / 4) 484",
+    "1x + 2 / 2 (1x + 2 / 4) 6) 484"
+   ],
+   "notes": [
+    [
+     "2"
+    ],
+    [
+     "2"
+    ],
+    [
+     "2"
+    ],
+    [
+     "2"
+    ],
+    [
+     "2"
+    ]
+   ]
+  },
+  {
+   "no": "3.7",
+   "section": "Wheels/Tyres",
+   "label": "Track width, rear b11 (mm)",
+   "unit": "",
+   "values": [
+    "395",
+    "395",
+    "395",
+    "395",
+    "395"
+   ],
+   "notes": [
+    [
+     "2"
+    ],
+    [
+     "2"
+    ],
+    [
+     "2"
+    ],
+    [
+     "2"
+    ],
+    [
+     "2"
+    ]
+   ]
+  },
+  {
+   "no": "4.4",
+   "section": "Dimensions",
+   "label": "Lift h3 (mm)",
+   "unit": "",
+   "values": [
+    "125",
+    "125",
+    "125",
+    "125",
+    "125"
+   ],
+   "notes": [
+    [
+     "2"
+    ],
+    [
+     "2"
+    ],
+    [
+     "2"
+    ],
+    [
+     "2"
+    ],
+    [
+     "2"
+    ]
+   ]
+  },
+  {
+   "no": "4.15",
+   "section": "Dimensions",
+   "label": "Height, lowered h13 (mm)",
+   "unit": "",
+   "values": [
+    "88",
+    "88",
+    "88",
+    "88",
+    "88"
+   ],
+   "notes": [
+    [
+     "7"
+    ],
+    [
+     "7"
+    ],
+    [
+     "7"
+    ],
+    [
+     "7"
+    ],
+    [
+     "7"
+    ]
+   ]
+  },
+  {
+   "no": "4.19",
+   "section": "Dimensions",
+   "label": "Overall length l1 (mm)",
+   "unit": "",
+   "values": [
+    "1950",
+    "1950",
+    "2400",
+    "1950",
+    "2400"
+   ],
+   "notes": [
+    [
+     "2"
+    ],
+    [
+     "2"
+    ],
+    [
+     "2"
+    ],
+    [
+     "2"
+    ],
+    [
+     "2"
+    ]
+   ]
+  },
+  {
+   "no": "4.20",
+   "section": "Dimensions",
+   "label": "Length to fork face l2 (mm)",
+   "unit": "",
+   "values": [
+    "800",
+    "800",
+    "800",
+    "800",
+    "800"
+   ],
+   "notes": [
+    [
+     "2"
+    ],
+    [
+     "2"
+    ],
+    [
+     "2"
+    ],
+    [
+     "2"
+    ],
+    [
+     "2"
+    ]
+   ]
+  },
+  {
+   "no": "4.21",
+   "section": "Dimensions",
+   "label": "Overall width b1/b2 (mm)",
+   "unit": "",
+   "values": [
+    "770",
+    "770",
+    "770",
+    "770",
+    "770"
+   ],
+   "notes": [
+    [
+     "2"
+    ],
+    [
+     "2"
+    ],
+    [
+     "2"
+    ],
+    [
+     "2"
+    ],
+    [
+     "2"
+    ]
+   ]
+  },
+  {
+   "no": "4.22",
+   "section": "Dimensions",
+   "label": "Fork dimensions DIN ISO 2331 s/e/l (mm)",
+   "unit": "",
+   "values": [
+    "55 x 165 x 1150",
+    "55 x 165 x 1150",
+    "55 x 165 x 1600",
+    "55 x 165 x 1150",
+    "55 x 165 x 1600"
+   ],
+   "notes": [
+    [],
+    [],
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "4.25",
+   "section": "Dimensions",
+   "label": "Fork spread b5 (mm)",
+   "unit": "",
+   "values": [
+    "520/540/560/680",
+    "520/540/560/680",
+    "520/540/560/680",
+    "520/540/560/680",
+    "520/540/560/680"
+   ],
+   "notes": [
+    [
+     "2"
+    ],
+    [
+     "2"
+    ],
+    [
+     "2"
+    ],
+    [
+     "2"
+    ],
+    [
+     "2"
+    ]
+   ]
+  },
+  {
+   "no": "4.32",
+   "section": "Dimensions",
+   "label": "Ground clearance, centre of wheelbase m2 (mm)",
+   "unit": "",
+   "values": [
+    "30",
+    "30",
+    "30",
+    "30",
+    "30"
+   ],
+   "notes": [
+    [
+     "8"
+    ],
+    [
+     "8"
+    ],
+    [
+     "8"
+    ],
+    [
+     "8"
+    ],
+    [
+     "8"
+    ]
+   ]
+  },
+  {
+   "no": "4.34.1",
+   "section": "Dimensions",
+   "label": "Aisle width for pallets 1000 × 1200 crossways Ast (mm)",
+   "unit": "",
+   "values": [
+    "2165",
+    "2165",
+    "-",
+    "2165",
+    "-"
+   ],
+   "notes": [
+    [
+     "9",
+     "10"
+    ],
+    [
+     "9",
+     "10"
+    ],
+    [],
+    [
+     "9",
+     "10"
+    ],
+    []
+   ]
+  },
+  {
+   "no": "4.34.2",
+   "section": "Dimensions",
+   "label": "Aisle width with pallet 800 x 1200 along forks Ast (mm)",
+   "unit": "",
+   "values": [
+    "2215",
+    "2215",
+    "-",
+    "2215",
+    "-"
+   ],
+   "notes": [
+    [
+     "9"
+    ],
+    [
+     "9"
+    ],
+    [],
+    [
+     "9"
+    ],
+    []
+   ]
+  },
+  {
+   "no": "4.35",
+   "section": "Dimensions",
+   "label": "Turning radius Wa (mm)",
+   "unit": "",
+   "values": [
+    "1710 / 1780",
+    "1710 / 1780",
+    "2160 / 2230",
+    "1710 / 1780",
+    "2160 / 2230"
+   ],
+   "notes": [
+    [
+     "1"
+    ],
+    [
+     "1"
+    ],
+    [
+     "1"
+    ],
+    [
+     "1"
+    ],
+    [
+     "1"
+    ]
+   ]
+  },
+  {
+   "no": "5.1",
+   "section": "Performance",
+   "label": "Travel speed, with/without load (km/h)",
+   "unit": "",
+   "values": [
+    "8 / 10",
+    "10 / 12",
+    "10 / 12",
+    "10 / 12",
+    "10 / 12"
+   ],
+   "notes": [
+    [
+     "11"
+    ],
+    [
+     "11"
+    ],
+    [
+     "11"
+    ],
+    [
+     "11"
+    ],
+    [
+     "11"
+    ]
+   ]
+  },
+  {
+   "no": "5.2",
+   "section": "Performance",
+   "label": "Lifting speed, with/without load",
+   "unit": "(m/s)",
+   "values": [
+    "0.04 / 0.047",
+    "0.036 / 0.043",
+    "0.027 / 0.034",
+    "0.036 / 0.043",
+    "0.027 / 0.034"
+   ],
+   "notes": [
+    [
+     "4"
+    ],
+    [
+     "4"
+    ],
+    [
+     "4"
+    ],
+    [
+     "4"
+    ],
+    [
+     "4"
+    ]
+   ]
+  },
+  {
+   "no": "5.3",
+   "section": "Performance",
+   "label": "Lowering speed, with/without load",
+   "unit": "(m/s)",
+   "values": [
+    "0.074 / 0.07",
+    "0.064 / 0.059",
+    "0.067 / 0.059",
+    "0.064 / 0.059",
+    "0.067 / 0.059"
+   ],
+   "notes": [
+    [
+     "4"
+    ],
+    [
+     "4"
+    ],
+    [
+     "4"
+    ],
+    [
+     "4"
+    ],
+    [
+     "4"
+    ]
+   ]
+  },
+  {
+   "no": "5.8",
+   "section": "Performance",
+   "label": "Maximum climbing ability, with/without load",
+   "unit": "(%)",
+   "values": [
+    "16.0 / 20.0",
+    "15.0 / 20.0",
+    "9.0 / 20.0",
+    "15.0 / 20.0",
+    "9.0 / 20.0"
+   ],
+   "notes": [
+    [],
+    [],
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "5.10",
+   "section": "Performance",
+   "label": "Service brake",
+   "unit": "",
+   "values": [
+    "Electro-magnetic",
+    "Electro-magnetic",
+    "Electro-magnetic",
+    "Electro-magnetic",
+    "Electro-magnetic"
+   ],
+   "notes": [
+    [],
+    [],
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "6.1",
+   "section": "Electric-engine",
+   "label": "Drive motor rating S2 60 min",
+   "unit": "(kW)",
+   "values": [
+    "2.3",
+    "3",
+    "3",
+    "3",
+    "3"
+   ],
+   "notes": [
+    [],
+    [],
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "6.2",
+   "section": "Electric-engine",
+   "label": "Lift motor rating at S3 15%",
+   "unit": "(kW)",
+   "values": [
+    "1.2",
+    "1.2",
+    "1.5",
+    "1.2",
+    "1.5"
+   ],
+   "notes": [
+    [],
+    [],
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "6.3",
+   "section": "Electric-engine",
+   "label": "Battery according to DIN 43531/35/36 A,B,C,no",
+   "unit": "",
+   "values": [
+    "43 535/B 3PzS [Li-ION",
+    "43 535/B 3PzS [Li-ION",
+    "43 535/B 3PzS [Li-ION",
+    "43 535/B 3PzS [Li-ION",
+    "43 535/B 3PzS [Li-ION"
+   ],
+   "notes": [
+    [],
+    [],
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "6.4",
+   "section": "Electric-engine",
+   "label": "Battery voltage/rated capacity (5h) (V)/(Ah)",
+   "unit": "",
+   "values": [
+    "(3PzS)] 24 / 345/375",
+    "(3PzS)] 24 / 345/375",
+    "(3PzS)] 24 / 345/375",
+    "(3PzS)] 24 / 345/375",
+    "(3PzS)] 24 / 345/375"
+   ],
+   "notes": [
+    [],
+    [],
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "6.5",
+   "section": "Electric-engine",
+   "label": "Battery weight (± 5%)",
+   "unit": "(kg)",
+   "values": [
+    "[23/205] 12) 287 [190]",
+    "[23/205]",
+    "[23/205]",
+    "[23/205]",
+    "[23/205]"
+   ],
+   "notes": [
+    [
+     "12"
+    ],
+    [
+     "12",
+     "12"
+    ],
+    [
+     "12",
+     "12"
+    ],
+    [
+     "12",
+     "12"
+    ],
+    [
+     "12"
+    ]
+   ]
+  },
+  {
+   "no": "6.6",
+   "section": "Electric-engine",
+   "label": "Power consumption according to VDI cycle (kWh/h)",
+   "unit": "",
+   "values": [
+    "0.33",
+    "287 [190] 0.4",
+    "287 [190] 0.53",
+    "287 [190] 0.4",
+    "287 [190] 12) 0.53"
+   ],
+   "notes": [
+    [],
+    [],
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "6.7",
+   "section": "Electric-engine",
+   "label": "Turnover output",
+   "unit": "(t/h)",
+   "values": [
+    "99.4",
+    "146.0",
+    "170.0",
+    "146.0",
+    "170.0"
+   ],
+   "notes": [
+    [],
+    [],
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "6.8",
+   "section": "Electric-engine",
+   "label": "Energy consumption at turnover output (kWh/h)",
+   "unit": "",
+   "values": [
+    "1.09",
+    "1.5",
+    "1.77",
+    "1.5",
+    "1.77"
+   ],
+   "notes": [
+    [],
+    [],
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "8.1",
+   "section": "Drive",
+   "label": "Type of drive unit",
+   "unit": "",
+   "values": [
+    "LAC",
+    "LAC",
+    "LAC",
+    "LAC",
+    "LAC"
+   ],
+   "notes": [
+    [],
+    [],
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "10.7",
+   "section": "Additional data",
+   "label": "Sound pressure level LpAZ (at the driver’s seat) (dB(A)) 1) Forks upraised / lowered 2) (± 5 mm) 3) Figures with battery, see line 6.4/6.5. 4) (± 10%) 5) Solid rubber + polyurethane / polyurethane 6) Figures in parenthesis with tandem load wheels. 7) (-0/+5 mm)",
+   "unit": "",
+   "values": [
+    "62 13) 8) (± 2 mm) 10) With fork length 1150 mm 11) (± 5%) 12) Figures in [ ] with Li-ION battery see line 6.4 13) (± 2.",
+    "65 13) 9) Including a 200 mm (min.) operating aisle clearance.",
+    "-",
+    "65",
+    "-"
+   ],
+   "notes": [
+    [
+     "5"
+    ],
+    [],
+    [],
+    [
+     "13"
+    ],
+    []
+   ]
+  }
+ ],
+ "footnotes": [],
+ "masts": {},
+ "equipment": [],
+ "characteristics": [],
+ "unparsed": {
+  "page1": "Standard Equipment /Optional Equipment                                                                                                                                                                                                                                 Features\n                                                                                                                                                                                                                                                                       Fully suspended operator compartment                                                            Multiple driving positions\n                                                                                                                                                                                                                                                                       3 Standard on 2t & 2.5t versions                                                                3 Side (S) version: vertical to forks\n                                                                                                                                                                                                                                                                       3 Suspended floor on T14 S                                                                        direction\n                                                                                                                                                                                                                                                                       3 Decoupled stand-on platform and drive unit                                                    3 TipControl®, an innovative drive and\nStandard Equipment                                                                                                                                                                                                                                                                                                                                                       lift control unit\n                                                                                                                                                                                                                                                                          from the chassis (S and SF)\n                                                                                                                                                                                                                                                                       3 Comfortable and curved padded                                                                 3 Steering wheel on right or left side\nFully suspended operator compartment (2t & 2.5t)                   Automatic speed reduction when cornering                                                                                                                                                               backrest (S)                                                                                 3 Ergonomic driving position with\nSuspended floor (T14 S)                                            Electromagnetic emergency brake acting proportionally to                                                                                                                                            3 Significant reduction of vibrations                                                             comfortable backrest\n                                                                                                                                                                                                                                                                          transmitted to the body                                                                      3 Stand Front (SF) version: in forks\nNarrow chassis width                                               the load weight\n                                                                                                                                                                                                                                                                       3 Ergonomic 90° driving position (S)                                                              direction\nKey switch or PIN Code access                                      CAN bus technology\n                                                                                                                                                                                                                                                                                                                                                                                                                  Subject to modification in the interest of progress. Illustrations and technical details could include options and not binding for actual construc-\n                                                                                                                                                                                                                                                                                                                                                                       3 Twin grip handle bar\nMultifunction coloured display as well as hourmeter, mainte-       Drive wheel Polyurethane\nnance indication, battery discharge indicator and internal fault   Single load wheels Polyurethane\ncode indication                                                    Battery compartment for 3PzS and 4PzS\nPower assisted steering                                            Width over fork carriage: 520mm, 540mm, 560mm & 680mm\nAutomatic speed reduction when cornering                           Fork carriage length: 1000mm, 1150mm, 1160mm, 2400mm\nECO-Mode with up to 12% energy savings                             (overhang 188mm) and 2400mm (overhang 563mm)\nDrive wheel position mentioned in display (S)                      Protection -10°C\nSteering wheel left or right side (S)\n                                                                                                                                                                                                                                                                       Handling                                         TipControl®                                  Drive control and settings\n                                                                                                                                                                                                                                                                       3 Chassis width = 770mm                          3 Traction, lift controls and horn grouped   3 Steering effort adjusts automatically to\n                                                                                                                                                                                                                                                                       3 Small l2 dimension = 800mm                        in one single ergonomic unit                 speed and turning radius\n                                                                                                                                                                                                                                                                       3 High maneuverability when operating            3 Enables one-handed operations              3 Speed is automatically reduced in rela-\n                                                                                                                                                                                                      Stand-on Pallet Truck                                              in lorries or confined spaces\n                                                                                                                                                                                                                                                                       3 High stand-on position for good\n                                                                                                                                                                                                                                                                                                                        3 High modularity : either left or\n                                                                                                                                                                                                                                                                                                                           right side\n                                                                                                                                                                                                                                                                                                                                                                        tion to the steering angle\n                                                                                                                                                                                                                                                                                                                        3 Height adjustable hand platform\n                                                                                                                                                                                                                                                                                                                        3 Available on Side (S) version\n                                                                                                                                                                                                                                                                                                                                                                        to finish shift with low battery status\n                                                                                                                                                                                                      T14 S, T20 S/SF, T25 S/SF Series 1154\n                                                                                                                                                                                                                                                                                                                                                                                                                  tions. All dimensions subject to usual tolerances.\nOptional Equipment\nDrive wheels: cushion rubber, synthetic cushion rubber non            Linde Connected Solutions:                                    Safety\nmarking, wet grip                                                     ac:access control (PIN or RFID Dual), an:usage analysis and   High performance combined with safety. The operator’s body\nLoad wheels: tandem polyurethane, single polyurethane gre-            dt:crash detection                                            remains safely within the chassis contours at all time.\nasable, tandem polyurethane greasable                                 Pole on left side for additional support                      A deadman foot switch ensures instant braking response\nLateral battery change 3PzS and 4PzS with ergonomic battery           Pole on right side for flashing beacon                        when necessary. The truck comes rapidly to a smooth stop\nun/locking with lever                                                 Support Clipboard DIN A4                                      thanks to an electromagnetic brake which acts proportionally                                                                       Workstation                                      Comprehensive energy solutions               AC motor\nLoad backrests with h=1115mm and h=1875mm                             Support data terminal incl. power supply cable 24V            to the load on the forks. Due to its compact chassis, the fork                                                                     3 Multifunctional coloured display with          3 Battery tray for DIN batteries             3 Powerful, 3 kW drive motor\n                                                                                                                                                                                                                                                                         easy & ergonomic menu structure                3 24V batteries : capacities from 345 Ah     3 Maintenance-free, moisture and dust\nFloor compensator                                                     Mobile or Fixed battery stand                                 tips are easily visible ensuring safe load handling.                                                                               3 Truck access control by PIN code or              (3PzS) to 500 Ah (4PzS)                       proof AC motor\nSpeed reduction if forks lowered                                      Automatic battery watering system                                                                                                                                                                  ignition key                                   3 Lateral battery change with ergonomic      3 Gradient performance of max. 15%\n                                                                      Cold store protection -35°C                                   Performance                                                      Reliability                                                       3 Wide and deep storage compartment                battery lever & spring (option)               (laden)\n                                                                                                                                                                                                                                                                         for work gloves, writing utensils etc          3 Li-ION batteries from 4,5kWh to 9kWh       3 No roll back on gradient starts\n                                                                                                                                    One of the truck’s great strengths is its productivity.          Rugged construction and the use of tried and tested compon-\n                                                                                                                                                                                                                                                                       3 Support clipboard DIN A4, flashing               (205-410Ah/3PzS)                           3 High torque motor negotiates loading\n                                                                      Other options available on request                            The compact drive unit permits precise manoeuvring for           ents make this a truck that can be relied on. Smooth fork entry     beacon available as option                     3 Rapid full charge in 1h30min with opti-       docks with ease\n                                                                                                                                    reaching the utmost performance. With capacity from              into close pallets is assured by the profiled shape of the fork                                                      mized charger\nLi-ION technology                                                     Li-ION batteries                                              1,400 kg up to 2,500 kg, and a powerful maintenance-free         tips and the entry skid. These features guarantee a longer\nRapid full charge                                                     Fits in 3 PzS SL compartment: 4,5kWh-9kWh (205Ah-410Ah)       3 kW drive motor providing a maximum speed of 12 km/h,           operating life combined with fast, safe and easy load handling.\nOpportunity charging                                                  Includes battery housing extra weight                         the Stand-on Pallet Truck is ideally suited to intensive lorry\nRapid intermediate charging                                           Li-ION charger                                                loading and unloading and rapid pallet transfer applications.    Service\nMaintenance free                                                      Optimized 24V-Charger v255: full charging time 1h30min                                                                         Efficiency at work and efficiency in servicing with cost effec-\nExtended lifetime                                                     (4,5kWh) and 2h40min (9,0kWh)                                 Comfort                                                          tive maintenance routine. Easy access to all components and\n                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 Printed in Germany 756.e.0417.2.IndF.Ki\nEfficient performance in Cold Stores                                                                                                The fully suspended operator compartment, completely             maintenance-free technology also play their part in increasing\nSide Plug available                                                                                                                 decoupled from the chassis keeps the driver concentrated         truck uptime and availability. CAN bus connectivity provides\n                                                                                                                                    and maintains high efficiency levels throughout the shift.       a computerised diagnostic system for rapid analysis to ensure\n                                                                                                                                    Allied with a padded backrest, the operator’s stability is       maintenance intervals are also minimised.\n                                                                                                                                    assured.\n                                                                                                                                                                                                                                                                       Linde Material Handling GmbH, Postfach 10 01 36, 63701 Aschaffenburg, GermanyPhone\n                                                                                                                                                                                                                                                                       +49.6021.99-0, Fax +49.6021.99-1570, www.linde-mh.com, info@linde-mh.com"
+ }
+}

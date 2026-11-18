@@ -1,0 +1,980 @@
+{
+ "slug": "p60-do-p80",
+ "datasheet": {
+  "name": "DS_P60-P80_1191-01_en_C_0523_view.pdf",
+  "id": "1vfQVIidZ6t7KyYW74N744nfaJg_vMcG5"
+ },
+ "heading": "Tow Tractors",
+ "range": "P60 – P80",
+ "capacity": "Capacity 6.0 t – 8.0 t | Series 1191",
+ "tagline": "Convenient power packs",
+ "benefits": [
+  "Decoupled and sprung wheel attachment of all three wheels for quiet and safe journeys",
+  "Large amount of pulling power and small turning radius for exceptional handling performance even in tight spaces",
+  "More leg room, adjustable operator’s seat and steering wheel angle, and intuitively arranged control elements for a high degree of operating comfort",
+  "Towing power of 6 to 8 tonnes for efficient transport of goods",
+  "Maximum speed without load of 20 km/h for fast empty runs"
+ ],
+ "versions": [
+  "P60",
+  "P80"
+ ],
+ "vdi": [
+  {
+   "no": "1.1",
+   "section": "Characteristics",
+   "label": "Manufacturer",
+   "unit": "",
+   "values": [
+    "Linde MH",
+    "Linde MH"
+   ],
+   "notes": [
+    [],
+    []
+   ]
+  },
+  {
+   "no": "1.2",
+   "section": "Characteristics",
+   "label": "Model",
+   "unit": "",
+   "values": [
+    "P60",
+    "P80"
+   ],
+   "notes": [
+    [],
+    []
+   ]
+  },
+  {
+   "no": "1.2a",
+   "section": "Characteristics",
+   "label": "Series",
+   "unit": "",
+   "values": [
+    "1191 - 01",
+    "1191 - 01"
+   ],
+   "notes": [
+    [],
+    []
+   ]
+  },
+  {
+   "no": "1.3",
+   "section": "Characteristics",
+   "label": "Power unit",
+   "unit": "",
+   "values": [
+    "Battery",
+    "Battery"
+   ],
+   "notes": [
+    [],
+    []
+   ]
+  },
+  {
+   "no": "1.4",
+   "section": "Characteristics",
+   "label": "Operation",
+   "unit": "",
+   "values": [
+    "Seat",
+    "Seat"
+   ],
+   "notes": [
+    [],
+    []
+   ]
+  },
+  {
+   "no": "1.5",
+   "section": "Characteristics",
+   "label": "Load capacity / Load",
+   "unit": "Q (t)",
+   "values": [
+    "0.15 / 6.0",
+    "0.15 / 8.0"
+   ],
+   "notes": [
+    [
+     "1",
+     "2"
+    ],
+    [
+     "1",
+     "2"
+    ]
+   ]
+  },
+  {
+   "no": "1.7",
+   "section": "Characteristics",
+   "label": "Rated tractive force",
+   "unit": "F (N)",
+   "values": [
+    "1200",
+    "1600"
+   ],
+   "notes": [
+    [],
+    []
+   ]
+  },
+  {
+   "no": "1.9",
+   "section": "Characteristics",
+   "label": "Wheelbase",
+   "unit": "y (mm)",
+   "values": [
+    "1190",
+    "1190"
+   ],
+   "notes": [
+    [
+     "3"
+    ],
+    [
+     "3"
+    ]
+   ]
+  },
+  {
+   "no": "2.1",
+   "section": "Weights",
+   "label": "Service weight",
+   "unit": "kg",
+   "values": [
+    "1260 (151",
+    "1280 (153"
+   ],
+   "notes": [
+    [
+     "5",
+     "4",
+     "5"
+    ],
+    [
+     "5",
+     "4",
+     "5"
+    ]
+   ]
+  },
+  {
+   "no": "2.2",
+   "section": "Weights",
+   "label": "Axle load with load, front / rear",
+   "unit": "kg",
+   "values": [
+    "550 / 860 (662 / 100",
+    "560 / 870 (672 / 101"
+   ],
+   "notes": [
+    [
+     "3",
+     "4",
+     "5"
+    ],
+    [
+     "3",
+     "4",
+     "5"
+    ]
+   ]
+  },
+  {
+   "no": "2.3",
+   "section": "Weights",
+   "label": "Axle load without load, front / rear",
+   "unit": "kg",
+   "values": [
+    "550 / 710 (662 / 85",
+    "560 / 720 (672 / 86"
+   ],
+   "notes": [
+    [
+     "3",
+     "4",
+     "5"
+    ],
+    [
+     "3",
+     "4",
+     "5"
+    ]
+   ]
+  },
+  {
+   "no": "3.1",
+   "section": "Wheels/Tyres",
+   "label": "Tyres rubber, SE, pneumatic, polyurethane",
+   "unit": "",
+   "values": [
+    "Pneumatic",
+    "Pneumatic"
+   ],
+   "notes": [
+    [],
+    []
+   ]
+  },
+  {
+   "no": "3.2",
+   "section": "Wheels/Tyres",
+   "label": "Tyre size, front",
+   "unit": "",
+   "values": [
+    "4.00 - 8 / 6PR",
+    "4.00 - 8 / 6PR"
+   ],
+   "notes": [
+    [],
+    []
+   ]
+  },
+  {
+   "no": "3.3",
+   "section": "Wheels/Tyres",
+   "label": "Tyre size, rear",
+   "unit": "",
+   "values": [
+    "4.00 - 8 / 6PR",
+    "4.00 - 8 / 6PR"
+   ],
+   "notes": [
+    [],
+    []
+   ]
+  },
+  {
+   "no": "3.5",
+   "section": "Wheels/Tyres",
+   "label": "Wheels, number front / rear (x = driven)",
+   "unit": "",
+   "values": [
+    "1 / 2x",
+    "1 / 2x"
+   ],
+   "notes": [
+    [],
+    []
+   ]
+  },
+  {
+   "no": "3.7",
+   "section": "Wheels/Tyres",
+   "label": "Track width, rear",
+   "unit": "b11 (mm)",
+   "values": [
+    "860",
+    "860"
+   ],
+   "notes": [
+    [
+     "3"
+    ],
+    [
+     "3"
+    ]
+   ]
+  },
+  {
+   "no": "4.7",
+   "section": "Dimensions",
+   "label": "Height of overhead guard (cabin)",
+   "unit": "h6 (mm)",
+   "values": [
+    "1915 / (207",
+    "1915 / (207"
+   ],
+   "notes": [
+    [
+     "0",
+     "3"
+    ],
+    [
+     "0",
+     "3"
+    ]
+   ]
+  },
+  {
+   "no": "4.8",
+   "section": "Dimensions",
+   "label": "Seat height relating to SIP / stand height",
+   "unit": "h7 (mm)",
+   "values": [
+    "1020",
+    "1020"
+   ],
+   "notes": [
+    [
+     "3"
+    ],
+    [
+     "3"
+    ]
+   ]
+  },
+  {
+   "no": "4.12",
+   "section": "Dimensions",
+   "label": "Towing coupling height",
+   "unit": "h10 (mm)",
+   "values": [
+    "285, 340, 395",
+    "285, 340, 395"
+   ],
+   "notes": [
+    [
+     "3"
+    ],
+    [
+     "3"
+    ]
+   ]
+  },
+  {
+   "no": "4.13",
+   "section": "Dimensions",
+   "label": "Platform height, unladen",
+   "unit": "h11 (mm)",
+   "values": [
+    "645",
+    "645"
+   ],
+   "notes": [
+    [],
+    []
+   ]
+  },
+  {
+   "no": "4.16",
+   "section": "Dimensions",
+   "label": "Loading platform, length",
+   "unit": "l3 (mm)",
+   "values": [
+    "520 (26",
+    "520 (26"
+   ],
+   "notes": [
+    [
+     "5",
+     "5"
+    ],
+    [
+     "5",
+     "5"
+    ]
+   ]
+  },
+  {
+   "no": "4.17",
+   "section": "Dimensions",
+   "label": "Rear overhang",
+   "unit": "l5 (mm)",
+   "values": [
+    "350",
+    "350"
+   ],
+   "notes": [
+    [],
+    []
+   ]
+  },
+  {
+   "no": "4.18",
+   "section": "Dimensions",
+   "label": "Loading platform, width",
+   "unit": "b9 (mm)",
+   "values": [
+    "900",
+    "900"
+   ],
+   "notes": [
+    [
+     "3"
+    ],
+    [
+     "3"
+    ]
+   ]
+  },
+  {
+   "no": "4.19",
+   "section": "Dimensions",
+   "label": "Overall length",
+   "unit": "l1 (mm)",
+   "values": [
+    "1830",
+    "1830"
+   ],
+   "notes": [
+    [
+     "3"
+    ],
+    [
+     "3"
+    ]
+   ]
+  },
+  {
+   "no": "4.21",
+   "section": "Dimensions",
+   "label": "Overall width",
+   "unit": "b1 / b2 (mm)",
+   "values": [
+    "996",
+    "996"
+   ],
+   "notes": [
+    [
+     "3"
+    ],
+    [
+     "3"
+    ]
+   ]
+  },
+  {
+   "no": "4.32",
+   "section": "Dimensions",
+   "label": "Ground clearance, centre of wheelbase",
+   "unit": "m2 (mm)",
+   "values": [
+    "135",
+    "135"
+   ],
+   "notes": [
+    [
+     "6"
+    ],
+    [
+     "6"
+    ]
+   ]
+  },
+  {
+   "no": "4.35",
+   "section": "Dimensions",
+   "label": "Turning radius",
+   "unit": "Wa (mm)",
+   "values": [
+    "1650",
+    "1650"
+   ],
+   "notes": [
+    [
+     "7"
+    ],
+    [
+     "7"
+    ]
+   ]
+  },
+  {
+   "no": "4.36",
+   "section": "Dimensions",
+   "label": "Minimum pivoting point distance",
+   "unit": "b13 (mm)",
+   "values": [
+    "600",
+    "600"
+   ],
+   "notes": [
+    [],
+    []
+   ]
+  },
+  {
+   "no": "5.1",
+   "section": "Performance",
+   "label": "Travel speed, with / without load",
+   "unit": "km / h",
+   "values": [
+    "12 / 20",
+    "10 / 20"
+   ],
+   "notes": [
+    [],
+    []
+   ]
+  },
+  {
+   "no": "5.5",
+   "section": "Performance",
+   "label": "Tractive force, with / without load",
+   "unit": "N",
+   "values": [
+    "1200",
+    "1600"
+   ],
+   "notes": [
+    [],
+    []
+   ]
+  },
+  {
+   "no": "5.6",
+   "section": "Performance",
+   "label": "Maximum tractive force, with / without load",
+   "unit": "N",
+   "values": [
+    "6500",
+    "6500"
+   ],
+   "notes": [
+    [],
+    []
+   ]
+  },
+  {
+   "no": "5.7",
+   "section": "Performance",
+   "label": "Climbing ability, with / without load",
+   "unit": "%",
+   "values": [
+    "see tow diagrams",
+    "see tow diagrams"
+   ],
+   "notes": [
+    [],
+    []
+   ]
+  },
+  {
+   "no": "5.8",
+   "section": "Performance",
+   "label": "Maximum climbing ability, with / without load",
+   "unit": "%",
+   "values": [
+    "see tow diagrams",
+    "see tow diagrams"
+   ],
+   "notes": [
+    [],
+    []
+   ]
+  },
+  {
+   "no": "5.10",
+   "section": "Performance",
+   "label": "Service brake",
+   "unit": "",
+   "values": [
+    "Electric / hydraulic",
+    "Electric / hydraulic"
+   ],
+   "notes": [
+    [],
+    []
+   ]
+  },
+  {
+   "no": "6.1",
+   "section": "Electric-engine",
+   "label": "Drive motor rating S2 60 min",
+   "unit": "kW",
+   "values": [
+    "4.5 (AC)",
+    "4.5 (AC)"
+   ],
+   "notes": [
+    [],
+    []
+   ]
+  },
+  {
+   "no": "6.3",
+   "section": "Electric-engine",
+   "label": "Battery according to DIN 43531 / 35 / 36 A,B,C,no",
+   "unit": "",
+   "values": [
+    "43 531 A",
+    "43 531 A"
+   ],
+   "notes": [
+    [],
+    []
+   ]
+  },
+  {
+   "no": "6.4",
+   "section": "Electric-engine",
+   "label": "Battery voltage / rated capacity (5h)",
+   "unit": "(V) / (Ah) o. kWh",
+   "values": [
+    "48 / 375",
+    "48 / 375"
+   ],
+   "notes": [
+    [],
+    []
+   ]
+  },
+  {
+   "no": "6.5",
+   "section": "Electric-engine",
+   "label": "Battery weight (±5 %)",
+   "unit": "kg",
+   "values": [
+    "560",
+    "560"
+   ],
+   "notes": [
+    [],
+    []
+   ]
+  },
+  {
+   "no": "6.6",
+   "section": "Electric-engine",
+   "label": "Power consumption according to VDI cycle",
+   "unit": "kWh / h",
+   "values": [
+    "3.84 (cycl. 2012)",
+    "4.27 (cycl. 2012)"
+   ],
+   "notes": [
+    [],
+    []
+   ]
+  },
+  {
+   "no": "8.1",
+   "section": "Drive",
+   "label": "Type of drive unit",
+   "unit": "",
+   "values": [
+    "Electronic / stepless",
+    "Electronic / stepless"
+   ],
+   "notes": [
+    [],
+    []
+   ]
+  },
+  {
+   "no": "10.7",
+   "section": "Additional data",
+   "label": "Sound pressure level LpAZ (at the driver’s seat)",
+   "unit": "dB(A)",
+   "values": [
+    "60",
+    "60"
+   ],
+   "notes": [
+    [],
+    []
+   ]
+  },
+  {
+   "no": "10.8",
+   "section": "Additional data",
+   "label": "Towing coupling, design / type, DIN 15 170",
+   "unit": "",
+   "values": [
+    "see option list",
+    "see option list"
+   ],
+   "notes": [
+    [],
+    []
+   ]
+  }
+ ],
+ "footnotes": [
+  {
+   "n": "1",
+   "text": "Based on level, dry surface with rolling resistance of 200N / t. Refer to tow diagrams for specific              4)     (±10 kg) operating conditions and when the application                5)     Values in parenthesis with cabin involves inclines or ramps                                   6)     (±2 mm)"
+  },
+  {
+   "n": "2",
+   "text": "Load capacity (carrying on platform) 150 kg"
+  },
+  {
+   "n": "3",
+   "text": "(±5 mm)"
+  },
+  {
+   "n": "7",
+   "text": "(±20 mm)"
+  }
+ ],
+ "masts": {},
+ "equipment": [
+  {
+   "group": "Safety",
+   "columns": [],
+   "items": [
+    {
+     "text": "Model / Equipment P60 P80"
+    },
+    {
+     "text": "Linde Curve Assist"
+    },
+    {
+     "text": "Constant speed on gradients"
+    },
+    {
+     "text": "Emergency circuit isolator"
+    },
+    {
+     "text": "Duplicated fail - to - safe - circuitry"
+    },
+    {
+     "text": "Lap belt"
+    },
+    {
+     "text": "Electric horn"
+    },
+    {
+     "text": "Heavy - duty steel chassis"
+    },
+    {
+     "text": "Easy service access to all key components"
+    }
+   ]
+  },
+  {
+   "group": "Digitalisation",
+   "columns": [],
+   "items": [
+    {
+     "text": "Diagnostic computer port (CAN bus system)"
+    },
+    {
+     "text": "Digital interactive display"
+    },
+    {
+     "text": "Battery discharge status & working hours"
+    },
+    {
+     "text": "Travel speed (km / h)"
+    },
+    {
+     "text": "Power setting adjustment"
+    },
+    {
+     "text": "Indicators & information for optional equipment"
+    },
+    {
+     "text": "Front tubular mounting for optional equipment such as mirrors, pad holder, data terminals etc. (only without cabin)"
+    },
+    {
+     "text": "Vertical pole at the rear for optional equipment such as beacon, bin etc."
+    }
+   ]
+  },
+  {
+   "group": "Environment",
+   "columns": [],
+   "items": [
+    {
+     "text": "Opportunity charging"
+    },
+    {
+     "text": "On - board charger"
+    },
+    {
+     "text": "Linde high frequency AC traction controller is sealed against the ingress of dust and water"
+    },
+    {
+     "text": "Individual travel speed reduction"
+    },
+    {
+     "text": "Audible warning in reverse"
+    },
+    {
+     "text": "Several modular cabin versions like sun protection, roof & windows, flexi doors, full metal doors, cabin heating"
+    },
+    {
+     "text": "Sealed and reverse polarity protected connectors ensure excellent vibration proof contact"
+    },
+    {
+     "text": "Inching control (forwards & backwards) on both sides at the rear chassis"
+    },
+    {
+     "text": "Pedestrian traction buttons (forwards traction only) on both sides of the chassis for order picking applications"
+    }
+   ]
+  },
+  {
+   "group": "Workplace",
+   "columns": [],
+   "items": [
+    {
+     "text": "48V DIN batteries up to 375 Ah capacity"
+    },
+    {
+     "text": "Battery roll - off adapter, for use with pallet truck"
+    },
+    {
+     "text": "Generous storage compartments"
+    },
+    {
+     "text": "Auxiliary power supply socket (12 V) in dashboard"
+    },
+    {
+     "text": "Key switch"
+    },
+    {
+     "text": "PIN code access"
+    },
+    {
+     "text": "Adjustable PVC covered seat"
+    },
+    {
+     "text": "Deluxe seat with mechanical suspension"
+    },
+    {
+     "text": "Deluxe Super Comfort with air suspension and heating"
+    },
+    {
+     "text": "Three wheel configuration for optimum manoeuvrability"
+    },
+    {
+     "text": "Excellent stability"
+    },
+    {
+     "text": "Side battery exchange, 48V circuit"
+    }
+   ]
+  },
+  {
+   "group": "Attachment/Couplings",
+   "columns": [],
+   "items": [
+    {
+     "text": "Single pedal accelerator and direction lever"
+    },
+    {
+     "text": "Rear multi - position towing coupling"
+    },
+    {
+     "text": "3 position hook (rear)"
+    },
+    {
+     "text": "Rockinger 244D auto. (rear)"
+    },
+    {
+     "text": "3 position hook (front)"
+    },
+    {
+     "text": "Rockinger 244D auto. (front)"
+    },
+    {
+     "text": "Metal front protection shield"
+    },
+    {
+     "text": "Pneumatic tyres"
+    },
+    {
+     "text": "Superelastic SE 4.00 x 8"
+    },
+    {
+     "text": "Superelastic SE non marking"
+    }
+   ]
+  },
+  {
+   "group": "Drive and Braking System",
+   "columns": [],
+   "items": [
+    {
+     "text": "Two stage travel speed selection"
+    },
+    {
+     "text": "Resilient cushioning and swinging arm suspension on all three wheels"
+    },
+    {
+     "text": "4,5 kW sealed AC drive motor"
+    },
+    {
+     "text": "Four independent braking systems"
+    },
+    {
+     "text": "Regenerative electric braking as accelerator released"
+    },
+    {
+     "text": "Automatic electro - magnetic parking brake"
+    },
+    {
+     "text": "Gradient hold control & start assist without roll - back"
+    },
+    {
+     "text": "Self adjusting hydraulic drum brakes on all three wheels"
+    },
+    {
+     "text": "Lighting systems (bulb or LED)"
+    },
+    {
+     "text": "Road lighting LED"
+    },
+    {
+     "text": "Add. LED rear light, high"
+    }
+   ]
+  },
+  {
+   "group": "Lighting",
+   "columns": [],
+   "items": [
+    {
+     "text": "Working light LED, Pos. 7"
+    }
+   ]
+  }
+ ],
+ "characteristics": [
+  {
+   "group": "Safety",
+   "bullets": [
+    "Four separate braking systems for efficient braking in all operating situations",
+    "Hill-start assist to prevent the truck from rolling backwards on gradients",
+    "Good all-round view and solid steel chassis for optimum protection for the operator and the work area"
+   ]
+  },
+  {
+   "group": "Ergonomics",
+   "bullets": [
+    "Easily accessible and intuitively arranged control elements for efficient truck operation",
+    "Large access area with rounded corners and non-slip steps to enable the operator to enter the truck effortlessly",
+    "Large, easily accessible storage compartments for work equipment"
+   ]
+  },
+  {
+   "group": "Handling",
+   "bullets": [
+    "Modular concept with equipment options such as sun protection, side windows, sliding doors and enclosed, heated cabs for maximum flexibility",
+    "4.5 kW AC drive motor for considerable towing power",
+    "Precise control and small turning circle for easy manoeuvrability in narrow aisles"
+   ]
+  },
+  {
+   "group": "Service",
+   "bullets": [
+    "Long maintenance intervals for high availability",
+    "Easy access to all the important components thanks to service-friendly design",
+    "Comprehensive truck diagnostics via laptop for low service costs",
+    "Multifunction display for the perfect overview of the truck and battery status indicators"
+   ]
+  }
+ ],
+ "unparsed": {
+  "characteristics_captions": [
+   "Road lighting LED",
+   "Intuitive automotive layout",
+   "Airport application",
+   "Easy service access to all key components"
+  ],
+  "other": "                          l3\nh6\n                                                  h7\n                                            h11\n                                 h10a h10c\n                m2                  h10b\n            y              l5                          b11\n           l1                                           b1\n                     l3\n                                WaR\n                                             b9\n     WaF\n                                      b13",
+  "sections": {
+   "P60                                                                                                                                                    P80": "                      35                                                                        12000                                                            35                                            12000\n\n                      30                                                                        10000                                                            30                                            10000\n\n\n\n\n                                                                                                            Permissible haul per hour (m)\n\n\n\n\n                                                                                                                                                                                                                        Permissible haul per hour (m)\n                      25                                                                        8000                                                             25                                            8000\n\n                      20                                                                                                                                                                                       6000\n  Speed (km / h)\n\n\n\n\n                                                                                                                                               Speed (km / h)\n                                                                                                6000                                                             20\n\n                      15                                                                        4000                                                             15                                            4000\n\n                      10                                                                        2000                                                             10                                            2000\n\n                       5                                                                        0                                                                 5                                            0\n\n                       0             1000        2000     3000        4000       5000            Drawbar pull (N)                                                     1000        2000   3000   4000    5000    Drawbar pull (N)\n                                                                                                                                                                  0\n                                                                                                         Combined weight: trailer + load (t)\n\n\n\n\n                                                                                                                                                                                                                        Combined weight: trailer + load (t)\n                     5%                                                                                                                                          5%\n                                                                                                                                                                                                               8t\n\n                    10%                                                                                                                                         10%                                            7t\n                                                                                                6t\n                                                                                                                                                                                                               6t\n                                                                                                5t\n  Gradient (%)\n\n\n\n\n                                                                                                                                               Gradient (%)\n\n\n\n\n                    15%                                                                                                                                         15%                                            5t\n\n\n                    20%                                                                         4t                                                              20%                                            4t\n\n\n                    25%                                                                                                                                         25%\n                                     0t     1t              2t                     3t                                                                                 0t     1t           2t           3t\n\n\n\n\n                                    Example\n                                    Permissible haul per hour (m)*\n\n                                    Speed (km/h)\n                                    Load (t)\n\n                           * The permissible haul per hour is the total distance travelled, including\n                              the return journey and any downhill gradients.\n\n\n\n                           The example shown illustrates a\n                           tractor that is transporting 4 t,\n                           on a ramp of 5% gradient, with a\n                           maximum driving speed of 7.5 km/h\n                           and a maximum travel distance of\n                           3700 m per hour.\n\n\n\n\nInformation\n\n\n\n          Unbraked trailer load recommendation\n\n                                                              P60                       P80\n\n                   Maximum recommended\n                                                              2.5 t                     2.5 t\n                   unbraked trailer load\n\n\n\n\nFor trailer loads exceeding 2.5 tons and for all trailer loads where a gradient is involved it is recommended that braked trailers are used."
+  }
+ }
+}

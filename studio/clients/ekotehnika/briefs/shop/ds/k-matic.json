@@ -1,0 +1,973 @@
+{
+ "slug": "k-matic",
+ "datasheet": {
+  "name": "DS_K_MATIC_5231_en_A_0224_view.pdf",
+  "id": "1_x5_SA70ralDXtCoOsePpyfGf9ok8BLv"
+ },
+ "heading": "Automatic Storage Solutions",
+ "range": "K-MATIC",
+ "capacity": "Load capacity 1.45 t | Series 5231",
+ "tagline": "Reliable logistics in narrow aisle warehouses",
+ "benefits": [
+  "Automated truck with lifting capacity up to 1450 kg and 14 m lifting height (16 m lifting height possible on request)",
+  "Control via intelligent contour navigation without additional infrastructure",
+  "Seamless interaction with conveyor technology and transfer stations",
+  "Straightforward integration into common WMS and ERP systems",
+  "Use as a single unit or in an automated fleet"
+ ],
+ "versions": [
+  "K-MATIC",
+  "K-MATIC",
+  "K-MATIC"
+ ],
+ "vdi": [
+  {
+   "no": "1.1",
+   "section": "Characteristics",
+   "label": "Manufacturer (abbreviation)",
+   "unit": "",
+   "values": [
+    "Linde MH",
+    "Linde MH",
+    "Linde MH"
+   ],
+   "notes": [
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "1.2",
+   "section": "Characteristics",
+   "label": "Manufacturer’s type designation",
+   "unit": "",
+   "values": [
+    "K-MATIC",
+    "K-MATIC",
+    "K-MATIC"
+   ],
+   "notes": [
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "1.2a",
+   "section": "Characteristics",
+   "label": "Series",
+   "unit": "",
+   "values": [
+    "5231",
+    "5231",
+    "5231"
+   ],
+   "notes": [
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "1.3",
+   "section": "Characteristics",
+   "label": "Drive",
+   "unit": "",
+   "values": [
+    "Battery",
+    "Battery",
+    "Battery"
+   ],
+   "notes": [
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "1.4",
+   "section": "Characteristics",
+   "label": "Operation",
+   "unit": "",
+   "values": [
+    "Automated",
+    "Automated",
+    "Automated"
+   ],
+   "notes": [
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "1.5",
+   "section": "Characteristics",
+   "label": "Rated capacity/rated load",
+   "unit": "Q (t)",
+   "values": [
+    "1.45",
+    "1.45",
+    "1.45"
+   ],
+   "notes": [
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "1.6",
+   "section": "Characteristics",
+   "label": "Load centre distance",
+   "unit": "c (mm)",
+   "values": [
+    "625",
+    "625",
+    "625"
+   ],
+   "notes": [
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "1.9",
+   "section": "Characteristics",
+   "label": "Wheelbase",
+   "unit": "y (mm)",
+   "values": [
+    "1992",
+    "2212",
+    "2212"
+   ],
+   "notes": [
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "2.1",
+   "section": "Weight",
+   "label": "Service weight",
+   "unit": "kg",
+   "values": [
+    "9258",
+    "11156",
+    "12477"
+   ],
+   "notes": [
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "2.2",
+   "section": "Weight",
+   "label": "Axle loading, laden front/rear",
+   "unit": "kg",
+   "values": [
+    "2828/7730",
+    "3617/8768",
+    "4013/7390"
+   ],
+   "notes": [
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "2.3",
+   "section": "Weight",
+   "label": "Axle loading, unladen front/rear",
+   "unit": "kg",
+   "values": [
+    "3595/5444",
+    "4309/6626",
+    "4734/7390"
+   ],
+   "notes": [
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "3.1",
+   "section": "Tyres/chassis",
+   "label": "Tyres: solid rubber, superelastic, pneumatic, polyurethane",
+   "unit": "",
+   "values": [
+    "Polyurethane",
+    "Polyurethane",
+    "Polyurethane"
+   ],
+   "notes": [
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "3.2",
+   "section": "Tyres/chassis",
+   "label": "Tyre size, front",
+   "unit": "mm",
+   "values": [
+    "406/170",
+    "406/170",
+    "406/170"
+   ],
+   "notes": [
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "3.3",
+   "section": "Tyres/chassis",
+   "label": "Tyre size, rear",
+   "unit": "mm",
+   "values": [
+    "370/160",
+    "370/160",
+    "370/160"
+   ],
+   "notes": [
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "3.5",
+   "section": "Tyres/chassis",
+   "label": "Wheels, number front/rear (x = driven)",
+   "unit": "1x/2",
+   "values": [
+    "1x/2",
+    "1x/2",
+    "1x/2"
+   ],
+   "notes": [
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "3.6",
+   "section": "Tyres/chassis",
+   "label": "Tread, front",
+   "unit": "b10 (mm)",
+   "values": [
+    "1395",
+    "1445",
+    "1545"
+   ],
+   "notes": [
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "3.7",
+   "section": "Tyres/chassis",
+   "label": "Tread, rear",
+   "unit": "b11 (mm)",
+   "values": [
+    "0",
+    "0",
+    "0"
+   ],
+   "notes": [
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "4.2",
+   "section": "Dimensions",
+   "label": "Mast height, lowered",
+   "unit": "h1 (mm)",
+   "values": [
+    "4900",
+    "5400",
+    "6400"
+   ],
+   "notes": [
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "4.3",
+   "section": "Dimensions",
+   "label": "Free lift",
+   "unit": "h2 (mm)",
+   "values": [
+    "-",
+    "4150",
+    "5150"
+   ],
+   "notes": [
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "4.4",
+   "section": "Dimensions",
+   "label": "Lift",
+   "unit": "h3 (mm)",
+   "values": [
+    "7200",
+    "11550",
+    "14350"
+   ],
+   "notes": [
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "4.5",
+   "section": "Dimensions",
+   "label": "Mast height, extended",
+   "unit": "h4 (mm)",
+   "values": [
+    "9800",
+    "14150",
+    "16950"
+   ],
+   "notes": [
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "4.7",
+   "section": "Dimensions",
+   "label": "Height of overhead guard (cabin)",
+   "unit": "h6 (mm)",
+   "values": [
+    "2555",
+    "2555",
+    "2555"
+   ],
+   "notes": [
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "4.8",
+   "section": "Dimensions",
+   "label": "Seat height relating to SIP/stand height",
+   "unit": "h7 (mm)",
+   "values": [
+    "460",
+    "460",
+    "460"
+   ],
+   "notes": [
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "4.11",
+   "section": "Dimensions",
+   "label": "Additional lift",
+   "unit": "h9 (mm)",
+   "values": [
+    "1800",
+    "1800",
+    "1800"
+   ],
+   "notes": [
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "4.15",
+   "section": "Dimensions",
+   "label": "Height, lowered",
+   "unit": "h13 (mm)",
+   "values": [
+    "60",
+    "60",
+    "60"
+   ],
+   "notes": [
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "4.19",
+   "section": "Dimensions",
+   "label": "Overall length",
+   "unit": "l1 (mm)",
+   "values": [
+    "3843",
+    "4158",
+    "4258"
+   ],
+   "notes": [
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "4.21",
+   "section": "Dimensions",
+   "label": "Overall width",
+   "unit": "b1/b2 (mm)",
+   "values": [
+    "1450/1600",
+    "1450/1650",
+    "1450/1750"
+   ],
+   "notes": [
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "4.22",
+   "section": "Dimensions",
+   "label": "Fork dimensions DIN ISO 2331",
+   "unit": "s/e/l",
+   "values": [
+    "50/120/1250",
+    "50/120/1250",
+    "50/120/1250"
+   ],
+   "notes": [
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "4.24",
+   "section": "Dimensions",
+   "label": "Fork carriage width",
+   "unit": "b3 (mm)",
+   "values": [
+    "710",
+    "710",
+    "710"
+   ],
+   "notes": [
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "4.25",
+   "section": "Dimensions",
+   "label": "Fork spread",
+   "unit": "b5 (mm)",
+   "values": [
+    "470/640",
+    "470/640",
+    "470/640"
+   ],
+   "notes": [
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "4.29",
+   "section": "Dimensions",
+   "label": "Reach, lateral",
+   "unit": "b7 (mm)",
+   "values": [
+    "1405",
+    "1430",
+    "1510"
+   ],
+   "notes": [
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "4.31",
+   "section": "Dimensions",
+   "label": "Ground clearance, laden, below mast",
+   "unit": "m1 (mm)",
+   "values": [
+    "40",
+    "40",
+    "40"
+   ],
+   "notes": [
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "4.32",
+   "section": "Dimensions",
+   "label": "Ground clearance, centre of wheelbase",
+   "unit": "m2 (mm)",
+   "values": [
+    "87",
+    "87",
+    "87"
+   ],
+   "notes": [
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "4.34",
+   "section": "Dimensions",
+   "label": "Aisle width predetermined load dimensions (800 × 1200/1000 × 1200)",
+   "unit": "Ast (mm)",
+   "values": [
+    "1850/--",
+    "1850/1900",
+    "2000/2000"
+   ],
+   "notes": [
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "4.35",
+   "section": "Dimensions",
+   "label": "Turning radius",
+   "unit": "Wa (mm)",
+   "values": [
+    "2257/2435",
+    "2477/2655",
+    "2477/2655"
+   ],
+   "notes": [
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "4.38",
+   "section": "Dimensions",
+   "label": "Distance to swivelling-fork pivot",
+   "unit": "l8 (mm)",
+   "values": [
+    "1053",
+    "1148",
+    "1248"
+   ],
+   "notes": [
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "5.1",
+   "section": "Performance",
+   "label": "Travel speed, laden/unladen",
+   "unit": "m/s",
+   "values": [
+    "2/2",
+    "2/2",
+    "2/2"
+   ],
+   "notes": [
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "5.2",
+   "section": "Performance",
+   "label": "Lifting speed, laden/unladen",
+   "unit": "m/s",
+   "values": [
+    "0.4/0.4",
+    "0.4/0.4",
+    "0.4/0.4"
+   ],
+   "notes": [
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "5.3",
+   "section": "Performance",
+   "label": "Lowering speed, laden/unladen",
+   "unit": "m/s",
+   "values": [
+    "0.4/0.4",
+    "0.4/0.4",
+    "0.4/0.4"
+   ],
+   "notes": [
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "5.4",
+   "section": "Performance",
+   "label": "Reaching speed, laden/unladen",
+   "unit": "m/s",
+   "values": [
+    "0.29/0.29",
+    "0.29/0.29",
+    "0.29/0.29"
+   ],
+   "notes": [
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "5.10",
+   "section": "Performance",
+   "label": "Service brake",
+   "unit": "",
+   "values": [
+    "Regenerative",
+    "Regenerative",
+    "Regenerative"
+   ],
+   "notes": [
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "6.1",
+   "section": "Electric-engine",
+   "label": "Drive motor rating S2 60 min",
+   "unit": "kW",
+   "values": [
+    "7.0 kW/S2 = 60 min",
+    "7.0 kW/S2 = 60 min",
+    "7.0 kW/S2 = 60 min"
+   ],
+   "notes": [
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "6.2",
+   "section": "Electric-engine",
+   "label": "Lift motor rating at S3 15%",
+   "unit": "kW",
+   "values": [
+    "24.0 kW/S3 = 15%",
+    "24.0 kW/S3 = 15%",
+    "24.0 kW/S3 = 15%"
+   ],
+   "notes": [
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "6.3",
+   "section": "Electric-engine",
+   "label": "Battery according to DIN 43531/35/36 A, B, C, no",
+   "unit": "",
+   "values": [
+    "IEC 254-2; A",
+    "IEC 254-2; A",
+    "IEC 254-2; A"
+   ],
+   "notes": [
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "6.4",
+   "section": "Electric-engine",
+   "label": "Battery type, voltage, nominal capacity K5",
+   "unit": "V/Ah",
+   "values": [
+    "PzS, 80 V/700 Ah",
+    "PzS, 80 V/840 Ah",
+    "PzS, 80 V/840 Ah"
+   ],
+   "notes": [
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "6.5",
+   "section": "Electric-engine",
+   "label": "Battery weight (+/-5%)",
+   "unit": "kg",
+   "values": [
+    "1863",
+    "2178",
+    "2178"
+   ],
+   "notes": [
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "10.7",
+   "section": "Additional data",
+   "label": "Sound pressure level LpAZ (at the operator’s seat)",
+   "unit": "dB(A)",
+   "values": [
+    "68",
+    "68",
+    "68"
+   ],
+   "notes": [
+    [],
+    [],
+    []
+   ]
+  }
+ ],
+ "footnotes": [],
+ "masts": {
+  "STANDARD MAST (in mm)": "Lift                               h3: 3200                h3: 4200               h3: 5200              h3: 6200              h3: 7200\n                               h1: 2900 h4: 5900      h1: 3400 h4: 6900       h1: 3900 h4: 7900    h1: 4400 h4: 8900      h1: 4900 h4: 9900\nHeight measurements\n                               h2: -                  h2: -                   h2: -                h2: -                  h2: -\nManufacturer’s type\ndesignation\nK-MATIC\n\n\n\nLift                               h3: 8200                h3: 9000              h3: 10000              h3: 10800            h3: 11800\n                               h1: 5400 h4:           h1: 5900 h4:            h1: 6400 h4:         h1: 6900 h4:           h1: 7400 h4:14500\nHeight measurements\n                               10900 h2: -            11700 h2: -             12700 h2: -          13500 h2: -            h2: -\nManufacturer’s type\ndesignation\nK-MATIC",
+  "TRIPLEX MAST (in mm)": "Lift                               h3: 5050                h3: 6350               h3: 7450              h3: 8750              h3: 10050\n                               h1: 2900 h4: 7750      h1: 3400 h4: 9050       h1: 3900 h4:10150    h1: 4400 h4:           h1: 4900 h4:\nHeight measurements\n                               h2:1650                h2: 2150                h2: 2650             11450 h2: 3150         12750 h2: 3650\nManufacturer’s type\ndesignation\nK-MATIC\n\n\n\nLift                               h3: 11550               h3: 12850             h3: 14350\n                               h1: 5400 h4: 14250     h1: 5900 h4: 15550      h1: 6400 h4: 17050\nHeight measurements\n                               h2: 4150               h2: 4650                h2: 5150\nManufacturer’s type\ndesignation\nK-MATIC\n\n\n\n\n  Optional equipment\n\nh1: Mast height, lowered                                             h4: Mast height, extended\nh2: Free lift\nh3: Lift"
+ },
+ "equipment": [
+  {
+   "group": "On-board software",
+   "columns": [
+    "K-MATIC"
+   ],
+   "items": [
+    {
+     "text": "Contour navigation"
+    },
+    {
+     "text": "User-friendly log file analysis"
+    }
+   ]
+  },
+  {
+   "group": "Off-board software",
+   "columns": [
+    "K-MATIC"
+   ],
+   "items": [
+    {
+     "text": "Advanced routing algorithm"
+    },
+    {
+     "text": "Editor for integrating different shelving systems"
+    },
+    {
+     "text": "Interfaces to existing Warehouse Management System (WMS), Enterprise Resource Planning System (ERP) or similar"
+    },
+    {
+     "text": "Interfaces to infrastructure: doors, conveyors, etc."
+    },
+    {
+     "text": "Linde Warehouse Management System – Linde Warehouse Navigator"
+    },
+    {
+     "text": "Email updates on performance data of automated guided vehicles (AGVs)"
+    }
+   ]
+  },
+  {
+   "group": "Safety",
+   "columns": [
+    "K-MATIC"
+   ],
+   "items": [
+    {
+     "text": "Front and rear safety scanners"
+    },
+    {
+     "text": "Side safety scanners"
+    },
+    {
+     "text": "2D laser protection curtain in driving direction"
+    },
+    {
+     "text": "Linde BlueSpot – visual warning signal for pedestrians and other operators"
+    },
+    {
+     "text": "Additional emergency stop buttons"
+    },
+    {
+     "text": "Visual warning signals – lights indicating truck status"
+    },
+    {
+     "text": "Acoustic warning signals"
+    }
+   ]
+  },
+  {
+   "group": "Load handling",
+   "columns": [
+    "K-MATIC"
+   ],
+   "items": [
+    {
+     "text": "Load detection with 3D camera"
+    },
+    {
+     "text": "2D barcode reader"
+    },
+    {
+     "text": "1D barcode reader"
+    },
+    {
+     "text": "Anti-drag or anti-push detection of load carriers"
+    }
+   ]
+  },
+  {
+   "group": "Mast",
+   "columns": [
+    "K-MATIC"
+   ],
+   "items": [
+    {
+     "text": "Standard masts for lift heights up to 14 m"
+    },
+    {
+     "text": "Triplex masts for lift heights up to 14 m"
+    },
+    {
+     "text": "Auxiliary lift 1800 mm"
+    }
+   ]
+  },
+  {
+   "group": "Environment",
+   "columns": [
+    "K-MATIC"
+   ],
+   "items": [
+    {
+     "text": "WLAN communication"
+    },
+    {
+     "text": "Operator interface – touch screen display"
+    },
+    {
+     "text": "Navigation laser"
+    },
+    {
+     "text": "ComBox – communication box"
+    }
+   ]
+  },
+  {
+   "group": "Energy",
+   "columns": [
+    "K-MATIC"
+   ],
+   "items": [
+    {
+     "text": "Lead-acid batteries for manual charging"
+    }
+   ]
+  }
+ ],
+ "characteristics": [
+  {
+   "group": "Safety",
+   "bullets": [
+    "All-round view of the working environment",
+    "Laser-based safety system detects people and obstacles",
+    "Multiple emergency stop buttons for rapid hazard prevention",
+    "Acoustic and visual signals ensure early warning of potenital issues"
+   ]
+  },
+  {
+   "group": "Handling",
+   "bullets": [
+    "3D pallet recognition simplifies loading and unloading of different load carriers",
+    "Control system for all MATIC trucks",
+    "Environment mapping for rapid adaptation to changing environments",
+    "Manual control option for increased flexibility",
+    "Optional barcode scanner for precise tracking of goods"
+   ]
+  },
+  {
+   "group": "Service",
+   "bullets": [
+    "7 inch screen provides all important truck and job data at a glance",
+    "Wireless transmission of maintenance-relevant truck data",
+    "Preventive maintenance ensures maximum truck availability",
+    "Use of PIN ensures safe service mode"
+   ]
+  },
+  {
+   "group": "Sales and Implementation",
+   "bullets": [
+    "Project-specific automated solutions including dynamic simulation and proof of concept on site",
+    "Manual handling processes and the degree of automation can be adapted to suit the application",
+    "Single point of contact at Linde MH from initial contact to project implementation and commissioning",
+    "Intelligent and scalable software solutions provide optimum control over processes",
+    "Project management and commissioning according to Linde MH standards with"
+   ]
+  }
+ ],
+ "unparsed": {
+  "characteristics_captions": [
+   "Maximum safety thanks to all-round monitoring",
+   "Guidance control for the MATIC fleet",
+   "7 inch screen – see everything at a glance",
+   "Always process-oriented                                                      standardised tools and templates used in every project"
+  ],
+  "other": "h4 (with barcode reader option)\n                                  h4\n                                       h25\n                                             h3\n                                                                                                                            h1\n                                                                                                                       h6\n                                                  h9                                                            h610\n                                                                                                         h810\n                                                                    m2          m1\n                                                       h13         l8                y\n                                                             Transfer aisle width\n                                                                                         b3\n                                                                                         b5\n                                                                                              b7\n                                                                                                   Ast\n                                         b2 b1\n                                                       Wa\n                                                                   l1",
+  "sections": {
+   "ADDITIONAL DATA FOR AUTOMATIC OPERATION": "Maximum lifting height (automatic mode)                                               h25 (mm)              8660                       13010   15810\nScan height, localisation sensor                                                      h610 (mm)             2300                       2300    2300\nScan height, front safety scanner                                                     h810 (mm)             160                        160     160\nScan height, side safety scanner                                                      h820 (mm)             401                        401     401\nScan height, back safety scanner                                                      h840 (mm)             233                        233     233\nPrecision of the longitudinal positioning of the truck at standstill                  +/- (mm)              20                         20      20\nPrecision of the lateral positioning of the truck at standstill                       +/- (mm)              20                         20      20\nLift control accuracy                                                                 +/- (mm)              10                         10      10\nMaximum climbing ability, with/without load                                           (%)                   3/3                        3/3     3/3"
+  }
+ }
+}

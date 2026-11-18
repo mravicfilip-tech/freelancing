@@ -1,0 +1,596 @@
+{
+ "slug": "mv01",
+ "datasheet": {
+  "name": "DS_MV01_8905_en_C_0623_view.pdf",
+  "id": "1ZDJhPWMdexs-w9EJsENEKaTVJ-eKpRO2"
+ },
+ "heading": "Multi Function Vehicle",
+ "range": "MV01",
+ "capacity": "Capacity 0.09 t | Series 8905",
+ "tagline": "Vehicle for versatile warehouse applications",
+ "benefits": [
+  "Overall length of only 1440 millimetres ensures easy manoeuvrability",
+  "Platform lift up to 3 metres enables order picking on the second and third racking level",
+  "Stable structure for load capacity up to 100 kilograms",
+  "Li-ION battery can be charged at any time and increases vehicle availability"
+ ],
+ "versions": [
+  "MV01"
+ ],
+ "vdi": [
+  {
+   "no": "1.1",
+   "section": "Characteristics",
+   "label": "Manufacturer",
+   "unit": "",
+   "values": [
+    "Linde MH"
+   ],
+   "notes": [
+    []
+   ]
+  },
+  {
+   "no": "1.2",
+   "section": "Characteristics",
+   "label": "Model",
+   "unit": "",
+   "values": [
+    "MV01"
+   ],
+   "notes": [
+    []
+   ]
+  },
+  {
+   "no": "1.2.a",
+   "section": "Characteristics",
+   "label": "Series",
+   "unit": "",
+   "values": [
+    "8905"
+   ],
+   "notes": [
+    []
+   ]
+  },
+  {
+   "no": "1.3",
+   "section": "Characteristics",
+   "label": "Power Unit",
+   "unit": "",
+   "values": [
+    "Battery"
+   ],
+   "notes": [
+    []
+   ]
+  },
+  {
+   "no": "1.4",
+   "section": "Characteristics",
+   "label": "Operation",
+   "unit": "",
+   "values": [
+    "Multi Function Vehicle"
+   ],
+   "notes": [
+    []
+   ]
+  },
+  {
+   "no": "1.5",
+   "section": "Characteristics",
+   "label": "Load capacity/Load",
+   "unit": "Q1 (t) Q2 (t)",
+   "values": [
+    "0.09 0.11"
+   ],
+   "notes": [
+    []
+   ]
+  },
+  {
+   "no": "1.9",
+   "section": "Characteristics",
+   "label": "Wheelbase",
+   "unit": "Q3 (t) y (mm)",
+   "values": [
+    "0.136 1095"
+   ],
+   "notes": [
+    []
+   ]
+  },
+  {
+   "no": "2.1",
+   "section": "Weights",
+   "label": "Service weight",
+   "unit": "(kg)",
+   "values": [
+    "770"
+   ],
+   "notes": [
+    []
+   ]
+  },
+  {
+   "no": "2.2",
+   "section": "Weights",
+   "label": "Axle load with load, front/rear",
+   "unit": "(kg)",
+   "values": [
+    "550/560"
+   ],
+   "notes": [
+    []
+   ]
+  },
+  {
+   "no": "2.3",
+   "section": "Weights",
+   "label": "Axle load without load, front/rear",
+   "unit": "(kg)",
+   "values": [
+    "375/395"
+   ],
+   "notes": [
+    []
+   ]
+  },
+  {
+   "no": "3.1",
+   "section": "Wheels/Tyres",
+   "label": "Tyres rubber, SE, pneumatic, polyurethane",
+   "unit": "",
+   "values": [
+    "PU + PU/R"
+   ],
+   "notes": [
+    []
+   ]
+  },
+  {
+   "no": "3.2",
+   "section": "Wheels/Tyres",
+   "label": "Tyre size, front",
+   "unit": "",
+   "values": [
+    "Ф 210 × 70"
+   ],
+   "notes": [
+    []
+   ]
+  },
+  {
+   "no": "3.3",
+   "section": "Wheels/Tyres",
+   "label": "Tyre size, rear",
+   "unit": "",
+   "values": [
+    "Ф 250 × 100"
+   ],
+   "notes": [
+    []
+   ]
+  },
+  {
+   "no": "3.4",
+   "section": "Wheels/Tyres",
+   "label": "Auxiliary wheels (dimensions)",
+   "unit": "",
+   "values": [
+    "Ф 74 × 48"
+   ],
+   "notes": [
+    []
+   ]
+  },
+  {
+   "no": "3.5",
+   "section": "Wheels/Tyres",
+   "label": "Wheels, number front/rear (x = driven)",
+   "unit": "",
+   "values": [
+    "1x + 2/2"
+   ],
+   "notes": [
+    []
+   ]
+  },
+  {
+   "no": "3.6",
+   "section": "Wheels/Tyres",
+   "label": "Track width, front",
+   "unit": "b10 (mm)",
+   "values": [
+    "545"
+   ],
+   "notes": [
+    []
+   ]
+  },
+  {
+   "no": "3.7",
+   "section": "Wheels/Tyres",
+   "label": "Track width, rear",
+   "unit": "b11 (mm)",
+   "values": [
+    "640"
+   ],
+   "notes": [
+    []
+   ]
+  },
+  {
+   "no": "4.2",
+   "section": "Dimensions",
+   "label": "Height of mast, lowered",
+   "unit": "h1 (mm)",
+   "values": [
+    "1425"
+   ],
+   "notes": [
+    []
+   ]
+  },
+  {
+   "no": "4.4",
+   "section": "Dimensions",
+   "label": "Lift",
+   "unit": "h3 (mm)",
+   "values": [
+    "3620"
+   ],
+   "notes": [
+    []
+   ]
+  },
+  {
+   "no": "4.5",
+   "section": "Dimensions",
+   "label": "Height of mast, extended",
+   "unit": "h4 (mm)",
+   "values": [
+    "4100"
+   ],
+   "notes": [
+    []
+   ]
+  },
+  {
+   "no": "4.7",
+   "section": "Dimensions",
+   "label": "Height of overhead guard (cabin)",
+   "unit": "h6 (mm)",
+   "values": [
+    "1375"
+   ],
+   "notes": [
+    []
+   ]
+  },
+  {
+   "no": "4.8",
+   "section": "Dimensions",
+   "label": "Seat height/standing height)",
+   "unit": "h7 (mm)",
+   "values": [
+    "275"
+   ],
+   "notes": [
+    []
+   ]
+  },
+  {
+   "no": "4.14",
+   "section": "Dimensions",
+   "label": "Stand height, elevated",
+   "unit": "h12 (mm)",
+   "values": [
+    "3000"
+   ],
+   "notes": [
+    []
+   ]
+  },
+  {
+   "no": "4.19",
+   "section": "Dimensions",
+   "label": "Overall length",
+   "unit": "l1 (mm)",
+   "values": [
+    "1440"
+   ],
+   "notes": [
+    []
+   ]
+  },
+  {
+   "no": "4.21",
+   "section": "Dimensions",
+   "label": "Overall width",
+   "unit": "b1/b2 (mm)",
+   "values": [
+    "750"
+   ],
+   "notes": [
+    []
+   ]
+  },
+  {
+   "no": "4.32",
+   "section": "Dimensions",
+   "label": "Ground clearance with load, center of wheelbase",
+   "unit": "m2 (mm)",
+   "values": [
+    "35"
+   ],
+   "notes": [
+    []
+   ]
+  },
+  {
+   "no": "4.35",
+   "section": "Dimensions",
+   "label": "Turning radius 5.1 5.2 5.3",
+   "unit": "Wa (mm)",
+   "values": [
+    "1260"
+   ],
+   "notes": [
+    []
+   ]
+  },
+  {
+   "no": "5.8",
+   "section": "Performance",
+   "label": "Travel speed, with/without load (H: 0 – 500 mm) Travel speed,with/without load (H: 500 – 1000 mm) Travel speed, with/without load (H: 1000 – 2000 mm) Travel speed,with/without load (H: 2000 – 3000 mm) Lifting speed, with/without load (Q3) Lifting speed, with/without load (Q1) Lowering speed, with/without load (Q3) Lowering speed, with/without load (Q1) Max. gradeability, laden/unladen",
+   "unit": "(km/h) (km/h) (km/h) (km/h) (m/s) (m/s) (m/s) (m/s) (%)",
+   "values": [
+    "6/6.5 3 2 1 0.213/0.225 0.023/0.028 0.230/0.233 0.030/0.029 5/8"
+   ],
+   "notes": [
+    []
+   ]
+  },
+  {
+   "no": "5.10",
+   "section": "Performance",
+   "label": "Service brake",
+   "unit": "",
+   "values": [
+    "Electromagnetic"
+   ],
+   "notes": [
+    []
+   ]
+  },
+  {
+   "no": "6.1",
+   "section": "Electric-engine",
+   "label": "Drive motor rating S2 60 min",
+   "unit": "(kW)",
+   "values": [
+    "0.65"
+   ],
+   "notes": [
+    []
+   ]
+  },
+  {
+   "no": "6.2",
+   "section": "Electric-engine",
+   "label": "Lift motor rating",
+   "unit": "(kW)",
+   "values": [
+    "2.2"
+   ],
+   "notes": [
+    []
+   ]
+  },
+  {
+   "no": "6.4",
+   "section": "Electric-engine",
+   "label": "Battery voltage, nominal capacity K5",
+   "unit": "(V/Ah)",
+   "values": [
+    "24/135"
+   ],
+   "notes": [
+    []
+   ]
+  },
+  {
+   "no": "6.5",
+   "section": "Electric-engine",
+   "label": "Battery weight",
+   "unit": "(kg)",
+   "values": [
+    "35"
+   ],
+   "notes": [
+    []
+   ]
+  },
+  {
+   "no": "6.6",
+   "section": "Electric-engine",
+   "label": "Power consumption according to VDI cycle",
+   "unit": "(kWh/h)",
+   "values": [
+    "0.387"
+   ],
+   "notes": [
+    []
+   ]
+  },
+  {
+   "no": "8.1",
+   "section": "Drive",
+   "label": "Type of drive unit",
+   "unit": "",
+   "values": [
+    "Brushless DC"
+   ],
+   "notes": [
+    []
+   ]
+  },
+  {
+   "no": "8.4",
+   "section": "Drive",
+   "label": "Noise level",
+   "unit": "(dB(A))",
+   "values": [
+    "74"
+   ],
+   "notes": [
+    []
+   ]
+  }
+ ],
+ "footnotes": [],
+ "masts": {},
+ "equipment": [
+  {
+   "group": "Safety",
+   "columns": [],
+   "items": [
+    {
+     "text": "Model/Equipment MV01"
+    },
+    {
+     "text": "Rear flashing beacon"
+    },
+    {
+     "text": "Front BlueSpot ®"
+    },
+    {
+     "text": "Automatic locking doors"
+    },
+    {
+     "text": "Acoustic signal descending platform"
+    },
+    {
+     "text": "Acoustic signal (reverse or forward/backward driving)"
+    },
+    {
+     "text": "Automatic speed reduction when cornering"
+    },
+    {
+     "text": "Automatic speed reduction when lifting platform"
+    },
+    {
+     "text": "Interlock sensor on right handle for operating"
+    },
+    {
+     "text": "Key switch"
+    },
+    {
+     "text": "CAN bus technology"
+    },
+    {
+     "text": "Lifting platform up to 3 meters"
+    },
+    {
+     "text": "Multifunctional display"
+    }
+   ]
+  },
+  {
+   "group": "Workplace",
+   "columns": [],
+   "items": [
+    {
+     "text": "Compact steering wheel integrated into the console"
+    },
+    {
+     "text": "Electrically adjustable storage tray up to 90 kg"
+    },
+    {
+     "text": "Storage: paperwork, pens, gloves, two bottles compartments"
+    },
+    {
+     "text": "Drive wheel polyurethane"
+    },
+    {
+     "text": "Load wheel rubber"
+    },
+    {
+     "text": "0.65 kW brushless DC motor (maintenance free)"
+    },
+    {
+     "text": "Electromagnetic braking system"
+    }
+   ]
+  },
+  {
+   "group": "Drive and Brake-System",
+   "columns": [],
+   "items": [
+    {
+     "text": "Li-ION battery 24 V/135 Ah"
+    },
+    {
+     "text": "Built-in Li-ION 30 Ah charger"
+    }
+   ]
+  }
+ ],
+ "characteristics": [
+  {
+   "group": "Safety",
+   "bullets": [
+    "Reduction of the speed when the cabin is raised",
+    "Automatic door interlock to protect the operator when raising the platform",
+    "Sensor on single right handle reduces risk of injury",
+    "Single foot pedal as dead man’s switch",
+    "Warning lights and signal tones increase safety around the vehicle"
+   ]
+  },
+  {
+   "group": "Ergonomics",
+   "bullets": [
+    "Spacious and comfortable operator`s compartment",
+    "Ergonomic arrangement of the controls",
+    "Electrically adjustable storage tray as standard",
+    "Storage compartments for paper work and small bottle of water",
+    "Integrated charger enables opportunity charging of the Li-ION battery and increases vehicle availability"
+   ]
+  },
+  {
+   "group": "Handling",
+   "bullets": [
+    "Lifting platform up to 3 meters height for effortless access to the second and third rack level",
+    "Powerful DC motor ensures a top speed of up to 6.5 km/h",
+    "Compact dimensions increase manoeuvrability in narrow aisles and curves",
+    "Electrical steering for effortless manoeuvrability and safe, highly efficient load handling",
+    "Built-in Li-ION battery 24 V 135 AH"
+   ]
+  },
+  {
+   "group": "Service",
+   "bullets": [
+    "Maintenance-free Li-ION batteries contribute to high energy efficiency and vehicle availability",
+    "Battery management system ensures high performance and long battery life",
+    "Low-maintenance brushless DC drive motor reduces service costs",
+    "CAN bus connection ensures simple service processes",
+    "Key vehicle components are easily accessible"
+   ]
+  }
+ ],
+ "unparsed": {
+  "image_pages": [
+   4
+  ],
+  "characteristics_captions": [
+   "Safety sensor on right handle",
+   "Spacious operator compartment",
+   "Optimised 1st and 2nd level order picking",
+   "All information at a glance"
+  ],
+  "other": "                                                                                                         4600* 5000*\n  h4      h3\n                             485\n                                                   Q1                  Q3\n                                                                   y\n                                                                            1060              h1   h12\n                                        Q2\n                425\n                                                                             h7\n                             15               m2\n                                                        y\n                                   Wa\n                                                                                   b11   b1\n                      740\n                        b10\n                       a/2              540\n                                                        l1\n                                                             Ast\n*Actual height depending on operator"
+ }
+}

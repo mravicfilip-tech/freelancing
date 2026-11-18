@@ -1,0 +1,1491 @@
+{
+ "slug": "v-modular",
+ "datasheet": {
+  "name": "DS_V modular_5214_en_A_0123_view.pdf",
+  "id": "16g5dRiZw0AbvC9K1BREatxut28kCAgi-"
+ },
+ "heading": "Order Picker",
+ "range": "V MODULAR | V MODULAR B",
+ "capacity": "Capacity 1.2 t | Capacity 1.0 t | Series 5214",
+ "tagline": "Modular sky climber",
+ "benefits": [
+  "Powerful vertical order picker for use in high-bay warehouse",
+  "Picking heights up to 14.5 m (V modular B: 7.8 m) and load capacity up to 1.2 t (V modular B: 1.0 t)",
+  "Available in two versions: With walk-on pallet or for order picking from the closed cabin",
+  "Modular design with numerous options to optimally tailor the vehicle to on-site requirements",
+  "Two triplex mast variants: with free lift and low overall height or without free lift for faster lifting"
+ ],
+ "versions": [
+  "V-modular 48V Standard mast",
+  "V-modular 48V Triplex mast",
+  "V-modular 48V Triplex mast",
+  "V modular B 24V Standard mast",
+  "V modular B 48V Standard mast",
+  "V modular B 48V Standard mast"
+ ],
+ "vdi": [
+  {
+   "no": "1.1",
+   "section": "Characteristics",
+   "label": "Manufacturer",
+   "unit": "",
+   "values": [
+    "Linde",
+    "Linde",
+    "Linde",
+    "Linde",
+    "Linde",
+    "Linde"
+   ],
+   "notes": [
+    [],
+    [],
+    [],
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "1.2",
+   "section": "Characteristics",
+   "label": "Manufacturer's type designation",
+   "unit": "",
+   "values": [
+    "V-modular 48V Standard mast",
+    "V-modular 48V Triplex mast",
+    "V-modular 48V Triplex mast",
+    "V modular B 24V Standard mast",
+    "V modular B 48V Standard mast",
+    "V modular B 48V Standard mast"
+   ],
+   "notes": [
+    [
+     "1"
+    ],
+    [
+     "1"
+    ],
+    [
+     "1"
+    ],
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "1.2a",
+   "section": "Characteristics",
+   "label": "Series",
+   "unit": "",
+   "values": [
+    "5214-00",
+    "5214-00",
+    "5214-00",
+    "5214-00",
+    "5214-00",
+    "5214-00"
+   ],
+   "notes": [
+    [],
+    [],
+    [],
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "1.3",
+   "section": "Characteristics",
+   "label": "Power unit",
+   "unit": "",
+   "values": [
+    "Battery",
+    "Battery",
+    "Battery",
+    "Battery",
+    "Battery",
+    "Battery"
+   ],
+   "notes": [
+    [],
+    [],
+    [],
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "1.4",
+   "section": "Characteristics",
+   "label": "Operation",
+   "unit": "",
+   "values": [
+    "Order Picker",
+    "Order Picker",
+    "Order Picker",
+    "Order Picker",
+    "Order Picker",
+    "Order Picker"
+   ],
+   "notes": [
+    [],
+    [],
+    [],
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "1.5",
+   "section": "Characteristics",
+   "label": "Load capacity / Load",
+   "unit": "Q (t)",
+   "values": [
+    "1.2",
+    "1.2",
+    "1.2",
+    "1",
+    "1",
+    "1"
+   ],
+   "notes": [
+    [],
+    [],
+    [],
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "1.6",
+   "section": "Characteristics",
+   "label": "Load centre distance",
+   "unit": "c (mm)",
+   "values": [
+    "400",
+    "400",
+    "400",
+    "600",
+    "600",
+    "400"
+   ],
+   "notes": [
+    [],
+    [],
+    [],
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "1.8",
+   "section": "Characteristics",
+   "label": "Axle centre to fork face",
+   "unit": "x (mm)",
+   "values": [
+    "345",
+    "455",
+    "455",
+    "353",
+    "353",
+    "353"
+   ],
+   "notes": [
+    [],
+    [],
+    [],
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "1.9",
+   "section": "Characteristics",
+   "label": "Wheelbase",
+   "unit": "y (mm)",
+   "values": [
+    "1628",
+    "1844",
+    "1844",
+    "1340",
+    "1448",
+    "1448"
+   ],
+   "notes": [
+    [],
+    [],
+    [],
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "2.1",
+   "section": "Weights",
+   "label": "Service weight",
+   "unit": "(kg)",
+   "values": [
+    "4626",
+    "5673",
+    "5996",
+    "3300",
+    "3766",
+    "3878"
+   ],
+   "notes": [
+    [],
+    [],
+    [],
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "2.3",
+   "section": "Weights",
+   "label": "Axle load with load, front / rear",
+   "unit": "(kg)",
+   "values": [
+    "1877 / 3949",
+    "2283 / 4590",
+    "2389 / 4806",
+    "1016 / 3284",
+    "1303 / 3463",
+    "1513 / 3365",
+    "2472 / 2154",
+    "2864 / 2809",
+    "2993 / 3002",
+    "1752 / 1548",
+    "1984 / 1782",
+    "2056 / 1822"
+   ],
+   "notes": [
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "3.1",
+   "section": "Wheels/Tyres",
+   "label": "Tyres rubber, SE, pneumatic, polyurethane",
+   "unit": "",
+   "values": [
+    "Polyurethane",
+    "Polyurethane",
+    "Polyurethane",
+    "polyurethane",
+    "polyurethane",
+    "polyurethane"
+   ],
+   "notes": [
+    [],
+    [],
+    [],
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "3.2",
+   "section": "Wheels/Tyres",
+   "label": "Tyre size, front",
+   "unit": "",
+   "values": [
+    "Ø 360 × 130",
+    "Ø 360 × 130",
+    "Ø 360 × 130",
+    "360 / 130",
+    "360 / 130",
+    "360 / 130"
+   ],
+   "notes": [
+    [],
+    [],
+    [],
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "3.3",
+   "section": "Wheels/Tyres",
+   "label": "Tyre size, rear",
+   "unit": "",
+   "values": [
+    "Ø 180 × 156",
+    "Ø 180 × 156",
+    "Ø 180 × 156",
+    "180 / 156",
+    "180 / 156",
+    "180 / 156"
+   ],
+   "notes": [
+    [],
+    [],
+    [],
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "3.5",
+   "section": "Wheels/Tyres",
+   "label": "Wheels, number front / rear",
+   "unit": "",
+   "values": [
+    "1x / 2",
+    "1x / 2",
+    "1x / 2",
+    "1x / 2",
+    "1x / 2",
+    "1x / 2"
+   ],
+   "notes": [
+    [],
+    [],
+    [],
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "3.6",
+   "section": "Wheels/Tyres",
+   "label": "(x = driven) Track width, front",
+   "unit": "b10 (mm)",
+   "values": [
+    "0",
+    "0",
+    "0",
+    "0",
+    "0",
+    "0"
+   ],
+   "notes": [
+    [],
+    [],
+    [],
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "3.7",
+   "section": "Wheels/Tyres",
+   "label": "Track width, rear",
+   "unit": "b11 (mm)",
+   "values": [
+    "994",
+    "1394",
+    "1394",
+    "900",
+    "1400",
+    "1400"
+   ],
+   "notes": [
+    [],
+    [],
+    [],
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "4.2",
+   "section": "Dimensions",
+   "label": "Height of mast, lowered",
+   "unit": "h1 (mm)",
+   "values": [
+    "5400",
+    "4700",
+    "5400",
+    "2900",
+    "3400",
+    "3900"
+   ],
+   "notes": [
+    [],
+    [],
+    [],
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "4.3",
+   "section": "Dimensions",
+   "label": "Free lift",
+   "unit": "h2 (mm)",
+   "values": [
+    "-",
+    "4050",
+    "-",
+    "0",
+    "0",
+    "0"
+   ],
+   "notes": [
+    [],
+    [],
+    [],
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "4.4",
+   "section": "Dimensions",
+   "label": "Lift height",
+   "unit": "h3 (mm)",
+   "values": [
+    "8525",
+    "11160",
+    "12660",
+    "4550",
+    "5000",
+    "6000"
+   ],
+   "notes": [
+    [],
+    [],
+    [],
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "4.5",
+   "section": "Dimensions",
+   "label": "Height, mast extended",
+   "unit": "h4 (mm)",
+   "values": [
+    "10815",
+    "13450",
+    "14950",
+    "6834",
+    "7284",
+    "8284"
+   ],
+   "notes": [
+    [],
+    [],
+    [],
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "4.7",
+   "section": "Dimensions",
+   "label": "Height to top of overhead guard",
+   "unit": "h6 (mm)",
+   "values": [
+    "2290",
+    "2290",
+    "2290",
+    "2284",
+    "2284",
+    "2284"
+   ],
+   "notes": [
+    [],
+    [],
+    [],
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "4.8",
+   "section": "Dimensions",
+   "label": "Height of seat / stand-on platform",
+   "unit": "h7 (mm)",
+   "values": [
+    "240",
+    "240",
+    "240",
+    "233",
+    "233",
+    "233"
+   ],
+   "notes": [
+    [],
+    [],
+    [],
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "4.11",
+   "section": "Dimensions",
+   "label": "Supplementary lift",
+   "unit": "h9 (mm)",
+   "values": [
+    "740",
+    "740",
+    "740",
+    "800",
+    "800",
+    "800"
+   ],
+   "notes": [
+    [],
+    [],
+    [],
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "4.14",
+   "section": "Dimensions",
+   "label": "Platform height, raised",
+   "unit": "h12 (mm)",
+   "values": [
+    "8765",
+    "11400",
+    "12900",
+    "4783",
+    "5233",
+    "6233"
+   ],
+   "notes": [
+    [],
+    [],
+    [],
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "4.15",
+   "section": "Dimensions",
+   "label": "Fork height lowered",
+   "unit": "h13 (mm)",
+   "values": [
+    "65",
+    "65",
+    "65",
+    "65",
+    "65",
+    "65"
+   ],
+   "notes": [
+    [],
+    [],
+    [],
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "4.19",
+   "section": "Dimensions",
+   "label": "Overall length",
+   "unit": "l1 (mm)",
+   "values": [
+    "3099",
+    "3386",
+    "3386",
+    "3138",
+    "3288",
+    "2888"
+   ],
+   "notes": [
+    [],
+    [],
+    [],
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "4.20",
+   "section": "Dimensions",
+   "label": "Length to fork face",
+   "unit": "l2 (mm) b1 / b2",
+   "values": [
+    "2299",
+    "2586",
+    "2586",
+    "1938",
+    "2088",
+    "2088"
+   ],
+   "notes": [
+    [],
+    [],
+    [],
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "4.21",
+   "section": "Dimensions",
+   "label": "Overall width",
+   "unit": "",
+   "values": [
+    "1080 / 1180",
+    "1080 / 1580",
+    "1080 / 1580",
+    "1080 / 1080",
+    "1080 / 1580",
+    "1080 / 1580"
+   ],
+   "notes": [
+    [],
+    [],
+    [],
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "4.22",
+   "section": "Dimensions",
+   "label": "Fork dimensions",
+   "unit": "(mm) s / e / l (mm)",
+   "values": [
+    "60 / 120 / 800",
+    "60 / 120 / 800",
+    "60 / 120 / 800",
+    "60 / 120 / 1200",
+    "60/120 / 1200",
+    "60 / 120 / 800"
+   ],
+   "notes": [
+    [],
+    [],
+    [],
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "4.23",
+   "section": "Dimensions",
+   "label": "Fork carriage to to ISO 2328, class / type A, B",
+   "unit": "(mm)",
+   "values": [
+    "no",
+    "no",
+    "no",
+    "Special",
+    "Special",
+    "Special"
+   ],
+   "notes": [
+    [],
+    [],
+    [],
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "4.24",
+   "section": "Dimensions",
+   "label": "Width of fork carriage",
+   "unit": "b3 (mm)",
+   "values": [
+    "740",
+    "740",
+    "740",
+    "660",
+    "660",
+    "740"
+   ],
+   "notes": [
+    [],
+    [],
+    [],
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "4.25",
+   "section": "Dimensions",
+   "label": "Fork spread, min / max",
+   "unit": "b5 (mm)",
+   "values": [
+    "640 / 640",
+    "640 / 640",
+    "640 / 640",
+    "560 / 560",
+    "560 / 560",
+    "640 / 640"
+   ],
+   "notes": [
+    [],
+    [],
+    [],
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "4.27",
+   "section": "Dimensions",
+   "label": "Width over side guide rollers",
+   "unit": "b6 (mm)",
+   "values": [
+    "1375",
+    "1815",
+    "1815",
+    "-",
+    "1815",
+    "1815"
+   ],
+   "notes": [
+    [],
+    [],
+    [],
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "4.31",
+   "section": "Dimensions",
+   "label": "Ground clearance beneath mast, laden",
+   "unit": "m1 (mm)",
+   "values": [
+    "50",
+    "50",
+    "50",
+    "50",
+    "50",
+    "50"
+   ],
+   "notes": [
+    [],
+    [],
+    [],
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "4.32",
+   "section": "Dimensions",
+   "label": "Ground clearance, centre of wheelbase",
+   "unit": "m2 (mm)",
+   "values": [
+    "50",
+    "50",
+    "50",
+    "50",
+    "50",
+    "50"
+   ],
+   "notes": [
+    [],
+    [],
+    [],
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "4.34",
+   "section": "Dimensions",
+   "label": "Aisle width with pallet 800 × 1200 along forks",
+   "unit": "Ast (mm)",
+   "values": [
+    "1380",
+    "1820",
+    "1820",
+    "-",
+    "1820",
+    "1820"
+   ],
+   "notes": [
+    [],
+    [],
+    [],
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "4.35",
+   "section": "Dimensions",
+   "label": "Turning radius",
+   "unit": "Wa (mm)",
+   "values": [
+    "2071",
+    "2316",
+    "2316",
+    "1585",
+    "1958",
+    "1958"
+   ],
+   "notes": [
+    [],
+    [],
+    [],
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "4.42",
+   "section": "Dimensions",
+   "label": "Transfer aisle width (min.)",
+   "unit": "Au (mm)",
+   "values": [
+    "3564",
+    "3907",
+    "3907",
+    "3389",
+    "3762",
+    "3.458"
+   ],
+   "notes": [
+    [],
+    [],
+    [],
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "5.1",
+   "section": "Performance",
+   "label": "Travel speed, with / without load",
+   "unit": "(km / h)",
+   "values": [
+    "11.0 / 11.0",
+    "13.0 / 13.0",
+    "13.0 / 13.0",
+    "9.0 / 9.0",
+    "10.0 / 10.0",
+    "10.0 / 10.0"
+   ],
+   "notes": [
+    [],
+    [],
+    [],
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "5.2",
+   "section": "Performance",
+   "label": "Lift speed, with / without load",
+   "unit": "(m / s)",
+   "values": [
+    "0.31 / 0.36",
+    "0.28 / 0.35",
+    "0.29 / 0.35",
+    "0.27 / 0.30",
+    "0.36 / 0.36",
+    "0.36 / 0.36"
+   ],
+   "notes": [
+    [],
+    [],
+    [],
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "5.3",
+   "section": "Performance",
+   "label": "Lowering speed, with / without load",
+   "unit": "(m / s)",
+   "values": [
+    "(0.41 / 0.42) 3) 0.32 / 0.32",
+    "(0.48 / 0.50) 3) 0.32 / 0.32",
+    "(0.40 / 0.40) 3) 0.32 / 0.32",
+    "0.28 / 0.28",
+    "(0.50 / 0.50) 3) 0.32 / 0.32",
+    "(0.50 / 0.50) 3) 0.32 / 0.32"
+   ],
+   "notes": [
+    [],
+    [],
+    [],
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "5.4",
+   "section": "Performance",
+   "label": "Reach speed, with / without load",
+   "unit": "(m / s)",
+   "values": [
+    "(0.45 / 0.45) 3) -",
+    "(0.45 / 0.45) 3) -",
+    "(0.45 / 0.45) 3) -",
+    "-",
+    "(0.45 / 0.45) 3) -",
+    "(0.45 / 0.45) 3) -"
+   ],
+   "notes": [
+    [],
+    [],
+    [],
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "5.9",
+   "section": "Performance",
+   "label": "Acceleration time, with / without load",
+   "unit": "(s)",
+   "values": [
+    "6/6",
+    "6/6",
+    "6/6",
+    "7/7",
+    "6/6",
+    "6/6"
+   ],
+   "notes": [
+    [],
+    [],
+    [],
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "5.10",
+   "section": "Performance",
+   "label": "Service brake",
+   "unit": "",
+   "values": [
+    "\"Regenerative",
+    "\"Regenerative",
+    "\"Regenerative",
+    "Regenerative",
+    "Regenerative",
+    "Regenerative"
+   ],
+   "notes": [
+    [],
+    [],
+    [],
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "6.1",
+   "section": "Electric-engine",
+   "label": "Drive motor, 60-minute rating",
+   "unit": "(kW)",
+   "values": [
+    "/ Mechanic\" 6.5",
+    "/ Mechanic\" 6.5",
+    "/ Mechanic\" 6.5",
+    "4.0",
+    "6.5",
+    "6.5"
+   ],
+   "notes": [
+    [],
+    [],
+    [],
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "6.2",
+   "section": "Electric-engine",
+   "label": "Lift motor, rating at S3 15 %",
+   "unit": "(kW)",
+   "values": [
+    "13",
+    "13",
+    "13",
+    "7.6",
+    "13",
+    "13"
+   ],
+   "notes": [
+    [],
+    [],
+    [],
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "6.4",
+   "section": "Electric-engine",
+   "label": "Battery voltage / rated capacity (5 h)",
+   "unit": "(V / Ah)",
+   "values": [
+    "48 / 620",
+    "48 / 930",
+    "48 / 930",
+    "24 / 840",
+    "48 / 620",
+    "48 / 620"
+   ],
+   "notes": [
+    [],
+    [],
+    [],
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "6.5",
+   "section": "Electric-engine",
+   "label": "Battery weight (±5 %)",
+   "unit": "(kg)",
+   "values": [
+    "933",
+    "1309",
+    "1309",
+    "687",
+    "933",
+    "933"
+   ],
+   "notes": [
+    [],
+    [],
+    [],
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "8.1",
+   "section": "Drive",
+   "label": "Type of drive control",
+   "unit": "",
+   "values": [
+    "Microprocessor",
+    "Microprocessor",
+    "Microprocessor",
+    "Microprocessor",
+    "Microprocessor",
+    "Microprocessor"
+   ],
+   "notes": [
+    [],
+    [],
+    [],
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "8.4",
+   "section": "Drive",
+   "label": "Noise level at operator’s ear",
+   "unit": "dB (A)",
+   "values": [
+    "64",
+    "64",
+    "64",
+    "64",
+    "64",
+    "64"
+   ],
+   "notes": [
+    [],
+    [],
+    [],
+    [],
+    [],
+    []
+   ]
+  }
+ ],
+ "footnotes": [
+  {
+   "n": "1",
+   "text": "Examplary configuration based on a modular trucksystem. Please contact your local sales department for an individual truck configuration                                 3) Figures in parenthesis for optional „Heavy“"
+  },
+  {
+   "n": "2",
+   "text": "Figures with battery, see line 6.4 / 6.5"
+  }
+ ],
+ "masts": {
+  "STANDARD MAST (in mm)": "Series                                                                                5214\nLift                       h3: 2825                    h3: 3225                     h3: 4125                      h3: 5125                    h3: 5725\n                    h1: 2250    h4: 5115*    h1: 2450       h4: 5515*         h1: 2900    h4: 6415*         h1: 3400     h4: 7415*      h1: 3900     h4: 8015*\nHeight              h9: 740     h12: 3065    h9: 740        h12: 4025         h9: 740     h12: 4925         h9: 740      h12: 5925      h9: 740      h12: 6525\nmeasurements        h24: 3565   h25: 3630    h24: 3965      h25: 4030         h24: 4865   h25: 4930         h24: 5865    h25: 5930      h24: 6465    h25: 6530\n                    h28: 4665                h28: 5065                        h28: 5965                     h28: 6965                   h28: 7565\n\nModel\nV modular\n\n\nSeries\nLift                       h3: 6725                    h3: 7725                     h3: 8525\n                    h1: 4400    h4: 9015*    h1: 4900       h4: 10015*        h1: 5400   h4: 10815*\nHeight              h9: 740     h12: 7525    h9: 740        h12: 8525         h9: 740    h12: 9325\nmeasurements        h24: 7465   h25: 7530    h24: 8465      h25: 8530         h24: 9265 h25: 9330\n                    h28: 8565                h28: 9565                        h28: 10365\n\nModel\nV modular",
+  "TRIPLEX MAST WITHOUT FREE LIFT (in mm)": "Series                                                                                5214\nLift                       h3: 7160                    h3: 8660                     h3: 9960                      h3: 11160                   h3: 12660\n                    h1: 3300    h4: 9490*    h1: 3800   h4: 10990*            h1: 4350   h4: 12290*         h1: 4800   h4: 13490*       h1: 5400   h4: 14990*\nHeight              h9: 740     h12: 7400    h9: 740    h12: 8900             h9: 740    h12: 10200         h9: 740    h12: 11400       h9: 740    h12: 12900\nmeasurements        h24: 7900   h25: 7965    h24: 9400 h25: 9465              h24: 10700 h25: 10765         h24: 11900 h25: 11965       h24: 13400 h25: 13465\n                    h28: 9000                h28: 10500                       h28: 11800                    h28: 13000                  h28: 14500\n\nModel\nV modular",
+  "TRIPLEX MAST WITH FREE LIFT (in mm)": " Series                                                                                       5214\n Lift                h3: 4410                h3: 5010                     h3: 6360                     h3: 7160                   h3: 8660                    h3: 9960                 h3: 11160\n               h1: 2250    h2: 1600    h1: 2450    h2: 1800        h1: 2900       h2: 2250       h1: 3200     h2: 2250      h1: 3700     h2: 3050      h1: 4200     h2: 3550     h1: 4700     h2: 4050\n Height        h4: 6700*   h9: 740     h4: 7300*   h9: 740         h4: 8650*      h9: 740        h4: 9450*    h9: 740       h4: 10950*   h9: 740       h4: 12250*   h9: 740      h4: 13450*   h9: 740\n measure-\n ments         h12: 4650   h24: 5150   h12: 5250   h24: 5750       h12: 6600      h24: 7100      h12: 7400    h24: 7900     h12: 8900    h24: 9400     h12: 10200   h24: 10700   h12: 11400   h24: 11900\n               h25: 5215   h28: 6250   h25: 5815   h28: 6850       h25: 7165      h28: 8200      h25: 7965    h28: 9000     h25: 9465    h28: 10500    h25: 10765   h28: 11800   h25: 11965   h28: 13000\n\n Model\n V modular\n\n\n  Optional equipment                                        *OHG 2000mm\n\n\n\nV MODULAR B",
+  "STANDARD MAST (in mm) (2)": " Series                                                                                5214\n Lift                       h3: 3250                    h3:3550                      h3: 4550                      h3: 5000                    h3: 6000\n                     h1: 2250    h4: 5534*    h1: 2400       h4: 5834*         h1: 2900    h4: 6834*         h1: 3400     h4: 7284*      h1: 3900     h4: 8284*\n Height              h9: 800     h12: 3483    h9: 800        h12: 3783         h9: 800     h12: 4783         h9: 800      h12: 5233      h9: 800      h12: 6233\n measurements        h24: 4050   h25: 4115    h24: 4350      h25: 4415         h24: 5350   h25: 5415         h24: 5800    h25: 5865      h24: 6800    h25: 6865\n                     h28: 5083                h28: 5383                        h28: 6383                     h28: 6833                   h28: 7833\n\n Model\n V modular B\n\n\n  Optional equipment                                        *OHG 2000mm\n\n\n\n\nh1: Height of mast, lowered                                        h2: Free lift                                                         h3: Lift\nh4: Height of mast, extended                                       h9: \tAuxiliary lift                                                  h12: Platform height, raised\nh24: Total lift height (h3 + h9)                                   h25: Total lift height from ground\nh28: Picking height (h12 + 1600 mm)                                       (h3 + h9 + h13)"
+ },
+ "equipment": [
+  {
+   "group": "Safety",
+   "columns": [],
+   "items": [
+    {
+     "text": "V modular V modular B Model / Equipment"
+    },
+    {
+     "text": "Automatic reduction in travel speed with platform raised (LSC 3.0)"
+    },
+    {
+     "text": "All traction and lift functions interlocked through foot switch and sensors, ensuring two-handed operation"
+    },
+    {
+     "text": "Linde curve control for safe cornering"
+    },
+    {
+     "text": "Side barriers with gas struts and safety interlocks"
+    },
+    {
+     "text": "Warning light"
+    },
+    {
+     "text": "Alternative speed reduction and end of aisle stop interlocks"
+    },
+    {
+     "text": "Aisle Safety Assist for individual safety interlocks for each aisle",
+     "na": [
+      "—"
+     ]
+    },
+    {
+     "text": "Lift and traction cut-outs"
+    },
+    {
+     "text": "Touchless anti-collision sensor for lifting"
+    },
+    {
+     "text": "LSC for speed reduction with weight and load-dependent speed profiles for lifting and driving; weight-measuring sensor",
+     "na": [
+      "—"
+     ]
+    },
+    {
+     "text": "Load wheel brakes for increased safety in an emergency"
+    },
+    {
+     "text": "Data Transmission Online"
+    },
+    {
+     "text": "Data Transmission Wifi"
+    },
+    {
+     "text": "Linde connect:desk an – Provides fleet utilisation and availability data"
+    },
+    {
+     "text": "Linde connect:cloud Basic Package Customer – provides core fleet management features for end customers"
+    }
+   ]
+  },
+  {
+   "group": "Environment",
+   "columns": [],
+   "items": [
+    {
+     "text": "Linde connect:cloud Basic Package Network – provides core fleet management features for network partners"
+    },
+    {
+     "text": "Online Diagnosis Tool"
+    },
+    {
+     "text": "Mechanical aisle guidance"
+    },
+    {
+     "text": "Inductive aisle guidance"
+    },
+    {
+     "text": "Cold store version"
+    },
+    {
+     "text": "Antistatic guide rollers and wheels"
+    },
+    {
+     "text": "Mast or load-side controls"
+    },
+    {
+     "text": "Suspension-mounted cab to absorb shocks and vibration"
+    },
+    {
+     "text": "Soft rubber mat isolates operator from shocks and vibration"
+    },
+    {
+     "text": "Storage compartments, pen holders and space for bottles, cans or tools integrated into cab interior"
+    }
+   ]
+  },
+  {
+   "group": "Workplace",
+   "columns": [],
+   "items": [
+    {
+     "text": "Colour graphic display with lift height indicator, speedometer, hourmeter, steer wheel position indicator and battery status",
+     "na": [
+      "—"
+     ]
+    },
+    {
+     "text": "Very low step height for easy on / off access"
+    },
+    {
+     "text": "Steering knob"
+    },
+    {
+     "text": "Alternative cabin widths (900 mm – 1800 mm)",
+     "na": [
+      "—"
+     ]
+    },
+    {
+     "text": "Alternative cabin widths (1000 mm – 1500 mm)",
+     "na": [
+      "—"
+     ]
+    },
+    {
+     "text": "Tilting barriers"
+    },
+    {
+     "text": "Rearview mirror"
+    },
+    {
+     "text": "LED cabin working light with two-step illumination"
+    },
+    {
+     "text": "Fan on overhead guard included in mirror module"
+    }
+   ]
+  },
+  {
+   "group": "Mast/Forks",
+   "columns": [],
+   "items": [
+    {
+     "text": "Steering wheel"
+    },
+    {
+     "text": "Macrolon cover for overhead guard"
+    },
+    {
+     "text": "Attachment base for writing pads / terminals / other equipment"
+    },
+    {
+     "text": "Overhead guard: 2200 mm height for greater comfort"
+    },
+    {
+     "text": "Triplex mast with and without free lift function",
+     "na": [
+      "—"
+     ]
+    },
+    {
+     "text": "Different fork lengths"
+    },
+    {
+     "text": "Carriage for adjustable forks"
+    },
+    {
+     "text": "Walk-on platform"
+    },
+    {
+     "text": "Pallet clamp for US and Chep pallet",
+     "na": [
+      "—"
+     ]
+    },
+    {
+     "text": "Mast soft end stops for lifting / lowering"
+    },
+    {
+     "text": "Durable polyurethane wheels"
+    },
+    {
+     "text": "Lift height preselection",
+     "na": [
+      "—"
+     ]
+    },
+    {
+     "text": "Regenerative electric braking through the drive motor for optimum use of energy"
+    },
+    {
+     "text": "Battery discharge indicator with lift cutout"
+    }
+   ]
+  },
+  {
+   "group": "Throughput",
+   "columns": [],
+   "items": [
+    {
+     "text": "Automatic Lowering of suppl. lift",
+     "na": [
+      "—"
+     ]
+    },
+    {
+     "text": "10 different chassis, 880 mm – 1580 mm to suit every application",
+     "na": [
+      "—"
+     ]
+    },
+    {
+     "text": "6 different chassis, 1080 mm – 1580 mm to suit every application",
+     "na": [
+      "—"
+     ]
+    },
+    {
+     "text": "Supplementary lift 750 mm for easy order picking",
+     "na": [
+      "—"
+     ]
+    },
+    {
+     "text": "Supplementary lift 800 mm for easy order picking",
+     "na": [
+      "—"
+     ]
+    },
+    {
+     "text": "Buttons for supplementary lift on load side for easy handling"
+    },
+    {
+     "text": "Truck prepared for data terminal, printer, scanner installation"
+    },
+    {
+     "text": "Semi-automatic navigation system",
+     "na": [
+      "—"
+     ]
+    },
+    {
+     "text": "Different drive and lift motors available"
+    }
+   ]
+  }
+ ],
+ "characteristics": [
+  {
+   "group": "Safety",
+   "bullets": [
+    "Sensor-monitored controls and dead man’s switch ensure maximum safety during vehicle operation",
+    "Electrically monitored side barriers for safe working with the cabin raised",
+    "Optimised mast visibility allows better view of load and vehicle surroundings.",
+    "Mobile personal safety equipment (PSE) detects people or obstacles on the driveway and stops the vehicle within the narrow aisle",
+    "Linde System Control assistance system calculates residual load capacity and prevents overloading",
+    "Optional Red Warning Lines for better visibility in poorly lit aisles working heights"
+   ]
+  },
+  {
+   "group": "Ergonomics",
+   "bullets": [
+    "Wide cabin entrance and low entry height for effortless access to the vehicle",
+    "Soft floor mat to absorb vibrations and protect the operator from physical stress",
+    "Spaciously designed driver’s cabin for maximum freedom of movement and comfortable working",
+    "Patented Ergo roller for muscle relief",
+    "Ergonomic control panel that can be mounted on the mast side, load side or both sides",
+    "Colour display for a perfect overview of all relevant information (time, speed, lifting height, etc.) nection, foil holder or waste bin",
+    "Optional tilt barrier for safe and comfortable picking from the rack"
+   ]
+  },
+  {
+   "group": "Performance",
+   "bullets": [
+    "Picking height up to 14.5 m (V modular B: 7.8 m) for efficient order picking in very high racking levels",
+    "Top speed of 13 km/h for fast travel",
+    "Optional triplex mast without free lift for higher lifting speeds",
+    "Two vehicle variants: With walk-on pallet or for order picking from the enclosed cabin",
+    "Redesigned chassis and improved load arms for greater stability and manoeuvrability",
+    "High residual capacity for maximum goods handling even at great heights"
+   ]
+  },
+  {
+   "group": "Service",
+   "bullets": [
+    "Maintenance-free electric motor for maximum vehicle availability and low service costs",
+    "Enclosed drive and lift motors for optimum protection against dust and dirt",
+    "Easy access to all relevant components thanks to service-friendly design",
+    "CAN bus connection for easy access to all vehicle data via diagnostic connector"
+   ]
+  }
+ ],
+ "unparsed": {
+  "characteristics_captions": [
+   "Red warning lines for safe operation                                         → Easily accessible emergency lowering valve for emergencies at greater",
+   "Ergonomic control                                                            → Newly designed storage option on the mast side including preparation for USB con-",
+   "Optional walk-on pallet",
+   "Easy access for maintenance"
+  ],
+  "sections": {
+   "V MODULAR": "                                                                                                                             h4\nh28\n\n\n\n      h25\n\n\n                                                                                                                        h1\n\n            h12\n                        h6                                                517\n                   h3\n                                                 320\n\n                                                                                                              1377\n                                   896\n                              h9                                c         672\n                                                       Q\n\n\n\n\n                                             s\n                                   h7 h13                                            m1            m2\n                                                                      x                        y                  240\n\n                                                            l                             l2\n\n                                                                                l1\n\n\n\n\n                                                                                                        Wa\n\n\n\n\n                                         e                                                                        b2\n                             b12 b3 b5                          b11                                          b1         b6\n                  Ast\n\n\n\n\n                                                       l6\n\n\n\n\n                                                                                Au",
+   "V MODULAR B": "h28\n                                                                                                                            h4\n\n       h25\n\n             h12\n\n                    h3                                                                                                 h1\n                                                                          461\n\n                         h6\n\n\n                                               336\n                                         967                                                                   1377\n                              h9                                  c       463\n                                                          Q\n\n\n\n\n                                   h7 h13 s                                           m1             m2\n                                                                      x                     y                    240\n\n                                                              l                        l2\n\n                                                                                 l1\n\n\n\n\n                                                                                                Wa\n\n\n\n\n                                     e\n      Ast          b12   b3 b5                            b11                                             b1    b2 b6\n                                   b3\n\n\n\n\n                                                     l6\n\n\n                                                                                Au",
+   "MODULAR SKY CLIMBER": "The V modular vertical order picker reaches gripping\nheights of up to 14.5 metres and has a load capacity of\nup to 1,200 kilograms, depending on the model. The\nvibration-damped cabin, the low entry height and the\nergonomic parapet height relieve the driver and make\norder picking easier.\n\nHigh lift and travel speeds ensure maximum picking\nperformance. Linde offers the V modular in two ver-\nsions: In the version with auxiliary lift, the operator\npicks from the cab onto the pallet in front, which is\nalways positioned at an ergonomic height.\n\nThe version with an open cab to the front allows the\noperator to enter the securely fixed walk-on pallet and\npick the goods from there. Thanks to the modular\ndesign, the V modular can be precisely adapted to the\nrequirements on site. Users can choose between\ndifferent chassis widths, battery sizes, mast variants\nand cabin designs.",
+   "V MODULAR B - POWERFUL ENTRY-LEVEL MODEL": "AIMING HIGH WITH EASE\nThe V modular B vertical order picker is a powerful\ntruck for medium order picking heights of up to 7.8\nmeters and load capacity of up to 1,000 kilograms.\nThe series combines the best of the Linde order pick-\ner product family, uniting performance and cost effi-\nciency. The spacious operator‘s cab offers the driver\na comfortable workplace.\n\nIn addition to the lower entry height compared to\ncompetitor trucks, the cab is decoupled from the\nchassis. Vibrations and impacts are only transmitted\nto the operator in a damped manner.\n\nAs a result, the V modular B enables ergonomic and\nsafe working and protects the operator from injury.\nThe vertical order picker achieves a maximum lift\nspeed of 0.4 m/s and a travel speed of up to 11\nkm/h, which additionally contributes to higher pick-\ning performance. Thanks to the modular truck con-\ncept, customers can adapt the order picker precisely\nto their individual requirements and, for example,\nchoose between a 24 V and 48 V motor depending\non their power needs."
+  }
+ }
+}

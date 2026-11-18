@@ -1,0 +1,1221 @@
+{
+ "slug": "l14-do-l16-r-ri",
+ "datasheet": {
+  "name": "DS_L14_16R_BR1174_en_A_0617_view.pdf",
+  "id": "1QNOD_6GZ3PKk_lutc5TzB-SN4hU5Cwrl"
+ },
+ "heading": "3 ECO-Mode up to12% energy savings to",
+ "range": "ergonomic unit",
+ "capacity": "Capacity 1,400 & 1,600 kg                                                  al lift and horn grouped in one single",
+ "tagline": null,
+ "benefits": [],
+ "versions": [
+  "L14R",
+  "L16R",
+  "L14Ri"
+ ],
+ "vdi": [
+  {
+   "no": "1.1",
+   "section": "Characteristics",
+   "label": "Manufacturer",
+   "unit": "",
+   "values": [
+    "LINDE",
+    "LINDE",
+    "LINDE"
+   ],
+   "notes": [
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "1.2",
+   "section": "Characteristics",
+   "label": "Manufacturer‘s type designation",
+   "unit": "",
+   "values": [
+    "L14R",
+    "L16R",
+    "L14Ri"
+   ],
+   "notes": [
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "1.2a",
+   "section": "Characteristics",
+   "label": "Series",
+   "unit": "",
+   "values": [
+    "1174-00",
+    "1174-00",
+    "1174-00"
+   ],
+   "notes": [
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "1.3",
+   "section": "Characteristics",
+   "label": "Power unit",
+   "unit": "",
+   "values": [
+    "Battery",
+    "Battery",
+    "Battery"
+   ],
+   "notes": [
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "1.4",
+   "section": "Characteristics",
+   "label": "Operation",
+   "unit": "",
+   "values": [
+    "Seat",
+    "Seat",
+    "Seat"
+   ],
+   "notes": [
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "1.5",
+   "section": "Characteristics",
+   "label": "Load capacity/Load",
+   "unit": "",
+   "values": [
+    "Q (t) 1.4",
+    "1.6",
+    "1.4 / (2."
+   ],
+   "notes": [
+    [],
+    [],
+    [
+     "0",
+     "1"
+    ]
+   ]
+  },
+  {
+   "no": "1.6",
+   "section": "Characteristics",
+   "label": "Load centre distance",
+   "unit": "",
+   "values": [
+    "c (mm) 600",
+    "600",
+    "600"
+   ],
+   "notes": [
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "1.8",
+   "section": "Characteristics",
+   "label": "Axle centre to fork face",
+   "unit": "",
+   "values": [
+    "x (mm) 724",
+    "724",
+    "724"
+   ],
+   "notes": [
+    [
+     "2"
+    ],
+    [
+     "2"
+    ],
+    [
+     "2"
+    ]
+   ]
+  },
+  {
+   "no": "1.9",
+   "section": "Characteristics",
+   "label": "Wheelbase",
+   "unit": "",
+   "values": [
+    "y (mm) 1597",
+    "1597",
+    "1597"
+   ],
+   "notes": [
+    [
+     "2"
+    ],
+    [
+     "2"
+    ],
+    [
+     "2"
+    ]
+   ]
+  },
+  {
+   "no": "2.1",
+   "section": "Weights",
+   "label": "Service weight",
+   "unit": "",
+   "values": [
+    "(kg) 1580",
+    "1580",
+    "1499"
+   ],
+   "notes": [
+    [
+     "3",
+     "4"
+    ],
+    [
+     "3",
+     "4"
+    ],
+    [
+     "3",
+     "4"
+    ]
+   ]
+  },
+  {
+   "no": "2.2",
+   "section": "Weights",
+   "label": "Axle load with load, front/rear",
+   "unit": "",
+   "values": [
+    "(kg) 1159 / 1821",
+    "1174 / 2006",
+    "1080 / 1819"
+   ],
+   "notes": [
+    [
+     "3",
+     "4"
+    ],
+    [
+     "3",
+     "4"
+    ],
+    [
+     "3",
+     "4"
+    ]
+   ]
+  },
+  {
+   "no": "2.3",
+   "section": "Weights",
+   "label": "Axle load without load, front/rear",
+   "unit": "",
+   "values": [
+    "(kg) 1050 / 530",
+    "1050 / 530",
+    "971 / 528"
+   ],
+   "notes": [
+    [
+     "3",
+     "4"
+    ],
+    [
+     "3",
+     "4"
+    ],
+    [
+     "3",
+     "4"
+    ]
+   ]
+  },
+  {
+   "no": "3.1",
+   "section": "Wheels/Tyres",
+   "label": "Tyres rubber, SE, pneumatic, polyurethane",
+   "unit": "",
+   "values": [
+    "V+P/P",
+    "V+P/P",
+    "V+P/P"
+   ],
+   "notes": [
+    [
+     "5"
+    ],
+    [
+     "5"
+    ],
+    [
+     "5"
+    ]
+   ]
+  },
+  {
+   "no": "3.2",
+   "section": "Wheels/Tyres",
+   "label": "Tyre size, front",
+   "unit": "",
+   "values": [
+    "Ø 254 x 102",
+    "Ø 254 x 102",
+    "Ø 254 x 102"
+   ],
+   "notes": [
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "3.3",
+   "section": "Wheels/Tyres",
+   "label": "Tyre size, rear",
+   "unit": "",
+   "values": [
+    "Ø 85 x 85 ( Ø 85 x",
+    "Ø 85 x 85 ( Ø 85 x",
+    "Ø 85 x 85 ( Ø 85 x"
+   ],
+   "notes": [
+    [
+     "60",
+     "6"
+    ],
+    [
+     "60",
+     "6"
+    ],
+    [
+     "60",
+     "6"
+    ]
+   ]
+  },
+  {
+   "no": "3.4",
+   "section": "Wheels/Tyres",
+   "label": "Auxiliary wheels (dimensions)",
+   "unit": "",
+   "values": [
+    "2x Ø 140 x 50",
+    "2x Ø 140 x 50",
+    "2x Ø 140 x 50"
+   ],
+   "notes": [
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "3.5",
+   "section": "Wheels/Tyres",
+   "label": "Wheels, number front/rear (x = driven)",
+   "unit": "",
+   "values": [
+    "1x + 1 / 2 (1x + 1 /",
+    "1x + 1 / 2 (1x + 1 /",
+    "1x + 1 / 2 (1x + 1 /"
+   ],
+   "notes": [
+    [
+     "4",
+     "6"
+    ],
+    [
+     "4",
+     "6"
+    ],
+    [
+     "4",
+     "6"
+    ]
+   ]
+  },
+  {
+   "no": "3.6",
+   "section": "Wheels/Tyres",
+   "label": "Track width, front",
+   "unit": "b10 (mm)",
+   "values": [
+    "541",
+    "541",
+    "541"
+   ],
+   "notes": [
+    [
+     "2"
+    ],
+    [
+     "2"
+    ],
+    [
+     "2"
+    ]
+   ]
+  },
+  {
+   "no": "3.7",
+   "section": "Wheels/Tyres",
+   "label": "Track width, rear",
+   "unit": "b11 (mm)",
+   "values": [
+    "380",
+    "380",
+    "380"
+   ],
+   "notes": [
+    [
+     "2"
+    ],
+    [
+     "2"
+    ],
+    [
+     "2"
+    ]
+   ]
+  },
+  {
+   "no": "4.2",
+   "section": "Dimensions",
+   "label": "Height of mast, lowered",
+   "unit": "h1 (mm)",
+   "values": [
+    "1915",
+    "1915",
+    "1915"
+   ],
+   "notes": [
+    [
+     "2"
+    ],
+    [
+     "2"
+    ],
+    [
+     "2"
+    ]
+   ]
+  },
+  {
+   "no": "4.3",
+   "section": "Dimensions",
+   "label": "Free lift",
+   "unit": "h2 (mm)",
+   "values": [
+    "150",
+    "150",
+    "150"
+   ],
+   "notes": [
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "4.4",
+   "section": "Dimensions",
+   "label": "Lift",
+   "unit": "h3 (mm)",
+   "values": [
+    "2844",
+    "2844",
+    "2844"
+   ],
+   "notes": [
+    [
+     "2"
+    ],
+    [
+     "2"
+    ],
+    [
+     "2"
+    ]
+   ]
+  },
+  {
+   "no": "4.5",
+   "section": "Dimensions",
+   "label": "Height of mast, extended",
+   "unit": "h4 (mm)",
+   "values": [
+    "3364",
+    "3364",
+    "3364"
+   ],
+   "notes": [
+    [
+     "2"
+    ],
+    [
+     "2"
+    ],
+    [
+     "2"
+    ]
+   ]
+  },
+  {
+   "no": "4.6",
+   "section": "Dimensions",
+   "label": "Initial lift",
+   "unit": "h5 (mm)",
+   "values": [
+    "-",
+    "-",
+    "125"
+   ],
+   "notes": [
+    [],
+    [],
+    [
+     "2"
+    ]
+   ]
+  },
+  {
+   "no": "4.7",
+   "section": "Dimensions",
+   "label": "Height of overhead guard (cabin)",
+   "unit": "h6 (mm)",
+   "values": [
+    "2260",
+    "2260",
+    "2260"
+   ],
+   "notes": [
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "4.8",
+   "section": "Dimensions",
+   "label": "Height of seat/stand on platform",
+   "unit": "h7 (mm)",
+   "values": [
+    "1024",
+    "1024",
+    "1024"
+   ],
+   "notes": [
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "4.10",
+   "section": "Dimensions",
+   "label": "Height of reach legs",
+   "unit": "h8 (mm)",
+   "values": [
+    "80",
+    "80",
+    "80"
+   ],
+   "notes": [
+    [
+     "7"
+    ],
+    [
+     "7"
+    ],
+    [
+     "7"
+    ]
+   ]
+  },
+  {
+   "no": "4.15",
+   "section": "Dimensions",
+   "label": "Height, lowered",
+   "unit": "h13 (mm)",
+   "values": [
+    "86",
+    "86",
+    "86"
+   ],
+   "notes": [
+    [
+     "7"
+    ],
+    [
+     "7"
+    ],
+    [
+     "7"
+    ]
+   ]
+  },
+  {
+   "no": "4.19",
+   "section": "Dimensions",
+   "label": "Overall length",
+   "unit": "",
+   "values": [
+    "l1 (mm) 2187",
+    "2187",
+    "2187"
+   ],
+   "notes": [
+    [
+     "2"
+    ],
+    [
+     "2"
+    ],
+    [
+     "2"
+    ]
+   ]
+  },
+  {
+   "no": "4.20",
+   "section": "Dimensions",
+   "label": "Length to fork face",
+   "unit": "",
+   "values": [
+    "l2 (mm) 1037",
+    "1037",
+    "1037"
+   ],
+   "notes": [
+    [
+     "2"
+    ],
+    [
+     "2"
+    ],
+    [
+     "2"
+    ]
+   ]
+  },
+  {
+   "no": "4.21",
+   "section": "Dimensions",
+   "label": "Overall width b1/b2 (mm)",
+   "unit": "",
+   "values": [
+    "820",
+    "820",
+    "820"
+   ],
+   "notes": [
+    [
+     "2"
+    ],
+    [
+     "2"
+    ],
+    [
+     "2"
+    ]
+   ]
+  },
+  {
+   "no": "4.22",
+   "section": "Dimensions",
+   "label": "Fork dimensions DIN ISO 2331 s/e/l (mm)",
+   "unit": "",
+   "values": [
+    "71 x 180 x 1150",
+    "71 x 180 x 1150",
+    "71 x 180 x 1150"
+   ],
+   "notes": [
+    [
+     "8"
+    ],
+    [
+     "8"
+    ],
+    [
+     "8"
+    ]
+   ]
+  },
+  {
+   "no": "4.24",
+   "section": "Dimensions",
+   "label": "Width of fork carriage",
+   "unit": "b3 (mm)",
+   "values": [
+    "780",
+    "780",
+    "780"
+   ],
+   "notes": [
+    [
+     "2"
+    ],
+    [
+     "2"
+    ],
+    [
+     "2"
+    ]
+   ]
+  },
+  {
+   "no": "4.25",
+   "section": "Dimensions",
+   "label": "Fork spread",
+   "unit": "b5 (mm)",
+   "values": [
+    "560",
+    "560",
+    "560"
+   ],
+   "notes": [
+    [
+     "2"
+    ],
+    [
+     "2"
+    ],
+    [
+     "2"
+    ]
+   ]
+  },
+  {
+   "no": "4.32",
+   "section": "Dimensions",
+   "label": "Ground clearance, centre of wheelbase b12",
+   "unit": "m2 (mm)",
+   "values": [
+    "30",
+    "30",
+    "20"
+   ],
+   "notes": [
+    [
+     "9"
+    ],
+    [
+     "9"
+    ],
+    [
+     "9"
+    ]
+   ]
+  },
+  {
+   "no": "4.33",
+   "section": "Dimensions",
+   "label": "Load dimension b12 x l6",
+   "unit": "",
+   "values": [
+    "x l6 800 x 1200",
+    "800 x 1200",
+    "800 x 1200"
+   ],
+   "notes": [
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "4.34",
+   "section": "Dimensions",
+   "label": "Aisle width predetermined load dimensions",
+   "unit": "Ast (mm)",
+   "values": [
+    "(mm) 2605",
+    "2605",
+    "2605"
+   ],
+   "notes": [
+    [
+     "10"
+    ],
+    [
+     "10"
+    ],
+    [
+     "10"
+    ]
+   ]
+  },
+  {
+   "no": "4.35",
+   "section": "Dimensions",
+   "label": "Turning radius",
+   "unit": "Wa (mm)",
+   "values": [
+    "1783",
+    "1783",
+    "1783 Lift"
+   ],
+   "notes": [
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "5.1",
+   "section": "Performance",
+   "label": "Travel speed, with/without load",
+   "unit": "",
+   "values": [
+    "(km/h) 10 / 10",
+    "10 / 10",
+    "10 / 10"
+   ],
+   "notes": [
+    [
+     "11"
+    ],
+    [
+     "11"
+    ],
+    [
+     "11"
+    ]
+   ]
+  },
+  {
+   "no": "5.2",
+   "section": "Performance",
+   "label": "Lifting speed, with/without load",
+   "unit": "",
+   "values": [
+    "(m/s) 0.144 / 0.447",
+    "0.144 / 0.447",
+    "0.144 / 0.447 (0.045 / 0.08"
+   ],
+   "notes": [
+    [
+     "4"
+    ],
+    [
+     "4"
+    ],
+    [
+     "8",
+     "12",
+     "4"
+    ]
+   ]
+  },
+  {
+   "no": "5.3",
+   "section": "Performance",
+   "label": "Lowering speed, with/without load",
+   "unit": "",
+   "values": [
+    "(m/s) 0.343 / 0.342",
+    "0.343 / 0.342",
+    "0.343 / 0.342 (0.076 / 0.07"
+   ],
+   "notes": [
+    [
+     "4"
+    ],
+    [
+     "4"
+    ],
+    [
+     "2",
+     "12",
+     "4"
+    ]
+   ]
+  },
+  {
+   "no": "5.8",
+   "section": "Performance",
+   "label": "Maximum climbing ability, with/without load",
+   "unit": "",
+   "values": [
+    "(%) 11.0 / 20.0",
+    "11.0 / 20.0",
+    "11.0 (9.0) / 20.0"
+   ],
+   "notes": [
+    [],
+    [],
+    [
+     "1"
+    ]
+   ]
+  },
+  {
+   "no": "5.9",
+   "section": "Performance",
+   "label": "Acceleration time, with/without load",
+   "unit": "",
+   "values": [
+    "(s) 6.1 / 5.0",
+    "6.1 / 5.0",
+    "6.1 / 5.0"
+   ],
+   "notes": [
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "5.10",
+   "section": "Performance",
+   "label": "Service brake",
+   "unit": "",
+   "values": [
+    "Electro-magnetic",
+    "Electro-magnetic",
+    "Electro-magnetic"
+   ],
+   "notes": [
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "6.1",
+   "section": "Electric-engine",
+   "label": "Drive motor rating S2 60 min",
+   "unit": "",
+   "values": [
+    "(kW) 3",
+    "3",
+    "Free lift 3"
+   ],
+   "notes": [
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "6.2",
+   "section": "Electric-engine",
+   "label": "Lift motor rating at S3 15%",
+   "unit": "",
+   "values": [
+    "(kW) 3.2",
+    "3.2",
+    "3.2"
+   ],
+   "notes": [
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "6.3",
+   "section": "Electric-engine",
+   "label": "Battery according to DIN 43531/35/36 A,B,C,no",
+   "unit": "",
+   "values": [
+    "43 535 / A / 3PzS",
+    "43 535 / A / 3PzS",
+    "43 535 / A / 3PzS"
+   ],
+   "notes": [
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "6.4",
+   "section": "Electric-engine",
+   "label": "Battery voltage/rated capacity (5h)",
+   "unit": "(V)/(Ah)",
+   "values": [
+    "24 / 345/375",
+    "24 / 345/375",
+    "Lift 24 / 345/375"
+   ],
+   "notes": [
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "6.5",
+   "section": "Electric-engine",
+   "label": "Battery weight (± 5%)",
+   "unit": "",
+   "values": [
+    "(kg) 287",
+    "287",
+    "287"
+   ],
+   "notes": [
+    [
+     "4"
+    ],
+    [
+     "4"
+    ],
+    [
+     "4"
+    ]
+   ]
+  },
+  {
+   "no": "6.6",
+   "section": "Electric-engine",
+   "label": "Power consumption according to VDI cycle",
+   "unit": "(kWh/h)",
+   "values": [
+    "1.65",
+    "1.65",
+    "1.65"
+   ],
+   "notes": [
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "6.7",
+   "section": "Electric-engine",
+   "label": "Turnover output",
+   "unit": "",
+   "values": [
+    "(t/h) 64.0",
+    "64.0",
+    "64.0"
+   ],
+   "notes": [
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "6.8",
+   "section": "Electric-engine",
+   "label": "Energy consumption at turnover output",
+   "unit": "(kWh/h)",
+   "values": [
+    "2.26",
+    "2.26",
+    "2.26"
+   ],
+   "notes": [
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "8.1",
+   "section": "Drive",
+   "label": "Type of drive unit",
+   "unit": "",
+   "values": [
+    "LAC",
+    "LAC",
+    "LAC"
+   ],
+   "notes": [
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "10.7",
+   "section": "Additional data",
+   "label": "Sound pressure level LpAZ (at the driver’s seat) 1) (Load distribution e.g. 1000 kg on the forks, 1000 kg on the fork arms. Total load max. 7) (-0/+5 mm) 2000 kg.) 8) Reach legs 75x150x1115 2) (± 5 mm) 9) (± 2 mm) 3) Figures with battery, see line 6.4/6.5. 10) Including a 200 mm (min.) operating aisle clearance. 4) (± 10%) 11) (± 5%) 5) Solid rubber + polyurethane / polyurethane 12) Figures in parenthesis with initial lift 6) Figures in parenthesis with tandem load wheels.",
+   "unit": "",
+   "values": [
+    "(dB(A)) 65",
+    "65",
+    "65 Free lift"
+   ],
+   "notes": [
+    [],
+    [],
+    []
+   ]
+  }
+ ],
+ "footnotes": [],
+ "masts": {},
+ "equipment": [],
+ "characteristics": [],
+ "unparsed": {
+  "page1": "Standard Equipment /Optional Equipment                                                                                                                                                                                                                                     Features\n                                                                                                                                                                                                                                                                           Ergonomics                                                                                      Lifting systems\n                                                                                                                                                                                                                                                                           3 Ergonomic operator compartment with                                                           3 Lift control provides accurate lifting as\n                                                                                                                                                                                                                                                                              standard fabric seat or leather seat availa-                                                     well as smooth, quiet operation\n                                                                                                                                                                                                                                                                              ble with three independent adjustments                                                       3 Soft landing on forks protects the load\nStandard Equipment                                                                                                                                                                                                                                                                                                                                                             when lowering\n                                                                                                                                                                                                                                                                              systems\n                                                                                                                                                                                                                                                                           3 Seat heating available as option                                                              3 Initial lift independent of main lift\nNarrow chassis width 820mm                                       Overhead guard                                                                                                                                                                                            3 Metal handle with padded material & adju-                                                         (option)\nKey switch or PIN Code access                                    Soft landing on forks                                                                                                                                                                                        stable floor plate designed for easy truck                                                   3 Max. lift height up to 5316mm\n                                                                                                                                                                                                                                                                              access                                                                                       3 Max. load capacity in Stacker use:\nMultifunction coloured display with Linde Load Management        Floor compensator\n                                                                                                                                                                                                                                                                           3 Side-stance position 90° allows excellent                                                         1,400kg/1,600kg on load arms\nas well as hourmeter, maintenance indication, battery dischar-   Linde Load Management (Standard):\n                                                                                                                                                                                                                                                                                                                                                                                                                         Subject to modification in the interest of progress. Illustrations and technical details could include options and not binding for actual construc-\n                                                                                                                                                                                                                                                                              visibility in both directions\nge indicator and internal fault code indication                  Automatic residual capacity calculation\nPower assisted steering                                          Operator warning when approaching the limits\nAutomatic speed reduction when cornering                         Traction speed is varied automatically in proportion to the\nECO-Mode with up to 12% energy savings                           steering angle for maximum safety\n3 kW AC motor (maintenance free)                                 Drive wheel Polyurethane\nDrive wheel position mentioned in display                        Single load wheel Polyurethane\nLateral battery change 3PzS available with ergonomic battery     Chassis for load arm width 560 & 680mm\nun/locking with lever & rollers (l2=1037mm)                      Protection -10°C\nCAN bus technology                                                                                                                                                                                                                                                         Handling                                          Linde Load Management                       Drive control and settings\n                                                                                                                                                                                                                                                                           3 Chassis width = 820mm                           3 Standard or Advanced, the load            3 Steering effort adjusts automatically to\n                                                                                                                                                                                                                                                                           3 High maneuverability when operating                management system assists control of        speed and turning radius\n                                                                                                                                                                                                                                                                             in lorries or confined spaces                      residual capacity and stability          3 Speed is automatically reduced in rela-\n                                                                                                                                                                                                  Seated Pallet Stacker                                                    3 Stable 4 point configuration\n                                                                                                                                                                                                                                                                           3 TipControl®: traction, lift controls, initi-\n                                                                                                                                                                                                                                                                                                                             3 Standard: Weight estimation of the\n                                                                                                                                                                                                                                                                                                                                load carried up to 1500mm\n                                                                                                                                                                                                                                                                                                                                                                            tion to the steering angle\n                                                                                                                                                                                                                                                                                                                             3 Advanced: Immediate calculation of\n                                                                                                                                                                                                                                                                                                                                load weight and lifting height\n                                                                                                                                                                                                                                                                                                                                                                            finish shift with low battery status\n                                                                                                                                                                                                  L14 R, L16 R                                               Series 1174\n                                                                                                                                                                                                                                                                           3 Enables one-handed operations\n                                                                                                                                                                                                                                                                           3 Height adjustable hand platform\n                                                                                                                                                                                                                                                                                                                             3 Information available at a glance on a\n                                                                                                                                                                                                                                                                                                                                wide multifunctional display\n                                                                                                                                                                                                                                                                                                                                                                                                                         tions. All dimensions subject to usual tolerances.\nOptional Equipment\nInitial lift (h5=125mm)                                          Mast Protection: polycarbonate, steel mesh\nUltra fast lifting (up to +40%)                                  Speed reduction if forks lowered                                Safety\nLinde Load Management Advanced:                                  Alternative fork carriage length/thickness:                     High productivity combined with safety. The operator’s\nLive calculation of weight and height                            950mm or 1150 mm / 71 mm or 55 mm (preferred while              body remains within the chassis contours at all times and\nInforms on potential maximum height & weight                     using gitter box)                                               is also protected by an overhead guard. The Linde Load\nManagement of the remaining residual capacity                    Linde Connected Solutions:                                      Management system automatically calculates residual capa-                                                                                 Workstation                                       Comprehensive energy solutions              AC motor\nDrive wheels: cushion rubber, synthetic cushion rubber non       ac: access control (PIN or RFID Dual), an: usage analysis and   city and warns the operator when approaching load limits.                                                                                 3 Multifunctional instrument display with         3 24V batteries : capacities from 345 Ah    3 Powerful, 3 kW drive motor\n                                                                                                                                                                                                                                                                             user-friendly menu structure                      (3PzS) to 500 Ah (4PzS)                   3 Moisture and dust proof AC drive\nmarking, wet grip                                                dt: crash detection                                             Automatic floor compensating system ensures the truck‘s                                                                                   3 Truck access control by PIN code or             3 Standard Lateral change including rol-       motor is maintenance-free\nLoad wheels: tandem polyurethane, tandem polyurethane and        Flashing beacon                                                 stability.                                                                                                                                  ignition key                                      lers inside the battery compartment to    3 Gradient performance of max. 15%\ngreasable                                                        Support Clipboard DIN A4 & panoramic mirror                                                                                     Reliability                                                               3 Support clipboard DIN A4, flashing                aid battery change                           (laden)\n                                                                                                                                                                                                                                                                             beacon & panoramic mirror available             3 Lever initiates battery change pre-       3 No roll back on gradient starts\nLateral battery change 4PzS available with ergonomic battery     Support data terminal incl. power supply cable 24V              Performance                                                     Rugged construction and the use of tried and tested com-\n                                                                                                                                                                                                                                                                             as option                                         venting direct contact                    3 High torque motor negotiates loading\nun/locking with lever & rollers (l2=1112mm)                      Mobile or Fixed battery stand                                   One of the trucks many benefits is its high productivity        ponents make this a truck that can be relied on. Motor,                   3 Emergency isolator located for instant          3 Li-ION batteries with 4,5KWh(205Ah)          docks with ease\nLeather seat & seat heating                                      Automatic battery watering system                               performance, with a 3 kW AC motor enabling speeds up to         sub-components and electronics are all protected within the                 actuation                                         and 9,0kWh(410Ah)\nVarious Standard, Duplex & Triplex masts (up to 5316mm lift      Cold store protection -35°C                                     10km/h. The robust chassis structure provides exceptional       robust chassis structure. With the initial lift version(option), the                                                        3 Rapid full charge in 1h30min with opti-\n                                                                                                                                                                                                                                                                                                                               mized charger\nheight)                                                          Other options available on request                              residual capacities, with nominal capacities from 1,400kg       ground clearance is improved to cope with gradients and dock\n                                                                                                                                 up to 1,600kg. The truck chassis width of 820mm, combined       levellers. These features guarantee a longer operating life com-\nLi-ION                                                           Li-ION Batteries                                                with intuitive operating controls, delivers excellent manoeu-   bined with safe, efficient and highly productive load handling.\nRapid Full Charge                                                fits in 4 PzS SL compartment: 4,5kWh-9kWh (205Ah-410Ah)         vrability in confined areas.\nOpportunity Charging                                             includes battery housing extra weight                                                                                           Service\n                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        Printed in Germany 761.e.1.0617.IndA.Ki\nRapid Intermediate Charging                                      Li-ION charger                                                  Comfort                                                         Efficiency at work and efficiency in servicing with cost effec-\nMaintenance Free                                                 optimized 24V-Charger v255: full charging time 1h30min          The 90° seating position and a seat with three independent      tive maintenance routines. Easy access to all components and\nExtended Lifetime                                                (4,5kWh) and 2h40min (9,0kWh)                                   adjustments provides an excellent working posture, and the      maintenance-free technology also play their part in increasing\nEfficient performance in Cold Stores                                                                                             integrated, and highly functional, operating controls, ensure   truck uptime and availability. CAN bus connectivity provides\nSide Plug available                                                                                                              a superb working environment. The compartment floor plate       a computerised diagnostic system for rapid analysis to ensure\n                                                                                                                                                                                                                                                                           Linde Material Handling GmbH, Postfach 10 01 36, 63701 Aschaffenburg, Germany Phone\n                                                                                                                                 is adjustable.                                                  maintenance intervals are also minimised for maximum uptime.              +49.6021.99-0, Fax +49.6021.99-1570, www.linde-mh.com, info@linde-mh.com",
+  "table": [
+   "Mast 1.4 and 1.6 t (in mm)",
+   "1844 S",
+   "2344 S",
+   "2844 S",
+   "3244 S",
+   "3744 S",
+   "4144 S",
+   "4644 S",
+   "1844 D",
+   "2344 D",
+   "h3",
+   "1844",
+   "2344",
+   "2844",
+   "3244",
+   "3744",
+   "4144",
+   "4644",
+   "1844",
+   "2344",
+   "Lift + fork height",
+   "h3+h13",
+   "1930",
+   "2430",
+   "2930",
+   "3330",
+   "3830",
+   "4230",
+   "4730",
+   "1930",
+   "2430",
+   "Height, mast lowered",
+   "h1",
+   "1415",
+   "1665",
+   "1915",
+   "2115",
+   "2365",
+   "2565",
+   "2815",
+   "1415",
+   "1665",
+   "Closed height (with free lift at 150 mm)",
+   "h1#",
+   "1490",
+   "1740",
+   "1990",
+   "2190",
+   "2440",
+   "2640",
+   "2890",
+   "-",
+   "-",
+   "Height, mast extended",
+   "h4",
+   "2364",
+   "2864",
+   "3364",
+   "3764",
+   "4264",
+   "4664",
+   "5164",
+   "2364",
+   "2864",
+   "h2",
+   "150",
+   "150",
+   "150",
+   "150",
+   "150",
+   "150",
+   "150",
+   "895",
+   "1145",
+   "Mast 1.4 and 1.6 t (in mm)",
+   "2844 D",
+   "3244 D",
+   "3744 D",
+   "4144 D",
+   "4266 T",
+   "4716 T",
+   "5316 T",
+   "-",
+   "h3",
+   "2844",
+   "3244",
+   "3744",
+   "4144",
+   "4266",
+   "4716",
+   "5316",
+   "-",
+   "Lift + fork height",
+   "h3+h13",
+   "2930",
+   "3330",
+   "3830",
+   "4230",
+   "4352",
+   "4802",
+   "5402",
+   "-",
+   "Height, mast lowered",
+   "h1",
+   "1915",
+   "2115",
+   "2365",
+   "2565",
+   "1915",
+   "2065",
+   "2265",
+   "-",
+   "Closed height (with free lift at 150 mm)",
+   "h1#",
+   "1915",
+   "2115",
+   "2365",
+   "2565",
+   "1915",
+   "2065",
+   "2265",
+   "-",
+   "Height, mast extended",
+   "h4",
+   "3364",
+   "3764",
+   "4264",
+   "4664",
+   "4786",
+   "5236",
+   "5836",
+   "-",
+   "h2",
+   "1395",
+   "1595",
+   "1845",
+   "2045",
+   "1395",
+   "1545",
+   "1745",
+   "-"
+  ]
+ }
+}

@@ -1,0 +1,633 @@
+{
+ "slug": "d10",
+ "datasheet": {
+  "name": "DS_D10_BR1163_en_A_1018_view.pdf",
+  "id": "1_C57m_VL2kCRPCfZ1i4CMqgKjZ-pUrbu"
+ },
+ "heading": "PEDESTRIAN DOUBLE STACKER",
+ "range": "D10",
+ "capacity": "CAPACITY 1000 KG | SERIES 1163",
+ "tagline": null,
+ "benefits": [],
+ "versions": [
+  "D10"
+ ],
+ "vdi": [
+  {
+   "no": "1.1",
+   "section": "Characteristics",
+   "label": "Manufacturer",
+   "unit": "",
+   "values": [
+    "LINDE"
+   ],
+   "notes": [
+    []
+   ]
+  },
+  {
+   "no": "1.2",
+   "section": "Characteristics",
+   "label": "Model design",
+   "unit": "",
+   "values": [
+    "D10"
+   ],
+   "notes": [
+    []
+   ]
+  },
+  {
+   "no": "1.3",
+   "section": "Characteristics",
+   "label": "Power unit",
+   "unit": "",
+   "values": [
+    "Battery"
+   ],
+   "notes": [
+    []
+   ]
+  },
+  {
+   "no": "1.4",
+   "section": "Characteristics",
+   "label": "Operation",
+   "unit": "",
+   "values": [
+    "Standing"
+   ],
+   "notes": [
+    []
+   ]
+  },
+  {
+   "no": "1.5",
+   "section": "Characteristics",
+   "label": "Load capacity / Load",
+   "unit": "Q (t)",
+   "values": [
+    "1.0"
+   ],
+   "notes": [
+    []
+   ]
+  },
+  {
+   "no": "1.6",
+   "section": "Characteristics",
+   "label": "Load centre distance",
+   "unit": "c (mm)",
+   "values": [
+    "600"
+   ],
+   "notes": [
+    []
+   ]
+  },
+  {
+   "no": "1.8",
+   "section": "Characteristics",
+   "label": "Axle centre to fork face",
+   "unit": "x (mm)",
+   "values": [
+    "949"
+   ],
+   "notes": [
+    []
+   ]
+  },
+  {
+   "no": "1.9",
+   "section": "Characteristics",
+   "label": "Wheelbase",
+   "unit": "y (mm)",
+   "values": [
+    "1653"
+   ],
+   "notes": [
+    []
+   ]
+  },
+  {
+   "no": "2.1",
+   "section": "Weight",
+   "label": "Service weight",
+   "unit": "(kg)",
+   "values": [
+    "1181"
+   ],
+   "notes": [
+    []
+   ]
+  },
+  {
+   "no": "2.2",
+   "section": "Weight",
+   "label": "Axle load with load, front / rear",
+   "unit": "(kg)",
+   "values": [
+    "1276 / 1884"
+   ],
+   "notes": [
+    []
+   ]
+  },
+  {
+   "no": "2.3",
+   "section": "Weight",
+   "label": "Axle load without load, front / rear",
+   "unit": "(kg)",
+   "values": [
+    "889 / 292"
+   ],
+   "notes": [
+    []
+   ]
+  },
+  {
+   "no": "3.1",
+   "section": "Tyres/chassis",
+   "label": "Tyres rubber, SE, pneumatic, polyurethane",
+   "unit": "",
+   "values": [
+    "R + P/P"
+   ],
+   "notes": [
+    []
+   ]
+  },
+  {
+   "no": "3.2",
+   "section": "Tyres/chassis",
+   "label": "Tyre size, front",
+   "unit": "",
+   "values": [
+    "230 x 90"
+   ],
+   "notes": [
+    []
+   ]
+  },
+  {
+   "no": "3.3",
+   "section": "Tyres/chassis",
+   "label": "Tyre size, rear",
+   "unit": "",
+   "values": [
+    "85 x 85 (bogies 85 x 60)"
+   ],
+   "notes": [
+    []
+   ]
+  },
+  {
+   "no": "3.4",
+   "section": "Tyres/chassis",
+   "label": "Auxiliary wheels (dimensions)",
+   "unit": "",
+   "values": [
+    "2 x 125 x 60"
+   ],
+   "notes": [
+    []
+   ]
+  },
+  {
+   "no": "3.5",
+   "section": "Tyres/chassis",
+   "label": "Wheels, number front / rear (x = driven)",
+   "unit": "",
+   "values": [
+    "1x + 1 / 2 + 1x 1 / 4"
+   ],
+   "notes": [
+    []
+   ]
+  },
+  {
+   "no": "3.6",
+   "section": "Tyres/chassis",
+   "label": "Track width, front",
+   "unit": "b10 (mm)",
+   "values": [
+    "502"
+   ],
+   "notes": [
+    []
+   ]
+  },
+  {
+   "no": "3.7",
+   "section": "Tyres/chassis",
+   "label": "Track width, rear",
+   "unit": "b11 (mm)",
+   "values": [
+    "380"
+   ],
+   "notes": [
+    []
+   ]
+  },
+  {
+   "no": "4.2",
+   "section": "Dimensions",
+   "label": "Height of mast, lowered",
+   "unit": "h1 (mm)",
+   "values": [
+    "1465 (2024S)"
+   ],
+   "notes": [
+    []
+   ]
+  },
+  {
+   "no": "4.3",
+   "section": "Dimensions",
+   "label": "Free lift",
+   "unit": "h 2 (mm)",
+   "values": [
+    "150 (2024S)"
+   ],
+   "notes": [
+    []
+   ]
+  },
+  {
+   "no": "4.4",
+   "section": "Dimensions",
+   "label": "Lift",
+   "unit": "h 3 (mm)",
+   "values": [
+    "2024 (2024S)"
+   ],
+   "notes": [
+    []
+   ]
+  },
+  {
+   "no": "4.5",
+   "section": "Dimensions",
+   "label": "Height of mast, extended",
+   "unit": "h 4 (mm)",
+   "values": [
+    "2544 (2024S)"
+   ],
+   "notes": [
+    []
+   ]
+  },
+  {
+   "no": "4.6",
+   "section": "Dimensions",
+   "label": "Initial lift",
+   "unit": "h 5 (mm)",
+   "values": [
+    "125"
+   ],
+   "notes": [
+    []
+   ]
+  },
+  {
+   "no": "4.9",
+   "section": "Dimensions",
+   "label": "Height of tiller arm in operating position, min / max",
+   "unit": "h14 (mm)",
+   "values": [
+    "855 / 1220"
+   ],
+   "notes": [
+    []
+   ]
+  },
+  {
+   "no": "4.15",
+   "section": "Dimensions",
+   "label": "Height, lowered",
+   "unit": "h13 (mm)",
+   "values": [
+    "86"
+   ],
+   "notes": [
+    []
+   ]
+  },
+  {
+   "no": "4.19",
+   "section": "Dimensions",
+   "label": "Overall length",
+   "unit": "l 1 (mm)",
+   "values": [
+    "2129"
+   ],
+   "notes": [
+    []
+   ]
+  },
+  {
+   "no": "4.20",
+   "section": "Dimensions",
+   "label": "Length to fork face",
+   "unit": "l 2 (mm)",
+   "values": [
+    "979"
+   ],
+   "notes": [
+    []
+   ]
+  },
+  {
+   "no": "4.21",
+   "section": "Dimensions",
+   "label": "Overall width",
+   "unit": "b1 / b2 (mm)",
+   "values": [
+    "720"
+   ],
+   "notes": [
+    []
+   ]
+  },
+  {
+   "no": "4.22",
+   "section": "Dimensions",
+   "label": "Fork dimensions DIN ISO 2331",
+   "unit": "s / e / l (mm)",
+   "values": [
+    "50 x 180 x 1150"
+   ],
+   "notes": [
+    []
+   ]
+  },
+  {
+   "no": "4.24",
+   "section": "Dimensions",
+   "label": "Width of fork carriage",
+   "unit": "b3 (mm)",
+   "values": [
+    "710"
+   ],
+   "notes": [
+    []
+   ]
+  },
+  {
+   "no": "4.25",
+   "section": "Dimensions",
+   "label": "Fork spread",
+   "unit": "b 5 (mm)",
+   "values": [
+    "540 / 560"
+   ],
+   "notes": [
+    []
+   ]
+  },
+  {
+   "no": "4.26",
+   "section": "Dimensions",
+   "label": "Distance between wheel arms / loading surfaces",
+   "unit": "b 4 (mm)",
+   "values": [
+    "210 / 230"
+   ],
+   "notes": [
+    []
+   ]
+  },
+  {
+   "no": "4.32",
+   "section": "Dimensions",
+   "label": "Ground clearance, centre of wheelbase",
+   "unit": "m 2 (mm)",
+   "values": [
+    "20"
+   ],
+   "notes": [
+    []
+   ]
+  },
+  {
+   "no": "4.34.1",
+   "section": "Dimensions",
+   "label": "Aisle width for pallets 1000 × 1200 crossways",
+   "unit": "A st (mm)",
+   "values": [
+    "2745"
+   ],
+   "notes": [
+    []
+   ]
+  },
+  {
+   "no": "4.34.2",
+   "section": "Dimensions",
+   "label": "Aisle width with pallet 800 x 1200 along forks",
+   "unit": "A st (mm)",
+   "values": [
+    "2870"
+   ],
+   "notes": [
+    []
+   ]
+  },
+  {
+   "no": "4.35",
+   "section": "Dimensions",
+   "label": "Turning radius",
+   "unit": "Wa (mm)",
+   "values": [
+    "2070"
+   ],
+   "notes": [
+    []
+   ]
+  },
+  {
+   "no": "5.1",
+   "section": "Performance",
+   "label": "Travel speed, with / without load",
+   "unit": "(km / h)",
+   "values": [
+    "6.0 / 6.0"
+   ],
+   "notes": [
+    []
+   ]
+  },
+  {
+   "no": "5.2",
+   "section": "Performance",
+   "label": "Lifting speed, with / without load",
+   "unit": "(m / s)",
+   "values": [
+    "0. 050 / 0.061",
+    "0. 14 / 0.22"
+   ],
+   "notes": [
+    [],
+    []
+   ]
+  },
+  {
+   "no": "5.3",
+   "section": "Performance",
+   "label": "Initial lowering speed",
+   "unit": "(m / s)",
+   "values": [
+    "0.102 / 0.082",
+    "0.488 / 0.197"
+   ],
+   "notes": [
+    [],
+    []
+   ]
+  },
+  {
+   "no": "5.8",
+   "section": "Performance",
+   "label": "Maximum climbing ability",
+   "unit": "",
+   "values": [
+    "0 kg / 1000 kg / 2000 kg"
+   ],
+   "notes": [
+    []
+   ]
+  },
+  {
+   "no": "5.9",
+   "section": "Performance",
+   "label": "Acceleration time, with / without load",
+   "unit": "(s)",
+   "values": [
+    "7.6 / 6.7"
+   ],
+   "notes": [
+    []
+   ]
+  },
+  {
+   "no": "5.10",
+   "section": "Performance",
+   "label": "Service brake",
+   "unit": "",
+   "values": [
+    "Electro-magnetic"
+   ],
+   "notes": [
+    []
+   ]
+  },
+  {
+   "no": "6.1",
+   "section": "Electric-engine",
+   "label": "Drive motor rating S2 60 min",
+   "unit": "(kW)",
+   "values": [
+    "1.5"
+   ],
+   "notes": [
+    []
+   ]
+  },
+  {
+   "no": "6.2",
+   "section": "Electric-engine",
+   "label": "Lift motor rating at S3 15 %",
+   "unit": "(kW)",
+   "values": [
+    "2.2"
+   ],
+   "notes": [
+    []
+   ]
+  },
+  {
+   "no": "6.3",
+   "section": "Electric-engine",
+   "label": "Battery according to DIN 43531 / 35 / 36 A, B, C, no",
+   "unit": "",
+   "values": [
+    "3 PZs SL"
+   ],
+   "notes": [
+    []
+   ]
+  },
+  {
+   "no": "6.4",
+   "section": "Electric-engine",
+   "label": "Battery voltage / rated capacity (5 h)",
+   "unit": "(V) / (Ah)",
+   "values": [
+    "24 / 375"
+   ],
+   "notes": [
+    []
+   ]
+  },
+  {
+   "no": "6.5",
+   "section": "Electric-engine",
+   "label": "Battery weight (± 5 %)",
+   "unit": "(kg)",
+   "values": [
+    "290"
+   ],
+   "notes": [
+    []
+   ]
+  },
+  {
+   "no": "6.6",
+   "section": "Electric-engine",
+   "label": "Power consumption according to VDI cycle",
+   "unit": "(kWh / h)",
+   "values": [
+    "0.483"
+   ],
+   "notes": [
+    []
+   ]
+  },
+  {
+   "no": "8.1",
+   "section": "Drive",
+   "label": "Type of drive unit",
+   "unit": "",
+   "values": [
+    "LAC"
+   ],
+   "notes": [
+    []
+   ]
+  },
+  {
+   "no": "10.7",
+   "section": "Additional data",
+   "label": "Sound pressure level LpAZ (at the driver’s seat)",
+   "unit": "(dB(A))",
+   "values": [
+    "62"
+   ],
+   "notes": [
+    []
+   ]
+  }
+ ],
+ "footnotes": [],
+ "masts": {},
+ "equipment": [],
+ "characteristics": [],
+ "unparsed": {
+  "image_pages": [
+   5
+  ],
+  "page1": "Safety                                                                      Reliability\nThe D10 benefits from a long tiller with a low mounting point              Rugged construction makes the D10 a Double Stacker that can be\nensuring a large safety clearance between operator and chassis.           relied on. The battery cover, as well as the robust chassis are\n Creep speed, proportional speed and lift functions provide optimum        remarkably solid and resistant to damage. The sturdy mast and\nsafety during load transfer or when manoeuvring in tight corners.             durable fork carriage are made out of high-grade rolled steel to\n                                                                               ensure easy and safe load handling.\nPerformance\nThe D10 can handle two pallets at once with a maximum total                  Service\ncapacity of 2000 kg. The innovative castor wheels ensure the                A maintenance-free AC motor reduces service costs. Operating\n optimum mix of stability and traction in all situations. The OptiLift®     paramaters can be individually adjusted to the operator‘s need via\n  mast control provides accurate, fully proportional lifting, and assures     the CAN-bus system. The service engineer has fast, easy access, not\n  quiet smooth operation.                                                     only to truck data, via the CAN-bus system, but also to all main\n                                                                            internal components.\nComfort\nAll controls on the ergonomic tiller head can be easily operated by\neither hand. A Creep speed button offers utmost maneuverability in\nconfined areas. Generous storage compartments for work equip-\nment, such as shrink wrap, are also available.",
+  "other": "ACCORDING TO VDI 2198\n                                                            cut off\n                                                            brake\n                                   driving\n                cut off\n                brake",
+  "masts": "Mast type                                           1574S             1724S   2024S   2424S   1574D   1724D   2024D   2424D   2136T\n\n\nh1                                                  1240              1315    1465    1665    1240    1315    1465    1665    1165\nh1`                                                  1315             1390    1540    1740      /       /       /       /       /\nh2                                                   150               150     150     150     720     795     945    1145     645\nh3                                                   1574             1724    2024    2424    1574    1724    2024    2424    2136\nh4                                                  2094              2244    2544    2944    2094    2244    2544    2944    2662\n\nOther masts on request. S = Standard, D = Duplex, T = Triplex\n\nSTANDARD EQUIPMENT / OPTIONAL EQUIPMENT\nSTANDARD EQUIPMENT                                                           OPTIONAL EQUIPMENT\n\n720 mm chassis width smaller than a pallet                                   Hydraulic castor wheels\nLong tiller with a low mounting point                                        Drive wheels: cushion, cushion with tread, non-marking, or wet grip\nLinde OptiLift : proportional control on the tiller\n              ®\n                                                                             Load wheels: tandem polyurethane or single / tandem polyurethane\n                                                                             greasable load wheels\nPower assisted steering with variable steering resistance\nAutomatic speed reduction when cornering                                     Alternative fork dimensions\n\n1.5 kW AC motor (maintenance-free)                                           Load backrest (h = 1000 mm)\n\nVertical 3 PzS battery compartment                                           Low speed option when initial lift lowered\n\nElectrohydraulic emergency brake acting proportionally to the load weight    Lift end stop sensor\n\nKey switch or Log in PIN code (no extra)                                     Soft landing of forks\n\nWork station with storage compartments                                       Accessory support\n\nCAN bus technology                                                           Support data terminal incl. power supply cable 24 V\n                                                                             Support clipboard DIN A4\nMultifunction coloured display hour meter, maintenance indication, battery\ndischarge indicator and internal fault code indication                       Support for scanner\nPolyurethane drive wheel                                                     Built-in charger\nPolyurethane single load wheels                                              Lateral 3 PzS battery compartment\nMast protection: polycarbonate or mesh wired (no extra)                      Lateral 4 PzS battery compartment\nProtection: – 10° C                                                          Battery stand – fixed and mobile\n                                                                             Cold store protection: – 35° C\n                                                                             Working lamp LED front\n                                                                             Other options available on request\n\n                                                                             Linde Connected Solutions:\n                                                                             ac: access control (PIN or RFID Dual),\n                                                                             an: usage analysis and dt: crash detection\n                                                                             Data transfer online\n                                                                             Data transfer WIFI\n                                                                             Bluetooth USB Stick\n\n                                                                             Li-ION technology:\n                                                                             3 PzS compartment with 4.5 kWh - 9 kWh (205 Ah - 410 Ah)\n\n                                                                             Li-ION charger:\n                                                                             24 V-Charger v255: 4.5 kWh (full charging time 1 h 30 min) -\n                                                                             9.0 kWh (2 h 40 min)\n\n\nFEATURES\n\nLifting systems                                                                                                                     Steering system\n→ OptiLift® mast controls provides accurate,                                                                                       → Proportional speed control varies truck\n  fully proportional lifting as well as                                                                                                speed automatically, in relation to tiller\n  smooth, quiet operation                                                                                                              angle for safe, comfortable, and\n→ Soft landing of forks protects load when                                                                                            productive operation\n  lowering                                                                                                                          → End-of-stroke resistance on the tiller\n→ Initial lift independent of main lift                                                                                                avoids accidental, abrupt braking\n→ Max. lift height up to 2424 mm                                                                                                    → Soft, fold-back tiller when returning into\n→ Max. load capacity in double-stacking                                                                                                an upright position, avoiding the tiller\n  use: 1000 kg on forks and 1000 kg on load                                                                                            from snapping on to the motor cover\n  arms\n\n\n\nHandling                                                                         Braking                                            AC Motor\n→ 720  mm chassis width narrower than a                                          → Highly efficient mechanical brake when           → Compact, efficient and maintenance-free\n   pallet                                                                           the tiller is fully raised or lowered              1.5 kW AC motor\n→ Compact and robust chassis for easy                                            → Automatic electric braking on releasing          → Max. travel speed: 6 km / h (adjustable)\n   handling in narrow spaces                                                       the butterfly control or reversing direction    → Innovative castor wheel design offers\n→ A creep speed button ensures high                                              → Truck slows down prior to stopping -               maximum traction and stability for\n    maneuverability in confined areas when                                         remaining under complete control at all          demanding applications, such as,\n     operating with with the tiller in an                                            times                                             loading / unloading\n  upright position                                                              → No roll-back when starting on a slope\n→ Long tiller arm reduces steering effort\n→ Pallet stop for fast stacking of two pallets\n\n\n\n\nWorkstation                                                                      Tiller and tiller head                             Comprehensive energy solutions\n→ Multifunctional instrument display with                                        → Long tiller with a low mounting point            → 24 V batteries: capacities from 345 Ah\n   easy ergonomic menu                                                               provides a large safety clearance               (3 PzS) to 500 Ah (4 PzS)\n→ Truck access control by PIN code or                                                 between operator and chassis                 → Li-ION batteries with 4. 5KWh (205 Ah)\n  ignition key                                                                  → All controls are ergonomically integrated          and 9.0 kWh (410 Ah)\n→ Storage compartment for work gloves,                                                 in the tiller head                           → Optional built-in charger available\n   writing ustensils, etc                                                        → Easy-to-reach control buttons permits            → Optional lateral change including rollers\n→ Emergency isolator                                                                   fingertip operation for utmost efficiency     inside the battery compartment and a\n                                                                                 → Wrap-around hand protection                        lever to aid battery change\n                                                                                 → Twin grip steering control, operable with\n                                                                                        either hand for easy handling\n\n\n\n\n                                                                                                                                    Presented by:\n\nSubject to modification in the interest of progress. Illustrations and technical details could include options and\nnot binding for actual constructions. All dimensions subject to usual tolerances.\n\n\n\n\n                                                             Linde Material Handling GmbH\n                                                             Postbox 10 0136 | 63701 Aschaffenburg | Germany\n                                                             Phone + 49 6021 99 0 | Fax + 49 6021 99 15 70\n                                                             www.linde-mh.com | info@linde-mh.com\n\n                                                             Printed in Germany 782.e.1.1018.IndA.Ki"
+ }
+}

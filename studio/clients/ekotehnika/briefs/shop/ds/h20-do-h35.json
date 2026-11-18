@@ -1,0 +1,2325 @@
+{
+ "slug": "h20-do-h35",
+ "datasheet": {
+  "name": "DS_H20_H35_1202_en_C_1020_view.pdf",
+  "id": "1A_n0xDMmSwAoVfPlCu92kECc1OTHKoB9"
+ },
+ "heading": "Internal Combustion Engine Counterbalance Truck",
+ "range": "H20 – H35",
+ "capacity": "Capacity 2.0 – 3.5 t | Series 1202",
+ "tagline": "Robust Performer with All-Round Visibility",
+ "benefits": [
+  "Hydrostatic drive, dual pedal control and Linde Load Control enable efficient load handling",
+  "Robust construction and maintenance-free components guarantee high truck availability",
+  "Slim mast profiles, narrow A-pillar, lowered front plate and see-through roof ensure outstanding visibility",
+  "Wireless data transmission aids effortless integration into software systems, e.g. for fleet management.",
+  "The truck’s low center of gravity and intelligent assistance systems reduce the risk of tipping and loading accidents"
+ ],
+ "versions": [
+  "H20 / 600 D",
+  "H25 D",
+  "H25 / 600 D",
+  "H30 D",
+  "H35 D",
+  "H20 / 600 T",
+  "H25 T",
+  "H25 / 600 T",
+  "H30 T",
+  "H35 T",
+  "H35 D Container",
+  "H35 D Beverage",
+  "H35 CNG"
+ ],
+ "vdi": [
+  {
+   "no": "1.1",
+   "section": "Characteristics",
+   "label": "Manufacturer",
+   "unit": "",
+   "values": [
+    "Linde",
+    "Linde",
+    "Linde",
+    "Linde",
+    "Linde",
+    "Linde",
+    "Linde",
+    "Linde",
+    "Linde",
+    "Linde",
+    "LINDE",
+    "LINDE",
+    "LINDE"
+   ],
+   "notes": [
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "1.2",
+   "section": "Characteristics",
+   "label": "Model",
+   "unit": "",
+   "values": [
+    "H20 / 600 D",
+    "H25 D",
+    "H25 / 600 D",
+    "H30 D",
+    "H35 D",
+    "H20 / 600 T",
+    "H25 T",
+    "H25 / 600 T",
+    "H30 T",
+    "H35 T",
+    "H35 D Container",
+    "H35 D Beverage",
+    "H35 CNG"
+   ],
+   "notes": [
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "1.3",
+   "section": "Characteristics",
+   "label": "Power unit",
+   "unit": "",
+   "values": [
+    "Diesel",
+    "Diesel",
+    "Diesel",
+    "Diesel",
+    "Diesel",
+    "LPG",
+    "LPG",
+    "LPG",
+    "LPG",
+    "LPG",
+    "Diesel",
+    "Diesel",
+    "CNG"
+   ],
+   "notes": [
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "1.4",
+   "section": "Characteristics",
+   "label": "Operation",
+   "unit": "",
+   "values": [
+    "Seat",
+    "Seat",
+    "Seat",
+    "Seat",
+    "Seat",
+    "Seat",
+    "Seat",
+    "Seat",
+    "Seat",
+    "Seat",
+    "Seat",
+    "Seat",
+    "Seat"
+   ],
+   "notes": [
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "1.5",
+   "section": "Characteristics",
+   "label": "Load capacity / Load",
+   "unit": "Q (t)",
+   "values": [
+    "2",
+    "2.5",
+    "2.5",
+    "3",
+    "3.5",
+    "2",
+    "2.5",
+    "2.5",
+    "3",
+    "3.5",
+    "3.5",
+    "3.5",
+    "3.5"
+   ],
+   "notes": [
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "1.6",
+   "section": "Characteristics",
+   "label": "Load centre distance",
+   "unit": "c (mm)",
+   "values": [
+    "600",
+    "500",
+    "600",
+    "500",
+    "500",
+    "600",
+    "500",
+    "600",
+    "500",
+    "500",
+    "500",
+    "500",
+    "500"
+   ],
+   "notes": [
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "1.8",
+   "section": "Characteristics",
+   "label": "Axle centre to fork face",
+   "unit": "x (mm)",
+   "values": [
+    "416.50",
+    "416.50",
+    "455.50",
+    "448.50",
+    "453.50",
+    "416.50",
+    "416.50",
+    "455.50",
+    "448.50",
+    "453.50",
+    "453.5",
+    "453.5",
+    "453.5"
+   ],
+   "notes": [
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "1.9",
+   "section": "Characteristics",
+   "label": "Wheelbase",
+   "unit": "y (mm)",
+   "values": [
+    "1865",
+    "1905",
+    "1905",
+    "1930",
+    "1965",
+    "1865",
+    "1905",
+    "1905",
+    "1930",
+    "1965",
+    "1965",
+    "1965",
+    "1965"
+   ],
+   "notes": [
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "2.1",
+   "section": "Weights",
+   "label": "Service weight",
+   "unit": "(kg)",
+   "values": [
+    "3738",
+    "3918",
+    "4480",
+    "4635",
+    "4978",
+    "3712",
+    "3891",
+    "4453",
+    "4609",
+    "4952",
+    "4950",
+    "5302",
+    "5016"
+   ],
+   "notes": [
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "2.2",
+   "section": "Weights",
+   "label": "Axle load with load, front / rear",
+   "unit": "(kg)",
+   "values": [
+    "4916 / 822",
+    "5560 / 858",
+    "6001 / 979",
+    "6657 / 978",
+    "7487 / 991",
+    "4885 / 827",
+    "5528 / 863",
+    "5970 / 983",
+    "6626 / 983",
+    "7456 / 996",
+    "7458 / 992",
+    "7667 / 1135",
+    "7460 / 1056"
+   ],
+   "notes": [
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "2.3",
+   "section": "Weights",
+   "label": "Axle load without load, front / rear",
+   "unit": "(kg)",
+   "values": [
+    "1826 / 1912",
+    "1857 / 2061",
+    "2116 / 2364",
+    "2183 / 2452",
+    "2289 / 2689",
+    "1795 / 1917",
+    "1825 / 2066",
+    "2085 / 2368",
+    "2152 / 2457",
+    "2258 / 2694",
+    "2260 / 2690",
+    "2469 / 2833",
+    "2262 / 2754"
+   ],
+   "notes": [
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "3.1",
+   "section": "Wheels/Tyres",
+   "label": "Tyres rubber, SE, pneumatic, polyurethane",
+   "unit": "",
+   "values": [
+    "SE",
+    "SE",
+    "SE",
+    "SE",
+    "SE",
+    "SE",
+    "SE",
+    "SE",
+    "SE",
+    "SE",
+    "SE",
+    "SE",
+    "SE"
+   ],
+   "notes": [
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "3.2",
+   "section": "Wheels/Tyres",
+   "label": "Tyre size, front",
+   "unit": "",
+   "values": [
+    "225 / 75 - 10",
+    "225 / 75 - 10",
+    "250 / 75 - 12",
+    "250 / 75 - 12",
+    "250 / 75 - 12",
+    "225 / 75 - 10",
+    "225 / 75 - 10",
+    "250 / 75 - 12",
+    "250 / 75 - 12",
+    "250 / 75 - 12",
+    "250 / 75 - 12",
+    "250 / 75 - 12",
+    "250 / 75 - 12"
+   ],
+   "notes": [
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "3.3",
+   "section": "Wheels/Tyres",
+   "label": "Tyre size, rear",
+   "unit": "",
+   "values": [
+    "(23 × 9 - 10) 6.50 - 10",
+    "(23 ×9 - 10) 6.50 - 10",
+    "225 / 75 - 10",
+    "225 / 75 - 10",
+    "225 / 75 - 10",
+    "(23 × 9 - 10) 6.50 - 10",
+    "(23 × 9 - 10) 6.50 - 10",
+    "225 / 75 - 10",
+    "225 / 75 - 10",
+    "225 / 75 - 10",
+    "(27 × 10 - 12) 225 / 75 - 10",
+    "(27 × 10 - 12) 225 / 75 - 10",
+    "(27 × 10 - 12) 225 / 75 - 10"
+   ],
+   "notes": [
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "3.5",
+   "section": "Wheels/Tyres",
+   "label": "Wheels, number front / rear (x = driven)",
+   "unit": "",
+   "values": [
+    "2x / 2",
+    "2x / 2",
+    "(23 × 9 - 10) 2x / 2",
+    "(23 × 9 - 10) 2x / 2",
+    "(23 × 9 - 10) 2x / 2",
+    "2x / 2",
+    "2x / 2",
+    "(23 × 9 - 10) 2x / 2",
+    "(23 × 9 - 10) 2x / 2",
+    "(23 × 9 - 10) 2x / 2",
+    "(23 × 9 - 10) 2x / 2",
+    "(23 × 9 - 10) 2x / 2",
+    "(23 × 9 - 10) 2x / 2"
+   ],
+   "notes": [
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "3.6",
+   "section": "Wheels/Tyres",
+   "label": "Track width, front",
+   "unit": "b10 (mm)",
+   "values": [
+    "972",
+    "972",
+    "1008",
+    "1008",
+    "1008",
+    "972",
+    "972",
+    "1008",
+    "1008",
+    "1008",
+    "1008",
+    "1008",
+    "1008"
+   ],
+   "notes": [
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "3.7",
+   "section": "Wheels/Tyres",
+   "label": "Track width, rear",
+   "unit": "b11 (mm)",
+   "values": [
+    "961",
+    "961",
+    "961",
+    "961",
+    "961",
+    "961",
+    "961",
+    "961",
+    "961",
+    "961",
+    "961",
+    "961",
+    "961"
+   ],
+   "notes": [
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "4.1",
+   "section": "Dimensions",
+   "label": "Mast / fork carriage tilt, forward / backward",
+   "unit": "a / b (°)",
+   "values": [
+    "5.0 / 8.0",
+    "5.0 / 8.0",
+    "5.0 / 8.0",
+    "5.0 / 8.0",
+    "5.0 / 8.0",
+    "5.0 / 8.0",
+    "5.0 / 8.0",
+    "5.0 / 8.0",
+    "5.0 / 8.0",
+    "5.0 / 8.0",
+    "5.0 / 8.0",
+    "5.0 / 5.0",
+    "5.0 / 8.0v"
+   ],
+   "notes": [
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "4.2",
+   "section": "Dimensions",
+   "label": "Height of mast, lowered",
+   "unit": "h1 (mm)",
+   "values": [
+    "2288",
+    "2288",
+    "2330",
+    "2330",
+    "2330",
+    "2288",
+    "2288",
+    "2330",
+    "2330",
+    "2330",
+    "2230",
+    "2730",
+    "2330"
+   ],
+   "notes": [
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "4.3",
+   "section": "Dimensions",
+   "label": "Free lift",
+   "unit": "h2 (mm)",
+   "values": [
+    "150",
+    "150",
+    "150",
+    "150",
+    "150",
+    "150",
+    "150",
+    "150",
+    "150",
+    "150",
+    "150",
+    "150",
+    "150"
+   ],
+   "notes": [
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "4.4",
+   "section": "Dimensions",
+   "label": "Lift",
+   "unit": "h3 (mm)",
+   "values": [
+    "3230",
+    "3230",
+    "3295",
+    "3295",
+    "3295",
+    "3230",
+    "3230",
+    "3295",
+    "3295",
+    "3295",
+    "3095",
+    "4095",
+    "3295"
+   ],
+   "notes": [
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "4.5",
+   "section": "Dimensions",
+   "label": "Height of mast, extended",
+   "unit": "h4 (mm)",
+   "values": [
+    "3901",
+    "3901",
+    "4061",
+    "4061",
+    "4061",
+    "3901",
+    "3901",
+    "4061",
+    "4061",
+    "4061",
+    "3861",
+    "4861",
+    "4061"
+   ],
+   "notes": [
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "4.7",
+   "section": "Dimensions",
+   "label": "Height of overhead guard (cabin)",
+   "unit": "h6 (mm)",
+   "values": [
+    "2275",
+    "2275",
+    "2322",
+    "2322",
+    "2322",
+    "2275",
+    "2275",
+    "2322",
+    "2322",
+    "2322",
+    "2222",
+    "2722",
+    "2322"
+   ],
+   "notes": [
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "4.8",
+   "section": "Dimensions",
+   "label": "Height of seat / stand on platform",
+   "unit": "h7 (mm)",
+   "values": [
+    "1074",
+    "1074",
+    "1119",
+    "1119",
+    "1119",
+    "1074",
+    "1074",
+    "1119",
+    "1119",
+    "1119",
+    "1119",
+    "1519",
+    "1119"
+   ],
+   "notes": [
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "4.12",
+   "section": "Dimensions",
+   "label": "Towing coupling height",
+   "unit": "h10 (mm)",
+   "values": [
+    "621",
+    "621",
+    "668",
+    "643",
+    "643",
+    "621",
+    "621",
+    "668",
+    "643",
+    "643",
+    "643",
+    "643",
+    "643"
+   ],
+   "notes": [
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "4.19",
+   "section": "Dimensions",
+   "label": "Overall length",
+   "unit": "l1 (mm)",
+   "values": [
+    "3659",
+    "3699",
+    "3738",
+    "3756",
+    "3796",
+    "3659",
+    "3699",
+    "3738",
+    "3756",
+    "3796",
+    "3796",
+    "3796",
+    "3796"
+   ],
+   "notes": [
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "4.20",
+   "section": "Dimensions",
+   "label": "Length to fork face",
+   "unit": "l2 (mm)",
+   "values": [
+    "2659",
+    "2699",
+    "2738",
+    "2756",
+    "2796",
+    "2659",
+    "2699",
+    "2738",
+    "2756",
+    "2796",
+    "2796",
+    "2796",
+    "2796"
+   ],
+   "notes": [
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "4.21",
+   "section": "Dimensions",
+   "label": "Overall width",
+   "unit": "b1 / b2 (mm)",
+   "values": [
+    "1180 / 1176",
+    "1180 / 1176",
+    "1256 / 1176",
+    "1256 / 1176",
+    "1256 / 1176",
+    "1180 / 1176",
+    "1180 / 1176",
+    "1256 / 1176",
+    "1256 / 1176",
+    "1256 / 1176",
+    "1256 / 1176",
+    "1256 / 1176",
+    "1256 / 1176"
+   ],
+   "notes": [
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "4.22",
+   "section": "Dimensions",
+   "label": "Fork dimensions DIN ISO 2331",
+   "unit": "s / e / l (mm)",
+   "values": [
+    "45 × 100 × 1000",
+    "45 × 100 × 1000",
+    "45 × 100 × 1000",
+    "45 × 100 × 1000",
+    "50 × 120 × 1000",
+    "45 × 100 × 1000",
+    "45 × 100 × 1000",
+    "45 × 100 × 1000",
+    "45 × 100 × 1000",
+    "50 × 120 × 1000",
+    "50 × 120 × 1000",
+    "50 × 120 × 1000",
+    "50 × 120 × 1000"
+   ],
+   "notes": [
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "4.23",
+   "section": "Dimensions",
+   "label": "Fork carriage to ISO 2328, class / type A, B",
+   "unit": "",
+   "values": [
+    "2A",
+    "2A",
+    "2A",
+    "3A",
+    "3A",
+    "2A",
+    "2A",
+    "2A",
+    "3A",
+    "3A",
+    "3A",
+    "3A",
+    "3A"
+   ],
+   "notes": [
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "4.24",
+   "section": "Dimensions",
+   "label": "Width of fork carriage",
+   "unit": "b3 (mm)",
+   "values": [
+    "1150",
+    "1150",
+    "1150",
+    "1150",
+    "1150",
+    "1150",
+    "1150",
+    "1150",
+    "1150",
+    "1150",
+    "1150",
+    "1150",
+    "1150"
+   ],
+   "notes": [
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "4.31",
+   "section": "Dimensions",
+   "label": "Ground clearance, below mast",
+   "unit": "m1 (mm)",
+   "values": [
+    "121",
+    "121",
+    "124",
+    "123",
+    "121",
+    "121",
+    "121",
+    "124",
+    "123",
+    "121",
+    "121",
+    "120",
+    "121"
+   ],
+   "notes": [
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "4.32",
+   "section": "Dimensions",
+   "label": "Ground clearance, centre of wheelbase",
+   "unit": "m2 (mm)",
+   "values": [
+    "130",
+    "130",
+    "177",
+    "176",
+    "175",
+    "130",
+    "130",
+    "177",
+    "176",
+    "175",
+    "175",
+    "174",
+    "175"
+   ],
+   "notes": [
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "4.34.1",
+   "section": "Dimensions",
+   "label": "Aisle width for pallets 1000 × 1200 crossways",
+   "unit": "Ast (mm)",
+   "values": [
+    "3990",
+    "4032",
+    "4071",
+    "4090",
+    "4132",
+    "3990",
+    "4032",
+    "4071",
+    "4090",
+    "4132",
+    "4132",
+    "4132",
+    "4132"
+   ],
+   "notes": [
+    [
+     "1"
+    ],
+    [
+     "1"
+    ],
+    [
+     "1"
+    ],
+    [
+     "1"
+    ],
+    [
+     "1"
+    ],
+    [
+     "1"
+    ],
+    [
+     "1"
+    ],
+    [
+     "1"
+    ],
+    [
+     "1"
+    ],
+    [
+     "1"
+    ],
+    [
+     "1"
+    ],
+    [
+     "1"
+    ],
+    [
+     "1"
+    ]
+   ]
+  },
+  {
+   "no": "4.34.2",
+   "section": "Dimensions",
+   "label": "Aisle width with pallet 800 × 1200 along forks",
+   "unit": "Ast (mm)",
+   "values": [
+    "4190",
+    "4232",
+    "4271",
+    "4290",
+    "4332",
+    "4190",
+    "4232",
+    "4271",
+    "4290",
+    "4332",
+    "4332",
+    "4332",
+    "4332"
+   ],
+   "notes": [
+    [
+     "1"
+    ],
+    [
+     "1"
+    ],
+    [
+     "1"
+    ],
+    [
+     "1"
+    ],
+    [
+     "1"
+    ],
+    [
+     "1"
+    ],
+    [
+     "1"
+    ],
+    [
+     "1"
+    ],
+    [
+     "1"
+    ],
+    [
+     "1"
+    ],
+    [
+     "1"
+    ],
+    [
+     "1"
+    ],
+    [
+     "1"
+    ]
+   ]
+  },
+  {
+   "no": "4.35",
+   "section": "Dimensions",
+   "label": "Turning radius",
+   "unit": "Wa (mm)",
+   "values": [
+    "2373",
+    "2415",
+    "2415",
+    "2441",
+    "2478",
+    "2373",
+    "2415",
+    "2415",
+    "2441",
+    "2478",
+    "2478",
+    "2478",
+    "2478"
+   ],
+   "notes": [
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "4.36",
+   "section": "Dimensions",
+   "label": "Minimum pivoting point distance",
+   "unit": "b13 (mm)",
+   "values": [
+    "645",
+    "659",
+    "659",
+    "668",
+    "680",
+    "645",
+    "659",
+    "659",
+    "668",
+    "680",
+    "680",
+    "680",
+    "680"
+   ],
+   "notes": [
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "5.1",
+   "section": "Performance",
+   "label": "Travel speed, with / without load",
+   "unit": "(km / h)",
+   "values": [
+    "22 / 22",
+    "22 / 22",
+    "22 / 22",
+    "22 / 22",
+    "22 / 22",
+    "22 / 22",
+    "22 / 22",
+    "22 / 22",
+    "22 / 22",
+    "22 / 22",
+    "22 / 22",
+    "22 / 22",
+    "22 / 22"
+   ],
+   "notes": [
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "5.2",
+   "section": "Performance",
+   "label": "Lifting speed, with / without load",
+   "unit": "(m / s)",
+   "values": [
+    "0.53 / 0.55",
+    "0.53 / 0.55",
+    "0.53 / 0.56",
+    "0.53 / 0.56",
+    "0.53 / 0.56",
+    "0.53 / 0.55",
+    "0.53 / 0.55",
+    "0.53 / 0.56",
+    "0.53 / 0.56",
+    "0.45 / 0.56",
+    "0.53 / 0.56",
+    "0.53 / 0.55",
+    "0.45 / 0.56"
+   ],
+   "notes": [
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "5.3",
+   "section": "Performance",
+   "label": "Lowering speed, with / without load",
+   "unit": "(m / s)",
+   "values": [
+    "0.56 / 0.56",
+    "0.56 / 0.56",
+    "0.56 / 0.56",
+    "0.56 / 0.56",
+    "0.56 / 0.56",
+    "0.56 / 0.56",
+    "0.56 / 0.56",
+    "0.56 / 0.56",
+    "0.56 / 0.56",
+    "0.56 / 0.56",
+    "0.56 / 0.56",
+    "0.56 / 0.52",
+    "0.56 / 0.56"
+   ],
+   "notes": [
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "5.5",
+   "section": "Performance",
+   "label": "Tractive force, with / without load",
+   "unit": "(N)",
+   "values": [
+    "14.553 / 14.330",
+    "14.420 / 14.575",
+    "19.722 / 16.611",
+    "19.593 / 17.132",
+    "19.428 / 17.973",
+    "14.558 / 14.089",
+    "14.425 / 14.331",
+    "19.727 / 16.364",
+    "19.598 / 16.886",
+    "19.433 / 17.721",
+    "19.350 / 19.900",
+    "19.430 / 17.770",
+    "19-420 / 17.760"
+   ],
+   "notes": [
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "5.7",
+   "section": "Performance",
+   "label": "Climbing ability, with / without load",
+   "unit": "(%)",
+   "values": [
+    "28.0 / 34.0",
+    "24.0 / 31.0",
+    "32.0 / 33.0",
+    "27.0 / 30.0",
+    "27.0 / 30.0",
+    "28.0 / 34.0",
+    "24.0 / 31.0",
+    "32.0 / 33.0",
+    "27.0 / 30.0",
+    "27.0 / 30.0",
+    "22.9 / 28.4",
+    "24.1 / 28.4",
+    "23.9 / 27.8"
+   ],
+   "notes": [
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "5.9",
+   "section": "Performance",
+   "label": "Acceleration time, with / without load",
+   "unit": "(s)",
+   "values": [
+    "5.6 / 5.1",
+    "5.8 / 5.1",
+    "5.4 / 4.6",
+    "5.6 / 4.7",
+    "5.8 / 4.9",
+    "5.4 / 4.7",
+    "5.6 / 4.7",
+    "5.8 / 5.0",
+    "5.8 / 5.0",
+    "5.9 / 5.0",
+    "5.8 / 4.9",
+    "5.8 / 4.9",
+    "6.0 / 5.0"
+   ],
+   "notes": [
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "5.10",
+   "section": "Performance",
+   "label": "Service brake",
+   "unit": "",
+   "values": [
+    "hydrostatic",
+    "hydrostatic",
+    "hydrostatic",
+    "hydrostatic",
+    "hydrostatic",
+    "hydrostatic",
+    "hydrostatic",
+    "hydrostatic",
+    "hydrostatic",
+    "hydrostatic",
+    "hydrostatic",
+    "hydrostatic",
+    "hydrostatic"
+   ],
+   "notes": [
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "7.1",
+   "section": "Combustion-engine",
+   "label": "Engine manufacturer / type",
+   "unit": "",
+   "values": [
+    "Deutz TCD 2.2 L3",
+    "Deutz TCD 2.2 L3",
+    "Deutz TCD 2.2 L3",
+    "Deutz TCD 2.2 L3",
+    "Deutz TCD 2.2 L3",
+    "Deutz G 2.2 L3",
+    "Deutz G 2.2 L3",
+    "Deutz G 2.2 L3",
+    "Deutz G 2.2 L3",
+    "Deutz G 2.2 L3",
+    "Deutz TCD 2.2 L3",
+    "Deutz TCD 2.2 L3",
+    "Deutz G 2.2 L3"
+   ],
+   "notes": [
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "7.2",
+   "section": "Combustion-engine",
+   "label": "Engine performance according to DIN ISO 1585",
+   "unit": "(kW)",
+   "values": [
+    "30",
+    "30",
+    "45",
+    "45",
+    "45",
+    "36.4",
+    "36.4",
+    "40",
+    "40",
+    "40",
+    "45",
+    "45",
+    "36.2"
+   ],
+   "notes": [
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "7.3",
+   "section": "Combustion-engine",
+   "label": "Rated speed",
+   "unit": "(1 / min)",
+   "values": [
+    "2300",
+    "2300",
+    "2100",
+    "2100",
+    "2100",
+    "2300",
+    "2300",
+    "2600",
+    "2600",
+    "2600",
+    "2100",
+    "2100",
+    "2600"
+   ],
+   "notes": [
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "7.4",
+   "section": "Combustion-engine",
+   "label": "Number of cylinders / displacement 7.5 c 7.5 d",
+   "unit": "(- / cm3)",
+   "values": [
+    "3 / 2194",
+    "3 / 2194",
+    "3 / 2194",
+    "3 / 2194",
+    "3 / 2194",
+    "3 / 2194",
+    "3 / 2194",
+    "3 / 2194",
+    "3 / 2194",
+    "3 / 2194",
+    "3.0 / 2194",
+    "3.0 / 2194",
+    "3.0 / 2194"
+   ],
+   "notes": [
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "7.5.1",
+   "section": "Combustion-engine",
+   "label": "Fuel consumption in accordance with EN 16796 Fuel consumption in accordance with EN 16796 CO2 equivalent according to EN 16796",
+   "unit": "(l / h) (kg / h) (kg / h)",
+   "values": [
+    "2.5 7.9",
+    "2.7 8.6",
+    "2.9 9.2",
+    "3.0 9.5",
+    "3.1 9.9",
+    "2.3 7.8",
+    "2.5 8.5",
+    "2.7 9.2",
+    "2.8 9.5",
+    "2.9 9.8",
+    "3.1 9.9",
+    "3.1 9.9",
+    "3.2 4.38 (H); 3.89 (L) 10"
+   ],
+   "notes": [
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "8.1",
+   "section": "Drive",
+   "label": "Type of drive unit",
+   "unit": "",
+   "values": [
+    "hydrostatic / stepless",
+    "hydrostatic / stepless",
+    "hydrostatic / stepless",
+    "hydrostatic / stepless",
+    "hydrostatic / stepless",
+    "hydrostatic / stepless",
+    "hydrostatic / stepless",
+    "hydrostatic / stepless",
+    "hydrostatic / stepless",
+    "hydrostatic / stepless",
+    "hydrostatic / stepless",
+    "hydrostatic / stepless",
+    "hydrostatic / stepless"
+   ],
+   "notes": [
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "10.1",
+   "section": "Additional data",
+   "label": "Operating pressure for attachments",
+   "unit": "(bar)",
+   "values": [
+    "200",
+    "230",
+    "200",
+    "225",
+    "245",
+    "200",
+    "230",
+    "200",
+    "225",
+    "245",
+    "245",
+    "245",
+    "245"
+   ],
+   "notes": [
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "10.2",
+   "section": "Additional data",
+   "label": "Oil flow for attachments",
+   "unit": "(l / min)",
+   "values": [
+    "50",
+    "50",
+    "50",
+    "50",
+    "50",
+    "50",
+    "50",
+    "50",
+    "50",
+    "50",
+    "50",
+    "50",
+    "50"
+   ],
+   "notes": [
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "10.7",
+   "section": "Additional data",
+   "label": "Sound pressure level LpAZ (at the driver’s seat)",
+   "unit": "(dB(A))",
+   "values": [
+    "79",
+    "79",
+    "79",
+    "79",
+    "79",
+    "79",
+    "79",
+    "79",
+    "79",
+    "79",
+    "79",
+    "79",
+    "79"
+   ],
+   "notes": [
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [
+     "2"
+    ]
+   ]
+  },
+  {
+   "no": "10.8",
+   "section": "Additional data",
+   "label": "Towing coupling, design / type, DIN 15 170",
+   "unit": "",
+   "values": [
+    "similar to form H",
+    "similar to form H",
+    "similar to form H",
+    "similar to form H",
+    "similar to form H",
+    "similar to form H",
+    "similar to form H",
+    "similar to form H",
+    "similar to form H",
+    "similar to form H",
+    "similar to form H",
+    "similar to form H",
+    "similar to form H"
+   ],
+   "notes": [
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    []
+   ]
+  }
+ ],
+ "footnotes": [
+  {
+   "n": "1",
+   "text": "Including a 200 mm operating aisle clearance"
+  },
+  {
+   "n": "2",
+   "text": "With full cabin"
+  }
+ ],
+ "masts": {
+  "STANDARD MAST (in mm)": "Series                                                                                              1532\nLift                h3: 3030                  h3: 3230                  h3: 3430                  h3: 3730            h3: 4030              h3: 4530               h3: 5030\nHeight          h1: 2187 h2: 150       h1: 2287 h2: 150             h1: 2387 h2: 150          h1: 2537 h2: 150    h1: 2687 h2: 150      h1: 2937 h2: 150      h1: 3187 h2: 150\nmeasurements    h4: 3702               h4: 3902                     h4: 4102                  h4: 4402            h4: 4702              h4: 5202              h4: 5702\n\nModel\nH20/600\nH25\n\n\n\nSeries                                                                                              1533\nLift                h3: 3095                  h3: 3295                  h3: 3395                  h3: 3695            h3: 3995              h3: 4495               h3: 4995\nHeight          h1: 2224 h2: 150       h1: 2324 h2: 150             h1: 2374 h2: 150          h1: 2524 h2: 150    h1: 2674 h2: 150      h1: 2924 h2: 150      h1: 3174 h2: 150\nmeasurements    h4: 3856               h4: 4056                     h4: 4156                  h4: 4456            h4: 4756              h4: 5256              h4: 5756\n\nModel\nH25/600\nH30\nH35",
+  "DUPLEX MAST (in mm)": "Series                                                        1532                                                                                  1533\nLift              h3: 3100            h3: 3300              h3: 3400            h3: 3800              h3: 4100         h3: 3165          h3: 3365           h3: 3765          h3: 4065\n               h1: 2134            h1: 2234              h1: 2284           h1: 2484               h1: 2634        h1: 2179           h1: 2279         h1: 2479           h1: 2629\nHeight\n               h2: 1444            h2: 1544              h2: 1594           h2: 1794               h2: 1944        h2: 1394           h2: 1494         h2: 1694           h2: 1844\nmeasurements\n               h4: 3791            h4: 3991              h4: 4091           h4: 4491               h4: 4791        h4: 3951           h4: 4151         h4: 4551           h4: 4851\n\nModel\nH20/600                                                                                                                   —                  —                 —                 —\nH25                                                                                                                       —                  —                 —                 —\nH25/600              —                   —                     —                   —                       —\nH30                  —                   —                     —                   —                       —\nH35                  —                   —                     —                   —                       —",
+  "TRIPLEX MAST (in mm)": "Series                                                                                 1532\nLift                h3: 4610                  h3: 4910                  h3: 5060                  h3: 5560            h3: 6010              h3: 6510\nHeight          h1: 2134 h2: 1444      h1: 2234 h2: 1544            h1: 2284 h2: 1594         h1: 2484 h2: 1794   h1: 2634 h2: 1944     h1: 2834 h2: 2144\nmeasurements    h4: 5299               h4: 5599                     h4: 5749                  h4: 6249            h4: 6699              h4: 7199\n\nModel\nH20/600\nH25\n\n\n\nSeries                                                                                 1533\nLift                h3: 4680                  h3: 4980                  h3: 5330                  h3: 5930            h3: 6430              h3: 6880\nHeight          h1: 2179 h2: 1394      h1: 2279 h2: 1494            h1: 2429 h2: 1644         h1: 2629 h2: 1844   h1: 2829 h2: 2044     h1: 2979 h2: 2194\nmeasurements    h4: 5464               h4: 5764                     h4: 6114                  h4: 6714            h4: 7214              h4: 7664\n\nModel\nH25/600\nH30\nH35\n\n\n\n\n Optional equipment                                      — Not available\n\n\n\nh1: Height of mast, lowered                              h2: Free lift                           h3: Lift                     h4: Height of mast, extended\n\nLOAD CAPACITY\n\n                              H20 / 600                                                H25\n                               H (mm)                           Q (kg)                 H (mm)                      Q (kg)\n                               6800         1300         1180            1090   1000   6800       1500      1350            1230   1130\n                               6700         1380         1250            1150   1060   6600       1650      1490            1360   1250\n                               6600         1460         1330            1220   1120   6400       1810      1630            1480   1360\n                               6500         1530         1400            1250   1180   6300       1880      1700            1550   1420\n\n                               6400         1610         1470            1350   1240   6200       1960      1770            1610   1480\n\n                               6300         1690         1540            1410   1300   6100       2040      1840            1670   1540\n                               6200         1770         1610            1480   1360   6000       2120      1910            1740   1590\n                               6100         1840         1680            1540   1420   5900       2190      1980            1800   1650\n                               6000         1920         1750            1610   1480   5800       2270      2050            1860   1710\n                               ≤ 5900       2000         1820            1670   1540   5700       2350      2120            1930   1770\n                               c (mm)     400 - 600      700             800    900    5600       2420      2180            1990   1830\n                                                                                       ≤ 5500     2500      2250            2050   1880\n                                                                                       c (mm)   400 - 500   600             700    800\n\n\n\n\n                              H25 / 600                                                H30\n                               H (mm)                           Q (kg)                 H (mm)                      Q (kg)\n                               7000         1700         1550            1420   1320   7000       2000      1810            1650   1520\n                               6900         1800         1640            1510   1400   6900       2100      1900            1730   1600\n                               6800         1900         1730            1590   1470   6800       2200      1990            1820   1670\n                               6700         2000         1820            1680   1550   6700       2300      2080            1900   1750\n\n                               6600         2100         1910            1760   1630   6600       2400      2170            1980   1820\n\n                               6500         2200         2000            1840   1710   6500       2500      2260            2060   1900\n                               6400         2300         2100            1930   1790   6400       2600      2350            2150   1980\n                               6300         2400         2190            2010   1860   6300       2700      2440            2230   2050\n                               ≤ 6200       2500         2280            2100   1860   6200       2800      2530            2310   2130\n                               c (mm)     400 - 600      700             800    900    6100       2900      2620            2400   2190\n                                                                                       ≤ 6000     3000      2710            2480   2190\n                                                                                       c (mm)   400 - 500   600             700    800\n\n\n\n\n                              H35\n                               H (mm)                           Q (kg)\n                               7000         2000         1810            1650   1520\n                               6800         2220         2010            1840   1690\n                               6600         2440         2210            2020   1860\n                               6500         2550         2310            2110   1940\n\n                               6400         2660         2410            2200   2020\n\n                               6300         2770         2510            2290   2110\n                               6200         2880         2610            2380   2190\n                               6100         2990         2700            2470   2270\n                               6000         3100         2810            2560   2360\n                               5900         3230         2930            2670   2460\n                               5800         3370         3050            2780   2560\n                               ≤ 5700       3500         3170            2890   2660\n                               c (mm)     400 - 500      600             700    800\n\n\n\n\nH = Lifting height, c = Load centre, Q = Load capacity\nLoad capacity for standard mast and fork carriage"
+ },
+ "equipment": [
+  {
+   "group": "Operator Compartment",
+   "columns": [],
+   "items": [
+    {
+     "text": "H20-H35 CNG H20 - H35 D H20 - H35 T H20-H35 CNG"
+    },
+    {
+     "text": "Ergonomic and save truck access due to a low entry step and handle bar at a-pillar and bonnet"
+    },
+    {
+     "text": "Innovative decoupling concept for lowest human vibrations"
+    },
+    {
+     "text": "Tilt adjustable steering column"
+    },
+    {
+     "text": "Overhead guard comfort for max. head clearance"
+    },
+    {
+     "text": "Operator's seat – mechanical quick weight adjustment"
+    },
+    {
+     "text": "Various seating options such as heating, air suspension, active seat ventilation, longitudinal suspension"
+    },
+    {
+     "text": "Operators seat – Swiveling seat"
+    },
+    {
+     "text": "Coloured 3.5\" LED display with steering angle indicator and tilt angle indicator"
+    },
+    {
+     "text": "Coloured 7\" LED multifunction display integrates additional functions e.g. cameras and Linde Safety Pilot"
+    },
+    {
+     "text": "Top screen armored glass"
+    },
+    {
+     "text": "Alloy doors with openable window"
+    },
+    {
+     "text": "Din A4 illuminated clipboard"
+    },
+    {
+     "text": "Warm water heater incl. defog function / air conditioning"
+    },
+    {
+     "text": "Radio, DAB+, MP3 Player incl. bluetooth hands-free equipment"
+    },
+    {
+     "text": "Linde Hydrostatic Drive – for high productivity and low fuel consumption"
+    },
+    {
+     "text": "Deutz Diesel Engine EU 2016 / 1628 Stage 5*",
+     "na": [
+      "—"
+     ]
+    },
+    {
+     "text": "Deutz CNG Engine EU 2016 / 1628 Stage 5*",
+     "na": [
+      "—"
+     ]
+    },
+    {
+     "text": "Particel filter, oxidation catalysts, exhaust gas recirculation",
+     "na": [
+      "—"
+     ]
+    },
+    {
+     "text": "Deutz LPG Engine EU 2016 / 1628 Stage 5*",
+     "na": [
+      "—"
+     ]
+    }
+   ]
+  },
+  {
+   "group": "Driving and Lifting",
+   "columns": [],
+   "items": [
+    {
+     "text": "3-Way Catalyst",
+     "na": [
+      "—"
+     ]
+    },
+    {
+     "text": "LPG tank including fill level indicator in the display",
+     "na": [
+      "—"
+     ]
+    },
+    {
+     "text": "Engine air filter including safety elements"
+    },
+    {
+     "text": "Linde Engine Protection System (LEPS) – warning, speed reduction under critical engine conditions"
+    },
+    {
+     "text": "Hydraulic parking brake"
+    },
+    {
+     "text": "Oversized, variable displacement pump for lifting function – for low fuel consumption, low noise level and emissions"
+    },
+    {
+     "text": "Hydraulic filter concept – realizing 6000 hour hydraulic-oil change interval"
+    },
+    {
+     "text": "Power setting efficiency, economy, performance"
+    }
+   ]
+  },
+  {
+   "group": "Mast",
+   "columns": [],
+   "items": [
+    {
+     "text": "Super Elastic (SE) Tyres"
+    },
+    {
+     "text": "Closed Shoulder Tyres CS 20"
+    },
+    {
+     "text": "Pneumatic Tyres"
+    },
+    {
+     "text": "Antistatic, non marking Tyres"
+    },
+    {
+     "text": "Anti-spray mudflaps front and rear"
+    },
+    {
+     "text": "Top mounted tilting cylinders – inlcuding maintenance free bearings"
+    },
+    {
+     "text": "Best visibility through asymmetric, nested mast profiles on standard, duplex, triplex masts"
+    },
+    {
+     "text": "Electronic damped tilt stop"
+    },
+    {
+     "text": "Hydraulic accumulator for high driving comfort and less wear"
+    },
+    {
+     "text": "Reinforced Linde forks – easy ajustable and long life time"
+    },
+    {
+     "text": "Integrated sideshift with full lift capacity and roller guided"
+    },
+    {
+     "text": "Integrated fork positioner \"View\" for high residual capacities and optimized visibility"
+    },
+    {
+     "text": "Street sweeper preparation"
+    }
+   ]
+  },
+  {
+   "group": "Safety",
+   "columns": [],
+   "items": [
+    {
+     "text": "Linde Curve Assist – automatic drive speed reduction when cornering"
+    },
+    {
+     "text": "Electrical seat belt monitoring – visual and acoustic feedback"
+    },
+    {
+     "text": "Linde Load Assist – increased safety at high lift heights"
+    },
+    {
+     "text": "BlueSpot and TruckSpot – optical warning signal for pedestrians and drivers"
+    },
+    {
+     "text": "Load weight indicator"
+    },
+    {
+     "text": "Linde Safety Pilot – load-dependent travel and lifting speed intervention plus additonial functions"
+    },
+    {
+     "text": "Linde Safety Guard – truck to truck warning and truck to pedestrian warning"
+    },
+    {
+     "text": "Speed limitations (via switch, indoor-outdoor, load depending)"
+    },
+    {
+     "text": "Restraint systems (different options)"
+    },
+    {
+     "text": "Data Transmission Online"
+    },
+    {
+     "text": "Data Transmission Wifi"
+    },
+    {
+     "text": "Linde connect:desk – local fleet management with diffferent functional modules"
+    },
+    {
+     "text": "Linde connect:cloud – fleet management as a service (hosted version)"
+    },
+    {
+     "text": "Pre-Operation-Check – individualizable daily check protocol for operational readiness"
+    }
+   ]
+  },
+  {
+   "group": "Operation/Load Handling",
+   "columns": [],
+   "items": [
+    {
+     "text": "Truck Call App – coordination of transport orders"
+    },
+    {
+     "text": "Double pedal control – Stepless acceleration and fast reversing"
+    },
+    {
+     "text": "Single pedal control – Stepless acceleration"
+    },
+    {
+     "text": "Linde Load Control – central levers fully integrated in the armrest for precise control of all hydraulic functions"
+    },
+    {
+     "text": "Individual Lever System"
+    }
+   ]
+  }
+ ],
+ "characteristics": [
+  {
+   "group": "Ergonomics",
+   "bullets": [
+    "Ergonomic and intuitive operating concept maximizes operator comfort",
+    "Components decoupled from the chassis (axles, mast and tilt cylinder) protect against impacts and vibrations",
+    "Large selection of ergonomic seats protects against postural injuries",
+    "3.5-inch display provides permanent overview of all important information"
+   ]
+  },
+  {
+   "group": "Handling",
+   "bullets": [
+    "Linde Load Control and Dual pedal control guarantee precise control of all driving and mast movements",
+    "Freely programmable buttons in the armrest ensure quick access to frequently used functions",
+    "Overhead tilt cylinders guarantee torsional stability and high residual load capacities at large lifting heights",
+    "Minimized fuel consumption reduces operating costs"
+   ]
+  },
+  {
+   "group": "Safety",
+   "bullets": [
+    "Optimized design provides outstanding visibility in all directions",
+    "Roof with narrow cross struts or armored glass makes working easier at large lifting heights",
+    "The truck’s low center of gravity and a high-mounted steering axle improves stability while cornering",
+    "Linde Curve Assist and Linde Load Assist reduce the risk of tipping and loading accidents"
+   ]
+  },
+  {
+   "group": "Service",
+   "bullets": [
+    "Robust construction with low-wear and maintenance-free components ensure high truck availability",
+    "Truck Health Monitoring protects the engine in extreme outdoor temperatures",
+    "Linde Engine Protection System (LEPS) provides additional protection against engine damage",
+    "Extra-large service openings make maintenance easy"
+   ]
+  }
+ ],
+ "unparsed": {
+  "characteristics_captions": [
+   "Driver workplace",
+   "Linde Load Control",
+   "All-round visibility",
+   "Easy service access"
+  ],
+  "other": "                                                                                                    h4\n                                                      α        β\n              h3\n                                                                                              h6\n        h1\n                                            c\n                                  Q\n                                                                                         h7\n                                                                                   h10\n                   h2\n                                                                         m2\n                                                          m1\n                                                           x             y\n                                      l                                  l2\n                                                                         l1\n                                            e\n                        b1   b3       b10                                                     b11   b2\n                                                b13\n                                                                              Wa\n                   a                                                               a\n                   2                                                               2\n                                                                   Ast\nSafety distance a = 200 mm"
+ }
+}

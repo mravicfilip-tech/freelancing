@@ -1,0 +1,1221 @@
+{
+ "slug": "p180",
+ "datasheet": {
+  "name": "DS_P120-P350_5007-10_en_C_0322_view.pdf",
+  "id": "1D5G7G_uJGV9qP_0R-AvbJ7_k4R0lIptv"
+ },
+ "heading": "Electric Tow Tractor",
+ "range": "P120 – P350",
+ "capacity": "Capacity 12 – 35 t | Series 5007-10",
+ "tagline": "Powerful load handler",
+ "benefits": [
+  "Powerful electric motors for a high towing capacity of up to 35 tons at top speeds of up to 25 kilometers per hour",
+  "High maneuverability for effortless control of the heaviest loads in narrow production halls and warehouses",
+  "Operator‘s compartment decoupled from chassis and drive axle equipped with coil spring and damping system that protects from any vibrations",
+  "Free choice between lead-acid batteries and lithium-ion batteries"
+ ],
+ "versions": [
+  "P120 (VSWB)",
+  "P180 (VSWB)",
+  "P250 (SWB)",
+  "P250 (LWB)",
+  "P300 (LWB)",
+  "P350 (VLWB)"
+ ],
+ "vdi": [
+  {
+   "no": "1.1",
+   "section": "Characteristics",
+   "label": "Manufacturer",
+   "unit": "",
+   "values": [
+    "Linde",
+    "Linde",
+    "Linde",
+    "Linde",
+    "Linde",
+    "Linde"
+   ],
+   "notes": [
+    [],
+    [],
+    [],
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "1.2",
+   "section": "Characteristics",
+   "label": "Model designation",
+   "unit": "",
+   "values": [
+    "P120 (VSWB)",
+    "P180 (VSWB)",
+    "P250 (SWB)",
+    "P250 (LWB)",
+    "P300 (LWB)",
+    "P350 (VLWB)"
+   ],
+   "notes": [
+    [],
+    [],
+    [],
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "1.3",
+   "section": "Characteristics",
+   "label": "Power unit",
+   "unit": "",
+   "values": [
+    "Electric",
+    "Electric",
+    "Electric",
+    "Electric",
+    "Electric",
+    "Electric"
+   ],
+   "notes": [
+    [],
+    [],
+    [],
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "1.4",
+   "section": "Characteristics",
+   "label": "Operation",
+   "unit": "",
+   "values": [
+    "Seat",
+    "Seat",
+    "Seat",
+    "Seat",
+    "Seat",
+    "Seat"
+   ],
+   "notes": [
+    [],
+    [],
+    [],
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "1.5",
+   "section": "Characteristics",
+   "label": "Load capacity",
+   "unit": "Q (kg)",
+   "values": [
+    "300",
+    "300",
+    "300",
+    "300",
+    "300",
+    "300"
+   ],
+   "notes": [
+    [],
+    [],
+    [],
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "1.5.1",
+   "section": "Characteristics",
+   "label": "Towing capacity",
+   "unit": "Q (kg)",
+   "values": [
+    "12000",
+    "18000",
+    "25000",
+    "25000",
+    "30000",
+    "35000"
+   ],
+   "notes": [
+    [],
+    [],
+    [],
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "1.7",
+   "section": "Characteristics",
+   "label": "Rated tractive force",
+   "unit": "F (N)",
+   "values": [
+    "2400",
+    "3600",
+    "5000",
+    "5000",
+    "-",
+    "7000"
+   ],
+   "notes": [
+    [],
+    [],
+    [],
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "1.9",
+   "section": "Characteristics",
+   "label": "Wheelbase",
+   "unit": "y (mm)",
+   "values": [
+    "1408",
+    "1408",
+    "1551",
+    "1906",
+    "1906",
+    "2156"
+   ],
+   "notes": [
+    [],
+    [],
+    [],
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "2.1",
+   "section": "Weights",
+   "label": "Service weight incl. battery (with cabin)",
+   "unit": "(kg)",
+   "values": [
+    "3883",
+    "3883",
+    "4450",
+    "5250",
+    "5250",
+    "6000"
+   ],
+   "notes": [
+    [],
+    [],
+    [],
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "2.2",
+   "section": "Weights",
+   "label": "Axle load with load, front / rear",
+   "unit": "(kg)",
+   "values": [
+    "2079 / 2104",
+    "2079 / 2104",
+    "2900 / 1850",
+    "2928 / 2622",
+    "2928 / 2622",
+    "3220 / 3080"
+   ],
+   "notes": [
+    [],
+    [],
+    [],
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "2.3",
+   "section": "Weights",
+   "label": "Axle load without load, front / rear 3.1 polyurethane",
+   "unit": "(kg)",
+   "values": [
+    "2010 / 1873",
+    "2010 / 1873",
+    "2780 / 1670",
+    "2808 / 2442",
+    "2808 / 2442",
+    "3150 / 2850"
+   ],
+   "notes": [
+    [],
+    [],
+    [],
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "3.2",
+   "section": "Wheels/Tyres",
+   "label": "Tyres rubber, SE, pneumatic, Tyre size, front",
+   "unit": "",
+   "values": [
+    "Pneumatic / Superelastic 6.00 R 9",
+    "Pneumatic / Superelastic 6.00 R 9",
+    "Pneumatic / Superelastic 6.00 R 9",
+    "Pneumatic / Superelastic 6.00 R 9",
+    "Pneumatic / Superelastic 6.00 R 9",
+    "Pneumatic / Superelastic 6.00 R 9"
+   ],
+   "notes": [
+    [],
+    [],
+    [],
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "3.3",
+   "section": "Wheels/Tyres",
+   "label": "Tyre size, rear",
+   "unit": "",
+   "values": [
+    "7.00 R 12",
+    "7.00 R 12",
+    "7.00 R 12",
+    "7.00 R 12",
+    "7.00 R 12",
+    "7.00 R 12"
+   ],
+   "notes": [
+    [],
+    [],
+    [],
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "3.5",
+   "section": "Wheels/Tyres",
+   "label": "Wheels number front / rear (x = driven)",
+   "unit": "",
+   "values": [
+    "2 / 2x",
+    "2 / 2x",
+    "2 / 2x",
+    "2 / 2x",
+    "2 / 2x",
+    "2 / 2x"
+   ],
+   "notes": [
+    [],
+    [],
+    [],
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "3.6",
+   "section": "Wheels/Tyres",
+   "label": "Track width, front",
+   "unit": "b10 (mm)",
+   "values": [
+    "1102 / 1120",
+    "1102 / 1120",
+    "1102 / 1120",
+    "1102 / 1120",
+    "1102 / 1120",
+    "1102 / 1120"
+   ],
+   "notes": [
+    [],
+    [],
+    [],
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "3.7",
+   "section": "Wheels/Tyres",
+   "label": "Track width, rear",
+   "unit": "b11 (mm)",
+   "values": [
+    "1060",
+    "1060",
+    "1060",
+    "1060",
+    "1060",
+    "1060"
+   ],
+   "notes": [
+    [],
+    [],
+    [],
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "4.7",
+   "section": "Dimensions",
+   "label": "Height of overhead guard (cabin)",
+   "unit": "h6 (mm)",
+   "values": [
+    "1950",
+    "1950",
+    "1950",
+    "1950",
+    "1950",
+    "1950"
+   ],
+   "notes": [
+    [],
+    [],
+    [],
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "4.8",
+   "section": "Dimensions",
+   "label": "Height of seat / stand-on platform",
+   "unit": "h7 (mm)",
+   "values": [
+    "907",
+    "907",
+    "907",
+    "907",
+    "907",
+    "907"
+   ],
+   "notes": [
+    [],
+    [],
+    [],
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "4.12",
+   "section": "Dimensions",
+   "label": "Towing coupling height",
+   "unit": "h10 (mm)",
+   "values": [
+    "270, 330, 380,",
+    "270, 330, 380,",
+    "270, 330, 380,",
+    "345*",
+    "345*",
+    "345*"
+   ],
+   "notes": [
+    [],
+    [],
+    [],
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "4.13",
+   "section": "Dimensions",
+   "label": "Platform height, unladen",
+   "unit": "h11 (mm)",
+   "values": [
+    "440* 1060",
+    "440* 1060",
+    "440* 1060",
+    "1060",
+    "1060",
+    "1060"
+   ],
+   "notes": [
+    [],
+    [],
+    [],
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "4.16",
+   "section": "Dimensions",
+   "label": "Loading platform, length",
+   "unit": "l3 (mm)",
+   "values": [
+    "1396",
+    "1396",
+    "1540",
+    "1895",
+    "1895",
+    "2145"
+   ],
+   "notes": [
+    [],
+    [],
+    [],
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "4.17",
+   "section": "Dimensions",
+   "label": "Rear overhang (Cabin / rear)",
+   "unit": "l5.1 l5 (mm)",
+   "values": [
+    "1055 / 624",
+    "1055 / 624",
+    "1055 / 624",
+    "1055 / 707",
+    "1055 / 707",
+    "1055 / 707"
+   ],
+   "notes": [
+    [],
+    [],
+    [],
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "4.18",
+   "section": "Dimensions",
+   "label": "Loading platform, width",
+   "unit": "b9 (mm)",
+   "values": [
+    "1056 – 1176",
+    "1056 – 1176",
+    "1056 – 1176",
+    "1056 – 1176",
+    "1056 – 1176",
+    "1056 – 1176"
+   ],
+   "notes": [
+    [],
+    [],
+    [],
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "4.19",
+   "section": "Dimensions",
+   "label": "Overall length",
+   "unit": "l1 (mm)",
+   "values": [
+    "3086",
+    "3086",
+    "3230",
+    "3668",
+    "3668",
+    "3918"
+   ],
+   "notes": [
+    [],
+    [],
+    [],
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "4.21",
+   "section": "Dimensions",
+   "label": "Overall width",
+   "unit": "b1 (mm)",
+   "values": [
+    "1310",
+    "1310",
+    "1310",
+    "1310",
+    "1310",
+    "1310"
+   ],
+   "notes": [
+    [],
+    [],
+    [],
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "4.32",
+   "section": "Dimensions",
+   "label": "Ground clearance, centre of wheelbase",
+   "unit": "m2 (mm)",
+   "values": [
+    "150",
+    "150",
+    "150",
+    "150",
+    "150",
+    "150"
+   ],
+   "notes": [
+    [],
+    [],
+    [],
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "4.34",
+   "section": "Dimensions",
+   "label": "(front) Aisle width (without safety distance)",
+   "unit": "Ast (mm)",
+   "values": [
+    "4500",
+    "4500",
+    "4696",
+    "5230",
+    "5230",
+    "5603"
+   ],
+   "notes": [
+    [],
+    [],
+    [],
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "4.35",
+   "section": "Dimensions",
+   "label": "Turning radius (front / rear)",
+   "unit": "Waf / War (mm)",
+   "values": [
+    "2737 / 1563",
+    "2737 / 1563",
+    "2884 / 1612",
+    "3280 / 1750",
+    "3280 / 1750",
+    "3539 / 1864"
+   ],
+   "notes": [
+    [],
+    [],
+    [],
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "4.36",
+   "section": "Dimensions",
+   "label": "Minimum pivoting point distance",
+   "unit": "b13 (mm)",
+   "values": [
+    "881",
+    "881",
+    "931",
+    "1071",
+    "1071",
+    "1187"
+   ],
+   "notes": [
+    [],
+    [],
+    [],
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "5.1",
+   "section": "Performance",
+   "label": "Travel speed, with / without load",
+   "unit": "(km / h)",
+   "values": [
+    "15 / 22",
+    "17 / 23",
+    "18 / 25",
+    "20 / 25",
+    "20 / 25",
+    "20 / 25"
+   ],
+   "notes": [
+    [],
+    [],
+    [],
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "5.5",
+   "section": "Performance",
+   "label": "Tractive force, with / without load",
+   "unit": "(N)",
+   "values": [
+    "2400",
+    "3600",
+    "5000",
+    "5000",
+    "-",
+    "-"
+   ],
+   "notes": [
+    [],
+    [],
+    [],
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "5.6",
+   "section": "Performance",
+   "label": "Maximum tractive force, with / without load",
+   "unit": "(N)",
+   "values": [
+    "12000",
+    "15000",
+    "18000",
+    "18000",
+    "20000",
+    "21500"
+   ],
+   "notes": [
+    [],
+    [],
+    [],
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "5.7",
+   "section": "Performance",
+   "label": "Climbing ability, with / without load",
+   "unit": "(%)",
+   "values": [
+    "See towing",
+    "See towing",
+    "See towing",
+    "See towing",
+    "See towing",
+    "See towing"
+   ],
+   "notes": [
+    [],
+    [],
+    [],
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "5.8",
+   "section": "Performance",
+   "label": "Maximum climbing ability, with / without load",
+   "unit": "(%)",
+   "values": [
+    "diagram See towing",
+    "diagram See towing",
+    "diagram See towing",
+    "diagram See towing",
+    "diagram See towing",
+    "diagram See towing"
+   ],
+   "notes": [
+    [],
+    [],
+    [],
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "5.10",
+   "section": "Performance",
+   "label": "Service brake",
+   "unit": "",
+   "values": [
+    "diagram Electric / hydraulic",
+    "diagram Electric / hydrAulic",
+    "diagram Electric / hydraulic",
+    "diagram Electric / hydraulic",
+    "diagram Electric / hydraulic",
+    "diagram Electric / hydraulic"
+   ],
+   "notes": [
+    [],
+    [],
+    [],
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "6.1",
+   "section": "Electric-engine",
+   "label": "Drive motor, 60 minute rating",
+   "unit": "(kW)",
+   "values": [
+    "2 × 10.5 KW",
+    "2 × 10.5 KW",
+    "2 × 10.5 KW",
+    "2 × 10.5 KW",
+    "2 × 10.5 KW",
+    "2 × 10.5 KW"
+   ],
+   "notes": [
+    [],
+    [],
+    [],
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "6.3",
+   "section": "Electric-engine",
+   "label": "Battery according to",
+   "unit": "",
+   "values": [
+    "43536 A",
+    "43536 A",
+    "43536 A",
+    "43536 A",
+    "43536 A",
+    "43536 A"
+   ],
+   "notes": [
+    [],
+    [],
+    [],
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "6.4",
+   "section": "Electric-engine",
+   "label": "DIN 43531 / 35 / 36 A, B, C, no Battery voltage",
+   "unit": "U (V)",
+   "values": [
+    "80",
+    "80",
+    "80",
+    "80",
+    "80",
+    "80"
+   ],
+   "notes": [
+    [],
+    [],
+    [],
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "6.4.1",
+   "section": "Electric-engine",
+   "label": "Battery capacity",
+   "unit": "K5 (Ah)",
+   "values": [
+    "420 / 465",
+    "420 / 465",
+    "500 / 620",
+    "700 / 930",
+    "700 / 930",
+    "1240"
+   ],
+   "notes": [
+    [],
+    [],
+    [],
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "6.5",
+   "section": "Electric-engine",
+   "label": "Battery weight",
+   "unit": "(kg)",
+   "values": [
+    "1238",
+    "1238",
+    "1210 / 1558",
+    "1863 / 2178",
+    "1863 / 2178",
+    "2785"
+   ],
+   "notes": [
+    [],
+    [],
+    [],
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "6.6",
+   "section": "Electric-engine",
+   "label": "Power consumption according to",
+   "unit": "(kWh / h)",
+   "values": [
+    "5.82",
+    "6.79",
+    "7.76",
+    "8.73",
+    "9.69",
+    "10.66"
+   ],
+   "notes": [
+    [],
+    [],
+    [],
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "8.4",
+   "section": "Drive",
+   "label": "EN16796 Noise level at operator‘s ear",
+   "unit": "(dB(A))",
+   "values": [
+    "62",
+    "62",
+    "62",
+    "62",
+    "62",
+    "62"
+   ],
+   "notes": [
+    [],
+    [],
+    [],
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "8.5",
+   "section": "Drive",
+   "label": "Towing coupling, design / type, DIN",
+   "unit": "",
+   "values": [
+    "Rockinger 244 * with Ro 244",
+    "Rockinger 244 * with Ro 244",
+    "Rockinger 244 * with Ro 244",
+    "Typ HSM 2140 * with HSM 2140",
+    "Typ HSM 2140 * with HSM 2140",
+    "Typ HSM 2140 * with HSM 2140"
+   ],
+   "notes": [
+    [],
+    [],
+    [],
+    [],
+    [],
+    []
+   ]
+  }
+ ],
+ "footnotes": [],
+ "masts": {},
+ "equipment": [
+  {
+   "group": "Safety",
+   "columns": [],
+   "items": [
+    {
+     "text": "Model / Equipment P120 (VSWB) P180 (VSWB) P250 (SWB) P250 (LWB) P300 (LWB) P350 (VLWB)"
+    },
+    {
+     "text": "Chassis protection"
+    },
+    {
+     "text": "Gradient assist"
+    },
+    {
+     "text": "Automatic speed reduction when cornering"
+    },
+    {
+     "text": "Safety belt"
+    },
+    {
+     "text": "Linde BlueSpot™"
+    },
+    {
+     "text": "Flashing / Rotating Beacon on / below overhead guard"
+    },
+    {
+     "text": "Additionnal emergency buttons located in the rear part"
+    },
+    {
+     "text": "Key switch"
+    },
+    {
+     "text": "Log in PIN code"
+    },
+    {
+     "text": "Inching control"
+    },
+    {
+     "text": "Load platform lighting"
+    },
+    {
+     "text": "Reversing camera"
+    },
+    {
+     "text": "Speed reduced if deep discharge"
+    }
+   ]
+  },
+  {
+   "group": "Digitalisation",
+   "columns": [],
+   "items": [
+    {
+     "text": "External rear-view mirrors"
+    },
+    {
+     "text": "Telescopic rear-view mirrors"
+    },
+    {
+     "text": "Linde connect: desk"
+    },
+    {
+     "text": "ac: access control (PIN or RFID)"
+    },
+    {
+     "text": "dt: crash detection"
+    },
+    {
+     "text": "Linde connect: cloud"
+    },
+    {
+     "text": "Data Transmission (WiFi or Online)"
+    },
+    {
+     "text": "Suspended Cabin"
+    },
+    {
+     "text": "Steering wheel with knob"
+    },
+    {
+     "text": "Air conditioning"
+    },
+    {
+     "text": "Heating"
+    }
+   ]
+  },
+  {
+   "group": "Workplace",
+   "columns": [],
+   "items": [
+    {
+     "text": "Multifunction coloured display with hour meter, maintenance indication, battery d ischarge indicator, internal fault code indication, selected drive direction and actual steering wheel position"
+    }
+   ]
+  },
+  {
+   "group": "Attachement/Forks",
+   "columns": [],
+   "items": [
+    {
+     "text": "Radio"
+    },
+    {
+     "text": "Electrical socket and USB-connection"
+    },
+    {
+     "text": "Sun visor"
+    },
+    {
+     "text": "Support clipboard DIN A4"
+    },
+    {
+     "text": "Lighting for rear towing attachment"
+    },
+    {
+     "text": "Electric. socket 12 V (13-pole)"
+    },
+    {
+     "text": "Tyre Conti. RV20",
+     "na": [
+      "—"
+     ]
+    },
+    {
+     "text": "SE-SIT Continental"
+    },
+    {
+     "text": "SE-SIT non marking"
+    },
+    {
+     "text": "Onboard charger"
+    }
+   ]
+  },
+  {
+   "group": "Drive and Brake-System",
+   "columns": [],
+   "items": [
+    {
+     "text": "Lateral battery change option"
+    },
+    {
+     "text": "Vertical battery change option",
+     "na": [
+      "—"
+     ]
+    },
+    {
+     "text": "Battery 3 PzS 420 – 465 Ah",
+     "na": [
+      "—"
+     ]
+    },
+    {
+     "text": "Battery 4 PzS 560 – 620 Ah",
+     "na": [
+      "—"
+     ]
+    },
+    {
+     "text": "Battery 5 PzS 700 – 775 Ah",
+     "na": [
+      "—"
+     ]
+    },
+    {
+     "text": "Battery 6 PzS 840 – 930 Ah",
+     "na": [
+      "—"
+     ]
+    },
+    {
+     "text": "Battery 8 PzS 1120 – 1240 Ah",
+     "na": [
+      "—"
+     ]
+    },
+    {
+     "text": "CAN bus technology"
+    },
+    {
+     "text": "Free maintenance braking system"
+    }
+   ]
+  }
+ ],
+ "characteristics": [
+  {
+   "group": "Safety",
+   "bullets": [
+    "Automatic parking brake for preventing the vehicle from rolling unintentionally on slopes",
+    "Constant speed even on ramps for consistent performance",
+    "Robust cabin and windshield bars for protecting the driver",
+    "Electrically monitored cabin doors for safe driving",
+    "Door locked sensor to make sure operators drive safely inside the cabin",
+    "Linde curve assist reducing speed when cornering"
+   ]
+  },
+  {
+   "group": "Ergonomics",
+   "bullets": [
+    "Spacious damped cabin for increased driving comfort",
+    "Optimum all-round visibility for maximum maneuverability in confined spaces",
+    "Storage compartments and nets for sufficient storage space in everyday work",
+    "Optional sliding doors for easy access and less damage",
+    "Easy adjustable steering column",
+    "Curved front screen ensures excellent maneuvrability"
+   ]
+  },
+  {
+   "group": "Handling",
+   "bullets": [
+    "High handling performance thanks to powerful electric motors and constant speed on steep ramps",
+    "Smooth, precise steering for easy maneuverability in tight spaces",
+    "Small turning angle for all the models",
+    "Inching control as standard",
+    "Front and rear towing attachment"
+   ]
+  },
+  {
+   "group": "Service",
+   "bullets": [
+    "Easily accessible service components for efficient maintenance and repair",
+    "Maintenance-free multi-disc brake for maximum vehicle availability",
+    "Lateral or vertical battery change for fast replacement (only lateral for P350)",
+    "Easily replaceable windshield for fast reparations"
+   ]
+  }
+ ],
+ "unparsed": {
+  "image_pages": [
+   4
+  ],
+  "characteristics_captions": [
+   "Operator and passenger seat belt",
+   "Door net storage compartment",
+   "Lateral battery change",
+   "Coil spring and maintenance free braking system"
+  ],
+  "other": "                             b\n                                      l3\n  h6\n                                                                        h11\n             h7\n                                                            h10\n                        m2\n                                 y               l5\n                                 L1\n                                                      War\n(b)    b10                                                        b11         b9\n                                           b13\n                  Waf",
+  "sections": {
+   "TOW DIAGRAMS": "P120                                                                           P120 Towing diagram\n                          22                                                                                                                                                12000\n                          21                                                                                                                                                                                                                             Permissible driving distance per hour (m / h)\n                          20                                                                                                                                                                                                                             Driving speed (km / h)\n\n\n\n\n                                                                                                                                                                                                  Permissible driving distance per hour [m/h]\n                          19\n                          18                                                                                                                                                10000\n                          17\n                          16\n                          15                                                                                                                                                8000\n Driving speed [km/h]\n\n\n\n\n                          14\n                          13\n                          12\n                          11                                                                                                                                                6000\n                          10\n                           9\n                           8\n                           7                                                                                                                                                4000\n                           6\n                           5\n                           4                                                                                                                                                2000\n                           3\n                           2\n                           1\n                           0                                                                                                                                                0\n                                                                                                                                                                                                                                                The example shown illustrates a\n                               0                  2000                  4000                    6000                8000                  10000             12000\n                                                                                                                                                                                                                                                tractor transporting 6 t operating on\n                           0                                                                    Zugkraft [kN]\n                                                                                                                                                                                                                                                a ramp of 5 % m   aximum travelling\n                                                          Zugkraft                  zulässige Fahrstrecke pro Stunde                       Poly. (Zugkraft)\n                           5                                                                                                                                                                                                                    speed reachable 8 km / h to a\n                                                                                                                                                                                                                                                maximum travel distance per hour\n                          10\n                                                                                                                                                                                                                                                 of 1.8 km / h (1800 m*)\n  Gradient [%]\n\n\n\n\n                          15\n                                                                                                                                                                                                                                                * depends on created heat while in application\n\n                          20\n\n\n\n                          25\n\n                                                                   0t           2t              4t          6t         8t           10t           12t\n                                                                               P180 Towing diagram\nP180\n   23                                                                                                                                                                      12000\n                          22\n                          21\n                          20                                                                                                                                                                                                                            Permissible driving distance per hour (m / h)\n                                                                                                                                                                                        Permissible driving distance per hour [m/h]\n\n\n\n\n                          19                                                                                                                                               10000\n                          18                                                                                                                                                                                                                            Driving speed (km / h)\n                          17\n                          16\n                                                                                                                                                                           8000\n   Driving speed [km/h]\n\n\n\n\n                          15\n                          14\n                          13\n                          12\n                                                                                                                                                                           6000\n                          11\n                          10\n                           9\n                           8                                                                                                                                               4000\n                           7\n                           6\n                           5\n                           4                                                                                                                                               2000\n                           3\n                           2\n                           1\n                           0                                                                                                                                              0\n                               0              2000            4000              6000                 8000           10000            12000              14000         16000\n                           0                                                                    Zugkraft [kN]\n\n                                                          Zugkraft                  zulässige Fahrstrecke pro Stunde                       Poly. (Zugkraft)\n                           5\n\n\n\n                          10\n    Gradient [%]\n\n\n\n\n                          15\n\n\n\n                          20\n\n\n\n                          25\n\n                                                     0t        2t              4t           6t           8t           10t           12t           15t           18t\n\n\nP250                                                                       P250 Towing diagram\n                          25                                                                                                                                               12000                                                                      Permissible driving distance per hour (m / h)\n                          24\n                          23\n                          22                                                                                                                                                                                                                          Driving speed (km / h)\n                                                                                                                                                                                    Permissible driving distance per hour [m/h]\n\n\n\n\n                          21                                                                                                                                               10000\n                          20\n                          19\n                          18\n                          17                                                                                                                                               8000\n Driving speed [km/h]\n\n\n\n\n                          16\n                          15\n                          14\n                          13                                                                                                                                               6000\n                          12\n                          11\n                          10\n                           9\n                           8                                                                                                                                               4000\n                           7\n                           6\n                           5\n                           4                                                                                                                                               2000\n                           3\n                           2\n                           1\n                           0                                                                                                                                               0\n                               0           2000        4000        6000             8000         10000        12000         14000     16000        18000         20000\n                           0                                                                    Zugkraft [kN]\n\n                                   Zugkraft            zulässige Fahrstrecke pro Stunde                       2 Periode gleit. Mittelw. (Zugkraft)               Poly. (Zugkraft)\n                           5\n\n\n\n                          10\n  Gradient [%]\n\n\n\n\n                          15\n\n\n\n                          20\n\n\n\n                          25\n\n                                      0t          2t          4t          6t               8t          10t            12t           15t           18t           20t       25t\n\nP300                                                             P 300 Towing diagramm\n                         25                                                                                                                        12000\n                         24                                                                                                                                                                                                          Permissible driving distance per hour (m / h)\n                         23\n                         22                                                                                                                                                                                                          Driving speed (km / h)\n\n\n\n\n                                                                                                                                                                           Permissible Driving distance per hour [m/h]\n                         21                                                                                                                        10000\n                         20\n                         19\n                         18\n                         17                                                                                                                        8000\n  Driving Speed [km/h]\n\n\n\n\n                         16\n                         15\n                         14\n                         13                                                                                                                        6000\n                         12\n                         11\n                         10\n                          9\n                          8                                                                                                                        4000\n                          7\n                          6\n                          5\n                          4                                                                                                                        2000\n                          3\n                          2\n                          1\n                          0                                                                                                                        0\n                              0        2000   4000     6000        8000       10000        12000    14000    16000       18000     20000\n                          0                                                    Zugkraft [kN]\n\n                                                 Zugkraft              zulässige Fahrstrecke pro Stunde              Poly. (Zugkraft)\n                          5\n\n\n\n                         10\n   Gradient [%]\n\n\n\n\n                         15\n\n\n\n                         20\n\n\n\n                         25\n\n                                  0t     2t    4t      6t         8t        10t       12t          15t      18t       20t        25t       28t         30t\n\n\n\n\nP350                                                             P 350 Towing diagram\n                         25                                                                                                                      12000                                                                               Permissible driving distance per hour (m / h)\n                         24\n                         23                                                                                                                                                                                                          Driving speed (km / h)\n                         22\n                                                                                                                                                          Permissible driving distance per hour [m/h]\n\n\n\n\n                         21                                                                                                                      10000\n                         20\n                         19\n                         18\n                         17                                                                                                                      8000\n Driving speed [km/h]\n\n\n\n\n                         16\n                         15\n                         14\n                         13                                                                                                                      6000\n                         12\n                         11\n                         10\n                          9\n                          8                                                                                                                      4000\n                          7\n                          6\n                          5\n                          4                                                                                                                      2000\n                          3\n                          2\n                          1\n                          0                                                                                                                    0\n                              0        2000   4000    6000        8000       10000     12000       14000    16000      18000     20000     22000\n                          0                                                   Zugkraft [kN]\n\n                                                Zugkraft               zulässige Fahrstrecke pro Stunde             Poly. (Zugkraft)\n                          5\n\n\n\n                         10\n  Gradient [%]\n\n\n\n\n                         15\n\n\n\n                         20\n\n\n\n                         25                                0t      2t          4t          6t       8t       10t       12t\n                                                           15t     18t         20t         25t      28t      30t       35t\n\n\n\n\n                    Unbraked trailer load recommendation\n\n                                                                              P120 SWB                        P180 SWB                           P250 LWB                                                                P350 VLWB\n\n                         Maximum recommended\n                                                                                    4 to                            7 to                           10 to                                                                   12 to\n                         unbraked trailer load"
+  }
+ }
+}

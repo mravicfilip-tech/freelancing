@@ -24,3 +24,7 @@ Round of 18 November, sent while the shop ran on his localhost. Planned and buil
 11. The model page, "the product page needs more work, needs description, bullet points why this works, extract data from google drive and
    populize this page as much as we can". Link to /prodavnica/dizel-i-plinski-ceoni-viljuskari/h16-do-h20. Lifts the brief's "specs only
    from an exact old-site match" for what the client's own Drive says about a series, his words "extract data from google drive".
+    Filip's answers, 18 November, "yes to all 4, go". 1 the Serbian is translated from Linde's English data sheets, marked for the client
+    to proofread. 2 H16 to H20 is built in full first, every other series after Filip looks. 3 data sheet numbers replace the old site's on
+    the cards and in the filters wherever a sheet exists. 4 the page grows to five sections, the top with the description, Zašto ovaj model
+    and four figures, then Karakteristike, Verzije with the full table closed under it, Oprema closed by group, then Fotografije and related.

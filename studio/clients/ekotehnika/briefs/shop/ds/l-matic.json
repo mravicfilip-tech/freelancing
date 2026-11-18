@@ -1,0 +1,1172 @@
+{
+ "slug": "l-matic",
+ "datasheet": {
+  "name": "DS_L-MATIC AC_1170_en_C_1024_view.PDF",
+  "id": "1o1N5hl4M5FlalkAH5kgwE-Pj7dE1dvNL"
+ },
+ "heading": "Automated Pallet Stackers",
+ "range": "L-MATIC AC",
+ "capacity": "Capacity 1.2 t – 1.6 t | Series 1170",
+ "tagline": "Powerful pallet lifter",
+ "benefits": [
+  "Load capacity up to 1.6 t and lifting height up to 4.2 m",
+  "Intelligent contour navigation requires no additional infrastructure",
+  "Load pick-up at transfer stations which cannot be accessed from below",
+  "Easy handling of closed bottom load carriers",
+  "Comprehensive safety systems protect the vehicle and its surroundings"
+ ],
+ "versions": [
+  "L-MATIC AC 1.2 t",
+  "L-MATIC AC 1.6 t",
+  "L-MATIC AC 1.2 t",
+  "L-MATIC AC 1.6 t"
+ ],
+ "vdi": [
+  {
+   "no": "1.1",
+   "section": "Characteristics",
+   "label": "Manufacturer (abbreviation)",
+   "unit": "",
+   "values": [
+    "Linde MH",
+    "Linde MH",
+    "Linde MH",
+    "Linde MH"
+   ],
+   "notes": [
+    [],
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "1.2",
+   "section": "Characteristics",
+   "label": "Manufacturer's type designation",
+   "unit": "",
+   "values": [
+    "L-MATIC AC 1.2 t",
+    "L-MATIC AC 1.6 t",
+    "L-MATIC AC 1.2 t",
+    "L-MATIC AC 1.6 t"
+   ],
+   "notes": [
+    [],
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "1.2a",
+   "section": "Characteristics",
+   "label": "Series",
+   "unit": "",
+   "values": [
+    "1170",
+    "1170",
+    "1170",
+    "1170"
+   ],
+   "notes": [
+    [],
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "1.3",
+   "section": "Characteristics",
+   "label": "Drive",
+   "unit": "",
+   "values": [
+    "Battery",
+    "Battery",
+    "Battery",
+    "Battery"
+   ],
+   "notes": [
+    [],
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "1.4",
+   "section": "Characteristics",
+   "label": "Operation",
+   "unit": "",
+   "values": [
+    "Automatic/manual",
+    "Automatic/manual",
+    "Automatic/manual",
+    "Automatic/manual"
+   ],
+   "notes": [
+    [],
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "1.5",
+   "section": "Characteristics",
+   "label": "Rated capacity/rated load",
+   "unit": "Q (t)",
+   "values": [
+    "1.2",
+    "1.6",
+    "1.2",
+    "1.6"
+   ],
+   "notes": [
+    [],
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "1.6",
+   "section": "Characteristics",
+   "label": "Load centre distance",
+   "unit": "c (mm)",
+   "values": [
+    "600",
+    "600",
+    "600",
+    "600"
+   ],
+   "notes": [
+    [],
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "1.8",
+   "section": "Characteristics",
+   "label": "Load distance, centre of drive axle to fork",
+   "unit": "x (mm)",
+   "values": [
+    "100",
+    "105",
+    "100",
+    "105"
+   ],
+   "notes": [
+    [
+     "1"
+    ],
+    [
+     "1"
+    ],
+    [
+     "1"
+    ],
+    [
+     "1"
+    ]
+   ]
+  },
+  {
+   "no": "1.9",
+   "section": "Characteristics",
+   "label": "Wheelbase",
+   "unit": "y (mm)",
+   "values": [
+    "1270",
+    "1635",
+    "1270",
+    "1635"
+   ],
+   "notes": [
+    [
+     "1"
+    ],
+    [
+     "1"
+    ],
+    [
+     "1"
+    ],
+    [
+     "1"
+    ]
+   ]
+  },
+  {
+   "no": "2.1",
+   "section": "Weight",
+   "label": "Service weight",
+   "unit": "kg",
+   "values": [
+    "2060",
+    "2020",
+    "2275",
+    "2235"
+   ],
+   "notes": [
+    [
+     "2"
+    ],
+    [
+     "2"
+    ],
+    [
+     "2"
+    ],
+    [
+     "2"
+    ]
+   ]
+  },
+  {
+   "no": "2.2",
+   "section": "Weight",
+   "label": "Axle loading, laden front/rear",
+   "unit": "kg",
+   "values": [
+    "613/2647",
+    "718/2902",
+    "613/2862",
+    "718/3117"
+   ],
+   "notes": [
+    [
+     "2"
+    ],
+    [
+     "2"
+    ],
+    [
+     "2"
+    ],
+    []
+   ]
+  },
+  {
+   "no": "2.3",
+   "section": "Weight",
+   "label": "Axle loading, unladen front/rear",
+   "unit": "kg",
+   "values": [
+    "1180/880",
+    "1310/710",
+    "1180/1095",
+    "1310/925"
+   ],
+   "notes": [
+    [
+     "2"
+    ],
+    [
+     "2"
+    ],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "3.1",
+   "section": "Tyres/chassis",
+   "label": "Tyres: solid rubber, superelastic, pneumatic, polyurethane",
+   "unit": "",
+   "values": [
+    "Polyurethane",
+    "Polyurethane",
+    "Polyurethane",
+    "Polyurethane"
+   ],
+   "notes": [
+    [],
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "3.2",
+   "section": "Tyres/chassis",
+   "label": "Tyre size, front",
+   "unit": "Ø × l (mm)",
+   "values": [
+    "Ø 254 × 102",
+    "Ø 254 × 102",
+    "Ø 254 × 102",
+    "Ø 254 × 102"
+   ],
+   "notes": [
+    [],
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "3.3",
+   "section": "Tyres/chassis",
+   "label": "Tyre size, rear",
+   "unit": "Ø × l (mm)",
+   "values": [
+    "Ø 85 × 105",
+    "Ø 85 × 105",
+    "Ø 85 × 105",
+    "Ø 85 × 105"
+   ],
+   "notes": [
+    [],
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "3.5",
+   "section": "Tyres/chassis",
+   "label": "Wheels, number front/rear (x = driven wheels)",
+   "unit": "",
+   "values": [
+    "1x/4",
+    "1x/4",
+    "1x/4",
+    "1x/4"
+   ],
+   "notes": [
+    [],
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "3.7",
+   "section": "Tyres/chassis",
+   "label": "Tread, rear",
+   "unit": "b11 (mm)",
+   "values": [
+    "483",
+    "483",
+    "483",
+    "483"
+   ],
+   "notes": [
+    [
+     "1"
+    ],
+    [
+     "1"
+    ],
+    [
+     "1"
+    ],
+    [
+     "1"
+    ]
+   ]
+  },
+  {
+   "no": "4.2",
+   "section": "Dimensions",
+   "label": "Mast height, lowered",
+   "unit": "h1 (mm)",
+   "values": [
+    "1515",
+    "1515",
+    "2665",
+    "2665"
+   ],
+   "notes": [
+    [],
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "4.3",
+   "section": "Dimensions",
+   "label": "Free lift",
+   "unit": "h2 (mm)",
+   "values": [
+    "150",
+    "150",
+    "150",
+    "150"
+   ],
+   "notes": [
+    [],
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "4.4",
+   "section": "Dimensions",
+   "label": "Lift",
+   "unit": "h3 (mm)",
+   "values": [
+    "1924",
+    "1844",
+    "4224",
+    "4144"
+   ],
+   "notes": [
+    [],
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "4.5",
+   "section": "Dimensions",
+   "label": "Mast height, extended/with load backrest",
+   "unit": "h4 (mm)",
+   "values": [
+    "2485/3576",
+    "2405/3501",
+    "4785/6433",
+    "4705/6358"
+   ],
+   "notes": [
+    [],
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "4.6",
+   "section": "Dimensions",
+   "label": "Initial lift",
+   "unit": "h5 (mm)",
+   "values": [
+    "0",
+    "0",
+    "0",
+    "0"
+   ],
+   "notes": [
+    [],
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "4.9",
+   "section": "Dimensions",
+   "label": "Height drawbar in driving position min./max.",
+   "unit": "h14 (mm)",
+   "values": [
+    "1140/1350",
+    "1140/1350",
+    "1140/1350",
+    "1140/1350"
+   ],
+   "notes": [
+    [],
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "4.15",
+   "section": "Dimensions",
+   "label": "Height, lowered",
+   "unit": "h13 (mm)",
+   "values": [
+    "40",
+    "45",
+    "40",
+    "45"
+   ],
+   "notes": [
+    [],
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "4.19",
+   "section": "Dimensions",
+   "label": "Overall length",
+   "unit": "l1 (mm)",
+   "values": [
+    "2900",
+    "3270",
+    "2900",
+    "3270"
+   ],
+   "notes": [
+    [
+     "1"
+    ],
+    [
+     "1"
+    ],
+    [
+     "1"
+    ],
+    [
+     "1"
+    ]
+   ]
+  },
+  {
+   "no": "4.20",
+   "section": "Dimensions",
+   "label": "Length to fork face",
+   "unit": "l2 (mm)",
+   "values": [
+    "1700",
+    "2065",
+    "2065",
+    "2065"
+   ],
+   "notes": [
+    [],
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "4.21",
+   "section": "Dimensions",
+   "label": "Overall width",
+   "unit": "b1/b2 (mm)",
+   "values": [
+    "790/890",
+    "790/890",
+    "793/890",
+    "794/890"
+   ],
+   "notes": [
+    [
+     "1"
+    ],
+    [
+     "1"
+    ],
+    [
+     "1"
+    ],
+    [
+     "1"
+    ]
+   ]
+  },
+  {
+   "no": "4.22",
+   "section": "Dimensions",
+   "label": "Fork dimensions DIN ISO 2331",
+   "unit": "s/e/l (mm)",
+   "values": [
+    "40/80/1200",
+    "45/100/1200",
+    "40/80/1200",
+    "45/100/1200"
+   ],
+   "notes": [
+    [],
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "4.23",
+   "section": "Dimensions",
+   "label": "Fork carriage to ISO 2328, class/type A, B",
+   "unit": "",
+   "values": [
+    "2B",
+    "2B",
+    "2B",
+    "2B"
+   ],
+   "notes": [
+    [],
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "4.24",
+   "section": "Dimensions",
+   "label": "Fork carriage width",
+   "unit": "b3 (mm)",
+   "values": [
+    "876",
+    "876",
+    "876",
+    "876"
+   ],
+   "notes": [
+    [],
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "4.25",
+   "section": "Dimensions",
+   "label": "Fork spread",
+   "unit": "b5 (mm)",
+   "values": [
+    "314/682",
+    "314/682",
+    "314/682",
+    "314/682"
+   ],
+   "notes": [
+    [],
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "4.32",
+   "section": "Dimensions",
+   "label": "Ground clearance, centre of wheelbase",
+   "unit": "m2 (mm)",
+   "values": [
+    "40",
+    "40",
+    "40",
+    "40"
+   ],
+   "notes": [
+    [],
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "4.34.1",
+   "section": "Dimensions",
+   "label": "Aisle width for pallets 1050 × 1250 across forks, auto mode",
+   "unit": "Ast (mm)",
+   "values": [
+    "3370",
+    "3730",
+    "3430",
+    "3800"
+   ],
+   "notes": [
+    [],
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "4.34.2",
+   "section": "Dimensions",
+   "label": "Aisle width for pallets 850 × 1250 in length, auto mode",
+   "unit": "Ast (mm)",
+   "values": [
+    "3340",
+    "3710",
+    "3340",
+    "3710"
+   ],
+   "notes": [
+    [],
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "4.35",
+   "section": "Dimensions",
+   "label": "Turning radius auto mode",
+   "unit": "Wa (mm)",
+   "values": [
+    "1668",
+    "2033",
+    "1668",
+    "2033"
+   ],
+   "notes": [
+    [],
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "5.1",
+   "section": "Performance",
+   "label": "Travel speed load direction, laden/unladen",
+   "unit": "m/s",
+   "values": [
+    "1.7/1.7",
+    "1.7/1.7",
+    "1.7/1.7",
+    "1.7/1.7"
+   ],
+   "notes": [
+    [],
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "5.1a",
+   "section": "Performance",
+   "label": "Travel speed drive direction, laden/unladen",
+   "unit": "m/s",
+   "values": [
+    "0.8/0.8",
+    "0.8/0.8",
+    "0.8/0.8",
+    "0.8/0.8"
+   ],
+   "notes": [
+    [],
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "5.2",
+   "section": "Performance",
+   "label": "Lifting speed, laden/unladen",
+   "unit": "m/s",
+   "values": [
+    "0.15/0.3",
+    "0.15/0.3",
+    "0.15/0.3",
+    "0.15/0.3"
+   ],
+   "notes": [
+    [],
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "5.3",
+   "section": "Performance",
+   "label": "Lowering speed, laden/unladen",
+   "unit": "m/s",
+   "values": [
+    "0.45/0.35",
+    "0.45/0.35",
+    "0.45/0.35",
+    "0.45/0.35"
+   ],
+   "notes": [
+    [],
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "5.8",
+   "section": "Performance",
+   "label": "Max. gradeability, laden/unladen",
+   "unit": "%",
+   "values": [
+    "3/3",
+    "3/3",
+    "3/3",
+    "3/3"
+   ],
+   "notes": [
+    [],
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "5.10",
+   "section": "Performance",
+   "label": "Service brake",
+   "unit": "",
+   "values": [
+    "Electro-magnetic",
+    "Electro-magnetic",
+    "Electro-magnetic",
+    "Electro-magnetic"
+   ],
+   "notes": [
+    [],
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "6.1",
+   "section": "Electric-engine",
+   "label": "Drive motor rating S2 60 min",
+   "unit": "kW",
+   "values": [
+    "3",
+    "3",
+    "3",
+    "3"
+   ],
+   "notes": [
+    [],
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "6.2",
+   "section": "Electric-engine",
+   "label": "Lift motor rating at S3 15%",
+   "unit": "kW",
+   "values": [
+    "3",
+    "3",
+    "3",
+    "3"
+   ],
+   "notes": [
+    [],
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "6.3",
+   "section": "Electric-engine",
+   "label": "Battery according to DIN 43531/35/36 A, B, C, no",
+   "unit": "",
+   "values": [
+    "no",
+    "no",
+    "no",
+    "no"
+   ],
+   "notes": [
+    [],
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "6.4",
+   "section": "Electric-engine",
+   "label": "Battery voltage/rated capacity (5h)",
+   "unit": "(V)/(Ah)",
+   "values": [
+    "24/375",
+    "24/500",
+    "24/375",
+    "24/500"
+   ],
+   "notes": [
+    [],
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "6.5",
+   "section": "Electric-engine",
+   "label": "Battery weight",
+   "unit": "kg",
+   "values": [
+    "295",
+    "365",
+    "295",
+    "365"
+   ],
+   "notes": [
+    [],
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "6.6",
+   "section": "Electric-engine",
+   "label": "Energy consumption in relation to VDI cycle (X cycles/1h)",
+   "unit": "kWh/h",
+   "values": [
+    "1.45",
+    "1.45",
+    "1.45",
+    "1.45"
+   ],
+   "notes": [
+    [],
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "8.1",
+   "section": "Drive",
+   "label": "Type of drive unit",
+   "unit": "",
+   "values": [
+    "LAC",
+    "LAC",
+    "LAC",
+    "LAC"
+   ],
+   "notes": [
+    [],
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "10.7",
+   "section": "Additional data",
+   "label": "Sound pressure level LpAZ (at the operator's seat)",
+   "unit": "dB (A)",
+   "values": [
+    "<70",
+    "<70",
+    "<70",
+    "<70"
+   ],
+   "notes": [
+    [],
+    [],
+    [],
+    []
+   ]
+  }
+ ],
+ "footnotes": [
+  {
+   "n": "1",
+   "text": "±5 mm 2) ±10%"
+  }
+ ],
+ "masts": {
+  "STANDARD MAST (in mm)": "Lift                        h3: 1844                h3: 1924                h3:4144                 h3:4224\n\n                      h1: 1515     h2: 150   h1: 1515     h2: 150   h1: 2665      h2:150   h1: 2665       h2: 150\nHeight measurements\n                      h4: 2405 1739/1489*    h4: 2485 1814/1564*    h4: 4705 4039/3789*    h4: 4785   4114/3864*\n\nManufacturer’s type\ndesignation\nL-MATIC AC 1.2 t               —                                               —\n\nL-MATIC AC 1.6 t                                       —                                                  —\n\n\n  Optional equipment — Not available\n\nh1: Mast height, lowered                       h2: Free lift                  h3: Lift                    h4: Mast height, extended\n\n*Pick height/Drop height"
+ },
+ "equipment": [
+  {
+   "group": "Off-Board Software",
+   "columns": [
+    "L-MATIC AC 1.2 t",
+    "L-MATIC AC 1.6 t"
+   ],
+   "items": [
+    {
+     "text": "Interfaces to existing WMS and ERP systems"
+    },
+    {
+     "text": "Interfaces to infrastructure: doors, conveyors, etc."
+    },
+    {
+     "text": "Linde WMS system"
+    },
+    {
+     "text": "Email updates on performance data"
+    }
+   ]
+  },
+  {
+   "group": "On-Board Software",
+   "columns": [
+    "L-MATIC AC 1.2 t",
+    "L-MATIC AC 1.6 t"
+   ],
+   "items": [
+    {
+     "text": "Natural feature navigation"
+    },
+    {
+     "text": "Self-calibration algorithm"
+    }
+   ]
+  },
+  {
+   "group": "Safety",
+   "columns": [
+    "L-MATIC AC 1.2 t",
+    "L-MATIC AC 1.6 t"
+   ],
+   "items": [
+    {
+     "text": "Front and rear safety scanners"
+    },
+    {
+     "text": "2D curtain laser in forward direction"
+    },
+    {
+     "text": "Side safety scanner for 360° safety"
+    },
+    {
+     "text": "Side safety bumper"
+    },
+    {
+     "text": "Linde BlueSpot – optical warning signal for pedestrians and other co-workers"
+    },
+    {
+     "text": "Additional emergency buttons"
+    },
+    {
+     "text": "Visual warning indicators – lights indicating vehicle status (warnings and alarms)"
+    },
+    {
+     "text": "Acoustic warning indicators"
+    }
+   ]
+  },
+  {
+   "group": "Load Handling",
+   "columns": [
+    "L-MATIC AC 1.2 t",
+    "L-MATIC AC 1.6 t"
+   ],
+   "items": [
+    {
+     "text": "Mobile load detection"
+    },
+    {
+     "text": "3D camera load detection"
+    },
+    {
+     "text": "1D barcode reader"
+    },
+    {
+     "text": "2D barcode reader"
+    },
+    {
+     "text": "Side shift"
+    }
+   ]
+  },
+  {
+   "group": "Environment Forks",
+   "columns": [
+    "L-MATIC AC 1.2 t",
+    "L-MATIC AC 1.6 t"
+   ],
+   "items": [
+    {
+     "text": "ISO forks: 1200 × 80 × 40 mm",
+     "na": [
+      "L-MATIC AC 1.6 t"
+     ]
+    },
+    {
+     "text": "ISO forks: 1200 × 100 × 45 mm",
+     "na": [
+      "L-MATIC AC 1.2 t"
+     ]
+    },
+    {
+     "text": "Data transmission via Wifi"
+    },
+    {
+     "text": "Touch screen with simple user interface"
+    }
+   ]
+  },
+  {
+   "group": "Energy",
+   "columns": [
+    "L-MATIC AC 1.2 t",
+    "L-MATIC AC 1.6 t"
+   ],
+   "items": [
+    {
+     "text": "Lead-acid battery for manual charging"
+    },
+    {
+     "text": "Li-ION battery for automatic charging"
+    },
+    {
+     "text": "Truck prepared for automatic charging"
+    },
+    {
+     "text": "Lateral battery change"
+    },
+    {
+     "text": "Docking station for automatic charging"
+    }
+   ]
+  }
+ ],
+ "characteristics": [
+  {
+   "group": "Safety",
+   "bullets": [
+    "Safety system automatically recognises people and obstacles",
+    "Truck stops immediately if there are obstacles in the danger zone",
+    "Comprehensive safety thanks to warning sounds, flashing lights and Linde BlueSpot",
+    "Numerous emergency stop buttons for rapid hazard prevention",
+    "Safe co-operation with people, other vehicles and infrastructure"
+   ]
+  },
+  {
+   "group": "Handling",
+   "bullets": [
+    "Interaction with other systems such as industrial doors or roller conveyors",
+    "Route guidance and order assignment via master control",
+    "Optional interface to merchandise management or ERP system",
+    "Contour navigation enables quick adaptation to new working environments",
+    "Switch to manual mode available"
+   ]
+  },
+  {
+   "group": "Service",
+   "bullets": [
+    "High reliability thanks to proven Linde technology",
+    "Robust design reduces maintenance costs",
+    "Fast, easy access to major components maximizes up-time",
+    "Control unit networking means data can be accessed via a laptop",
+    "Linde service network and central hotline ensures high product availability"
+   ]
+  },
+  {
+   "group": "Sales and implementation",
+   "bullets": [
+    "Project-specific automated solutions including dynamic simulation and proof of concept on site",
+    "Manual handling processes and the degree of automation can be optimized to suit customer needs",
+    "Single point of contact at Linde MH, from initial contact to project implementation and commissioning",
+    "Intelligent and scalable software solutions give the customer optimum control over all processes",
+    "Project management and commissioning in accordance with Linde MH standards"
+   ]
+  }
+ ],
+ "unparsed": {
+  "characteristics_captions": [
+   "2D curtain laser for obstacle detection",
+   "Manual operation option",
+   "Excellent operational availability",
+   "Process-oriented as standard                                                  with uniform tools and templates used throughout the sales network"
+  ],
+  "other": "h4\n                                                                h1\n                                                           h6\n          h3\n               h2\n                                   m2\n                    h13   x             y\n                                             l7\n                                            l2\n                              l1\n                                                  Wa\n     b3   b5                                           b1 b2"
+ }
+}

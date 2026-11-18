@@ -1,0 +1,461 @@
+{
+ "slug": "mp13",
+ "datasheet": {
+  "name": "DS_MP13_BR8904_en_A_0818_view.pdf",
+  "id": "1-JKoQeidaSexjNaUUIgxr5mIjJioMkN1"
+ },
+ "heading": "PEDESTRIAN TRACTOR",
+ "range": "MP13",
+ "capacity": "CAPACITY 1300 KG | SERIES 8904",
+ "tagline": null,
+ "benefits": [],
+ "versions": [
+  "MP13"
+ ],
+ "vdi": [
+  {
+   "no": "1.1",
+   "section": "Characteristics",
+   "label": "Manufacturer",
+   "unit": "",
+   "values": [
+    "Linde"
+   ],
+   "notes": [
+    []
+   ]
+  },
+  {
+   "no": "1.2",
+   "section": "Characteristics",
+   "label": "Model designation",
+   "unit": "",
+   "values": [
+    "MP13"
+   ],
+   "notes": [
+    []
+   ]
+  },
+  {
+   "no": "1.3",
+   "section": "Characteristics",
+   "label": "Power unit",
+   "unit": "",
+   "values": [
+    "Battery"
+   ],
+   "notes": [
+    []
+   ]
+  },
+  {
+   "no": "1.4",
+   "section": "Characteristics",
+   "label": "Operation",
+   "unit": "",
+   "values": [
+    "Pedestrian"
+   ],
+   "notes": [
+    []
+   ]
+  },
+  {
+   "no": "1.5",
+   "section": "Characteristics",
+   "label": "Rated capacity",
+   "unit": "Q (t)",
+   "values": [
+    "1.3"
+   ],
+   "notes": [
+    []
+   ]
+  },
+  {
+   "no": "1.7",
+   "section": "Characteristics",
+   "label": "Rated drawbar pull",
+   "unit": "F (N)",
+   "values": [
+    "200"
+   ],
+   "notes": [
+    []
+   ]
+  },
+  {
+   "no": "1.9",
+   "section": "Characteristics",
+   "label": "Wheelbase",
+   "unit": "y (mm)",
+   "values": [
+    "315"
+   ],
+   "notes": [
+    []
+   ]
+  },
+  {
+   "no": "2.1",
+   "section": "Weight",
+   "label": "Service weight (include battery)",
+   "unit": "kg",
+   "values": [
+    "98"
+   ],
+   "notes": [
+    []
+   ]
+  },
+  {
+   "no": "2.2",
+   "section": "Weight",
+   "label": "Axle loading, laden driving side / loading side",
+   "unit": "kg",
+   "values": [
+    "98 / 0"
+   ],
+   "notes": [
+    []
+   ]
+  },
+  {
+   "no": "2.3",
+   "section": "Weight",
+   "label": "Axle loading without load, (front) drive / (rear) load",
+   "unit": "kg",
+   "values": [
+    "78 / 20"
+   ],
+   "notes": [
+    []
+   ]
+  },
+  {
+   "no": "3.1",
+   "section": "Tyres/chassis",
+   "label": "Tyre, (front) drive / (rear) load",
+   "unit": "",
+   "values": [
+    "Pneumatic"
+   ],
+   "notes": [
+    []
+   ]
+  },
+  {
+   "no": "3.2",
+   "section": "Tyres/chassis",
+   "label": "Tyre size, (front)drive wheel",
+   "unit": "mm",
+   "values": [
+    "2 x Ф250 x 85"
+   ],
+   "notes": [
+    []
+   ]
+  },
+  {
+   "no": "3.3",
+   "section": "Tyres/chassis",
+   "label": "Tyre size, (rear)load wheel",
+   "unit": "mm",
+   "values": [
+    "2 x Ф 75 x 32"
+   ],
+   "notes": [
+    []
+   ]
+  },
+  {
+   "no": "3.5",
+   "section": "Tyres/chassis",
+   "label": "Wheels, number (front)drive / (rear)load (x = drive wheels)",
+   "unit": "",
+   "values": [
+    "2x/2"
+   ],
+   "notes": [
+    []
+   ]
+  },
+  {
+   "no": "3.6",
+   "section": "Tyres/chassis",
+   "label": "Track width, (front)drive",
+   "unit": "b10 (mm)",
+   "values": [
+    "428"
+   ],
+   "notes": [
+    []
+   ]
+  },
+  {
+   "no": "3.7",
+   "section": "Tyres/chassis",
+   "label": "Track width, (rear)load wheel",
+   "unit": "b11 (mm)",
+   "values": [
+    "217"
+   ],
+   "notes": [
+    []
+   ]
+  },
+  {
+   "no": "4.9",
+   "section": "Dimensions",
+   "label": "Height drawbar in driving position min. / max.",
+   "unit": "h14 (mm)",
+   "values": [
+    "876 / 971 / 1051"
+   ],
+   "notes": [
+    []
+   ]
+  },
+  {
+   "no": "4.12",
+   "section": "Dimensions",
+   "label": "Tow coupling height",
+   "unit": "h10 (mm)",
+   "values": [
+    "120 ~ 280"
+   ],
+   "notes": [
+    []
+   ]
+  },
+  {
+   "no": "4.17",
+   "section": "Dimensions",
+   "label": "Rear overhang",
+   "unit": "l 5 (mm)",
+   "values": [
+    "430"
+   ],
+   "notes": [
+    []
+   ]
+  },
+  {
+   "no": "4.19",
+   "section": "Dimensions",
+   "label": "Overall length",
+   "unit": "l 1 (mm)",
+   "values": [
+    "1284 / 1344 / 1374"
+   ],
+   "notes": [
+    []
+   ]
+  },
+  {
+   "no": "4.21",
+   "section": "Dimensions",
+   "label": "Overall width",
+   "unit": "b1 / b2 (mm)",
+   "values": [
+    "520"
+   ],
+   "notes": [
+    []
+   ]
+  },
+  {
+   "no": "4.32",
+   "section": "Dimensions",
+   "label": "Ground clearance, center of wheelbase",
+   "unit": "m 2 (mm)",
+   "values": [
+    "30"
+   ],
+   "notes": [
+    []
+   ]
+  },
+  {
+   "no": "4.35",
+   "section": "Dimensions",
+   "label": "Turning radius",
+   "unit": "Wa (mm)",
+   "values": [
+    "890 / 940 / 980"
+   ],
+   "notes": [
+    []
+   ]
+  },
+  {
+   "no": "5.1",
+   "section": "Performance",
+   "label": "Travel speed, with / without load",
+   "unit": "km/h",
+   "values": [
+    "4 / 4.5"
+   ],
+   "notes": [
+    []
+   ]
+  },
+  {
+   "no": "5.5",
+   "section": "Performance",
+   "label": "Drawbar pull (60 minutes rating)",
+   "unit": "N",
+   "values": [
+    "200"
+   ],
+   "notes": [
+    []
+   ]
+  },
+  {
+   "no": "5.6",
+   "section": "Performance",
+   "label": "Max. drawbar pull (5 minutes rating)",
+   "unit": "N",
+   "values": [
+    "650"
+   ],
+   "notes": [
+    []
+   ]
+  },
+  {
+   "no": "5.8",
+   "section": "Performance",
+   "label": "Maximum gradeability, with / without load",
+   "unit": "%",
+   "values": [
+    "3 / 16"
+   ],
+   "notes": [
+    []
+   ]
+  },
+  {
+   "no": "5.10",
+   "section": "Performance",
+   "label": "Service brake",
+   "unit": "",
+   "values": [
+    "Electromagnetic"
+   ],
+   "notes": [
+    []
+   ]
+  },
+  {
+   "no": "6.1",
+   "section": "Electric-engine",
+   "label": "Drive motor rating S 2 60 min",
+   "unit": "kW",
+   "values": [
+    "0.4"
+   ],
+   "notes": [
+    []
+   ]
+  },
+  {
+   "no": "6.3",
+   "section": "Electric-engine",
+   "label": "The maximum allowed size battery",
+   "unit": "mm",
+   "values": [
+    "195 / 165 / 175"
+   ],
+   "notes": [
+    []
+   ]
+  },
+  {
+   "no": "6.4",
+   "section": "Electric-engine",
+   "label": "Battery voltage / rated capacity K20",
+   "unit": "(V) / (Ah)",
+   "values": [
+    "24 / 50"
+   ],
+   "notes": [
+    []
+   ]
+  },
+  {
+   "no": "6.5",
+   "section": "Electric-engine",
+   "label": "Battery weight (+5 %)",
+   "unit": "kg",
+   "values": [
+    "2 x 14"
+   ],
+   "notes": [
+    []
+   ]
+  },
+  {
+   "no": "6.6",
+   "section": "Electric-engine",
+   "label": "Energy consumption acc. to VDI cycle",
+   "unit": "kWh / h at number of cycles",
+   "values": [
+    "0.218"
+   ],
+   "notes": [
+    []
+   ]
+  },
+  {
+   "no": "8.1",
+   "section": "Drive",
+   "label": "Type of drive control",
+   "unit": "",
+   "values": [
+    "DC"
+   ],
+   "notes": [
+    []
+   ]
+  },
+  {
+   "no": "10.5",
+   "section": "Additional data",
+   "label": "Steering type",
+   "unit": "",
+   "values": [
+    "Mechanical"
+   ],
+   "notes": [
+    []
+   ]
+  },
+  {
+   "no": "10.7",
+   "section": "Additional data",
+   "label": "Noise level at the driver’s ear",
+   "unit": "dB(A)",
+   "values": [
+    "< 50"
+   ],
+   "notes": [
+    []
+   ]
+  }
+ ],
+ "footnotes": [],
+ "masts": {},
+ "equipment": [],
+ "characteristics": [],
+ "unparsed": {
+  "page1": "Safety                                                                        easily and conveniently adjusted to suit every o  perator’s preferenc-\nThe MP13 eliminates the physical effort which causes physical stress and     es. A built-in charger enables the battery to be charged at any conve-\nstrain to users. The position of the tiller places the operator in a safe,   nient power point for optimum uptime.\nyet comfortable, working distance from the truck. The efficient braking\nsystems ensure inherent safety. The MP13 features an effective parking       Reliability\n brake to hold the truck safely on slopes or on truck tail lifts.             The durable drive unit of the MP13 delivers consistent high perfor-\n                                                                              mance and reliability. It is equipped with a maintenance-free gel\nPerformance                                                                   battery. The battery discharge indicator, with an operating hour meter,\nWith the MP13 moving trolleys, roll cages, or shopping carts has              informs you at any time about the charging status of the battery.\nnever been so easy. Equipped with a 0.4 kW drive m     otor, the MP13\n offers a highly cost-effective and productive s olution for short dis-      Productivity\n tance transfer duties of loads up to 1300 kg. Its compactness guaran-        The DC drive motor optimizes uptime ratios between routine ser-\n tees maximum maneuverability when operating in a busy area or in             vice periods and reduces service costs, while a reliable, energy ef-\n confined spaces.                                                             ficient controller delivers smooth handling performance. Fast and\n                                                                              easy a ccess to all internal components ensures service tasks are\nComfort                                                                       completed with a minimum of delay.\nThe dual butterfly lever on the ergonomic tiller head ensures precise\ntraction control with either hand. The inclination of the tiller can be",
+  "other": "ACCORDING TO VDI 2198",
+  "sections": {
+   "STANDARD EQUIPMENT                                 OPTIONAL EQUIPMENT": "Pneumatic drive wheel                              Various towing couplings\nFront hook                                         Plug interlock (compulsory for UK)\n4 / 4.5 km / h travel speed (w / o load)           Plug: UK type\nBuilt-in charger\nGel battery 24 V 50 Ah\nDisplay: hour meter, battery discharge indicator\nAutomatic parking brake\nBelly switch on tiller head\nKey switch\nPlug: EU type",
+   "FEATURES": "Drive unit                                                                                                                       Braking system\n→ DC drive motor                                                                                                                 →→ Automatic deceleration when butterfly\n→ Reliable, energy efficient electronic                                                                                             button is released\n  controller                                                                                                                     →→ Parking brake applies automatically\n→ Adjustable parameters: travel speed and                                                                                           when tiller arm is released\n  acceleration                                                                                                                   →→ Proofed emergency button\n                                                                                                                                 →→ Key switch\n\n\n\n\nMultifunctional display                                                                                                          Energy\n→ Reliable and precise battery discharge                                                                                         →→ Built-in gel battery\n   indicator                                                                                                                     →→ Maintenance-free battery: 2 x 12 V 50 Ah\n→ Operating hour meter                                                                                                           →→ Autonomy up to 3 h\n→→ Faults code indication\n\n\n\n\nTiller and tiller head                                                           Built-in charger                                Towing couplings\n→→ Adjustable tiller height                                                      →→ Built-in charger enables the battery to be   →→ Easy coupling and decoupling\n→→ Traction controls grouped on ergonom-                                            charged at any convenient power point        →→ Coupling is always in an excellent view of\n    ic tiller head                                                                  during occasional breaks                        operator\n→→ Dual butterfly control can be levered with                                    →→ Plug interlock for more safety               →→ Additional various coupling devices\n    either hand\n→→ Belly switch on tiller head stops truck\n    when actuated\n\n\n\n\n                                                                                                                                 Presented by:\n\nSubject to modification in the interest of progress. Illustrations and technical details could include options and\nnot binding for actual constructions. All dimensions subject to usual tolerances.\n\n\n\n\n                                                             Linde Material Handling GmbH\n                                                             Postbox 10 0136 | 63701 Aschaffenburg | Germany\n                                                             Phone + 49 6021 99 0 | Fax + 49 6021 99 15 70\n                                                             www.linde-mh.com | info@linde-mh.com\n\n                                                             Printed in Germany 787.e.0,5.0818.IndA.Ki"
+  }
+ }
+}

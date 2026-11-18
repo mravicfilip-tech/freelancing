@@ -1,0 +1,776 @@
+{
+ "slug": "l14-do-l16-rw",
+ "datasheet": {
+  "name": "DS_L14RW_L16RW_BR1174_en_A_0618_view.pdf",
+  "id": "1553b5nBz36rqwTpT9AF5vqHvs35fOquX"
+ },
+ "heading": "SEATED PALLET STACKER",
+ "range": "L14 RW | L16 RW",
+ "capacity": "CAPACITY 1400 - 1600 KG | SERIES 1174",
+ "tagline": null,
+ "benefits": [],
+ "versions": [
+  "L14 RW",
+  "L16 RW"
+ ],
+ "vdi": [
+  {
+   "no": "1.1",
+   "section": "Characteristics",
+   "label": "Manufacturer",
+   "unit": "",
+   "values": [
+    "LINDE",
+    "LINDE"
+   ],
+   "notes": [
+    [],
+    []
+   ]
+  },
+  {
+   "no": "1.2",
+   "section": "Characteristics",
+   "label": "Model design",
+   "unit": "",
+   "values": [
+    "L14 RW",
+    "L16 RW"
+   ],
+   "notes": [
+    [],
+    []
+   ]
+  },
+  {
+   "no": "1.3",
+   "section": "Characteristics",
+   "label": "Power unit",
+   "unit": "",
+   "values": [
+    "Battery",
+    "Battery"
+   ],
+   "notes": [
+    [],
+    []
+   ]
+  },
+  {
+   "no": "1.4",
+   "section": "Characteristics",
+   "label": "Operation",
+   "unit": "",
+   "values": [
+    "Seat",
+    "Seat"
+   ],
+   "notes": [
+    [],
+    []
+   ]
+  },
+  {
+   "no": "1.5",
+   "section": "Characteristics",
+   "label": "Load capacity / Load",
+   "unit": "Q (t)",
+   "values": [
+    "1.4",
+    "1.6"
+   ],
+   "notes": [
+    [],
+    []
+   ]
+  },
+  {
+   "no": "1.6",
+   "section": "Characteristics",
+   "label": "Load centre distance",
+   "unit": "c (mm)",
+   "values": [
+    "600",
+    "600"
+   ],
+   "notes": [
+    [],
+    []
+   ]
+  },
+  {
+   "no": "1.8",
+   "section": "Characteristics",
+   "label": "Axle centre to fork face",
+   "unit": "x (mm)",
+   "values": [
+    "724 (645)",
+    "724 (645)"
+   ],
+   "notes": [
+    [],
+    []
+   ]
+  },
+  {
+   "no": "1.9",
+   "section": "Characteristics",
+   "label": "Wheelbase",
+   "unit": "y (mm)",
+   "values": [
+    "1603",
+    "1603"
+   ],
+   "notes": [
+    [],
+    []
+   ]
+  },
+  {
+   "no": "2.1",
+   "section": "Weight",
+   "label": "Service weight",
+   "unit": "(kg)",
+   "values": [
+    "1616 (1697)",
+    "1616 (1697)"
+   ],
+   "notes": [
+    [],
+    []
+   ]
+  },
+  {
+   "no": "2.2",
+   "section": "Weight",
+   "label": "Axle load with load, front / rear",
+   "unit": "(kg)",
+   "values": [
+    "1174 / 1842 (1227 / 1870)",
+    "1190 / 2026 (1243 / 2054)"
+   ],
+   "notes": [
+    [],
+    []
+   ]
+  },
+  {
+   "no": "2.3",
+   "section": "Weight",
+   "label": "Axle load without load, front / rear",
+   "unit": "(kg)",
+   "values": [
+    "1066 / 550 (1119 / 578)",
+    "1066 / 550 (1119 / 578)"
+   ],
+   "notes": [
+    [],
+    []
+   ]
+  },
+  {
+   "no": "3.1",
+   "section": "Tyres/chassis",
+   "label": "Tyres rubber, SE, pneumatic, polyurethane",
+   "unit": "",
+   "values": [
+    "V+P/P",
+    "V+P/P"
+   ],
+   "notes": [
+    [],
+    []
+   ]
+  },
+  {
+   "no": "3.2",
+   "section": "Tyres/chassis",
+   "label": "Tyre size, front",
+   "unit": "",
+   "values": [
+    "Ø 254 x 102",
+    "Ø 254 x 102"
+   ],
+   "notes": [
+    [],
+    []
+   ]
+  },
+  {
+   "no": "3.3",
+   "section": "Tyres/chassis",
+   "label": "Tyre size, rear",
+   "unit": "",
+   "values": [
+    "Ø 85 x 60",
+    "Ø 85 x 60"
+   ],
+   "notes": [
+    [],
+    []
+   ]
+  },
+  {
+   "no": "3.4",
+   "section": "Tyres/chassis",
+   "label": "Auxiliary wheels (dimensions)",
+   "unit": "",
+   "values": [
+    "Ø 140 x 50",
+    "Ø 140 x 50"
+   ],
+   "notes": [
+    [],
+    []
+   ]
+  },
+  {
+   "no": "3.5",
+   "section": "Tyres/chassis",
+   "label": "Wheels, number front/rear (x = driven)",
+   "unit": "",
+   "values": [
+    "1x + 1/4",
+    "1x+1/4"
+   ],
+   "notes": [
+    [],
+    []
+   ]
+  },
+  {
+   "no": "3.6",
+   "section": "Tyres/chassis",
+   "label": "Track width, front",
+   "unit": "b10 (mm)",
+   "values": [
+    "699",
+    "699"
+   ],
+   "notes": [
+    [],
+    []
+   ]
+  },
+  {
+   "no": "3.7",
+   "section": "Tyres/chassis",
+   "label": "Track width, rear",
+   "unit": "b11 (mm)",
+   "values": [
+    "380",
+    "380"
+   ],
+   "notes": [
+    [],
+    []
+   ]
+  },
+  {
+   "no": "4.2",
+   "section": "Dimensions",
+   "label": "Height of mast, lowered",
+   "unit": "h1 (mm)",
+   "values": [
+    "2365",
+    "2365"
+   ],
+   "notes": [
+    [],
+    []
+   ]
+  },
+  {
+   "no": "4.3",
+   "section": "Dimensions",
+   "label": "Free lift",
+   "unit": "h 2 (mm)",
+   "values": [
+    "150",
+    "150"
+   ],
+   "notes": [
+    [],
+    []
+   ]
+  },
+  {
+   "no": "4.4",
+   "section": "Dimensions",
+   "label": "Lift",
+   "unit": "h 3 (mm)",
+   "values": [
+    "3744",
+    "3744"
+   ],
+   "notes": [
+    [],
+    []
+   ]
+  },
+  {
+   "no": "4.5",
+   "section": "Dimensions",
+   "label": "Height of mast, extended",
+   "unit": "h 4 (mm)",
+   "values": [
+    "4264",
+    "2260"
+   ],
+   "notes": [
+    [],
+    []
+   ]
+  },
+  {
+   "no": "4.6",
+   "section": "Dimensions",
+   "label": "Initial lift",
+   "unit": "h 5 (mm)",
+   "values": [
+    "(- 125)",
+    "(- 125)"
+   ],
+   "notes": [
+    [],
+    []
+   ]
+  },
+  {
+   "no": "4.7",
+   "section": "Dimensions",
+   "label": "Height of overhead guard (cabin)",
+   "unit": "h 6 (mm)",
+   "values": [
+    "2260",
+    "2260"
+   ],
+   "notes": [
+    [],
+    []
+   ]
+  },
+  {
+   "no": "4.8",
+   "section": "Dimensions",
+   "label": "Height of seat/stand on platform",
+   "unit": "h7 (mm)",
+   "values": [
+    "1166",
+    "1166"
+   ],
+   "notes": [
+    [],
+    []
+   ]
+  },
+  {
+   "no": "4.10",
+   "section": "Dimensions",
+   "label": "Height of reach legs",
+   "unit": "h 8 (mm)",
+   "values": [
+    "80",
+    "80"
+   ],
+   "notes": [
+    [],
+    []
+   ]
+  },
+  {
+   "no": "4.15",
+   "section": "Dimensions",
+   "label": "Height, lowered",
+   "unit": "h13 (mm)",
+   "values": [
+    "86",
+    "86"
+   ],
+   "notes": [
+    [],
+    []
+   ]
+  },
+  {
+   "no": "4.19",
+   "section": "Dimensions",
+   "label": "Overall length",
+   "unit": "l 1 (mm)",
+   "values": [
+    "2187",
+    "2187"
+   ],
+   "notes": [
+    [],
+    []
+   ]
+  },
+  {
+   "no": "4.20",
+   "section": "Dimensions",
+   "label": "Length to fork face",
+   "unit": "l 2 (mm)",
+   "values": [
+    "1037",
+    "1037"
+   ],
+   "notes": [
+    [],
+    []
+   ]
+  },
+  {
+   "no": "4.21",
+   "section": "Dimensions",
+   "label": "Overall width",
+   "unit": "b1 / b2 (mm)",
+   "values": [
+    "970",
+    "970"
+   ],
+   "notes": [
+    [],
+    []
+   ]
+  },
+  {
+   "no": "4.22",
+   "section": "Dimensions",
+   "label": "Fork dimensions DIN ISO 2331",
+   "unit": "s / e / l (mm)",
+   "values": [
+    "71 x 180 x 1150",
+    "71 x 180 x 1150"
+   ],
+   "notes": [
+    [],
+    []
+   ]
+  },
+  {
+   "no": "4.24",
+   "section": "Dimensions",
+   "label": "Width of fork carriage",
+   "unit": "b3 (mm)",
+   "values": [
+    "780",
+    "780"
+   ],
+   "notes": [
+    [],
+    []
+   ]
+  },
+  {
+   "no": "4.25",
+   "section": "Dimensions",
+   "label": "Fork spread",
+   "unit": "b 5 (mm)",
+   "values": [
+    "560",
+    "560"
+   ],
+   "notes": [
+    [],
+    []
+   ]
+  },
+  {
+   "no": "4.32",
+   "section": "Dimensions",
+   "label": "Ground clearance, centre of wheelbase",
+   "unit": "m 2 (mm)",
+   "values": [
+    "30 (20)",
+    "30 (20)"
+   ],
+   "notes": [
+    [],
+    []
+   ]
+  },
+  {
+   "no": "4.33",
+   "section": "Dimensions",
+   "label": "Load dimension b12 x l 6",
+   "unit": "b12 x l 6 (mm)",
+   "values": [
+    "800 x 1200",
+    "800 x 1200"
+   ],
+   "notes": [
+    [],
+    []
+   ]
+  },
+  {
+   "no": "4.34",
+   "section": "Dimensions",
+   "label": "Aisle width predetermined load dimensions",
+   "unit": "A st (mm)",
+   "values": [
+    "2618",
+    "2618"
+   ],
+   "notes": [
+    [],
+    []
+   ]
+  },
+  {
+   "no": "4.35",
+   "section": "Dimensions",
+   "label": "Turning radius",
+   "unit": "Wa (mm)",
+   "values": [
+    "1796",
+    "1796"
+   ],
+   "notes": [
+    [],
+    []
+   ]
+  },
+  {
+   "no": "5.1",
+   "section": "Performance",
+   "label": "Travel speed, with / without load",
+   "unit": "(km / h)",
+   "values": [
+    "10 / 12",
+    "10 / 12"
+   ],
+   "notes": [
+    [],
+    []
+   ]
+  },
+  {
+   "no": "5.2",
+   "section": "Performance",
+   "label": "Lifting speed, with / without load",
+   "unit": "(m / s)",
+   "values": [
+    "0.144 / 0.447",
+    "0.144 / 0.447"
+   ],
+   "notes": [
+    [],
+    []
+   ]
+  },
+  {
+   "no": "5.3",
+   "section": "Performance",
+   "label": "Lowering speed, with / without load",
+   "unit": "(m / s)",
+   "values": [
+    "(0.045 / 0.088) 0.343 / 0.342 (0.076 / 0.072)",
+    "(0.045 / 0.088) 0.343 / 0.342 (0.076 / 0.072)"
+   ],
+   "notes": [
+    [],
+    []
+   ]
+  },
+  {
+   "no": "5.8",
+   "section": "Performance",
+   "label": "Maximum climbing ability, with / without load",
+   "unit": "(%)",
+   "values": [
+    "13.0 / 20.0 (12.0 / 20.0)",
+    "13.0 / 20.0 (12.0 / 20.0)"
+   ],
+   "notes": [
+    [],
+    []
+   ]
+  },
+  {
+   "no": "5.9",
+   "section": "Performance",
+   "label": "Acceleration time, with/without load",
+   "unit": "(s)",
+   "values": [
+    "5.6 / 4.7",
+    "5.6 / 4.7"
+   ],
+   "notes": [
+    [],
+    []
+   ]
+  },
+  {
+   "no": "5.10",
+   "section": "Performance",
+   "label": "Service brake",
+   "unit": "",
+   "values": [
+    "Electro-magnetic",
+    "Electro-magnetic"
+   ],
+   "notes": [
+    [],
+    []
+   ]
+  },
+  {
+   "no": "6.1",
+   "section": "Electric-engine",
+   "label": "Drive motor rating S2 60 min",
+   "unit": "(kW)",
+   "values": [
+    "3",
+    "3"
+   ],
+   "notes": [
+    [],
+    []
+   ]
+  },
+  {
+   "no": "6.2",
+   "section": "Electric-engine",
+   "label": "Lift motor rating at S3 15 %",
+   "unit": "(kW)",
+   "values": [
+    "3.2",
+    "3.2"
+   ],
+   "notes": [
+    [],
+    []
+   ]
+  },
+  {
+   "no": "6.3",
+   "section": "Electric-engine",
+   "label": "Battery according to DIN 43531 / 35 / 36 A, B, C, no",
+   "unit": "",
+   "values": [
+    "no",
+    "no"
+   ],
+   "notes": [
+    [],
+    []
+   ]
+  },
+  {
+   "no": "6.4",
+   "section": "Electric-engine",
+   "label": "Battery voltage/rated capacity (5 h)",
+   "unit": "(V) / (Ah)",
+   "values": [
+    "24 / 345 / 375",
+    "24 / 345 / 375"
+   ],
+   "notes": [
+    [],
+    []
+   ]
+  },
+  {
+   "no": "6.5",
+   "section": "Electric-engine",
+   "label": "Battery weight (± 5 %)",
+   "unit": "(kg)",
+   "values": [
+    "288",
+    "288"
+   ],
+   "notes": [
+    [],
+    []
+   ]
+  },
+  {
+   "no": "6.6",
+   "section": "Electric-engine",
+   "label": "Power consumption according to VDI cycle",
+   "unit": "(kWh / h)",
+   "values": [
+    "1.41",
+    "1.41"
+   ],
+   "notes": [
+    [],
+    []
+   ]
+  },
+  {
+   "no": "6.7",
+   "section": "Electric-engine",
+   "label": "Turnover output",
+   "unit": "(t / h)",
+   "values": [
+    "67.2",
+    "67.2"
+   ],
+   "notes": [
+    [],
+    []
+   ]
+  },
+  {
+   "no": "6.8",
+   "section": "Electric-engine",
+   "label": "Energy consumption at turnover output",
+   "unit": "(kWh / h)",
+   "values": [
+    "2.08",
+    "2.08"
+   ],
+   "notes": [
+    [],
+    []
+   ]
+  },
+  {
+   "no": "8.1",
+   "section": "Drive",
+   "label": "Type of drive unit",
+   "unit": "",
+   "values": [
+    "LAC",
+    "LAC"
+   ],
+   "notes": [
+    [],
+    []
+   ]
+  },
+  {
+   "no": "10.7",
+   "section": "Additional data",
+   "label": "Sound pressure level LpAZ (at the driver’s seat)",
+   "unit": "(dB(A))",
+   "values": [
+    "65",
+    "65"
+   ],
+   "notes": [
+    [],
+    []
+   ]
+  }
+ ],
+ "footnotes": [],
+ "masts": {},
+ "equipment": [],
+ "characteristics": [],
+ "unparsed": {
+  "image_pages": [
+   3,
+   5
+  ],
+  "page1": "Safety                                                                      are easily accessible. The sitting position and the floorplate are adjustable\nHigh performance combined with safety. The Linde Load Management           to suit every operator’s preferences.\nsystem automatically calculates residual capacity. It warns the operator\nand deactivates the lift function when approaching load capacity limits.    Reliability\nThe efficient braking systems and the four point configuration ensures      Rugged construction and the use of tried and tested components\ninherent stability. The operator is always safely within the chassis        ensure this a truck that can be relied on. Motor, sub-components and\ncontour and is also protected by the overhead guard.                        electronics are all protected within the robust chassis structure. With\n                                                                             the initial lift version (option), the ground clearance is improved to cope\nPerformance                                                                  with gradients and uneven floors. These features guarantee a longer\nHigh operational efficiency is this truck‘s true strength. The 3 kW AC       operating life, delivering safe, efficient, and productive load handling.\nmotor enables speeds up to 12 km / h. The robust chassis structure\nprovides exceptional residual capacities with nominal capacities from      Service\n 1400 kg up to 1600 kg and a lifting height of up to 6.2 m.                 Efficiency at work and efficiency in servicing with cost effective\n                                                                            maintenance routines. Easy access to all components and\nComfort                                                                      maintenance-free technology also play their part in increasing truck\nThe 90° sitting position provides excellent all-round visibility over the     up-time and availability. CAN bus connectivity provides a\nenvironment. The spacious operator's compartment and the padded              computerized diagnostic system for rapid analysis to ensure\n armrest offer a stress-free working environment for optimum efficiency        maintenance intervals are also minimized.\n and productivity. All the operating controls incorporated in the console",
+  "other": "ACCORDING TO VDI 2198",
+  "sections": {
+   "STANDARD EQUIPMENT                                                                              OPTIONAL EQUIPMENT": "Chassis width 970 mm                                                                            Initial lift (h5 = 125 mm)\nKey switch or PIN Code access                                                                   Ultra fast lifting (up to + 40 %)\nMultifunction coloured display hour meter, maintenance indication, battery                      Drive wheels: cushion rubber, synthetic cushion rubber non marking, wet grip\ndischarge indicator and internal fault code indication\n                                                                                                Load wheels: tandem polyurethane greasable\nPower assisted steering                                                                         Lateral battery change 3 PzS / 4 PzS available with an ergonomic battery\nAutomatic speed reduction when cornering                                                        un / locking with lever and rollers (l2 =1112 mm)\nECO-Mode with up to 12 % energy savings                                                         Leather seat and seat heating\n3 kW AC motor (maintenance free)                                                                Head support\nDrive wheel position mentioned in display                                                       Various Standard, Duplex and Triplex masts (up to 6200 mm lift height)\nLateral battery change 3 PzS available with ergonomic battery un / locking                      Mast Protection: polycarbonate, steel mesh\nwith lever and rollers (l2 = 1037 mm)\n                                                                                                Speed reduction if forks lowered\nCAN bus technology\n                                                                                                Alternative fork carriage length / thickness: 950 mm or 1150 mm / 71 mm or\nOverhead guard                                                                                  55 mm (preferred while using gitter box)\nSoft landing on forks                                                                           Blue Spot\nFloor compensator                                                                               Flashing beacon\nDrive wheel Polyurethane                                                                        Support Clipboard DIN A4 and panoramic mirror\nTandem load wheel Polyurethane                                                                  Support data terminal incl. power supply cable 24 V\nChassis for load arm width 560 and 680 mm                                                       Mobile or Fixed battery stand\nProtection -10° C                                                                               Cold store protection - 35° C\n                                                                                                Other options available on request\n\n                                                                                                Linde Connected Solutions:\n                                                                                                ac: access control (PIN or RFID Dual),\n                                                                                                an: usage analysis and dt: crash detection\n\n                                                                                                Data transfer Online\n\n                                                                                                Data transfer WIFI\n\n                                                                                                Bluetooth USB Stick\n\n                                                                                                Li-ION technology:\n                                                                                                4 PzSL compartment: 4.5 kwh - 9 Kwh (205 Ah - 410 Ah)\n\nMAST TABLES                                                                                     Li-ION charger:\n                                                                                                24 V-Charger v255: 4.5 kWh (full charging time 1 h 30 min) - 9.0 kWh (2 h 40 min)\n\n\n\n  Mast 1.4 and 1.6 t (in mm)                                         1844 S         2344 S   2844 S       3244 S            3744 S           4144 S           4644 S          1844 D    2344 D\n\n\n  Height, mast lowered                                   h1           1415            1665    1915          2115            2365             2565              2815            1415      1665\n  Closed height (with free lift at 150 mm)               h1'         1490             1740    1990          2190            2440             2640              2890             /             /\n  Free lift                                              h2           150              150    150           150              150              150              150             895           1145\n  Lift                                                   h3          1844             2344   2844           3244             3744            4144              4644            1844      2344\n  Height, mast extended                                  h4          2364             2864   3364           3764            4264             4664              5164            2364      2864\n\n\n\n\n  Mast 1.4 and 1.6 t (in mm)                                                  2844 D         3244 D                3744 D            4266 T           4716 T           5466T           6216T\n\n\n  Height, mast lowered                                         h1              1915           2115                 2365               1915            2065             2315            2565\n  Closed height (with free lift at 150 mm)                     h1'              /               /                    /                 /                /                /               /\n  Free lift                                                    h2              1395           1595                  1845              1395             1545            1795            2045\n  Lift                                                         h3              2844           3244                  3744             4266             4716             5466            6216\n  Height, mast extended                                        h4              3364           3764                 4264              4786             5236             5986            6736\n\n  Other masts on request. S = Standard, D = Duplex, T = Triplex",
+   "FEATURES": "Lifting systems                                                                                                               Linde Load Management\n→ Precise, effortless fingertip control of all                                                                                → Immediate calculation of the current\n  mast movements                                                                                                                weight and lifting height\n→ Soft landing on forks protects the load                                                                                     → Calculates in live if the operator is\n  when lowering                                                                                                                 approaching or over the residual capacity\n→ Initial lift independent of main lift                                                                                         limit\n→ Max. lift height up to 6200 mm                                                                                              → Informs on potential maximum height\n→ Max. load capacity in Stacker use: 1600 kg                                                                                    and weight\n  on load arms                                                                                                                → Information available at a glance on a\n                                                                                                                                wide multifunctional display\n                                                                                                                              → Acoustic and visual warning with blinking\n                                                                                                                                red light.\n\n\n\n\nHandling                                                                         Comprehensive energy solutions               Drive control and settings\n→ Chassis width b1 = 970 mm                                                      → 24 V batteries: capacities from 345 Ah     → Compact steering wheel integrated into\n→ Initial lift = 125 mm                                                            (3 PzS) to 500 Ah (4 PzS)                    the console\n→ High seated position for excellent                                             → 24 V high batteries: capacities from       → Traction speed automatically reduces in\n  visibility                                                                       420 Ah (3 PzS) to 620 Ah (4 PzS)             relation to the steering angle\n→ Stable 4 point configuration                                                   → Li-ION batteries with 4.5 kWh (205 Ah)     → ECO-Mode up to 12 % energy savings to\n→ Pallet stop for fast, efficient stacking of                                      and 9.0 kWh (410 Ah)                         finish shift with low battery status\n  two pallets\n\n\n\n\nWorkstation                                                                      Ergonomics and sitting position              Twin or single pedal\n→ Multifunctional instrument display with                                        → 90° Side-stance seating posture ensures    → Seamless and effortless forward / reverse\n  easy ergonomic menu                                                              excellent visibility                         selection provides outstanding traction\n→ Truck access control by PIN code or                                            → Padded armrest and easy access to all        control and places minimal demands on\n  ignition key                                                                     operating controls                           operator\n→ Storage compartment for work gloves,                                           → Three independent adjustments systems:     → The left foot is safely protected within\n  writing utensils etc.                                                            backrest adjustable, length adjustable,      the chassis contours\n→ Emergency isolator                                                               weight adjustable for operator’s comfort   → The operator is able to maintain high\n                                                                                 → Adjustable floor plate                       levels of efficiency and productivity\n\n\n\n                                                                                                                              Presented by:\n\nSubject to modification in the interest of progress. Illustrations and technical details could include options and\nnot binding for actual constructions. All dimensions subject to usual tolerances.\n\n\n\n\n                                                             Linde Material Handling GmbH\n                                                             Postbox 10 0136 | 63701 Aschaffenburg | Germany\n                                                             Phone + 49 6021 99 0 | Fax + 49 6021 99 15 70\n                                                             www.linde-mh.com | info@linde-mh.com\n\n                                                             Printed in Germany 779.e.0,2.0618.IndA.Ki"
+  }
+ }
+}

@@ -1,0 +1,2174 @@
+{
+ "slug": "h16-do-h20",
+ "datasheet": {
+  "name": "DS_H16_H20_391_EN_J_1024_view.pdf",
+  "id": "1NAv3cMk5dps5AsNIHd9wVkvp0Al05BRL"
+ },
+ "heading": "Internal Combustion Engine Counterbalance Trucks",
+ "range": "H16 – H20",
+ "capacity": "Capacity 1.6 t – 2.0 t | Series 391",
+ "tagline": "Agile bundle of energy",
+ "benefits": [
+  "Compact dimensions for operation in tight corners",
+  "Spacious, ergonomic workplace with outstanding visibility for maximum operating comfort",
+  "Sturdy design for the most demanding applications in dusty environments or multi-shift operation",
+  "Wide variety of models, comprehensive range of standard equipment, additional options and customer-specific solutions for maximum versatility",
+  "Hydrostatic direct drive, twin pedal control and Linde Load Control ensure powerful, fast and precise power delivery",
+  "Low fuel consumption, long service intervals and maintenance-free components ensure high availability and keep total cost of ownership as low as possible"
+ ],
+ "versions": [
+  "H16 D",
+  "H16 T",
+  "H16 CNG",
+  "H18 D",
+  "H18 T",
+  "H18 CNG",
+  "H20 D",
+  "H20 T",
+  "H20 CNG"
+ ],
+ "vdi": [
+  {
+   "no": "1.1",
+   "section": "Characteristics",
+   "label": "Manufacturer (abbreviation)",
+   "unit": "",
+   "values": [
+    "Linde MH",
+    "Linde MH",
+    "Linde MH",
+    "Linde MH",
+    "Linde MH",
+    "Linde MH",
+    "Linde MH",
+    "Linde MH",
+    "Linde MH"
+   ],
+   "notes": [
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "1.2",
+   "section": "Characteristics",
+   "label": "Manufacturer’s type designation",
+   "unit": "",
+   "values": [
+    "H16 D",
+    "H16 T",
+    "H16 CNG",
+    "H18 D",
+    "H18 T",
+    "H18 CNG",
+    "H20 D",
+    "H20 T",
+    "H20 CNG"
+   ],
+   "notes": [
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "1.2a",
+   "section": "Characteristics",
+   "label": "Series",
+   "unit": "",
+   "values": [
+    "391-02",
+    "391-02",
+    "391-02",
+    "391-02",
+    "391-02",
+    "391-02",
+    "391-02",
+    "391-02",
+    "391-02"
+   ],
+   "notes": [
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "1.3",
+   "section": "Characteristics",
+   "label": "Drive",
+   "unit": "",
+   "values": [
+    "Diesel",
+    "LPG",
+    "CNG",
+    "Diesel",
+    "LPG",
+    "CNG",
+    "Diesel",
+    "LPG",
+    "CNG"
+   ],
+   "notes": [
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "1.4",
+   "section": "Characteristics",
+   "label": "Operation",
+   "unit": "",
+   "values": [
+    "Seat",
+    "Seat",
+    "Seat",
+    "Seat",
+    "Seat",
+    "Seat",
+    "Seat",
+    "Seat",
+    "Seat"
+   ],
+   "notes": [
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "1.5",
+   "section": "Characteristics",
+   "label": "Rated capacity/rated load",
+   "unit": "Q (t)",
+   "values": [
+    "1.6",
+    "1.6",
+    "1.6",
+    "1.8",
+    "1.8",
+    "1.8",
+    "2.0",
+    "2.0",
+    "2.0"
+   ],
+   "notes": [
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "1.6",
+   "section": "Characteristics",
+   "label": "Load centre distance",
+   "unit": "c (mm)",
+   "values": [
+    "500",
+    "500",
+    "500",
+    "500",
+    "500",
+    "500",
+    "500",
+    "500",
+    "500"
+   ],
+   "notes": [
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "1.8",
+   "section": "Characteristics",
+   "label": "Load distance, centre of drive axle to fork",
+   "unit": "x (mm)",
+   "values": [
+    "365",
+    "365",
+    "365",
+    "370",
+    "370",
+    "370",
+    "374",
+    "374",
+    "374"
+   ],
+   "notes": [
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "1.9",
+   "section": "Characteristics",
+   "label": "Wheelbase",
+   "unit": "y (mm)",
+   "values": [
+    "1600",
+    "1600",
+    "1600",
+    "1600",
+    "1600",
+    "1600",
+    "1600",
+    "1600",
+    "1600"
+   ],
+   "notes": [
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "2.1",
+   "section": "Weight",
+   "label": "Service weight",
+   "unit": "kg",
+   "values": [
+    "2745",
+    "2725",
+    "2810",
+    "2920",
+    "2900",
+    "2985",
+    "3110",
+    "3090",
+    "3175"
+   ],
+   "notes": [
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "2.2",
+   "section": "Weight",
+   "label": "Axle loading, laden front/rear",
+   "unit": "kg",
+   "values": [
+    "3815/530",
+    "3775/550",
+    "3849/561",
+    "4139/581",
+    "4099/601",
+    "4173/612",
+    "4483/628",
+    "4443/648",
+    "4517/659"
+   ],
+   "notes": [
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "2.3",
+   "section": "Weight",
+   "label": "Axle loading, unladen front/rear",
+   "unit": "kg",
+   "values": [
+    "1350/1395",
+    "1310/1415",
+    "1384/1426",
+    "1360/1560",
+    "1320/1580",
+    "1394/1591",
+    "1390/1720",
+    "1350/1740",
+    "1424/1751"
+   ],
+   "notes": [
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "3.1",
+   "section": "Tyres/chassis",
+   "label": "Tyres: solid rubber, superelastic, pneumatic, polyurethane",
+   "unit": "",
+   "values": [
+    "SE",
+    "SE",
+    "SE",
+    "SE",
+    "SE",
+    "SE",
+    "SE",
+    "SE",
+    "SE"
+   ],
+   "notes": [
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "3.2",
+   "section": "Tyres/chassis",
+   "label": "Tyre size, front",
+   "unit": "",
+   "values": [
+    "180/70-8 (18x7-8)",
+    "180/70-8 (18x7-8)",
+    "180/70-8 (18x7-8)",
+    "180/70-8 (18x7-8)",
+    "180/70-8 (18x7-8)",
+    "180/70-8 (18x7-8)",
+    "200/50-10",
+    "200/50-10",
+    "200/50-10"
+   ],
+   "notes": [
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "3.3",
+   "section": "Tyres/chassis",
+   "label": "Tyre size, rear",
+   "unit": "",
+   "values": [
+    "180/70-8 (18x7-8)",
+    "180/70-8 (18x7-8)",
+    "180/70-8 (18x7-8)",
+    "180/70-8 (18x7-8)",
+    "180/70-8 (18x7-8)",
+    "180/70-8 (18x7-8)",
+    "180/70-8 (18x7-8)",
+    "180/70-8 (18x7-8)",
+    "180/70-8 (18x7-8)"
+   ],
+   "notes": [
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "3.5",
+   "section": "Tyres/chassis",
+   "label": "Wheels, number front/rear (x = driven wheels)",
+   "unit": "",
+   "values": [
+    "2x/2",
+    "2x/2",
+    "2x/2",
+    "2x/2",
+    "2x/2",
+    "2x/2",
+    "2x/2",
+    "2x/2",
+    "2x/2"
+   ],
+   "notes": [
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "3.6",
+   "section": "Tyres/chassis",
+   "label": "Tread, front",
+   "unit": "b10 (mm)",
+   "values": [
+    "930",
+    "930",
+    "930",
+    "930",
+    "930",
+    "930",
+    "945",
+    "945",
+    "945"
+   ],
+   "notes": [
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "3.7",
+   "section": "Tyres/chassis",
+   "label": "Tread, rear",
+   "unit": "b11 (mm)",
+   "values": [
+    "873",
+    "873",
+    "873",
+    "873",
+    "873",
+    "873",
+    "873",
+    "873",
+    "873"
+   ],
+   "notes": [
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "4.1",
+   "section": "Dimensions",
+   "label": "Mast/fork carriage tilt, forward/backward",
+   "unit": "a/b (°)",
+   "values": [
+    "6.0/9.0",
+    "6.0/9.0",
+    "6.0/9.0",
+    "6.0/9.0",
+    "6.0/9.0",
+    "6.0/9.0",
+    "6.0/9.0",
+    "6.0/9.0",
+    "6.0/9.0"
+   ],
+   "notes": [
+    [
+     "1"
+    ],
+    [
+     "1"
+    ],
+    [
+     "1"
+    ],
+    [
+     "1"
+    ],
+    [
+     "1"
+    ],
+    [
+     "1"
+    ],
+    [
+     "1"
+    ],
+    [
+     "1"
+    ],
+    [
+     "1"
+    ]
+   ]
+  },
+  {
+   "no": "4.2",
+   "section": "Dimensions",
+   "label": "Mast height, lowered",
+   "unit": "h1 (mm)",
+   "values": [
+    "2197",
+    "2197",
+    "2197",
+    "2197",
+    "2197",
+    "2197",
+    "2198",
+    "2198",
+    "2198"
+   ],
+   "notes": [
+    [
+     "2"
+    ],
+    [
+     "2"
+    ],
+    [
+     "2"
+    ],
+    [
+     "2"
+    ],
+    [
+     "2"
+    ],
+    [
+     "2"
+    ],
+    [
+     "2"
+    ],
+    [
+     "2"
+    ],
+    [
+     "2"
+    ]
+   ]
+  },
+  {
+   "no": "4.3",
+   "section": "Dimensions",
+   "label": "Free lift",
+   "unit": "h2 (mm)",
+   "values": [
+    "150",
+    "150",
+    "150",
+    "150",
+    "150",
+    "150",
+    "150",
+    "150",
+    "150"
+   ],
+   "notes": [
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "4.4",
+   "section": "Dimensions",
+   "label": "Lift",
+   "unit": "h3 (mm)",
+   "values": [
+    "3150",
+    "3150",
+    "3150",
+    "3150",
+    "3150",
+    "3150",
+    "3150",
+    "3150",
+    "3150"
+   ],
+   "notes": [
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "4.5",
+   "section": "Dimensions",
+   "label": "Mast height, extended",
+   "unit": "h4 (mm)",
+   "values": [
+    "3754",
+    "3754",
+    "3754",
+    "3754",
+    "3754",
+    "3754",
+    "3755",
+    "3755",
+    "3755"
+   ],
+   "notes": [
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "4.7",
+   "section": "Dimensions",
+   "label": "Height of overhead guard (cabin)",
+   "unit": "h6 (mm)",
+   "values": [
+    "2123",
+    "2123",
+    "2123",
+    "2123",
+    "2123",
+    "2123",
+    "2123",
+    "2123",
+    "2123"
+   ],
+   "notes": [
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "4.8",
+   "section": "Dimensions",
+   "label": "Seat height relating to SIP/stand height",
+   "unit": "h7 (mm)",
+   "values": [
+    "1138",
+    "1138",
+    "1138",
+    "1138",
+    "1138",
+    "1138",
+    "1138",
+    "1138",
+    "1138"
+   ],
+   "notes": [
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "4.12",
+   "section": "Dimensions",
+   "label": "Coupling height",
+   "unit": "h10 (mm)",
+   "values": [
+    "530",
+    "530",
+    "530",
+    "530",
+    "530",
+    "530",
+    "530",
+    "530",
+    "530"
+   ],
+   "notes": [
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "4.19",
+   "section": "Dimensions",
+   "label": "Overall length",
+   "unit": "l1 (mm)",
+   "values": [
+    "3211",
+    "3222",
+    "3222",
+    "3227",
+    "3227",
+    "3227",
+    "3231",
+    "3231",
+    "3231"
+   ],
+   "notes": [
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "4.20",
+   "section": "Dimensions",
+   "label": "Length to fork face",
+   "unit": "l2 (mm)",
+   "values": [
+    "2311",
+    "2322",
+    "2322",
+    "2327",
+    "2327",
+    "2327",
+    "2331",
+    "2331",
+    "2331"
+   ],
+   "notes": [
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "4.21",
+   "section": "Dimensions",
+   "label": "Overall width",
+   "unit": "b1/b2 (mm)",
+   "values": [
+    "1086",
+    "1086",
+    "1086",
+    "1086",
+    "1086",
+    "1086",
+    "1152",
+    "1152",
+    "1152"
+   ],
+   "notes": [
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "4.22",
+   "section": "Dimensions",
+   "label": "Fork dimensions DIN ISO 2331",
+   "unit": "s/e/l (mm)",
+   "values": [
+    "40/80/900",
+    "40/80/900",
+    "40/80/900",
+    "45/100/900",
+    "45/100/900",
+    "45/100/900",
+    "45/100/900",
+    "45/100/900",
+    "45/100/900"
+   ],
+   "notes": [
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "4.23",
+   "section": "Dimensions",
+   "label": "Fork carriage to ISO 2328, class/type A, B",
+   "unit": "",
+   "values": [
+    "2A",
+    "2A",
+    "2A",
+    "2A",
+    "2A",
+    "2A",
+    "2A",
+    "2A",
+    "2A"
+   ],
+   "notes": [
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "4.24",
+   "section": "Dimensions",
+   "label": "Fork carriage width",
+   "unit": "b3 (mm)",
+   "values": [
+    "980",
+    "980",
+    "980",
+    "980",
+    "980",
+    "980",
+    "980",
+    "980",
+    "980"
+   ],
+   "notes": [
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "4.31",
+   "section": "Dimensions",
+   "label": "Ground clearance, laden, below mast",
+   "unit": "m1 (mm)",
+   "values": [
+    "93",
+    "93",
+    "93",
+    "92",
+    "92",
+    "92",
+    "95",
+    "95",
+    "95"
+   ],
+   "notes": [
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "4.32",
+   "section": "Dimensions",
+   "label": "Ground clearance, centre of wheelbase",
+   "unit": "m2 (mm)",
+   "values": [
+    "119",
+    "119",
+    "119",
+    "118",
+    "118",
+    "118",
+    "121",
+    "121",
+    "121"
+   ],
+   "notes": [
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "4.34.1",
+   "section": "Dimensions",
+   "label": "Aisle width for pallets 1000 × 1200 crossways",
+   "unit": "Ast (mm)",
+   "values": [
+    "3686",
+    "3686",
+    "3686",
+    "3691",
+    "3691",
+    "3691",
+    "3695",
+    "3695",
+    "3695"
+   ],
+   "notes": [
+    [
+     "3"
+    ],
+    [
+     "3"
+    ],
+    [
+     "3"
+    ],
+    [
+     "3"
+    ],
+    [
+     "3"
+    ],
+    [
+     "3"
+    ],
+    [
+     "3"
+    ],
+    [
+     "3"
+    ],
+    [
+     "3"
+    ]
+   ]
+  },
+  {
+   "no": "4.34.2",
+   "section": "Dimensions",
+   "label": "Aisle width with pallet 800 × 1200 lengthways",
+   "unit": "Ast (mm)",
+   "values": [
+    "3886",
+    "3886",
+    "3886",
+    "3891",
+    "3891",
+    "3891",
+    "3895",
+    "3895",
+    "3895"
+   ],
+   "notes": [
+    [
+     "3"
+    ],
+    [
+     "3"
+    ],
+    [
+     "3"
+    ],
+    [
+     "3"
+    ],
+    [
+     "3"
+    ],
+    [
+     "3"
+    ],
+    [
+     "3"
+    ],
+    [
+     "3"
+    ],
+    [
+     "3"
+    ]
+   ]
+  },
+  {
+   "no": "4.35",
+   "section": "Dimensions",
+   "label": "Turning radius",
+   "unit": "Wa (mm)",
+   "values": [
+    "2121",
+    "2121",
+    "2121",
+    "2121",
+    "2121",
+    "2121",
+    "2121",
+    "2121",
+    "2121"
+   ],
+   "notes": [
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "4.36",
+   "section": "Dimensions",
+   "label": "Inside turning radius",
+   "unit": "b13 (mm)",
+   "values": [
+    "600",
+    "600",
+    "600",
+    "600",
+    "600",
+    "600",
+    "638",
+    "638",
+    "638"
+   ],
+   "notes": [
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "5.1",
+   "section": "Performance",
+   "label": "Travel speed, laden/unladen",
+   "unit": "km/h",
+   "values": [
+    "20/20",
+    "20/20",
+    "20/20",
+    "20/20",
+    "20/20",
+    "20/20",
+    "20/20",
+    "20/20",
+    "20/20"
+   ],
+   "notes": [
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "5.2",
+   "section": "Performance",
+   "label": "Lifting speed, laden/unladen",
+   "unit": "m/s",
+   "values": [
+    "0.6/0.63",
+    "0.6/0.63",
+    "0.6/0.63",
+    "0.6/0.63",
+    "0.6/0.63",
+    "0.6/0.63",
+    "0.6/0.63",
+    "0.6/0.63",
+    "0.6/0.63"
+   ],
+   "notes": [
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "5.3",
+   "section": "Performance",
+   "label": "Lowering speed, laden/unladen",
+   "unit": "m/s",
+   "values": [
+    "0.57/0.57",
+    "0.57/0.57",
+    "0.57/0.57",
+    "0.57/0.57",
+    "0.57/0.57",
+    "0.57/0.57",
+    "0.57/0.57",
+    "0.57/0.57",
+    "0.57/0.57"
+   ],
+   "notes": [
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "5.5",
+   "section": "Performance",
+   "label": "Drawbar pull, laden/unladen",
+   "unit": "N",
+   "values": [
+    "12900/9900",
+    "12900/9900",
+    "12900/9900",
+    "12900/10300",
+    "12900/10300",
+    "12900/10300",
+    "12900/10700",
+    "12900/10700",
+    "12900/10700"
+   ],
+   "notes": [
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "5.7",
+   "section": "Performance",
+   "label": "Gradeability, laden/unladen",
+   "unit": "%",
+   "values": [
+    "32.0/37.0",
+    "32.0/37.0",
+    "32.0/37.0",
+    "29.0/36.0",
+    "29.0/36.0",
+    "29.0/36.0",
+    "27.0/36.0",
+    "27.0/36.0",
+    "27.0/36.0"
+   ],
+   "notes": [
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "5.9",
+   "section": "Performance",
+   "label": "Acceleration time, laden/unladen",
+   "unit": "s",
+   "values": [
+    "5.1/4.5",
+    "5.0/4.3",
+    "5.0/4.3",
+    "5.3/4.6",
+    "5.2/4.5",
+    "5.2/4.5",
+    "5.4/4.7",
+    "5.3/4.6",
+    "5.3/4.6"
+   ],
+   "notes": [
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "5.10",
+   "section": "Performance",
+   "label": "Service brake",
+   "unit": "",
+   "values": [
+    "hydrostatic",
+    "hydrostatic",
+    "hydrostatic",
+    "hydrostatic",
+    "hydrostatic",
+    "hydrostatic",
+    "hydrostatic",
+    "hydrostatic",
+    "hydrostatic"
+   ],
+   "notes": [
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "7.1",
+   "section": "Combustion-engine",
+   "label": "Engine manufacturer/type",
+   "unit": "",
+   "values": [
+    "Deutz TD 2.2 L3",
+    "Deutz G 2.2 L3",
+    "Deutz G 2.2 L3",
+    "Deutz TD 2.2 L3",
+    "Deutz G 2.2 L3",
+    "Deutz G 2.2 L3",
+    "Deutz TD 2.2 L3",
+    "Deutz G 2.2 L3",
+    "Deutz G 2.2 L3"
+   ],
+   "notes": [
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "7.2",
+   "section": "Combustion-engine",
+   "label": "Engine power according to ISO 1585",
+   "unit": "kW",
+   "values": [
+    "30",
+    "30",
+    "30",
+    "30",
+    "30",
+    "30",
+    "30",
+    "30",
+    "30"
+   ],
+   "notes": [
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "7.3",
+   "section": "Combustion-engine",
+   "label": "Rated speed",
+   "unit": "1/min",
+   "values": [
+    "2200",
+    "2200",
+    "2200",
+    "2200",
+    "2200",
+    "2200",
+    "2200",
+    "2200",
+    "2200"
+   ],
+   "notes": [
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "7.4",
+   "section": "Combustion-engine",
+   "label": "Number of cylinders/displacement",
+   "unit": "-/cm ³",
+   "values": [
+    "3.0/2194.0",
+    "3.0/2194.0",
+    "3.0/2194.0",
+    "3.0/2194.0",
+    "3.0/2194.0",
+    "3.0/2194.0",
+    "3.0/2194.0",
+    "3.0/2194.0",
+    "3.0/2194.0"
+   ],
+   "notes": [
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "7.5",
+   "section": "Combustion-engine",
+   "label": "Fuel consumption according to DIN EN 16796",
+   "unit": "l/h",
+   "values": [
+    "2.2",
+    "-",
+    "-",
+    "2.3",
+    "-",
+    "-",
+    "2.4",
+    "-",
+    "-"
+   ],
+   "notes": [
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "7.5a",
+   "section": "Combustion-engine",
+   "label": "Fuel consumption according to DIN EN 16796",
+   "unit": "kg/h",
+   "values": [
+    "-",
+    "2.0",
+    "-",
+    "-",
+    "2.1",
+    "-",
+    "-",
+    "2.2",
+    "-"
+   ],
+   "notes": [
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "7.5b",
+   "section": "Combustion-engine",
+   "label": "Fuel consumption according to VDI cycle",
+   "unit": "m3/h",
+   "values": [
+    "-",
+    "-",
+    "2.2 (H); 2.4 (L)",
+    "-",
+    "-",
+    "2.3 (H); 2.5 (L)",
+    "-",
+    "-",
+    "2.4 (H); 2.6 (L)"
+   ],
+   "notes": [
+    [],
+    [],
+    [
+     "4"
+    ],
+    [],
+    [],
+    [
+     "4"
+    ],
+    [],
+    [],
+    [
+     "4"
+    ]
+   ]
+  },
+  {
+   "no": "7.5.1",
+   "section": "Combustion-engine",
+   "label": "CO2 equivalent according to EN 16796",
+   "unit": "kg/h",
+   "values": [
+    "7",
+    "6.8",
+    "5.4 (H); 5.9 (L)",
+    "7.3",
+    "7.1",
+    "5.7 (H); 6.2 (L)",
+    "7.6",
+    "7.5",
+    "5.9 (H); 6.4 (L)"
+   ],
+   "notes": [
+    [],
+    [],
+    [
+     "4"
+    ],
+    [],
+    [],
+    [
+     "4"
+    ],
+    [],
+    [],
+    [
+     "4"
+    ]
+   ]
+  },
+  {
+   "no": "7.6",
+   "section": "Combustion-engine",
+   "label": "Turnover output according to VDI 2198",
+   "unit": "t/h",
+   "values": [
+    "134.0",
+    "134.0",
+    "134.0",
+    "148.0",
+    "148.0",
+    "148.0",
+    "160.0",
+    "160.0",
+    "160.0"
+   ],
+   "notes": [
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "7.7",
+   "section": "Combustion-engine",
+   "label": "Turnover efficiency according to VDI 2198",
+   "unit": "t/l",
+   "values": [
+    "41.9",
+    "46.2",
+    "-",
+    "44.8",
+    "49.3",
+    "-",
+    "45.7",
+    "51.6",
+    "-"
+   ],
+   "notes": [
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "8.1",
+   "section": "Drive",
+   "label": "Type of drive unit",
+   "unit": "",
+   "values": [
+    "hydrost./stepl.",
+    "hydrost./stepl.",
+    "hydrost./stepl.",
+    "hydrost./stepl.",
+    "hydrost./stepl.",
+    "hydrost./stepl.",
+    "hydrost./stepl.",
+    "hydrost./stepl.",
+    "hydrost./stepl."
+   ],
+   "notes": [
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "10.1",
+   "section": "Additional data",
+   "label": "Operating pressure for attachments",
+   "unit": "bar",
+   "values": [
+    "170",
+    "170",
+    "170",
+    "170",
+    "170",
+    "170",
+    "170",
+    "170",
+    "170"
+   ],
+   "notes": [
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "10.2",
+   "section": "Additional data",
+   "label": "Oil flow for attachments",
+   "unit": "l/min",
+   "values": [
+    "38",
+    "38",
+    "38",
+    "38",
+    "38",
+    "38",
+    "38",
+    "38",
+    "38"
+   ],
+   "notes": [
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "10.7",
+   "section": "Additional data",
+   "label": "Sound pressure level LpAZ (at the operator’s seat)",
+   "unit": "dB(A)",
+   "values": [
+    "80",
+    "80",
+    "80",
+    "80",
+    "80",
+    "80",
+    "80",
+    "80",
+    "80"
+   ],
+   "notes": [
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "10.8",
+   "section": "Additional data",
+   "label": "Towing coupling, type DIN 15170",
+   "unit": "",
+   "values": [
+    "-",
+    "-",
+    "-",
+    "-",
+    "-",
+    "-",
+    "-",
+    "-",
+    "-"
+   ],
+   "notes": [
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "11.2",
+   "section": "Additional data",
+   "label": "Static stability",
+   "unit": "",
+   "values": [
+    "1.61",
+    "1.64",
+    "1.65",
+    "1.59",
+    "1.61",
+    "1.63",
+    "1.57",
+    "1.59",
+    "1.60"
+   ],
+   "notes": [
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    []
+   ]
+  }
+ ],
+ "footnotes": [
+  {
+   "n": "1",
+   "text": "Lift height and equipment can alter rear mast tilt angle"
+  },
+  {
+   "n": "2",
+   "text": "With 150 mm free lift"
+  },
+  {
+   "n": "3",
+   "text": "Including a 200 mm (min.) operating aisle clearance"
+  },
+  {
+   "n": "4",
+   "text": "(H)= high quality, (L)= low quality"
+  }
+ ],
+ "masts": {
+  "STANDARD MAST (mm)": "Series                                              1521\nLift                   h3: 3150                   h3: 3850            h3: 4250\nHeight             h1: 2121 h2: 150       h1: 2471 h2: 150        h1: 2671 h2: 150\nmeasurements       h4: 3753               h4: 4453                h4: 4853\nManufacturer’s\ntype designation\n\nH16\nH18\nH20",
+  "DUPLEX MAST (mm)": "Series                                 1521\nLift                   h3: 3145                   h3: 3845\nHeight             h1: 2121 h2: 1518          h1: 2471 h2: 1868\nmeasurements       h4: 3747                   h4: 4447\nManufacturer’s\ntype designation\n\nH16\nH18\nH20",
+  "TRIPLEX MAST (mm)": "Series                                 1521\nLift                   h3: 4625                   h3: 5475\nHeight             h1: 2121 h2: 1519          h1: 2471 h2: 1869\nmeasurements       h4: 5227                   h4: 6077\nManufacturer’s\ntype designation\n\nH16\nH18\nH20\n\n\n\n\n  Optional equipment\nh1: Mast height, lowered                 h2: Free lift            h3: Lift           h4: Mast height, extended\n\n\nFigures for other equipments and triplex masts on request"
+ },
+ "equipment": [
+  {
+   "group": "Workplace",
+   "columns": [
+    "H16 – H20 D",
+    "H16 – H20 T",
+    "H16 – H20 CNG"
+   ],
+   "items": [
+    {
+     "text": "Ergonomic and safe truck access due to a low entry step and grab handle on A-pillar"
+    },
+    {
+     "text": "Innovative decoupling concept reducing vibrations for operator"
+    },
+    {
+     "text": "Adjustable steering column tilt"
+    },
+    {
+     "text": "Container overhead guard: height 2133 mm"
+    },
+    {
+     "text": "Operator's seat – quick, easy mechanical weight adjustment aids operator comfort"
+    },
+    {
+     "text": "Different operator’s seat options: heated seats, air suspension, active seat ventilation"
+    },
+    {
+     "text": "Swivelling seat for easier on/off access"
+    },
+    {
+     "text": "3.5” LED colour display with steering angle, tilt angle display, fuel gauge, clock, hour meter and servicing information"
+    },
+    {
+     "text": "Display shows engine oil pressure, engine overheating, parking brake, audible warning signal for engine and hydraulic oil temperature, blocked intake filter and low fuel consumption"
+    },
+    {
+     "text": "Armoured glass top screen"
+    },
+    {
+     "text": "Radio incl. DAB+, MP3 player and bluetooth hands-free kit"
+    },
+    {
+     "text": "Cabin doors with sliding window and door monitoring (complies with EN 16307-01 for the monitoring of restraint systems)"
+    },
+    {
+     "text": "Illuminated DIN A4 clip board"
+    },
+    {
+     "text": "Hot water heating/air conditioning with demist function and rear window heating"
+    }
+   ]
+  },
+  {
+   "group": "Drive and brake system",
+   "columns": [
+    "H16 – H20 D",
+    "H16 – H20 T",
+    "H16 – H20 CNG"
+   ],
+   "items": [
+    {
+     "text": "Linde hydrostatic transmission for exceptional truck control and low fuel consumption"
+    },
+    {
+     "text": "Deutz Diesel Engine EU 2016/1628 Stage 5",
+     "na": [
+      "H16 – H20 T",
+      "H16 – H20 CNG"
+     ]
+    },
+    {
+     "text": "Deutz CNG Engine EU 2016/1628 Stage 5",
+     "na": [
+      "H16 – H20 D",
+      "H16 – H20 T"
+     ]
+    },
+    {
+     "text": "Deutz LPG Engine EU 2016/1628 Stage 5",
+     "na": [
+      "H16 – H20 D",
+      "H16 – H20 CNG"
+     ]
+    },
+    {
+     "text": "Volumetric LPG tank (45l) including fill level indicator in the display",
+     "na": [
+      "H16 – H20 D",
+      "H16 – H20 CNG"
+     ]
+    },
+    {
+     "text": "LPG truck fitted with accurate ultrasonic fuel level indicator for exchange bottles",
+     "na": [
+      "H16 – H20 D",
+      "H16 – H20 CNG"
+     ]
+    },
+    {
+     "text": "Diesel particulate filter, oxidation catalysts, exhaust gas recirculation",
+     "na": [
+      "H16 – H20 T",
+      "H16 – H20 CNG"
+     ]
+    },
+    {
+     "text": "3-way catalytic converter",
+     "na": [
+      "H16 – H20 D"
+     ]
+    },
+    {
+     "text": "Linde Engine Protection System (LEPS) – audible warning and speed reduction in critical engine conditions"
+    },
+    {
+     "text": "Hydraulic parking brake"
+    },
+    {
+     "text": "Hydraulic filter concept – hydraulic oil change after 6000 hours"
+    },
+    {
+     "text": "Power settings: Economy, Efficiency, Performance"
+    }
+   ]
+  },
+  {
+   "group": "Axles and tyres",
+   "columns": [
+    "H16 – H20 D",
+    "H16 – H20 T",
+    "H16 – H20 CNG"
+   ],
+   "items": [
+    {
+     "text": "Super-elastic (SE) tyres"
+    },
+    {
+     "text": "High performance Closed Shoulder tyres CS20"
+    },
+    {
+     "text": "Pneumatic tyres"
+    },
+    {
+     "text": "Anti-static tyres, non-marking"
+    },
+    {
+     "text": "Dirt deflectors/mud guards, front and rear"
+    }
+   ]
+  },
+  {
+   "group": "Mast",
+   "columns": [
+    "H16 – H20 D",
+    "H16 – H20 T",
+    "H16 – H20 CNG"
+   ],
+   "items": [
+    {
+     "text": "Top mounted tilt cylinders – for precise load handling at high lift heights"
+    },
+    {
+     "text": "Best visibility through standard, duplex, triplex mast"
+    },
+    {
+     "text": "Electronic end-position cushioning with tilt stop"
+    },
+    {
+     "text": "Hydraulic pressure accumulator protects loads and increases operator comfort over rough ground"
+    }
+   ]
+  },
+  {
+   "group": "Attachment/forks",
+   "columns": [
+    "H16 – H20 D",
+    "H16 – H20 T",
+    "H16 – H20 CNG"
+   ],
+   "items": [
+    {
+     "text": "Reinforced Linde forks – easy to adjust and long life time"
+    },
+    {
+     "text": "Integral roller guided sideshift with full lift capacity"
+    },
+    {
+     "text": "Integral fork positioner \"View\" for high residual capacities and optimized visibility"
+    }
+   ]
+  },
+  {
+   "group": "Safety",
+   "columns": [
+    "H16 – H20 D",
+    "H16 – H20 T",
+    "H16 – H20 CNG"
+   ],
+   "items": [
+    {
+     "text": "Linde Curve Assist – automatic reduction of travel speed around corners aids stability"
+    },
+    {
+     "text": "Electrical seat belt monitoring – visual and audible feedback"
+    },
+    {
+     "text": "Linde Load Assist – increased safety at high lift heights"
+    },
+    {
+     "text": "BlueSpot and TruckSpot – visual drive path warning for pedestrians and operators"
+    },
+    {
+     "text": "Load weight indicator incl. tare function –  load weight indicator including load-dependent drive and lift limitation"
+    },
+    {
+     "text": "Linde Safety Pilot – load-dependent driving and lifting speed regulation with additional functions"
+    },
+    {
+     "text": "Linde Safety Guard – visual and audible proximity warning between trucks or between trucks and pedestrians"
+    },
+    {
+     "text": "Speed restriction options (via switch, indoor/outdoor, load-dependent)"
+    },
+    {
+     "text": "High safety and stability ensured by Linde Protector Frame"
+    },
+    {
+     "text": "Different lighting options truck lighting, working lamps, LED stripes, VertiLights"
+    }
+   ]
+  },
+  {
+   "group": "Digitalisation",
+   "columns": [
+    "H16 – H20 D",
+    "H16 – H20 T",
+    "H16 – H20 CNG"
+   ],
+   "items": [
+    {
+     "text": "Online data transmission"
+    },
+    {
+     "text": "WiFi data transmission"
+    },
+    {
+     "text": "Linde Fleet Management (local and cloud-based fleet management with various modules)"
+    },
+    {
+     "text": "Linde Pre-Op Check – customisable daily inspection log to check the readiness of the truck for operation"
+    }
+   ]
+  },
+  {
+   "group": "Operation/load handling",
+   "columns": [
+    "H16 – H20 D",
+    "H16 – H20 T",
+    "H16 – H20 CNG"
+   ],
+   "items": [
+    {
+     "text": "Twin pedal control – smooth acceleration and quick reversing"
+    },
+    {
+     "text": "Single pedal control – smooth acceleration and fast manoeuvring"
+    },
+    {
+     "text": "Linde Load Control – central control lever fully integrated into the armrest for precise control of all hydraulic functions"
+    },
+    {
+     "text": "Individual lever control of working hydraulics, levers mounted on armrest"
+    }
+   ]
+  }
+ ],
+ "characteristics": [
+  {
+   "group": "Safety",
+   "bullets": [
+    "Linde Protector Frame for the highest level of operator safety",
+    "Particularly slim lift mast profile for optimum visibility",
+    "Linde Curve Assist for reduced speed around corners, reducing the risk of the forklift truck tipping over",
+    "Linde Engine Protection System for monitoring important engine operating parameters such as oil pressure, coolant level and temperature"
+   ]
+  },
+  {
+   "group": "Ergonomics",
+   "bullets": [
+    "Spacious cabin with a large footwell, comfortable seat and automotive ambience for low-fatigue working",
+    "Ergonomic configuration of all controls with adjustable armrest and seat for efficient, comfortable working",
+    "Precise and sensitive control of all mast and lifting movements for effortless manoeuvring",
+    "Operator`s cab, mast and drive axle isolated from chassis for almost vibration and shock-free operation"
+   ]
+  },
+  {
+   "group": "Handling",
+   "bullets": [
+    "Hydrostatic direct drive for responsive, smooth and precise movement",
+    "Durable diesel, LPG or natural gas engines ensure high torque and minimal fuel consumption",
+    "Twin or single pedal control for efficient operation",
+    "Linde Load Control for pin-point precision control of all mast functions"
+   ]
+  },
+  {
+   "group": "Service",
+   "bullets": [
+    "Maintenance-free mounting of axles and tilt cylinders for minimal downtime and operating costs",
+    "Linde hydrostatic transmission reduces service costs, guarantees excellent availability and increases handling performance",
+    "Easy access to maintenance components for fast servicing and increased truck availability",
+    "Rapid diagnostics via laptop"
+   ]
+  }
+ ],
+ "unparsed": {
+  "image_pages": [
+   5,
+   7
+  ],
+  "characteristics_captions": [
+   "Linde Protector Frame",
+   "Driver workplace",
+   "Linde Load Control",
+   "Easy service access"
+  ]
+ }
+}

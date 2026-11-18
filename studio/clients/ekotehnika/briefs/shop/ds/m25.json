@@ -1,0 +1,295 @@
+{
+ "slug": "m25",
+ "datasheet": {
+  "name": "DS_M25_BR033_01_en_A_0318_view.pdf",
+  "id": "1LJ0FD2un5CyaOuzaQmWCMMKXM-2Mr405"
+ },
+ "heading": "HAND PALLET TRUCK",
+ "range": "M25",
+ "capacity": "CAPACITY 2500 KG | SERIES 033-01",
+ "tagline": null,
+ "benefits": [],
+ "versions": [
+  "M25"
+ ],
+ "vdi": [
+  {
+   "no": "1.1",
+   "section": "Characteristics",
+   "label": "Manufacturer",
+   "unit": "",
+   "values": [
+    "LINDE"
+   ],
+   "notes": [
+    []
+   ]
+  },
+  {
+   "no": "1.2",
+   "section": "Characteristics",
+   "label": "Model designation",
+   "unit": "",
+   "values": [
+    "M25"
+   ],
+   "notes": [
+    []
+   ]
+  },
+  {
+   "no": "1.5",
+   "section": "Characteristics",
+   "label": "Load capacity",
+   "unit": "Q (kg)",
+   "values": [
+    "2500 kg"
+   ],
+   "notes": [
+    []
+   ]
+  },
+  {
+   "no": "1.6",
+   "section": "Characteristics",
+   "label": "Load centre distance",
+   "unit": "c (mm)",
+   "values": [
+    "600"
+   ],
+   "notes": [
+    []
+   ]
+  },
+  {
+   "no": "1.8",
+   "section": "Characteristics",
+   "label": "Load distance, center of drive axle to fork",
+   "unit": "x (mm)",
+   "values": [
+    "932"
+   ],
+   "notes": [
+    []
+   ]
+  },
+  {
+   "no": "1.9",
+   "section": "Characteristics",
+   "label": "Wheelbase",
+   "unit": "y (mm)",
+   "values": [
+    "1192"
+   ],
+   "notes": [
+    []
+   ]
+  },
+  {
+   "no": "2.1",
+   "section": "Weight",
+   "label": "Service weight (incl. battery item 6.5)",
+   "unit": "kg",
+   "values": [
+    "63"
+   ],
+   "notes": [
+    []
+   ]
+  },
+  {
+   "no": "3.1",
+   "section": "Tyres/chassis",
+   "label": "Tyres",
+   "unit": "",
+   "values": [
+    "Polyurethane / Nylon"
+   ],
+   "notes": [
+    []
+   ]
+  },
+  {
+   "no": "3.2",
+   "section": "Tyres/chassis",
+   "label": "Tyre size, front",
+   "unit": "",
+   "values": [
+    "Ø 200 X 55"
+   ],
+   "notes": [
+    []
+   ]
+  },
+  {
+   "no": "3.3",
+   "section": "Tyres/chassis",
+   "label": "Tyre size, rear",
+   "unit": "",
+   "values": [
+    "Ø 83 X Ø 82 - 60"
+   ],
+   "notes": [
+    []
+   ]
+  },
+  {
+   "no": "3.5",
+   "section": "Tyres/chassis",
+   "label": "Wheels, number front/rear (x = driven)",
+   "unit": "",
+   "values": [
+    "2 / 2 -2 / 4"
+   ],
+   "notes": [
+    []
+   ]
+  },
+  {
+   "no": "3.7",
+   "section": "Tyres/chassis",
+   "label": "Track width, rear",
+   "unit": "b11 (mm)",
+   "values": [
+    "375"
+   ],
+   "notes": [
+    []
+   ]
+  },
+  {
+   "no": "4.4",
+   "section": "Dimensions",
+   "label": "Lift",
+   "unit": "h3 (mm)",
+   "values": [
+    "115"
+   ],
+   "notes": [
+    []
+   ]
+  },
+  {
+   "no": "4.15",
+   "section": "Dimensions",
+   "label": "Fork height, lowered",
+   "unit": "h13 (mm)",
+   "values": [
+    "85"
+   ],
+   "notes": [
+    []
+   ]
+  },
+  {
+   "no": "4.19",
+   "section": "Dimensions",
+   "label": "Overall length",
+   "unit": "l1 (mm)",
+   "values": [
+    "1550"
+   ],
+   "notes": [
+    []
+   ]
+  },
+  {
+   "no": "4.20",
+   "section": "Dimensions",
+   "label": "Length to fork face",
+   "unit": "l2 (mm)",
+   "values": [
+    "400"
+   ],
+   "notes": [
+    []
+   ]
+  },
+  {
+   "no": "4.21",
+   "section": "Dimensions",
+   "label": "Overall width",
+   "unit": "B1 / b2 (mm)",
+   "values": [
+    "525"
+   ],
+   "notes": [
+    []
+   ]
+  },
+  {
+   "no": "4.22",
+   "section": "Dimensions",
+   "label": "Fork dimensions",
+   "unit": "s / e / l (mm)",
+   "values": [
+    "55 / 150 / 1150"
+   ],
+   "notes": [
+    []
+   ]
+  },
+  {
+   "no": "4.25",
+   "section": "Dimensions",
+   "label": "Fork spread, min / max",
+   "unit": "b5 (mm)",
+   "values": [
+    "525"
+   ],
+   "notes": [
+    []
+   ]
+  },
+  {
+   "no": "4.32",
+   "section": "Dimensions",
+   "label": "Ground clearance, centre of wheel base",
+   "unit": "m2 (mm)",
+   "values": [
+    "30"
+   ],
+   "notes": [
+    []
+   ]
+  },
+  {
+   "no": "4.34",
+   "section": "Dimensions",
+   "label": "Aisle width for pallets 800 x 1200 along forks",
+   "unit": "Ast (mm)",
+   "values": [
+    "1835"
+   ],
+   "notes": [
+    []
+   ]
+  },
+  {
+   "no": "4.35",
+   "section": "Dimensions",
+   "label": "Turning radius *limited wheel choice, limited fork length choice",
+   "unit": "Wa (mm)",
+   "values": [
+    "1367"
+   ],
+   "notes": [
+    []
+   ]
+  }
+ ],
+ "footnotes": [],
+ "masts": {},
+ "equipment": [],
+ "characteristics": [],
+ "unparsed": {
+  "image_pages": [
+   3
+  ],
+  "page1": "Safety                                                                    Reliability\nAt Linde, safety receives the closest attention in material handling      The European quality torsion-resistant construction of the strong chassis\ntrucks of every size. The wide handle of the Linde control tiller         permits safe handling of loads up to 2500 kg. When the m    aximum load\nprovides the operator with the necessary sense of safety,                capacity is exceeded, oil pressure exceeds its m\n                                                                                                                          aximum limit and the\n effectively protecting the hands throughout every maneuver, while       valve automatically locks the forks. Thus possible structural damage is\n  the low-slung chassis prevents risk of foot injury.                    avoided. The frame is varnished with polyester powder at a\n                                                                         temperature of 250 ° to guarantee maximum resistance.\nPerformance\nAir and dust-tight enclosure of the hydraulic circuit ensures            Service\ntrouble-free operation over long periods of time, no matter how         Effective and cost-efficient at work. Steer and load wheels are of very\n harsh conditions may be on site. With the Quick-lift feature, loads     high quality, quiet running and low in rolling resistance. Bush\n weighing up to 200 kg can be lifted to maximum height in half the       bearings are fitted on all joints, making it an exceptionally\n time. The M25 is a hand pallet truck for peak performance.               low-maintenance hand pallet truck.\nComfort\nThe Linde M25 hand pallet truck lives up to its purpose of a high-\nconvenience all-around helper. Functional design devoid of all sharp\ncorners and edges plus a large steering pivot angle of 102.5 to either\nside make it exceptionally manageable and manoeuvrable inside a\ntrailer or in other tight spaces.",
+  "other": "ACCORDING TO VDI 2198",
+  "sections": {
+   "FEATURES": "Minimal servicing requirements                                                                                                    Quick hydraulic lift unit\n→ All joints fitted with bush bearings as                                                                                         → Hydraulic circuit sealed to preserve\n  standard                                                                                                                          smooth working characteristics\n→ Exceptionally low maintenance                                                                                                   → Quick-lift feature as option (active with\n  requirements                                                                                                                      loads up to 200 kg), lifts to maximum\n                                                                                                                                    height in half the time\n\n\n\n\nHot galvanized                                                                                                                    Stainless version\n→ Hot galvanized chassis (over 350 °) with a                                                                                      → AISI 304: standard stainless version for\n   thickness of around 100 μm                                                                                                       moisture working areas\n→ Cold galvanized handle and pump body\n   with a thickness of around 35 μm\n→ Wheel axle and wheel bearings in\n  stainless steel\n→ Life time extended at minimum 10 times\n\n\n\n\nLinde control tiller                                                             Chassis                                          Smooth-running steer and load wheels\n→ Wide handle for effortless steering                                            → Sturdy, torsion-resistant steel construction   → Entry / exit rollers under the fork tips\n→ Optimum hand protection                                                        → Reinforced tiller base ensures long life          simplify pallet pick-up\n→ Convenient manoeuvring due to 210 °                                  °\n\n\n\n\n                                                                                 → High-grade powder coat finish                  → Tapered and ramped fork tips make pallet\n   steering pivot angle                                                                                                               entry much easier, especially with\n→ Plastic handle covering affords pleasant                                                                                          shrink-wrapped loads\n   and secure grip at all ambient                                                                                                 → Low rolling resistance\n   temperatures\n\n\n\n\n                                                                                                                                  Presented by:\n\nSubject to modification in the interest of progress. Illustrations and technical details could include options and\nnot binding for actual constructions. All dimensions subject to usual tolerances.\n\n\n\n\n                                                             Linde Material Handling GmbH\n                                                             Postbox 10 0136 | 63701 Aschaffenburg | Germany\n                                                             Phone + 49 6021 99 0 | Fax + 49 6021 99 15 70\n                                                             www.linde-mh.com | info@linde-mh.com\n\n                                                             Printed in Germany 773.e.0,5.0318.IndA.Ki"
+  }
+ }
+}

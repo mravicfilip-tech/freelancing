@@ -1,0 +1,1133 @@
+{
+ "slug": "a-5224",
+ "datasheet": {
+  "name": "DS_A_5224_en_B_0821_view.pdf",
+  "id": "1TeEOIiRP6-ObTxZvDxQE5dOOsl2MJYAt"
+ },
+ "heading": "Very Narrow Aisle",
+ "range": "A",
+ "capacity": "Capacity 1.0 – 1.5 t | Series 5224",
+ "tagline": "Narrow Pace Setter",
+ "benefits": [
+  "Unique modular designed truck enables the perfect specification for individual customer applications",
+  "Linde System Control (LSC) adjusts lift and travel speeds relative to lift height and load weight",
+  "Dynamic Reach Control (DRC) reduces mast-oscillations while loads handling, thus ensuring increased safety and higher handling performance",
+  "Linde ergonomic design concept achieves perfect interface between operator and truck"
+ ],
+ "versions": [
+  "A",
+  "A",
+  "A"
+ ],
+ "vdi": [
+  {
+   "no": "1.1",
+   "section": "Characteristics",
+   "label": "Manufacturer",
+   "unit": "",
+   "values": [
+    "LINDE",
+    "LINDE",
+    "LINDE"
+   ],
+   "notes": [
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "1.2",
+   "section": "Characteristics",
+   "label": "Manufacturer's type designation",
+   "unit": "",
+   "values": [
+    "A",
+    "A",
+    "A"
+   ],
+   "notes": [
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "1.2a",
+   "section": "Characteristics",
+   "label": "Series",
+   "unit": "",
+   "values": [
+    "5224",
+    "5224",
+    "5224"
+   ],
+   "notes": [
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "1.3",
+   "section": "Characteristics",
+   "label": "Power unit",
+   "unit": "",
+   "values": [
+    "Battery",
+    "Battery",
+    "Battery"
+   ],
+   "notes": [
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "1.4",
+   "section": "Characteristics",
+   "label": "Operation",
+   "unit": "",
+   "values": [
+    "Seated",
+    "Seated",
+    "Seated"
+   ],
+   "notes": [
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "1.5",
+   "section": "Characteristics",
+   "label": "Load capacity / Load",
+   "unit": "Q (t)",
+   "values": [
+    "1",
+    "1.35",
+    "1.5"
+   ],
+   "notes": [
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "1.6",
+   "section": "Characteristics",
+   "label": "Load centre distance",
+   "unit": "c (mm)",
+   "values": [
+    "600",
+    "600",
+    "600"
+   ],
+   "notes": [
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "1.9",
+   "section": "Characteristics",
+   "label": "Wheelbase",
+   "unit": "y (mm)",
+   "values": [
+    "1595",
+    "1844",
+    "1916"
+   ],
+   "notes": [
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "2.1",
+   "section": "Weights",
+   "label": "Service weight",
+   "unit": "(kg)",
+   "values": [
+    "5579",
+    "6968",
+    "8602"
+   ],
+   "notes": [
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "2.3",
+   "section": "Weights",
+   "label": "Axle load without load, front /rear",
+   "unit": "(kg)",
+   "values": [
+    "1989 / 3591",
+    "2426 / 4541",
+    "2854 / 5748"
+   ],
+   "notes": [
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "3.1",
+   "section": "Wheels/Tyres",
+   "label": "Tyres rubber, SE, pneumatic, polyurethane",
+   "unit": "",
+   "values": [
+    "Polyurethane",
+    "Polyurethane",
+    "Polyurethane"
+   ],
+   "notes": [
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "3.2",
+   "section": "Wheels/Tyres",
+   "label": "Tyre size, front",
+   "unit": "",
+   "values": [
+    "360 / 130",
+    "360 / 130",
+    "360 / 130"
+   ],
+   "notes": [
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "3.3",
+   "section": "Wheels/Tyres",
+   "label": "Tyre size, rear",
+   "unit": "",
+   "values": [
+    "370 / 160",
+    "370 / 160",
+    "370 / 160"
+   ],
+   "notes": [
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "3.5",
+   "section": "Wheels/Tyres",
+   "label": "Wheels, number front / rear (x = driven)",
+   "unit": "",
+   "values": [
+    "1x / 2",
+    "1x / 2",
+    "1x / 2"
+   ],
+   "notes": [
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "3.6",
+   "section": "Wheels/Tyres",
+   "label": "Track width, front",
+   "unit": "b10 (mm)",
+   "values": [
+    "-",
+    "-",
+    "-"
+   ],
+   "notes": [
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "3.7",
+   "section": "Wheels/Tyres",
+   "label": "Track width, rear",
+   "unit": "b11 (mm)",
+   "values": [
+    "1290",
+    "1290",
+    "1390"
+   ],
+   "notes": [
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "4.2",
+   "section": "Dimensions",
+   "label": "Height of mast, lowered",
+   "unit": "h1 (mm)",
+   "values": [
+    "4900",
+    "3900",
+    "5900"
+   ],
+   "notes": [
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "4.3",
+   "section": "Dimensions",
+   "label": "Free lift",
+   "unit": "h2 (mm)",
+   "values": [
+    "-",
+    "2650",
+    "4650"
+   ],
+   "notes": [
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "4.4",
+   "section": "Dimensions",
+   "label": "Lift height",
+   "unit": "h3 (mm)",
+   "values": [
+    "7600",
+    "7450",
+    "12850"
+   ],
+   "notes": [
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "4.5",
+   "section": "Dimensions",
+   "label": "Height, mast raised",
+   "unit": "h4 (mm)",
+   "values": [
+    "9050",
+    "8900",
+    "14300"
+   ],
+   "notes": [
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "4.7",
+   "section": "Dimensions",
+   "label": "Height to top of overhead guard",
+   "unit": "h6 (mm)",
+   "values": [
+    "2200",
+    "2200",
+    "2200"
+   ],
+   "notes": [
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "4.8",
+   "section": "Dimensions",
+   "label": "Seat height",
+   "unit": "h7 (mm)",
+   "values": [
+    "1050",
+    "1050",
+    "1050"
+   ],
+   "notes": [
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "4.15",
+   "section": "Dimensions",
+   "label": "Fork height lowered",
+   "unit": "h13 (mm)",
+   "values": [
+    "60",
+    "60",
+    "60"
+   ],
+   "notes": [
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "4.19",
+   "section": "Dimensions",
+   "label": "Overall length (including forks)",
+   "unit": "l1 (mm)",
+   "values": [
+    "2887",
+    "3136",
+    "3208"
+   ],
+   "notes": [
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "4.21",
+   "section": "Dimensions",
+   "label": "Overall width",
+   "unit": "b1 / b2 (mm)",
+   "values": [
+    "1250 / 1500",
+    "1250 / 1500",
+    "1250 / 1600"
+   ],
+   "notes": [
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "4.22",
+   "section": "Dimensions",
+   "label": "Fork dimensions",
+   "unit": "s / e / l (mm)",
+   "values": [
+    "50 / 120 / 1200",
+    "50 / 120 / 1200",
+    "50 / 120 / 1200"
+   ],
+   "notes": [
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "4.23",
+   "section": "Dimensions",
+   "label": "Fork carriage to DIN 15173 / class / form A, B, no",
+   "unit": "(mm)",
+   "values": [
+    "Special",
+    "Special",
+    "Special"
+   ],
+   "notes": [
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "4.24",
+   "section": "Dimensions",
+   "label": "Width of fork carriage",
+   "unit": "b3 (mm)",
+   "values": [
+    "710",
+    "710",
+    "710"
+   ],
+   "notes": [
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "4.25",
+   "section": "Dimensions",
+   "label": "Width of forks min. / max.",
+   "unit": "b5 (mm)",
+   "values": [
+    "470 / 640",
+    "470 / 640",
+    "470 / 640"
+   ],
+   "notes": [
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "4.27",
+   "section": "Dimensions",
+   "label": "Width over side guide rollers",
+   "unit": "b6 (mm)",
+   "values": [
+    "1675",
+    "1660",
+    "1760"
+   ],
+   "notes": [
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "4.29",
+   "section": "Dimensions",
+   "label": "Lateral reach travel",
+   "unit": "b7 (mm)",
+   "values": [
+    "1373",
+    "1295",
+    "1350"
+   ],
+   "notes": [
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "4.31",
+   "section": "Dimensions",
+   "label": "Ground clearance beneath mast, laden",
+   "unit": "m1 (mm)",
+   "values": [
+    "40",
+    "40",
+    "40"
+   ],
+   "notes": [
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "4.32",
+   "section": "Dimensions",
+   "label": "Ground clearance at centre of wheelbase",
+   "unit": "m2 (mm)",
+   "values": [
+    "80",
+    "80",
+    "80"
+   ],
+   "notes": [
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "4.34",
+   "section": "Dimensions",
+   "label": "Aisle width",
+   "unit": "Ast (mm)",
+   "values": [
+    "1740",
+    "1665",
+    "1765"
+   ],
+   "notes": [
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "4.35",
+   "section": "Dimensions",
+   "label": "Turning radius",
+   "unit": "Wa (mm)",
+   "values": [
+    "1826",
+    "2075",
+    "2147"
+   ],
+   "notes": [
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "4.38",
+   "section": "Dimensions",
+   "label": "Centre of axle to fork pivot",
+   "unit": "l8 (mm)",
+   "values": [
+    "706",
+    "706",
+    "706"
+   ],
+   "notes": [
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "4.39",
+   "section": "Dimensions",
+   "label": "Head centre",
+   "unit": "A (mm)",
+   "values": [
+    "480",
+    "480",
+    "480"
+   ],
+   "notes": [
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "4.40",
+   "section": "Dimensions",
+   "label": "Width of reach carriage",
+   "unit": "B (mm)",
+   "values": [
+    "1560",
+    "1465",
+    "1495"
+   ],
+   "notes": [
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "4.41",
+   "section": "Dimensions",
+   "label": "Head width",
+   "unit": "F (mm)",
+   "values": [
+    "277",
+    "277",
+    "287"
+   ],
+   "notes": [
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "4.42",
+   "section": "Dimensions",
+   "label": "Transfer aisle width (minimum)",
+   "unit": "Au (mm)",
+   "values": [
+    "3356",
+    "3605",
+    "3680"
+   ],
+   "notes": [
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "5.1",
+   "section": "Performance",
+   "label": "Travel speed, with / without load",
+   "unit": "(km / h)",
+   "values": [
+    "10.5 / 10.5",
+    "10.5 / 10.5",
+    "10.5 / 10.5"
+   ],
+   "notes": [
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "5.2",
+   "section": "Performance",
+   "label": "Lift speed, with / without load",
+   "unit": "(m / s)",
+   "values": [
+    "0.57 / 0.57",
+    "0.56 / 0.57",
+    "0.43 / 0.43"
+   ],
+   "notes": [
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "5.3",
+   "section": "Performance",
+   "label": "Lowering speed, with / without load",
+   "unit": "(m / s)",
+   "values": [
+    "0.45 / 0.45",
+    "0.45 / 0.45",
+    "0.45 / 0.45"
+   ],
+   "notes": [
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "5.4",
+   "section": "Performance",
+   "label": "Reach speed, with / without load",
+   "unit": "(m / s)",
+   "values": [
+    "0.33 / 0.33",
+    "0.30 / 0.30",
+    "0.29 / 0.29"
+   ],
+   "notes": [
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "5.9",
+   "section": "Performance",
+   "label": "Acceleration time, with / without load",
+   "unit": "(s)",
+   "values": [
+    "5/5",
+    "6/6",
+    "6/6"
+   ],
+   "notes": [
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "5.10",
+   "section": "Performance",
+   "label": "Brakes",
+   "unit": "",
+   "values": [
+    "Regenerative",
+    "Regenerative",
+    "Regenerative"
+   ],
+   "notes": [
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "6.1",
+   "section": "Electric-engine",
+   "label": "Drive motor, Power",
+   "unit": "(kW)",
+   "values": [
+    "6.5 / S2 = 60 min",
+    "6.5 / S2 = 60 min",
+    "6.5 / S2 = 60 min"
+   ],
+   "notes": [
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "6.2",
+   "section": "Electric-engine",
+   "label": "Lift motor, Power",
+   "unit": "(kW)",
+   "values": [
+    "24.0 / S3 = 15 %",
+    "24.0 / S3 = 15 %",
+    "24.0 / S3 = 15 %"
+   ],
+   "notes": [
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "6.3",
+   "section": "Electric-engine",
+   "label": "Battery",
+   "unit": "",
+   "values": [
+    "IEC 254-2; C",
+    "IEC 254-2; C",
+    "IEC 254-2; C"
+   ],
+   "notes": [
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "6.4",
+   "section": "Electric-engine",
+   "label": "Battery type, voltage, capacity (5 h)",
+   "unit": "(V / Ah)",
+   "values": [
+    "PzS, 48 V, 700 Ah",
+    "PzS, 48 V, 980 Ah",
+    "PzS, 48 V, 1120 Ah"
+   ],
+   "notes": [
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "6.5",
+   "section": "Electric-engine",
+   "label": "Battery weight (± 5 %)",
+   "unit": "(kg)",
+   "values": [
+    "1119",
+    "1498",
+    "1688"
+   ],
+   "notes": [
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "8.1",
+   "section": "Drive",
+   "label": "Type of drive control",
+   "unit": "",
+   "values": [
+    "Microprocessor",
+    "Microprocessor",
+    "Microprocessor"
+   ],
+   "notes": [
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "8.4",
+   "section": "Drive",
+   "label": "Noise level at operator’s ear",
+   "unit": "dB (A)",
+   "values": [
+    "68",
+    "68",
+    "68"
+   ],
+   "notes": [
+    [],
+    [],
+    []
+   ]
+  }
+ ],
+ "footnotes": [],
+ "masts": {},
+ "equipment": [
+  {
+   "group": "Safety",
+   "columns": [],
+   "items": [
+    {
+     "text": "Model / Equipment A"
+    },
+    {
+     "text": "Warning light mounted on overhead guard (active during all movements)"
+    },
+    {
+     "text": "BlueSpot – optical warning signals for pedestrians and drivers"
+    },
+    {
+     "text": "Different speed reductions and aisle stop functions"
+    },
+    {
+     "text": "Personal safety equipment (PSE)"
+    },
+    {
+     "text": "Lifting and driving cut off"
+    },
+    {
+     "text": "Audible warnings"
+    },
+    {
+     "text": "Camera systems for driving and pallet handling"
+    },
+    {
+     "text": "Data Transmission Online"
+    },
+    {
+     "text": "Data Transmission Wifi"
+    },
+    {
+     "text": "Linde connect:desk an – Provides fleet utilization and availability data"
+    },
+    {
+     "text": "Linde connect:cloud Basic Package Customer – provides core fleet management features for end customers"
+    }
+   ]
+  },
+  {
+   "group": "Enviroment",
+   "columns": [],
+   "items": [
+    {
+     "text": "Linde connect:cloud Basic Package Network – provides core fleet management features for network partners"
+    },
+    {
+     "text": "Online Diagnosis Tool"
+    },
+    {
+     "text": "Antistatic guiderollers"
+    },
+    {
+     "text": "Antistatic for inductive guidance"
+    },
+    {
+     "text": "LSC Standard"
+    },
+    {
+     "text": "LSC with load recognition, load sensor or weight and load recognition"
+    },
+    {
+     "text": "Dynamic Reach Control"
+    },
+    {
+     "text": "Synchronous swivel"
+    }
+   ]
+  },
+  {
+   "group": "Throughput",
+   "columns": [],
+   "items": [
+    {
+     "text": "Synchronous swivel with stop at 90°"
+    },
+    {
+     "text": "Energy recovery when braking or lowering the mast"
+    },
+    {
+     "text": "Automatic fork cycle"
+    },
+    {
+     "text": "Overrach facility of forks up to 55 mm"
+    }
+   ]
+  },
+  {
+   "group": "Operators compartment",
+   "columns": [],
+   "items": [
+    {
+     "text": "Twin Pedal System"
+    },
+    {
+     "text": "Pallet positioning aid – cross line laser"
+    },
+    {
+     "text": "Pallet positioning aid – fork camera"
+    },
+    {
+     "text": "Lift height preselection"
+    },
+    {
+     "text": "Loadwheel brake for increased travel speed"
+    },
+    {
+     "text": "Hydraulically damped operator's seat with stepless weight adjustment, longitudinal adjustment and lumbar support"
+    },
+    {
+     "text": "Comfortable seats (heated, tilt adjustment)"
+    },
+    {
+     "text": "Ergonomic multifunctional Joystick"
+    },
+    {
+     "text": "Truck access via key"
+    },
+    {
+     "text": "Low step in height for easy access to drivers compartment"
+    },
+    {
+     "text": "Basic functions without changing position of grip"
+    },
+    {
+     "text": "Multi purpose full graphic color display"
+    },
+    {
+     "text": "Storage compartments, pen holders and space for bottles, cans or tools integrated"
+    },
+    {
+     "text": "Side seated operation"
+    },
+    {
+     "text": "All round visibility with the ergonomically designed overhead guard"
+    },
+    {
+     "text": "Overhead guard with head cushion"
+    },
+    {
+     "text": "Wire mesh or makrolon overhead guard cover"
+    },
+    {
+     "text": "Clear and distinct control layout"
+    },
+    {
+     "text": "Rearview (left / right) and panorama mirror"
+    },
+    {
+     "text": "Clipboard DIN A4"
+    },
+    {
+     "text": "Lighting for operators compartment"
+    },
+    {
+     "text": "Working lights into rack"
+    },
+    {
+     "text": "Pin code access"
+    },
+    {
+     "text": "RFID access"
+    },
+    {
+     "text": "L-head or telescopic forks"
+    },
+    {
+     "text": "Standard masts 1000 kg capacity up to 7600 mm lift height"
+    },
+    {
+     "text": "Standard masts 1500 kg capacity up to 7200 mm lift height"
+    },
+    {
+     "text": "Triplex masts 1500 kg capacity up to 12850 mm lift height"
+    }
+   ]
+  },
+  {
+   "group": "Drive and Brake-System",
+   "columns": [],
+   "items": [
+    {
+     "text": "Auxiliary lift (h9) up to 1105 mm"
+    },
+    {
+     "text": "Alternative fork lengths for different pallet sizes"
+    },
+    {
+     "text": "Manual or hydraulically adaptable forks"
+    },
+    {
+     "text": "Gear rack cover for L-head"
+    },
+    {
+     "text": "Battery compartment, Li-ION battery (360 Ah / 1085 Ah) including side plug for opportunity charging"
+    },
+    {
+     "text": "Quick charge for battery 48 V"
+    },
+    {
+     "text": "Regenerative breaking system"
+    },
+    {
+     "text": "6.5 kW AC motor (maintenance free)"
+    }
+   ]
+  }
+ ],
+ "characteristics": [
+  {
+   "group": "Safety",
+   "bullets": [
+    "Side seated operation allows the truck operator to have excellent view during both forward and reverse traction of the truck",
+    "Optional lane warning device Linde BlueSpot™ enhances safety by making the forklift visible with an LED spot",
+    "Optional personnel safety equipment (PSE) detects persons or objects in the line of travel via sensors on the front and rear and stops the truck"
+   ]
+  },
+  {
+   "group": "Ergonomics",
+   "bullets": [
+    "Spacious cab, comfort seat and intuitive layout of all controls ensure optimum driving comfort",
+    "Fatigue free working due to ergonomic positioned multifunction joystick",
+    "Intuitive operation without having to reach around increases handling performance",
+    "Full graphic colour display shows all information at a glance"
+   ]
+  },
+  {
+   "group": "Handling",
+   "bullets": [
+    "Optional fork camera and crossline laser facilitate load handling on the upper racking levels and reduce the risk of accidents",
+    "Standard and triplex mast options are available up to 1500 kg capacity",
+    "A rigid, strong mast design helps reduce mast sway, therefore increasing truck cycle times",
+    "Energy recovery during braking and lowering reduces energy consumption",
+    "Easier pallet handling at height through camera system"
+   ]
+  },
+  {
+   "group": "Service",
+   "bullets": [
+    "The operator can check the truck’s status via the multifunctional display",
+    "CAN bus diagnostics enable rapid fault finding and repair helping to achieve exceptional levels of truck uptime",
+    "Easy and quick battery change with truck battery rollers"
+   ]
+  }
+ ],
+ "unparsed": {
+  "characteristics_captions": [
+   "Personal Safety Equipment",
+   "Spacious cabin",
+   "Crossline laser",
+   "Easy and quick battery change"
+  ],
+  "other": "            h4\n                 h25\n                                                                                                     h1\n                       2224                                                                     h6\n                                  h9\n                                                                                           h7\n                                        s\n                                  h13                            m1                  m2\n                                                  l8                  y        231\n                                                       l1\n      a21\n                        F\n                              c\nAst                                               B                                   b1\n      l6         l\n                                                                          Wa\n                                            b5\n                                            b12\n                                                            Au",
+  "masts": "STANDARD MAST BASIC (1000 KG) (in mm)\nSeries                                                           5224\nLift              h3: 2200       h3: 2600        h3: 3600      h3: 4600      h3: 5600      h3: 6600      h3: 7600\n               h1: 2200       h1: 2400        h1: 2900      h1: 3400      h1: 3900      h1: 4400      h1: 4900\n               h13: 60        h13: 60         h13: 60       h13: 60       h13: 60       h13: 60       h13: 60\nHeight\n               h9: 1105       h9: 1105        h9: 1105      h9: 1105      h9: 1105      h9: 1105      h9: 1105\nmeasurements\n               h25: 3365      h25: 3765       h25: 4765     h25: 5765     h25: 6765     h25: 7765     h25: 8765\n               h4: 4418       h4: 4818        h4: 5818      h4: 6818      h4: 7818      h4: 8818      h4: 9818\n\nModel\nA\n\n\n\n\nSTANDARD MAST HEAVY (1500 KG) (in mm)\nSeries                                                           5224\nLift              h3: 1800       h3: 2200        h3: 3200      h3: 4200      h3: 5200      h3: 6200      h3: 7200\n               h1: 2200       h1: 2400        h1: 2900      h1: 3400      h1: 3900      h1: 4400      h1: 4900\n               h13: 60        h13: 60         h13: 60       h13: 60       h13: 60       h13: 60       h13: 60\nHeight\n               h9: 1040       h9: 1040        h9: 1040      h9: 1040      h9: 1040      h9: 1040      h9: 1040\nmeasurements\n               h25: 2900      h25: 3365       h25: 4300     h25: 5300     h25: 6300     h25: 7300     h25: 8300\n               h4: 4018       h4: 4418        h4: 5418      h4: 6418      h4: 7418      h4: 8418      h4: 9418\n\nModel\nA\n\n\n\n\nTRIPLEX MAST HEAVY (1500 KG) (in mm)\nSeries                                                                         5224\nLift              h3: 2950       h3: 3550        h3: 5050      h3: 6350      h3: 7450      h3: 8950     h3: 10050      h3: 11550     h3: 12850\n               h1: 2200       h1: 2400        h1: 2900      h1: 3400      h1: 3900      h1: 4400      h1: 4900       h1: 5400      h1: 5900\n               h13: 60        h13: 60         h13: 60       h13: 60       h13: 60       h13: 60       h13: 60        h13: 60       h13: 60\nHeight\n               h9: 1040       h9: 1040        h9: 1040      h9: 1040      h9: 1040      h9: 1040      h9: 1040       h9: 1040      h9: 1040\nmeasurements\n               h25: 4050      h25: 4650       h25: 6150     h25: 7450     h25: 8550     h25: 10050    h25: 11150     h25: 12650    h25: 13950\n               h4: 5168       h4: 5768        h4: 7268      h4: 8568      h4: 9668      h4: 11168     h4: 12268      h4: 13768     h4: 15068\n\nModel\nA\n\n\n\n\n    Optional equipment\n\nh1: Height of mast, lowered                 h3: Lift                 h4: Height of mast, extended         h9: Auxiliary lift\nh13: Fork height lowered                    h25: Total lifting height ex floor"
+ }
+}

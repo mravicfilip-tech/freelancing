@@ -39,6 +39,10 @@ Task format
   - [x] Note 9, the hero's slide tabs restyled
   - [x] Note 10, a better search icon, Filip picked 3, the grey cell at the field's end, 18 November
   - [ ] Note 11, the model page filled from the Drive, a description, why it works, every figure the data sheet gives
+  - [x] Filip's yes to the four lines, 18 November
+  - [x] Every data sheet on the Drive pulled into data, briefs/shop/ds, 83 of 89 series have one, 53 parse in full
+  - [ ] H16 to H20 built in full, Filip looks
+  - [ ] Every other series filled, the cards and filters on the data sheet numbers
   - [ ] The Serbian model descriptions, ekotehnika.rs refuses this container, Filip to get them another way
   - [ ] The form sends through Resend once Filip gives the key, the privacy text and the deadline from Filip
 

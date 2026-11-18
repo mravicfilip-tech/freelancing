@@ -16,6 +16,7 @@ import { Card, Facts, Picture } from './Card';
 import { Hero } from './Hero';
 import { Listing } from './Listing';
 import { SearchBox } from './SearchBox';
+import { SpecEquipment, SpecFeatures, SpecFigures, SpecVersions, SpecWhy, useSpec } from './ModelSpec';
 import './shop.css';
 
 function Crumbs({ items }: { items: { label: string; href?: string }[] }) {
@@ -167,7 +168,11 @@ function ModelPage({ cat, model }: { cat: string; model: string }) {
   const c = categoryOf(cat);
   const p = productOf(cat, model);
   useTitle(p ? `Linde ${p.code}, ${p.kind.toLowerCase()}` : 'Model nije pronađen');
+  // the facts of the model's data sheet, Filip 18 November, see ModelSpec.tsx. Null while they load, and a model with no sheet keeps
+  // the old site's two facts.
+  const loaded = useSpec(model);
   if (!c || !p) return <Missing />;
+  const spec = loaded?.spec ?? null;
   const others = productsOf(cat).filter((x) => x.slug !== p.slug);
   const start = Math.max(0, others.findIndex((x) => x.slug > p.slug));
   const related = [...others.slice(start), ...others.slice(0, start)].slice(0, 4);
@@ -182,7 +187,15 @@ function ModelPage({ cat, model }: { cat: string; model: string }) {
           <p className="sp-lab">{p.kind}</p>
           <h1 className="sp-h1">{p.code}</h1>
           <p className="sp-series">Linde serija {p.series}</p>
-          <Facts p={p} big />
+          {spec ? (
+            <>
+              {spec.tagline ? <p className="sp-model-tag">{spec.tagline}</p> : null}
+              <p className="sp-lede sp-model-lede">{spec.lede}</p>
+              <SpecFigures spec={spec} />
+            </>
+          ) : loaded ? (
+            <Facts p={p} big />
+          ) : null}
           <div className="sp-acts">
             <Link className="btn btn-primary" href={hrefAsk(p, 'kupovina')} data-cta="quote">
               <BtnInner>Zatražite ponudu</BtnInner>
@@ -199,8 +212,16 @@ function ModelPage({ cat, model }: { cat: string; model: string }) {
               </span>
             </a>
           ) : null}
+          {spec ? <SpecWhy spec={spec} /> : null}
         </Cell>
       </section>
+      {spec ? (
+        <>
+          <SpecFeatures spec={spec} />
+          <SpecVersions spec={spec} />
+          <SpecEquipment spec={spec} />
+        </>
+      ) : null}
       {p.photos.length ? (
         <section className="sp-frame sp-photos" aria-label="Fotografije">
           {p.photos.map((src, i) => (

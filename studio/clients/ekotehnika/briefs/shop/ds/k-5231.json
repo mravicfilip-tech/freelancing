@@ -1,0 +1,907 @@
+{
+ "slug": "k-5231",
+ "datasheet": {
+  "name": "DS_K_5231_en_C_0821_view.pdf",
+  "id": "1fN7qrKH7PCBCqPi7fN3vjLSQDBYKdf-D"
+ },
+ "heading": "VERY NARROW AISLE",
+ "range": "K",
+ "capacity": "CAPACITY 1500 KG | SERIES 5231",
+ "tagline": null,
+ "benefits": [],
+ "versions": [
+  "K-Example A",
+  "K-Example B",
+  "K-Example C"
+ ],
+ "vdi": [
+  {
+   "no": "1.1",
+   "section": "Characteristics",
+   "label": "Manufacturer",
+   "unit": "",
+   "values": [
+    "LINDE",
+    "LINDE",
+    "LINDE"
+   ],
+   "notes": [
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "1.2",
+   "section": "Characteristics",
+   "label": "Model desgination",
+   "unit": "",
+   "values": [
+    "K-Example A",
+    "K-Example B",
+    "K-Example C"
+   ],
+   "notes": [
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "1.3",
+   "section": "Characteristics",
+   "label": "Power unit",
+   "unit": "",
+   "values": [
+    "Battery",
+    "Battery",
+    "Battery"
+   ],
+   "notes": [
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "1.4",
+   "section": "Characteristics",
+   "label": "Operation",
+   "unit": "",
+   "values": [
+    "Stand / Sitz",
+    "Stand / Sitz",
+    "Stand / Sitz"
+   ],
+   "notes": [
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "1.5",
+   "section": "Characteristics",
+   "label": "Load capacity",
+   "unit": "Q (t)",
+   "values": [
+    "0.7",
+    "0.9",
+    "1.5"
+   ],
+   "notes": [
+    [
+     "1"
+    ],
+    [
+     "1"
+    ],
+    [
+     "1"
+    ]
+   ]
+  },
+  {
+   "no": "1.6",
+   "section": "Characteristics",
+   "label": "Load centre",
+   "unit": "c (mm)",
+   "values": [
+    "600",
+    "400",
+    "600"
+   ],
+   "notes": [
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "1.9",
+   "section": "Characteristics",
+   "label": "Wheelbase",
+   "unit": "y (mm)",
+   "values": [
+    "1614",
+    "2046",
+    "2212"
+   ],
+   "notes": [
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "2.1",
+   "section": "Weight",
+   "label": "Service weight",
+   "unit": "(kg)",
+   "values": [
+    "6488",
+    "8555",
+    "12776"
+   ],
+   "notes": [
+    [
+     "2"
+    ],
+    [
+     "2"
+    ],
+    [
+     "2"
+    ]
+   ]
+  },
+  {
+   "no": "2.2",
+   "section": "Weight",
+   "label": "Axle load with load, front / rear",
+   "unit": "(kg)",
+   "values": [
+    "1972 / 5216",
+    "2844 / 6611",
+    "4162 / 10114"
+   ],
+   "notes": [
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "2.3",
+   "section": "Weight",
+   "label": "Axle load without load, front / rear",
+   "unit": "(kg)",
+   "values": [
+    "2424 / 4064",
+    "3390 / 5165",
+    "4909 / 7867"
+   ],
+   "notes": [
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "3.1",
+   "section": "Tyres/chassis",
+   "label": "Tyres",
+   "unit": "",
+   "values": [
+    "Polyurethane",
+    "Polyurethane",
+    "Polyurethane"
+   ],
+   "notes": [
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "3.2",
+   "section": "Tyres/chassis",
+   "label": "Tyre size, front",
+   "unit": "",
+   "values": [
+    "360 x 140",
+    "406 x 170",
+    "360 x 140"
+   ],
+   "notes": [
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "3.3",
+   "section": "Tyres/chassis",
+   "label": "Tyre size, rear",
+   "unit": "",
+   "values": [
+    "370 x 160",
+    "370 x 160",
+    "370 x 160"
+   ],
+   "notes": [
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "3.5",
+   "section": "Tyres/chassis",
+   "label": "Wheels, number front / rear (x = driven)",
+   "unit": "",
+   "values": [
+    "1x / 2",
+    "1x / 2",
+    "1x / 2"
+   ],
+   "notes": [
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "3.6",
+   "section": "Tyres/chassis",
+   "label": "Track width, front",
+   "unit": "b10 [mm]",
+   "values": [
+    "1245",
+    "955",
+    "1595"
+   ],
+   "notes": [
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "4.2",
+   "section": "Dimensions",
+   "label": "Height of mast, lowered",
+   "unit": "h1 (mm)",
+   "values": [
+    "3900",
+    "4900",
+    "6900"
+   ],
+   "notes": [
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "4.4",
+   "section": "Dimensions",
+   "label": "Lift",
+   "unit": "h 3 (mm)",
+   "values": [
+    "5600",
+    "7200",
+    "15650"
+   ],
+   "notes": [
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "4.5",
+   "section": "Dimensions",
+   "label": "Height of mast, extended",
+   "unit": "h 4 (mm)",
+   "values": [
+    "8155",
+    "9800",
+    "18850"
+   ],
+   "notes": [
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "4.7",
+   "section": "Dimensions",
+   "label": "Height of overhead guard (cabin)",
+   "unit": "h 6 (mm)",
+   "values": [
+    "2555",
+    "2555",
+    "2555"
+   ],
+   "notes": [
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "4.8",
+   "section": "Dimensions",
+   "label": "Height of seat / stand-on platform",
+   "unit": "h7 (mm)",
+   "values": [
+    "460",
+    "460",
+    "460"
+   ],
+   "notes": [
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "4.11",
+   "section": "Dimensions",
+   "label": "Supplementary lift",
+   "unit": "h9 (mm)",
+   "values": [
+    "1800",
+    "1800",
+    "2400"
+   ],
+   "notes": [
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "4.14",
+   "section": "Dimensions",
+   "label": "Platform height, raised",
+   "unit": "h12 (mm)",
+   "values": [
+    "6060",
+    "7660",
+    "16110"
+   ],
+   "notes": [
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "4.15",
+   "section": "Dimensions",
+   "label": "fork height, lowered",
+   "unit": "h13 (mm)",
+   "values": [
+    "60",
+    "60",
+    "60"
+   ],
+   "notes": [
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "4.19",
+   "section": "Dimensions",
+   "label": "Overall length",
+   "unit": "l 1 (mm)",
+   "values": [
+    "3244",
+    "3871",
+    "3842"
+   ],
+   "notes": [
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "4.21",
+   "section": "Dimensions",
+   "label": "Overall width",
+   "unit": "b1 / b2 (mm)",
+   "values": [
+    "1160 / 1450",
+    "1160 / 1160",
+    "1160 / 1800"
+   ],
+   "notes": [
+    [
+     "3"
+    ],
+    [
+     "3"
+    ],
+    [
+     "3"
+    ]
+   ]
+  },
+  {
+   "no": "4.22",
+   "section": "Dimensions",
+   "label": "Fork dimensions",
+   "unit": "s / e / l (mm)",
+   "values": [
+    "50 x 120 x 1190",
+    "50 x 120 x 780",
+    "50 x 120 x 1185"
+   ],
+   "notes": [
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "4.24",
+   "section": "Dimensions",
+   "label": "Width of fork carriage",
+   "unit": "b3 (mm)",
+   "values": [
+    "710",
+    "710",
+    "710"
+   ],
+   "notes": [
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "4.25",
+   "section": "Dimensions",
+   "label": "Fork spread, min / max",
+   "unit": "b 5 (mm)",
+   "values": [
+    "470 / 640",
+    "470 / 640",
+    "470 / 640"
+   ],
+   "notes": [
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "4.27",
+   "section": "Dimensions",
+   "label": "Width over side guide rollers",
+   "unit": "b 6 (mm)",
+   "values": [
+    "1585",
+    "1945",
+    "1895"
+   ],
+   "notes": [
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "4.29",
+   "section": "Dimensions",
+   "label": "Lateral reach travel",
+   "unit": "b7 (mm)",
+   "values": [
+    "1305",
+    "1590",
+    "1400"
+   ],
+   "notes": [
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "4.31",
+   "section": "Dimensions",
+   "label": "Ground clearance, below mast",
+   "unit": "m1 (mm)",
+   "values": [
+    "40",
+    "40",
+    "40"
+   ],
+   "notes": [
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "4.32",
+   "section": "Dimensions",
+   "label": "Ground clearance, centre of wheelbase",
+   "unit": "m 2 (mm)",
+   "values": [
+    "87",
+    "87",
+    "87"
+   ],
+   "notes": [
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "4.34",
+   "section": "Dimensions",
+   "label": "Aisle width with pallet 800 x 1200 mm along forks",
+   "unit": "A st (mm)",
+   "values": [
+    "1645",
+    "1950",
+    "1900"
+   ],
+   "notes": [
+    [
+     "4"
+    ],
+    [
+     "4"
+    ],
+    [
+     "4"
+    ]
+   ]
+  },
+  {
+   "no": "4.35",
+   "section": "Dimensions",
+   "label": "Turning radius",
+   "unit": "Wa (mm)",
+   "values": [
+    "1870",
+    "2302",
+    "2468"
+   ],
+   "notes": [
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "4.38",
+   "section": "Dimensions",
+   "label": "Centre of axle to fork pivot",
+   "unit": "l 8 (mm)",
+   "values": [
+    "1019",
+    "1214",
+    "1019"
+   ],
+   "notes": [
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "4.39",
+   "section": "Dimensions",
+   "label": "Head centre",
+   "unit": "A (mm)",
+   "values": [
+    "480",
+    "675",
+    "480"
+   ],
+   "notes": [
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "4.40",
+   "section": "Dimensions",
+   "label": "Width of reach carriage",
+   "unit": "B (mm)",
+   "values": [
+    "1465",
+    "1750",
+    "1560"
+   ],
+   "notes": [
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "4.41",
+   "section": "Dimensions",
+   "label": "Head width",
+   "unit": "F (mm)",
+   "values": [
+    "250",
+    "260",
+    "330"
+   ],
+   "notes": [
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "4.42",
+   "section": "Dimensions",
+   "label": "End aisle width, with / without load",
+   "unit": "A u (mm)",
+   "values": [
+    "3664",
+    "4392",
+    "4298"
+   ],
+   "notes": [
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "5.1",
+   "section": "Performance",
+   "label": "Travel speed, with / without load",
+   "unit": "(km / h)",
+   "values": [
+    "9/9",
+    "14 / 14",
+    "11.1 / 11.1"
+   ],
+   "notes": [
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "5.2",
+   "section": "Performance",
+   "label": "Lifting speed, with / without load",
+   "unit": "(m / s)",
+   "values": [
+    "0.4 / 0.4",
+    "0.60 / 0.60",
+    "0.39 / 0.39"
+   ],
+   "notes": [
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "5.3",
+   "section": "Performance",
+   "label": "Lowering speed, with / without load",
+   "unit": "(m / s)",
+   "values": [
+    "0.45 / 0.45",
+    "0.45 / 0.45",
+    "0.43 / 0.43"
+   ],
+   "notes": [
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "5.4",
+   "section": "Performance",
+   "label": "Reach speed, with / without load",
+   "unit": "(m / s)",
+   "values": [
+    "0.3 / 0.4",
+    "0.36 / 0.4",
+    "0.30 / 0.4"
+   ],
+   "notes": [
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "5.9",
+   "section": "Performance",
+   "label": "Acceleration time, with / without load",
+   "unit": "(s)",
+   "values": [
+    "6.0 / 6.0",
+    "6.0 / 6.0",
+    "7.0 / 7.0"
+   ],
+   "notes": [
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "5.10",
+   "section": "Performance",
+   "label": "Service brake",
+   "unit": "",
+   "values": [
+    "Regenerative",
+    "Regenerative",
+    "Regenerative"
+   ],
+   "notes": [
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "6.1",
+   "section": "Electric-engine",
+   "label": "Drive motor, 60 minute rating",
+   "unit": "(kW)",
+   "values": [
+    "6.5",
+    "7",
+    "7"
+   ],
+   "notes": [
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "6.2",
+   "section": "Electric-engine",
+   "label": "Lift motor rating at S3 15 %",
+   "unit": "(kW)",
+   "values": [
+    "13",
+    "24",
+    "24"
+   ],
+   "notes": [
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "6.3",
+   "section": "Electric-engine",
+   "label": "Battery according to DIN 43531 /35 / 36 A,B,C,no",
+   "unit": "",
+   "values": [
+    "43 531 / B",
+    "IEC 254-2 A",
+    "IEC 254-2 A"
+   ],
+   "notes": [
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "6.4",
+   "section": "Electric-engine",
+   "label": "Battery voltage / rated capacity (5 h)",
+   "unit": "(V / Ah)",
+   "values": [
+    "48 / 775",
+    "80 / 930",
+    "80 / 930"
+   ],
+   "notes": [
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "6.5",
+   "section": "Electric-engine",
+   "label": "Battery weight (± 5 %)",
+   "unit": "(kg)",
+   "values": [
+    "1119",
+    "2178",
+    "2178"
+   ],
+   "notes": [
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "8.1",
+   "section": "Drive",
+   "label": "Type of drive control",
+   "unit": "",
+   "values": [
+    "Microprocessor",
+    "Microprocessor",
+    "Microprocessor"
+   ],
+   "notes": [
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "8.2",
+   "section": "Drive",
+   "label": "Noise level at operator's ear",
+   "unit": "(dB(A))",
+   "values": [
+    "68",
+    "68",
+    "68"
+   ],
+   "notes": [
+    [],
+    [],
+    []
+   ]
+  }
+ ],
+ "footnotes": [
+  {
+   "n": "1",
+   "text": "Delta Q = 100 kg; from 500 - 1500 kg with L-Head model and from 500 - 1300 kg with telescopic forks"
+  },
+  {
+   "n": "2",
+   "text": "Figures with battery, see line 6.4 / 6.5."
+  },
+  {
+   "n": "3",
+   "text": "Step for b2; 50 mm from 1160 - 1800 mm"
+  },
+  {
+   "n": "4",
+   "text": "Including a 180 mm (min.) operating aisle clearance."
+  }
+ ],
+ "masts": {},
+ "equipment": [],
+ "characteristics": [],
+ "unparsed": {
+  "image_pages": [
+   5
+  ],
+  "page1": "Safety                                                                    Comfort\nThe K truck has various systems to offer safe operations for the          With the K trucks superb cabin layout the operator feels immediately\ndriver as well as for its environment. The personal safety system        at ease and acclimatised. With generous space for freedom of\n prevents damage inside the aisle, while the innovative rescue alarm      movement, the cab offers a comfortable operational environment\n detects unusual operators behavior and attracts attention                for fatigue-free working and promotes optimum efficiency and\n in emergency cases.                                                      productivity.\nPerformance                                                               Reliability\nStrong motors enable high lift- and driving-speeds, while the             These ruggedly constructed, high quality trucks combine with\nergonomic control panel enables quick load handling with minimal         advanced technology and Linde‘s vast experience in very narrow\n hand movement. Assisting systems like LSC or the Aisle Safety A ssist    aisle applications to ensure optimum reliability and durability.\n support the operator for maximum throughput in safe operation.\n The innovative Active Stability Control assistance system ensures a      Service\n smooth and fast travel speed even on floors that do not comply with     Integrated diagnostic CAN bus technology minimises maintenance\n VDMA guidelines. The electro-mechanical sensors identify and auto-       intervals. Easy access to all service relevant components enables quick\n matically compensate unevenness of the floor to achieve maximum          maintenance and low downtimes. The new oil tank is designed for\n handling performance.                                                     quick access and short maintenance, as well as for optimized foaming\n                                                                          behavior.",
+  "other": "ACCORDING TO VDI 2198",
+  "sections": {
+   "STANDARD EQUIPMENT                                           OPTIONAL EQUIPMENT": "Operators cabin “Combi” for easy stacking or order picking   Different types of cabins (combi, comfort, coldstore, wind protection )\nHeight and length adjustable and stowable fabric seat        Comfortable seats (air suspended, heated, adjustable backrests,\nSuspension-mounted cab to absorb shock and vibration         armrests, etc.)\n\nVery soft and comfortable platform surface                   Radio preparation integrated in the overhead guard\n\nSteering knob                                                Rearview (left / right) and panorama mirror\n\nTruck access via key                                         Clipboard DIN A4\n\nLow step on height for easy on and off                       Wind protection for lateral doors and loadside\n                                                             (glazed doors and cabin)\nOptic and acoustic user guidance with signalling\n                                                             Operator fan\nBasic functions without changing position of grip\n                                                             Lighting for operators compartment\nMultipurpose full graphic color display\n                                                             Working lights into racking\nSensor area for secured 2 handed driving\n                                                             Linde Connect\nLateral barriers left and right\n                                                             Individual configurable attachment bars on load or mast side\nThroughput:\n                                                             Throughput:\nLSC standard\n                                                             Active Stability Control (ASC)\nSynchronized lowering / lifting\n                                                             Aisle Safety Assist\nEnergy recovery when braking or lowering the cabin\n                                                             Warehouse Navigation\nSynchronous reach and rotate of forks\n                                                             LSC Load or LSC Weight\nMast / Forks:\n                                                             Dynamic Reach Control\nL-Head or telescopic forks\n                                                             Automatic fork cyclus\nMotors:\n                                                             Overreach of forks\n7 kW drive motor\n                                                             Lift height preselection\n20 kW lift motor\n                                                             Different drive and lift motors available\n\n                                                             Mast / Forks:\n                                                             Standard masts up to 11800 mm lift height\n                                                             Triplex masts available up to 15650 mm lift height\n                                                             Telescopic forks\n                                                             Manual or hydraulical adaptable forks\n                                                             Gear rack cover of L-Head\n\n                                                             Battery:\n                                                             Different battery (compartment) sizes\n                                                             Battery roller for lateral change\n                                                             Battery carrier\n                                                             Electrical verification for battery lock\n                                                             Side covering for battery\n                                                             Li-ION 48 V / 90 V\n\n                                                             Environment:\n                                                             Cold store protection (w / w.o. 2nd sliding door, Intercom)\n                                                             Antistatic guide rollers\n\n                                                             Safety:\n                                                             Rescue alarm\n                                                             Load wheel brake for increased safety at emergency stop\n                                                             Personal safety equipment (PSE)\n                                                             Non contact collision avoiding sensor\n\n                                                             Motors:\n                                                             7 kW Heavy Drive Motor\n                                                             24 kW Heavy Lift Motor\n\n                                                                                                                                                                                                   Ast\n\n\n\n\n         h28\n        (=h12\n       + 1600)\n\n\n\n\n                                                                                                                                             h4\n\n                 h25\n                       h12\n\n                                                                                                                                                                                                                        l1    l21\n                                                              2015                                                                   h1                                                                           b10\n\n\n                                     h3\n                              h9                                                                                              h6\n                             + 785              s\n\n                                           h8                                                                         1430\n\n                                                                                                                                                                              Wa\n\n                                                                                                                                                                                                   b1\n                                     h13                                               m1     h7    m2\n                                                                                                                                                                                                   b2\n                                                      l8                                 y                              265                                                                        b6\n\n\n\n\nStandard mast (Basic)                                       h 1 = 2400                       h 1 = 2900                  h 1 = 3400                           h 1 = 3900                    h 1 = 4400                              h 1 = 4900\n\nh3                                                            2600                             3600                           4600                              5600                           6200                                   7200\nh 25                                                          4460                             5460                           6460                              7460                           8060                                   9060\nh9                                                            1800                             1800                           1800                              1800                           1800                                    1800\nh 28                                                          4660                             5660                           6660                              7660                           8260                                   9260\nh4                                                            5155                             6155                           7155                              8155                           8755                                    9755\n\n\n\nStandard mast (Basic Plus,                          h1 = 2400 1|3      h1 = 2900 3       h1 = 3400 3        h1 = 3900         h1 = 4400           h1 = 4900         h1 = 5400          h1 = 5900         h1 = 6400 2         h1 = 6900 2         h1 = 7400 2\nMedium, Heavy, Heavy Plus)\nh3                                                     2200              3200                4200              5200             6200               7200                8200             9000               10000               10800               11800\nh 25                                                   4060              5060                6060              7060             8060               9060                10060            10860              11860               12660               13660\nh9                                                     1800              1800                1800              1800             1800                1800               1800             1800               1800                1800                1800\nh 28                                                   4260              5260                6260              7260             8260               9260                10260            11060              12060               12860               13860\nh4                                                     4755              5755                6755              7755             8755                9755               10755            11555              12555               13355               14355\n1\n    only available for Basic Plus standard mast               ² not available for Basic Plus standard mast                           3\n                                                                                                                                         not available for Heavy Plus standard mast\n\n\n\nTriplex mast (Medium,                                 h1 = 2900 4            h1 = 3400                h1 = 3900         h1 = 4400                 h1 = 4900                h1 = 5400         h1 = 5900              h1 = 6400 5               h1 = 6900 5\nHeavy, Heavy Plus)\nh3                                                         5050                 6350                    7450                 8750                  10050                    11550               12850                   14350                    15650\nh 25                                                       6910                 8210                    9310                 10610                 11910                    13410               14710                   16210                    17510\nh9                                                         1800                 1800                    1800                 1800                   1800                    1800                1800                    1800                     1800\nh 28                                                       7110                 8410                    9510                 10810                 12110                    13610               14910                   16410                    17710\nh4                                                         7605                 8905                   10005                 11305                 12605                    14105               15405                   16905                    18205\n4\n     not available for Heavy Plus Triplex mast                5\n                                                                  only available for Heavy Plus Triplex mast",
+   "FEATURES": "Cabin                                                                                                                                Linde System Control (LSC)\n→ 3 different cabins available                                                                                                       → LSC Standard: Dynamic residual capacity\n   – Combi cabin                                                                                                                        diagram depening on lift height\n     (combined picking / stacking)                                                                                                   → LSC Load: Optimisation of shift,\n   – Comfort cabin with + 100 mm                                                                                                        swiveling and supplementary lift by load\n     more depth                                                                                                                         recognition\n   – Cold store cabin (- 30 °C)                                                                                                      → LSC Weight: Optimization of all moved\n→ Reduced shock and vibration due to                                                                                                    axes depending on actual load weight\n   isolation of cabin from chassis                                                                                                      and lift height\n→ Easy and low access height\n→ Various comfortable and adjustable\n   seats\n\n\n\n\nModular concept                                                                  Doors                                               Dynamic Reach Control\n→ Unique modular design concept enables                                          → Side barriers for quick access and                → Effective compensation of lateral mast\n  perfect individualization                                                        easy order picking                                  movements while reaching of forks\n→ Combination of different lift and drive                                        → Glass doors to avoid draft and wind                 enables, quicker and more comfortable\n  motors                                                                         → Tilting barriers for perfect reach to picking       pallet handling\n→ Truck capacities from 0.5 t to 1.5 t                                             position                                          → Reach adjustment depending on lift\n→ Various cabin widths and executions                                                                                                  height and load weight enables exact\n→ Various chassis widths                                                                                                               and even storage of goods\n→ Different battery compartments\n\n\n\n\nMast                                                                                Control panel                                    Active Stability Control\n→ New modular design with exceptionally                                             → Control panel options for perfect              → Maximum handling performance on floors\n  stable, low deflection characteristics                                               customisation                                    that do not comply with VDMA guidelines\n→ Alternative standard and triplex mast to                                          → Split control panel for full pallet handling   → Electro-mechanical sensors identify and\n  suit all headroom requirements                                                    → Front control panel for order picking             automatically compensate bad surface\n→ More than 60 different masts available                                               or full pallet handling                       → Full speed and maximal performance on\n→ Automatic soft stop of lift, rotate and                                                                                               bad floors possible. For further information\n  traverse movements                                                                                                                    ask your Linde expert\n\n\n\n                                                                                                                                     Presented by:\n\nSubject to modification in the interest of progress. Illustrations and technical details could include options and\nnot binding for actual constructions. All dimensions subject to usual tolerances.\n\n\n\n\n                                                             Linde Material Handling GmbH\n                                                             Carl-von-Linde-Platz | 63741 Aschaffenburg | Germany\n                                                             Phone + 49 6021 99 0 | Fax + 49 6021 99 1570\n                                                             www.linde-mh.com | info@linde-mh.com\n\n                                                             Printed in Germany | DS_K_5231_en_C_0821"
+  }
+ }
+}

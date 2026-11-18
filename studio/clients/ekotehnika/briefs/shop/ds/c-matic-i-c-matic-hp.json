@@ -1,0 +1,627 @@
+{
+ "slug": "c-matic-i-c-matic-hp",
+ "datasheet": {
+  "name": "DS_C-MATIC_8925_en_E_1025_view.pdf",
+  "id": "1zv2AWdEASVFtcWL_mNv8w_JUPYZLmCTQ"
+ },
+ "heading": "Automated Transporting Solutions",
+ "range": "C-MATIC",
+ "capacity": "Capacity 1.0 t – 1.5 t | Series 8925",
+ "tagline": "Flat load carrier for short and medium distances",
+ "benefits": [
+  "Effortless transport on load tables or direct transport on pallets between transfer stations",
+  "Rotating plate to reorientate the load",
+  "Models with capacities from 1000 to 1500 kg",
+  "Intelligent software control with efficient orientation via QR codes",
+  "Safety technology for hazard-free operation in dedicated areas"
+ ],
+ "versions": [
+  "C-MATIC 10",
+  "C-MATIC 15"
+ ],
+ "vdi": [
+  {
+   "no": "1.1",
+   "section": "Characteristics",
+   "label": "Manufacturer (abbreviation)",
+   "unit": "",
+   "values": [
+    "Linde MH",
+    "Linde MH"
+   ],
+   "notes": [
+    [],
+    []
+   ]
+  },
+  {
+   "no": "1.2",
+   "section": "Characteristics",
+   "label": "Manufacturer's type designation",
+   "unit": "",
+   "values": [
+    "C-MATIC 10",
+    "C-MATIC 15"
+   ],
+   "notes": [
+    [],
+    []
+   ]
+  },
+  {
+   "no": "1.2a",
+   "section": "Characteristics",
+   "label": "Series",
+   "unit": "",
+   "values": [
+    "8925-23",
+    "8925-23"
+   ],
+   "notes": [
+    [],
+    []
+   ]
+  },
+  {
+   "no": "1.3",
+   "section": "Characteristics",
+   "label": "Drive",
+   "unit": "",
+   "values": [
+    "Battery",
+    "Battery"
+   ],
+   "notes": [
+    [],
+    []
+   ]
+  },
+  {
+   "no": "1.4",
+   "section": "Characteristics",
+   "label": "Operation",
+   "unit": "",
+   "values": [
+    "Automatic",
+    "Automatic"
+   ],
+   "notes": [
+    [],
+    []
+   ]
+  },
+  {
+   "no": "1.5",
+   "section": "Characteristics",
+   "label": "Rated capacity/rated load",
+   "unit": "Q (t)",
+   "values": [
+    "1.0",
+    "1.5"
+   ],
+   "notes": [
+    [],
+    []
+   ]
+  },
+  {
+   "no": "2.1",
+   "section": "Weight",
+   "label": "Service weight",
+   "unit": "kg",
+   "values": [
+    "230",
+    "235"
+   ],
+   "notes": [
+    [
+     "1"
+    ],
+    [
+     "1"
+    ]
+   ]
+  },
+  {
+   "no": "3.1",
+   "section": "Tyres/chassis",
+   "label": "Tyres: solid rubber, superelastic, pneumatic, polyurethane",
+   "unit": "",
+   "values": [
+    "Polyurethane",
+    "Polyurethane"
+   ],
+   "notes": [
+    [],
+    []
+   ]
+  },
+  {
+   "no": "3.4",
+   "section": "Tyres/chassis",
+   "label": "Auxiliary wheels (dimensions)",
+   "unit": "",
+   "values": [
+    "Ø 200 × 40",
+    "Ø 200 × 40"
+   ],
+   "notes": [
+    [],
+    []
+   ]
+  },
+  {
+   "no": "3.5",
+   "section": "Tyres/chassis",
+   "label": "Wheels, number front/rear (x = driven wheels)",
+   "unit": "",
+   "values": [
+    "2x + 4",
+    "2x + 4"
+   ],
+   "notes": [
+    [],
+    []
+   ]
+  },
+  {
+   "no": "3.6",
+   "section": "Tyres/chassis",
+   "label": "Tread, front",
+   "unit": "b10 (mm)",
+   "values": [
+    "758",
+    "758"
+   ],
+   "notes": [
+    [],
+    []
+   ]
+  },
+  {
+   "no": "4.4",
+   "section": "Dimensions",
+   "label": "Lift",
+   "unit": "h3 (mm)",
+   "values": [
+    "60",
+    "60"
+   ],
+   "notes": [
+    [],
+    []
+   ]
+  },
+  {
+   "no": "4.15",
+   "section": "Dimensions",
+   "label": "Height, lowered",
+   "unit": "h13 (mm)",
+   "values": [
+    "260",
+    "260"
+   ],
+   "notes": [
+    [],
+    []
+   ]
+  },
+  {
+   "no": "4.16",
+   "section": "Dimensions",
+   "label": "Length of loading surface",
+   "unit": "l3 (mm)",
+   "values": [
+    "950",
+    "950"
+   ],
+   "notes": [
+    [
+     "2"
+    ],
+    [
+     "2"
+    ]
+   ]
+  },
+  {
+   "no": "4.18",
+   "section": "Dimensions",
+   "label": "Width of loading surface",
+   "unit": "b9 (mm)",
+   "values": [
+    "750",
+    "750"
+   ],
+   "notes": [
+    [
+     "2"
+    ],
+    [
+     "2"
+    ]
+   ]
+  },
+  {
+   "no": "4.19",
+   "section": "Dimensions",
+   "label": "Overall length",
+   "unit": "l1 (mm)",
+   "values": [
+    "1180",
+    "1180"
+   ],
+   "notes": [
+    [],
+    []
+   ]
+  },
+  {
+   "no": "4.21",
+   "section": "Dimensions",
+   "label": "Overall width",
+   "unit": "b1/b2 (mm)",
+   "values": [
+    "832",
+    "832"
+   ],
+   "notes": [
+    [],
+    []
+   ]
+  },
+  {
+   "no": "4.33",
+   "section": "Dimensions",
+   "label": "Load dimension",
+   "unit": "b12 × l6 (mm)",
+   "values": [
+    "1200 × 1200 // (1080 × 108",
+    "1200 × 1200 // (1080 × 108"
+   ],
+   "notes": [
+    [
+     "0",
+     "3"
+    ],
+    [
+     "0",
+     "3"
+    ]
+   ]
+  },
+  {
+   "no": "4.34",
+   "section": "Dimensions",
+   "label": "Aisle width predetermined load dimensions",
+   "unit": "Ast (mm)",
+   "values": [
+    "1897",
+    "1897"
+   ],
+   "notes": [
+    [
+     "4"
+    ],
+    [
+     "4"
+    ]
+   ]
+  },
+  {
+   "no": "4.35",
+   "section": "Dimensions",
+   "label": "Turning radius",
+   "unit": "Wa (mm)",
+   "values": [
+    "618.5",
+    "618.5"
+   ],
+   "notes": [
+    [
+     "5"
+    ],
+    [
+     "5"
+    ]
+   ]
+  },
+  {
+   "no": "5.1",
+   "section": "Performance",
+   "label": "Travel speed, laden/unladen",
+   "unit": "km/h",
+   "values": [
+    "4.3/5.4",
+    "4.3/5.4"
+   ],
+   "notes": [
+    [],
+    []
+   ]
+  },
+  {
+   "no": "5.8",
+   "section": "Performance",
+   "label": "Max. gradeability, laden/unladen",
+   "unit": "%",
+   "values": [
+    "< 5.0",
+    "< 5.0"
+   ],
+   "notes": [
+    [
+     "6"
+    ],
+    [
+     "6"
+    ]
+   ]
+  },
+  {
+   "no": "6.3",
+   "section": "Electric-engine",
+   "label": "Battery according to DIN 43531/35/36 A, B, C, no",
+   "unit": "",
+   "values": [
+    "Li-ION",
+    "Li-ION"
+   ],
+   "notes": [
+    [],
+    []
+   ]
+  },
+  {
+   "no": "6.4",
+   "section": "Electric-engine",
+   "label": "Battery voltage/nominal capacity K 5",
+   "unit": "(V)/(Ah) o. kWh",
+   "values": [
+    "51.2/42",
+    "51.2/42"
+   ],
+   "notes": [
+    [],
+    []
+   ]
+  },
+  {
+   "no": "6.5",
+   "section": "Electric-engine",
+   "label": "Battery weight (±5%)",
+   "unit": "kg",
+   "values": [
+    "22",
+    "22"
+   ],
+   "notes": [
+    [],
+    []
+   ]
+  }
+ ],
+ "footnotes": [
+  {
+   "n": "1",
+   "text": "Without adaptor plate"
+  },
+  {
+   "n": "2",
+   "text": "Loading platform rotation diameter: C-MATIC 10/15: Ø 1060 mm                                  10/15: Ø 1411 mm"
+  },
+  {
+   "n": "3",
+   "text": "With loading platform: tables as load carrier are required. Pallet handling with adaptor plate (l3 × b9 = 1200 × 887 mm) with 3 fixation                 traversable gap at rated speed ≤ 5 mm – with reduced speed ≤ 30 mm positions l6: 1016 mm (Position 1), 1000 mm (Position 2), 800 mm (Position 3) b12: < 1219 mm // (load inner dimensions l6.1 × b14)"
+  },
+  {
+   "n": "4",
+   "text": "Including a 200 mm (min.) operating aisle clearance. With adaptor plate and load dimensions (l6 × b12) of Euro pallet (800 × 1200) = 1642 mm; UK pallet (1000 × 1200) = 1762 mm: US pallet (1016 × 1219) = 1898 mm"
+  },
+  {
+   "n": "5",
+   "text": "Unladen rotation diameter C-MATIC 10/15: Ø 1237 mm with adaptor plate: C-MATIC"
+  },
+  {
+   "n": "6",
+   "text": "Allowed step height at rated speed ≤ 5 mm – with reduced speed ≤ 10 mm,"
+  }
+ ],
+ "masts": {},
+ "equipment": [
+  {
+   "group": "Off board software",
+   "columns": [
+    "C-MATIC 10",
+    "C-MATIC 15"
+   ],
+   "items": [
+    {
+     "text": "Smart charging logic"
+    },
+    {
+     "text": "Interfaces to existing WMS, ERP, etc."
+    },
+    {
+     "text": "Interfaces with infrastructure: doors, conveyors, etc."
+    },
+    {
+     "text": "Interfaces with Linde Warehouse Management Systems"
+    }
+   ]
+  },
+  {
+   "group": "On board software",
+   "columns": [
+    "C-MATIC 10",
+    "C-MATIC 15"
+   ],
+   "items": [
+    {
+     "text": "QR code navigation"
+    },
+    {
+     "text": "QR code load identification"
+    },
+    {
+     "text": "User-friendly log-on to the vehicle"
+    }
+   ]
+  },
+  {
+   "group": "Safety",
+   "columns": [
+    "C-MATIC 10",
+    "C-MATIC 15"
+   ],
+   "items": [
+    {
+     "text": "Personal detection safety scanner in main direction of travel"
+    },
+    {
+     "text": "Dual lidar safety scanners on both front and rear sides for enhanced coverage"
+    },
+    {
+     "text": "Safety field switches between lifted and lowered platform"
+    },
+    {
+     "text": "Emergency stop buttons on all sides (left and right corners at both front and rear)"
+    },
+    {
+     "text": "Safety bumper around the vehicle (front, side, rear)"
+    }
+   ]
+  },
+  {
+   "group": "Navigation",
+   "columns": [
+    "C-MATIC 10",
+    "C-MATIC 15"
+   ],
+   "items": [
+    {
+     "text": "Positional accuracy ±10 mm"
+    },
+    {
+     "text": "Stop accuracy ±5 mm"
+    },
+    {
+     "text": "Angular accuracy ±1°"
+    },
+    {
+     "text": "Navigation QR codes with interval 1400 × 1400 mm"
+    }
+   ]
+  },
+  {
+   "group": "HMI interface",
+   "columns": [
+    "C-MATIC 10",
+    "C-MATIC 15"
+   ],
+   "items": [
+    {
+     "text": "Control buttons"
+    },
+    {
+     "text": "LED indicators"
+    },
+    {
+     "text": "Depending on situation plays warning sounds and/or voice package"
+    }
+   ]
+  },
+  {
+   "group": "Operation/load handling",
+   "columns": [
+    "C-MATIC 10",
+    "C-MATIC 15"
+   ],
+   "items": [
+    {
+     "text": "QR code load table identification"
+    },
+    {
+     "text": "Turn, transport and drop load through 90°, 180° and 270°"
+    },
+    {
+     "text": "Load table dimensions 1200 × 1200 mm"
+    },
+    {
+     "text": "Adaptor plate with a height range of 290-1000 mm above the floor – suitable for various handover tasks such as pick and drop stations, workstations, conveyors, etc."
+    },
+    {
+     "text": "Differential drive with dual wheels"
+    },
+    {
+     "text": "Turn on the spot with and without locked platform"
+    }
+   ]
+  },
+  {
+   "group": "Environment",
+   "columns": [
+    "C-MATIC 10",
+    "C-MATIC 15"
+   ],
+   "items": [
+    {
+     "text": "Wifi communication"
+    },
+    {
+     "text": "Ambient operating temperature +0 – +40°C"
+    }
+   ]
+  },
+  {
+   "group": "Energy",
+   "columns": [
+    "C-MATIC 10",
+    "C-MATIC 15"
+   ],
+   "items": [
+    {
+     "text": "Li-ION battery"
+    },
+    {
+     "text": "Automatic Opportunity Charging Connector"
+    }
+   ]
+  },
+  {
+   "group": "Service",
+   "columns": [
+    "C-MATIC 10",
+    "C-MATIC 15"
+   ],
+   "items": [
+    {
+     "text": "Switch for automated or maintenance mode"
+    },
+    {
+     "text": "Plug for Hand Control Unit"
+    },
+    {
+     "text": "Hand Control Unit"
+    },
+    {
+     "text": "Ramp to operate C-MATIC from delivery pallet"
+    },
+    {
+     "text": "Special Equipment"
+    }
+   ]
+  }
+ ],
+ "characteristics": [],
+ "unparsed": {
+  "image_pages": [
+   3,
+   6
+  ],
+  "sections": {
+   "APPLICATION INFORMATION": "                                                                                                                                                                          h11\n                                                                                                                                                                 m2\n\n\n                                                                                                                                l6.1 = l6 - (b12 - b14)                                        b14\n\nPLATFORM: TABLE REQUIREMENTS                                                                                                               l6                                                  b12\n\n\n\n\n                                                       h11\n                                           m2\n\n\n                 l6.1 = l6 - (b12 - b14)                                                           b14\n                           l6                                                                      b12\n\n\n\n                 A QR code must be located centrally underneath the\n                 table for load identification and orientation\n\n\n\n Manufacturer‘s type designation                             C-MATIC 10                                           C-MATIC 15\n Dimension l6 × b12 × m2 (mm)                                1200 × 1200 × 290                                    1200 × 1200 × 290\n Inner dimensions l6.1 × b14 (mm)                            1080 × 1080                                          1080 × 1080\n Capacity (kg)                                               1000                                                 1500\n Loading height, unladen h11 (mm)                            330                                                  330\n\n\n\nADAPTOR PLATE: PALLET REQUIREMENTS\n                                               Safety distance a = 200 mm\n                                      a                                                                    a\n                                      2                                                                    2\n\n\n                                                                    l3\n\n\n\n\n                                               1                                           1\n             Fixation\n                                                                            R\n                                                                                                                                      Ast = 2 × max (Wa, R) + a,\n             positions                     2       3                                   3       2                                      with a = 200 mm\n             (1, 2, 3)                                                                                   b9 b12\n\n                                           2       3                                   3       2\n                                                        Wa                                                                                        b12 2          l6 2\n                                                                                                                                      R=                +\n                                                                                                                                                   2              2\n                                               1                                           1\n\n\n\n\n                                                                     l6\n\n                                                                    Ast\n\n\n\n\n Adaptor plate                                               C-MATIC 10                                           C-MATIC 15                                     Ast (mm)\n Adaptor plate dimensions l3 × b9 (mm)                       1200 × 887                                           1200 × 887                                     1611\n Load dimensions (l6 × b12)                                  Fixation position 1, 2 or 3\n EPAL1, CP2: 800 × 1200 mm                                   Position 3                                           Position 3                                     1642\n EPAL3, CP1: 1000 × 1200 mm                                  Position 2                                           Position 2                                     1762\n Australia, GMA and North America: 1016 × 1219 mm            Position 1                                           Position 1                                     1898",
+   "LOCALISATION TECHNOLOGY": "The max. QR codes unit distances (CUD) is limited to\n                                                                                                                                                                                Standard CUD\n1500 mm for vehicle localisation.                                                                                                                   Manufacturer‘s type\n                                                                                                                                                    designation                 (mm × mm)\nThe different models are optimised for a standard                                                                                                   C-MATIC 10                  1400 × 1400\nCUD for loads without overhang.                                                                                                                     C-MATIC 15                  1400 × 1400"
+  }
+ }
+}

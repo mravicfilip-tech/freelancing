@@ -1,0 +1,1302 @@
+{
+ "slug": "v08",
+ "datasheet": {
+  "name": "DS_V08 _4594_en_F_0622_view.pdf",
+  "id": "1Fc9R9qb4LUuIP3vSqEoQGHTCMx57KJp5"
+ },
+ "heading": "Order Picker",
+ "range": "V08",
+ "capacity": "Capacity 0.7 t, 0.8 t and 1.0 t | Series 4594",
+ "tagline": "Precise pacemaker",
+ "benefits": [
+  "Available as V08-01 with rigid forks of different length and as V08-02 with supplementary fork lift",
+  "Lifting platform up to 1.2 meter in height enables order picking on the second shelf level",
+  "Lift mast control Linde OptiLift ensures smooth lifting movements",
+  "Linde steering wheel with integrated driving and lifting functions enables optimum vehicle control",
+  "Powerful motor for a top speed of up to 12 km / h"
+ ],
+ "versions": [
+  "V08-01 0.7 t",
+  "V08-01 1.0 t",
+  "V08-02"
+ ],
+ "vdi": [
+  {
+   "no": "1.1",
+   "section": "Characteristics",
+   "label": "Manufacturer",
+   "unit": "",
+   "values": [
+    "Linde",
+    "Linde",
+    "Linde"
+   ],
+   "notes": [
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "1.2",
+   "section": "Characteristics",
+   "label": "Model",
+   "unit": "",
+   "values": [
+    "V08-01 0.7 t",
+    "V08-01 1.0 t",
+    "V08-02"
+   ],
+   "notes": [
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "1.2.a",
+   "section": "Characteristics",
+   "label": "Series",
+   "unit": "",
+   "values": [
+    "4594",
+    "4594",
+    "4594"
+   ],
+   "notes": [
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "1.3",
+   "section": "Characteristics",
+   "label": "Power Unit",
+   "unit": "",
+   "values": [
+    "Electric",
+    "Electric",
+    "Electric"
+   ],
+   "notes": [
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "1.4",
+   "section": "Characteristics",
+   "label": "Operation",
+   "unit": "",
+   "values": [
+    "Stand-on",
+    "Stand-on",
+    "Stand-on"
+   ],
+   "notes": [
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "1.5",
+   "section": "Characteristics",
+   "label": "Load capacity / Load",
+   "unit": "Q (t)",
+   "values": [
+    "0.7",
+    "1.0",
+    "0.8"
+   ],
+   "notes": [
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "1.6",
+   "section": "Characteristics",
+   "label": "Load centre distance",
+   "unit": "c (mm)",
+   "values": [
+    "500",
+    "600",
+    "500"
+   ],
+   "notes": [
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "1.8",
+   "section": "Characteristics",
+   "label": "Axle centre to fork face",
+   "unit": "x (mm)",
+   "values": [
+    "97",
+    "309",
+    "121"
+   ],
+   "notes": [
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "1.9",
+   "section": "Characteristics",
+   "label": "Wheelbase",
+   "unit": "y (mm)",
+   "values": [
+    "1152",
+    "1554",
+    "1380"
+   ],
+   "notes": [
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "2.1",
+   "section": "Weights",
+   "label": "Service weight",
+   "unit": "(kg)",
+   "values": [
+    "1264",
+    "1266",
+    "1576"
+   ],
+   "notes": [
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "2.2",
+   "section": "Weights",
+   "label": "Axle load with load, front / rear",
+   "unit": "(kg)",
+   "values": [
+    "390 / 1574",
+    "694 / 1572",
+    "512 / 1864"
+   ],
+   "notes": [
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "2.3",
+   "section": "Weights",
+   "label": "Axle load without load, front / rear",
+   "unit": "(kg)",
+   "values": [
+    "766 / 498",
+    "890 / 376",
+    "892 / 684"
+   ],
+   "notes": [
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "3.1",
+   "section": "Wheels/Tyres",
+   "label": "Tyres rubber, SE, pneumatic, polyurethane",
+   "unit": "",
+   "values": [
+    "Polyurethane",
+    "Polyurethane",
+    "Polyurethane"
+   ],
+   "notes": [
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "3.2",
+   "section": "Wheels/Tyres",
+   "label": "Tyre size, front",
+   "unit": "",
+   "values": [
+    "230 × 90",
+    "230 × 90",
+    "230 × 90"
+   ],
+   "notes": [
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "3.3",
+   "section": "Wheels/Tyres",
+   "label": "Tyre size, rear",
+   "unit": "",
+   "values": [
+    "120 × 50",
+    "85 × 90",
+    "120 × 50"
+   ],
+   "notes": [
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "3.4",
+   "section": "Wheels/Tyres",
+   "label": "Additional wheels (dimensions)",
+   "unit": "",
+   "values": [
+    "100 × 40",
+    "150 × 50",
+    "100 × 40"
+   ],
+   "notes": [
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "3.5",
+   "section": "Wheels/Tyres",
+   "label": "Wheels, number front / rear (x = driven)",
+   "unit": "",
+   "values": [
+    "1x - 2 / 4",
+    "1x - 1 / 2",
+    "1x - 2 / 4"
+   ],
+   "notes": [
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "3.6",
+   "section": "Wheels/Tyres",
+   "label": "Track width, front",
+   "unit": "b10 (mm)",
+   "values": [
+    "552",
+    "478",
+    "552"
+   ],
+   "notes": [
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "3.7",
+   "section": "Wheels/Tyres",
+   "label": "Track width, rear",
+   "unit": "b11 (mm)",
+   "values": [
+    "534",
+    "378",
+    "534"
+   ],
+   "notes": [
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "4.2",
+   "section": "Dimensions",
+   "label": "Height of mast, lowered",
+   "unit": "h1 (mm)",
+   "values": [
+    "1381",
+    "1381",
+    "1381",
+    "1432",
+    "1432",
+    "1687"
+   ],
+   "notes": [
+    [],
+    [],
+    [],
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "4.4",
+   "section": "Dimensions",
+   "label": "Lift",
+   "unit": "h3 (mm)",
+   "values": [
+    "1050",
+    "1050",
+    "1050"
+   ],
+   "notes": [
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "4.5",
+   "section": "Dimensions",
+   "label": "Height of mast, extended",
+   "unit": "h4 (mm)",
+   "values": [
+    "2431",
+    "2431",
+    "2431"
+   ],
+   "notes": [
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "4.8",
+   "section": "Dimensions",
+   "label": "Height of seat / stand on platform",
+   "unit": "h7 (mm)",
+   "values": [
+    "145",
+    "145",
+    "145"
+   ],
+   "notes": [
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "4.9",
+   "section": "Dimensions",
+   "label": "Height drawbar in driving position min./max.",
+   "unit": "h14 (mm)",
+   "values": [
+    "1266",
+    "1266",
+    "1266"
+   ],
+   "notes": [
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "4.1",
+   "section": "Dimensions",
+   "label": "Height of wheel arms",
+   "unit": "h8 (mm)",
+   "values": [
+    "80",
+    "80",
+    "80"
+   ],
+   "notes": [
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "4.11",
+   "section": "Dimensions",
+   "label": "Additional lift",
+   "unit": "h9 (mm)",
+   "values": [
+    "-",
+    "-",
+    "762"
+   ],
+   "notes": [
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "4.14",
+   "section": "Dimensions",
+   "label": "Stand height, elevated with lifting platform",
+   "unit": "h12 (mm)",
+   "values": [
+    "1195",
+    "1195",
+    "1195"
+   ],
+   "notes": [
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "4.15",
+   "section": "Dimensions",
+   "label": "Forks height, lowered",
+   "unit": "h13 (mm)",
+   "values": [
+    "95",
+    "95",
+    "50"
+   ],
+   "notes": [
+    [],
+    [],
+    [
+     "1"
+    ]
+   ]
+  },
+  {
+   "no": "4.19",
+   "section": "Dimensions",
+   "label": "Overall length",
+   "unit": "l1 (mm)",
+   "values": [
+    "2582",
+    "2582",
+    "2887"
+   ],
+   "notes": [
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "4.21",
+   "section": "Dimensions",
+   "label": "Overall width",
+   "unit": "b1 (mm)",
+   "values": [
+    "800",
+    "800",
+    "800"
+   ],
+   "notes": [
+    [],
+    [],
+    [
+     "1"
+    ]
+   ]
+  },
+  {
+   "no": "4.22",
+   "section": "Dimensions",
+   "label": "Fork dimensions DIN ISO 2331",
+   "unit": "s / e / l (mm)",
+   "values": [
+    "57 / 186 / 1150",
+    "57 / 186 / 1150",
+    "40 / 80 / 1200"
+   ],
+   "notes": [
+    [],
+    [],
+    [
+     "1"
+    ]
+   ]
+  },
+  {
+   "no": "4.24",
+   "section": "Dimensions",
+   "label": "Width of fork carriage",
+   "unit": "b3 (mm)",
+   "values": [
+    "-",
+    "-",
+    "800"
+   ],
+   "notes": [
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "4.25",
+   "section": "Dimensions",
+   "label": "Distance between fork-arms",
+   "unit": "b5 (mm)",
+   "values": [
+    "564",
+    "564",
+    "205 / 733"
+   ],
+   "notes": [
+    [],
+    [],
+    [
+     "1"
+    ]
+   ]
+  },
+  {
+   "no": "4.26",
+   "section": "Dimensions",
+   "label": "Distance between wheel arms",
+   "unit": "b4 (mm)",
+   "values": [
+    "-",
+    "253",
+    "-"
+   ],
+   "notes": [
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "4.32",
+   "section": "Dimensions",
+   "label": "Ground clearance, centre of wheelbase",
+   "unit": "m2 (mm)",
+   "values": [
+    "30",
+    "30",
+    "30"
+   ],
+   "notes": [
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "4.34.1",
+   "section": "Dimensions",
+   "label": "Aisle width for pallets 1000 x 1200 crossways",
+   "unit": "Ast (mm)",
+   "values": [
+    "2806",
+    "-",
+    "3139"
+   ],
+   "notes": [
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "4.34.2",
+   "section": "Dimensions",
+   "label": "Aisle width for pallets 800 x 1200 along forks",
+   "unit": "Ast (mm)",
+   "values": [
+    "2902",
+    "2919",
+    "3149"
+   ],
+   "notes": [
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "4.35",
+   "section": "Dimensions",
+   "label": "Turning radius",
+   "unit": "Wa (mm)",
+   "values": [
+    "1345",
+    "1742",
+    "1569"
+   ],
+   "notes": [
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "5.1",
+   "section": "Performance",
+   "label": "Travel speed, with / without load",
+   "unit": "(km / h)",
+   "values": [
+    "9 / 10",
+    "10 / 10",
+    "9 / 10"
+   ],
+   "notes": [
+    [
+     "2"
+    ],
+    [
+     "2"
+    ],
+    [
+     "2"
+    ]
+   ]
+  },
+  {
+   "no": "5.1.1",
+   "section": "Performance",
+   "label": "Travel speed, with / without load, backwards",
+   "unit": "(km / h)",
+   "values": [
+    "8 / 8",
+    "8 / 8",
+    "8 / 8"
+   ],
+   "notes": [
+    [
+     "2"
+    ],
+    [
+     "2"
+    ],
+    [
+     "2"
+    ]
+   ]
+  },
+  {
+   "no": "5.2",
+   "section": "Performance",
+   "label": "Lifting speed, with / without load",
+   "unit": "(m / s)",
+   "values": [
+    "0.16 / 0.23",
+    "0.15 / 0.23",
+    "0.15 / 0.21 (0.15 / 0.2"
+   ],
+   "notes": [
+    [],
+    [],
+    [
+     "2",
+     "3"
+    ]
+   ]
+  },
+  {
+   "no": "5.3",
+   "section": "Performance",
+   "label": "Lowering speed, with / without load",
+   "unit": "(m / s)",
+   "values": [
+    "0.34 / 0.26",
+    "0.34 / 0.26",
+    "0.34 / 0.33 (0.30 / 0.1"
+   ],
+   "notes": [
+    [],
+    [],
+    [
+     "3",
+     "3"
+    ]
+   ]
+  },
+  {
+   "no": "5.8",
+   "section": "Performance",
+   "label": "Max. greadability with / without load",
+   "unit": "(%)",
+   "values": [
+    "5 % / 10 %",
+    "8 % / 10 %",
+    "7 % / 10 %"
+   ],
+   "notes": [
+    [
+     "4"
+    ],
+    [
+     "4"
+    ],
+    [
+     "4"
+    ]
+   ]
+  },
+  {
+   "no": "5.9",
+   "section": "Performance",
+   "label": "Acceleration time, with / without load",
+   "unit": "(s)",
+   "values": [
+    "5.7 / 5.2",
+    "6.2 / 5.4",
+    "6.2 / 5.6"
+   ],
+   "notes": [
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "5.10",
+   "section": "Performance",
+   "label": "Service brake",
+   "unit": "",
+   "values": [
+    "Electromagnetic",
+    "Electromagnetic",
+    "Electromagnetic"
+   ],
+   "notes": [
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "6.1",
+   "section": "Electric-engine",
+   "label": "Drive motor rating S2 60 min",
+   "unit": "(kW)",
+   "values": [
+    "2.3",
+    "2.3",
+    "2.3"
+   ],
+   "notes": [
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "6.2",
+   "section": "Electric-engine",
+   "label": "Lift motor rating at S3",
+   "unit": "(kW)",
+   "values": [
+    "2.2 / 6 %",
+    "2.2 / 6 %",
+    "2.2 / 6 %"
+   ],
+   "notes": [
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "6.3",
+   "section": "Electric-engine",
+   "label": "Battery according to DIN 43531 / 35 / 36 A. B. C. no",
+   "unit": "",
+   "values": [
+    "no",
+    "no",
+    "no"
+   ],
+   "notes": [
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "6.4",
+   "section": "Electric-engine",
+   "label": "Battery voltage / nominal capacity K5",
+   "unit": "(V / Ah)",
+   "values": [
+    "24 / 345 - 375",
+    "24 / 345 - 375",
+    "24 / 400 - 500"
+   ],
+   "notes": [
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "6.5",
+   "section": "Electric-engine",
+   "label": "Battery weight (± 5 %)",
+   "unit": "(kg)",
+   "values": [
+    "295",
+    "295",
+    "377"
+   ],
+   "notes": [
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "6.6",
+   "section": "Electric-engine",
+   "label": "Energy consumption according to DIN EN 16796",
+   "unit": "(kWh / h)",
+   "values": [
+    "0.44",
+    "0.44",
+    "0.44"
+   ],
+   "notes": [
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "6.6.1",
+   "section": "Electric-engine",
+   "label": "CO2 equivalent emissions",
+   "unit": "(kg / h)",
+   "values": [
+    "0.2",
+    "0.2",
+    "0.2"
+   ],
+   "notes": [
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "6.7",
+   "section": "Electric-engine",
+   "label": "Turnover output according to VDI cycle 2198",
+   "unit": "(t / h)",
+   "values": [
+    "48",
+    "71",
+    "53"
+   ],
+   "notes": [
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "6.8",
+   "section": "Electric-engine",
+   "label": "Turnover efficiency according to VDI 2198",
+   "unit": "(t / kWh)",
+   "values": [
+    "43.6",
+    "44.4",
+    "53.3"
+   ],
+   "notes": [
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "8.1",
+   "section": "Drive",
+   "label": "Type of drive control",
+   "unit": "",
+   "values": [
+    "AC control",
+    "AC control",
+    "AC control"
+   ],
+   "notes": [
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "10.7",
+   "section": "Additional data",
+   "label": "Noise level at operator‘s ear",
+   "unit": "dB (A)",
+   "values": [
+    "< 70",
+    "< 70",
+    "< 70"
+   ],
+   "notes": [
+    [],
+    [],
+    []
+   ]
+  }
+ ],
+ "footnotes": [
+  {
+   "n": "1",
+   "text": "with adjustable forks standard; for platform with fixed forks h13 = 65 mm; s / e / l = 60 / 180 / 1150 mm; b3 = 700 mm; b5 = 560 mm"
+  },
+  {
+   "n": "2",
+   "text": "up to a platform height of 300 mm from the floor"
+  },
+  {
+   "n": "3",
+   "text": "in brackets: (forks speed)"
+  },
+  {
+   "n": "4",
+   "text": "on rounded edge slope; geometric limit on unrounded edge slope is 7 %"
+  }
+ ],
+ "masts": {},
+ "equipment": [
+  {
+   "group": "Safety",
+   "columns": [],
+   "items": [
+    {
+     "text": "V08-01 V08-01 V08-02 Model / Equipment (0.7 t) (1 t) (0.8 t)"
+    },
+    {
+     "text": "Front anti-collision guard, rubber - low position"
+    },
+    {
+     "text": "Front anti-collision steel guard - high position"
+    },
+    {
+     "text": "Front anti-collision steel guard high position with low rubber protection"
+    },
+    {
+     "text": "Front anti-collision steel guard - fully rounded"
+    },
+    {
+     "text": "Linde BlueSpot™- optical warning signal for pedestrians and drivers"
+    },
+    {
+     "text": "Front LED lights"
+    },
+    {
+     "text": "Automatic speed reduction when cornering"
+    },
+    {
+     "text": "Rear feet protection",
+     "na": [
+      "—"
+     ]
+    },
+    {
+     "text": "Lateral platform sideguards",
+     "na": [
+      "—"
+     ]
+    },
+    {
+     "text": "Auxiliary support frame",
+     "na": [
+      "—"
+     ]
+    },
+    {
+     "text": "Key switch"
+    },
+    {
+     "text": "Log in PIN code"
+    },
+    {
+     "text": "CAN bus technology"
+    }
+   ]
+  },
+  {
+   "group": "Digitalisation",
+   "columns": [],
+   "items": [
+    {
+     "text": "Data Transmission online",
+     "na": [
+      "—"
+     ]
+    },
+    {
+     "text": "Data Transmission Wifi",
+     "na": [
+      "—"
+     ]
+    },
+    {
+     "text": "Linde connect:desk - local fleet management with diffferent functional modules"
+    },
+    {
+     "text": "Linde connect:cloud - fleet management as a service (hosted version)"
+    },
+    {
+     "text": "Inching control (forward only or forward / backward)",
+     "na": [
+      "—"
+     ]
+    },
+    {
+     "text": "Low speed supplementary lift low",
+     "na": [
+      "—"
+     ]
+    },
+    {
+     "text": "Speed up to 12 km/h"
+    }
+   ]
+  },
+  {
+   "group": "Enviroment",
+   "columns": [],
+   "items": [
+    {
+     "text": "OptiLift ® system for rising platform"
+    },
+    {
+     "text": "Pedestrian mast lift control"
+    },
+    {
+     "text": "Lift control buttons (up and down, located on both sides of the backrest)",
+     "na": [
+      "—"
+     ]
+    },
+    {
+     "text": "Coldstore -35 °C (in / out)"
+    },
+    {
+     "text": "Height adjustable Linde steering wheel"
+    },
+    {
+     "text": "Knee protection"
+    },
+    {
+     "text": "Multifunction coloured display hour meter, maintenance indication, battery discharge indicator and internal fault code indication"
+    }
+   ]
+  },
+  {
+   "group": "Workplace",
+   "columns": [],
+   "items": [
+    {
+     "text": "Safe operator compartment with cushioned platform mat"
+    },
+    {
+     "text": "Fixed roundly-shaped backrest",
+     "na": [
+      "—"
+     ]
+    },
+    {
+     "text": "Front accessory bar"
+    },
+    {
+     "text": "Front picking shelf (50 kg)"
+    },
+    {
+     "text": "Support clipboard and scanner"
+    }
+   ]
+  },
+  {
+   "group": "Attachement/Forks",
+   "columns": [],
+   "items": [
+    {
+     "text": "Support data terminal and power supply cable 24 V"
+    },
+    {
+     "text": "Front shrink wrap holder"
+    },
+    {
+     "text": "Bottle compartments below rear backrest",
+     "na": [
+      "—"
+     ]
+    },
+    {
+     "text": "Forks dimensions 560 / 1150 / 60 mm",
+     "na": [
+      "—"
+     ]
+    },
+    {
+     "text": "Forks dimensions 40 × 80 × 1200 mm, similar to ISO (more options available)",
+     "na": [
+      "—"
+     ]
+    },
+    {
+     "text": "Drive wheel Heavy duty"
+    },
+    {
+     "text": "Drive wheel High grip"
+    },
+    {
+     "text": "Single load wheels polyurethane",
+     "na": [
+      "—"
+     ]
+    }
+   ]
+  },
+  {
+   "group": "Axles and Tyres",
+   "columns": [],
+   "items": [
+    {
+     "text": "Single load wheels polyurethane (splitted)",
+     "na": [
+      "—"
+     ]
+    },
+    {
+     "text": "Tandem load wheels polyurethane (greaseable)",
+     "na": [
+      "—"
+     ]
+    },
+    {
+     "text": "Single castor wheel polyurethane",
+     "na": [
+      "—"
+     ]
+    }
+   ]
+  },
+  {
+   "group": "Drive and Brake-System",
+   "columns": [],
+   "items": [
+    {
+     "text": "Tandem castor wheels polyurethane",
+     "na": [
+      "—"
+     ]
+    },
+    {
+     "text": "Single castor wheel polyurethane",
+     "na": [
+      "—"
+     ]
+    },
+    {
+     "text": "Tandem greased castor wheels polyurethane",
+     "na": [
+      "—"
+     ]
+    },
+    {
+     "text": "Power assisted steering"
+    },
+    {
+     "text": "3 kW AC motor (maintenance free)"
+    },
+    {
+     "text": "Electromagnetic braking system"
+    },
+    {
+     "text": "Battery compartment, lateral change 3 PzS (300 Ah / 375 Ah)",
+     "na": [
+      "—"
+     ]
+    },
+    {
+     "text": "Battery compartment, lateral change 4 PzS (400 Ah / 500 Ah), incl. ergonomic lever and metal rollers"
+    },
+    {
+     "text": "Li-ION technology available - different battery capacities depending of the model with laterally or vertically mounted opportunity charging plug"
+    },
+    {
+     "text": "Lead-Acid on-board charger 60 Ah (Li-ION on-board charger 35 Ah available upon request)"
+    },
+    {
+     "text": "Integrated charger for lead acid and Li-ION batteries"
+    }
+   ]
+  }
+ ],
+ "characteristics": [
+  {
+   "group": "Safety",
+   "bullets": [
+    "Raised outer edge of the driver’s platform protects the driver from missteps",
+    "Strong bumpers provide protection in the event of minor collisions",
+    "LED headlights and Linde BlueSpot™ improve vehicle visibility",
+    "Driver platform functions completely as dead man’s switch",
+    "Additional side rails on the V08-02 protect against falls"
+   ]
+  },
+  {
+   "group": "Ergonomics",
+   "bullets": [
+    "Height-adjustable Linde steering wheel for a back-friendly working position",
+    "Spacious entrance and low step height make it easier to enter and leave the vehicle",
+    "Spring-loaded driver’s platform absorbs vibrations and shocks",
+    "Spacious storage compartments for work materials and personal belongings",
+    "Additional brackets assist the driver in their work"
+   ]
+  },
+  {
+   "group": "Handling",
+   "bullets": [
+    "Lifting platform up to 1.2 meters in height for effortless access to the second shelf level",
+    "Lift mast control Linde OptiLift enables smooth, vibration-free lifting movements",
+    "Powerful motor provides a top speed of up to 12 km / h",
+    "Self-centering power steering keeps the vehicle on a straight track",
+    "Important driving functions are directly integrated into the Linde steering wheel",
+    "V08-02’s pedestrian function allows the vehicle to be maneuvered from the outside"
+   ]
+  },
+  {
+   "group": "Service",
+   "bullets": [
+    "Strong bumpers protect the chassis in the event of a collision",
+    "Low-maintenance design ensures high vehicle availability",
+    "Non-contact sensors rarely need to be replaced",
+    "CAN bus connection ensures simple service processes",
+    "Important vehicle components are easily accessible"
+   ]
+  }
+ ],
+ "unparsed": {
+  "characteristics_captions": [
+   "Optional lateral sideguards",
+   "Comfortable operator compartment",
+   "Intuitive Linde steering wheel",
+   "Robust chassis construction"
+  ],
+  "other": "                                                                                                   h4\n                                                                       l\nh1                                                             c           Q\n     h14                                  h3                                             h12\n                                    h7                                                 h13\n                      m2\n                                y                  x\n                Wa\n                                                                                         e\nb1                                                                                           b5\n                                                                                            100\n     100                   l2\n                                              l1\n                                                                                       h4\n                                                                   l\n                                                           c           Q\n       h1 h14\n                                         h3\n                                                                                 h12\n                                                                               h13\n                                         h7\n                     m2                                x\n                                y\n                Wa\n                                                                                         e\nb1\n                                                                                             b4 b5\n                                                                                             100\n      100                  l2\n                                              l1\n                                                                                                                                             h4\n                       h1                                                 h3\n                               h14                                                                                                     h12\n                                                                                                                l                h9\n                                                                                                 c          Q\n                                                             m2           h7                                                     h13\n                                                                   y                   x\n                                                  Wa\n                                                                                                                                       e\n                      b1                                                                                                                     b5\n                               100                                l2\n                                                                                  l1                                                       100",
+  "sections": {
+   "LOAD CAPACITY": "h13 + h3 + h9 (mm)          Q (kg)\n1145                 700             600          V08-01 0.7 t\n1145                 1000            1000         V08-01 1.0 t\n1877                 800             700            V08-02\nc (mm)               500             600\n\n\n\nh13: Forks height, lowered                  h9: Additional lift        h3: Lift            c: Load center           Q: Load capacity"
+  }
+ }
+}

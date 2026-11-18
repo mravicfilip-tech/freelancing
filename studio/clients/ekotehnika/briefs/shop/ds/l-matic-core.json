@@ -1,0 +1,769 @@
+{
+ "slug": "l-matic-core",
+ "datasheet": {
+  "name": "DS_L-MATIC core_1195-01_en_B_0425_view.pdf",
+  "id": "1otyJl7EFwEdaBfR1kJdIZmv4XPq41D4F"
+ },
+ "heading": "Automated Pallet Stacker",
+ "range": "L-MATIC core",
+ "capacity": "Capacity 1.2 t | Series 1195-01",
+ "tagline": "Compact load carrier",
+ "benefits": [
+  "Load capacity up to 1.2 tonnes, maximum lifting height up to 1.84 metres (storage height: 1.78 metres)",
+  "Ideal for transporting goods at ground level, serving conveyor belts, or storing and retrieving items close to the ground",
+  "Suitable for use in confined spaces thanks to compact design with an aisle width of less than 2.5 metres",
+  "Quick commissioning in combination with Linde MATIC:move software",
+  "Perfect solution for mixed operation and brownfield projects"
+ ],
+ "versions": [
+  "L-MATIC core"
+ ],
+ "vdi": [
+  {
+   "no": "1.1",
+   "section": "Characteristics",
+   "label": "Manufacturer (abbreviation)",
+   "unit": "",
+   "values": [
+    "Linde MH"
+   ],
+   "notes": [
+    []
+   ]
+  },
+  {
+   "no": "1.2",
+   "section": "Characteristics",
+   "label": "Manufacturer’s type designation",
+   "unit": "",
+   "values": [
+    "L-MATIC core"
+   ],
+   "notes": [
+    []
+   ]
+  },
+  {
+   "no": "1.2a",
+   "section": "Characteristics",
+   "label": "Series",
+   "unit": "",
+   "values": [
+    "1195-01"
+   ],
+   "notes": [
+    []
+   ]
+  },
+  {
+   "no": "1.3",
+   "section": "Characteristics",
+   "label": "Drive",
+   "unit": "",
+   "values": [
+    "Battery"
+   ],
+   "notes": [
+    []
+   ]
+  },
+  {
+   "no": "1.4",
+   "section": "Characteristics",
+   "label": "Operation",
+   "unit": "",
+   "values": [
+    "Maintenance/automatic"
+   ],
+   "notes": [
+    []
+   ]
+  },
+  {
+   "no": "1.5",
+   "section": "Characteristics",
+   "label": "Rated capacity/rated load",
+   "unit": "Q (t)",
+   "values": [
+    "1.2"
+   ],
+   "notes": [
+    []
+   ]
+  },
+  {
+   "no": "1.6",
+   "section": "Characteristics",
+   "label": "Load centre distance",
+   "unit": "c (mm)",
+   "values": [
+    "600"
+   ],
+   "notes": [
+    []
+   ]
+  },
+  {
+   "no": "1.8",
+   "section": "Characteristics",
+   "label": "Load distance, centre of drive axle to fork",
+   "unit": "x (mm)",
+   "values": [
+    "665"
+   ],
+   "notes": [
+    []
+   ]
+  },
+  {
+   "no": "1.9",
+   "section": "Characteristics",
+   "label": "Wheelbase",
+   "unit": "y (mm)",
+   "values": [
+    "1013"
+   ],
+   "notes": [
+    []
+   ]
+  },
+  {
+   "no": "2.1",
+   "section": "Weight",
+   "label": "Service weight",
+   "unit": "kg",
+   "values": [
+    "850"
+   ],
+   "notes": [
+    []
+   ]
+  },
+  {
+   "no": "2.2",
+   "section": "Weight",
+   "label": "Axle loading, laden front/rear",
+   "unit": "kg",
+   "values": [
+    "695/1355"
+   ],
+   "notes": [
+    []
+   ]
+  },
+  {
+   "no": "2.3",
+   "section": "Weight",
+   "label": "Axle loading, unladen front/rear",
+   "unit": "kg",
+   "values": [
+    "670/180"
+   ],
+   "notes": [
+    []
+   ]
+  },
+  {
+   "no": "3.1",
+   "section": "Tyres/chassis",
+   "label": "Tyres: solid rubber, superelastic, pneumatic, polyurethane",
+   "unit": "",
+   "values": [
+    "P+P/P"
+   ],
+   "notes": [
+    [
+     "3"
+    ]
+   ]
+  },
+  {
+   "no": "3.2",
+   "section": "Tyres/chassis",
+   "label": "Tyre size, front",
+   "unit": "",
+   "values": [
+    "Ø 230 × 90"
+   ],
+   "notes": [
+    []
+   ]
+  },
+  {
+   "no": "3.3",
+   "section": "Tyres/chassis",
+   "label": "Tyre size, rear",
+   "unit": "",
+   "values": [
+    "Ø 85 × 65"
+   ],
+   "notes": [
+    []
+   ]
+  },
+  {
+   "no": "3.4",
+   "section": "Tyres/chassis",
+   "label": "Additional wheels (dimensions)",
+   "unit": "",
+   "values": [
+    "Ø 140 × 54"
+   ],
+   "notes": [
+    []
+   ]
+  },
+  {
+   "no": "3.5",
+   "section": "Tyres/chassis",
+   "label": "Wheels, number front/rear (x = driven wheels)",
+   "unit": "",
+   "values": [
+    "1x + 1/4"
+   ],
+   "notes": [
+    []
+   ]
+  },
+  {
+   "no": "3.6",
+   "section": "Tyres/chassis",
+   "label": "Tread, front",
+   "unit": "b10 (mm)",
+   "values": [
+    "426.5"
+   ],
+   "notes": [
+    []
+   ]
+  },
+  {
+   "no": "3.7",
+   "section": "Tyres/chassis",
+   "label": "Tread, rear",
+   "unit": "b11 (mm)",
+   "values": [
+    "380"
+   ],
+   "notes": [
+    []
+   ]
+  },
+  {
+   "no": "4.2",
+   "section": "Dimensions",
+   "label": "Mast height, lowered",
+   "unit": "h1 (mm)",
+   "values": [
+    "1415"
+   ],
+   "notes": [
+    []
+   ]
+  },
+  {
+   "no": "4.3",
+   "section": "Dimensions",
+   "label": "Free lift",
+   "unit": "h2 (mm)",
+   "values": [
+    "264"
+   ],
+   "notes": [
+    []
+   ]
+  },
+  {
+   "no": "4.4",
+   "section": "Dimensions",
+   "label": "Lift",
+   "unit": "h3 (mm)",
+   "values": [
+    "1844"
+   ],
+   "notes": [
+    []
+   ]
+  },
+  {
+   "no": "4.5",
+   "section": "Dimensions",
+   "label": "Mast height, extended",
+   "unit": "h4 (mm)",
+   "values": [
+    "2364"
+   ],
+   "notes": [
+    []
+   ]
+  },
+  {
+   "no": "4.15",
+   "section": "Dimensions",
+   "label": "Height, lowered",
+   "unit": "h13 (mm)",
+   "values": [
+    "86"
+   ],
+   "notes": [
+    []
+   ]
+  },
+  {
+   "no": "4.19",
+   "section": "Dimensions",
+   "label": "Overall length",
+   "unit": "l1 (mm)",
+   "values": [
+    "1785"
+   ],
+   "notes": [
+    []
+   ]
+  },
+  {
+   "no": "4.20",
+   "section": "Dimensions",
+   "label": "Length to fork face",
+   "unit": "l2 (mm)",
+   "values": [
+    "535"
+   ],
+   "notes": [
+    []
+   ]
+  },
+  {
+   "no": "4.21",
+   "section": "Dimensions",
+   "label": "Overall width",
+   "unit": "b1 (mm)",
+   "values": [
+    "887"
+   ],
+   "notes": [
+    []
+   ]
+  },
+  {
+   "no": "4.22",
+   "section": "Dimensions",
+   "label": "Fork dimensions DIN ISO 2331",
+   "unit": "s/e/l (mm)",
+   "values": [
+    "55/182/1250"
+   ],
+   "notes": [
+    []
+   ]
+  },
+  {
+   "no": "4.24",
+   "section": "Dimensions",
+   "label": "Fork carriage width",
+   "unit": "b3 (mm)",
+   "values": [
+    "780"
+   ],
+   "notes": [
+    []
+   ]
+  },
+  {
+   "no": "4.25",
+   "section": "Dimensions",
+   "label": "Fork spread",
+   "unit": "b5 (mm)",
+   "values": [
+    "560"
+   ],
+   "notes": [
+    []
+   ]
+  },
+  {
+   "no": "4.26",
+   "section": "Dimensions",
+   "label": "Distance between wheel arms/loading surfaces",
+   "unit": "b4 (mm)",
+   "values": [
+    "196"
+   ],
+   "notes": [
+    []
+   ]
+  },
+  {
+   "no": "4.31",
+   "section": "Dimensions",
+   "label": "Ground clearance, laden, below mast",
+   "unit": "m1 (mm)",
+   "values": [
+    "30"
+   ],
+   "notes": [
+    []
+   ]
+  },
+  {
+   "no": "4.32",
+   "section": "Dimensions",
+   "label": "Ground clearance, centre of wheelbase",
+   "unit": "m2 (mm)",
+   "values": [
+    "17"
+   ],
+   "notes": [
+    []
+   ]
+  },
+  {
+   "no": "4.34.1",
+   "section": "Dimensions",
+   "label": "Aisle width for pallets 1000 × 1200 crossways",
+   "unit": "Ast (mm)",
+   "values": [
+    "21481)/2750"
+   ],
+   "notes": [
+    [
+     "2"
+    ]
+   ]
+  },
+  {
+   "no": "4.34.2",
+   "section": "Dimensions",
+   "label": "Aisle width with pallet 800 × 1200 lengthways",
+   "unit": "Ast (mm)",
+   "values": [
+    "21291)/2480"
+   ],
+   "notes": [
+    [
+     "2"
+    ]
+   ]
+  },
+  {
+   "no": "4.35",
+   "section": "Dimensions",
+   "label": "Turning radius",
+   "unit": "Wa (mm)",
+   "values": [
+    "1261"
+   ],
+   "notes": [
+    [
+     "1"
+    ]
+   ]
+  },
+  {
+   "no": "5.1",
+   "section": "Performance",
+   "label": "Travel speed, laden/unladen",
+   "unit": "km/h",
+   "values": [
+    "4/41) 6.0/7.2"
+   ],
+   "notes": [
+    [
+     "2"
+    ]
+   ]
+  },
+  {
+   "no": "5.2",
+   "section": "Performance",
+   "label": "Lifting speed, laden/unladen",
+   "unit": "m/s",
+   "values": [
+    "0.19/0.3"
+   ],
+   "notes": [
+    []
+   ]
+  },
+  {
+   "no": "5.3",
+   "section": "Performance",
+   "label": "Lowering speed, laden/unladen",
+   "unit": "m/s",
+   "values": [
+    "0.31/0.24"
+   ],
+   "notes": [
+    []
+   ]
+  },
+  {
+   "no": "5.10",
+   "section": "Performance",
+   "label": "Service brake",
+   "unit": "",
+   "values": [
+    "Electromagnetic"
+   ],
+   "notes": [
+    []
+   ]
+  },
+  {
+   "no": "6.1",
+   "section": "Electric-engine",
+   "label": "Drive motor rating S2 60 min",
+   "unit": "kW",
+   "values": [
+    "1.5"
+   ],
+   "notes": [
+    []
+   ]
+  },
+  {
+   "no": "6.2",
+   "section": "Electric-engine",
+   "label": "Lift motor rating at S3 15%",
+   "unit": "kW",
+   "values": [
+    "3.2"
+   ],
+   "notes": [
+    []
+   ]
+  },
+  {
+   "no": "6.3",
+   "section": "Electric-engine",
+   "label": "Battery according to DIN 43531/35/36 A, B, C, no",
+   "unit": "",
+   "values": [
+    "Li-ION: 1P8S 206"
+   ],
+   "notes": [
+    []
+   ]
+  },
+  {
+   "no": "6.4",
+   "section": "Electric-engine",
+   "label": "Battery voltage/nominal capacity K5",
+   "unit": "(V)/(Ah) or kWh",
+   "values": [
+    "24/206"
+   ],
+   "notes": [
+    []
+   ]
+  },
+  {
+   "no": "6.5",
+   "section": "Electric-engine",
+   "label": "Battery weight (±5%)",
+   "unit": "kg",
+   "values": [
+    "66"
+   ],
+   "notes": [
+    []
+   ]
+  },
+  {
+   "no": "6.6",
+   "section": "Electric-engine",
+   "label": "Energy consumption according to DIN EN 16796",
+   "unit": "kWh/h",
+   "values": [
+    "0.57"
+   ],
+   "notes": [
+    []
+   ]
+  },
+  {
+   "no": "8.1",
+   "section": "Drive/lifting mechanism",
+   "label": "Type of drive unit",
+   "unit": "",
+   "values": [
+    "LAC"
+   ],
+   "notes": [
+    []
+   ]
+  }
+ ],
+ "footnotes": [
+  {
+   "n": "1",
+   "text": "Maintenance operation"
+  },
+  {
+   "n": "2",
+   "text": "Automated operation"
+  },
+  {
+   "n": "3",
+   "text": "Polyurethane + polyurethane/polyurethane"
+  }
+ ],
+ "masts": {
+  "STANDARD MAST (in mm)": "    Lift                        h3: 1844\n                          h1: 1415 h1’: 1565\n                          h2: 264 h2’: 150\n    Height measurements\n                          h4: 2364 h3+h13: 1930\n                          h*: 1780\n    Manufacturer’s type\n    designation\n    L-MATIC core\n\n\n      Standard equipment\n\nh1: Mast height, lowered                     h1’: Mast height, with used free lift h2 (h1’= h1+h2/2)\nh4: Mast height, extended                    h*: Maximum automated storage height 2\nh2: Free lift driving1                       h2’: Free lift storage3\nh3+h13: Lift + fork height                   h3: Lift\n\n1\n  With extended mast h1’, free lift for AGV safety scanner while driving\n2\n  Under consideration of free lift and load detection, the following connection applies to the\n   maximum load deposit height/pick-up height h*: = h3 + h13 − h2‘\n3\n  Free lift for storage and retrieval of load carriers"
+ },
+ "equipment": [
+  {
+   "group": "Safety",
+   "columns": [
+    "L-MATIC core"
+   ],
+   "items": [
+    {
+     "text": "360° safety scanner"
+    },
+    {
+     "text": "2D laser protection curtain in direction of travel for detecting objects above ground level"
+    },
+    {
+     "text": "2D laser protection curtain on the sides for detecting objects above ground level"
+    },
+    {
+     "text": "Linde BlueSpot – visual drive path warning for pedestrians and co-workers"
+    },
+    {
+     "text": "Visual warnings – multicolour flashing lights indicating vehicle status"
+    },
+    {
+     "text": "Acoustic warning signals"
+    },
+    {
+     "text": "Red warning lights at sides – red lines projected onto floor at either side of the vehicle"
+    },
+    {
+     "text": "Red warning lines in direction of travel – red lines projected onto floor in direction of travel"
+    },
+    {
+     "text": "Emergency stop buttons mounted on either side of vehicle"
+    }
+   ]
+  },
+  {
+   "group": "Operation/load handling",
+   "columns": [
+    "L-MATIC core"
+   ],
+   "items": [
+    {
+     "text": "Safety fields for standard load carrier, EPAL1 longitudinal transport compact*"
+    },
+    {
+     "text": "Safety fields for standard load carrier, longitudinal transport*"
+    },
+    {
+     "text": "Safety fields for standard load carrier, transverse transport*"
+    },
+    {
+     "text": "Pallet cage detection"
+    },
+    {
+     "text": "Stacked load detection"
+    },
+    {
+     "text": "Soft landing of forks"
+    },
+    {
+     "text": "Increased navigation laser height for MATIC fleet (2424 mm)"
+    },
+    {
+     "text": "Manual control unit"
+    },
+    {
+     "text": "Load backrest"
+    }
+   ]
+  },
+  {
+   "group": "Digitalisation",
+   "columns": [
+    "L-MATIC core"
+   ],
+   "items": [
+    {
+     "text": "Data transmission WiFi"
+    }
+   ]
+  },
+  {
+   "group": "Mast",
+   "columns": [
+    "L-MATIC core"
+   ],
+   "items": [
+    {
+     "text": "Standard mast, 1844/1415/264 mm"
+    },
+    {
+     "text": "Polycarbonate mast protection"
+    }
+   ]
+  },
+  {
+   "group": "Attachment/forks",
+   "columns": [
+    "L-MATIC core"
+   ],
+   "items": [
+    {
+     "text": "Width over forks: 560 mm"
+    },
+    {
+     "text": "Fork length: 1250 mm"
+    }
+   ]
+  },
+  {
+   "group": "Axles and tyres",
+   "columns": [
+    "L-MATIC core"
+   ],
+   "items": [
+    {
+     "text": "Single castor wheel"
+    },
+    {
+     "text": "Drive wheel, polyurethane"
+    },
+    {
+     "text": "Single load wheel, polyurethane"
+    }
+   ]
+  },
+  {
+   "group": "Energy",
+   "columns": [
+    "L-MATIC core"
+   ],
+   "items": [
+    {
+     "text": "Li-ION battery"
+    },
+    {
+     "text": "Charging contacts for automated opportunity charging"
+    },
+    {
+     "text": "Charging station for automated charging"
+    },
+    {
+     "text": "Charger (120A or 225A)"
+    }
+   ]
+  }
+ ],
+ "characteristics": [],
+ "unparsed": {
+  "image_pages": [
+   6
+  ],
+  "other": "                                   s                                                       h4\n                                                                                 h3\n1990\n                                             l            h1         h1’\n                                   c\n                                                 Q\n                                       x\n                                                     h2\n                                                                           h13\n                          m1        m2\n                                                                                                b10\n             186.9             y\n                                       Ast\n                                                                 e\n   b1                              b3                            b4        b11        b5\n   Wa\n                     l2\n       a/2                              l1                 a/2"
+ }
+}

@@ -1,0 +1,766 @@
+{
+ "slug": "v10",
+ "datasheet": {
+  "name": "DS_V10_BR5021_en_F_0119_view.pdf",
+  "id": "1oJHBbzuhK2YlR-YMqx0fGcD3skTBlPEI"
+ },
+ "heading": "ORDER PICKER",
+ "range": "V10",
+ "capacity": "CAPACITY 1000 KG | SERIES 5021",
+ "tagline": null,
+ "benefits": [],
+ "versions": [
+  "V10 Simplex mast",
+  "V10 Standard mast"
+ ],
+ "vdi": [
+  {
+   "no": "1.1",
+   "section": "Characteristics",
+   "label": "Manufacturer",
+   "unit": "",
+   "values": [
+    "LINDE",
+    "LINDE"
+   ],
+   "notes": [
+    [],
+    []
+   ]
+  },
+  {
+   "no": "1.2",
+   "section": "Characteristics",
+   "label": "Model designation",
+   "unit": "",
+   "values": [
+    "V10 Simplex mast",
+    "V10 Standard mast"
+   ],
+   "notes": [
+    [
+     "1"
+    ],
+    [
+     "1"
+    ]
+   ]
+  },
+  {
+   "no": "1.2a",
+   "section": "Characteristics",
+   "label": "Series",
+   "unit": "",
+   "values": [
+    "5021-01",
+    "5021-01"
+   ],
+   "notes": [
+    [],
+    []
+   ]
+  },
+  {
+   "no": "1.3",
+   "section": "Characteristics",
+   "label": "Power unit",
+   "unit": "",
+   "values": [
+    "Battery",
+    "Battery"
+   ],
+   "notes": [
+    [],
+    []
+   ]
+  },
+  {
+   "no": "1.4",
+   "section": "Characteristics",
+   "label": "Operation",
+   "unit": "",
+   "values": [
+    "Order Picker",
+    "Order Picker"
+   ],
+   "notes": [
+    [],
+    []
+   ]
+  },
+  {
+   "no": "1.5",
+   "section": "Characteristics",
+   "label": "Load capacity / Load",
+   "unit": "Q (t)",
+   "values": [
+    "1.0",
+    "1.0"
+   ],
+   "notes": [
+    [],
+    []
+   ]
+  },
+  {
+   "no": "1.6",
+   "section": "Characteristics",
+   "label": "Load centre distance",
+   "unit": "c (mm)",
+   "values": [
+    "400",
+    "400"
+   ],
+   "notes": [
+    [],
+    []
+   ]
+  },
+  {
+   "no": "1.8",
+   "section": "Characteristics",
+   "label": "Axle centre to fork face",
+   "unit": "x (mm)",
+   "values": [
+    "180",
+    "180"
+   ],
+   "notes": [
+    [],
+    []
+   ]
+  },
+  {
+   "no": "1.9",
+   "section": "Characteristics",
+   "label": "Wheelbase",
+   "unit": "y (mm)",
+   "values": [
+    "1270",
+    "1415"
+   ],
+   "notes": [
+    [],
+    []
+   ]
+  },
+  {
+   "no": "2.1",
+   "section": "Weight",
+   "label": "Service weight",
+   "unit": "(kg)",
+   "values": [
+    "1754",
+    "2739"
+   ],
+   "notes": [
+    [
+     "2"
+    ],
+    [
+     "2"
+    ]
+   ]
+  },
+  {
+   "no": "2.2",
+   "section": "Weight",
+   "label": "Axle load without load, front/rear",
+   "unit": "(kg)",
+   "values": [
+    "597 / 2157",
+    "1142 / 2597"
+   ],
+   "notes": [
+    [
+     "2"
+    ],
+    [
+     "2"
+    ]
+   ]
+  },
+  {
+   "no": "2.3",
+   "section": "Weight",
+   "label": "Axle load without load, front / rear",
+   "unit": "(kg)",
+   "values": [
+    "1054 / 700",
+    "1552 / 1187"
+   ],
+   "notes": [
+    [
+     "2"
+    ],
+    [
+     "2"
+    ]
+   ]
+  },
+  {
+   "no": "3.1",
+   "section": "Tyres/chassis",
+   "label": "Tyres rubber, SE, pneumatic, polyurethane",
+   "unit": "",
+   "values": [
+    "Polyurethane",
+    "Polyurethane"
+   ],
+   "notes": [
+    [],
+    []
+   ]
+  },
+  {
+   "no": "3.2",
+   "section": "Tyres/chassis",
+   "label": "Tyre size, front",
+   "unit": "",
+   "values": [
+    "Ø 250 x 100",
+    "Ø 250 x 100"
+   ],
+   "notes": [
+    [],
+    []
+   ]
+  },
+  {
+   "no": "3.3",
+   "section": "Tyres/chassis",
+   "label": "Tyre size, rear",
+   "unit": "",
+   "values": [
+    "Ø 120 x 50",
+    "Ø 150 x 100"
+   ],
+   "notes": [
+    [],
+    []
+   ]
+  },
+  {
+   "no": "3.5",
+   "section": "Tyres/chassis",
+   "label": "Wheels, number front / rear (x = driven)",
+   "unit": "",
+   "values": [
+    "1x / 2",
+    "1x / 2"
+   ],
+   "notes": [
+    [],
+    []
+   ]
+  },
+  {
+   "no": "3.6",
+   "section": "Tyres/chassis",
+   "label": "Track width, front",
+   "unit": "b10 (mm)",
+   "values": [
+    "0",
+    "0"
+   ],
+   "notes": [
+    [],
+    []
+   ]
+  },
+  {
+   "no": "3.7",
+   "section": "Tyres/chassis",
+   "label": "Track width, rear",
+   "unit": "b11 (mm)",
+   "values": [
+    "660",
+    "850"
+   ],
+   "notes": [
+    [],
+    []
+   ]
+  },
+  {
+   "no": "4.2",
+   "section": "Dimensions",
+   "label": "Height of mast, lowered",
+   "unit": "h1 (mm)",
+   "values": [
+    "2120",
+    "2900"
+   ],
+   "notes": [
+    [],
+    []
+   ]
+  },
+  {
+   "no": "4.4",
+   "section": "Dimensions",
+   "label": "Lift",
+   "unit": "h 3 (mm)",
+   "values": [
+    "1500",
+    "4550"
+   ],
+   "notes": [
+    [],
+    []
+   ]
+  },
+  {
+   "no": "4.5",
+   "section": "Dimensions",
+   "label": "Height of mast, extended",
+   "unit": "h 4 (mm)",
+   "values": [
+    "3760",
+    "6810"
+   ],
+   "notes": [
+    [],
+    []
+   ]
+  },
+  {
+   "no": "4.7",
+   "section": "Dimensions",
+   "label": "Height of overhead guard (cabin)",
+   "unit": "h 6 (mm)",
+   "values": [
+    "2260",
+    "2260"
+   ],
+   "notes": [
+    [],
+    []
+   ]
+  },
+  {
+   "no": "4.8",
+   "section": "Dimensions",
+   "label": "Height of seat / stand on platform",
+   "unit": "h7 (mm)",
+   "values": [
+    "200",
+    "200"
+   ],
+   "notes": [
+    [],
+    []
+   ]
+  },
+  {
+   "no": "4.11",
+   "section": "Dimensions",
+   "label": "Supplementary lift",
+   "unit": "h9 (mm)",
+   "values": [
+    "800",
+    "800"
+   ],
+   "notes": [
+    [],
+    []
+   ]
+  },
+  {
+   "no": "4.14",
+   "section": "Dimensions",
+   "label": "Platform height, raised",
+   "unit": "h12 (mm)",
+   "values": [
+    "1700",
+    "4750"
+   ],
+   "notes": [
+    [],
+    []
+   ]
+  },
+  {
+   "no": "4.15",
+   "section": "Dimensions",
+   "label": "Height, lowered",
+   "unit": "h13 (mm)",
+   "values": [
+    "65",
+    "65"
+   ],
+   "notes": [
+    [],
+    []
+   ]
+  },
+  {
+   "no": "4.19",
+   "section": "Dimensions",
+   "label": "Overall length",
+   "unit": "l 1 (mm)",
+   "values": [
+    "2465",
+    "2630"
+   ],
+   "notes": [
+    [],
+    []
+   ]
+  },
+  {
+   "no": "4.20",
+   "section": "Dimensions",
+   "label": "Length to fork face",
+   "unit": "l 2 (mm)",
+   "values": [
+    "1665",
+    "1830"
+   ],
+   "notes": [
+    [],
+    []
+   ]
+  },
+  {
+   "no": "4.21",
+   "section": "Dimensions",
+   "label": "Overall width",
+   "unit": "b1",
+   "values": [
+    "790 / 790",
+    "980 / 980"
+   ],
+   "notes": [
+    [],
+    []
+   ]
+  },
+  {
+   "no": "4.22",
+   "section": "Dimensions",
+   "label": "Fork dimensions DIN ISO 2331",
+   "unit": "s / e / l (mm)",
+   "values": [
+    "60 x 120 x 800",
+    "60 x 120 x 800"
+   ],
+   "notes": [
+    [],
+    []
+   ]
+  },
+  {
+   "no": "4.23",
+   "section": "Dimensions",
+   "label": "Fork carriage to ISO 2328, class / type A, B",
+   "unit": "",
+   "values": [
+    "no",
+    "no"
+   ],
+   "notes": [
+    [],
+    []
+   ]
+  },
+  {
+   "no": "4.24",
+   "section": "Dimensions",
+   "label": "Width of fork carriage",
+   "unit": "b3 (mm)",
+   "values": [
+    "660 / 740",
+    "660 / 740"
+   ],
+   "notes": [
+    [],
+    []
+   ]
+  },
+  {
+   "no": "4.25",
+   "section": "Dimensions",
+   "label": "Fork spread",
+   "unit": "b 5 (mm)",
+   "values": [
+    "560 / 640",
+    "560 / 640"
+   ],
+   "notes": [
+    [],
+    []
+   ]
+  },
+  {
+   "no": "4.27",
+   "section": "Dimensions",
+   "label": "Width over side guide rollers",
+   "unit": "b 6 (mm)",
+   "values": [
+    "1185",
+    "1375"
+   ],
+   "notes": [
+    [],
+    []
+   ]
+  },
+  {
+   "no": "4.31",
+   "section": "Dimensions",
+   "label": "Ground clearance, below mast",
+   "unit": "m1 (mm)",
+   "values": [
+    "40",
+    "38"
+   ],
+   "notes": [
+    [],
+    []
+   ]
+  },
+  {
+   "no": "4.32",
+   "section": "Dimensions",
+   "label": "Ground clearance, centre of wheelbase",
+   "unit": "m 2 (mm)",
+   "values": [
+    "40",
+    "38"
+   ],
+   "notes": [
+    [],
+    []
+   ]
+  },
+  {
+   "no": "4.34.2",
+   "section": "Dimensions",
+   "label": "Aisle width with pallet 800 x 1200 along forks",
+   "unit": "A st (mm)",
+   "values": [
+    "1190",
+    "1380"
+   ],
+   "notes": [
+    [],
+    []
+   ]
+  },
+  {
+   "no": "4.35",
+   "section": "Dimensions",
+   "label": "Turning radius",
+   "unit": "Wa (mm)",
+   "values": [
+    "1485",
+    "1650"
+   ],
+   "notes": [
+    [],
+    []
+   ]
+  },
+  {
+   "no": "4.42",
+   "section": "Dimensions",
+   "label": "End aisle width, with / without load",
+   "unit": "Au (mm)",
+   "values": [
+    "2834",
+    "2999"
+   ],
+   "notes": [
+    [],
+    []
+   ]
+  },
+  {
+   "no": "5.1",
+   "section": "Performance",
+   "label": "Travel speed, with / without load",
+   "unit": "(km/h)",
+   "values": [
+    "9/9",
+    "10 / 10"
+   ],
+   "notes": [
+    [],
+    []
+   ]
+  },
+  {
+   "no": "5.2",
+   "section": "Performance",
+   "label": "Lifting speed, with / without load",
+   "unit": "(m/s)",
+   "values": [
+    "0.18 / 0.25",
+    "0.22 / 0.31"
+   ],
+   "notes": [
+    [],
+    []
+   ]
+  },
+  {
+   "no": "5.3",
+   "section": "Performance",
+   "label": "Lowering speed, with / without load",
+   "unit": "(m/s)",
+   "values": [
+    "0.3 / 0.24",
+    "0.3 / 0.24"
+   ],
+   "notes": [
+    [],
+    []
+   ]
+  },
+  {
+   "no": "5.9",
+   "section": "Performance",
+   "label": "Acceleration time, with / without load",
+   "unit": "(s)",
+   "values": [
+    "7.0 / 7.0",
+    "8.0 / 8.0"
+   ],
+   "notes": [
+    [],
+    []
+   ]
+  },
+  {
+   "no": "5.10",
+   "section": "Performance",
+   "label": "Service brake",
+   "unit": "",
+   "values": [
+    "Regenerative",
+    "Regenerative"
+   ],
+   "notes": [
+    [],
+    []
+   ]
+  },
+  {
+   "no": "6.1",
+   "section": "Electric-engine",
+   "label": "Drive motor, rating S 2 60 min",
+   "unit": "(kW)",
+   "values": [
+    "3",
+    "3"
+   ],
+   "notes": [
+    [],
+    []
+   ]
+  },
+  {
+   "no": "6.2",
+   "section": "Electric-engine",
+   "label": "Lift motor, rating at S 3 15 %",
+   "unit": "(kW)",
+   "values": [
+    "4",
+    "7.6"
+   ],
+   "notes": [
+    [],
+    []
+   ]
+  },
+  {
+   "no": "6.3",
+   "section": "Electric-engine",
+   "label": "Battery according to DIN 43531 / 35 / 36 A, B, C, no",
+   "unit": "",
+   "values": [
+    "43 535 / B",
+    "43 535 / A"
+   ],
+   "notes": [
+    [],
+    []
+   ]
+  },
+  {
+   "no": "6.4",
+   "section": "Electric-engine",
+   "label": "Battery voltage / rated capacity (5 h)",
+   "unit": "(V)/(Ah)",
+   "values": [
+    "24 / 420",
+    "24 / 560"
+   ],
+   "notes": [
+    [],
+    []
+   ]
+  },
+  {
+   "no": "6.5",
+   "section": "Electric-engine",
+   "label": "Battery weight (± 5 %)",
+   "unit": "(kg)",
+   "values": [
+    "385",
+    "502"
+   ],
+   "notes": [
+    [],
+    []
+   ]
+  },
+  {
+   "no": "8.1",
+   "section": "Drive",
+   "label": "Type of drive unit",
+   "unit": "",
+   "values": [
+    "Microprocessor",
+    "Microprocessor"
+   ],
+   "notes": [
+    [],
+    []
+   ]
+  },
+  {
+   "no": "10.7",
+   "section": "Additional data",
+   "label": "Sound pressure level LpAZ (at the driver’s seat)",
+   "unit": "(dB(A))",
+   "values": [
+    "61",
+    "69"
+   ],
+   "notes": [
+    [],
+    []
+   ]
+  }
+ ],
+ "footnotes": [],
+ "masts": {},
+ "equipment": [],
+ "characteristics": [],
+ "unparsed": {
+  "image_pages": [
+   4
+  ],
+  "page1": "Safety                                                                       and options such as radio preparation, fans, preparation data\nThe V10 truck is designed to guarantee the operator’s safety when            terminals and scanners ensures that the truck can be equipped for\ndriving, lifting and order picking. Outstanding visibility through and        every kind of order picking application.\nto either side of the mast offers the highest level of security. The\nintegrated touch sensors ensure 2 hand operation. The LSC lift control      Reliability\n monitors lift height and steering angle automatically reducing traction    Our expertise in designing and building material handling equipment\n speed when necessary.                                                        is the guarantee that the V10 is a truck you can rely on. Thanks\n                                                                              to its easy maintenance, downtime is reduced and throughput\nPerformance                                                                  is increased. Aspects like the central servicing make the V10 an\nEfficiency and high performance are the best words to describe the           extremely reliable machine. The active cooling system ensures the\nV10. It is capable of picking at heights up to 6350 mm. Its p\n                                                             owerful         highest availability even in extreme conditions.\nand economical AC drive unit combines optimum performance with\nlow energy consumption and great reliability. Three different lift motor     Productivity\noptions allow the truck to be tailored to exactly match the application.     The V10 is designed to achieve the highest productivity possible. The\n                                                                              powerful lift motors provide fast lift of the cab w\n                                                                                                                                 henever needed.\nComfort                                                                       Based on the latest ergonomic standards, the working e   nvironment\nThe soft suspended stand-on platform and the low cab step height              and the controls allow the operator to maximise throughput. Of\nincreases working comfort and makes the truck as easy to use at               course, the truck can work just as well in a wide aisle, as in a\nmax. height as at floor level. Wide variety of storage compartments        guided aisle.",
+  "table": [
+   "/ b2 (mm)"
+  ],
+  "other": "ACCORDING TO VDI 2198\n  V10 with simplex mast (1)\n  Height of mast lovered                               h1 (mm)       1620   2120   2530\n  Lift height without supplementary mast               h 3 (mm)      1000   1500   1910\n  Lift height with supplementary mast                h 3 + h9 (mm)   1800   2300   2710\n  Total lift height from ground                        h25\n                                                             (mm)    1865   2365   2775\n  Supplementary lift                                   h9 (mm)       800    800    800\n  Platform height                                      h12 (mm)      1200   1700   2110\n  Picking height (h12+ 1600 mm)                       h 28 (mm)      2800   3300   3710\n  Extended height                                      h 4 (mm)      2395   3760   4170\n(1) available with 790 mm and 980 mm chassis width\n  V10 with standard mast (2)\n  Height of mast lovered                               h1 (mm)       2400   2900    -\n  Lift height without supplementary mast               h 3 (mm)      3550   4550    -\n  Lift height with supplementary mast                h 3 + h9 (mm)   4350   5350    -\n  Total lift height from ground                       h 25 (mm)      4415   5415    -\n  Supplementary lift                                   h9 (mm)       800    800     -\n  Platform height                                      h12 (mm)      3750   4750    -\n  Picking height (h12+ 1600mm)                        h 28 (mm)      5350   6350    -\n  Extended height                                      h 4 (mm)      5810   6810    -\n(2) available with 980 mm chassis width",
+  "sections": {
+   "STANDARD EQUIPMENT                                                              OPTIONAL EQUIPMENT": "Modular truck design for optimum customization                                  Operator‘s compartment:\n\nOperator‘s compartment:                                                         LCD „Comfort“ display with keypad log-on, lift height indicator, speedometer,\nMast or load side controls                                                      hour meter, steered wheel position indicator, battery status and service codes\nSuspension mounted cab to absorb shocks and vibration\n                                                                                Alternative cabin widths (800 mm - 1500 mm)\nSoft rubber mat isolates operator from shocks and vibration\n                                                                                Tilting barriers\nStorage compartments, pen holders and space for bottles, cans or tools          Rearview mirrors (left / right) on load side and / or mast side\nintegrated into cab interior\n                                                                                Steering wheel\nLED display with hour meter, steered wheel position indicator, battery status\nand service codes                                                               Macrolon cover for overhead guard\n                                                                                Lighting focusable on rack, pallet or cab interior\nVery low step on height for easy and off access\n                                                                                Attachment bars on mastside and on overhead guard\nSteering knob\n                                                                                Clipboard DIN A4\nThroughput:\n                                                                                Fan in overhead guard\nDurable polyurethane wheels\n                                                                                Radio preparation 12 V / 50 W with 2 speakers and antenna\nRegenerative electric braking through the drive motor for optimum use of\nenergy                                                                          Linde connect: data management system\n\nBattery discharge indicator with lift cutout                                    Kneepad on front barrier\n\nMotors:                                                                         Throughput:\n\nAC drive motor for robust, economical high performance with minimum wear        2 different chassis, 790 mm and 980 mm to suit application\nand maintenance                                                                 Supplementary lift 800 mm for easy order picking\n3.0 KW drive motor                                                              Buttons for supplementary lift on load side for easy handling\n3.2 KW lift motor                                                               Inching buttons for pedestrian operation on both sides\n\nSafety:                                                                         Truck prepared for data terminal, printer, scanner installation\n\nAutomatic reduction in travel speed with platform raised                        Motors:\nAll traction and lift functions interlocked through foot switch and sensors     4.0 kW lift motor for higher throughput\nensuring two handed operation\n                                                                                7.6 kW lift motor for maximum throughput\n\n                                                                                Safety:\n                                                                                Side barriers fitted with gas struts and safety interlocks\n                                                                                Alternative speed reduction and end aisle stop functions\n                                                                                Personal safety scanner\n                                                                                Lift and traction cut off\n                                                                                Anti-collision sensor for lifting\n                                                                                Warning lights\n                                                                                Warning sounds\n                                                                                LSC for speed reduction with steering angle\n\n                                                                                Mast / Forks:\n                                                                                Different fork lengths 700 mm - 2500 mm\n                                                                                Carriage for adjustable forks (FEM)\n\n                                                                                Environment:\n                                                                                Mechanical side guidance\n                                                                                Inductive wire guidance\n                                                                                Cold store version\n                                                                                Antistatic guide rollers and wheels\n                                                                                Online diagnosis tool",
+   "FEATURES": "Two versions are available                                                                                                       Operators compartment\n→→ Model V10-01 with fixed forks welded                                                                                          →→ Cab is suspension-mounted and has\n    to the operator platform, for working                                                                                           a floor designed to absorb shock and\n    with walk on pallets                                                                                                            vibration\n→→ Model V10-02 with supplementary lift                                                                                          →→ Lighting to illuminate racks, load and / or\n    on operator platform, forks welded                                                                                             cab\n   to fork carriage. Pallet can be raised                                                                                       →→ Storage compartments, pen holders and\n   to most convenient working level for                                                                                            space for bottles, cans or tools integrated\n   picking. Optimum matching of lift car-                                                                                          in cab lining\n   riage minimizes dead space to allow                                                                                          →→ Radio preparation, fans, preparation for\n   full utilization of pallet surface area                                                                                          data terminals and scanners\n\n\n\n\nModular concept                                                                  Drive and lift                                  Safety\n→→ Unique modular design allows the                                              →→ Robust, economical high performance          →→ Two handed operation of controls via\n   perfect specification for each application                                      traction and lift motors are fitted as          touch sensors ensures safety\n→→ Combination of different lift motors, chas-                                      standard                                     →→ All traction and lift functions interlocked\n    sis, masts, batteries, cabins, etc. to suit                                  →→ Optional lift motor sizes (3 options for        through deadman‘s switch and integrated\n    every application                                                               light, standard and heavy duty appli-           2 handed operation\n→→ Side guide rollers can be fitted for narrow                                     cations) allow truck performance to be       →→ Automatic speed reduction when turning\n    aisle working                                                                   matched to customer requirements             →→ Emergency lowering under rear hood\n                                                                                                                                    readily accessible in aisle\n\n\n\n\nControl concept                                                                  LSC                                             Order Picking\n→→ Simple ergonomic controls a llow precise,                                   →→ Stepless automatic adjustment of speed       →→ Spacious cabin for comfortable order\n   accurate operation reducing driver fatigue                                      depending on steering angle and lift            picking\n   and increasing throughput                                                        height                                       →→ Tilting barriers enable better reaching\n→→ Simultaneous traction and                                                     →→ Highly efficient use of energy and e\n                                                                                                                        nergy      into the racking\n   lifting / lowering                                                               recovering                                   →→ Optimal height of front barrier for\n→→ Safe two handed operation ensured by                                                                                             productive order picking\n   integrated sensors                                                                                                            →→ Safe stand at cabin side\n\n                                                                                                                                 Presented by:\n\nSubject to modification in the interest of progress. Illustrations and technical details could include options and\nnot binding for actual constructions. All dimensions subject to usual tolerances.\n\n\n\n\n                                                             Linde Material Handling GmbH\n                                                             Carl-von-Linde-Platz | 63741 Aschaffenburg | Germany\n                                                             Phone + 49 6021 99 0 | Fax + 49 6021 99 1570\n                                                             www.linde-mh.com | info@linde-mh.com\n\n                                                             Printed in Germany 123.e.2.0119.IndF.Ki"
+  }
+ }
+}

@@ -1,0 +1,2531 @@
+{
+ "slug": "l06-do-l16-ac",
+ "datasheet": {
+  "name": "DS_L06_L16_AC_EX_1171_25_en_A_1121_view.pdf",
+  "id": "13iyJ2axKFq-VmnaH4f3eaXrLqfaAmJJ3"
+ },
+ "heading": "Pallet Stacker",
+ "range": "L06-L16 AC EX",
+ "capacity": "Capacity 0.6 t – 1.6 t | Series 1171-25",
+ "tagline": "Versatile Powerhouse",
+ "benefits": [
+  "Long tiller and precise power steering for optimum handling and maneuverability",
+  "ISO standard forks for handling all types of pallets",
+  "Ergonomically shaped handle with all-round design for hand protection",
+  "Long, low-mounted tiller for sufficient safety distance to the chassis",
+  "Automatic speed reduction in curves for anti-tip protection and maximum driving safety"
+ ],
+ "versions": [
+  "L06 AC EX",
+  "L10 AC EX",
+  "L12 AC EX",
+  "L16 AC EX"
+ ],
+ "vdi": [
+  {
+   "no": "1.1",
+   "section": "Characteristics",
+   "label": "Manufacturer",
+   "unit": "",
+   "values": [
+    "Linde",
+    "Linde",
+    "Linde",
+    "Linde"
+   ],
+   "notes": [
+    [],
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "1.2",
+   "section": "Characteristics",
+   "label": "Model",
+   "unit": "",
+   "values": [
+    "L06 AC EX",
+    "L10 AC EX",
+    "L12 AC EX",
+    "L16 AC EX"
+   ],
+   "notes": [
+    [],
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "1.2.a",
+   "section": "Characteristics",
+   "label": "Series",
+   "unit": "",
+   "values": [
+    "1171-25",
+    "1171-25",
+    "1171-25",
+    "1171-25"
+   ],
+   "notes": [
+    [],
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "1.3",
+   "section": "Characteristics",
+   "label": "Power unit",
+   "unit": "",
+   "values": [
+    "Battery",
+    "Battery",
+    "Battery",
+    "Battery"
+   ],
+   "notes": [
+    [],
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "1.4",
+   "section": "Characteristics",
+   "label": "Operation",
+   "unit": "",
+   "values": [
+    "Pedestrian",
+    "Pedestrian",
+    "Pedestrian",
+    "Pedestrian"
+   ],
+   "notes": [
+    [],
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "1.5",
+   "section": "Characteristics",
+   "label": "Load capacity / Load",
+   "unit": "Q (t)",
+   "values": [
+    "0.6",
+    "1.0",
+    "1.2",
+    "1.6"
+   ],
+   "notes": [
+    [],
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "1.6",
+   "section": "Characteristics",
+   "label": "Load centre distance",
+   "unit": "c (mm)",
+   "values": [
+    "500",
+    "500",
+    "500",
+    "500"
+   ],
+   "notes": [
+    [],
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "1.8",
+   "section": "Characteristics",
+   "label": "Axle centre to fork face",
+   "unit": "x (mm)",
+   "values": [
+    "107",
+    "107",
+    "107",
+    "107"
+   ],
+   "notes": [
+    [],
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "1.9",
+   "section": "Characteristics",
+   "label": "Wheelbase",
+   "unit": "y (mm)",
+   "values": [
+    "914",
+    "1264",
+    "1264",
+    "1626"
+   ],
+   "notes": [
+    [],
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "2.1",
+   "section": "Weights",
+   "label": "Service weight",
+   "unit": "(kg)",
+   "values": [
+    "1775",
+    "1911",
+    "1935",
+    "2135"
+   ],
+   "notes": [
+    [
+     "2"
+    ],
+    [
+     "2"
+    ],
+    [
+     "2"
+    ],
+    [
+     "2"
+    ]
+   ]
+  },
+  {
+   "no": "2.2",
+   "section": "Weights",
+   "label": "Axle load with load, front / rear",
+   "unit": "(kg)",
+   "values": [
+    "582 / 1793",
+    "649 / 2262",
+    "554 / 2581",
+    "728 / 3007"
+   ],
+   "notes": [
+    [
+     "2"
+    ],
+    [
+     "2"
+    ],
+    [
+     "2"
+    ],
+    [
+     "2"
+    ]
+   ]
+  },
+  {
+   "no": "2.3",
+   "section": "Weights",
+   "label": "Axle load without load, front / rear",
+   "unit": "(kg)",
+   "values": [
+    "980 / 795",
+    "1129 / 782",
+    "1130 / 805",
+    "1325 / 810"
+   ],
+   "notes": [
+    [
+     "2"
+    ],
+    [
+     "2"
+    ],
+    [
+     "2"
+    ],
+    [
+     "2"
+    ]
+   ]
+  },
+  {
+   "no": "3.1",
+   "section": "Wheels/Tyres",
+   "label": "Tyres rubber, SE, pneumatic, polyurethane",
+   "unit": "",
+   "values": [
+    "PU wet grip",
+    "PU wet grip",
+    "PU wet grip",
+    "PU wet grip"
+   ],
+   "notes": [
+    [],
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "3.2",
+   "section": "Wheels/Tyres",
+   "label": "Tyre size, front",
+   "unit": "",
+   "values": [
+    "Ø 230 × 100",
+    "Ø 230 × 100",
+    "Ø 230 × 100",
+    "Ø 230 × 100"
+   ],
+   "notes": [
+    [],
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "3.3",
+   "section": "Wheels/Tyres",
+   "label": "Tyre size, rear",
+   "unit": "",
+   "values": [
+    "Ø 85 × 105",
+    "Ø 85 × 105",
+    "Ø 85 × 105",
+    "Ø 85 × 105"
+   ],
+   "notes": [
+    [],
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "3.5",
+   "section": "Wheels/Tyres",
+   "label": "Wheels, number front / rear (x = driven)",
+   "unit": "",
+   "values": [
+    "1x / 4",
+    "1x / 4",
+    "1x / 4",
+    "1x / 4"
+   ],
+   "notes": [
+    [],
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "3.6",
+   "section": "Wheels/Tyres",
+   "label": "Track width, front",
+   "unit": "b10 (mm)",
+   "values": [
+    "-",
+    "-",
+    "-",
+    "-"
+   ],
+   "notes": [
+    [],
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "3.7",
+   "section": "Wheels/Tyres",
+   "label": "Track width, rear",
+   "unit": "b11 (mm)",
+   "values": [
+    "500",
+    "500",
+    "500",
+    "500"
+   ],
+   "notes": [
+    [],
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "4.1",
+   "section": "Dimensions",
+   "label": "Mast / fork carriage tilt, forward / backward",
+   "unit": "a / b (°)",
+   "values": [
+    "1.0 / 6.0",
+    "1.0 / 6.0",
+    "1.0 / 6.0",
+    "1.0 / 6.0"
+   ],
+   "notes": [
+    [],
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "4.2",
+   "section": "Dimensions",
+   "label": "Height of mast, lowered",
+   "unit": "h1 (mm)",
+   "values": [
+    "1515",
+    "1515",
+    "1515",
+    "1515"
+   ],
+   "notes": [
+    [],
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "4.3",
+   "section": "Dimensions",
+   "label": "Free lift",
+   "unit": "h2 (mm)",
+   "values": [
+    "150",
+    "150",
+    "150",
+    "150"
+   ],
+   "notes": [
+    [],
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "4.4",
+   "section": "Dimensions",
+   "label": "Lift",
+   "unit": "h3 (mm)",
+   "values": [
+    "1924",
+    "1924",
+    "1924",
+    "1844"
+   ],
+   "notes": [
+    [],
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "4.5",
+   "section": "Dimensions",
+   "label": "Height of mast, extended",
+   "unit": "h4 (mm)",
+   "values": [
+    "2485",
+    "2485",
+    "2485",
+    "2405"
+   ],
+   "notes": [
+    [],
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "4.9",
+   "section": "Dimensions",
+   "label": "Height of tiller arm in operating position, min / max",
+   "unit": "h14 (mm)",
+   "values": [
+    "857 / 1222",
+    "857 / 1222",
+    "857 / 1222",
+    "857 / 1222"
+   ],
+   "notes": [
+    [],
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "4.15",
+   "section": "Dimensions",
+   "label": "Height, lowered",
+   "unit": "h13 (mm)",
+   "values": [
+    "67",
+    "67",
+    "67",
+    "67"
+   ],
+   "notes": [
+    [],
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "4.19",
+   "section": "Dimensions",
+   "label": "Overall length",
+   "unit": "l1 (mm)",
+   "values": [
+    "2465",
+    "2812",
+    "2812",
+    "3176"
+   ],
+   "notes": [
+    [
+     "2"
+    ],
+    [
+     "2"
+    ],
+    [
+     "2"
+    ],
+    [
+     "2"
+    ]
+   ]
+  },
+  {
+   "no": "4.20",
+   "section": "Dimensions",
+   "label": "Length to fork face",
+   "unit": "l2 (mm)",
+   "values": [
+    "1311",
+    "1658",
+    "1658",
+    "2022"
+   ],
+   "notes": [
+    [],
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "4.21",
+   "section": "Dimensions",
+   "label": "Overall width",
+   "unit": "b1/b2 (mm)",
+   "values": [
+    "790 / 890",
+    "790 / 890",
+    "790 / 890",
+    "790 / 890"
+   ],
+   "notes": [
+    [],
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "4.22",
+   "section": "Dimensions",
+   "label": "Fork dimensions DIN ISO 2331",
+   "unit": "s / e / l (mm)",
+   "values": [
+    "51 × 108 × 1154",
+    "51 × 108 × 1154",
+    "51 × 108 × 1154",
+    "51 × 108 × 1154"
+   ],
+   "notes": [
+    [
+     "2"
+    ],
+    [
+     "2"
+    ],
+    [
+     "2"
+    ],
+    [
+     "2"
+    ]
+   ]
+  },
+  {
+   "no": "4.23",
+   "section": "Dimensions",
+   "label": "Fork carriage to ISO 2328, class / type A, B",
+   "unit": "",
+   "values": [
+    "2B",
+    "2B",
+    "2B",
+    "2B"
+   ],
+   "notes": [
+    [],
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "4.24",
+   "section": "Dimensions",
+   "label": "Width of fork carriage",
+   "unit": "b3 (mm)",
+   "values": [
+    "1000",
+    "1000",
+    "1000",
+    "1000"
+   ],
+   "notes": [
+    [],
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "4.25",
+   "section": "Dimensions",
+   "label": "Fork spread",
+   "unit": "b5 (mm)",
+   "values": [
+    "233 / 934",
+    "233 / 934",
+    "233 / 934",
+    "233 / 934"
+   ],
+   "notes": [
+    [
+     "2"
+    ],
+    [
+     "2"
+    ],
+    [
+     "2"
+    ],
+    [
+     "2"
+    ]
+   ]
+  },
+  {
+   "no": "4.31",
+   "section": "Dimensions",
+   "label": "Ground clearance, below mast",
+   "unit": "m1 (mm)",
+   "values": [
+    "30",
+    "30",
+    "30",
+    "30"
+   ],
+   "notes": [
+    [],
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "4.32",
+   "section": "Dimensions",
+   "label": "Ground clearance, centre of wheelbase",
+   "unit": "m2 (mm)",
+   "values": [
+    "38",
+    "38",
+    "38",
+    "38"
+   ],
+   "notes": [
+    [
+     "2"
+    ],
+    [
+     "2"
+    ],
+    [
+     "2"
+    ],
+    [
+     "2"
+    ]
+   ]
+  },
+  {
+   "no": "4.34.1",
+   "section": "Dimensions",
+   "label": "Aisle width for pallets 1000 × 1200 crossways",
+   "unit": "Ast (mm)",
+   "values": [
+    "2783",
+    "3133",
+    "3133",
+    "3495"
+   ],
+   "notes": [
+    [
+     "1"
+    ],
+    [
+     "1"
+    ],
+    [
+     "1"
+    ],
+    [
+     "1"
+    ]
+   ]
+  },
+  {
+   "no": "4.34.2",
+   "section": "Dimensions",
+   "label": "Aisle width with pallet 800 × 1200 along forks",
+   "unit": "Ast (mm)",
+   "values": [
+    "2891",
+    "3241",
+    "3241",
+    "3603"
+   ],
+   "notes": [
+    [
+     "1"
+    ],
+    [
+     "1"
+    ],
+    [
+     "1"
+    ],
+    [
+     "1"
+    ]
+   ]
+  },
+  {
+   "no": "4.35",
+   "section": "Dimensions",
+   "label": "Turning radius",
+   "unit": "Wa (mm)",
+   "values": [
+    "1324",
+    "1674",
+    "1674",
+    "2036"
+   ],
+   "notes": [
+    [],
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "5.1",
+   "section": "Performance",
+   "label": "Travel speed, with / without load",
+   "unit": "(km / h)",
+   "values": [
+    "5/6",
+    "5/6",
+    "5/6",
+    "5/6"
+   ],
+   "notes": [
+    [],
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "5.2",
+   "section": "Performance",
+   "label": "Lifting speed, with / without load",
+   "unit": "(m / s)",
+   "values": [
+    "-",
+    "0.15 / 0.3",
+    "0.15 / 0.3",
+    "0.15 / 0.3"
+   ],
+   "notes": [
+    [],
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "5.3",
+   "section": "Performance",
+   "label": "Lowering speed, with / without load",
+   "unit": "(m / s)",
+   "values": [
+    "-",
+    "0.45 / 0.35",
+    "0.45 / 0.35",
+    "0.45 / 0.35"
+   ],
+   "notes": [
+    [],
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "5.10",
+   "section": "Performance",
+   "label": "Service brake",
+   "unit": "",
+   "values": [
+    "Electro-magnetic",
+    "Electro-magnetic",
+    "Electro-magnetic",
+    "Electro-magnetic"
+   ],
+   "notes": [
+    [],
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "6.1",
+   "section": "Electric-engine",
+   "label": "Drive motor rating S2 60 min",
+   "unit": "(kW)",
+   "values": [
+    "2.3",
+    "2.3",
+    "2.3",
+    "2.3"
+   ],
+   "notes": [
+    [],
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "6.2",
+   "section": "Electric-engine",
+   "label": "Lift motor rating at S3 15 %",
+   "unit": "(kW)",
+   "values": [
+    "2.2",
+    "3.2",
+    "3.2",
+    "3.2"
+   ],
+   "notes": [
+    [],
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "6.3",
+   "section": "Electric-engine",
+   "label": "Battery according to DIN 43531 / 35 / 36 A, B, C, no",
+   "unit": "",
+   "values": [
+    "40540 B / 3 PzS",
+    "40540 B / 3 PzS",
+    "40540 B / 3 PzS",
+    "40540 B / 4 PzS"
+   ],
+   "notes": [
+    [],
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "6.4",
+   "section": "Electric-engine",
+   "label": "Battery voltage / rated capacity (5 h)",
+   "unit": "(V / Ah)",
+   "values": [
+    "24 / 270",
+    "24 / 270",
+    "24 / 270",
+    "24 / 500"
+   ],
+   "notes": [
+    [],
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "6.5",
+   "section": "Electric-engine",
+   "label": "Battery weight (± 5 %)",
+   "unit": "(kg)",
+   "values": [
+    "253",
+    "253",
+    "253",
+    "368"
+   ],
+   "notes": [
+    [],
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "6.6",
+   "section": "Electric-engine",
+   "label": "Power consumption according to VDI cycle",
+   "unit": "(kWh / h)",
+   "values": [
+    "0.72",
+    "1.19",
+    "1.19",
+    "1.45"
+   ],
+   "notes": [
+    [],
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "6.7",
+   "section": "Electric-engine",
+   "label": "Turnover output",
+   "unit": "(t / h)",
+   "values": [
+    "26.4",
+    "50.4",
+    "50.4",
+    "67.0"
+   ],
+   "notes": [
+    [],
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "6.8",
+   "section": "Electric-engine",
+   "label": "Turnover efficiency addording to VDI 2198",
+   "unit": "(t / kWh)",
+   "values": [
+    "21",
+    "30",
+    "30",
+    "35"
+   ],
+   "notes": [
+    [],
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "8.1",
+   "section": "Drive",
+   "label": "Type of drive unit",
+   "unit": "",
+   "values": [
+    "LAC",
+    "LAC",
+    "LAC",
+    "LAC"
+   ],
+   "notes": [
+    [],
+    [],
+    [],
+    []
+   ]
+  },
+  {
+   "no": "10.7",
+   "section": "Additional data",
+   "label": "Sound pressure level LpAZ (at the driver’s seat)",
+   "unit": "(dB(A))",
+   "values": [
+    "63",
+    "61",
+    "61",
+    "61"
+   ],
+   "notes": [
+    [],
+    [],
+    [],
+    []
+   ]
+  }
+ ],
+ "footnotes": [
+  {
+   "n": "1",
+   "text": "Including a 200 mm (min.) operating aisle clearance"
+  },
+  {
+   "n": "2",
+   "text": "These values differ from the values of a standard vehicle due to the Ex-version"
+  }
+ ],
+ "masts": {},
+ "equipment": [
+  {
+   "group": "Safety",
+   "columns": [],
+   "items": [
+    {
+     "text": "L06 AC EX L10 AC EX L12 AC EX L16 AC EX Model / Equipment 3G / 3D 3G / 3D 3G / 3D 3G / 3D"
+    },
+    {
+     "text": "ATEX protection package Zone 2 / Zone 22"
+    },
+    {
+     "text": "Constant monitoring of ATEX relevant safety values and wear"
+    },
+    {
+     "text": "Long tiller with low mounting point ensures large safety clearance between operator and chassis"
+    },
+    {
+     "text": "Log-in PIN code"
+    },
+    {
+     "text": "CAN-bus technology"
+    },
+    {
+     "text": "Linde Ex-Monitoring App for quick and efficient diagnosis of ATEX-relevant values"
+    },
+    {
+     "text": "Maintenance-free three-phase drive and steering motors for the EX area"
+    },
+    {
+     "text": "Central 24 / 7 provision of standard and ATEX spare parts"
+    },
+    {
+     "text": "Condition Monitoring of ATEX relevant safety values via Linde EX-Monitoring App"
+    }
+   ]
+  },
+  {
+   "group": "Digitalisation",
+   "columns": [],
+   "items": [
+    {
+     "text": "Linde connect"
+    },
+    {
+     "text": "ac: access control PIN or RFID"
+    },
+    {
+     "text": "dt: crash detection"
+    },
+    {
+     "text": "an: usage analysis"
+    },
+    {
+     "text": "Soft landing of forks"
+    },
+    {
+     "text": "Ultra fast lifting"
+    },
+    {
+     "text": "Load backrest 1000 mm"
+    }
+   ]
+  },
+  {
+   "group": "Workplace",
+   "columns": [],
+   "items": [
+    {
+     "text": "Multifunction instrument display of hour meter, battery discharge, fault code and maintenance indication"
+    },
+    {
+     "text": "Additional display for ATEX relevant condition monitoring"
+    },
+    {
+     "text": "Spacious storage compartments"
+    },
+    {
+     "text": "Accessory support"
+    },
+    {
+     "text": "Clipboard DIN A4"
+    },
+    {
+     "text": "Standard mast"
+    },
+    {
+     "text": "Duplex mast"
+    },
+    {
+     "text": "Triplex mast"
+    },
+    {
+     "text": "Tilting mast (+1° / -6°) (on the L10 / 12 / 16 AC)",
+     "na": [
+      "—"
+     ]
+    },
+    {
+     "text": "Mast protection: polycarbonate"
+    }
+   ]
+  },
+  {
+   "group": "Attachement/Forks",
+   "columns": [],
+   "items": [
+    {
+     "text": "Mast protection: mesh"
+    },
+    {
+     "text": "Fork carriage: 800 mm ISO2B"
+    },
+    {
+     "text": "Fork carriage: 900 mm ISO2B",
+     "na": [
+      "—"
+     ]
+    },
+    {
+     "text": "Fork carriage: 1000 mm ISO2B",
+     "na": [
+      "—"
+     ]
+    },
+    {
+     "text": "Forks 1000 / 90 × 50 mm VA, coated in stainless steel",
+     "na": [
+      "—"
+     ]
+    },
+    {
+     "text": "Forks 1100 / 90 × 50 mm VA, coated in stainless steel",
+     "na": [
+      "—"
+     ]
+    },
+    {
+     "text": "Forks 1200 / 90 × 50 mm VA, coated in stainless steel",
+     "na": [
+      "—"
+     ]
+    },
+    {
+     "text": "Forks 1000 / 110 × 55 mm VA, coated in stainless steel",
+     "na": [
+      "—"
+     ]
+    },
+    {
+     "text": "Forks 1100 / 110 × 55 mm VA, coated in stainless steel",
+     "na": [
+      "—"
+     ]
+    },
+    {
+     "text": "Forks 1200 / 110 × 55 mm VA, coated in stainless steel",
+     "na": [
+      "—"
+     ]
+    },
+    {
+     "text": "Polyurethane wet grip drive wheels"
+    },
+    {
+     "text": "Polyurethane load wheels"
+    },
+    {
+     "text": "Power assisted steering"
+    },
+    {
+     "text": "2.3 kW AC motor (maintenance free)"
+    }
+   ]
+  },
+  {
+   "group": "Drive and Brake-System",
+   "columns": [],
+   "items": [
+    {
+     "text": "Electromagnetic braking systems"
+    },
+    {
+     "text": "Battery compartment, vertical change 3 PzS (345 Ah / 375 Ah)",
+     "na": [
+      "—"
+     ]
+    },
+    {
+     "text": "Battery compartment, vertical change 4 PzS (460 Ah / 500 Ah)",
+     "na": [
+      "—"
+     ]
+    },
+    {
+     "text": "Battery compartment, side change 3 PzS (345 Ah / 375 Ah), incl. ergonomic lever and metal rollers"
+    },
+    {
+     "text": "Battery compartment, side change 4 PzS (460 Ah / 500 Ah), incl. ergonomic lever and metal rollers",
+     "na": [
+      "—"
+     ]
+    },
+    {
+     "text": "Charger plug ATEX loose or fitted"
+    }
+   ]
+  }
+ ],
+ "characteristics": [
+  {
+   "group": "Explosion protection",
+   "bullets": [
+    "Certification and documentation according to ATEX 2014 / 34 / EU and applicable EU norms ensures legal compliance",
+    "Passive protection concept enables zone 2 / 22 trucks to operate in explosive atmosphere, no shut-down required",
+    "Protection of electrical equipment and protection against mechanically generated sparks, unacceptably high temperatures and dangerous electrostatic charges"
+   ]
+  },
+  {
+   "group": "Ergonomics",
+   "bullets": [
+    "Operating controls on the console of the tiller head simplify handling",
+    "Long tiller makes maneuvering easier, even in confined spaces",
+    "Lift mast control via handle ensures effortless load handling",
+    "High maneuverability simplifies working in confined spaces"
+   ]
+  },
+  {
+   "group": "Safety",
+   "bullets": [
+    "Constant monitoring of ATEX relevant safety values and wear",
+    "Long, low-mounted tiller ensures sufficient safety clearance between driver and chassis",
+    "Automatic speed adjustment in curves reduces the risk of overturning",
+    "Automatic braking stops the truck as soon as the operator releases the controls"
+   ]
+  },
+  {
+   "group": "Service",
+   "bullets": [
+    "Maintenance-free three-phase steering and drive motors for the EX area",
+    "On-board diagnostics and CAN-bus interface",
+    "Linde Ex-Monitoring App for quick and efficient diagnosis of ATEX-relevant values",
+    "Rapid access to all truck data for performance parameter settings, trouble shooting, and preventative maintenance",
+    "Central 24 / 7 provision of standard and ATEX spare parts",
+    "Dense service network with certified technicians"
+   ]
+  }
+ ],
+ "unparsed": {
+  "characteristics_captions": [
+   "Counterbalance pallet stacker for application in",
+   "ATEX zones 2 / 22",
+   "All controls on ergonomic tiller can be easily operated by",
+   "either hand",
+   "Monitoring of ATEX relevant safety values",
+   "Quick diagnosis and easy service access"
+  ],
+  "other": "                                                                                                         Ø 85\n                                                                90                                 104\n                                                                              500\n                                                                              way\n                                                          6°\n                                                 1°\n                                                                                                            cut off\n                                                                                                            +brake\n                                                                                                                10°\n                                                                                                                                  52° driving\n                                         C\n                                                                                                                                                  cut off\n                                                                                                                                             8°\n                                                                      FS                                                                          +brake\nh1 / h4\n                           Q\n          h3 / h2                                                                                                                     h14                   1290\n                                                                                  963                                                 maxi\n                                   673                                    147.5                                                h14\n                    h13                                                                                                        mini\n                                                                                                                      m1\n                                                                                             38\n                                                                            m2\n                                                                                           Ø 230\n                                                      x                           y                                    (272)\n                 a/2                                                                                                   a/2\n                                                                l1\n                          l6\n                                                                                                           Wa\n                                     b3\n                    e\n   b        b5                                                       b2     860 b1\n                                             r\n                                                           s\n                               l                                                      l2\n                                                               Ast"
+ },
+ "more_datasheets": [
+  {
+   "datasheet": {
+    "name": "DS_L06_L16_AC_1171_01_en_B_0622_view.pdf",
+    "id": "1vlPGabXtUef7fwm9QF5edEe0z4iEDOmV"
+   },
+   "heading": "Pallet Stacker",
+   "range": "L06-L16 AC",
+   "capacity": "Capacity 0.6 t – 1.6 t | Series 1171",
+   "tagline": "Powerful and Agile",
+   "benefits": [
+    "Long tiller and precise power steering for optimum handling and maneuverability",
+    "ISO standard forks for handling all types of pallets",
+    "Ergonomically shaped handle with all-round design for hand protection",
+    "Long, low-mounted tiller for sufficient safety distance to the chassis",
+    "Automatic speed reduction in curves for anti-tip protection and maximum driving safety"
+   ],
+   "versions": [
+    "L06AC",
+    "L10AC",
+    "L12AC",
+    "L16AC"
+   ],
+   "vdi": [
+    {
+     "no": "1.1",
+     "section": "Characteristics",
+     "label": "Manufacturer",
+     "unit": "",
+     "values": [
+      "Linde",
+      "Linde",
+      "Linde",
+      "Linde"
+     ],
+     "notes": [
+      [],
+      [],
+      [],
+      []
+     ]
+    },
+    {
+     "no": "1.2",
+     "section": "Characteristics",
+     "label": "Model",
+     "unit": "",
+     "values": [
+      "L06AC",
+      "L10AC",
+      "L12AC",
+      "L16AC"
+     ],
+     "notes": [
+      [],
+      [],
+      [],
+      []
+     ]
+    },
+    {
+     "no": "1.2.a",
+     "section": "Characteristics",
+     "label": "Series 1.3.",
+     "unit": "",
+     "values": [
+      "1171-01",
+      "1171-01",
+      "1171-01",
+      "1171-01"
+     ],
+     "notes": [
+      [],
+      [],
+      [],
+      []
+     ]
+    },
+    {
+     "no": "1.4",
+     "section": "Characteristics",
+     "label": "Power unit Operation",
+     "unit": "",
+     "values": [
+      "Battery Pedestrian",
+      "Battery Pedestrian",
+      "Battery Pedestrian",
+      "Battery Pedestrian"
+     ],
+     "notes": [
+      [],
+      [],
+      [],
+      []
+     ]
+    },
+    {
+     "no": "1.5",
+     "section": "Characteristics",
+     "label": "Load capacity/Load",
+     "unit": "Q (t)",
+     "values": [
+      "0.6",
+      "1.0",
+      "1.2",
+      "1.6"
+     ],
+     "notes": [
+      [],
+      [],
+      [],
+      []
+     ]
+    },
+    {
+     "no": "1.6",
+     "section": "Characteristics",
+     "label": "Load centre distance",
+     "unit": "c (mm)",
+     "values": [
+      "500",
+      "500",
+      "500",
+      "500"
+     ],
+     "notes": [
+      [],
+      [],
+      [],
+      []
+     ]
+    },
+    {
+     "no": "1.8",
+     "section": "Characteristics",
+     "label": "Axle centre to fork face",
+     "unit": "x (mm)",
+     "values": [
+      "107",
+      "107",
+      "107",
+      "107"
+     ],
+     "notes": [
+      [],
+      [],
+      [],
+      []
+     ]
+    },
+    {
+     "no": "1.9",
+     "section": "Characteristics",
+     "label": "Wheelbase",
+     "unit": "y (mm)",
+     "values": [
+      "914",
+      "1264",
+      "1264",
+      "1626"
+     ],
+     "notes": [
+      [],
+      [],
+      [],
+      []
+     ]
+    },
+    {
+     "no": "2.1",
+     "section": "Weights",
+     "label": "Service weight",
+     "unit": "(kg)",
+     "values": [
+      "1725",
+      "1861",
+      "1885",
+      "2085"
+     ],
+     "notes": [
+      [],
+      [],
+      [],
+      []
+     ]
+    },
+    {
+     "no": "2.2",
+     "section": "Weights",
+     "label": "Axle load with load, front / rear",
+     "unit": "(kg)",
+     "values": [
+      "552 / 1773",
+      "619 / 2242",
+      "524 / 2561",
+      "698 / 2987"
+     ],
+     "notes": [
+      [],
+      [],
+      [],
+      []
+     ]
+    },
+    {
+     "no": "2.3",
+     "section": "Weights",
+     "label": "Axle load without load, front / rear",
+     "unit": "(kg)",
+     "values": [
+      "950 / 775",
+      "1099 / 762",
+      "1100 / 785",
+      "1295 / 790"
+     ],
+     "notes": [
+      [],
+      [],
+      [],
+      []
+     ]
+    },
+    {
+     "no": "3.1",
+     "section": "Wheels/Tyres",
+     "label": "Tyres rubber, SE, pneumatic, polyurethane",
+     "unit": "",
+     "values": [
+      "Polyurethane wet grip",
+      "Polyurethane wet grip",
+      "Polyurethane wet grip",
+      "Polyurethane wet grip"
+     ],
+     "notes": [
+      [],
+      [],
+      [],
+      []
+     ]
+    },
+    {
+     "no": "3.2",
+     "section": "Wheels/Tyres",
+     "label": "Tyre size, front",
+     "unit": "",
+     "values": [
+      "Ø 230 × 100",
+      "Ø 230 × 100",
+      "Ø 230 × 100",
+      "Ø 230 × 100"
+     ],
+     "notes": [
+      [],
+      [],
+      [],
+      []
+     ]
+    },
+    {
+     "no": "3.3",
+     "section": "Wheels/Tyres",
+     "label": "Tyre size, rear",
+     "unit": "",
+     "values": [
+      "Ø 85 × 105",
+      "Ø 85 × 105",
+      "Ø 85 × 105",
+      "Ø 85 × 105"
+     ],
+     "notes": [
+      [],
+      [],
+      [],
+      []
+     ]
+    },
+    {
+     "no": "3.5",
+     "section": "Wheels/Tyres",
+     "label": "Wheels, number front / rear (x = driven)",
+     "unit": "",
+     "values": [
+      "1x / 4",
+      "1x / 4",
+      "1x / 4",
+      "1x / 4"
+     ],
+     "notes": [
+      [],
+      [],
+      [],
+      []
+     ]
+    },
+    {
+     "no": "3.6",
+     "section": "Wheels/Tyres",
+     "label": "Track width, front",
+     "unit": "b10 (mm)",
+     "values": [
+      "-",
+      "-",
+      "-",
+      "-"
+     ],
+     "notes": [
+      [],
+      [],
+      [],
+      []
+     ]
+    },
+    {
+     "no": "3.7",
+     "section": "Wheels/Tyres",
+     "label": "Track width, rear",
+     "unit": "b11 (mm)",
+     "values": [
+      "500",
+      "500",
+      "500",
+      "500"
+     ],
+     "notes": [
+      [],
+      [],
+      [],
+      []
+     ]
+    },
+    {
+     "no": "4.1",
+     "section": "Dimensions",
+     "label": "Mast / fork carriage tilt, forward / backward",
+     "unit": "a / b (°)",
+     "values": [
+      null,
+      "1.0 / 6.0",
+      "1.0 / 6.0",
+      "1.0 / 6.0"
+     ],
+     "notes": [
+      [],
+      [],
+      [],
+      []
+     ]
+    },
+    {
+     "no": "4.2",
+     "section": "Dimensions",
+     "label": "Height of mast, lowered",
+     "unit": "h1 (mm)",
+     "values": [
+      "1515",
+      "1515",
+      "1515",
+      "1515"
+     ],
+     "notes": [
+      [],
+      [],
+      [],
+      []
+     ]
+    },
+    {
+     "no": "4.3",
+     "section": "Dimensions",
+     "label": "Free lift",
+     "unit": "h2 (mm)",
+     "values": [
+      "150",
+      "150",
+      "150",
+      "150"
+     ],
+     "notes": [
+      [],
+      [],
+      [],
+      []
+     ]
+    },
+    {
+     "no": "4.4",
+     "section": "Dimensions",
+     "label": "Lift",
+     "unit": "h3 (mm)",
+     "values": [
+      "1924",
+      "1924",
+      "1924",
+      "1844"
+     ],
+     "notes": [
+      [],
+      [],
+      [],
+      []
+     ]
+    },
+    {
+     "no": "4.5",
+     "section": "Dimensions",
+     "label": "Height of mast, extended",
+     "unit": "h4 (mm)",
+     "values": [
+      "2485",
+      "2485",
+      "2485",
+      "2405"
+     ],
+     "notes": [
+      [],
+      [],
+      [],
+      []
+     ]
+    },
+    {
+     "no": "4.9",
+     "section": "Dimensions",
+     "label": "Height of tiller arm in operating position, min / max",
+     "unit": "h14 (mm)",
+     "values": [
+      "857 / 1222",
+      "857 / 1222",
+      "857 / 1222",
+      "857 / 1222"
+     ],
+     "notes": [
+      [],
+      [],
+      [],
+      []
+     ]
+    },
+    {
+     "no": "4.15",
+     "section": "Dimensions",
+     "label": "Height, lowered",
+     "unit": "h13 (mm)",
+     "values": [
+      "67",
+      "67",
+      "67",
+      "67"
+     ],
+     "notes": [
+      [],
+      [],
+      [],
+      []
+     ]
+    },
+    {
+     "no": "4.19",
+     "section": "Dimensions",
+     "label": "Overall length",
+     "unit": "l1 (mm)",
+     "values": [
+      "2461",
+      "2808",
+      "2808",
+      "3172"
+     ],
+     "notes": [
+      [],
+      [],
+      [],
+      []
+     ]
+    },
+    {
+     "no": "4.20",
+     "section": "Dimensions",
+     "label": "Length to fork face",
+     "unit": "l2 (mm)",
+     "values": [
+      "1311",
+      "1658",
+      "1658",
+      "2022"
+     ],
+     "notes": [
+      [],
+      [],
+      [],
+      []
+     ]
+    },
+    {
+     "no": "4.21",
+     "section": "Dimensions",
+     "label": "Overall width",
+     "unit": "b1/b2 (mm)",
+     "values": [
+      "790 / 890",
+      "790 / 890",
+      "790 / 890",
+      "790 / 890"
+     ],
+     "notes": [
+      [],
+      [],
+      [],
+      []
+     ]
+    },
+    {
+     "no": "4.22",
+     "section": "Dimensions",
+     "label": "Fork dimensions DIN ISO 2331",
+     "unit": "s / e / l (mm)",
+     "values": [
+      "43 × 100 × 1150",
+      "43 × 100 × 1150",
+      "43 × 100 × 1150",
+      "43 × 100 × 1150"
+     ],
+     "notes": [
+      [],
+      [],
+      [],
+      []
+     ]
+    },
+    {
+     "no": "4.23",
+     "section": "Dimensions",
+     "label": "Fork carriage to ISO 2328, class / type A, B",
+     "unit": "",
+     "values": [
+      "2B",
+      "2B",
+      "2B",
+      "2B"
+     ],
+     "notes": [
+      [],
+      [],
+      [],
+      []
+     ]
+    },
+    {
+     "no": "4.24",
+     "section": "Dimensions",
+     "label": "Width of fork carriage",
+     "unit": "b3 (mm)",
+     "values": [
+      "1000",
+      "1000",
+      "1000",
+      "1000"
+     ],
+     "notes": [
+      [],
+      [],
+      [],
+      []
+     ]
+    },
+    {
+     "no": "4.25",
+     "section": "Dimensions",
+     "label": "Fork spread",
+     "unit": "b5 (mm)",
+     "values": [
+      "225 / 926",
+      "225 / 926",
+      "225 / 926",
+      "225 / 926"
+     ],
+     "notes": [
+      [],
+      [],
+      [],
+      []
+     ]
+    },
+    {
+     "no": "4.31",
+     "section": "Dimensions",
+     "label": "Ground clearance, below mast",
+     "unit": "m1 (mm)",
+     "values": [
+      "30",
+      "30",
+      "30",
+      "30"
+     ],
+     "notes": [
+      [],
+      [],
+      [],
+      []
+     ]
+    },
+    {
+     "no": "4.32",
+     "section": "Dimensions",
+     "label": "Ground clearance, centre of wheelbase",
+     "unit": "m2 (mm)",
+     "values": [
+      "2783",
+      "3133",
+      "3133",
+      "3495"
+     ],
+     "notes": [
+      [
+       "1"
+      ],
+      [
+       "1"
+      ],
+      [
+       "1"
+      ],
+      [
+       "1"
+      ]
+     ]
+    },
+    {
+     "no": "4.34.1",
+     "section": "Dimensions",
+     "label": "Aisle width for pallets 1000 × 1200 crossways",
+     "unit": "Ast (mm)",
+     "values": [
+      "2891",
+      "3241",
+      "3241",
+      "3603"
+     ],
+     "notes": [
+      [
+       "1"
+      ],
+      [
+       "1"
+      ],
+      [
+       "1"
+      ],
+      [
+       "1"
+      ]
+     ]
+    },
+    {
+     "no": "4.34.2",
+     "section": "Dimensions",
+     "label": "Aisle width with pallet 800 × 1200 along forks",
+     "unit": "Ast (mm)",
+     "values": [
+      "2891",
+      "3241",
+      "3241",
+      "3603"
+     ],
+     "notes": [
+      [],
+      [],
+      [],
+      []
+     ]
+    },
+    {
+     "no": "4.35",
+     "section": "Dimensions",
+     "label": "Turning radius",
+     "unit": "Wa (mm)",
+     "values": [
+      "1324",
+      "1674",
+      "1674",
+      "2036"
+     ],
+     "notes": [
+      [],
+      [],
+      [],
+      []
+     ]
+    },
+    {
+     "no": "5.1",
+     "section": "Performance",
+     "label": "Travel speed, with / without load",
+     "unit": "(km / h)",
+     "values": [
+      "5/6",
+      "5/6",
+      "5/6",
+      "5/6"
+     ],
+     "notes": [
+      [],
+      [],
+      [],
+      []
+     ]
+    },
+    {
+     "no": "5.2",
+     "section": "Performance",
+     "label": "Lifting speed, with / without load",
+     "unit": "(m / s)",
+     "values": [
+      "-",
+      "0.15 / 0.3",
+      "0.15 / 0.3",
+      "0.15 / 0.3"
+     ],
+     "notes": [
+      [],
+      [],
+      [],
+      []
+     ]
+    },
+    {
+     "no": "5.3",
+     "section": "Performance",
+     "label": "Lowering speed, with / without load",
+     "unit": "(m / s)",
+     "values": [
+      "-",
+      "0.45 / 0.35",
+      "0.45 / 0.35",
+      "0.45 / 0.35"
+     ],
+     "notes": [
+      [],
+      [],
+      [],
+      []
+     ]
+    },
+    {
+     "no": "5.10",
+     "section": "Performance",
+     "label": "Service brake",
+     "unit": "",
+     "values": [
+      "Electro-magnetic",
+      "Electro-magnetic",
+      "Electro-magnetic",
+      "Electro-magnetic"
+     ],
+     "notes": [
+      [],
+      [],
+      [],
+      []
+     ]
+    },
+    {
+     "no": "6.1",
+     "section": "Electric-engine",
+     "label": "Drive motor rating S2 60 min",
+     "unit": "(kW)",
+     "values": [
+      "2.3",
+      "2.3",
+      "2.3",
+      "2.3"
+     ],
+     "notes": [
+      [],
+      [],
+      [],
+      []
+     ]
+    },
+    {
+     "no": "6.2",
+     "section": "Electric-engine",
+     "label": "Lift motor rating at S3 15 %",
+     "unit": "(kW)",
+     "values": [
+      "2.2",
+      "3.2",
+      "3.2",
+      "3.2"
+     ],
+     "notes": [
+      [],
+      [],
+      [],
+      []
+     ]
+    },
+    {
+     "no": "6.3",
+     "section": "Electric-engine",
+     "label": "Battery according to DIN 43531/35/36 A, B, C, no",
+     "unit": "",
+     "values": [
+      "43 535 B / 3 PzS",
+      "43 535 B / 3 PzS",
+      "43 535 B / 3 PzS",
+      "43 535 B / 4 PzS"
+     ],
+     "notes": [
+      [],
+      [],
+      [],
+      []
+     ]
+    },
+    {
+     "no": "6.4",
+     "section": "Electric-engine",
+     "label": "Battery voltage/rated capacity (5 h)",
+     "unit": "(V / Ah)",
+     "values": [
+      "24 / 345 / 375",
+      "24 / 345 / 375",
+      "24 / 345 / 375",
+      "24 / 460 / 500"
+     ],
+     "notes": [
+      [],
+      [],
+      [],
+      []
+     ]
+    },
+    {
+     "no": "6.5",
+     "section": "Electric-engine",
+     "label": "Battery weight (± 5 %)",
+     "unit": "(kg)",
+     "values": [
+      "287",
+      "287",
+      "287",
+      "365"
+     ],
+     "notes": [
+      [],
+      [],
+      [],
+      []
+     ]
+    },
+    {
+     "no": "6.6",
+     "section": "Electric-engine",
+     "label": "Power consumption according to VDI cycle",
+     "unit": "(kWh / h)",
+     "values": [
+      "0.72",
+      "1.19",
+      "1.19",
+      "1.45"
+     ],
+     "notes": [
+      [],
+      [],
+      [],
+      []
+     ]
+    },
+    {
+     "no": "6.7",
+     "section": "Electric-engine",
+     "label": "Turnover output",
+     "unit": "(t / h)",
+     "values": [
+      "26.4",
+      "50.4",
+      "50.4",
+      "67.0"
+     ],
+     "notes": [
+      [],
+      [],
+      [],
+      []
+     ]
+    },
+    {
+     "no": "6.8",
+     "section": "Electric-engine",
+     "label": "Energy consumption at turnover output",
+     "unit": "(kWh / h)",
+     "values": [
+      "1.27",
+      "1.66",
+      "1.66",
+      "1.89"
+     ],
+     "notes": [
+      [],
+      [],
+      [],
+      []
+     ]
+    },
+    {
+     "no": "8.1",
+     "section": "Drive",
+     "label": "Type of drive unit",
+     "unit": "",
+     "values": [
+      "LAC",
+      "LAC",
+      "LAC",
+      "LAC"
+     ],
+     "notes": [
+      [],
+      [],
+      [],
+      []
+     ]
+    },
+    {
+     "no": "10.7",
+     "section": "Additional data",
+     "label": "Sound pressure level LpAZ (at the driver’s seat)",
+     "unit": "(dB(A))",
+     "values": [
+      "63",
+      "61",
+      "61",
+      "61"
+     ],
+     "notes": [
+      [],
+      [],
+      [],
+      []
+     ]
+    }
+   ],
+   "footnotes": [
+    {
+     "n": "1",
+     "text": "Including a 200 mm (min.) operating aisle clearance."
+    }
+   ],
+   "masts": {
+    "STANDARD MAST (in mm)": "Lift                      h3: 1924            h3: 2424            h3: 2924              h3: 3324           h3: 3824\n                      h1: 1440 h2: 879    h1: 1690 h2: 1129   h1: 1940 h2: 1379   h1: 2140 h2: 1579    h1: 2390 h2: 1829\nHeight measurements\n                      h3: 1924 h4: 2485   h3: 2424 h4: 2985   h3: 2924 h4: 3485   h3: 3324 h4: 3885    h3: 3824 h4: 4385\n\nModel\nL06AC                                                                                                         —\n\nL10AC\nL12AC\n                             —                   —                   —                     —                  —\nL16AC\n\n\n\nLift                      h3: 4224            h3: 1844            h3: 2344              h3: 2844\n                      h1: 2590 h2: 2029   h1: 1440 h2: 879    h1: 1690 h2: 1129   h1: 1940 h2: 1379\nHeight measurements\n                      h3: 4224 h4: 4785   h3: 1844 h4: 2405   h3: 2344 h4: 2905   h3: 2844 h4: 3405\n\nModel\nL06AC                        —                   —                   —                     —\n                             —                   —                   —                     —\nL10AC\nL12AC                                            —                   —                     —\n\nL16AC                        —",
+    "DUPLEX MAST (in mm)": "Lift                      h3: 3244            h3: 3744            h3: 4144\n                      h1: 2140 h2: 1579   h1: 2390 h2: 1829   h1: 2590 h2: 2029\nHeight measurements\n                      h3: 3244 h4: 3805   h3: 3744 h4: 4305   h3: 4144 h4: 4705\n\nModel\nL06AC                        —                   —                   —\nL10AC                        —                   —                   —\n\nL12AC                        —                   —                   —\n\nL16AC",
+    "TRIPLEX MAST (in mm)": "Lift                      h3: 3516            h3: 4266\n                      h1: 1690 h2: 1129   h1: 1940 h2: 1379\nHeight measurements\n                      h3: 3516 h4: 4077   h3: 4266 h4: 4827\n\nModel\nL06AC                                            —\nL10AC                                            —\n\nL12AC\nL16AC\n\n\n\n\n Optional equipment — Not available\n\nh1: Height of mast, lowered                   h2: Free lift                  h3: Lift                 h4: Height of mast, extended"
+   },
+   "equipment": [
+    {
+     "group": "Safety",
+     "columns": [],
+     "items": [
+      {
+       "text": "Model / Equipment L06 AC L10 AC L12 AC L16 AC"
+      },
+      {
+       "text": "Automatic speed reduction when cornering"
+      },
+      {
+       "text": "Low mounted tiller"
+      },
+      {
+       "text": "Key switch or Log in PIN code"
+      },
+      {
+       "text": "CAN bus technology"
+      },
+      {
+       "text": "Linde Connected Solutions:"
+      },
+      {
+       "text": "ac: access control (PIN or RFID Dual),"
+      }
+     ]
+    },
+    {
+     "group": "Digitalisation",
+     "columns": [],
+     "items": [
+      {
+       "text": "an: usage analysis and dt: crash detection"
+      },
+      {
+       "text": "Data transfer online"
+      },
+      {
+       "text": "Data transfer WIFI"
+      },
+      {
+       "text": "Bluetooth USB Stick"
+      },
+      {
+       "text": "Soft landing on forks"
+      },
+      {
+       "text": "Ultra Fast Lifting"
+      },
+      {
+       "text": "Load backrest 1000 mm"
+      }
+     ]
+    },
+    {
+     "group": "Enviroment",
+     "columns": [],
+     "items": [
+      {
+       "text": "Cold store protection to -35°C"
+      },
+      {
+       "text": "Multifunction coloured display hour meter, maintenance indication, battery discharge indicator and internal fault code indication"
+      },
+      {
+       "text": "Spacious storage compartments"
+      },
+      {
+       "text": "Accessory support"
+      },
+      {
+       "text": "Support data terminal incl. power supply cable 24 V"
+      }
+     ]
+    },
+    {
+     "group": "Mast",
+     "columns": [],
+     "items": [
+      {
+       "text": "Support clipboard DIN A4"
+      },
+      {
+       "text": "Support for scanner"
+      },
+      {
+       "text": "Standard mast"
+      },
+      {
+       "text": "Duplex mast"
+      },
+      {
+       "text": "Triplex mast"
+      },
+      {
+       "text": "Tilting mast (+1° / -6°) (on the L10 / 12 / 16 AC)",
+       "na": [
+        "—"
+       ]
+      },
+      {
+       "text": "Mast protection: polycarbonate"
+      },
+      {
+       "text": "Mast protection: mesh"
+      },
+      {
+       "text": "Fork carriage: 800 mm ISO2B"
+      },
+      {
+       "text": "Fork carriage: 900 mm ISO2B",
+       "na": [
+        "—"
+       ]
+      },
+      {
+       "text": "Fork carriage: 1000 mm ISO2B",
+       "na": [
+        "—"
+       ]
+      },
+      {
+       "text": "Forks 1000 / 80 x 40 mm",
+       "na": [
+        "—"
+       ]
+      },
+      {
+       "text": "Forks 1100 / 80 x 40 mm",
+       "na": [
+        "—"
+       ]
+      }
+     ]
+    },
+    {
+     "group": "Axles and Tyres",
+     "columns": [],
+     "items": [
+      {
+       "text": "Forks 1200 / 80 x 40 mm",
+       "na": [
+        "—"
+       ]
+      },
+      {
+       "text": "Forks 1000 / 100 x 45 mm",
+       "na": [
+        "—"
+       ]
+      },
+      {
+       "text": "Forks 1100 / 100 x 45 mm",
+       "na": [
+        "—"
+       ]
+      },
+      {
+       "text": "Forks 1200 / 100 x 45 mm",
+       "na": [
+        "—"
+       ]
+      },
+      {
+       "text": "Polyurethane wet grip drive wheel"
+      },
+      {
+       "text": "Polyurethane load wheels"
+      },
+      {
+       "text": "Power assisted steering"
+      },
+      {
+       "text": "2.3 kW AC motor (maintenance free)"
+      },
+      {
+       "text": "Electromagnetic Braking systems"
+      },
+      {
+       "text": "Battery compartment, vertical change 3 PzS (345 Ah / 375 Ah)",
+       "na": [
+        "—"
+       ]
+      },
+      {
+       "text": "Battery compartment, vertical change 4 PzS (460 Ah / 500 Ah)",
+       "na": [
+        "—"
+       ]
+      }
+     ]
+    },
+    {
+     "group": "Drive and Brake-System",
+     "columns": [],
+     "items": [
+      {
+       "text": "Battery compartment, side change 3 PzS (345 Ah / 375 Ah), incl. ergonomic lever and metal rollers"
+      },
+      {
+       "text": "Battery compartment, side change 4 PzS (460 Ah / 500 Ah), incl. ergonomic lever and metal rollers",
+       "na": [
+        "—"
+       ]
+      },
+      {
+       "text": "Battery compartment, Li-ION battery (205 AH / 410 AH), incl. side plug for opportunity charging",
+       "na": [
+        "—"
+       ]
+      },
+      {
+       "text": "Li-ION 24V-Charger",
+       "na": [
+        "—"
+       ]
+      }
+     ]
+    }
+   ],
+   "characteristics": [
+    {
+     "group": "Safety",
+     "bullets": [
+      "Long, low-mounted tiller ensures sufficient safety clearance between driver and chassis",
+      "All-round design of ergonomic handles protects the operator’s hands",
+      "Automatic speed adjustment in curves reduces the risk of overturning",
+      "Automatic braking stops the truck as soon as the operator releases the controls"
+     ]
+    },
+    {
+     "group": "Ergonomics",
+     "bullets": [
+      "Operating controls on the console of the tiller head simplify handling",
+      "Spacious storage compartment enables the storage of important work equipment",
+      "Long tiller makes maneuvering easier, even in confined spaces",
+      "Lift mast control via handle ensures effortless load handling"
+     ]
+    },
+    {
+     "group": "Handling",
+     "bullets": [
+      "ISO standard forks accommodate all types of pallets",
+      "High maneuverability simplifies working in confined spaces",
+      "Compact, maintenance-free 2.3 kW AC drive ensures optimum performance",
+      "High residual load capacity enables sovereign material handling"
+     ]
+    },
+    {
+     "group": "Service",
+     "bullets": [
+      "Digital multifunctional display shows all important truck parameters",
+      "CAN bus connection enables the service technician to read out and analyze truck data with a laptop",
+      "Free access to relevant truck components aids maintenance",
+      "Maintenance-free AC drive ensures short downtimes"
+     ]
+    }
+   ],
+   "unparsed": {
+    "characteristics_captions": [
+     "Low mounted tiller ensures large safety clearance",
+     "between operator and chassis",
+     "All controls on ergonomic tiller can be easily operated by",
+     "either hand",
+     "Fitted with ISO standard forks, the trucks can handle all",
+     "types of pallets",
+     "All truck components are easily and freely accessible"
+    ],
+    "other": "                                                                                                         Ø 85\n                                                                90                                 104\n                                                                              500\n                                                                              way\n                                                          6°\n                                                 1°\n                                                                                                            cut off\n                                                                                                            +brake\n                                                                                                                10°\n                                                                                                                                  52° driving\n                                         C\n                                                                                                                                                  cut off\n                                                                                                                                             8°\n                                                                      FS                                                                          +brake\nh1 / h4\n                           Q\n          h3 / h2                                                                                                                     h14                   1290\n                                                                                  963                                                 maxi\n                                   673                                    147.5                                                h14\n                    h13                                                                                                        mini\n                                                                                                                      m1\n                                                                                             38\n                                                                            m2\n                                                                                           Ø 230\n                                                      x                           y                                    (272)\n                 a/2                                                                                                   a/2\n                                                                l1\n                          l6\n                                                                                                           Wa\n                                     b3\n                    e\n   b        b5                                                       b2     860 b1\n                                             r\n                                                           s\n                               l                                                      l2\n                                                               Ast"
+   }
+  },
+  {
+   "datasheet": {
+    "name": "DS_L06 AC_L16 AC_1171_en_B_0622_print.pdf",
+    "id": "1EYXiTNtqi2MMh33frP5ouP6E5zFjTCpw"
+   },
+   "heading": null,
+   "range": null,
+   "capacity": null,
+   "tagline": null,
+   "benefits": [],
+   "versions": [],
+   "vdi": [],
+   "footnotes": [],
+   "masts": {},
+   "equipment": [],
+   "characteristics": [],
+   "unparsed": {
+    "reason": "the PDF holds no text, it is an image or empty"
+   }
+  }
+ ]
+}

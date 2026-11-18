@@ -614,7 +614,8 @@
   background: var(--tint);
 }
 
-.sp-related-h {
+.sp-related-h,
+.sp-sec-h {
   display: flex;
   justify-content: space-between;
   align-items: baseline;
@@ -628,6 +629,289 @@
   line-height: 24px;
   text-decoration: underline;
   text-underline-offset: 3px;
+}
+
+/* ---- a model's data sheet, ModelSpec.tsx, Filip 18 November, "needs description, bullet points why this works, extract data from
+   google drive". The tagline, a sentence and four figures by the picture, why this model under the buttons, then the features in the
+   four frames, the versions side by side with the whole table and the masts closed under them, the equipment by group, each closed. ---- */
+/* No vertical sticky on these pages. The body's overflow-x hidden makes it the scroll box a sticky part looks to, and the body never
+   scrolls, so a sticky part never pins. The tables' first column sticks sideways inside their own scroll box, which works. */
+.sp-sec-note {
+  margin: 0;
+  font-size: 14px;
+  line-height: 20px;
+  color: var(--grey-dark);
+}
+
+/* the four figures of a data sheet, a range in one line beside the picture */
+.sp-facts.is-spec dd {
+  font-size: 40px;
+  line-height: 48px;
+}
+
+.sp-model-tag {
+  margin: 32px 0 0;
+  font-size: 32px;
+  font-weight: 350;
+  line-height: 40px;
+  letter-spacing: -0.01em;
+}
+
+.sp-model-lede {
+  margin-top: 12px;
+}
+
+.sp-why {
+  align-self: stretch;
+  margin-top: 64px;
+}
+
+.sp-list {
+  display: grid;
+  gap: 12px;
+  margin: 16px 0 0;
+  padding: 0;
+  list-style: none;
+  font-size: 16px;
+  line-height: 24px;
+}
+
+.sp-list li {
+  position: relative;
+  padding-left: 24px;
+}
+
+.sp-list li::before {
+  content: '';
+  position: absolute;
+  top: 8px;
+  left: 0;
+  width: 8px;
+  height: 8px;
+  background: var(--black);
+}
+
+.sp-feat-h {
+  margin: 0;
+  font-size: 24px;
+  font-weight: 400;
+  line-height: 32px;
+}
+
+.sp-vers-c {
+  padding-top: 24px;
+}
+
+.sp-tbl-wrap {
+  overflow-x: auto;
+}
+
+.sp-tbl {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+  line-height: 20px;
+  font-variant-numeric: tabular-nums;
+}
+
+.sp-tbl :is(th, td) {
+  padding: 12px 16px 12px 0;
+  border-top: 1px solid var(--grey-light);
+  text-align: left;
+  vertical-align: top;
+}
+
+.sp-tbl thead th {
+  padding-top: 0;
+  border-top: 0;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.sp-tbl tbody th {
+  width: 24%;
+  min-width: 224px;
+  font-weight: 400;
+}
+
+/* the first column stays while a narrow screen scrolls the versions */
+.sp-tbl :is(thead th:first-child, tbody th) {
+  position: sticky;
+  left: 0;
+  z-index: 10;
+  background: var(--white);
+}
+
+.sp-tbl-u,
+.sp-tbl-no,
+.sp-tbl-none,
+.sp-tbl sup {
+  color: var(--grey-dark);
+}
+
+.sp-tbl-u {
+  display: block;
+  font-weight: 400;
+}
+
+.sp-tbl-no {
+  display: inline-block;
+  min-width: 48px;
+}
+
+.sp-tbl sup,
+.sp-notes sup {
+  margin-left: 2px;
+  font-size: 14px;
+  line-height: 0;
+  vertical-align: super;
+}
+
+.sp-tbl tr.is-sec th {
+  padding-top: 32px;
+  border-top: 0;
+  color: var(--grey-dark);
+  font: 500 14px/20px var(--font);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.sp-tbl.is-masts thead th {
+  white-space: normal;
+}
+
+.sp-notes {
+  display: grid;
+  gap: 4px;
+  margin: 16px 0 0;
+  padding: 0;
+  list-style: none;
+  color: var(--grey-dark);
+  font-size: 14px;
+  line-height: 20px;
+}
+
+.sp-notes sup {
+  margin: 0 4px 0 0;
+}
+
+/* a closed part, the name and a plus that turns to a minus while it is open */
+.sp-more-d {
+  margin-top: 32px;
+  border-top: 1px solid var(--grey-light);
+}
+
+.sp-more-d > summary {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 16px 0;
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 24px;
+  list-style: none;
+  cursor: pointer;
+}
+
+.sp-more-d > summary::-webkit-details-marker {
+  display: none;
+}
+
+.sp-more-d > summary > span:first-child {
+  flex: 1;
+}
+
+.sp-more-d > summary::after {
+  content: '';
+  flex: none;
+  width: 20px;
+  height: 20px;
+  background: var(--black);
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3E%3Cpath d='M9 3h2v6h6v2h-6v6H9v-6H3V9h6z'/%3E%3C/svg%3E") center / contain no-repeat;
+  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3E%3Cpath d='M9 3h2v6h6v2h-6v6H9v-6H3V9h6z'/%3E%3C/svg%3E") center / contain no-repeat;
+}
+
+.sp-more-d[open] > summary::after {
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3E%3Cpath d='M3 9h14v2H3z'/%3E%3C/svg%3E") center / contain no-repeat;
+  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3E%3Cpath d='M3 9h14v2H3z'/%3E%3C/svg%3E") center / contain no-repeat;
+}
+
+.sp-more-d > summary:hover > span:first-child {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.sp-eq .sp-more-d {
+  margin: 0;
+  border: 0;
+}
+
+.sp-eq .sp-more-d > summary {
+  padding: 0;
+}
+
+.sp-eq-n {
+  color: var(--grey-dark);
+  font-weight: 400;
+}
+
+.sp-eq-only {
+  color: var(--grey-dark);
+}
+
+@media (max-aspect-ratio: 4/5) {
+  .sp-model-tag {
+    margin-top: 24px;
+    font-size: 24px;
+    line-height: 32px;
+  }
+
+  .sp-why {
+    margin-top: 48px;
+  }
+
+  .sp-feat.is-blank,
+  .sp-eq.is-blank {
+    display: none;
+  }
+
+  .sp-eq {
+    padding-top: 16px;
+    padding-bottom: 16px;
+  }
+
+  .sp-tbl tbody th {
+    min-width: 160px;
+  }
+
+  .sp-tbl td,
+  .sp-tbl thead th {
+    white-space: nowrap;
+  }
+
+  /* the four figures as rows, the label and its value on one line */
+  .sp-facts.is-big.is-spec {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .sp-facts.is-big.is-spec div {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 16px;
+    padding: 12px 0;
+  }
+
+  .sp-facts.is-big.is-spec dd {
+    margin: 0;
+    font-size: 24px;
+    line-height: 32px;
+    white-space: nowrap;
+  }
+
+  .sp-facts.is-big.is-spec dd span {
+    font-size: 16px;
+  }
 }
 
 /* ---- Kontakt ---- */

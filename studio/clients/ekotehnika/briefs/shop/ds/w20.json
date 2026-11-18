@@ -1,0 +1,857 @@
+{
+ "slug": "w20",
+ "datasheet": {
+  "name": "DS_W20-W30_5007-10_en_B_0122_view.pdf",
+  "id": "1Tqahali5gIJlTMeeK6_HxVVgqzNqObGh"
+ },
+ "heading": "Platform truck",
+ "range": "W20 – W30",
+ "capacity": "Capacity 2 – 3 t | Series 5007-10",
+ "tagline": "Agile transporter",
+ "benefits": [
+  "High handling performance thanks to powerful electric motors",
+  "Efficient transport of bundled goods between two (W20) and three tons (W30)",
+  "Directional stability and maneuverability for safe, fast load transport even in tight spaces",
+  "Small turning circle and compact dimensions for optimum maneuverability",
+  "Driver‘s cabin decoupled from chassis for maximum driving comfort",
+  "Free choice between lead-acid batteries and lithium-ion batteries"
+ ],
+ "versions": [
+  "W20 (LWB)",
+  "W30 (LWB)"
+ ],
+ "vdi": [
+  {
+   "no": "1.1",
+   "section": "Characteristics",
+   "label": "Manufacturer",
+   "unit": "",
+   "values": [
+    "Linde",
+    "Linde"
+   ],
+   "notes": [
+    [],
+    []
+   ]
+  },
+  {
+   "no": "1.2",
+   "section": "Characteristics",
+   "label": "Model designation",
+   "unit": "",
+   "values": [
+    "W20 (LWB)",
+    "W30 (LWB)"
+   ],
+   "notes": [
+    [],
+    []
+   ]
+  },
+  {
+   "no": "1.3",
+   "section": "Characteristics",
+   "label": "Power unit",
+   "unit": "",
+   "values": [
+    "Electric",
+    "Electric"
+   ],
+   "notes": [
+    [],
+    []
+   ]
+  },
+  {
+   "no": "1.4",
+   "section": "Characteristics",
+   "label": "Operation",
+   "unit": "",
+   "values": [
+    "Seat",
+    "Seat"
+   ],
+   "notes": [
+    [],
+    []
+   ]
+  },
+  {
+   "no": "1.5",
+   "section": "Characteristics",
+   "label": "Load capacity",
+   "unit": "Q (kg)",
+   "values": [
+    "2000",
+    "3000"
+   ],
+   "notes": [
+    [],
+    []
+   ]
+  },
+  {
+   "no": "1.5.1",
+   "section": "Characteristics",
+   "label": "Towing capacity",
+   "unit": "Q (kg)",
+   "values": [
+    "6000",
+    "6000"
+   ],
+   "notes": [
+    [],
+    []
+   ]
+  },
+  {
+   "no": "1.7",
+   "section": "Characteristics",
+   "label": "Rated tractive force",
+   "unit": "F (N)",
+   "values": [
+    "900 / 1200",
+    "900 / 1200"
+   ],
+   "notes": [
+    [],
+    []
+   ]
+  },
+  {
+   "no": "1.9",
+   "section": "Characteristics",
+   "label": "Wheelbase",
+   "unit": "y (mm)",
+   "values": [
+    "1906",
+    "1906"
+   ],
+   "notes": [
+    [],
+    []
+   ]
+  },
+  {
+   "no": "2.1",
+   "section": "Weights",
+   "label": "Service weight incl. battery (with cabin)",
+   "unit": "(kg)",
+   "values": [
+    "4205*",
+    "4205*"
+   ],
+   "notes": [
+    [],
+    []
+   ]
+  },
+  {
+   "no": "2.2",
+   "section": "Weights",
+   "label": "Axle load with load, front / rear",
+   "unit": "(kg)",
+   "values": [
+    "2620* / 3585*",
+    "2620* / 3585*"
+   ],
+   "notes": [
+    [],
+    []
+   ]
+  },
+  {
+   "no": "2.3",
+   "section": "Weights",
+   "label": "Axle load without load, front / rear",
+   "unit": "(kg)",
+   "values": [
+    "2320* / 1885*",
+    "2320* / 1885*"
+   ],
+   "notes": [
+    [],
+    []
+   ]
+  },
+  {
+   "no": "3.1",
+   "section": "Wheels/Tyres",
+   "label": "Tyres rubber, SE, pneumatic, polyurethane",
+   "unit": "",
+   "values": [
+    "Pneumatic / Superelastic",
+    "Pneumatic / Superelastic"
+   ],
+   "notes": [
+    [],
+    []
+   ]
+  },
+  {
+   "no": "3.2",
+   "section": "Wheels/Tyres",
+   "label": "Tyre size, front",
+   "unit": "",
+   "values": [
+    "6.00 R 9",
+    "6.00 R 9"
+   ],
+   "notes": [
+    [],
+    []
+   ]
+  },
+  {
+   "no": "3.3",
+   "section": "Wheels/Tyres",
+   "label": "Tyre size, rear",
+   "unit": "",
+   "values": [
+    "7.00 R 12",
+    "7.00 R 12"
+   ],
+   "notes": [
+    [],
+    []
+   ]
+  },
+  {
+   "no": "3.5",
+   "section": "Wheels/Tyres",
+   "label": "Wheels number front / rear (x = driven)",
+   "unit": "",
+   "values": [
+    "2 / 2x",
+    "2 / 2x"
+   ],
+   "notes": [
+    [],
+    []
+   ]
+  },
+  {
+   "no": "3.6",
+   "section": "Wheels/Tyres",
+   "label": "Track width, front",
+   "unit": "b10 (mm)",
+   "values": [
+    "1102 / 1120",
+    "1102 / 1120"
+   ],
+   "notes": [
+    [],
+    []
+   ]
+  },
+  {
+   "no": "3.7",
+   "section": "Wheels/Tyres",
+   "label": "Track width, rear",
+   "unit": "b11 (mm)",
+   "values": [
+    "1060",
+    "1060"
+   ],
+   "notes": [
+    [],
+    []
+   ]
+  },
+  {
+   "no": "4.7",
+   "section": "Dimensions",
+   "label": "Height of overhead guard (cabin)",
+   "unit": "h6 (mm)",
+   "values": [
+    "1950",
+    "1950"
+   ],
+   "notes": [
+    [],
+    []
+   ]
+  },
+  {
+   "no": "4.8",
+   "section": "Dimensions",
+   "label": "Height of seat / stand-on platform",
+   "unit": "h7 (mm)",
+   "values": [
+    "907",
+    "907"
+   ],
+   "notes": [
+    [],
+    []
+   ]
+  },
+  {
+   "no": "4.12",
+   "section": "Dimensions",
+   "label": "Towing coupling height",
+   "unit": "h10 (mm)",
+   "values": [
+    "270, 330, 380, 440 **",
+    "270, 330, 380, 440 **"
+   ],
+   "notes": [
+    [],
+    []
+   ]
+  },
+  {
+   "no": "4.13",
+   "section": "Dimensions",
+   "label": "Platform height, unladen",
+   "unit": "h11 (mm)",
+   "values": [
+    "897",
+    "897"
+   ],
+   "notes": [
+    [],
+    []
+   ]
+  },
+  {
+   "no": "4.16",
+   "section": "Dimensions",
+   "label": "Loading platform, length",
+   "unit": "l3 (mm)",
+   "values": [
+    "2200 / 2600***",
+    "2200 / 2600***"
+   ],
+   "notes": [
+    [],
+    []
+   ]
+  },
+  {
+   "no": "4.17",
+   "section": "Dimensions",
+   "label": "Rear overhang (Cabin / rear)",
+   "unit": "l5.1 l5 (mm)",
+   "values": [
+    "1055 / 665 (1065***)",
+    "1055 / 665 (1065***)"
+   ],
+   "notes": [
+    [],
+    []
+   ]
+  },
+  {
+   "no": "4.18",
+   "section": "Dimensions",
+   "label": "Loading platform, width",
+   "unit": "b9 (mm)",
+   "values": [
+    "1300",
+    "1300"
+   ],
+   "notes": [
+    [],
+    []
+   ]
+  },
+  {
+   "no": "4.19",
+   "section": "Dimensions",
+   "label": "Overall length",
+   "unit": "l1 (mm)",
+   "values": [
+    "3626 / 4026***",
+    "3626 / 4026***"
+   ],
+   "notes": [
+    [],
+    []
+   ]
+  },
+  {
+   "no": "4.21",
+   "section": "Dimensions",
+   "label": "Overall width",
+   "unit": "b1 (mm)",
+   "values": [
+    "1310",
+    "1310"
+   ],
+   "notes": [
+    [],
+    []
+   ]
+  },
+  {
+   "no": "4.32",
+   "section": "Dimensions",
+   "label": "Ground clearance, centre of wheelbase (front)",
+   "unit": "m2 (mm)",
+   "values": [
+    "150",
+    "150"
+   ],
+   "notes": [
+    [],
+    []
+   ]
+  },
+  {
+   "no": "4.34",
+   "section": "Dimensions",
+   "label": "Aisle width (without safety distance)",
+   "unit": "Ast (mm)",
+   "values": [
+    "5371 / 5613***",
+    "5371 / 5613***"
+   ],
+   "notes": [
+    [],
+    []
+   ]
+  },
+  {
+   "no": "4.35",
+   "section": "Dimensions",
+   "label": "Turning radius (front / rear)",
+   "unit": "Waf / War (mm)",
+   "values": [
+    "3284 / 1887(2101***)",
+    "3284 / 1887(2101***)"
+   ],
+   "notes": [
+    [],
+    []
+   ]
+  },
+  {
+   "no": "4.36",
+   "section": "Dimensions",
+   "label": "Minimum pivoting point distance",
+   "unit": "b13 (mm)",
+   "values": [
+    "1116",
+    "1116"
+   ],
+   "notes": [
+    [],
+    []
+   ]
+  },
+  {
+   "no": "5.1",
+   "section": "Performance",
+   "label": "Travel speed, with / without load",
+   "unit": "(km / h)",
+   "values": [
+    "18 / 20",
+    "20 / 23"
+   ],
+   "notes": [
+    [],
+    []
+   ]
+  },
+  {
+   "no": "5.5",
+   "section": "Performance",
+   "label": "Tractive force, with / without load",
+   "unit": "(N)",
+   "values": [
+    "900 / 1200",
+    "900 / 1200"
+   ],
+   "notes": [
+    [],
+    []
+   ]
+  },
+  {
+   "no": "5.6",
+   "section": "Performance",
+   "label": "Maximum tractive force, with / without load",
+   "unit": "(N)",
+   "values": [
+    "15000",
+    "15000"
+   ],
+   "notes": [
+    [],
+    []
+   ]
+  },
+  {
+   "no": "5.7",
+   "section": "Performance",
+   "label": "Climbing ability, with / without load",
+   "unit": "(%)",
+   "values": [
+    "See towing diagram",
+    "See towing diagram"
+   ],
+   "notes": [
+    [],
+    []
+   ]
+  },
+  {
+   "no": "5.8",
+   "section": "Performance",
+   "label": "Maximum climbing ability, with / without load",
+   "unit": "(%)",
+   "values": [
+    "See towing diagram",
+    "See towing diagram"
+   ],
+   "notes": [
+    [],
+    []
+   ]
+  },
+  {
+   "no": "5.10",
+   "section": "Performance",
+   "label": "Service brake",
+   "unit": "",
+   "values": [
+    "electric / hydraulic",
+    "electric / hydraulic"
+   ],
+   "notes": [
+    [],
+    []
+   ]
+  },
+  {
+   "no": "6.1",
+   "section": "Electric-engine",
+   "label": "Drive motor, 60 minute rating",
+   "unit": "(kW)",
+   "values": [
+    "2 × 10,5 KW",
+    "2 x 10,5 KW"
+   ],
+   "notes": [
+    [],
+    []
+   ]
+  },
+  {
+   "no": "6.3",
+   "section": "Electric-engine",
+   "label": "Battery according to DIN 43531 / 35 / 36 A, B, C, no",
+   "unit": "",
+   "values": [
+    "43536 A",
+    "43536 A"
+   ],
+   "notes": [
+    [],
+    []
+   ]
+  },
+  {
+   "no": "6.4",
+   "section": "Electric-engine",
+   "label": "Battery voltage",
+   "unit": "U (V)",
+   "values": [
+    "80",
+    "80"
+   ],
+   "notes": [
+    [],
+    []
+   ]
+  },
+  {
+   "no": "6.4.1",
+   "section": "Electric-engine",
+   "label": "Battery capacity",
+   "unit": "K5 (Ah)",
+   "values": [
+    "240 / 500",
+    "240 / 500"
+   ],
+   "notes": [
+    [],
+    []
+   ]
+  },
+  {
+   "no": "6.5",
+   "section": "Electric-engine",
+   "label": "Battery weight",
+   "unit": "(kg)",
+   "values": [
+    "679 / 1210",
+    "679 / 1210"
+   ],
+   "notes": [
+    [],
+    []
+   ]
+  },
+  {
+   "no": "6.6",
+   "section": "Electric-engine",
+   "label": "Power consumption according to EN16796",
+   "unit": "(kWh / h)",
+   "values": [
+    "-",
+    "-"
+   ],
+   "notes": [
+    [],
+    []
+   ]
+  },
+  {
+   "no": "8.4",
+   "section": "Drive",
+   "label": "Noise level at operator‘s ear",
+   "unit": "(dB(A))",
+   "values": [
+    "60",
+    "60"
+   ],
+   "notes": [
+    [],
+    []
+   ]
+  },
+  {
+   "no": "8.5",
+   "section": "Drive",
+   "label": "Towing coupling, design / type, DIN",
+   "unit": "",
+   "values": [
+    "Rockinger 244 * with platform 2200 mm ** with Ro 244 *** optional platform 2600",
+    "Rockinger 244 * with platform 2200 mm ** with Ro 244 *** optional platform 2600"
+   ],
+   "notes": [
+    [],
+    []
+   ]
+  }
+ ],
+ "footnotes": [],
+ "masts": {},
+ "equipment": [
+  {
+   "group": "Safety",
+   "columns": [],
+   "items": [
+    {
+     "text": "Model / Equipment W20 W30"
+    },
+    {
+     "text": "Chassis protection"
+    },
+    {
+     "text": "Gradient assist"
+    },
+    {
+     "text": "Automatic speed reduction when cornering"
+    },
+    {
+     "text": "Safety belt"
+    },
+    {
+     "text": "Linde BlueSpot™"
+    },
+    {
+     "text": "Flashing / Rotating Beacon on / below overhead guard"
+    },
+    {
+     "text": "Additionnal emergency buttons located in the rear part"
+    },
+    {
+     "text": "Key switch"
+    },
+    {
+     "text": "Log in PIN code"
+    },
+    {
+     "text": "Inching control"
+    },
+    {
+     "text": "Load platform lighting"
+    },
+    {
+     "text": "Reversing camera"
+    },
+    {
+     "text": "Speed reduced if deep discharge"
+    }
+   ]
+  },
+  {
+   "group": "Digitalisation",
+   "columns": [],
+   "items": [
+    {
+     "text": "External rear-view mirrors"
+    },
+    {
+     "text": "Telescopic rear-view mirrors"
+    },
+    {
+     "text": "Linde connect: desk"
+    },
+    {
+     "text": "ac: access control (PIN or RFID)"
+    },
+    {
+     "text": "dt: crash detection"
+    },
+    {
+     "text": "Linde connect: cloud"
+    },
+    {
+     "text": "Data Transmission (WiFi or Online)"
+    },
+    {
+     "text": "Suspended Cabin"
+    },
+    {
+     "text": "Steering wheel with knob"
+    },
+    {
+     "text": "Air conditioning"
+    },
+    {
+     "text": "Heating"
+    }
+   ]
+  },
+  {
+   "group": "Workplace",
+   "columns": [],
+   "items": [
+    {
+     "text": "Multifunction coloured display with hour meter, maintenance indication, battery discharge indicator, internal fault code indication, selected drive direction and actual steering wheel position"
+    }
+   ]
+  },
+  {
+   "group": "Attachement/Forks",
+   "columns": [],
+   "items": [
+    {
+     "text": "Radio"
+    },
+    {
+     "text": "Electrical socket and USB-connection"
+    },
+    {
+     "text": "Sun visor"
+    },
+    {
+     "text": "Support clipboard DIN A4"
+    },
+    {
+     "text": "Lighting for rear towing attachment"
+    },
+    {
+     "text": "Electric. socket 12 V (13-pole)"
+    },
+    {
+     "text": "Tyre Conti. RV20"
+    },
+    {
+     "text": "SE-SIT Continental"
+    },
+    {
+     "text": "SE-SIT non marking"
+    },
+    {
+     "text": "Onboard charger"
+    }
+   ]
+  },
+  {
+   "group": "Drive and Brake-System",
+   "columns": [],
+   "items": [
+    {
+     "text": "Lateral battery change option"
+    },
+    {
+     "text": "Vertical battery change option",
+     "na": [
+      "—"
+     ]
+    },
+    {
+     "text": "Battery 3 PzS 240 Ah"
+    },
+    {
+     "text": "Battery 4 PzS 320 Ah"
+    },
+    {
+     "text": "Battery 4 PzS 7460 – 500 Ah"
+    },
+    {
+     "text": "CAN bus technology"
+    },
+    {
+     "text": "Free maintenance braking system"
+    }
+   ]
+  }
+ ],
+ "characteristics": [
+  {
+   "group": "Safety",
+   "bullets": [
+    "Automatic parking brake for preventing the vehicle from rolling unintentionally on slopes",
+    "Constant speed when driving downhill for safety on ramps",
+    "Operator and passenger seat belt",
+    "Robust cabin with safety bar for additional protection of the operator",
+    "Door locked sensor to make sure operators drive safely inside the cabin",
+    "Linde curve assist reducing speed when cornering"
+   ]
+  },
+  {
+   "group": "Ergonomics",
+   "bullets": [
+    "Spacious damped cabin for increased driving comfort",
+    "Easy maneuverability in tight spaces due to unobstructed all-round visibility and reflection-reducing windows",
+    "Storage compartments and nets for sufficient storage space in everyday work",
+    "Easy adjustable steering column",
+    "Curved front screen ensures excellent maneuvrability"
+   ]
+  },
+  {
+   "group": "Handling",
+   "bullets": [
+    "High handling performance thanks to high-performance electric motors and constant speed on steep ramps",
+    "Effortless, precise maneuverability thanks to the small turning circle, compact chassis, and smooth power steering",
+    "Optional side panels and flexible cover",
+    "2200 mm or 2600 mm platform length"
+   ]
+  },
+  {
+   "group": "Service",
+   "bullets": [
+    "Easily accessible service components for efficient maintenance and repair",
+    "Maintenance-free multi-disc brake for maximum vehicle availability",
+    "Lateral or vertical battery change for fast replacement",
+    "Easily replaceable windshield for fast reparations"
+   ]
+  }
+ ],
+ "unparsed": {
+  "characteristics_captions": [
+   "Operator and passenger seat belt",
+   "Door net storage compartment",
+   "Lateral battery change",
+   "Coil spring and maintenance free braking system"
+  ],
+  "other": "                              b\n                                     l3\n     h6\n          h7                                         h11\n                                               h10\n                     m2\n                          y               l5\n                              L1\n                                                War\n(b) b10                                                    b11   b9\n                                   b13\n               Waf\n                                                                                                                                                                                 *W20 with flexible cover option\n    TOW DIAGRAM      W20 – W30\n             W20/30 Towing diagram\n                      23                                                                                                   12000                                                  Permissible driving distance per hour (m / h)\n                      22                                                                                                                                                          Driving speed (km / h)\n                      21\n                      20\n                                                                                                                                   Permissible driving distance per hour [m/h]\n                      19                                                                                                   10000\n                      18\n                      17\n                      16\n                      15                                                                                                   8000\nDrivng speed [km/h]\n                      14\n                      13\n                      12\n                                                                                                                           6000\n                      11\n                      10\n                       9\n                       8                                                                                                   4000\n                       7\n                       6\n                       5\n                       4                                                                                                   2000\n                       3\n                       2\n                       1\n                       0                                                                                                   0\n                           0   2000      4000           6000            8000        10000        12000       14000     16000\n                       0                                            Zugkraft [kN]\n                                      Zugkraft          zulässige Fahrstrecke pro Stunde            Poly. (Zugkraft)\n                       5\n                      10\n Gradient [%]\n                      15\n                      20\n                      25\n                                        0t       0,5t          1t         2t        3t      4t       5t       6t\n    The example shown illustrates a load transporter transporting 2 t operating\n    on a ramp of 10 %, maximum travelling speed reachable 8.5 km / h for a\n    maximum travel distance per hour of 1.6 km (1600 m*)\n    *depends on created heat while in application"
+ }
+}

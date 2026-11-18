@@ -1,0 +1,805 @@
+{
+ "slug": "p20",
+ "datasheet": {
+  "name": "DS_P20_1193_en_C_0425_view.pdf",
+  "id": "1qHQ5f7jHgCpjCjhQQVEjMPPqyY_60Afa"
+ },
+ "heading": "Tow Tractor",
+ "range": "P20",
+ "capacity": "Capacity 2.0 t | Series 1193",
+ "tagline": "Slim tow tractor",
+ "benefits": [
+  "Compact construction for excellent handling performance even in tight spaces",
+  "Direct, responsive steering and a tight turning circle",
+  "Height-adjustable, folding operator’s seat for ergonomic working conditions",
+  "Towing capacity for loads up to 2 tonnes for efficient goods transportation"
+ ],
+ "versions": [
+  "P20"
+ ],
+ "vdi": [
+  {
+   "no": "1.1",
+   "section": "Characteristics",
+   "label": "Manufacturer (abbreviation)",
+   "unit": "",
+   "values": [
+    "Linde MH"
+   ],
+   "notes": [
+    []
+   ]
+  },
+  {
+   "no": "1.2",
+   "section": "Characteristics",
+   "label": "Manufacturer's type designation",
+   "unit": "",
+   "values": [
+    "P20"
+   ],
+   "notes": [
+    []
+   ]
+  },
+  {
+   "no": "1.2.a",
+   "section": "Characteristics",
+   "label": "Series",
+   "unit": "",
+   "values": [
+    "1193-00"
+   ],
+   "notes": [
+    []
+   ]
+  },
+  {
+   "no": "1.3",
+   "section": "Characteristics",
+   "label": "Drive",
+   "unit": "",
+   "values": [
+    "Battery"
+   ],
+   "notes": [
+    []
+   ]
+  },
+  {
+   "no": "1.4",
+   "section": "Characteristics",
+   "label": "Operation",
+   "unit": "",
+   "values": [
+    "Seat"
+   ],
+   "notes": [
+    []
+   ]
+  },
+  {
+   "no": "1.5",
+   "section": "Characteristics",
+   "label": "Rated capacity/rated load",
+   "unit": "Q (t)",
+   "values": [
+    "2.0"
+   ],
+   "notes": [
+    []
+   ]
+  },
+  {
+   "no": "1.7",
+   "section": "Characteristics",
+   "label": "Rated drawbar pull",
+   "unit": "F (N)",
+   "values": [
+    "400"
+   ],
+   "notes": [
+    []
+   ]
+  },
+  {
+   "no": "1.9",
+   "section": "Characteristics",
+   "label": "Wheelbase",
+   "unit": "y (mm)",
+   "values": [
+    "907"
+   ],
+   "notes": [
+    [
+     "1"
+    ]
+   ]
+  },
+  {
+   "no": "2.1",
+   "section": "Weight",
+   "label": "Service weight",
+   "unit": "kg",
+   "values": [
+    "630"
+   ],
+   "notes": [
+    [
+     "2"
+    ]
+   ]
+  },
+  {
+   "no": "2.3",
+   "section": "Weight",
+   "label": "Axle loading, unladen front/rear",
+   "unit": "kg",
+   "values": [
+    "350/280"
+   ],
+   "notes": [
+    []
+   ]
+  },
+  {
+   "no": "3.1",
+   "section": "Tyres/chassis",
+   "label": "Tyres: solid rubber, superelastic, pneumatic, polyurethane",
+   "unit": "",
+   "values": [
+    "C+PU/C"
+   ],
+   "notes": [
+    []
+   ]
+  },
+  {
+   "no": "3.2",
+   "section": "Tyres/chassis",
+   "label": "Tyre size, front",
+   "unit": "",
+   "values": [
+    "Ø 230 × 75"
+   ],
+   "notes": [
+    []
+   ]
+  },
+  {
+   "no": "3.3",
+   "section": "Tyres/chassis",
+   "label": "Tyre size, rear",
+   "unit": "",
+   "values": [
+    "2 × Ø 250 × 80"
+   ],
+   "notes": [
+    []
+   ]
+  },
+  {
+   "no": "3.4",
+   "section": "Tyres/chassis",
+   "label": "Auxiliary wheels (dimensions)",
+   "unit": "",
+   "values": [
+    "2 × Ø 100 × 40"
+   ],
+   "notes": [
+    []
+   ]
+  },
+  {
+   "no": "3.5",
+   "section": "Tyres/chassis",
+   "label": "Wheels, number front/rear (x = driven wheels)",
+   "unit": "",
+   "values": [
+    "1x + 2/2"
+   ],
+   "notes": [
+    []
+   ]
+  },
+  {
+   "no": "3.6",
+   "section": "Tyres/chassis",
+   "label": "Tread, front",
+   "unit": "b10 (mm)",
+   "values": [
+    "414"
+   ],
+   "notes": [
+    [
+     "1"
+    ]
+   ]
+  },
+  {
+   "no": "3.7",
+   "section": "Tyres/chassis",
+   "label": "Tread, rear",
+   "unit": "b11 (mm)",
+   "values": [
+    "480"
+   ],
+   "notes": [
+    []
+   ]
+  },
+  {
+   "no": "4.8",
+   "section": "Dimensions",
+   "label": "Seat height relating to SIP/stand height",
+   "unit": "h7 (mm)",
+   "values": [
+    "800/985"
+   ],
+   "notes": [
+    []
+   ]
+  },
+  {
+   "no": "4.9",
+   "section": "Dimensions",
+   "label": "Height drawbar in driving position min./max.",
+   "unit": "h14 (mm)",
+   "values": [
+    "1170/1270"
+   ],
+   "notes": [
+    [
+     "1"
+    ]
+   ]
+  },
+  {
+   "no": "4.12",
+   "section": "Dimensions",
+   "label": "Coupling height",
+   "unit": "h10 (mm)",
+   "values": [
+    "276"
+   ],
+   "notes": [
+    []
+   ]
+  },
+  {
+   "no": "4.13",
+   "section": "Dimensions",
+   "label": "Loading height, unladen",
+   "unit": "h11 (mm)",
+   "values": [
+    "-"
+   ],
+   "notes": [
+    []
+   ]
+  },
+  {
+   "no": "4.16",
+   "section": "Dimensions",
+   "label": "Length of loading surface",
+   "unit": "l3 (mm)",
+   "values": [
+    "-"
+   ],
+   "notes": [
+    []
+   ]
+  },
+  {
+   "no": "4.17",
+   "section": "Dimensions",
+   "label": "Overhang",
+   "unit": "l5 (mm)",
+   "values": [
+    "253"
+   ],
+   "notes": [
+    [
+     "3"
+    ]
+   ]
+  },
+  {
+   "no": "4.18",
+   "section": "Dimensions",
+   "label": "Width of loading surface",
+   "unit": "b9 (mm)",
+   "values": [
+    "-"
+   ],
+   "notes": [
+    []
+   ]
+  },
+  {
+   "no": "4.19",
+   "section": "Dimensions",
+   "label": "Overall length",
+   "unit": "l1 (mm)",
+   "values": [
+    "1315"
+   ],
+   "notes": [
+    [
+     "1"
+    ]
+   ]
+  },
+  {
+   "no": "4.21",
+   "section": "Dimensions",
+   "label": "Overall width",
+   "unit": "b1/b2 (mm)",
+   "values": [
+    "600"
+   ],
+   "notes": [
+    [
+     "1"
+    ]
+   ]
+  },
+  {
+   "no": "4.32",
+   "section": "Dimensions",
+   "label": "Ground clearance, centre of wheelbase",
+   "unit": "m2 (mm)",
+   "values": [
+    "40/80"
+   ],
+   "notes": [
+    [
+     "4"
+    ]
+   ]
+  },
+  {
+   "no": "4.35",
+   "section": "Dimensions",
+   "label": "Turning radius",
+   "unit": "Wa (mm)",
+   "values": [
+    "1080"
+   ],
+   "notes": [
+    [
+     "4"
+    ]
+   ]
+  },
+  {
+   "no": "5.1",
+   "section": "Performance data",
+   "label": "Travel speed, laden/unladen",
+   "unit": "km/h",
+   "values": [
+    "8/8"
+   ],
+   "notes": [
+    [
+     "5"
+    ]
+   ]
+  },
+  {
+   "no": "5.5",
+   "section": "Performance data",
+   "label": "Drawbar pull, laden/unladen",
+   "unit": "N",
+   "values": [
+    "400"
+   ],
+   "notes": [
+    []
+   ]
+  },
+  {
+   "no": "5.6",
+   "section": "Performance data",
+   "label": "Max. drawbar pull, laden/unladen",
+   "unit": "N",
+   "values": [
+    "1760"
+   ],
+   "notes": [
+    []
+   ]
+  },
+  {
+   "no": "5.7",
+   "section": "Performance data",
+   "label": "Gradeability, laden/unladen",
+   "unit": "%",
+   "values": [
+    "-"
+   ],
+   "notes": [
+    []
+   ]
+  },
+  {
+   "no": "5.8",
+   "section": "Performance data",
+   "label": "Max. gradeability, laden/unladen",
+   "unit": "%",
+   "values": [
+    "5.0/10.0"
+   ],
+   "notes": [
+    [
+     "6"
+    ]
+   ]
+  },
+  {
+   "no": "5.10",
+   "section": "Performance data",
+   "label": "Service brake",
+   "unit": "",
+   "values": [
+    "Electro-magnetic"
+   ],
+   "notes": [
+    []
+   ]
+  },
+  {
+   "no": "6.1",
+   "section": "Electric-engine",
+   "label": "Drive motor rating S2 60 min",
+   "unit": "kW",
+   "values": [
+    "1.5"
+   ],
+   "notes": [
+    []
+   ]
+  },
+  {
+   "no": "6.3",
+   "section": "Electric-engine",
+   "label": "Battery according to DIN 43531/35/36 A, B, C, no",
+   "unit": "",
+   "values": [
+    "2PzS-B"
+   ],
+   "notes": [
+    []
+   ]
+  },
+  {
+   "no": "6.4",
+   "section": "Electric-engine",
+   "label": "Battery voltage/nominal capacity K 5",
+   "unit": "(V)/(Ah) o. kWh",
+   "values": [
+    "24/200"
+   ],
+   "notes": [
+    []
+   ]
+  },
+  {
+   "no": "6.5",
+   "section": "Electric-engine",
+   "label": "Battery weight (±5%)",
+   "unit": "kg",
+   "values": [
+    "185"
+   ],
+   "notes": [
+    []
+   ]
+  },
+  {
+   "no": "6.6",
+   "section": "Electric-engine",
+   "label": "Power consumption according to VDI cycle",
+   "unit": "kWh/h",
+   "values": [
+    "1.21"
+   ],
+   "notes": [
+    [
+     "7"
+    ]
+   ]
+  },
+  {
+   "no": "8.1",
+   "section": "Drive/lifting mechanism",
+   "label": "Type of drive unit",
+   "unit": "",
+   "values": [
+    "LAC"
+   ],
+   "notes": [
+    []
+   ]
+  }
+ ],
+ "footnotes": [
+  {
+   "n": "1",
+   "text": "(±5 mm)"
+  },
+  {
+   "n": "2",
+   "text": "Figures with battery, see line 6.4/6.5."
+  },
+  {
+   "n": "3",
+   "text": "With single position hook"
+  },
+  {
+   "n": "4",
+   "text": ">=95%"
+  },
+  {
+   "n": "5",
+   "text": "(±5%)"
+  },
+  {
+   "n": "6",
+   "text": ">=100%"
+  },
+  {
+   "n": "7",
+   "text": "62 cycles"
+  }
+ ],
+ "masts": {},
+ "equipment": [
+  {
+   "group": "Safety",
+   "columns": [
+    "P20"
+   ],
+   "items": [
+    {
+     "text": "Horn"
+    },
+    {
+     "text": "Key switch"
+    },
+    {
+     "text": "PIN code access"
+    },
+    {
+     "text": "Automatic parking brake"
+    },
+    {
+     "text": "Buzzer reverse"
+    },
+    {
+     "text": "Emergency stop button"
+    }
+   ]
+  },
+  {
+   "group": "Service",
+   "columns": [
+    "P20"
+   ],
+   "items": [
+    {
+     "text": "CAN bus architecture"
+    }
+   ]
+  },
+  {
+   "group": "Digitalisation",
+   "columns": [
+    "P20"
+   ],
+   "items": [
+    {
+     "text": "Data transmission online"
+    },
+    {
+     "text": "Data transmission Wi-Fi"
+    }
+   ]
+  },
+  {
+   "group": "Operation/load handling",
+   "columns": [
+    "P20"
+   ],
+   "items": [
+    {
+     "text": "Inching control forward/back"
+    },
+    {
+     "text": "Increased ground clearance"
+    },
+    {
+     "text": "Rearview mirrors"
+    }
+   ]
+  },
+  {
+   "group": "Enviroment",
+   "columns": [
+    "P20"
+   ],
+   "items": [
+    {
+     "text": "Protection -10°"
+    }
+   ]
+  },
+  {
+   "group": "Workplace",
+   "columns": [
+    "P20"
+   ],
+   "items": [
+    {
+     "text": "Multifunction display hour meter, maintenance indication, battery discharge indicator and internal fault code indication"
+    },
+    {
+     "text": "Knee protection"
+    },
+    {
+     "text": "Clipboard on battery cover"
+    },
+    {
+     "text": "Accessory bar"
+    },
+    {
+     "text": "Foldable and height adjustable seat"
+    },
+    {
+     "text": "Spacious storage compartments"
+    }
+   ]
+  },
+  {
+   "group": "Lighting",
+   "columns": [
+    "P20"
+   ],
+   "items": [
+    {
+     "text": "Front and rear LED lights"
+    },
+    {
+     "text": "Headlight, tail light, braking light and turning indicators"
+    },
+    {
+     "text": "Flashing beacon"
+    }
+   ]
+  },
+  {
+   "group": "Towing attachment",
+   "columns": [
+    "P20"
+   ],
+   "items": [
+    {
+     "text": "Traction pin 290/345/400"
+    },
+    {
+     "text": "Hitchless with screws"
+    },
+    {
+     "text": "Traction pin 300"
+    },
+    {
+     "text": "Traction pin 300 wire-guided"
+    }
+   ]
+  },
+  {
+   "group": "Axles and tyres",
+   "columns": [
+    "P20"
+   ],
+   "items": [
+    {
+     "text": "Drive wheel cushion rubber, non-marking"
+    },
+    {
+     "text": "Tandem load wheels cushion rubber, non-marking"
+    },
+    {
+     "text": "Drive wheel cushion rubber, polyurethane, polyurethane wet grip"
+    }
+   ]
+  },
+  {
+   "group": "Drive and brake system",
+   "columns": [
+    "P20"
+   ],
+   "items": [
+    {
+     "text": "Linde LAC controller"
+    },
+    {
+     "text": "1.5 kW AC motor (maintenance free)"
+    },
+    {
+     "text": "Electromagnetic brake"
+    },
+    {
+     "text": "Automatic parking brake"
+    },
+    {
+     "text": "Lateral battery change 2 Pz-B"
+    },
+    {
+     "text": "Vertical battery change 2 Pz-B"
+    }
+   ]
+  },
+  {
+   "group": "Energy",
+   "columns": [
+    "P20"
+   ],
+   "items": [
+    {
+     "text": "Built-in charger"
+    }
+   ]
+  }
+ ],
+ "characteristics": [
+  {
+   "group": "Safety",
+   "bullets": [
+    "Compact chassis design protects the operator during operation",
+    "Ergonomic two-handled steering unit for easy and safe steering movements",
+    "Automatic parking brake for safe working on gradients",
+    "Optional variant with more ground clearance for safe driving on uneven surfaces and ramps"
+   ]
+  },
+  {
+   "group": "Ergonomics",
+   "bullets": [
+    "Height-adjustable and folding operator’s seat for increased operator comfort over long distances",
+    "Height-adjustable steering unit for easier operation",
+    "Large, easy-access storage compartments for work tools"
+   ]
+  },
+  {
+   "group": "Handling",
+   "bullets": [
+    "Narrow outer dimensions with a width of just 600 millimetres for manoeuvring in the tightest of spaces",
+    "Large steering unit for easier control",
+    "Drive wheels with large steering angle for a tight turning radius",
+    "1.5 kW three-phase motor for fast and continuous acceleration to top speed, even when towing trailers"
+   ]
+  },
+  {
+   "group": "Service",
+   "bullets": [
+    "Maintenance-free, delete- and water-resistant three-phase motor for high availability and reduced servicing requirements",
+    "Easy access to all important components thanks to service-friendly construction",
+    "Comprehensive truck data check via notebook keeps service costs to a minimum and allows for precise adjustment to the respective application"
+   ]
+  }
+ ],
+ "unparsed": {
+  "image_pages": [
+   3
+  ],
+  "characteristics_captions": [
+   "Two-handled steering unit",
+   "Height-adjustable and folding operator’s seat",
+   "Vehicle width of only 600 mm",
+   "Service-friendly construction"
+  ],
+  "sections": {
+   "TOW DIAGRAM": "                10\n\n\n\n                8\n\n\n\n                6\nSpeed (km/h)\n\n\n\n\n                4\n\n\n\n\n                2\n\n\n\n\n                        0                                                                                                                                             Drawbar pull (N)\n                             0\n                                                          500                               1000                                1500                           2000\n\n\n                    2\n\n\n\n\n                    4\n Gradient (%)\n\n\n\n\n                                                                                                                                                                          Combined weight: trailer + load (t)\n                                                                                                                                                        2.0\n                    6\n\n                                                                                                                                                       1.5\n\n                    8\n\n\n                                                                                                                  0.5                                  1.0\n                10\n\n\n\n\n                        speed (km/h)\n                        load (t)\n                        example\n\n\n\n\nThe example shown illustrates a\ntractor that is transporting 1 t, on\na ramp of 2% gradient, with a\nmaximum driving speed of 7 km/h.\n\n                For trailer loads exceeding 2.5 tons and for all trailer loads where a gradient is involved it is recommended that braked trailers are used."
+  }
+ }
+}

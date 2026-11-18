@@ -4,6 +4,7 @@ import { useEffect, useState, type AnchorHTMLAttributes, type MouseEvent } from 
 
 export type Route =
   | { page: 'home' }
+  | { page: 'all' }
   | { page: 'category'; cat: string }
   | { page: 'model'; cat: string; model: string }
   | { page: 'contact'; tema: string | null; model: string | null }
@@ -19,7 +20,7 @@ export function parse(path: string, search: string): Route {
   }
   if (parts[0] !== 'prodavnica') return { page: 'missing' };
   if (parts.length === 1) return { page: 'home' };
-  if (parts.length === 2) return { page: 'category', cat: parts[1] };
+  if (parts.length === 2) return parts[1] === 'svi-modeli' ? { page: 'all' } : { page: 'category', cat: parts[1] };
   if (parts.length === 3) return { page: 'model', cat: parts[1], model: parts[2] };
   return { page: 'missing' };
 }

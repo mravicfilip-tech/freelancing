@@ -3,15 +3,18 @@
 // model leads to the form. The look is the homepage's without the scroll story, the white ground, the five verticals of the grid with
 // a plus mark where a rule crosses one, Daxline, the red primary with its black plus cell, the same top row and footer. On a screen held
 // upright the edge lines only, no middle line and no marks (Filip 4 November).
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { BtnInner } from '../story2/shell/ui';
 import { Footer } from '../story2/shell/sections';
 import { SITE, hero, pillars } from '../content';
-import { CATEGORIES, categoryOf, faceOf, fmt, hrefAsk, hrefCategory, hrefProduct, modela, productOf, productsOf, PRODUCTS, type Product } from './data';
-import { Link, useRoute } from './route';
+import { CATEGORIES, GROUPS, categoryOf, faceOf, fmt, hrefAsk, hrefCategory, modela, productOf, productsOf, PRODUCTS, statsOf } from './data';
+import { Link, navigate, useRoute } from './route';
 import { ShopFrame } from './ShopFrame';
 import { Contact } from './Contact';
-import { Cap, Cell, Lines, Rule } from './parts';
+import { Cap, Cell, Lines } from './parts';
+import { Card, Facts, Picture } from './Card';
+import { Hero } from './Hero';
+import { Listing } from './Listing';
 import './shop.css';
 
 function Crumbs({ items }: { items: { label: string; href?: string }[] }) {
@@ -29,23 +32,25 @@ function Crumbs({ items }: { items: { label: string; href?: string }[] }) {
   );
 }
 
-function Facts({ p, big = false }: { p: Product; big?: boolean }) {
-  if (p.kg === null && p.mm === null) return null;
+// the facts of a category on its tile, from its models where the old site gives them
+function TileFacts({ cat }: { cat: string }) {
+  const st = statsOf(cat);
+  if (!st.kg && !st.mm) return null;
   return (
-    <dl className={`sp-facts${big ? ' is-big' : ''}`}>
-      {p.kg !== null ? (
+    <dl className="sp-facts sp-tile-facts">
+      {st.kg ? (
         <div>
           <dt>Nosivost</dt>
           <dd>
-            {fmt(p.kg)} <span>kg</span>
+            {st.kg[0] === st.kg[1] ? fmt(st.kg[0]) : `${fmt(st.kg[0])} do ${fmt(st.kg[1])}`} <span>kg</span>
           </dd>
         </div>
       ) : null}
-      {p.mm !== null ? (
+      {st.mm ? (
         <div>
-          <dt>Visina podizanja</dt>
+          <dt>Podizanje</dt>
           <dd>
-            {fmt(p.mm)} <span>mm</span>
+            do {fmt(st.mm)} <span>mm</span>
           </dd>
         </div>
       ) : null}
@@ -53,61 +58,53 @@ function Facts({ p, big = false }: { p: Product; big?: boolean }) {
   );
 }
 
-// the picture of a model, its cut out render, or the photo picked by hand where the Drive has no render, or its name on a pale field
-function Picture({ p, size }: { p: Product; size: 'card' | 'hero' }) {
-  const src = size === 'card' ? p.thumb : p.render;
-  if (!src)
-    return (
-      <div className="sp-pic is-empty" aria-hidden="true">
-        <span>{p.code}</span>
-      </div>
-    );
-  return (
-    <div className={`sp-pic is-${p.look ?? 'render'}`}>
-      <img src={src} alt={`Linde ${p.code}, ${p.kind.toLowerCase()}`} loading={size === 'card' ? 'lazy' : 'eager'} decoding="async" width={size === 'card' ? 560 : 1200} height={size === 'card' ? 560 : 1200} />
-    </div>
-  );
-}
-
-function Card({ p }: { p: Product }) {
-  return (
-    <Cell className="sp-card">
-      <Link className="sp-card-a" href={hrefProduct(p)}>
-        <Picture p={p} size="card" />
-        <span className="sp-lab">{p.kind}</span>
-        <span className="sp-card-code">{p.code}</span>
-        <Facts p={p} />
-        <i className="sp-go" aria-hidden="true" />
-      </Link>
-    </Cell>
-  );
-}
-
 function Home() {
   useTitle('Prodavnica, novi Linde viljuškari');
+  const [vrsta, setVrsta] = useState(() => new URLSearchParams(window.location.search).get('vrsta') ?? '');
+  const [q, setQ] = useState('');
+  useEffect(() => {
+    window.history.replaceState(null, '', `${window.location.pathname}${vrsta ? `?vrsta=${vrsta}` : ''}`);
+  }, [vrsta]);
+  const group = GROUPS.find((g) => g.id === vrsta);
+  const cats = group ? CATEGORIES.filter((c) => group.cats.includes(c.slug)) : CATEGORIES;
+  const count = (cs: string[]) => CATEGORIES.filter((c) => cs.includes(c.slug)).reduce((a, c) => a + c.count, 0);
+  const blanks = (4 - ((cats.length + 2) % 4)) % 4;
   return (
     <>
-      <section className="sp-frame sp-intro">
-        <Cell span={2}>
-          <p className="sp-lab">Prodavnica</p>
-          <h1 className="sp-h1">Novi Linde viljuškari</h1>
+      <Hero />
+      <section className="sp-frame sp-cats" aria-labelledby="sp-cats-h">
+        <Cell span={4} className="sp-bar sp-cats-bar">
+          <h2 className="sp-lab" id="sp-cats-h">
+            Kategorije
+          </h2>
+          <div className="sp-pills" role="group" aria-label="Vrsta vozila">
+            {[{ id: '', label: 'Sve', cats: CATEGORIES.map((c) => c.slug) }, ...GROUPS].map((g) => (
+              <button type="button" className="sp-pill" aria-pressed={vrsta === g.id} onClick={() => setVrsta(g.id)} key={g.id || 'sve'}>
+                {g.label} <span>{count(g.cats)}</span>
+              </button>
+            ))}
+          </div>
+          <form
+            className="sp-search"
+            role="search"
+            onSubmit={(e) => {
+              e.preventDefault();
+              navigate(`/prodavnica/svi-modeli${q.trim() ? `?q=${encodeURIComponent(q.trim())}` : ''}`);
+            }}
+          >
+            <label className="sr-only" htmlFor="sp-q">
+              Pretražite modele
+            </label>
+            <input id="sp-q" type="search" placeholder="Pretražite modele, npr. X20" value={q} onChange={(e) => setQ(e.target.value)} />
+          </form>
         </Cell>
-        <Cell span={2} className="sp-intro-r">
-          <p className="sp-lede">
-            {PRODUCTS.length} modela u {CATEGORIES.length} kategorija. Izaberite vrstu viljuškara, a ponudu za model vam šaljemo na upit.
-          </p>
-          <Link className="btn btn-secondary" href="/kontakt?tema=kupovina">
-            <BtnInner>Pošaljite upit</BtnInner>
-          </Link>
-        </Cell>
-      </section>
-      <section className="sp-frame sp-cats" aria-label="Kategorije">
-        {CATEGORIES.map((c) => (
+        {cats.map((c) => (
           <Cell className="sp-tile" key={c.slug}>
             <Link className="sp-tile-a" href={hrefCategory(c.slug)}>
               <span className="sp-lab">{modela(c.count)}</span>
               <span className="sp-pic">{faceOf(c.slug) ? <img src={faceOf(c.slug)!} alt="" loading="lazy" decoding="async" width={560} height={560} /> : null}</span>
               <span className="sp-tile-name">{c.name}</span>
+              <TileFacts cat={c.slug} />
               <i className="sp-go" aria-hidden="true" />
             </Link>
           </Cell>
@@ -129,9 +126,29 @@ function Home() {
             <BtnInner>Polovni na ekotehnika.rs</BtnInner>
           </a>
         </Cell>
+        {Array.from({ length: blanks }, (_, i) => (
+          <Cell className="sp-tile is-blank" key={`b${i}`} />
+        ))}
         <Cap />
       </section>
     </>
+  );
+}
+
+// the intro of a list, the way back, the title and the count
+function ListHead({ title, crumbs, count }: { title: string; crumbs: { label: string; href?: string }[]; count: number }) {
+  return (
+    <section className="sp-frame sp-intro sp-intro-list">
+      <Cell span={2}>
+        <Crumbs items={crumbs} />
+        <h1 className="sp-h1">{title}</h1>
+      </Cell>
+      <Cell span={2} className="sp-intro-r">
+        <p className="sp-count">
+          <span>{count}</span> {modela(count).split(' ')[1]}
+        </p>
+      </Cell>
+    </section>
   );
 }
 
@@ -142,41 +159,18 @@ function CategoryPage({ cat }: { cat: string }) {
   const items = productsOf(cat);
   return (
     <>
-      <section className="sp-frame sp-intro">
-        <Cell span={2}>
-          <Crumbs items={[{ label: 'Prodavnica', href: '/prodavnica' }, { label: c.name }]} />
-          <h1 className="sp-h1">{c.name}</h1>
-        </Cell>
-        <Cell span={2} className="sp-intro-r">
-          <p className="sp-count">
-            <span>{items.length}</span> {modela(items.length).split(' ')[1]}
-          </p>
-        </Cell>
-      </section>
-      <section className="sp-frame sp-list">
-        <nav className="sp-side" aria-label="Kategorije">
-          <Rule />
-          <p className="sp-lab">Kategorije</p>
-          <ul>
-            {CATEGORIES.map((k) => (
-              <li key={k.slug}>
-                <Link href={hrefCategory(k.slug)} aria-current={k.slug === cat ? 'page' : undefined}>
-                  <span>{k.name}</span> <span className="sp-side-n">{k.count}</span>
-                </Link>
-              </li>
-            ))}
-          </ul>
-        </nav>
-        <div className="sp-models">
-          {items.map((p) => (
-            <Card p={p} key={p.slug} />
-          ))}
-          {Array.from({ length: (3 - (items.length % 3)) % 3 }, (_, i) => (
-            <Cell className="sp-card is-blank" key={`b${i}`} />
-          ))}
-        </div>
-        <Cap />
-      </section>
+      <ListHead title={c.name} crumbs={[{ label: 'Prodavnica', href: '/prodavnica' }, { label: c.name }]} count={items.length} />
+      <Listing items={items} current={cat} />
+    </>
+  );
+}
+
+function AllPage() {
+  useTitle('Svi modeli, Linde');
+  return (
+    <>
+      <ListHead title="Svi modeli" crumbs={[{ label: 'Prodavnica', href: '/prodavnica' }, { label: 'Svi modeli' }]} count={PRODUCTS.length} />
+      <Listing items={PRODUCTS} current={null} />
     </>
   );
 }
@@ -284,6 +278,7 @@ export function Shop() {
       <main id="sp-main" className="sp-main" tabIndex={-1}>
         <Lines />
         {route.page === 'home' ? <Home /> : null}
+        {route.page === 'all' ? <AllPage /> : null}
         {route.page === 'category' ? <CategoryPage cat={route.cat} key={route.cat} /> : null}
         {route.page === 'model' ? <ModelPage cat={route.cat} model={route.model} key={route.model} /> : null}
         {route.page === 'contact' ? <Contact tema={route.tema} model={route.model} /> : null}

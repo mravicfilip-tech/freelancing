@@ -34,6 +34,7 @@ Task format
   - [x] Prodavnica, the category page, the model page and Kontakt, at 1440 and 390, the form's server function
   - [x] The homepage's links into the shop, Novi, Kontakt, Posetite prodavnicu, Pogledajte modele and the seven product cards
   - [ ] Preview link on Filip's phone, https://ekotehnika-e4j7x88q9-filip-mravic-s-projects.vercel.app/prodavnica
+  - [x] Filip's three notes of 18 November, briefs/shop/notes.md, the hero slider, the filters over the categories with each tile's facts, and the shop listing with filters, sort, search and inquiry buttons on the cards
   - [ ] The Serbian model descriptions, ekotehnika.rs refuses this container, Filip to get them another way
   - [ ] The form sends through Resend once Filip gives the key, the privacy text and the deadline from Filip
 

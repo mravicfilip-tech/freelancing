@@ -289,8 +289,7 @@
   padding: 0;
 }
 
-.sp-tile-a,
-.sp-card-a {
+.sp-tile-a {
   position: relative;
   display: flex;
   flex-direction: column;
@@ -301,18 +300,15 @@
   transition: background-color 200ms var(--out);
 }
 
-.sp-tile-a:is(:hover, :focus-visible),
-.sp-card-a:is(:hover, :focus-visible) {
+.sp-tile-a:is(:hover, :focus-visible) {
   background: var(--tint);
 }
 
-.sp-tile-a:is(:hover, :focus-visible) img,
-.sp-card-a:is(:hover, :focus-visible) img {
+.sp-tile-a:is(:hover, :focus-visible) img {
   transform: scale(1.03);
 }
 
-.sp-tile-a:focus-visible,
-.sp-card-a:focus-visible {
+.sp-tile-a:focus-visible {
   outline: 2px solid var(--black);
   outline-offset: -2px;
 }
@@ -356,7 +352,7 @@
   mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3E%3Cpath d='M9 3h2v6h6v2h-6v6H9v-6H3V9h6z'/%3E%3C/svg%3E") center / contain no-repeat;
 }
 
-:is(.sp-tile-a, .sp-card-a):is(:hover, :focus-visible) .sp-go {
+.sp-tile-a:is(:hover, :focus-visible) .sp-go {
   opacity: 1;
 }
 
@@ -430,9 +426,7 @@
   padding: 32px 24px 48px;
 }
 
-.sp-side ul {
-  position: sticky;
-  top: 24px;
+.sp-side-cats {
   margin: 16px 0 0;
   padding: 0;
   list-style: none;
@@ -468,9 +462,17 @@
   flex: none;
 }
 
-.sp-models {
+/* the models, the three frames right of the filters */
+.sp-results {
   display: grid;
   grid-column: 2 / span 3;
+  grid-template-columns: subgrid;
+  align-content: start;
+}
+
+.sp-models {
+  display: grid;
+  grid-column: 1 / -1;
   grid-template-columns: subgrid;
 }
 
@@ -958,12 +960,16 @@
     grid-column: auto !important;
   }
 
-  .sp-cats > .sp-help {
+  .sp-cats > .sp-help,
+  .sp-cats > .sp-cats-bar {
     grid-column: 1 / -1 !important;
   }
 
-  .sp-tile-a,
-  .sp-card-a {
+  .sp-cats > .is-blank {
+    display: none;
+  }
+
+  .sp-tile-a {
     padding: 16px 12px 24px;
   }
 
@@ -1015,8 +1021,7 @@
     display: none;
   }
 
-  .sp-side ul {
-    position: static;
+  .sp-side-cats {
     display: flex;
     gap: 8px;
     margin: 0 -16px;
@@ -1025,7 +1030,7 @@
     scrollbar-width: none;
   }
 
-  .sp-side li {
+  .sp-side-cats li {
     flex: none;
   }
 
@@ -1193,5 +1198,788 @@
   .sp-card .sp-pic {
     aspect-ratio: 1;
     height: auto;
+  }
+}
+
+/* ---- the hero of the first page, the words on the white beside the picture, the slides as tabs under both, Hero.tsx ---- */
+.sp-hero-text {
+  display: flex;
+  padding: 48px 24px;
+}
+
+.sp-hero-stack {
+  display: grid;
+  flex: 1;
+}
+
+.sp-hero-slide {
+  grid-area: 1 / 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
+  opacity: 0;
+  visibility: hidden;
+  transition:
+    opacity 400ms var(--out),
+    visibility 0s 400ms;
+}
+
+.sp-hero-slide[data-on] {
+  opacity: 1;
+  visibility: visible;
+  transition:
+    opacity 600ms var(--out) 200ms,
+    visibility 0s;
+}
+
+.sp-hero-t {
+  position: relative;
+  z-index: 20;
+  width: fit-content;
+  max-width: 10em;
+  margin: 16px 0 0;
+  background: var(--white);
+  font-size: 74px;
+  font-weight: 350;
+  line-height: 80px;
+  letter-spacing: -0.02em;
+  text-wrap: balance;
+}
+
+.sp-hero-slide .sp-lede {
+  margin-top: 24px;
+}
+
+.sp-hero-slide .btn {
+  margin-top: 48px;
+}
+
+.sp-price {
+  position: relative;
+  z-index: 20;
+  display: flex;
+  align-items: baseline;
+  gap: 16px;
+  margin: 32px 0 0;
+  background: var(--white);
+}
+
+.sp-price-l {
+  padding: 4px 8px;
+  background: var(--black);
+  color: var(--white);
+  font: 500 14px/20px var(--font);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.sp-price-v {
+  font-size: 54px;
+  font-weight: 350;
+  line-height: 60px;
+  letter-spacing: -0.02em;
+}
+
+.sp-hero-pic {
+  padding: 24px;
+}
+
+.sp-hero-imgs {
+  position: relative;
+  z-index: 20;
+  height: clamp(420px, 56vh, 600px);
+  overflow: hidden;
+  background: var(--tint);
+  touch-action: pan-y;
+}
+
+.sp-hero-imgs img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0;
+  transition: opacity 700ms var(--out);
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+.sp-hero-imgs img.is-contain {
+  padding: 8%;
+  object-fit: contain;
+}
+
+.sp-hero-imgs img[data-on] {
+  opacity: 1;
+}
+
+.sp-hero-nav {
+  display: flex;
+  align-items: stretch;
+  padding: 0;
+}
+
+.sp-hero-tabs {
+  display: flex;
+  flex: 1;
+  min-width: 0;
+}
+
+.sp-hero-tabs button {
+  position: relative;
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 4px;
+  min-width: 0;
+  padding: 20px 24px 24px;
+  border: 0;
+  background: none;
+  color: var(--grey-dark);
+  font: 400 16px/24px var(--font);
+  text-align: left;
+  cursor: pointer;
+}
+
+.sp-hero-tabs button:hover,
+.sp-hero-tabs button[aria-selected='true'] {
+  color: var(--black);
+}
+
+.sp-hero-tabs button:focus-visible {
+  outline: 2px solid var(--black);
+  outline-offset: -2px;
+}
+
+.sp-hero-tab-n {
+  font: 500 14px/20px var(--font);
+  letter-spacing: 0.08em;
+}
+
+.sp-hero-tab-t {
+  overflow: hidden;
+  max-width: 100%;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+/* the bar over a tab, full on the slide on screen, and filling over the 7 seconds while the slides run */
+.sp-hero-bar {
+  position: absolute;
+  left: 24px;
+  right: 24px;
+  top: 0;
+  height: 2px;
+  background: var(--black);
+  transform: scaleX(0);
+  transform-origin: left;
+}
+
+.sp-hero-tabs [aria-selected='true'] .sp-hero-bar {
+  transform: scaleX(1);
+}
+
+.sp-hero[data-playing] .sp-hero-tabs [aria-selected='true'] .sp-hero-bar {
+  animation: sp-fill linear forwards;
+}
+
+@keyframes sp-fill {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: scaleX(1);
+  }
+}
+
+.sp-hero-arrows {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0 24px;
+}
+
+.sp-arrow {
+  width: 48px;
+  padding: 0;
+}
+
+.sp-arrow .btn-t {
+  display: none;
+}
+
+.sp-arrow.is-prev {
+  --glyph: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3E%3Cpath d='M12.6 3.6 14 5l-5 5 5 5-1.4 1.4L6.2 10z'/%3E%3C/svg%3E");
+}
+
+.sp-arrow.is-next {
+  --glyph: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3E%3Cpath d='M7.4 3.6 6 5l5 5-5 5 1.4 1.4 6.4-6.4z'/%3E%3C/svg%3E");
+}
+
+/* ---- the bars over the categories and over the models, the count, the search, the sort and the filters that are on ---- */
+.sp-bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 16px 24px;
+  padding: 24px;
+}
+
+.sp-cats-bar .sp-lab {
+  margin: 0;
+}
+
+.sp-pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.sp-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  height: 40px;
+  padding: 0 16px;
+  border: 1px solid var(--grey-light);
+  background: var(--white);
+  color: var(--black);
+  font: 400 16px/24px var(--font);
+  cursor: pointer;
+}
+
+.sp-pill span {
+  color: var(--grey-dark);
+  font-size: 14px;
+}
+
+.sp-pill:hover {
+  border-color: var(--black);
+}
+
+.sp-pill[aria-pressed='true'] {
+  border-color: var(--black);
+  background: var(--black);
+  color: var(--white);
+}
+
+.sp-pill[aria-pressed='true'] span {
+  color: var(--grey-light);
+}
+
+.sp-search {
+  position: relative;
+  z-index: 20;
+  margin-left: auto;
+}
+
+.sp-search input {
+  width: 320px;
+  height: 40px;
+  padding: 0 16px 0 48px;
+  border: 1px solid var(--grey-light);
+  border-radius: 0;
+  background: var(--white) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3E%3Cpath d='M8.5 3a5.5 5.5 0 1 0 3.3 9.9l4 4 1.4-1.4-4-4A5.5 5.5 0 0 0 8.5 3zm0 2a3.5 3.5 0 1 1 0 7 3.5 3.5 0 0 1 0-7z'/%3E%3C/svg%3E") 12px center / 20px no-repeat;
+  color: var(--black);
+  font: 400 16px/24px var(--font);
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+.sp-search input:focus {
+  outline: none;
+  border-color: var(--black);
+  box-shadow: inset 0 0 0 1px var(--black);
+}
+
+.sp-shown {
+  margin: 0;
+  color: var(--grey-dark);
+  font-size: 16px;
+  line-height: 24px;
+}
+
+.sp-shown strong {
+  margin-right: 4px;
+  color: var(--black);
+  font-size: 24px;
+  font-weight: 500;
+}
+
+.sp-sort {
+  position: relative;
+  z-index: 20;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.sp-sort-l {
+  color: var(--grey-dark);
+  font-size: 14px;
+}
+
+.sp-sort select {
+  height: 40px;
+  padding: 0 48px 0 12px;
+  border: 1px solid var(--grey-light);
+  border-radius: 0;
+  background: var(--white);
+  color: var(--black);
+  font: 400 16px/24px var(--font);
+  cursor: pointer;
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+.sp-sort .sp-select::after {
+  top: 8px;
+  right: 12px;
+}
+
+.sp-open {
+  display: none;
+}
+
+.sp-chips {
+  display: flex;
+  flex-basis: 100%;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+
+.sp-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  height: 32px;
+  padding: 0 8px 0 12px;
+  border: 1px solid var(--black);
+  background: var(--white);
+  color: var(--black);
+  font: 400 14px/20px var(--font);
+  cursor: pointer;
+}
+
+.sp-chip::after {
+  content: '';
+  width: 16px;
+  height: 16px;
+  background: var(--black);
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3E%3Cpath d='M5 3.6l5 5 5-5 1.4 1.4-5 5 5 5-1.4 1.4-5-5-5 5L3.6 15l5-5-5-5z'/%3E%3C/svg%3E") center / contain no-repeat;
+  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3E%3Cpath d='M5 3.6l5 5 5-5 1.4 1.4-5 5 5 5-1.4 1.4-5-5-5 5L3.6 15l5-5-5-5z'/%3E%3C/svg%3E") center / contain no-repeat;
+}
+
+.sp-chip:hover {
+  background: var(--tint);
+}
+
+.sp-clear {
+  height: 32px;
+  padding: 0 4px;
+  border: 0;
+  background: none;
+  color: var(--black);
+  font: 400 14px/20px var(--font);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  cursor: pointer;
+}
+
+/* ---- the filters under the categories, each a group of checkboxes with how many models a value leaves ---- */
+.sp-sheet {
+  margin-top: 32px;
+}
+
+.sp-sheet-head,
+.sp-sheet-foot {
+  display: none;
+}
+
+/* the line over a group is drawn inside its box, so the group's name, a legend, never cuts into it */
+.sp-facet {
+  min-width: 0;
+  margin: 0 0 24px;
+  padding: 0;
+  border: 0;
+  box-shadow: inset 0 1px 0 var(--grey-light);
+}
+
+.sp-facet legend {
+  display: block;
+  width: 100%;
+  margin: 0 0 8px;
+  padding: 16px 0 0;
+  color: var(--grey-dark);
+  font: 500 14px/20px var(--font);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.sp-opt {
+  display: grid;
+  grid-template-columns: 24px minmax(0, 1fr) auto;
+  align-items: center;
+  column-gap: 12px;
+  min-height: 36px;
+  font-size: 16px;
+  line-height: 24px;
+  cursor: pointer;
+}
+
+.sp-opt input {
+  width: 24px;
+  height: 24px;
+  margin: 0;
+  accent-color: var(--black);
+  cursor: pointer;
+}
+
+.sp-opt-n {
+  color: var(--grey-dark);
+  font-size: 14px;
+}
+
+.sp-facet-note {
+  margin: 4px 0 0;
+  color: var(--grey-dark);
+  font-size: 14px;
+  line-height: 20px;
+}
+
+/* ---- the card of a model, the picture on a pale panel, the name the link over the whole card, the inquiry button over that ---- */
+.sp-card-in {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  padding: 24px 24px 32px;
+}
+
+.sp-card .sp-pic {
+  margin: 0 0 24px;
+  background: var(--tint);
+}
+
+.sp-card .sp-pic img {
+  inset: 8%;
+  width: 84%;
+  height: 84%;
+}
+
+.sp-card .sp-pic.is-scene img {
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* a studio photo on white sits into the pale panel */
+.sp-pic.is-studio img {
+  mix-blend-mode: multiply;
+}
+
+.sp-card-code {
+  margin: 4px 0 0;
+  font-size: 28px;
+  font-weight: 350;
+  line-height: 36px;
+  letter-spacing: -0.01em;
+}
+
+.sp-card-a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.sp-card-a::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+}
+
+.sp-card-a:focus-visible {
+  outline: none;
+}
+
+.sp-card-a:focus-visible::after {
+  outline: 2px solid var(--black);
+  outline-offset: -2px;
+}
+
+.sp-card-in:hover .sp-card-code {
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 6px;
+}
+
+.sp-card-in:hover .sp-pic img {
+  transform: scale(1.03);
+}
+
+.sp-card-acts {
+  position: relative;
+  z-index: 2;
+  margin-top: auto;
+  padding-top: 24px;
+}
+
+/* the facts of a category on its tile */
+.sp-tile-facts {
+  margin-top: 8px;
+}
+
+.sp-tile-facts dd {
+  font-size: 16px;
+  line-height: 24px;
+}
+
+/* nothing left after the filters */
+.sp-none {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 16px;
+  padding: 48px 24px 64px;
+}
+
+.sp-none-t {
+  margin: 0;
+  font-size: 32px;
+  font-weight: 350;
+  line-height: 40px;
+}
+
+.sp-none .sp-acts {
+  margin-top: 16px;
+}
+
+/* ---- the phone. The hero's picture first, then its words, the slides as numbered bars. The filters a sheet over the page. ---- */
+@media (max-aspect-ratio: 4/5) {
+  .sp-hero-pic {
+    order: -1;
+    padding: 16px 12px 0;
+  }
+
+  .sp-hero-pic > .sp-rule {
+    display: none;
+  }
+
+  .sp-hero-imgs {
+    height: auto;
+    aspect-ratio: 4 / 3;
+  }
+
+  .sp-hero-text {
+    padding: 24px 12px 32px;
+  }
+
+  .sp-hero-text > .sp-rule {
+    display: none;
+  }
+
+  .sp-hero-t {
+    font-size: clamp(36px, calc((100cqw - 56px) / 7), 48px);
+    line-height: 1.1;
+  }
+
+  .sp-hero-slide .btn {
+    margin-top: 32px;
+  }
+
+  .sp-price-v {
+    font-size: 40px;
+    line-height: 48px;
+  }
+
+  .sp-hero-tabs button {
+    padding: 16px 12px 24px;
+  }
+
+  .sp-hero-tab-t {
+    display: none;
+  }
+
+  .sp-hero-bar {
+    left: 12px;
+    right: 12px;
+  }
+
+  .sp-hero-arrows {
+    padding: 0 0 0 8px;
+  }
+
+  .sp-bar {
+    padding: 16px 12px;
+    gap: 12px;
+  }
+
+  .sp-cats-bar .sp-pills {
+    flex-wrap: nowrap;
+    margin: 0 -32px 0 -12px;
+    padding: 0 32px 0 12px;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+
+  .sp-pill {
+    flex: none;
+  }
+
+  .sp-search {
+    flex: 1 1 100%;
+    margin: 0;
+  }
+
+  .sp-search input {
+    width: 100%;
+    height: 44px;
+  }
+
+  .sp-results {
+    grid-column: 1 / -1;
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .sp-results > .sp-bar,
+  .sp-results > .sp-none {
+    grid-column: 1 / -1 !important;
+  }
+
+  .sp-sort-l {
+    display: none;
+  }
+
+  .sp-sort {
+    margin-left: auto;
+  }
+
+  .sp-sort select {
+    height: 44px;
+  }
+
+  .sp-sort .sp-select::after {
+    top: 10px;
+  }
+
+  .sp-open {
+    display: inline-flex;
+  }
+
+  .sp-sheet {
+    display: none;
+    margin: 0;
+  }
+
+  .sp-sheet[data-open] {
+    position: fixed;
+    inset: 0;
+    z-index: 50;
+    display: flex;
+    flex-direction: column;
+    padding: 0 16px;
+    overflow-y: auto;
+    background: var(--white);
+  }
+
+  .sp-sheet-head {
+    display: flex;
+    flex: none;
+    align-items: center;
+    justify-content: space-between;
+    height: 72px;
+  }
+
+  .sp-sheet-x {
+    width: 48px;
+    padding: 0;
+    --glyph: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3E%3Cpath d='M5 3.6l5 5 5-5 1.4 1.4-5 5 5 5-1.4 1.4-5-5-5 5L3.6 15l5-5-5-5z'/%3E%3C/svg%3E");
+  }
+
+  .sp-sheet-x .btn-t {
+    display: none;
+  }
+
+  .sp-sheet-foot {
+    position: sticky;
+    bottom: 0;
+    display: flex;
+    flex: none;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 8px;
+    margin-top: auto;
+    padding: 16px 0;
+    background: var(--white);
+  }
+
+  .sp-sheet-foot .btn .btn-t {
+    flex: 1;
+  }
+
+  .sp-opt {
+    min-height: 44px;
+  }
+
+  .sp-card-in {
+    padding: 16px 12px 24px;
+  }
+
+  .sp-card-code {
+    font-size: 24px;
+    line-height: 32px;
+  }
+
+  .sp-card-acts .btn {
+    width: 100%;
+  }
+
+  .sp-card-acts .btn .btn-t {
+    flex: 1;
+    padding: 0 12px;
+    font-size: 14px;
+  }
+}
+
+/* the card's button says the short word where a card is narrow, its full name stays in its label for a screen reader */
+.sp-ask-s {
+  display: none;
+}
+
+@media (max-aspect-ratio: 4/5) {
+  .sp-ask-l {
+    display: none;
+  }
+
+  .sp-ask-s {
+    display: inline;
+  }
+}
+
+/* on a phone, the count, then the search, then the filters and the sort on one row, then the chips */
+@media (max-aspect-ratio: 4/5) {
+  .sp-results .sp-bar > .sp-shown {
+    order: 0;
+  }
+
+  .sp-results .sp-bar > .sp-search {
+    order: 1;
+  }
+
+  .sp-results .sp-bar > .sp-open {
+    order: 2;
+  }
+
+  .sp-results .sp-bar > .sp-sort {
+    order: 3;
+  }
+
+  .sp-results .sp-bar > .sp-chips {
+    order: 4;
   }
 }

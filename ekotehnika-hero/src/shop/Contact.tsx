@@ -160,8 +160,10 @@ export function Contact({ tema, model }: { tema: string | null; model: string | 
             <>
               <Picture p={picked} size="hero" />
               <figcaption>
-                <span className="sp-lab">{picked.kind}</span>
-                <span className="sp-contact-pic-t">Linde {picked.code}</span>
+                <span className="sp-contact-pic-x">
+                  <span className="sp-lab">{picked.kind}</span>
+                  <span className="sp-contact-pic-t">Linde {picked.code}</span>
+                </span>
                 <Facts p={picked} />
               </figcaption>
             </>
@@ -171,8 +173,10 @@ export function Contact({ tema, model }: { tema: string | null; model: string | 
                 <img src="/shop/hero/range.webp" alt="Linde viljuškari svih vrsta, jedan pored drugog u hali" decoding="async" />
               </div>
               <figcaption>
-                <span className="sp-lab">Prodavnica</span>
-                <span className="sp-contact-pic-t">{PRODUCTS.length} modela Linde viljuškara</span>
+                <span className="sp-contact-pic-x">
+                  <span className="sp-lab">Prodavnica</span>
+                  <span className="sp-contact-pic-t">{PRODUCTS.length} modela Linde viljuškara</span>
+                </span>
               </figcaption>
             </>
           )}

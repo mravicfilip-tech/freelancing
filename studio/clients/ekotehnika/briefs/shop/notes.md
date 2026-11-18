@@ -62,3 +62,6 @@ Round of 18 November, sent while the shop ran on his localhost. Planned and buil
     proposal as 24.
     Filip's yes to the Kontakt structure for 24 and 26, 18 November, "yes, go". The picture of the inquiry's model under the contact rows,
     following the select, the range photo with no model, and the form across both right frames.
+27. Kontakt, "this doesn't look good, even it out a bit". Screenshots mark the empty space under the form while the picture's column runs
+    on. Built as the picture capped at 400px, its caption on one row, the name left and the figures right, and the message box growing so
+    the form ends level with the picture's column.

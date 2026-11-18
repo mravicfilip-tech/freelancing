@@ -1,0 +1,33 @@
+{
+  "name": "search-field",
+  "client": "ekotehnika",
+  "url": "http://localhost:4890/prodavnica",
+  "selector": ".sp-sb",
+  "date": "2026-11-18",
+  "width": 1440,
+  "source": {
+    "repo": "ekotehnika-hero",
+    "file": "src/shop/SearchBox.tsx"
+  },
+  "note": "The shop's large search, a 56px field ending in a grey square cell with a 2px solid magnifier, the secondary button's phone cell. A click searches, an empty field opens the suggestions. Picked 18 November, go with 3.",
+  "role": "div",
+  "tag": "div",
+  "text": "Pretražite modele",
+  "fingerprint": {
+    "fontFamily": "daxline pro",
+    "fontSize": "18px",
+    "fontWeight": "400",
+    "lineHeight": "27px",
+    "letterSpacing": "0px",
+    "textTransform": "none",
+    "color": "#000000",
+    "background": "transparent",
+    "border": "none",
+    "radius": "0px",
+    "padding": "0px 0px 0px 0px",
+    "height": "56px",
+    "shadow": "none",
+    "width": "447.28px"
+  },
+  "hover": null
+}

@@ -27,11 +27,6 @@ const remember = (q: string) => {
 
 type Item = { id: string; href: string; kind: 'model' | 'cat' | 'recent' | 'all'; label: string; p?: Product; note?: string };
 
-// The field's icon, Filip 18 November, "use better icon". Three variants to pick by number, ?sbi=1, 2 or 3 on localhost, see .sp-sb in
-// shop.css. 1 a thin line glyph in the field, 2 the site's own solid glyph weight in the field, 3 a grey cell at the field's end that
-// searches, like the phone cell of the site's secondary buttons. 3 shows until Filip picks, then the other two and this switch go.
-const ICON = (import.meta.env.DEV && new URLSearchParams(window.location.search).get('sbi')) || '3';
-
 export function SearchBox({ placeholder = 'Pretražite modele, npr. X20 ili slagač' }: { placeholder?: string }) {
   const [q, setQ] = useState('');
   const [open, setOpen] = useState(false);
@@ -153,7 +148,7 @@ export function SearchBox({ placeholder = 'Pretražite modele, npr. X20 ili slag
   const pastItems = items.filter((x) => x.kind === 'recent');
   const restItems = items.filter((x) => x.kind !== 'recent');
   return (
-    <div className="sp-sb" ref={root} data-open={open || undefined} data-icon={ICON}>
+    <div className="sp-sb" ref={root} data-open={open || undefined}>
       <form
         role="search"
         onSubmit={(e) => {
@@ -161,7 +156,6 @@ export function SearchBox({ placeholder = 'Pretražite modele, npr. X20 ili slag
           submit();
         }}
       >
-        <i className="sp-sb-i" aria-hidden="true" />
         <label className="sr-only" htmlFor={`${id}-q`}>
           Pretražite modele
         </label>

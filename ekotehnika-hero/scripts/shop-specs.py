@@ -19,7 +19,7 @@ DS = APP.parent / 'studio/clients/ekotehnika/briefs/shop/ds'
 OUT = APP / 'src/shop/specs'
 
 # the rows of the short table of versions, in this order, by VDI number
-COMPARE = ['1.3', '1.5', '4.4', '5.1', '5.2', '4.35', '4.34.1', '2.1', '7.2', 'fuel']
+COMPARE = ['1.3', '1.5', '1.7', '4.4', '5.1', '5.2', '4.35', '4.34.1', '2.1', '7.2', '6.1', '6.4', 'fuel']
 FUEL = ['7.5', '7.5a', '7.5b']
 
 
@@ -75,7 +75,29 @@ def span(xs, prefix_when_many='do '):
     return fmt_num(lo) if lo == hi else f'{fmt_num(lo)} do {fmt_num(hi)}'
 
 
-def build(d, sr, kind, missing):
+# the icon of a group of features or equipment, from the words of its English name, ModelSpec.tsx draws them
+ICONS = [
+    ('shield', ('safety', 'security', 'protect')),
+    ('seat', ('ergonom', 'workplace', 'comfort', 'cab', 'operator', 'driver')),
+    ('lever', ('operation', 'control', 'handling', 'load handling', 'steer')),
+    ('wrench', ('service', 'maintenance')),
+    ('battery', ('battery', 'charg', 'energy', 'lithium', 'li-ion')),
+    ('bolt', ('drive', 'brake', 'engine', 'motor', 'power', 'transmission')),
+    ('tyre', ('axle', 'tyre', 'tire', 'wheel', 'chassis')),
+    ('mast', ('mast', 'lift')),
+    ('fork', ('attach', 'fork')),
+    ('chip', ('digital', 'fleet', 'connect', 'data', 'assist', 'automat')),
+    ('gauge', ('perform', 'productiv', 'efficien', 'speed')),
+    ('bulb', ('light',)),
+]
+
+
+def icon_of(name):
+    low = name.lower()
+    return next((icon for icon, words in ICONS if any(w in low for w in words)), 'grid')
+
+
+def build(d, sr, kind, missing, category=''):
     def tr(table, s, where):
         key = norm(s)
         hit = sr.get(table, {}).get(key)
@@ -98,10 +120,15 @@ def build(d, sr, kind, missing):
     # the four figures over the buttons, each from its own row
     figures = []
     cap = rows.get('1.5')
-    if cap:
+    pull = rows.get('1.7')
+    if category == 'tegljaci':
+        # a tow tractor's 1.5 mixes the trailer's load and the platform's, so its figure is the pull
+        if pull and nums(pull['values']):
+            figures.append({'label': 'Vučna sila', 'value': span(nums(pull['values'])), 'unit': 'N'})
+    elif cap:
         xs = nums(cap['values'])
         if xs:
-            if '(t)' in cap.get('unit', ''):
+            if '(t)' in cap.get('unit', '') or max(xs) < 100:
                 xs = [x * 1000 for x in xs]
             figures.append({'label': 'Nosivost', 'value': span(xs), 'unit': 'kg'})
     masts = []
@@ -120,8 +147,16 @@ def build(d, sr, kind, missing):
         xs = nums(speed['values'])
         figures.append({'label': 'Brzina vožnje', 'value': ('do ' if len(set(xs)) > 1 else '') + fmt_num(max(xs)), 'unit': 'km/h'})
     power = rows.get('7.2')
+    motor = rows.get('6.1')
+    battery = rows.get('6.4')
     if power and nums(power['values']):
         figures.append({'label': 'Snaga motora', 'value': span(nums(power['values'])), 'unit': 'kW'})
+    elif motor and nums(motor['values']):
+        figures.append({'label': 'Snaga pogonskog motora', 'value': span(nums(motor['values'])), 'unit': 'kW'})
+    elif battery:
+        volts = [nums([v.split('/')[0]])[0] for v in battery['values'] if v and nums([v.split('/')[0]])]
+        if volts:
+            figures.append({'label': 'Napon baterije', 'value': span(volts), 'unit': 'V'})
     out['figures'] = figures
 
     # one sentence from the facts, the kind, the fuels, the capacity and how many versions
@@ -145,7 +180,7 @@ def build(d, sr, kind, missing):
         name = tr('groups', g['group'], slug)
         bullets = [x for x in (tr('text', b, slug) for b in g.get('bullets', [])) if x]
         if name and bullets:
-            out['characteristics'].append({'group': name, 'bullets': bullets})
+            out['characteristics'].append({'group': name, 'icon': icon_of(g['group']), 'bullets': bullets})
 
     # the full table by its sections, and the short one of the rows a buyer compares
     table = []
@@ -180,6 +215,10 @@ def build(d, sr, kind, missing):
         row = flat.get(no)
         if not row:
             continue
+        if no == '1.5' and category == 'tegljaci':
+            unit = re.sub(r'^[A-Za-z0-9/]+\s*\((.*)\)$', r'\1', row['unit'])
+            compare.append({'label': row['label'], 'unit': unit, 'values': row['values']})
+            continue
         if no == '1.5' and '(t)' in row['unit']:
             vals = [fmt_num(float(v.replace(',', '.')) * 1000) if v and re.fullmatch(r'[\d,]+', v) else v for v in row['values']]
             compare.append({'label': 'Nosivost', 'unit': 'kg', 'values': vals})
@@ -204,7 +243,7 @@ def build(d, sr, kind, missing):
             only = [c for c in cols if c not in na] if na else []
             items.append({'t': t, 'only': only} if only else {'t': t})
         if name and items:
-            equipment.append({'group': name, 'items': items})
+            equipment.append({'group': name, 'icon': icon_of(g['group']), 'items': items})
     out['equipment'] = equipment
     return out
 
@@ -216,10 +255,18 @@ def main():
         only = set(sys.argv[sys.argv.index('--only') + 1].split(','))
         args = [a for a in args if a != sys.argv[sys.argv.index('--only') + 1]]
     ds = Path(args[0]) if args else DS
-    sr = json.loads((APP / 'scripts/specs-sr.json').read_text())
-    sr = {k: ({norm(a): b for a, b in v.items()} if isinstance(v, dict) else v) for k, v in sr.items()}
+    # the Serbian, the first file and every part a helper translated in scripts/sr, a later file never overrides an earlier one
+    sr = {}
+    for f in [APP / 'scripts/specs-sr.json', *sorted((APP / 'scripts/sr').glob('*.json'))]:
+        for k, v in json.loads(f.read_text()).items():
+            if isinstance(v, dict):
+                for a, b in v.items():
+                    if isinstance(b, str) and b.strip():
+                        sr.setdefault(k, {}).setdefault(norm(a), b.strip())
     catalog = json.loads((APP / 'src/shop/catalog.json').read_text())
     kinds = {p['slug']: p['kind'] for p in catalog['products']}
+    cats = {p['slug']: p['category'] for p in catalog['products']}
+    facts = {}
     OUT.mkdir(parents=True, exist_ok=True)
     missing = set()
     written = 0
@@ -228,9 +275,21 @@ def main():
         slug = d.get('slug')
         if not slug or slug not in kinds or not d.get('datasheet') or (only and slug not in only):
             continue
-        spec = build(d, sr, kinds[slug], missing)
+        spec = build(d, sr, kinds[slug], missing, cats[slug])
         (OUT / f'{slug}.json').write_text(json.dumps(spec, ensure_ascii=False, indent=1) + '\n')
         written += 1
+        # the card's two facts from the sheet, Filip's yes of 18 November, the top capacity and the top lift like the old site's cards
+        f = {}
+        for fig in spec['figures']:
+            top = max(float(x.replace('.', '').replace(',', '.')) for x in re.findall(r'\d[\d.]*(?:,\d+)?', fig['value']))
+            if fig['label'] == 'Nosivost':
+                f['kg'] = round(top)
+            if fig['label'] == 'Visina podizanja' and top > 500:
+                f['mm'] = round(top)
+        if f:
+            facts[slug] = f
+    if not only:
+        (APP / 'src/shop/facts.json').write_text(json.dumps(dict(sorted(facts.items())), indent=1) + '\n')
     (ds / 'untranslated.txt').write_text(''.join(sorted(f'{m}\n' for m in missing)))
     print(f'{written} specs written to {OUT.relative_to(APP)}, {len(missing)} strings with no Serbian yet, see {ds / "untranslated.txt"}')
 

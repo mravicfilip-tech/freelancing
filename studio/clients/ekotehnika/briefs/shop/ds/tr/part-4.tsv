@@ -1,0 +1,664 @@
+table	english	series
+text	0.65 kW brushless DC motor (maintenance free)	mv01
+text	1.5 kW three-phase motor for fast and continuous acceleration to top speed, even when towing trailers	p20
+text	12 V socket	e10
+text	1570 h3: 2344 h3: 2844 h3: 3244 h3: 3744 h1: 1915 h2: 150 h1: 2115 h2: 150 h1: 2365 h2: 150 h1: 1665 h2: 150 h4: 3364 h4: 3764/4997 1) h4: 4264 h4: 4021 1)	l-matic-hd
+text	1D barcode reader	l-matic-hd
+text	2) Thin Plate Pure Lead battery	r-matic
+text	24 V / 60 A HF Charger	e10
+text	2D curtain laser in front of the vehicle to detect higher obstacles	r-matic
+text	2D laser protection curtain on the sides for detecting objects above ground level	l-matic-core
+text	2D sensors for detecting charge carriers and charge environments	r-matic-k
+text	3 kW AC drive motor which enables travel speeds up to 12 km / h	e10
+text	3 position hook (front)	p60-do-p80
+text	3.5" LED colour display with steering angle and tilt angle display	e35-do-e50
+text	3.5" multi-functional display	eg25-do-eg35
+text	360-degree safety monitoring to detect people or obstacles in the work area	r-matic
+text	360° safety scanner with automatic speed adjustment	l-matic-ac
+text	3D camera perception for load detection	r-matic
+text	4.5 kW AC drive motor for considerable towing power	p60-do-p80
+text	5.7 kW maintenance free AC hydraulic pump motor	e10
+text	6.5 kW AC motor (maintenance free)	a-5224
+text	7" LED multifunction colour display integrates additional functions such as cameras and Linde Safety Pilot	x35-do-x50
+text	A longer wheelbase, large tires, and vibration-free drive axle enable use in challenging environments	x20-do-x35
+text	AGVs based on robust and well-known Linde MH base vehicles	r-matic
+text	ATEX protection package zone 1/zone 21	e16-do-e20-p
+text	Absent driver switch	ht100-do-ht180-ds
+text	Accessory support	d10-ap
+text	Acoustic and visual signals ensure early warning of potenital issues	k-matic
+text	Acoustic warning indicators	l-matic
+text	Active foot bumper – assistant system for foot protection	d06-do-d10
+text	Add. LED rear light, high	p60-do-p80
+text	Additional emergency buttons	l-matic
+text	Additional hydraulic circuit for attachments	r14-do-r25
+text	Additional sensor (ultrasonic) for enhanced personal protection in front of load arms	r-matic-k
+text	Adjustable PVC seat (operator's weight and size)	e25s-do-e35s-sh
+text	Adjustable backrest	p40-do-p60-c
+text	Adjustable operator's seat with integrated suspension system	e100-do-e180
+text	Advanced hydraulic filter concept – enabling 6000 hour hydraulic oil change interval	h35-do-h50
+text	All round visibility with the ergonomically designed overhead guard	a-5224
+text	All-round view facilitates operation even in narrow environment	r10-do-r16-b
+text	Alloy doors with openable window and door monitoring	x20-do-x35
+text	Alternative cabin widths (900 mm – 1800 mm)	v-modular
+text	Alternative fork lengths for different pallet sizes	a-5224
+text	Analysis of manual handling processes and optimisation of the degree of automation as required for specific customer needs	r-matic-k
+text	Anti-spray mudflaps front	e20-do-e35
+text	Antistatic Fabric Operator's seat – mechanical quick weight adjustment and lordosis support	e14-do-e20
+text	Antistatic guiderollers	a-5224
+text	Antistatic, non-marking tyres	e60-do-e80
+text	Armrest with storage box	h100-do-h180-d
+text	Asymmetrical tiller head for a better loading view when stacking or transporting loads	l10-do-l16-b
+text	Audible reversing alarm	e60-do-e80
+text	Audible warning reverse alarm (85 dB)	ht100-do-ht180-ds
+text	Auto-stop system in the event of traction, steering or lift failure	r10-do-r16-b
+text	Automatic Opportunity Charging Connector	c-matic-i-c-matic-hp
+text	Automatic electro - magnetic parking brake	p60-do-p80
+text	Automatic lifting – up and down	t16-l
+text	Automatic parking brake for preventing the vehicle from rolling unintentionally on slopes	p250-swb
+text	Automatic parking brake guarantees safety on ramps	e60-do-e80
+text	Automatic slowdown at end of lift and reach motion to avoid load instability	r20-do-r25-f
+text	Automatic speed adjustment in curves reduces the risk of overturning	l06-do-l16-ac
+text	Automatic speed reduction when cornering	w20
+text	Automatically engaging parking brake secures the stationary truck	h100-do-h180-d
+text	Auxiliary support frame	v08
+text	Available with lead-acid or lithium-ion battery	eg16-do-eg20
+text	Basic rounded display	n16-do-n25
+text	Battery 4 PzS 560 – 620 Ah	p180
+text	Battery 8 PzS 1120 – 1240 Ah	p350
+text	Battery compartment 2PzS, lateral or vertical change	t14-do-t20
+text	Battery compartment 3 PzS, vertical change	t20-do-t25-ap-n
+text	Battery compartment 4 PzS, lateral change	l14-do-l20-ap
+text	Battery compartment 48V: 5PzS 575/625 Ah or 6PzS 690/750 Ah or 5PzS high 700/775 Ah	e16-do-e20-p
+text	Battery compartment, 2 PzS lateral or vertical change	d06-do-d10
+text	Battery compartment, 2 PzS-B vertical change	d06-do-d10
+text	Battery compartment, L16 – 4PzS SL	l-matic-hd
+text	Battery compartment, Li-ION battery 4.5 kWh (205 Ah)/9.0 kWh (410 Ah) including side plug for opportunity charging	d12-do-d14-ap
+text	Battery compartment, lateral change 3 PzS (300 Ah/375 Ah) and 4 PzS (400 Ah/500 Ah), incl. ergonomic locking lever and metal rollers	p40-do-p60-c
+text	Battery compartment, side change 3 PzS (345 Ah / 465 Ah) and 4 PzS (460 Ah / 620 Ah), including ergonomic lever and metal rollers	n16-do-n25
+text	Battery compartment, vertical change 3 PzS (345 Ah / 375 Ah)	l06-do-l16-ac
+text	Battery connection installed for batteries supplied by Linde	l10-do-l16-b
+text	Battery discharge indicator with LED lights	mt15-c
+text	Battery isolator switch	h100-do-h180-d
+text	Battery rollers – Integrated in truck for battery change	e10
+text	Best visibility through asymmetric, nested mast profiles on standard, duplex, triplex mast	x20-do-x35
+text	Blue Spot™ / TruckSpot safety light	r14-do-r20-g
+text	BlueSpot and TruckSpot – visual drive path warning for pedestrians and other operators	xi16-do-xi20-p
+text	BlueSpot – optical drive path warning for pedestrians and other operators	t20-do-t25-ap-n
+text	Bluetooth USB stick	t20-do-t25-ap-n
+text	Buddy seat, PVC covered	h100-do-h180-d
+text	Built-in safety with monitoring system that stops the truck upon traction, steering or lift failure	r14-do-r20-g
+text	Buzzer – preferable where low noise emission required	d06-do-d10
+text	CAN bus connection for easy access to all vehicle data via diagnostic connector	v-modular
+text	CAN bus structure for easy access to truck data	l10-do-l16-b
+text	Cabin doors with sliding window	h50-do-h80
+text	Camera and monitor fitted to side (not available in combination with rear-view after mirror)	r20-do-r25-f
+text	Capacity up to 1400 kg and storage height up to 3.8 metres	l-matic-ac
+text	Castor wheels, spring suspended	t20-do-t25-ap-n
+text	Central 24/7 provision of standard and ATEX spare parts	e14-do-e20
+text	Central readout of all vehicle data via service interface (laptop)	r20-do-r25-f
+text	Certification and documentation according to ATEX 2014/34/EU and applicable EU norms ensures legal compliance	t14-do-t20
+text	Certification of entire trucks for zone 1/21, and not just the individual electrical assemblies ensures maximum level of safety	t14-do-t20
+text	Charger	r-matic-k
+text	Charging contacts for automated opportunity charging	l-matic-ac
+text	Chassis mounted hourmeter	h100-do-h180-d
+text	Chill store option - down to +1 °C	r20-do-r25-f
+text	Choice of lithium-ion or lead acid batteries	e60-do-e80
+text	Clipboard	r20-do-r25-f
+text	Clipboard/scanner support with 24 V power supply	l10-do-l12-b-as
+text	Closed shoulder CS 20 tyres	xi10-do-xi20
+text	Cold store protection to -30°C	r14-do-r25
+text	Cold store version	v-modular
+text	Coldstore protection -35°C (in/out)	d06-do-d10
+text	Colour LED display with indicators for steering angle, tilt angle and remaining travel	e60-do-e80
+text	Colour touch screen display (7")	e100-do-e180
+text	ComBox 1)	r-matic
+text	Comfort operator's seat with pneumatic suspension and active climate control	e100-do-e180
+text	Comfortable seats (heated, tilt adjustment)	a-5224
+text	Compact chassis and small turning circle ensure best manoeuvrability in confined spaces	mt15-c
+text	Compact design and small stacking aisle width for precise operation	l10-do-l12-b-as
+text	Compact design for maximum manoeuvrability in confined spaces	t20-do-t25-ap-n
+text	Compact pedestrian double stacker for transporting goods over short to medium distances	d06-do-d10
+text	Complete lighting package (including front and rear LED, direction indicators, working, brake and reversing lights)	p40-do-p60-c
+text	Comprehensive 3.5 inch display optimally positioned for access to all relevant truck information at a glance	x35-do-x50
+text	Comprehensive safety thanks to warning sounds, flashing lights and Linde BlueSpot	l-matic
+text	Condition Monitoring of ATEX relevant safety values via Linde EX-Monitoring App	e16-do-e20-p
+text	Connect Access Control PIN	h100-do-h180-d
+text	Connect Operating Hours	ht100-do-ht180-ds
+text	Constant monitoring of ATEX relevant safety values and wear	l06-do-l16-ac
+text	Constant speed when driving downhill for safety on ramps	w30
+text	Contour navigation enables quick adaptation to new working environments	l-matic
+text	Control via intelligent contour navigation without additional infrastructure	k-matic
+text	Crash detection	eg25-do-eg35
+text	Creep speed enables precise, convenient load handling	d12-do-d14-ap
+text	Creep speed function for precise manoeuvring in confined areas	d10-ap
+text	Creep speed – for operation with tiller in vertical position	t16-l
+text	DAB+ radio with MP3 connection and Bluetooth ‘hands-free' support	h35-do-h50
+text	DIN A4 illuminated clipboad	x20-do-x35
+text	Damped platform option	n16-do-n25
+text	Data Transmission Wifi	x20-do-x35
+text	Data transmission WiFi	l10-do-l12-b-as
+text	Dead man switch for maximum safety	d10-ap
+text	Deluxe Super Comfort with air suspension and heating	p60-do-p80
+text	Dense service network with certified technicians	e14-do-e20
+text	Deutz Diesel Engine EU 2016 / 1628 Stage 5*	h20-do-h35
+text	Diesel engine adjusts torque to the required effort	h100-do-h180-d
+text	Different operator's seat options: Heated seats, air suspension, active seat cushion ventilation, fore/aft suspension	xi10-do-xi20
+text	Different speed reductions and aisle stop functions	a-5224
+text	Digital twin for safe software and hardware maintenance	l-matic-ac
+text	Din A4 illuminated clipboard	h20-do-h35
+text	Directional stability and maneuverability for safe, fast load transport even in tight spaces	w30
+text	Door locked sensor to make sure operators drive safely inside the cabin	w20
+text	Double castor wheels, greasable	d12-do-d14-ap
+text	Double pedal control – stepless acceleration and fast reversing	e20-do-e35
+text	Downtime minimized thanks to predictive maintenance	l-matic-ac
+text	Drive wheel High grip	p40-do-p60-c
+text	Drive wheel heavy duty, polyurethane non-marking	t20-do-t25-sp
+text	Drive wheel, heavy duty	t20-do-t25-ap-n
+text	Drive wheel: heavy duty, high grip	l10-do-l12-b-as
+text	Drive wheel: solid rubber, electrically conductive	l10-do-l16-b
+text	Drive wheels with large steering angle for a tight turning radius	w04
+text	Drive wheels, polyurethane	d12-do-d14-ap
+text	Driver display shows all important truck information to the driver	eg16-do-eg20
+text	Driving dynamics can be individually adjusted to the exact application requirements	e60-do-e80
+text	Dual mode allows for manual control as needed	r-matic-k
+text	Duplex masts (full free lift), 2580 − 7000 mm lift height (model specific)	h100-do-h180-d
+text	Dynamic Reach Control	a-5224
+text	EX monitoring app from Linde enables quick and efficient diagnosis of values relevant to ATEX as well as preventive maintenance for high level of availability	l10-do-l16-b
+text	Easily accessible components for fast, efficient maintenance	l10-do-l12-b-as
+text	Easily accessible controls enable comfortable seating position	ht100-do-ht180-ds
+text	Easily removable cover to engine compartment for easy access to central components	n20-xl
+text	Easy access to all relevant components thanks to service-friendly design	v-modular
+text	Easy access to main components	eg16-do-eg20
+text	Easy and quick access to battery thanks to 180°-opening battery door and battery hood	eg16-do-eg20
+text	Easy cleaning of the safety scanner	n16-do-n25
+text	Easy integration into existing warehouse systems	l-matic-ac
+text	Easy to operate with one hand, even when wearing gloves	l10-do-l16-b
+text	Effective goods handling due to simultaneous transport of three pallets (3.3 t)	t33-r-hp
+text	Efficient parking brake prevents the pallet truck from rolling away on loading ramps or slopes	mt15-c
+text	Effortless load handling over gradients up to 6 percent thanks to electric drive	mt15-c
+text	Effortless, precise maneuverability thanks to the small turning circle, compact chassis, and smooth power steering	w30
+text	Electric heating – 4 heat settings and 8 air nozzles for targeted adjustment as required	xi16-do-xi20-p
+text	Electric pedestrian straddle stacker (AS) for loads up to 1.2 tons and lifting heights up to 4.7 meters	l10-do-l12-b-as
+text	Electric. socket 12 V (13-pole)	w20
+text	Electrical seat beld monitoring – Visual and acoustic feedback	x20-do-x35
+text	Electrical seatbelt monitoring – visual and acoustic feedback	eg25-do-eg35
+text	Electrical socket USB 5V	t20-do-t25-sp
+text	Electrically adjustable storage tray as standard	mv01
+text	Electrically monitored side barriers for safe working with the cabin raised	v-modular
+text	Electromagnetic brake	w04
+text	Electromagnetic braking system	l10-do-l16-b
+text	Electromagnetic emergency brake acting proportionally to the load weight	t20-do-t25-ap-n
+text	Electronic truck diagnostics simplify maintenance	r10-do-r16-b
+text	Email updates on performance data of automated guided vehicles (AGVs)	k-matic
+text	Emergency stop buttons on all sides (left and right corners at both front and rear)	c-matic-i-c-matic-hp
+text	Enables 24/7 operation through automated charging	l-matic-hd
+text	Engine air filter including safety element	h50-do-h80
+text	Enhanced safety through independent all-wheel braking systems as standard	r10-do-r16-b
+text	Ergonomic and intuitive operating concept maximizes operator comfort	h20-do-h35
+text	Ergonomic and safe on / off access to the truck thanks to low non-slip step and handles on the A-pillar and engine cover	x35-do-x50
+text	Ergonomic and safe truck access thanks to a low entry step and grab handle bar on A-pillar	eg16-do-eg20
+text	Ergonomic and save truck access due to a low entry step and handle bar at a-pillar and bonnet	h20-do-h35
+text	Ergonomic control panel that can be mounted on the mast side, load side or both sides	v-modular
+text	Ergonomic location of all controls for efficient operation	t20-do-t25-ap-n
+text	Ergonomic operator´s compartment for high operating comfort and fatigue-free work	e10
+text	Ergonomic tiller head for intuitive control	d10-ap
+text	Ergonomic two-handled steering unit for easy and safe steering movements	w04
+text	Ergonomically shaped tiller head	t14-do-t20
+text	Excellent all-round visibility guarantees maximum safety in operation	e100-do-e180
+text	Excellent visibility through open-centre mast aids accurate load handling	d12-do-d14-ap
+text	Explosion protection according to ATEX 2014/34/EU for zones 1/21 and zones 2/22	t14-do-t20
+text	External Li-ION 10 A charger	mt15-c
+text	External rear-view mirrors	w20
+text	Extra-large service openings facilitate maintenance	h35-do-h50
+text	Exxtral ® motor and battery cover	l14-do-l20-ap
+text	Fast transport of goods even over long distances thanks to travel speeds of up to 20 km / h	t33-r-hp
+text	Fatigue-free working	e25s-do-e35s-sh
+text	Five easy-to-reach emergency stop switches for an immediate stop	r-matic-k
+text	Flashing / Rotating Beacon on / below overhead guard	p180
+text	Flashing warning light on overhead guard	r20-do-r25-f
+text	Flexible configuration thanks to varied selection of masts and lifting capacities	r-matic-k
+text	Flexible, simple charging options thanks to convenient rear charging	xi10-do-xi20
+text	Foldable operator's platform to use the vehicle as a manoeuvrable pedestrian or ride-on model (AP version)	t20-do-t25-sp
+text	Folding side guards	d12-do-d14-ap
+text	Folding stand-on platform with side guards	d10-ap
+text	For light to medium-duty applications in dispatch, warehouse or production areas	l10-do-l12-b-as
+text	Fork carriage length: 2400 mm	n20-xl
+text	Fork carriage widths: 3000 mm, 3500 mm, 4000 mm, 4500 mm	e100-do-e180
+text	Fork carriage: 800 mm ISO2B	l06-do-l16-ac
+text	Fork dimensions 570 / 3590 / 200	t33-r-hp
+text	Fork length, l = 1000 mm	e25s-do-e35s-sh
+text	Fork length: 1150 mm with overhang 205 mm	t16-l
+text	Fork length: 950 mm	l10-do-l16-b
+text	Fork tilt 2/4°	r-matic-k
+text	Fork widths: 526 mm, 546 mm, 566 mm, 686 mm	t14-do-t20
+text	Forks 1100 / 90 × 50 mm VA, coated in stainless steel	l06-do-l16-ac
+text	Forks dimensions 560 / 1150 / 60 mm	v08
+text	Forks: ISO2B, length 1000mm	l10-do-l12-b-as
+text	Forward and reverse camera systems	e100-do-e180
+text	Four independent braking systems. Regenerative and counter current braking, holding brake control with automatic parking brake and all- wheel braking system	r14-do-r25
+text	Four separate braking systems for efficient braking in all operating situations	p60-do-p80
+text	Free maintenance braking system	p350
+text	Front BlueSpot ®	mv01
+text	Front accessory support	p40-do-p60-c
+text	Front anti-collision guard, rubber - low position	v08
+text	Front anti-collision steel guard high position with low rubber protection	v08
+text	Front collision protection – steel panel covering front of tractor	p40-do-p60-c
+text	Front feet protection	n20-xl
+text	Front shrink wrap holder	v08
+text	Full cabin heating system	eg16-do-eg20
+text	Fully adjustable air suspension seat	r14-do-r20-g
+text	Fully integrated 90 volt Li-ION battery	xi16-do-xi20-p
+text	Fully integrated explosion protection measures maintain optimum visibility and spaciousness of the driver's cab	e14-do-e20
+text	Fully integrated heater	e60-do-e80
+text	Fully suspended operator compartment	n20-xl
+text	Fully suspended operator's compartment	p40-do-p60-c
+text	Fully suspended stand-on platform for low-vibration operation	t20-do-t25-ap-n
+text	Generous armoured glass roof available as an option for maximum overhead visibility	xi10-do-xi20
+text	Good all-round view and solid steel chassis for optimum protection for the operator and the work area	p60-do-p80
+text	Greater efﬁciency through low cabin access and height-adjustable operator seat	r10-do-r16-b
+text	H20-H35 CNG H20 - H35 D H20 - H35 T H20-H35 CNG	h20-do-h35
+text	Headlight, tail light, braking light and turning indicators	w04
+text	Heater/Climate control	e100-do-e180
+text	Height adjustable Linde Steering Wheel	n16-do-n25
+text	Height adjustable base plate	t33-r-hp
+text	Height-adjustable Linde steering wheel provides intuitive and precise control	p40-do-p60-c
+text	Height-adjustable steering unit	t20-do-t25-sp
+text	High Vision armoured glass roof provides best visibility	r10-do-r16-b
+text	High handling performance thanks to high-performance electric motors and constant speed on steep ramps	w30
+text	High maneuverability simplifies working in confined spaces	l06-do-l16-ac
+text	High mounted tilt cylinders with maintenance-free bearings increase capacity at height	e14-do-e20
+text	High operating speeds, even when fully loaded	t16-l
+text	High reliability thanks to proven Linde technology	l-matic-hd-k
+text	High strength mast profile	e25s-do-e35s-sh
+text	High-performance 48 V batteries from 420 Ah to 930 Ah	r20-do-r25-f
+text	Highly maneuverable through short wheelbase, compact chassis and 180° steering	r10-do-r16-b
+text	Hitchless with screws	w04
+text	Horn	p20
+text	Hydraulic accumulator	e100-do-e180
+text	Hydraulic castor wheels, electronically controlled	d10-ap
+text	Hydraulic oil change only after 6000 operating hours	h50-do-h80
+text	Hydraulically suspended seat reduces physical strain	h100-do-h180-d
+text	Hydrostatic drive, dual pedal control and Linde Load Control enable efficient load handling	h20-do-h35
+text	ISO forks ideal for handling loads with low under-clearance	l10-do-l12-b-as
+text	Ideal for ground transport and storage/retrieval in wide-aisled warehouses	l-matic-ac
+text	Ideal for storage and removal in high rack warehouses	r10-do-r16-b
+text	Ideal weight distribution ensures stable driving characteristics	e10
+text	Important vehicle components are easily accessible	v08
+text	In 'walk with me' mode, the operator can choose from three different positions that activate the vehicle's onward travel to provide the ideal walking path to the pallet	n16-do-n25
+text	Inching control (forward/backward)	p40-do-p60-c
+text	Increased ground clearance	p20
+text	Increased workplace safety through optional warning lights such as Linde BlueSpot™ and Linde TruckSpot™	e10
+text	Individual design of the driver's cab with many storage areas	n20-xl
+text	Individual lever system	eg25-do-eg35
+text	Individual, automated solutions with dynamic simulation and the option to run a demo in a real process environment on site	r-matic-k
+text	Initial lift	l14-do-l16-sp
+text	Initial lifting control	n20-xl
+text	Innovative Linde e-driver control perfectly suited for the 45° operation	t20-do-t25-sp
+text	Innovative castor wheels for optimum traction and stability	t20-do-t25-ap-n
+text	Innovative decoupling concept for lowest human vibration	x20-do-x35
+text	Innovative decoupling concept with ring bearings for low human vibrations	xi10-do-xi20
+text	Integral fork positioner	h100-do-h180-d
+text	Integral roller-guided side shift carriage retains full truck capacity	e14-do-e20
+text	Integrated 'View' fork positioner for high residual capacities and optimised visibility	h35-do-h50
+text	Integrated charger for lead acid and Li-ION batteries	v08
+text	Integrated fork positioner "View" for high residual capacities and optimized visibility	h20-do-h35
+text	Integrated fork-positioning carriage "VIEW" for high residual load capacity and optimum visibility	x35-do-x50
+text	Integrated side shift	e25s-do-e35s-sh
+text	Intelligent and scalable software solutions give the customer optimal control over their processes	l-matic-hd
+text	Intelligent software control with efficient orientation via QR codes	c-matic-i-c-matic-hp
+text	Interfaces to existing WMS and ERP systems	l-matic
+text	Interfaces to infrastructure: doors, conveyors, etc.	l-matic
+text	Interior light	h50-do-h80
+text	Internal rear-view mirror	h100-do-h180-d
+text	Intuitive operating controls, excellent visibility and ergonomic design ensures a high level of comfort and safety and guarantees productive load handling	x35-do-x50
+text	Intuitive, and ergonomic operating concept minimises physical strain on the operator	x35-do-x50
+text	Intuitively operable Linde Steering Wheel with meaningful symbols indicating key functions	n20-xl
+text	Key switch	p40-do-p60-c
+text	L-head or telescopic forks	a-5224
+text	LED headlights and Linde BlueSpot™ improve vehicle visibility	v08
+text	LED working lights at over head guard	r10-do-r16-b
+text	LSC Standard	a-5224
+text	Laptop overview of truck data and individual adjustment of performance parameters to suit customer requirements	r14-do-r20-g
+text	Large glass surfaces and curved windscreen guarantee good visibility	h100-do-h180-d
+text	Large step in plate with anti-slip design	e25s-do-e35s-sh
+text	Laser-based safety system detects people and obstacles	k-matic
+text	Lateral battery change 2 Pz-B	p20
+text	Lateral or vertical battery change for fast replacement	w20
+text	Lead acid batteries	l10-do-l12-b-as
+text	Lead-acid batteries offer a highly cost-effective power solution	e100-do-e180
+text	Lead-acid on-board charger 60 A	p40-do-p60-c
+text	Li-ION and lead-acid technology available with different battery capacities depending on the model	l14-do-l16-sp
+text	Li-ION battery 24 V/135 Ah	mv01
+text	Li-ION plug, laterally or vertically mounted	d06-do-d10
+text	Li-ION technology available – different battery capacities with front, laterally or vertically mounted opportunity charging plug	d06-do-d10
+text	Lift end stop sensor	d06-do-d10
+text	Lift height preselection	v-modular
+text	Lift limit switch – 1x or 2x lift stops	l10-do-l12-b-as
+text	Lift mast control via handle ensures effortless load handling	l06-do-l16-ac
+text	Lifting height display and high residual load capacity make goods transport safer	r10-do-r16-b
+text	Lifting platform up to 3 meters	mv01
+text	Light steering and comfortable operation aids physically demanding tasks	t14-do-t20
+text	Lighting systems (bulb or LED)	p60-do-p80
+text	Lightning: LED Stripes	x20-do-x35
+text	Linde BlueSpot TM - optical warning signal for pedestrians and drivers	e20-do-e35
+text	Linde BlueSpot – optical warning signal for pedestrians and other co-workers	l-matic
+text	Linde BlueSpot – visual warning of truck presence	d06-do-d10
+text	Linde BlueSpot – visual warning signal for pedestrians and other operators	k-matic
+text	Linde Curve Assist	r14-do-r20-g
+text	Linde Curve Assist automatic speed reduction with steering angle	r20-do-r25-f
+text	Linde Curve Assist reduces speed in relation to the steering angle when cornering	x20-do-x35
+text	Linde Curve Assist – automatic driving speed reduction when cornering	eg25-do-eg35
+text	Linde Digital Control System (LDC)	r10-do-r16-b
+text	Linde EX-Monitoring App for quick and efficient diagnosis of ATEX-relevant values	e35-do-e50
+text	Linde Ex-Monitoring App ensures quick and efficient diagnosis of ATEX-relevant values and preventive maintenance thus increasing truck availability	e16-do-e20-p
+text	Linde Hydrostatic Drive – for high productivity and low fuel consumption	h35-do-h50
+text	Linde Li-ION truck version and Li-ION batteries	r14-do-r25
+text	Linde Load Assist – active intervention in forward tilt and lift speed increases safety at high lift heights	e35-do-e50
+text	Linde Load Control enables fast and easy control of lift mast movements	e60-do-e80
+text	Linde Load Control for all lift mast functions	e100-do-e180
+text	Linde Load Control provides precise and safe operation	e60-do-e80
+text	Linde Load Control – central levers fully integrated in the armrest of precise control of all hydraulic functions	x20-do-x35
+text	Linde Load Management Advanced	l14-do-l20-ap
+text	Linde Load Weight Indicator (±1000 kg)	e100-do-e180
+text	Linde OptiLift mast control ensures precise operation for maximum work throughput	d12-do-d14-ap
+text	Linde Pendulum Axle	eg25-do-eg35
+text	Linde Pre-Op Check App – personalised daily check protocol for operational readiness	t20-do-t25-ap
+text	Linde Safety Guard – audible truck to truck warning with deceleration or speed zones	e16-do-e20-p
+text	Linde Safety Guard – truck-to-truck and truck-to-pedestrian warning	h35-do-h50
+text	Linde Safety Pilot – load-dependent travel and lifting speed intervention plus additional functions	e14-do-e20
+text	Linde Speed Management option for increased performance in double stacking mode	d10-ap
+text	Linde Truck Call App – coordination of transport jobs	e60-do-e80
+text	Linde Vertilight – extensive illumination of racking, load and forks	xi16-do-xi20-p
+text	Linde batteries and charger	r14-do-r25
+text	Linde combi steering axle – optimum manoeuvrability in the tightest spaces	e35-do-e50
+text	Linde connect an:usage analysis – digital usage analysis	d12-do-d14-ap
+text	Linde connect: crash detection	e20-do-e35
+text	Linde connect:ac access control – via RFID	e100-do-e180
+text	Linde connect:ac – Access control RFID	e10
+text	Linde connect:cloud Basic Package Network – provides core fleet management features for network partners	v-modular
+text	Linde connect:desk an – Provides fleet utilization and availability data	a-5224
+text	Linde connect:desk – local fleet management with various functional modules	d10-ap
+text	Linde connect:dt crash detection – electronic damage monitor	t20-do-t25-ap-n
+text	Linde curve assist reducing speed when cornering	w20
+text	Linde high frequency AC traction controller is sealed against the ingress of dust and water	p60-do-p80
+text	Linde steering wheel with integrated driving and lifting functions enables optimum vehicle control	v08
+text	Linde twin drive pedals to control truck travel	h100-do-h180-d
+text	Load arms length: 1200 mm	n20-xl
+text	Load backrest h = 700 mm, or h = 900 mm, from top of forks	d06-do-d10
+text	Load backrest h=1800 mm – from the ground	t14-do-t20
+text	Load capacity up to 1.2 tonnes, maximum lifting height up to 1.84 metres (storage height: 1.78 metres)	l-matic-core
+text	Load damping for high degree of driving comfort and load protection	e35-do-e50
+text	Load detection (detection of stacked load carriers during loading)	r-matic-k
+text	Load pick-up at transfer stations which cannot be accessed from below	l-matic
+text	Load weight and lift height display for precise handling	r20-do-r25-f
+text	Load weight indicator plus function	e60-do-e80
+text	Load wheels cushion rubber, non marking	p40-do-p60-c
+text	Log in PIN code	n16-do-n25
+text	Long forks enable the simultaneous transport of two pallets with a total weight of up to 2.0 t on initial lift	n20-xl
+text	Long maintenance intervals for high availability	p60-do-p80
+text	Long tiller and precise power steering for optimum handling and maneuverability	l06-do-l16-ac
+text	Long tiller with low mounting point	l14-do-l20-ap
+text	Long, low-mounted tiller ensures sufficient safety clearance between driver and chassis	l06-do-l16-ac
+text	Longer service interval for hydraulic oil and hydraulic oil filter change of 3000 h or 3 years	eg16-do-eg20
+text	Low centre of gravity and automatic speed reduction in corners reduces the risk of tipping over	x35-do-x50
+text	Low entry vibration-free cabin isolated from chassis prevents fatigue	r14-do-r20-g
+text	Low maintenance design ensures high truck availability	h100-do-h180-d
+text	Low speed supplementary lift low	v08
+text	Low traction speed when initial lift is lowered	d10-ap
+text	Low-mounted high level safety scanner	n16-do-n25
+text	MATIC:move+ (comprehensive system solutions)	r-matic-k
+text	Maintenance-free 2.3 kW AC motor guarantees high availability	d12-do-d14-ap
+text	Maintenance-free AC traction motor for EX area	l10-do-l16-b
+text	Maintenance-free motor for maximum availability	t20-do-t25-ap-n
+text	Maintenance-free three-phase AC technology and adjustment-free brakes reduce service costs	n20-xl
+text	Maintenance-free, delete- and water-resistant three-phase motor for high availability and reduced servicing requirements	w04
+text	Manoeuvrable and sturdy four-wheel version (P) with combi steer or articulating steer axle	xi16-do-xi20-p
+text	Manual fork carriage system	h100-do-h180-d
+text	Manual or hydraulically adaptable forks	a-5224
+text	Mast or load-side controls	v-modular
+text	Mast protection, mesh	d06-do-d10
+text	Mast protection: mesh	l14-do-l16-sp
+text	Mast stop landing (300 mm)	n20-xl
+text	Maximum operating speed limitation (8 or 10 km/h)	l14-do-l16-sp
+text	Maximum speed without load of 20 km/h for fast empty runs	p60-do-p80
+text	Metal battery cover	t16-l
+text	Metallic battery compartment cover for all zones	t14-do-t20
+text	Minimized fuel consumption reduces operating costs	h20-do-h35
+text	Mobile personal safety equipment (PSE) detects people or obstacles on the driveway and stops the vehicle within the narrow aisle	v-modular
+text	Model / Equipment H100 − H180	h100-do-h180-d
+text	Model / Equipment P60 P80	p60-do-p80
+text	Model / Equipment W20 W30	w20
+text	Model/Equipment EG16 – EG20	eg16-do-eg20
+text	Modern CAN bus connection for efficient troubleshooting	r20-do-r25-f
+text	Modular assemblies allow for quick replacement, shortening downtime during repairs	x20-do-x35
+text	Modular design with numerous options to optimally tailor the vehicle to on-site requirements	v-modular
+text	Motion Detection - registers movements in the back of the truck and prohibits the driving backwards	x20-do-x35
+text	Multi purpose full graphic color display	a-5224
+text	Multi-function display for easy access to truck information	t20-do-t25-ap-n
+text	Multifunction colour display	r20-do-r25-f
+text	Multifunction coloured display with hour meter, maintenance indication, battery discharge indicator, internal fault code indication, selected drive direction and actual steering wheel position	w30
+text	Multifunction display – hour meter, maintenance indication, battery discharge indicator and internal fault code indication	t16-l
+text	Multifunction lever – effortless control and increased ease of use	xi16-do-xi20-p
+text	Multiple emergency stop buttons for rapid hazard prevention	k-matic
+text	Narrow mast profiles, A-pillar and roof designed for provide optimum visibility of load and surroundings	x35-do-x50
+text	Natural feature navigation	l-matic
+text	Need-based engine speed ensures fuel savings	h100-do-h180-d
+text	Non-contact sensors rarely need to be replaced	v08
+text	Numerous optional assistance systems for additional protection	xi16-do-xi20-p
+text	Oil-immersed, multi-disc brakes acting on both front wheels	eg25-do-eg35
+text	On-board charger for lead-acid and Li-ION batteries	t20-do-t25-ap-n
+text	One Linde MH contact person for the entire process from the first contact to the life cycle phase	r-matic
+text	Open cabin with armoured glass roof	e100-do-e180
+text	Operation without changing the hand position reduces strain on the operator	e10
+text	Operator place foot area heat	t33-r-hp
+text	Operator's seat – fast, easy mechanical weight adjustment	xi16-do-xi20-p
+text	Operator's seat – swivelling seat	xi16-do-xi20-p
+text	Operator‘s compartment decoupled from chassis and drive axle equipped with coil spring and damping system that protects from any vibrations	p250-swb
+text	OptiLift fully proportional lifting function	d06-do-d10
+text	Optimal safety in the event of a collision thanks to optional impact protection integrated at the drive end	t33-r-hp
+text	Optimised design provides excellent visibility in all directions	h35-do-h50
+text	Optimized design provides outstanding visibility in all directions	e10
+text	Optimum control concept for precise and fatigue-free operation	e10
+text	Optimum stability due to innovative castor wheels	t20-do-t25-ap-n
+text	Optimum visibility due to nested mast profiles on standard and triplex masts	h50-do-h80
+text	Option to choose between lead-acid and Li-ION batteries with optional quick-charge solution	r-matic-k
+text	Optional Linde Steer Control operating concept with joystick or mini wheel reduces physical strain	xi10-do-xi20
+text	Optional barcode scanner for precise tracking of goods	k-matic
+text	Optional equipment e.g. cameras, BlueSpots and LED warning lines increase safety around the truck	e100-do-e180
+text	Optional lane warning device Linde BlueSpot™ enhances safety by making the forklift visible with an LED spot	a-5224
+text	Optional onboard charger provides flexible opportunity charging	xi16-do-xi20-p
+text	Optional second dual-command control lever for effortless reverse driving	e10
+text	Optional tilt barrier for safe and comfortable picking from the rack	v-modular
+text	Orange lap type seat belt	ht100-do-ht180-ds
+text	Outstanding manoeuvrability thanks to twin motor front-wheel drive and combi steer axle	e35-do-e50
+text	Overhang sensors	r-matic
+text	Overhead guard add-ons for front screen, top and rear window	e100-do-e180
+text	Overhead guard for optimum head clearance	h35-do-h50
+text	Overhead tilt cylinder and warp-resistant mast design ensure safe load handling	e20-do-e35
+text	Overrach facility of forks up to 55 mm	a-5224
+text	PIN access	l10-do-l16-b
+text	Pallet cage detection	l-matic-core
+text	Pallet stop ensures optimal positioning of pallets	d12-do-d14-ap
+text	Passive protection concept enables zone 2 / 22 trucks to operate in explosive atmospheres, no shut-down required	e20-do-e35
+text	Pedestrian mast lift control	v08
+text	Perfect for the varying requirements of combined indoor and outdoor applications	r14-do-r20-g
+text	Personal safety equipment (PSE)	a-5224
+text	Pin code access	a-5224
+text	Pneumatic Tyres	h20-do-h35
+text	Polycarbonate mast protection	l-matic-core
+text	Polyurethane load wheels	l06-do-l16-ac
+text	Power and precision ensure increased handling performance	h100-do-h180-d
+text	Power setting efficiency, economy, performance	x20-do-x35
+text	Power-assisted steering	n16-do-n25
+text	Powerful DC motor ensures a top speed of up to 6.5 km/h	mv01
+text	Powerful all-electric forklift combining high performance with zero emissions	e100-do-e180
+text	Powerful drive ensures maximum handling performance	ht100-do-ht180-ds
+text	Powerful electric motors for a high towing capacity of up to 35 tons at top speeds of up to 25 kilometers per hour	p120
+text	Powerful movement thanks to two reliable AC drive motors (48 V)	t33-r-hp
+text	Pre-Operation Check – customisable daily inspection log to check the readiness of the truck for operation	x35-do-x50
+text	Precise and fast handling increases throughput	ht100-do-ht180-ds
+text	Precise operation through individually adjustable steering resistance and Linde Load Control	r14-do-r20-g
+text	Preparation for data terminal	t33-r-hp
+text	Project management and commissioning according to Linde standards	r-matic
+text	Proportional speed control – speed dependent on tiller angle	l10-do-l12-b-as
+text	Protection -10°	w04
+text	Protection of the operator for instance in narrow aisles thanks to shoulder-protection frame	r14-do-r20-g
+text	Protective roof against falling loads to protect the driver	e10
+text	QR code load table identification	c-matic-i-c-matic-hp
+text	Quick charge for battery 48 V	a-5224
+text	Rack Protection Sensor	r14-do-r25
+text	Radio Data Terminal holster	r20-do-r25-f
+text	Radio with compact disc player and speakers	ht100-do-ht180-ds
+text	Radio, incl. DAB+, MP3 player and Bluetooth hands-free kit	x35-do-x50
+text	Range of seating options, by heating, air suspension, active seat ventilation, longitudinal suspension	e60-do-e80
+text	Reading lamp	t33-r-hp
+text	Rear flashing beacon	mv01
+text	Rear multi - position towing coupling	p60-do-p80
+text	Rearview mirror	v-modular
+text	Red warning lines in direction of travel – light projects red markings in direction of travel	l-matic-hd
+text	Reduced downtime due to shorter service and maintenance periods	e10
+text	Regenerative electric braking as accelerator released	p60-do-p80
+text	Reinforced Linde forks – easily adjustable and long-lasting	eg25-do-eg35
+text	Reinforced Linde forks – easy to adjust and long service life	h50-do-h80
+text	Reliable availability of spare parts	l-matic-ac
+text	Remote diagnostics and predictive maintenance through data analysis reduce downtime	xi16-do-xi20-p
+text	Removal of the A-pillar results in visibility-optimised manoeuvring and loading	xi10-do-xi20
+text	Restraint systems (different options)	x20-do-x35
+text	Reverse Assist camera – camera-based person detection for avoiding accidents	xi10-do-xi20
+text	Road lighting LED	p60-do-p80
+text	Robust chassis and reinforced forks for transporting loads up to two tons	t14-do-t20
+text	Robust construction provides for long maintenance intervals	ht100-do-ht180-ds
+text	Robust design reduces maintenance costs	l-matic
+text	Robust motor ensures service intervals − of up to 1000 hours	ht100-do-ht180-ds
+text	Robust, temperature monitored AC motor designed for a long service life	t14-do-t20
+text	Roller-guided integral side shift carriage provides full nominal load capacity	e35-do-e50
+text	Rotating operator‘s seat (10° or 17° to the right)	e100-do-e180
+text	Routing and job allocation via control software	l-matic-hd-k
+text	SE-SIT non marking	w30
+text	Safe operation thanks to outstanding visibility and wide range of ATEX-certified safety options	e35-do-e50
+text	Safety bumper around the vehicle (front, side, rear)	c-matic-i-c-matic-hp
+text	Safety field kit 1250 × 1250 mm (standard load carrier for longitudinal and lateral transport)	r-matic-k
+text	Safety fields for standard load carrier, longitudinal transport*	l-matic-core
+text	Safety switch on tiller head	mt15-c
+text	Scanner support and clipboard	l14-do-l16-sp
+text	Seamless interaction with conveyor technology and transfer stations	k-matic
+text	Seat-actuated traction interlock	r10-do-r16-b
+text	Self-centering power steering keeps the vehicle on a straight track	v08
+text	Semi-automatic operation is deactivated as soon as the operator drives the vehicle	n16-do-n25
+text	Sensor-monitored controls and dead man's switch ensure maximum safety during vehicle operation	v-modular
+text	Service components are easily accessible	t33-r-hp
+text	Several modular cabin versions like sun protection, roof & windows, flexi doors, full metal doors, cabin heating	p60-do-p80
+text	Shrink wrap holder	p40-do-p60-c
+text	Side battery exchange, 48V circuit	p60-do-p80
+text	Side safety scanner for 360° safety	l-matic
+text	Side shift	l-matic
+text	Simple and intuitive steering for precise and efficient operation	e10
+text	Simplex mast	l10-do-l16-b
+text	Single accelerator pedal	r10-do-r16-b
+text	Single castor wheel polyurethane	v08
+text	Single drive pedal with direction lever on armrest	e25s-do-e35s-sh
+text	Single handed operation of all driving and lifting functions for quick, easy transportation	d12-do-d14-ap
+text	Single load wheels polyurethane (splitted)	v08
+text	Single pedal control with direction selection switch in armrest	e100-do-e180
+text	Single pedal control – smooth acceleration and change of travel direction via switch	e14-do-e20
+text	Single point of contact at Linde MH, from initial contact to project implementation and commissioning	l-matic-hd-k
+text	Small diameter steering wheel	e25s-do-e35s-sh
+text	Smart bumper and low chassis prevent foot injuries	t14-do-t20
+text	Smooth, precise control of traction and hydraulic functions thanks to Linde Digital Control	r10-do-r16-b
+text	Soft landing of forks allows gentle lowering of the load	l10-do-l12-b-as
+text	Software solutions, such as MATIC:move and MATIC:move+ in particular, enable rapid commissioning, flexible customization, scalability, and optimal process control	r-matic-k
+text	Spacious 'comfort' overhead guard for optimum head clearance	e60-do-e80
+text	Spacious damped cabin for increased driving comfort	p180
+text	Spacious operator workstation with more room for the head and feet	xi10-do-xi20
+text	Spacious storage compartment for work equipment	t20-do-t25-ap-n
+text	Special Equipment	c-matic-i-c-matic-hp
+text	Speed is automatically reduced in curves thanks to Linde Curve Assist	r20-do-r25-f
+text	Speed limitations (via switch, indoor-outdoor, load depending)	h35-do-h50
+text	Speed restriction options (via switch, load-dependent)	e14-do-e20
+text	Speeds of up to 20 km/h and highly manoeuvrable for optimum performance even in tight corners	e14-do-e20
+text	Standard	l14-do-l16-sp
+text	Standard castor wheel	n16-do-n25
+text	Standard mast 4144/2583/150 mm	l-matic-ac
+text	Standard mast, 2430 - 9500 mm lift height	e100-do-e180
+text	Standard masts 1000 kg capacity up to 7600 mm lift height	a-5224
+text	Standard truck lightning	e25s-do-e35s-sh
+text	Steering column with tilt adjustment	e35-do-e50
+text	Steering wheel with tilt adjustment	xi10-do-xi20
+text	Storage and retrieval up to a height of 11 meters	r-matic
+text	Storage compartments for paper work and small bottle of water	mv01
+text	Storage: paperwork, pens, gloves, two bottles compartments	mv01
+text	Strong bumpers provide protection in the event of minor collisions	v08
+text	Sun blinds for front and top screen	e100-do-e180
+text	Super Elastic (SE) tyres	e60-do-e80
+text	Superelastic SE non marking	p60-do-p80
+text	Support clipboard DIN A4	p180
+text	Support for clipboard and scanner	t16-l
+text	Supports for DIN A4 clipboard and scanner	t20-do-t25-ap-n
+text	Suspended driver's cabin protects against shocks and vibrations	h100-do-h180-d
+text	Suspended platform	d12-do-d14-ap
+text	Switch to manual mode available	l-matic
+text	Synchronous reluctance motor (SRM+) for lift and drive function with efficient water-cooling system ensures consistently high performance, even in extreme conditions	x20-do-x35
+text	Synchronous reluctance motors (SRM) for traction and lifting functions	xi10-do-xi20
+text	Tailor-made energy solutions (lead-acid or Li-ION batteries)	l-matic-hd-k
+text	Tandem load wheel polyurethane (also available in greasable version)	t20-do-t25-ap
+text	Tandem load wheels polyurethane (greaseable)	v08
+text	Tandem load wheels, polyurethane greasable	t16-l
+text	Temperature sensors for function monitoring	t33-r-hp
+text	The control software MATIC:move for simple applications with a few trucks and MATIC:move+ for complex tasks offer flexible adaptations, a high level of scalability and optimum process control	l-matic-ac
+text	The maintenance and emission-free lithium-ion battery system enables non-stop operation for up to 1.7 hours	mt15-c
+text	The robust DC motor enables long maintenance intervals and reduces operating costs	mt15-c
+text	The truck's low centre of gravity and intelligent assistance systems reduce the risk of tipping and accidents	h35-do-h50
+text	The twin-motor front-wheel drive together with combi steering axle provides exceptional maneuverability	e20-do-e35
+text	Three-cylinder-mast concept	e25s-do-e35s-sh
+text	Tilting barriers	v-modular
+text	Top mounted tilting cylinders – including maintenance free bearings	e20-do-e35
+text	Top screen armoured glass – Best protection comes with best visibility	e10
+text	Torsion-resistant fixed clear view triplex mast	r14-do-r25
+text	Touch screen with simple user interface	r-matic
+text	Traction and lift control on the ergonomic tiller head	mt15-c
+text	Traction pin 300 wire-guided	w04
+text	Travel speed adjustable depending on travel direction, load weight and lift height	r20-do-r25-f
+text	Triplex full free lift mast, 5500 - 8100 mm lift height	e100-do-e180
+text	Triplex masts 1500 kg capacity up to 12850 mm lift height	a-5224
+text	Truck Call app – coordination of transport jobs	xi10-do-xi20
+text	Truck Health Monitoring protects the engine in extreme outdoor temperatures	h20-do-h35
+text	Truck data transmission unit as standard for integration into digital processes	x35-do-x50
+text	Truck prepared for data terminal, printer, scanner installation	v-modular
+text	Turn on the spot with and without locked platform	c-matic-i-c-matic-hp
+text	Twin maintenance-free AC motor front wheel drive	e60-do-e80
+text	Twin motor front-wheel drive with high performance synchronous reluctance motors (SRM+) for maximum power and manoeuvrability	x35-do-x50
+text	Twin pedal control enables seamless, fast reversing without repositioning the feet	e60-do-e80
+text	Twin pedals and control levers integrated into the armrest reduce physical stress	e60-do-e80
+text	Two motor front wheel drive	x20-do-x35
+text	Two vehicle variants: With walk-on pallet or for order picking from the enclosed cabin	v-modular
+text	Ultra fast lifting	l06-do-l16-ac
+text	Uncomplicated servicing at long intervals of 1000 operating hours	r10-do-r16-b
+text	Unique Linde drive unit suspension to absorb vibrations and road shocks	r14-do-r20-g
+text	Unique, safe and intuitive 45° operating position	t20-do-t25-sp
+text	Upholstered backrest for comfortable and stable standing	e10
+text	User friendly Log-file analysis	r-matic
+text	V08-01 V08-01 V08-02 Model / Equipment (0.7 t) (1 t) (0.8 t)	v08
+text	Various Standard / Duplex / Triplex masts, up to lift heights of 6580 mm	e25s-do-e35s-sh
+text	Various seating options such as heating, air suspension, active seat ventilation, longitudinal suspension	h20-do-h35
+text	Vehicle display, lamp post and laser display always provide information on current vehicle status	n16-do-n25
+text	Versatile pallet stacker for storage and retrieval at a height of up to 5.3 metres and for longer transport journeys	l14-do-l16-sp
+text	Vertical battery change option	p250-lwb
+text	Visibility optimization increases safety in every direction of travel	h100-do-h180-d
+text	Visual warning indicators – lights indicating vehicle status (warnings and alarms)	l-matic
+text	Visually optimised counterweight reduces blind spot	ht100-do-ht180-ds
+text	Warm water heater incl. defog function / air conditioning	h20-do-h35
+text	Warning light	v-modular
+text	Wear-free drive reduces service costs	h100-do-h180-d
+text	Wide and cushioned armrest	e25s-do-e35s-sh
+text	Wide operator's platform, easily accessible from both sides, with low access for easy boarding and alighting	n20-xl
+text	Wide service network with certified technicians	t14-do-t20
+text	Width over forks, fork length and overhang: 560/1150/55 mm	d12-do-d14-ap
+text	Width over forks: 568 mm	l10-do-l16-b
+text	Wifi data transmission	e14-do-e20
+text	Wireless access to driver data allows data analysis and connection to logistic, safety, and fleet management systems	e20-do-e35
+text	Wireless data transmission for smooth integration into software systems, e.g. for fleet management	h50-do-h80
+text	Working lamp – front and rear LED lights	p40-do-p60-c
+text	Working lights LED	h100-do-h180-d
+text	ac: access control (PIN or RFID)	p250-lwb
+text	ac: access control via PIN	l10-do-l16-b
+text	dt: trouble codes	p40-do-p60-c

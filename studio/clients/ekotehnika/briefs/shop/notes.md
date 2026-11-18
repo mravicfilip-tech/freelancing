@@ -28,3 +28,15 @@ Round of 18 November, sent while the shop ran on his localhost. Planned and buil
     to proofread. 2 H16 to H20 is built in full first, every other series after Filip looks. 3 data sheet numbers replace the old site's on
     the cards and in the filters wherever a sheet exists. 4 the page grows to five sections, the top with the description, Zašto ovaj model
     and four figures, then Karakteristike, Verzije with the full table closed under it, Oprema closed by group, then Fotografije and related.
+12. Karakteristike on the model page, "needs better styling here, icons, ticks etc". Screenshot marks the four feature groups.
+13. "issue with duplicated lines". Screenshot marks the doubled rule with its marks over Verzije, the cap under Karakteristike over the
+    rule of the next section.
+14. Verzije, "1,2, or evne 3 rows should stand out". Screenshot boxes the three H20 columns. Read as each model's versions standing out
+    as a group, H16, H18 and H20 each a band with its D, T and CNG under it, alternate bands tinted. A featured version is the other reading.
+15. "duplicate line issue". Screenshot marks the doubled rule under Oprema, over Fotografije. Same cause as 13.
+16. Oprema, "add icons here please". Screenshot marks the eight equipment groups.
+17. Oprema, "ticks and also i think we can keep top row open always (but not on mobile)". Screenshot marks the square bullets of an open
+    group. Ticks for the lists, and the first row of groups open on a wide screen, closed on a phone.
+18. The model's photos, "these should be moved above here and have gallery preview". Screenshots mark Fotografije and the empty space
+    under the main picture. Built as thumbnails under the main picture, the render first, a click shows that picture in the main frame,
+    and the Fotografije section under the page goes.

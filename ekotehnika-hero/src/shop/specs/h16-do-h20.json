@@ -109,6 +109,7 @@
  "characteristics": [
   {
    "group": "Bezbednost",
+   "icon": "shield",
    "bullets": [
     "Linde Protector Frame za najviši nivo bezbednosti vozača",
     "Posebno uzan profil stuba za najbolju preglednost",
@@ -118,6 +119,7 @@
   },
   {
    "group": "Ergonomija",
+   "icon": "seat",
    "bullets": [
     "Prostrana kabina sa mnogo mesta za noge, udobnim sedištem i ambijentom kao u automobilu, za rad bez zamora",
     "Ergonomski raspored svih komandi, sa podesivim naslonom za ruku i sedištem, za efikasan i udoban rad",
@@ -127,6 +129,7 @@
   },
   {
    "group": "Upravljanje",
+   "icon": "lever",
    "bullets": [
     "Hidrostatički direktni pogon za brz, miran i precizan odziv",
     "Izdržljivi motori na dizel, TNG ili prirodni gas daju visok obrtni moment uz malu potrošnju goriva",
@@ -136,6 +139,7 @@
   },
   {
    "group": "Servisiranje",
+   "icon": "wrench",
    "bullets": [
     "Oslonci osovina i cilindara za naginjanje ne traže održavanje, pa su zastoji i troškovi rada mali",
     "Linde hidrostatička transmisija smanjuje troškove servisa, drži viljuškar spremnim za rad i povećava učinak pretovara",
@@ -2006,6 +2010,7 @@
  "equipment": [
   {
    "group": "Radno mesto",
+   "icon": "seat",
    "items": [
     {
      "t": "Ergonomski i bezbedan ulazak, uz nizak stepenik i rukohvat na prednjem stubu kabine"
@@ -2053,6 +2058,7 @@
   },
   {
    "group": "Pogon i kočnice",
+   "icon": "bolt",
    "items": [
     {
      "t": "Linde hidrostatička transmisija za izuzetnu kontrolu viljuškara i malu potrošnju goriva"
@@ -2116,6 +2122,7 @@
   },
   {
    "group": "Osovine i gume",
+   "icon": "tyre",
    "items": [
     {
      "t": "Superelastične (SE) gume"
@@ -2136,6 +2143,7 @@
   },
   {
    "group": "Stub",
+   "icon": "mast",
    "items": [
     {
      "t": "Cilindri za naginjanje postavljeni gore, za precizno rukovanje teretom na velikim visinama"
@@ -2153,6 +2161,7 @@
   },
   {
    "group": "Priključci i viljuške",
+   "icon": "fork",
    "items": [
     {
      "t": "Ojačane Linde viljuške, lake za podešavanje i dugog veka"
@@ -2167,6 +2176,7 @@
   },
   {
    "group": "Bezbednost",
+   "icon": "shield",
    "items": [
     {
      "t": "Linde Curve Assist, automatski manja brzina u krivinama, za veću stabilnost"
@@ -2202,6 +2212,7 @@
   },
   {
    "group": "Digitalizacija",
+   "icon": "chip",
    "items": [
     {
      "t": "Prenos podataka preko interneta"
@@ -2219,6 +2230,7 @@
   },
   {
    "group": "Upravljanje i rukovanje teretom",
+   "icon": "lever",
    "items": [
     {
      "t": "Upravljanje sa dve pedale, mirno ubrzanje i brza promena smera"

@@ -1,7 +1,9 @@
 // The shop's catalogue, built by scripts/shop-catalog.py from the client's Drive and the old site's cards (briefs/shop). 89 series in
-// 10 categories, one product each. kg and mm are the old site's nosivost and visina podizanja, only where one card matches the series,
-// see briefs/shop/match.md. Nothing in here is made up, a series without a match has no numbers.
+// 10 categories, one product each. kg and mm are the top nosivost and the top visina podizanja of the series' Linde data sheet, from
+// facts.json (scripts/shop-specs.py), Filip's yes of 18 November. Where a series has no sheet they are the old site's, only where one
+// card matches the series, see briefs/shop/match.md. Nothing in here is made up, a series with neither has no numbers.
 import catalog from './catalog.json';
+import facts from './facts.json';
 
 export type Category = { slug: string; name: string; kind: string; drive: string; count: number };
 export type Product = {
@@ -23,7 +25,8 @@ export type Product = {
 };
 
 export const CATEGORIES = catalog.categories as Category[];
-export const PRODUCTS = catalog.products as Product[];
+const FACTS = facts as Record<string, { kg?: number; mm?: number }>;
+export const PRODUCTS = (catalog.products as Product[]).map((p) => ({ ...p, ...FACTS[p.slug] }));
 
 export const categoryOf = (slug: string) => CATEGORIES.find((c) => c.slug === slug);
 export const productsOf = (cat: string) => PRODUCTS.filter((p) => p.category === cat);

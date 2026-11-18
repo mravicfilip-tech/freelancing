@@ -7,7 +7,7 @@ import { useEffect, useState } from 'react';
 import { BtnInner } from '../story2/shell/ui';
 import { Footer } from '../story2/shell/sections';
 import { SITE, hero, pillars } from '../content';
-import { CATEGORIES, GROUPS, categoryOf, faceOf, fmt, hrefAsk, hrefCategory, modela, productOf, productsOf, PRODUCTS, statsOf } from './data';
+import { type Product, CATEGORIES, GROUPS, categoryOf, faceOf, fmt, hrefAsk, hrefCategory, modela, productOf, productsOf, PRODUCTS, statsOf } from './data';
 import { Link, useRoute } from './route';
 import { ShopFrame } from './ShopFrame';
 import { Contact } from './Contact';
@@ -181,7 +181,7 @@ function ModelPage({ cat, model }: { cat: string; model: string }) {
       <section className="sp-frame sp-model">
         <Cell span={2} className="sp-model-pic">
           <Crumbs items={[{ label: 'Prodavnica', href: '/prodavnica' }, { label: c.name, href: hrefCategory(c.slug) }, { label: p.code }]} />
-          <Picture p={p} size="hero" />
+          <Gallery p={p} />
         </Cell>
         <Cell span={2} className="sp-model-info">
           <p className="sp-lab">{p.kind}</p>
@@ -222,17 +222,6 @@ function ModelPage({ cat, model }: { cat: string; model: string }) {
           <SpecEquipment spec={spec} />
         </>
       ) : null}
-      {p.photos.length ? (
-        <section className="sp-frame sp-photos" aria-label="Fotografije">
-          {p.photos.map((src, i) => (
-            <Cell span={2} className="sp-photo" key={src}>
-              {i === 0 ? <p className="sp-lab">Fotografije</p> : <p className="sp-lab" aria-hidden="true">&nbsp;</p>}
-              <img src={src} alt={`Linde ${p.code}, fotografija ${i + 1}`} loading="lazy" decoding="async" />
-            </Cell>
-          ))}
-          {p.photos.length === 1 ? <Cell span={2} className="sp-photo is-blank" /> : null}
-        </section>
-      ) : null}
       {related.length ? (
         <section className="sp-frame sp-related" aria-label="Iz iste kategorije">
           <Cell span={4} className="sp-related-h">
@@ -251,6 +240,42 @@ function ModelPage({ cat, model }: { cat: string; model: string }) {
         </section>
       ) : null}
     </>
+  );
+}
+
+// The model's pictures, Filip 18 November, "these should be moved above here and have gallery preview". The render in the main frame,
+// and under it a row of thumbnails, the render then the Drive's photos. A thumbnail shows its picture in the main frame.
+function Gallery({ p }: { p: Product }) {
+  const [at, setAt] = useState(0);
+  useEffect(() => setAt(0), [p.slug]);
+  const shots = [...(p.render ? [{ src: p.render, thumb: p.thumb ?? p.render, render: true }] : []), ...p.photos.map((src) => ({ src, thumb: src, render: false }))];
+  if (shots.length < 2) return <Picture p={p} size="hero" />;
+  const s = shots[Math.min(at, shots.length - 1)];
+  const n = (i: number) => i + (p.render ? 0 : 1);
+  return (
+    <div className="sp-gal">
+      {s.render ? (
+        <Picture p={p} size="hero" />
+      ) : (
+        <div className="sp-pic is-photo">
+          <img src={s.src} alt={`Linde ${p.code}, fotografija ${n(at)}`} decoding="async" />
+        </div>
+      )}
+      <div className="sp-gal-row" role="group" aria-label="Slike modela">
+        {shots.map((x, i) => (
+          <button
+            type="button"
+            className={`sp-gal-t${x.render ? ' is-render' : ''}`}
+            aria-pressed={i === at}
+            aria-label={x.render ? `Linde ${p.code}, model` : `Fotografija ${n(i)}`}
+            onClick={() => setAt(i)}
+            key={x.src}
+          >
+            <img src={x.thumb} alt="" loading="lazy" decoding="async" />
+          </button>
+        ))}
+      </div>
+    </div>
   );
 }
 

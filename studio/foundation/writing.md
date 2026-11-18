@@ -29,6 +29,8 @@ layout keeps that layout. These rules govern the sentences inside it, not its st
 - The hard rules apply in full, since he forwards this text straight into
   client chats, tickets and email without editing it.
 - A time range reads "2pm to 3pm," not the 24 hour form, which needs a colon.
+- A message in Serbian he sends is written without diacritics, c for č and ć, s for š, z for ž, dj for đ. Filip, 18 November,
+  "bez kvacica uvek". Client site copy and UI text keep the full Serbian letters.
 - If a template he already uses (a chat header, for example) writes a colon
   by default, drop it and let him say if he wants it back.
 

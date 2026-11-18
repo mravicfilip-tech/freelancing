@@ -1438,7 +1438,7 @@
   },
   {
    "group": "Životna sredina",
-   "icon": "grid",
+   "icon": "leaf",
    "items": [
     {
      "t": "Linde connect cloud Basic Package Network, osnovne funkcije upravljanja voznim parkom za mrežne partnere"
@@ -1555,7 +1555,7 @@
   },
   {
    "group": "Učinak pretovara",
-   "icon": "grid",
+   "icon": "gauge",
    "items": [
     {
      "t": "Automatsko spuštanje dodatnog podizanja"

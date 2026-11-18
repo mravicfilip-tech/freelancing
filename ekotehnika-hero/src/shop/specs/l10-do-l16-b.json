@@ -226,7 +226,7 @@
   },
   {
    "group": "Upravljanje",
-   "icon": "lever",
+   "icon": "wheel",
    "bullets": [
     "Kompaktna šasija i mali radijus okretanja za optimalnu upravljivost",
     "Brzina do 6 km/h za brz i efikasan rad",
@@ -1352,7 +1352,7 @@
   },
   {
    "group": "Digitalizacija",
-   "icon": "chip",
+   "icon": "signal",
    "items": [
     {
      "t": "Nadzor bezbednosnih vrednosti bitnih za ATEX preko aplikacije Linde EX Monitoring"
@@ -1512,7 +1512,7 @@
   },
   {
    "group": "Pogon i kočnice",
-   "icon": "bolt",
+   "icon": "engine",
    "items": [
     {
      "t": "AC motor koji ne traži održavanje"

@@ -55,7 +55,7 @@
   },
   {
    "group": "Upravljanje",
-   "icon": "lever",
+   "icon": "wheel",
    "bullets": [
     "Rukovanje različitim vrstama tereta zahvaljujući inovativnom prepoznavanju 3D kamerom",
     "Dokazana pouzdanost za rad do 24/7",
@@ -78,7 +78,7 @@
   },
   {
    "group": "Prodaja i realizacija",
-   "icon": "grid",
+   "icon": "deal",
    "bullets": [
     "Automatizovana rešenja po meri projekta, uključujući dinamičku simulaciju i dokaz koncepta na licu mesta",
     "Po potrebi se kombinacija ručnih procesa i stepena automatizacije može optimizovati prema potrebama kupca",
@@ -1053,7 +1053,7 @@
  "equipment": [
   {
    "group": "Softver van vozila",
-   "icon": "grid",
+   "icon": "cpu",
    "items": [
     {
      "t": "Model / oprema R16 HD"
@@ -1134,7 +1134,7 @@
   },
   {
    "group": "Životna sredina",
-   "icon": "grid",
+   "icon": "leaf",
    "items": [
     {
      "t": "HMI, ekran za korisnika u kabini"

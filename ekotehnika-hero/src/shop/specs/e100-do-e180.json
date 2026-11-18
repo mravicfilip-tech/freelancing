@@ -217,7 +217,7 @@
   },
   {
    "group": "Upravljanje",
-   "icon": "lever",
+   "icon": "wheel",
    "bullets": [
     "Intuitivno i predvidivo ponašanje pri radu povećava produktivnost",
     "Precizno i direktno upravljanje",
@@ -2447,7 +2447,7 @@
   },
   {
    "group": "Digitalizacija",
-   "icon": "chip",
+   "icon": "signal",
    "items": [
     {
      "t": "Linde connect ac, kontrola pristupa preko PIN-a"
@@ -2483,7 +2483,7 @@
   },
   {
    "group": "Životna sredina",
-   "icon": "grid",
+   "icon": "leaf",
    "items": [
     {
      "t": "Zaštita donjeg dela vozila"

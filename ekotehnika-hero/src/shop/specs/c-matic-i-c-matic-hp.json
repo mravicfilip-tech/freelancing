@@ -485,7 +485,7 @@
  "equipment": [
   {
    "group": "Softver van vozila",
-   "icon": "grid",
+   "icon": "cpu",
    "items": [
     {
      "t": "Pametna logika punjenja"
@@ -503,7 +503,7 @@
   },
   {
    "group": "Softver na vozilu",
-   "icon": "grid",
+   "icon": "cpu",
    "items": [
     {
      "t": "Navigacija pomoću QR kodova"
@@ -539,7 +539,7 @@
   },
   {
    "group": "Navigacija",
-   "icon": "grid",
+   "icon": "signal",
    "items": [
     {
      "t": "Tačnost pozicioniranja ±10 mm"
@@ -557,7 +557,7 @@
   },
   {
    "group": "HMI interfejs",
-   "icon": "grid",
+   "icon": "cpu",
    "items": [
     {
      "t": "Komandni tasteri"
@@ -596,7 +596,7 @@
   },
   {
    "group": "Životna sredina",
-   "icon": "grid",
+   "icon": "leaf",
    "items": [
     {
      "t": "WiFi komunikacija"

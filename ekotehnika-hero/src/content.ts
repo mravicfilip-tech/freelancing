@@ -7,7 +7,8 @@ export const hero = {
   kicker: 'Zvanični Linde partner za Srbiju i Crnu Goru',
   headline: ['Linde viljuškari.', 'Prodaja, najam i servis na jednom mestu.'],
   sub: 'Novi i polovni viljuškari, najam od jednog dana i servis na terenu širom Srbije. Od 1997.',
-  quote: { label: 'Zatražite ponudu', href: `${SITE}/kontakt/` },
+  // every Zatražite ponudu of the site goes to this site's form with Kupovina picked, Filip 18 November, the menu remap
+  quote: { label: 'Zatražite ponudu', href: '/kontakt?tema=kupovina' },
   sales: { label: 'Prodaja', number: '+381 63 282-050', tel: 'tel:+38163282050' },
   service: { label: 'Hitan servis', number: '+381 60 300 20 50', tel: 'tel:+381603002050' },
   promo: {

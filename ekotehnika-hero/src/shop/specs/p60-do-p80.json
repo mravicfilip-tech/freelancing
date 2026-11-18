@@ -56,7 +56,7 @@
   },
   {
    "group": "Upravljanje",
-   "icon": "lever",
+   "icon": "wheel",
    "bullets": [
     "Modularni koncept sa opcijama opreme kao što su zaštita od sunca, bočni prozori, klizna vrata i zatvorene grejane kabine, za najveću fleksibilnost",
     "Pogonski AC motor od 4,5 kW za veliku vučnu silu",
@@ -782,7 +782,7 @@
   },
   {
    "group": "Digitalizacija",
-   "icon": "chip",
+   "icon": "signal",
    "items": [
     {
      "t": "Priključak za dijagnostički računar (CAN bus sistem)"
@@ -812,7 +812,7 @@
   },
   {
    "group": "Životna sredina",
-   "icon": "grid",
+   "icon": "leaf",
    "items": [
     {
      "t": "Povremeno punjenje"
@@ -923,7 +923,7 @@
   },
   {
    "group": "Pogon i kočnice",
-   "icon": "bolt",
+   "icon": "engine",
    "items": [
     {
      "t": "Izbor brzine vožnje u dva stepena"

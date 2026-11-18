@@ -55,7 +55,7 @@
   },
   {
    "group": "Upravljanje",
-   "icon": "lever",
+   "icon": "wheel",
    "bullets": [
     "Savršeno za različite zahteve kombinovane primene u zatvorenom i na otvorenom",
     "Izuzetno udobno rukovanje zahvaljujući velikim nosećim točkovima i većoj svetloj visini",
@@ -1120,7 +1120,7 @@
   },
   {
    "group": "Digitalizacija",
-   "icon": "chip",
+   "icon": "signal",
    "items": [
     {
      "t": "Povezivanje sa Linde Fleet Management"
@@ -1144,7 +1144,7 @@
   },
   {
    "group": "Životna sredina",
-   "icon": "grid",
+   "icon": "leaf",
    "items": [
     {
      "t": "Pokazivač visine podizanja iznad zone slobodnog podizanja"
@@ -1237,7 +1237,7 @@
   },
   {
    "group": "Pogon i kočnice",
-   "icon": "bolt",
+   "icon": "engine",
    "items": [
     {
      "t": "Četiri nezavisna kočiona sistema, rekuperativno kočenje i kočenje protivstrujom, upravljanje kočnicom za držanje sa automatskom parkirnom kočnicom i kočioni sistem na svim točkovima"

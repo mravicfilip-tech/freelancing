@@ -761,7 +761,7 @@
   },
   {
    "group": "Digitalizacija",
-   "icon": "chip",
+   "icon": "signal",
    "items": [
     {
      "t": "Prenos podataka preko WiFi mreže"

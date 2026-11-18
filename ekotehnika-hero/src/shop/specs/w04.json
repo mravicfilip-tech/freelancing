@@ -55,7 +55,7 @@
   },
   {
    "group": "Upravljanje",
-   "icon": "lever",
+   "icon": "wheel",
    "bullets": [
     "Uske spoljne mere, širina od samo 600 milimetara, za manevrisanje u najtesnijim prostorima",
     "Velika upravljačka jedinica za lakše upravljanje",
@@ -674,7 +674,7 @@
   },
   {
    "group": "Digitalizacija",
-   "icon": "chip",
+   "icon": "signal",
    "items": [
     {
      "t": "Prenos podataka preko interneta"
@@ -701,7 +701,7 @@
   },
   {
    "group": "Životna sredina",
-   "icon": "grid",
+   "icon": "leaf",
    "items": [
     {
      "t": "Zaštita -10°"
@@ -779,7 +779,7 @@
   },
   {
    "group": "Pogon i kočnice",
-   "icon": "bolt",
+   "icon": "engine",
    "items": [
     {
      "t": "Linde LAC kontroler"

@@ -134,7 +134,7 @@
   },
   {
    "group": "Upravljanje",
-   "icon": "lever",
+   "icon": "wheel",
    "bullets": [
     "Kompaktan AC motor od 2,3 kW za brz i odzivan rad",
     "Uska šasija, idealna za utovar i istovar",
@@ -948,7 +948,7 @@
   },
   {
    "group": "Digitalizacija",
-   "icon": "chip",
+   "icon": "signal",
    "items": [
     {
      "t": "Prenos podataka preko interneta"
@@ -987,7 +987,7 @@
   },
   {
    "group": "Životna sredina",
-   "icon": "grid",
+   "icon": "leaf",
    "items": [
     {
      "t": "Zaštita za rad u hladnjači, -35 °C"
@@ -1074,7 +1074,7 @@
   },
   {
    "group": "Pogon i kočnice",
-   "icon": "bolt",
+   "icon": "engine",
    "items": [
     {
      "t": "Servoupravljanje sa promenljivim otporom upravljanja"

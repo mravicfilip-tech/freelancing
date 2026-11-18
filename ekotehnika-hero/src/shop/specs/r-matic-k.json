@@ -57,7 +57,7 @@
   },
   {
    "group": "Upravljanje",
-   "icon": "lever",
+   "icon": "wheel",
    "bullets": [
     "2D sistem za pozicioniranje paleta za precizno rukovanje, čak i kada palete nisu tačno poravnate",
     "Bezbedno odlaganje i preuzimanje različitih tereta zahvaljujući naprednom otkrivanju tereta",
@@ -79,7 +79,7 @@
   },
   {
    "group": "Prodaja i realizacija",
-   "icon": "grid",
+   "icon": "deal",
    "bullets": [
     "Individualna automatizovana rešenja sa dinamičkom simulacijom i mogućnošću demonstracije u stvarnom procesnom okruženju na licu mesta",
     "Analiza ručnih procesa rukovanja i optimizacija stepena automatizacije prema potrebama kupca",
@@ -1073,7 +1073,7 @@
   },
   {
    "group": "Digitalizacija",
-   "icon": "chip",
+   "icon": "signal",
    "items": [
     {
      "t": "MATIC move (lako puštanje u rad)"

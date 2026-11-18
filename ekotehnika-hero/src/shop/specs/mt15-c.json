@@ -60,7 +60,7 @@
   },
   {
    "group": "Upravljanje",
-   "icon": "lever",
+   "icon": "wheel",
    "bullets": [
     "Lako rukovanje teretom na usponima do 6 posto zahvaljujući električnom pogonu",
     "Ojačane viljuške mogu da nose terete do 1,5 t",
@@ -725,7 +725,7 @@
   },
   {
    "group": "Pogon i kočnice",
-   "icon": "bolt",
+   "icon": "engine",
    "items": [
     {
      "t": "DC motor od 0,75 kW (ne traži održavanje)"

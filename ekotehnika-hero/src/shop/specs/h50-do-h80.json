@@ -290,7 +290,7 @@
   },
   {
    "group": "Upravljanje",
-   "icon": "lever",
+   "icon": "wheel",
    "bullets": [
     "Snažan i precizan rad zahvaljujući hidrostatičkom prenosu",
     "Brzo i ekološki prihvatljivo rukovanje teretom, zahvaljujući snažnim motorima male potrošnje i niske emisije",
@@ -1836,7 +1836,7 @@
   },
   {
    "group": "Pogon i kočnice",
-   "icon": "bolt",
+   "icon": "engine",
    "items": [
     {
      "t": "Linde hidrostatička transmisija za izuzetnu kontrolu viljuškara i malu potrošnju goriva"
@@ -1935,7 +1935,7 @@
   },
   {
    "group": "Digitalizacija",
-   "icon": "chip",
+   "icon": "signal",
    "items": [
     {
      "t": "Prenos podataka preko interneta"

@@ -1061,7 +1061,7 @@
   },
   {
    "group": "Digitalizacija",
-   "icon": "chip",
+   "icon": "signal",
    "items": [
     {
      "t": "Prenos podataka preko interneta"
@@ -1109,7 +1109,7 @@
   },
   {
    "group": "Životna sredina",
-   "icon": "grid",
+   "icon": "leaf",
    "items": [
     {
      "t": "Hladnjača -35 °C (unutra / napolju), sa rešetkastom ili standardnom podnom prostirkom"
@@ -1208,7 +1208,7 @@
   },
   {
    "group": "Pogon i kočnice",
-   "icon": "bolt",
+   "icon": "engine",
    "items": [
     {
      "t": "Servo upravljanje"

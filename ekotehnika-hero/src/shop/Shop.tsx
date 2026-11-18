@@ -308,7 +308,7 @@ export function Shop() {
   const route = useRoute();
   return (
     <div className="sp">
-      <ShopFrame page={route.page === 'contact' ? 'Kontakt' : 'Novi'} />
+      <ShopFrame page={route.page === 'contact' ? 'Kontakt' : 'Prodavnica'} />
       <main id="sp-main" className="sp-main" tabIndex={-1}>
         <Lines />
         {route.page === 'home' ? <Home /> : null}

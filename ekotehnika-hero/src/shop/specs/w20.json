@@ -62,7 +62,7 @@
   },
   {
    "group": "Upravljanje",
-   "icon": "lever",
+   "icon": "wheel",
    "bullets": [
     "Veliki učinak pretovara zahvaljujući snažnim elektromotorima i stalnoj brzini na strmim rampama",
     "Lako i precizno manevrisanje zahvaljujući malom prečniku okretanja, kompaktnoj šasiji i mekom servo upravljanju",
@@ -808,7 +808,7 @@
   },
   {
    "group": "Digitalizacija",
-   "icon": "chip",
+   "icon": "signal",
    "items": [
     {
      "t": "Spoljni retrovizori"
@@ -892,7 +892,7 @@
   },
   {
    "group": "Pogon i kočnice",
-   "icon": "bolt",
+   "icon": "engine",
    "items": [
     {
      "t": "Opciona bočna zamena baterije"

@@ -56,7 +56,7 @@
   },
   {
    "group": "Upravljanje",
-   "icon": "lever",
+   "icon": "wheel",
    "bullets": [
     "Intuitivnim komandama se lako rukuje sa obe ruke",
     "Ergonomski oblikovana glava upravljačke ručice",
@@ -1415,7 +1415,7 @@
   },
   {
    "group": "Digitalizacija",
-   "icon": "chip",
+   "icon": "signal",
    "items": [
     {
      "t": "Praćenje stanja sigurnosnih vrednosti važnih za ATEX preko aplikacije Linde Ex-Monitoring"
@@ -1520,7 +1520,7 @@
   },
   {
    "group": "Pogon i kočnice",
-   "icon": "bolt",
+   "icon": "engine",
    "items": [
     {
      "t": "AC motor koji ne traži održavanje"

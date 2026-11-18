@@ -65,7 +65,7 @@
   },
   {
    "group": "Upravljanje",
-   "icon": "lever",
+   "icon": "wheel",
    "bullets": [
     "Snažan trofazni AC motor od 2,3 kW",
     "Najveća brzina do 10 km/h za brz transport",
@@ -917,7 +917,7 @@
   },
   {
    "group": "Digitalizacija",
-   "icon": "chip",
+   "icon": "signal",
    "items": [
     {
      "t": "Linde connect ac, kontrola pristupa preko PIN-a ili RFID-a"
@@ -956,7 +956,7 @@
   },
   {
    "group": "Životna sredina",
-   "icon": "grid",
+   "icon": "leaf",
    "items": [
     {
      "t": "Zaštita za rad u hladnjači, -35 °C"
@@ -965,7 +965,7 @@
   },
   {
    "group": "Radni prostor",
-   "icon": "grid",
+   "icon": "seat",
    "items": [
     {
      "t": "Potpuno amortizovano radno mesto vozača, amortizovani su i platforma za noge i upravljačka jedinica"
@@ -1028,7 +1028,7 @@
   },
   {
    "group": "Pogon i kočnice",
-   "icon": "bolt",
+   "icon": "engine",
    "items": [
     {
      "t": "Servoupravljanje sa promenljivim otporom upravljanja"

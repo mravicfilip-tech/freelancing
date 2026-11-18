@@ -31,6 +31,7 @@ import { TextColumn } from './TextColumn';
 import { TapStory } from './TapStory';
 import { MSCROLL } from '../preview';
 import { isTall } from '../tall';
+import { followChapterHash } from '../chapters';
 
 export type Tone = 'light' | 'dark';
 
@@ -204,6 +205,8 @@ type ShellProps = {
 
 export function StoryShell({ Scene, tone, reduced, darkLayers, darkTop = DARK_TOP }: ShellProps) {
   const { stageRef, clock } = useStoryClock(reduced);
+  // Najam and Servis in the top menu open the story at their chapter, /#najam and /#servis, Filip 18 November
+  useEffect(() => followChapterHash(), []);
   const isDark = (l: LayerDef) => (darkLayers ? darkLayers.includes(l.id) : l.dark);
   const heroRef = useRef<HTMLDivElement>(null);
   const gridRef = useRef<HTMLDivElement>(null);

@@ -170,7 +170,7 @@
   },
   {
    "group": "Upravljanje",
-   "icon": "lever",
+   "icon": "wheel",
    "bullets": [
     "Linde OptiLift upravljanje stubom obezbeđuje precizan rad za najveći učinak",
     "Graničnik palete obezbeđuje optimalno pozicioniranje paleta",
@@ -1114,7 +1114,7 @@
   },
   {
    "group": "Digitalizacija",
-   "icon": "chip",
+   "icon": "signal",
    "items": [
     {
      "t": "Linde connect ac, kontrola pristupa preko PIN-a ili RFID-a"
@@ -1165,7 +1165,7 @@
   },
   {
    "group": "Životna sredina",
-   "icon": "grid",
+   "icon": "leaf",
    "items": [
     {
      "t": "Zaštita za hladnjače, -35 °C (unutra/napolju)"
@@ -1252,7 +1252,7 @@
   },
   {
    "group": "Pogon i kočnice",
-   "icon": "bolt",
+   "icon": "engine",
    "items": [
     {
      "t": "AC pogonski motor od 2,3 kW, ne traži održavanje"

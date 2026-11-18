@@ -15,24 +15,44 @@ import { frame, hero2 } from '../story2/copy';
 import { TALL_QUERY } from '../story2/tall';
 import { BtnInner, Fill } from '../story2/shell/ui';
 import { goHome } from '../scroll/useScrollStory';
+import { toChapter } from '../story2/chapters';
+import { ShopSheetItem, ShopSub, type LinkFn } from './ShopNav';
 import './heroframe.css';
 
 export type FrameTone = 'ink' | 'white';
 
 // ch names the story chapter a link stands for. In the story the nav's bar sits under that link while its chapter is on
 // screen, and under Početna where the chapter has no link, see StoryShell.
-// local marks a page of this site, the shop and its form (Filip 18 November, "Novi and Kontakt in the menu point into it"). The others
-// stay on ekotehnika.rs. The shop's own frame reads the same list, see shop/ShopFrame.tsx.
-export type NavLink = { label: string; href: string; current?: boolean; ch?: string; local?: boolean };
+// local marks a page of this site. Filip 18 November, "remap it to new home page + shop with categories, contact page and so on". Početna
+// is the story, Prodavnica the shop with its categories under it (sub), Najam and Servis the story's own chapters, Kontakt the form. Only
+// Polovni stays on ekotehnika.rs, the used trucks are listed there alone. The shop's own frame reads the same list, see shop/ShopFrame.tsx.
+export type NavLink = { label: string; href: string; current?: boolean; ch?: string; local?: boolean; sub?: boolean };
 export const links: NavLink[] = [
   { label: 'Početna', href: '/', current: true, ch: 'home' },
-  { label: 'Novi', href: '/prodavnica', ch: 'prodaja', local: true },
+  { label: 'Prodavnica', href: '/prodavnica', ch: 'prodaja', local: true, sub: true },
+  { label: 'Najam', href: '/#najam', ch: 'najam', local: true },
+  { label: 'Servis', href: '/#servis', ch: 'servis', local: true },
   { label: 'Polovni', href: '/polovni-linde-viljuskari/' },
-  { label: 'Najam', href: '/iznajmljivanje-viljuskara-cena/', ch: 'najam' },
-  { label: 'Servis', href: '/servis/odrzavanje-i-popravka/', ch: 'servis' },
   { label: 'Kontakt', href: '/kontakt', local: true },
 ];
 export const hrefOf = (l: NavLink) => (l.local ? l.href : `${SITE}${l.href}`);
+
+// A link to a chapter of the story, /#najam, glides there at once when the story is the page, and the menu sheet shuts first. From any other
+// page it is a plain link and the story follows the hash once it is pinned (story2/chapters.ts).
+export const onChapter = (href: string, after?: () => void) => (e: MouseEvent<HTMLAnchorElement>) => {
+  const ch = href.startsWith('/#') ? href.slice(2) : '';
+  if (!ch || window.location.pathname !== '/' || e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
+  e.preventDefault();
+  window.history.replaceState(null, '', href);
+  after?.();
+  toChapter(ch);
+};
+
+const plain: LinkFn = (href, children, className, current) => (
+  <a href={href} className={className} aria-current={current ? 'page' : undefined}>
+    {children}
+  </a>
+);
 
 // Past the pinned story, to the content that follows it. Falls back to the bottom of the page.
 function skip(e: MouseEvent<HTMLAnchorElement>) {
@@ -83,8 +103,12 @@ export function useMenu() {
         first.focus();
       }
     };
-    // the story behind the sheet must not scroll while the sheet is up, a wheel or a thumb on it goes nowhere
-    const hold = (e: Event) => e.preventDefault();
+    // the story behind the sheet must not scroll while the sheet is up, a wheel or a thumb on it goes nowhere, unless the sheet itself is
+    // taller than the screen, the shop's categories open, then it scrolls itself and never the page (overscroll-behavior in heroframe.css)
+    const hold = (e: Event) => {
+      if (el && el.scrollHeight > el.clientHeight + 1) return;
+      e.preventDefault();
+    };
     document.addEventListener('keydown', key);
     el?.addEventListener('wheel', hold, { passive: false });
     el?.addEventListener('touchmove', hold, { passive: false });
@@ -131,10 +155,11 @@ export function HeroFrame({ tone, toneBottom, rootRef }: { tone: FrameTone; tone
         <nav className="hf-nav" aria-label="Glavna navigacija">
           <ul>
             {links.map((l) => (
-              <li key={l.label}>
-                <a href={hrefOf(l)} aria-current={l.current ? 'page' : undefined} data-ch={l.ch}>
+              <li key={l.label} className={l.sub ? 'hf-has-sub' : undefined}>
+                <a href={hrefOf(l)} aria-current={l.current ? 'page' : undefined} data-ch={l.ch} onClick={onChapter(l.href)}>
                   {l.label}
                 </a>
+                {l.sub ? <ShopSub link={plain} /> : null}
               </li>
             ))}
           </ul>
@@ -211,13 +236,17 @@ export function HeroFrame({ tone, toneBottom, rootRef }: { tone: FrameTone; tone
           </button>
         </div>
         <ul className="hf-menu-links">
-          {links.map((l) => (
-            <li key={l.label}>
-              <a href={hrefOf(l)} aria-current={l.current ? 'page' : undefined}>
-                {l.label}
-              </a>
-            </li>
-          ))}
+          {links.map((l) =>
+            l.sub ? (
+              <ShopSheetItem label={l.label} href={hrefOf(l)} current={l.current} link={plain} key={l.label} />
+            ) : (
+              <li key={l.label}>
+                <a href={hrefOf(l)} aria-current={l.current ? 'page' : undefined} onClick={onChapter(l.href, () => menu.setOpen(false))}>
+                  {l.label}
+                </a>
+              </li>
+            ),
+          )}
         </ul>
         <div className="hf-menu-calls">
           {[hero.sales, hero.service].map((p) => (

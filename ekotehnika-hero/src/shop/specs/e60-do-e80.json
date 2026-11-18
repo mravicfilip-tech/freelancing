@@ -255,7 +255,7 @@
   },
   {
    "group": "Upravljanje",
-   "icon": "lever",
+   "icon": "wheel",
    "bullets": [
     "Linde Load Control omogućava brzo i lako upravljanje pokretima stuba",
     "Linde Curve Assist pomaže vozaču u oštrim krivinama",
@@ -1514,7 +1514,7 @@
   },
   {
    "group": "Pogon i kočnice",
-   "icon": "bolt",
+   "icon": "engine",
    "items": [
     {
      "t": "Pogon na prednje točkove sa dva AC motora koji ne traže održavanje"
@@ -1607,7 +1607,7 @@
   },
   {
    "group": "Digitalizacija",
-   "icon": "chip",
+   "icon": "signal",
    "items": [
     {
      "t": "Prenos podataka preko interneta"

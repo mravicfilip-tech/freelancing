@@ -867,7 +867,7 @@
   },
   {
    "group": "Digitalizacija",
-   "icon": "chip",
+   "icon": "signal",
    "items": [
     {
      "t": "Prenos podataka preko interneta"
@@ -1018,7 +1018,7 @@
   },
   {
    "group": "Pogon i kočnice",
-   "icon": "bolt",
+   "icon": "engine",
    "items": [
     {
      "t": "Prostor za bateriju, vertikalna zamena 3 PzS (300 Ah / 375 Ah) i 4 PzS (480 Ah / 620 Ah)"

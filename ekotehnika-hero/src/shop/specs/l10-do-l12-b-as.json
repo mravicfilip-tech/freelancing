@@ -171,7 +171,7 @@
   },
   {
    "group": "Upravljanje",
-   "icon": "lever",
+   "icon": "wheel",
    "bullets": [
     "Kompaktne mere i mala širina radnog prolaza za slaganje, za precizan rad",
     "Fleksibilno podesiva širina krakova (900, 1.200, 1.350 mm)",
@@ -1031,7 +1031,7 @@
   },
   {
    "group": "Digitalizacija",
-   "icon": "chip",
+   "icon": "signal",
    "items": [
     {
      "t": "Prenos podataka preko interneta"
@@ -1085,7 +1085,7 @@
   },
   {
    "group": "Životna sredina",
-   "icon": "grid",
+   "icon": "leaf",
    "items": [
     {
      "t": "Zaštita za hladnjače do -35 °C (ulaz/izlaz)"
@@ -1154,7 +1154,7 @@
   },
   {
    "group": "Pogon i kočnice",
-   "icon": "bolt",
+   "icon": "engine",
    "items": [
     {
      "t": "AC motor koji ne traži održavanje"

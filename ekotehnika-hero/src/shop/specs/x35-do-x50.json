@@ -137,7 +137,7 @@
   },
   {
    "group": "Upravljanje",
-   "icon": "lever",
+   "icon": "wheel",
    "bullets": [
     "Dug međuosovinski razmak i gume velikog prečnika daju stabilnost pri rukovanju teretom napolju i na neravnim podlogama",
     "Pogon na prednje točkove sa dva motora i visokoučinskim sinhronim reluktantnim motorima (SRM+) za najveću snagu i upravljivost",
@@ -2200,7 +2200,7 @@
   },
   {
    "group": "Pogonska jedinica i kočnice",
-   "icon": "bolt",
+   "icon": "engine",
    "items": [
     {
      "t": "Visokoučinski sinhroni reluktantni motori (SRM+) za vožnju i podizanje"
@@ -2296,7 +2296,7 @@
   },
   {
    "group": "Digitalizacija",
-   "icon": "chip",
+   "icon": "signal",
    "items": [
     {
      "t": "Više izvedbi osvetljenja viljuškara, farovi, puno osvetljenje puta, radna svetla, rotaciona svetla, LED trake i VertiLights"

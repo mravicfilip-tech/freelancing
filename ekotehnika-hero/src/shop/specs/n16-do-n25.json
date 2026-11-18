@@ -69,7 +69,7 @@
   },
   {
    "group": "Upravljanje",
-   "icon": "lever",
+   "icon": "wheel",
    "bullets": [
     "U režimu „walk with me” vozilo prati vozača dok komisionira sa jedne strane regala, pa nema hodanja od platforme vozača do palete",
     "U režimu „continuous” pogon se uključuje preko daljinskog upravljača i omogućava udobno komisioniranje sa obe strane regala",
@@ -1616,7 +1616,7 @@
   },
   {
    "group": "Digitalizacija",
-   "icon": "chip",
+   "icon": "signal",
    "items": [
     {
      "t": "Naslon za teret"
@@ -1724,7 +1724,7 @@
   },
   {
    "group": "Pogonski sistem",
-   "icon": "bolt",
+   "icon": "engine",
    "items": [
     {
      "t": "AC motor od 3 kW (ne traži održavanje)"

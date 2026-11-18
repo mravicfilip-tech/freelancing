@@ -66,7 +66,7 @@
   },
   {
    "group": "Upravljanje",
-   "icon": "lever",
+   "icon": "wheel",
    "bullets": [
     "Platforma za podizanje do visine od 1,2 metra za lak pristup drugom nivou police",
     "Upravljanje podizanjem stuba Linde OptiLift omogućava mirno podizanje bez vibracija",
@@ -1134,7 +1134,7 @@
   },
   {
    "group": "Digitalizacija",
-   "icon": "chip",
+   "icon": "signal",
    "items": [
     {
      "t": "Prenos podataka preko interneta"
@@ -1158,7 +1158,7 @@
   },
   {
    "group": "Životna sredina",
-   "icon": "grid",
+   "icon": "leaf",
    "items": [
     {
      "t": "OptiLift ® sistem za platformu koja se podiže"
@@ -1251,7 +1251,7 @@
   },
   {
    "group": "Pogon i kočnice",
-   "icon": "bolt",
+   "icon": "engine",
    "items": [
     {
      "t": "Tandem točkići od poliuretana"

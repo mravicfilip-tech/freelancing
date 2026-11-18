@@ -73,7 +73,7 @@
   },
   {
    "group": "Upravljanje",
-   "icon": "lever",
+   "icon": "wheel",
    "bullets": [
     "Dizel motor prilagođava obrtni moment potrebnom naporu",
     "Broj obrtaja motora prema potrebi štedi gorivo",
@@ -1896,7 +1896,7 @@
   },
   {
    "group": "Digitalizacija",
-   "icon": "chip",
+   "icon": "signal",
    "items": [
     {
      "t": "Connect Access Control PIN"
@@ -1944,7 +1944,7 @@
   },
   {
    "group": "Životna sredina",
-   "icon": "grid",
+   "icon": "leaf",
    "items": [
     {
      "t": "Jedna upravljačka ručica, upravljanje pozicijom viljuški, kulisnog tipa"
@@ -1977,7 +1977,7 @@
   },
   {
    "group": "Elektronika",
-   "icon": "grid",
+   "icon": "circuit",
    "items": [
     {
      "t": "Roletne za sunce na prednjem i krovnom staklu"

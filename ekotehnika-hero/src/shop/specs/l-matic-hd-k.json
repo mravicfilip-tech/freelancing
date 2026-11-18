@@ -54,7 +54,7 @@
   },
   {
    "group": "Upravljanje",
-   "icon": "lever",
+   "icon": "wheel",
    "bullets": [
     "Intuitivan ekran osetljiv na dodir sa jednostavnim korisničkim interfejsom",
     "Usmeravanje i raspodela zadataka preko upravljačkog softvera",
@@ -941,7 +941,7 @@
   },
   {
    "group": "Digitalizacija",
-   "icon": "chip",
+   "icon": "signal",
    "items": [
     {
      "t": "Prenos podataka preko WiFi mreže"

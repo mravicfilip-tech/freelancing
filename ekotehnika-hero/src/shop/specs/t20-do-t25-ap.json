@@ -1142,7 +1142,7 @@
   },
   {
    "group": "Digitalizacija",
-   "icon": "chip",
+   "icon": "signal",
    "items": [
     {
      "t": "Prenos podataka preko interneta"
@@ -1166,7 +1166,7 @@
   },
   {
    "group": "Upravljanje i rukovanje teretom",
-   "icon": "lever",
+   "icon": "wheel",
    "items": [
     {
      "t": "Puzajuća brzina, za rad sa ručicom u uspravnom položaju",
@@ -1188,7 +1188,7 @@
   },
   {
    "group": "Životna sredina",
-   "icon": "grid",
+   "icon": "leaf",
    "items": [
     {
      "t": "Rad u hladnjači, -35 °C (ulazak i izlazak), sa metalnom rešetkom ili standardnom podnom prostirkom"
@@ -1281,7 +1281,7 @@
   },
   {
    "group": "Pogon i kočnice",
-   "icon": "bolt",
+   "icon": "engine",
    "items": [
     {
      "t": "Servo upravljanje"

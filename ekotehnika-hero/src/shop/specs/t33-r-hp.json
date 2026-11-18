@@ -60,7 +60,7 @@
   },
   {
    "group": "Upravljanje",
-   "icon": "lever",
+   "icon": "wheel",
    "bullets": [
     "Efikasno rukovanje robom brzinom do 20 km/h i nosivošću do 3.300 kg",
     "Snažno kretanje zahvaljujući dva pouzdana AC pogonska motora (48 V)",
@@ -690,7 +690,7 @@
   },
   {
    "group": "Digitalizacija",
-   "icon": "chip",
+   "icon": "signal",
    "items": [
     {
      "t": "Priprema za terminal za podatke"
@@ -714,7 +714,7 @@
   },
   {
    "group": "Životna sredina",
-   "icon": "grid",
+   "icon": "leaf",
    "items": [
     {
      "t": "Obrnuto upravljanje"

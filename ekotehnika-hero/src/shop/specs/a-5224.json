@@ -62,7 +62,7 @@
   },
   {
    "group": "Upravljanje",
-   "icon": "lever",
+   "icon": "wheel",
    "bullets": [
     "Opciona kamera na viljuškama i unakrsni laser olakšavaju rukovanje teretom na gornjim nivoima regala i smanjuju rizik od nezgoda",
     "Standardni i tripleks stubovi dostupni su do nosivosti od 1.500 kg",
@@ -1039,7 +1039,7 @@
   },
   {
    "group": "Životna sredina",
-   "icon": "grid",
+   "icon": "leaf",
    "items": [
     {
      "t": "Linde connect cloud Basic Package Network, osnovne funkcije upravljanja voznim parkom za mrežne partnere"
@@ -1069,7 +1069,7 @@
   },
   {
    "group": "Učinak pretovara",
-   "icon": "grid",
+   "icon": "gauge",
    "items": [
     {
      "t": "Sinhrono okretanje sa zaustavljanjem na 90°"
@@ -1177,7 +1177,7 @@
   },
   {
    "group": "Pogon i kočnice",
-   "icon": "bolt",
+   "icon": "engine",
    "items": [
     {
      "t": "Pomoćno podizanje (h9) do 1.105 mm"

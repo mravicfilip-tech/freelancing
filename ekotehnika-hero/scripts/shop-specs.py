@@ -80,16 +80,22 @@ def span(xs, prefix_when_many='do '):
 # the icon of a group of features or equipment, from the words of its English name, ModelSpec.tsx draws them
 ICONS = [
     ('shield', ('safety', 'security', 'protect')),
-    ('seat', ('ergonom', 'workplace', 'comfort', 'cab', 'operator', 'driver')),
-    ('lever', ('operation', 'control', 'handling', 'load handling', 'steer')),
+    ('seat', ('ergonom', 'workplace', 'workspace', 'comfort', 'cab', 'operator', 'driver', 'seat')),
+    ('lever', ('operation', 'control', 'joystick', 'pedal')),
+    ('wheel', ('handling', 'steer')),
     ('wrench', ('service', 'maintenance')),
     ('battery', ('battery', 'charg', 'energy', 'lithium', 'li-ion')),
-    ('bolt', ('drive', 'brake', 'engine', 'motor', 'power', 'transmission')),
+    ('leaf', ('environment', 'enviroment', 'emission', 'eco', 'green')),
+    ('circuit', ('electronic',)),
+    ('engine', ('drive', 'brake', 'engine', 'motor', 'power', 'transmission')),
     ('tyre', ('axle', 'tyre', 'tire', 'wheel', 'chassis')),
     ('mast', ('mast', 'lift')),
     ('fork', ('attach', 'fork')),
-    ('chip', ('digital', 'fleet', 'connect', 'data', 'assist', 'automat')),
-    ('gauge', ('perform', 'productiv', 'efficien', 'speed')),
+    ('truck', ('tow', 'trailer')),
+    ('signal', ('digital', 'fleet', 'connect', 'data', 'telemat', 'navigation')),
+    ('cpu', ('automat', 'assist', 'software', 'hmi')),
+    ('deal', ('sales', 'implementation', 'realisation')),
+    ('gauge', ('perform', 'productiv', 'efficien', 'speed', 'throughput')),
     ('bulb', ('light',)),
 ]
 

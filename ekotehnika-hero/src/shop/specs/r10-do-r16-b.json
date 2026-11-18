@@ -55,7 +55,7 @@
   },
   {
    "group": "Upravljanje",
-   "icon": "lever",
+   "icon": "wheel",
    "bullets": [
     "Visoka upravljivost zahvaljujući kratkom međuosovinskom razmaku, kompaktnoj šasiji i upravljanju od 180°",
     "Meko i precizno upravljanje vučom i hidrauličnim funkcijama zahvaljujući Linde Digital Control",
@@ -1287,7 +1287,7 @@
   },
   {
    "group": "Digitalizacija",
-   "icon": "chip",
+   "icon": "signal",
    "items": [
     {
      "t": "Nosač radio-data terminala"
@@ -1314,7 +1314,7 @@
   },
   {
    "group": "Životna sredina",
-   "icon": "grid",
+   "icon": "leaf",
    "items": [
     {
      "t": "Ventilator ispod zaštitnog krova"
@@ -1407,7 +1407,7 @@
   },
   {
    "group": "Pogon i kočnice",
-   "icon": "bolt",
+   "icon": "engine",
    "items": [
     {
      "t": "Četiri nezavisna kočiona sistema, regenerativno kočenje i kočenje protivstrujom, upravljanje kočnicom za držanje sa automatskom parkirnom kočnicom i kočioni sistem na svim točkovima"

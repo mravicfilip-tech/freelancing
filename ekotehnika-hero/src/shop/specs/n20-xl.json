@@ -62,7 +62,7 @@
   },
   {
    "group": "Upravljanje",
-   "icon": "lever",
+   "icon": "wheel",
    "bullets": [
     "Trofazni AC motor od 3 kW za efikasno ubrzanje do najveće brzine od 12 km/h",
     "Napajanje prilagođeno potrebama voznog parka, preko olovnih ili opcionih litijum-jonskih baterija",
@@ -874,7 +874,7 @@
   },
   {
    "group": "Digitalizacija",
-   "icon": "chip",
+   "icon": "signal",
    "items": [
     {
      "t": "dt, detekcija udara"
@@ -907,7 +907,7 @@
   },
   {
    "group": "Životna sredina",
-   "icon": "grid",
+   "icon": "leaf",
    "items": [
     {
      "t": "Kontrola laganog kretanja (samo napred ili napred / nazad)"
@@ -1012,7 +1012,7 @@
   },
   {
    "group": "Pogon i kočnice",
-   "icon": "bolt",
+   "icon": "engine",
    "items": [
     {
      "t": "Prostor za Li-ION bateriju (205 Ah / 410 Ah) sa bočnim utikačem za povremeno punjenje"

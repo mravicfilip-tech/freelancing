@@ -61,7 +61,7 @@
   },
   {
    "group": "Upravljanje",
-   "icon": "lever",
+   "icon": "wheel",
    "bullets": [
     "Direktno preuzimanje zatvorenih nosača tereta sa tla",
     "Neometano povezivanje sa Linde Warehouse Manager",
@@ -84,7 +84,7 @@
   },
   {
    "group": "Prodaja i realizacija",
-   "icon": "grid",
+   "icon": "deal",
    "bullets": [
     "Individualna automatizovana rešenja sa dinamičkom simulacijom i mogućnošću demonstracije u stvarnom procesnom okruženju na licu mesta",
     "Analiza ručnih procesa rukovanja i optimizacija stepena automatizacije prema potrebama kupca",
@@ -661,7 +661,7 @@
   },
   {
    "group": "Digitalizacija",
-   "icon": "chip",
+   "icon": "signal",
    "items": [
     {
      "t": "Prenos podataka preko WiFi mreže"

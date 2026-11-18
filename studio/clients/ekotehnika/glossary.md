@@ -7,7 +7,8 @@ checks copy against this file. Add a term the first time the UI needs a new one.
 |---|---|---|---|
 | Viljuškar | A forklift, any Linde truck | Forklift, Mašina | Every beat, Proizvodi |
 | Prodaja | Selling new and used Linde trucks, the P beat name | Kupovina | P beat, phone label |
-| Novi, Polovni | The nav labels for new and used trucks, as on ekotehnika.rs | Nova vozila | Nav, footer nav |
+| Prodavnica | The shop of new trucks on this site and its nav label, Filip's menu remap of 18 November, in place of Novi | Novi, Nova vozila | Nav, footer nav, shop |
+| Polovni | The nav label for used trucks, the only item that still leads to ekotehnika.rs | Nova vozila | Nav, footer nav |
 | Najam | Renting trucks, hours to a year | Iznajmljivanje, Rent | Nav, N beat |
 | Servis | Maintenance and repair by Ekotehnika, as a section name | Popravka | Nav, S beat, footer |
 | Održavanje | Maintenance included in a rental, as a fact, never a section name | | N spec row |

@@ -74,3 +74,9 @@ Round of 18 November, sent while the shop ran on his localhost. Planned and buil
     29 built as each open equipment group showing its first 4 lines and a Još N button for the rest.
 31. The top menu, "this menu doesn't make sense, remap it to new home page + shop with categories, contact page and so on". Screenshot
     marks Početna, Novi, Polovni, Najam, Servis, Kontakt. Shared by the homepage and the shop.
+    Filip's yes to the menu map, 18 November, "yes, go". Početna, Prodavnica with its categories, Najam and Servis to their homepage
+    chapters, Polovni on ekotehnika.rs, Kontakt, and Zatražite ponudu to the form with Kupovina picked.
+32. Karakteristike and Oprema, "better icon choices overall please". Screenshot marks the four feature icons, hand drawn glyphs that read
+    as an L, a pin and a blob. To be redrawn from a proper icon set in its solid style, per the taste ruling.
+33. "what is this menu here remove it". Screenshot marks the phone bar, Meni, Prodaja and Zatražite ponudu, under the footer on a wide
+    screen. The phone's bar showing where it never should.

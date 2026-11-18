@@ -342,7 +342,7 @@
   },
   {
    "group": "Upravljanje",
-   "icon": "lever",
+   "icon": "wheel",
    "bullets": [
     "Linde Load Control i upravljanje sa dve pedale obezbeđuju precizno upravljanje svim pokretima vožnje i stuba",
     "Cilindri za naginjanje postavljeni gore obezbeđuju torzionu krutost i veliku preostalu nosivost na velikim visinama podizanja",
@@ -2982,7 +2982,7 @@
   },
   {
    "group": "Pogon i kočnice",
-   "icon": "bolt",
+   "icon": "engine",
    "items": [
     {
      "t": "Linde hidrostatički pogon za visoku produktivnost i malu potrošnju goriva"
@@ -3120,7 +3120,7 @@
   },
   {
    "group": "Digitalizacija",
-   "icon": "chip",
+   "icon": "signal",
    "items": [
     {
      "t": "Prenos podataka preko interneta"

@@ -204,7 +204,7 @@
   },
   {
    "group": "Upravljanje",
-   "icon": "lever",
+   "icon": "wheel",
    "bullets": [
     "Intuitivno, progresivno upravljanje od 360° obezbeđuje optimalnu upravljivost",
     "Velika fleksibilnost zahvaljujući podesivom razmaku viljuški",
@@ -1211,7 +1211,7 @@
   },
   {
    "group": "Elektronika",
-   "icon": "grid",
+   "icon": "circuit",
    "items": [
     {
      "t": "Utičnica od 12 V"
@@ -1295,7 +1295,7 @@
   },
   {
    "group": "Pogon i kočnice",
-   "icon": "bolt",
+   "icon": "engine",
    "items": [
     {
      "t": "AC pogonski motor od 7,2 kW koji ne traži održavanje"

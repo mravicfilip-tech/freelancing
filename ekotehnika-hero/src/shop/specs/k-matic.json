@@ -54,7 +54,7 @@
   },
   {
    "group": "Upravljanje",
-   "icon": "lever",
+   "icon": "wheel",
    "bullets": [
     "3D prepoznavanje paleta olakšava utovar i istovar različitih nosača tereta",
     "Upravljački sistem za sve MATIC viljuškare",
@@ -75,7 +75,7 @@
   },
   {
    "group": "Prodaja i realizacija",
-   "icon": "grid",
+   "icon": "deal",
    "bullets": [
     "Automatizovana rešenja po meri projekta, uključujući dinamičku simulaciju i dokaz koncepta na licu mesta",
     "Procesi ručnog rukovanja i stepen automatizacije mogu se prilagoditi primeni",
@@ -913,7 +913,7 @@
  "equipment": [
   {
    "group": "Softver na vozilu",
-   "icon": "grid",
+   "icon": "cpu",
    "items": [
     {
      "t": "Navigacija po konturama"
@@ -925,7 +925,7 @@
   },
   {
    "group": "Softver van vozila",
-   "icon": "grid",
+   "icon": "cpu",
    "items": [
     {
      "t": "Napredni algoritam za određivanje putanje"
@@ -976,7 +976,7 @@
   },
   {
    "group": "Rukovanje teretom",
-   "icon": "lever",
+   "icon": "wheel",
    "items": [
     {
      "t": "Otkrivanje tereta 3D kamerom"
@@ -1009,7 +1009,7 @@
   },
   {
    "group": "Životna sredina",
-   "icon": "grid",
+   "icon": "leaf",
    "items": [
     {
      "t": "WLAN komunikacija"

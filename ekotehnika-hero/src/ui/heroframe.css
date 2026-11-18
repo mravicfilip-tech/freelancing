@@ -461,6 +461,84 @@
   }
 }
 
+/* ---- the shop's categories under Prodavnica, a panel under the nav while the pointer or the focus is on Prodavnica, Filip 18 November,
+   "remap it to new home page + shop with categories". The four kinds of truck side by side, see ui/ShopNav.tsx. ---- */
+.hf-sub {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  z-index: 60;
+  padding-top: 16px;
+  color: var(--black);
+  visibility: hidden;
+  opacity: 0;
+  transform: translateY(8px);
+  transition:
+    opacity 160ms,
+    transform 200ms var(--ease-wipe),
+    visibility 0s linear 200ms;
+  pointer-events: none;
+}
+
+.hf-has-sub:is(:hover, :focus-within) > .hf-sub {
+  visibility: visible;
+  opacity: 1;
+  transform: none;
+  transition:
+    opacity 160ms,
+    transform 200ms var(--ease-wipe),
+    visibility 0s;
+  pointer-events: auto;
+}
+
+/* while the panel is open the frame stands over the story's plus marks (z 25), which otherwise draw across the panel */
+.hf:has(.hf-has-sub:is(:hover, :focus-within)) {
+  z-index: 30;
+}
+
+.hf-sub-in {
+  padding: 24px;
+  background: var(--white);
+  box-shadow:
+    inset 0 0 0 1px var(--grey-light),
+    0 16px 48px rgb(0 0 0 / 0.12);
+}
+
+.hf-sub-gs {
+  display: grid;
+  grid-template-columns: repeat(4, max-content);
+  gap: 32px;
+}
+
+.hf-sub-h {
+  margin: 0 0 8px;
+  color: var(--grey-dark);
+  font: 500 14px/20px var(--font);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.hf-nav .hf-sub ul {
+  display: block;
+}
+
+.hf-nav .hf-sub a {
+  display: inline-block;
+  padding: 4px 0;
+  font: 400 16px/24px var(--font);
+  white-space: nowrap;
+}
+
+.hf-sub-foot {
+  margin-top: 24px;
+  padding-top: 16px;
+  border-top: 1px solid var(--grey-light);
+}
+
+.hf-nav .hf-sub a.hf-sub-all {
+  font-weight: 500;
+}
+
 .hf-actions {
   grid-area: acts;
   justify-self: end;
@@ -757,6 +835,7 @@
     flex-direction: column;
     padding: 0 16px 16px;
     overflow-y: auto;
+    overscroll-behavior: contain;
     background: var(--white);
     color: var(--black);
     pointer-events: auto;
@@ -814,6 +893,63 @@
   .hf-menu-links a[aria-current='page'] {
     text-decoration: underline 2px;
     text-underline-offset: 6px;
+  }
+
+  /* Prodavnica's row in the sheet, the link and a plus that opens the shop's categories under it, two to a row */
+  .hf-menu-row {
+    display: flex;
+    align-items: stretch;
+  }
+
+  .hf-menu-row > a {
+    flex: 1;
+  }
+
+  .hf-menu-more {
+    position: relative;
+    flex: none;
+    width: 56px;
+    padding: 0;
+    border: 0;
+    border-left: 1px solid var(--grey-light);
+    background: none;
+    color: inherit;
+    cursor: pointer;
+  }
+
+  .hf-menu-more::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    width: 20px;
+    height: 20px;
+    margin: auto;
+    background: currentColor;
+    -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3E%3Cpath d='M9 3h2v6h6v2h-6v6H9v-6H3V9h6z'/%3E%3C/svg%3E") center / contain no-repeat;
+    mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3E%3Cpath d='M9 3h2v6h6v2h-6v6H9v-6H3V9h6z'/%3E%3C/svg%3E") center / contain no-repeat;
+  }
+
+  .hf-menu-more[aria-expanded='true']::after {
+    -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3E%3Cpath d='M3 9h14v2H3z'/%3E%3C/svg%3E") center / contain no-repeat;
+    mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3E%3Cpath d='M3 9h14v2H3z'/%3E%3C/svg%3E") center / contain no-repeat;
+  }
+
+  .hf-menu-cats:not([hidden]) {
+    display: grid;
+    margin: 0;
+    padding: 0 0 12px;
+    list-style: none;
+  }
+
+  .hf-menu-links .hf-menu-cats li {
+    border-top: 0;
+  }
+
+  .hf-menu-links .hf-menu-cats a {
+    min-height: 40px;
+    font-size: 16px;
+    line-height: 20px;
+    letter-spacing: 0;
   }
 
   .hf-menu-calls {

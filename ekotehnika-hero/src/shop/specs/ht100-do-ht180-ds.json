@@ -220,7 +220,7 @@
   },
   {
    "group": "Upravljanje",
-   "icon": "lever",
+   "icon": "wheel",
    "bullets": [
     "Precizno i brzo rukovanje povećava protok robe",
     "Efikasan dizel motor smanjuje potrošnju goriva i izduvne emisije",
@@ -2260,7 +2260,7 @@
   },
   {
    "group": "Digitalizacija",
-   "icon": "chip",
+   "icon": "signal",
    "items": [
     {
      "t": "Centralna servisna kutija"
@@ -2311,7 +2311,7 @@
   },
   {
    "group": "Životna sredina",
-   "icon": "grid",
+   "icon": "leaf",
    "items": [
     {
      "t": "Klipna pumpa promenljive zapremine"
@@ -2338,7 +2338,7 @@
   },
   {
    "group": "Elektronika",
-   "icon": "grid",
+   "icon": "circuit",
    "items": [
     {
      "t": "Otvorena kabina sa krovom od ojačanog stakla"

@@ -129,7 +129,7 @@
   },
   {
    "group": "Upravljanje",
-   "icon": "lever",
+   "icon": "wheel",
    "bullets": [
     "Hidrostatički direktni pogon za brz, miran i precizan odziv",
     "Izdržljivi motori na dizel, TNG ili prirodni gas daju visok obrtni moment uz malu potrošnju goriva",
@@ -2058,7 +2058,7 @@
   },
   {
    "group": "Pogon i kočnice",
-   "icon": "bolt",
+   "icon": "engine",
    "items": [
     {
      "t": "Linde hidrostatička transmisija za izuzetnu kontrolu viljuškara i malu potrošnju goriva"
@@ -2212,7 +2212,7 @@
   },
   {
    "group": "Digitalizacija",
-   "icon": "chip",
+   "icon": "signal",
    "items": [
     {
      "t": "Prenos podataka preko interneta"

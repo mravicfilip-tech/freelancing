@@ -2355,7 +2355,7 @@
   },
   {
    "group": "Digitalizacija",
-   "icon": "chip",
+   "icon": "signal",
    "items": [
     {
      "t": "Opsežan digitalni prikaz instrumenata"
@@ -2400,7 +2400,7 @@
   },
   {
    "group": "Životna sredina",
-   "icon": "grid",
+   "icon": "leaf",
    "items": [
     {
      "t": "Naslon za ruku podesiv po visini"
@@ -2424,7 +2424,7 @@
   },
   {
    "group": "Elektronika",
-   "icon": "grid",
+   "icon": "circuit",
    "items": [
     {
      "t": "Električna sirena i isključivač za nuždu"
@@ -2529,7 +2529,7 @@
   },
   {
    "group": "Pogon i kočnice",
-   "icon": "bolt",
+   "icon": "engine",
    "items": [
     {
      "t": "Četiri nezavisna sistema kočenja, rekuperativno kočenje i kočenje protivstrujom, upravljanje kočnicom za držanje sa automatskom parkirnom kočnicom i kočenje na svim točkovima"

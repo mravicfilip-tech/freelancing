@@ -1,15 +1,23 @@
-// The frame of a shop page, the homepage's own top row in flow, not over a scene. The two logos to the homepage, the nav with Novi or
-// Kontakt as the page, the two phone buttons and the one primary, the same classes as HeroFrame so it looks the same (heroframe.css).
+// The frame of a shop page, the homepage's own top row in flow, not over a scene. The two logos to the homepage, the nav with Prodavnica
+// or Kontakt as the page and the shop's categories under Prodavnica, the two phone buttons and the one primary, the same classes as HeroFrame so it looks the same (heroframe.css).
 // On a screen held upright the row is the logos only, 120px, and scrolls away, and the bar at the foot has the menu, the call and the
 // quote, the homepage's phone bar. The menu sheet stands over the page.
 import { createPortal } from 'react-dom';
 import { hero } from '../content';
 import { BtnInner } from '../story2/shell/ui';
 import { hrefOf, links, useMenu } from '../ui/HeroFrame';
+import { ShopSheetItem, ShopSub, type LinkFn } from '../ui/ShopNav';
 import { Link } from './route';
 import '../ui/heroframe.css';
 
-export function ShopFrame({ page }: { page: 'Novi' | 'Kontakt' }) {
+// a link inside the shop, the shop's own Link, a page of the shop opens without a reload
+const shopLink: LinkFn = (href, children, className, current) => (
+  <Link href={href} className={className} aria-current={current ? 'page' : undefined}>
+    {children}
+  </Link>
+);
+
+export function ShopFrame({ page }: { page: 'Prodavnica' | 'Kontakt' }) {
   const menu = useMenu();
   const nav = links.map((l) => ({ ...l, current: l.label === page }));
   const anchor = (l: (typeof nav)[number], className?: string) =>
@@ -41,7 +49,10 @@ export function ShopFrame({ page }: { page: 'Novi' | 'Kontakt' }) {
         <nav className="hf-nav" aria-label="Glavna navigacija">
           <ul>
             {nav.map((l) => (
-              <li key={l.label}>{anchor(l)}</li>
+              <li key={l.label} className={l.sub ? 'hf-has-sub' : undefined}>
+                {anchor(l)}
+                {l.sub ? <ShopSub link={shopLink} /> : null}
+              </li>
             ))}
           </ul>
         </nav>
@@ -65,7 +76,9 @@ export function ShopFrame({ page }: { page: 'Novi' | 'Kontakt' }) {
       {typeof document === 'undefined'
         ? null
         : createPortal(
-            <div className="hf-bar sp-bar" data-menu={menu.open ? '' : undefined}>
+            // the homepage's phone bar exactly, it once also carried sp-bar, the filter bar's class, whose display flex drew it on every
+            // screen under the footer (Filip 18 November, "what is this menu here remove it")
+            <div className="hf-bar" data-menu={menu.open ? '' : undefined}>
               <button
                 type="button"
                 className="btn btn-secondary hf-bar-menu"
@@ -95,9 +108,13 @@ export function ShopFrame({ page }: { page: 'Novi' | 'Kontakt' }) {
           </button>
         </div>
         <ul className="hf-menu-links" onClick={(e) => (e.target as HTMLElement).closest('a') && menu.setOpen(false)}>
-          {nav.map((l) => (
-            <li key={l.label}>{anchor(l)}</li>
-          ))}
+          {nav.map((l) =>
+            l.sub ? (
+              <ShopSheetItem label={l.label} href={hrefOf(l)} current={l.current} link={shopLink} key={l.label} />
+            ) : (
+              <li key={l.label}>{anchor(l)}</li>
+            ),
+          )}
         </ul>
         <div className="hf-menu-calls">
           {[hero.sales, hero.service].map((p) => (

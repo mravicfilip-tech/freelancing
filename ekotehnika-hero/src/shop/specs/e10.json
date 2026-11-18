@@ -64,7 +64,7 @@
   },
   {
    "group": "Upravljanje",
-   "icon": "lever",
+   "icon": "wheel",
    "bullets": [
     "Jednostavno i intuitivno upravljanje za precizan i efikasan rad",
     "Mali napor pri upravljanju zahvaljujući upravljanju zavisnom od brzine",
@@ -898,7 +898,7 @@
   },
   {
    "group": "Digitalizacija",
-   "icon": "chip",
+   "icon": "signal",
    "items": [
     {
      "t": "Linde connect ac, kontrola pristupa RFID"
@@ -922,7 +922,7 @@
   },
   {
    "group": "Elektronika",
-   "icon": "grid",
+   "icon": "circuit",
    "items": [
     {
      "t": "Pokazivač baterije preko CAN-BUS-a"

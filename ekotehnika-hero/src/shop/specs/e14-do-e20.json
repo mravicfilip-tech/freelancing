@@ -231,7 +231,7 @@
   },
   {
    "group": "Upravljanje",
-   "icon": "lever",
+   "icon": "wheel",
    "bullets": [
     "Potpuno integrisane mere zaštite od eksplozije čuvaju odličnu preglednost i prostranost kabine vozača",
     "Radno mesto vozača izolovano od udara i vibracija sa puta elastomernim prstenastim ležajevima, što smanjuje vibracije i zamor vozača",
@@ -2922,7 +2922,7 @@
   },
   {
    "group": "Digitalizacija",
-   "icon": "chip",
+   "icon": "signal",
    "items": [
     {
      "t": "Praćenje stanja ATEX relevantnih bezbednosnih vrednosti preko Linde EX-Monitoring App"
@@ -3054,7 +3054,7 @@
   },
   {
    "group": "Pogon i kočnice",
-   "icon": "bolt",
+   "icon": "engine",
    "items": [
     {
      "t": "48-voltni pogon prednjih točkova sa dva motora, sa kontrolom vuče i pomoći na rampama"

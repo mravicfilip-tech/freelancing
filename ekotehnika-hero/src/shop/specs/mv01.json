@@ -58,7 +58,7 @@
   },
   {
    "group": "Upravljanje",
-   "icon": "lever",
+   "icon": "wheel",
    "bullets": [
     "Platforma za podizanje do visine od 3 metra za lak pristup drugom i trećem nivou regala",
     "Snažan DC motor omogućava maksimalnu brzinu do 6,5 km/h",
@@ -636,7 +636,7 @@
   },
   {
    "group": "Pogon i kočnice",
-   "icon": "bolt",
+   "icon": "engine",
    "items": [
     {
      "t": "Li-ION baterija 24 V / 135 Ah"

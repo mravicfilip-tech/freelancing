@@ -226,7 +226,7 @@
   },
   {
    "group": "Upravljanje",
-   "icon": "lever",
+   "icon": "wheel",
    "bullets": [
     "Brzine podizanja i spuštanja do 20 procenata iznad standarda u industriji",
     "Linde kombinovana ili zglobna upravljačka osovina obezbeđuju upravljivost i stabilnost u zatvorenom i na otvorenom",
@@ -1767,7 +1767,7 @@
   },
   {
    "group": "Digitalizacija",
-   "icon": "chip",
+   "icon": "signal",
    "items": [
     {
      "t": "Prenos podataka preko interneta"
@@ -1917,7 +1917,7 @@
   },
   {
    "group": "Pogon i kočnice",
-   "icon": "bolt",
+   "icon": "engine",
    "items": [
     {
      "t": "Pogon na prednje točkove sa dva motora od 90 V, sa kontrolom vuče i pomoći pri kretanju na nagibu"

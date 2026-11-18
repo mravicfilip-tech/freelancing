@@ -263,7 +263,7 @@
   },
   {
    "group": "Upravljanje",
-   "icon": "lever",
+   "icon": "wheel",
    "bullets": [
     "Potpuno integrisane mere zaštite od eksplozije čuvaju odličnu preglednost i prostranost kabine vozača",
     "Izuzetna upravljivost zahvaljujući pogonu na prednje točkove sa dva motora i kombinovanoj upravljačkoj osovini",
@@ -1837,7 +1837,7 @@
   },
   {
    "group": "Digitalizacija",
-   "icon": "chip",
+   "icon": "signal",
    "items": [
     {
      "t": "Praćenje stanja ATEX relevantnih bezbednosnih vrednosti preko Linde EX-Monitoring App"
@@ -1972,7 +1972,7 @@
   },
   {
    "group": "Pogon i kočnice",
-   "icon": "bolt",
+   "icon": "engine",
    "items": [
     {
      "t": "Pogon na prednje točkove sa dva motora i elektronskom kontrolom vuče"

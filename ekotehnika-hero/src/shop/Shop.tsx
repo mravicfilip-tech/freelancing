@@ -261,7 +261,7 @@ function Gallery({ p }: { p: Product }) {
           <img src={s.src} alt={`Linde ${p.code}, fotografija ${n(at)}`} decoding="async" />
         </div>
       )}
-      <div className="sp-gal-row" role="group" aria-label="Slike modela">
+      <div className="sp-gal-row" role="group" aria-label="Slike modela" style={{ '--n': shots.length <= 4 ? shots.length : 3 } as React.CSSProperties}>
         {shots.map((x, i) => (
           <button
             type="button"

@@ -40,3 +40,17 @@ Round of 18 November, sent while the shop ran on his localhost. Planned and buil
 18. The model's photos, "these should be moved above here and have gallery preview". Screenshots mark Fotografije and the empty space
     under the main picture. Built as thumbnails under the main picture, the render first, a click shows that picture in the main frame,
     and the Fotografije section under the page goes.
+19. The model's pictures, "make images bigger, we have al ot of white space use it". Screenshot marks the empty space under the
+    thumbnails. Built as thumbnails grown into tiles across the frame, three or four to a row at 4 to 3, and the main picture's height
+    cap raised from 640px to 800px.
+20. Karakteristike, "use proper icons". Screenshot shows solid black squares where the icons belong, the shapes never drew on his
+    browser. The icons passed their shape through a CSS variable, the ticks wrote theirs directly and drew fine. Each icon now writes its
+    shape directly.
+21. Verzije, "add maybe recommended tag here, style this better". Screenshot marks the space beside H18. Built as a Preporučeno tag in the
+    site's Akcija label style on one model group, the middle one by default, set per series in src/shop/recommended.json, the client to
+    name the real one. Only that group is tinted, the others split by a hairline, the fuel letters small and grey under each model.
+22. Sve tehničke karakteristike, "stlye this better please". Screenshot of the open full table. Built as the unit on the label's line
+    in grey, the VDI number in its own narrow column, every row one line high, each section's name ruled off under it, and a faint
+    highlight on the row under the pointer.
+23. Oprema, "where icons". Screenshot shows black squares and the top row closed, from before the icon fix was pushed. The top row now
+    opens from the first render instead of after it.

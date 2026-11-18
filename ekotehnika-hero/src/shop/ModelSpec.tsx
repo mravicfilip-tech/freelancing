@@ -4,8 +4,9 @@
 // every line is the sheet's. The page grows by four parts, a description, four figures and why this model at the top, then the
 // features in the grid's four frames, the versions side by side with the whole table and the masts closed under them, and the equipment
 // by group, each group closed. A model without a sheet keeps the page it had.
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Cell } from './parts';
+import recommended from './recommended.json';
 
 export type Spec = {
   slug: string;
@@ -128,9 +129,11 @@ function Val({ v, note }: { v: string | null; note?: string }) {
 
 const versionWord = (n: number) => (n % 10 >= 2 && n % 10 <= 4 && (n % 100 < 12 || n % 100 > 14) ? 'verzije' : 'verzija');
 
-// The versions of one model side by side, Filip 18 November, "1,2, or evne 3 rows should stand out". Versions named like H16 D, H16 T,
-// H16 CNG fall into one group per model, the model's name over its group and every other group on a tint, so the eye takes a model at
-// a time. A series whose versions are all different models keeps one column each.
+// The versions of one model side by side, Filip 18 November, "1,2, or evne 3 rows should stand out", then "add maybe recommended tag here,
+// style this better". Versions named like H16 D, H16 T, H16 CNG fall into one group per model, the model's name over its group, the fuel
+// letters under it, a hairline between groups. One group is the recommended one, on a tint with a Preporučeno tag. Which one is the
+// client's to say, per series in recommended.json, the middle group until they do. A series whose versions are all different models
+// treats each version as its own group.
 type Group = { name: string; n: number };
 function groupsOf(versions: string[]): Group[] | null {
   const out: Group[] = [];
@@ -140,30 +143,58 @@ function groupsOf(versions: string[]): Group[] | null {
     if (last && last.name === name) last.n += 1;
     else out.push({ name, n: 1 });
   });
-  return out.length > 1 && out.length < versions.length ? out : null;
+  // a group only reads as one when each model has two versions or more, H16 D, T and CNG, never a lone R14 beside R14 HD
+  return out.length > 1 && out.every((g) => g.n > 1) ? out : null;
 }
 
-function TableHead({ versions, groups }: { versions: string[]; groups: Group[] | null }) {
-  const band = bandsOf(versions, groups);
+const RECOMMENDED = recommended as Record<string, string>;
+
+// the columns of each group, which column opens a group and which belong to the recommended one
+function layoutOf(slug: string, versions: string[], groups: Group[] | null) {
+  const units = groups ?? versions.map((v) => ({ name: v, n: 1 }));
+  const named = units.findIndex((g) => g.name === RECOMMENDED[slug]);
+  const rec = named >= 0 ? named : units.length > 1 ? Math.floor((units.length - 1) / 2) : -1;
+  const col: { rec: boolean; start: boolean }[] = [];
+  units.forEach((g, gi) => {
+    for (let k = 0; k < g.n; k++) col.push({ rec: gi === rec, start: Boolean(groups) && k === 0 && gi > 0 });
+  });
+  return { units, rec, col };
+}
+
+const cls = (c: { rec: boolean; start: boolean } | undefined) =>
+  [c?.rec ? 'is-rec' : '', c?.start ? 'is-gs' : ''].filter(Boolean).join(' ') || undefined;
+
+const Tag = () => <span className="sp-price-l sp-rec-tag">Preporučeno</span>;
+
+function TableHead({ slug, versions, groups }: { slug: string; versions: string[]; groups: Group[] | null }) {
+  const { units, rec, col } = layoutOf(slug, versions, groups);
   return (
     <thead>
       {groups ? (
         <tr className="is-grp">
           <td />
-          {groups.map((g, i) => (
-            <th scope="colgroup" colSpan={g.n} className={i % 2 ? 'is-band' : undefined} key={i}>
-              {g.name}
+          {units.map((g, i) => (
+            <th scope="colgroup" colSpan={g.n} className={cls({ rec: i === rec, start: i > 0 })} key={i}>
+              <span className="sp-grp-n">{g.name}</span>
+              {i === rec ? <Tag /> : null}
             </th>
           ))}
         </tr>
       ) : null}
-      <tr>
+      <tr className={groups ? 'is-fuel' : undefined}>
         <th scope="col">
           <span className="sr-only">Podatak</span>
         </th>
         {versions.map((v, i) => (
-          <th scope="col" className={band[i] ? 'is-band' : undefined} key={i}>
-            {groups ? v.split(' ').slice(1).join(' ') || v : v}
+          <th scope="col" className={cls(col[i])} key={i}>
+            {groups ? (
+              v.split(' ').slice(1).join(' ') || v
+            ) : (
+              <>
+                {col[i].rec ? <Tag /> : null}
+                <span className="sp-grp-n">{v}</span>
+              </>
+            )}
           </th>
         ))}
       </tr>
@@ -171,30 +202,25 @@ function TableHead({ versions, groups }: { versions: string[]; groups: Group[] |
   );
 }
 
-const bandsOf = (versions: string[], groups: Group[] | null) => {
-  if (!groups) return versions.map(() => false);
-  return groups.flatMap((g, i) => Array.from({ length: g.n }, () => i % 2 === 1));
-};
-
 export function SpecVersions({ spec }: { spec: Spec }) {
   const { versions, compare, table, masts, footnotes } = spec;
   if (!versions.length || !compare.length) return null;
   const groups = groupsOf(versions);
-  const band = bandsOf(versions, groups);
-  const cell = (i: number) => (band[i] ? 'is-band' : undefined);
+  const { col } = layoutOf(spec.slug, versions, groups);
+  const cell = (i: number) => cls(col[i]);
   return (
     <section className="sp-frame sp-vers" aria-labelledby="sp-vers-h">
       <Head id="sp-vers-h" label="Verzije" note={`${versions.length} ${versionWord(versions.length)}, podaci po VDI 2198`} />
       <Cell span={4} className="sp-vers-c">
         <div className="sp-tbl-wrap" role="region" aria-labelledby="sp-vers-h" tabIndex={0}>
           <table className="sp-tbl">
-            <TableHead versions={versions} groups={groups} />
+            <TableHead slug={spec.slug} versions={versions} groups={groups} />
             <tbody>
               {compare.map((r, ri) => (
                 <tr key={ri}>
                   <th scope="row">
                     {r.label}
-                    {r.unit ? <span className="sp-tbl-u">{r.unit}</span> : null}
+                    {r.unit ? <span className="sp-tbl-u"> {r.unit}</span> : null}
                   </th>
                   {versions.map((_, i) => (
                     <td className={cell(i)} key={i}>
@@ -213,7 +239,7 @@ export function SpecVersions({ spec }: { spec: Spec }) {
           </summary>
           <div className="sp-tbl-wrap" role="region" aria-label="Sve tehničke karakteristike" tabIndex={0}>
             <table className="sp-tbl is-full">
-              <TableHead versions={versions} groups={groups} />
+              <TableHead slug={spec.slug} versions={versions} groups={groups} />
               {table.map((s, si) => (
                 <tbody key={si}>
                   <tr className="is-sec">
@@ -224,9 +250,13 @@ export function SpecVersions({ spec }: { spec: Spec }) {
                   {s.rows.map((r, ri) => (
                     <tr key={ri}>
                       <th scope="row">
-                        <span className="sp-tbl-no">{r.no}</span>
-                        {r.label}
-                        {r.unit ? <span className="sp-tbl-u">{r.unit}</span> : null}
+                        <span className="sp-tbl-h">
+                          <span className="sp-tbl-no">{r.no}</span>
+                          <span>
+                            {r.label}
+                            {r.unit ? <span className="sp-tbl-u"> {r.unit}</span> : null}
+                          </span>
+                        </span>
                       </th>
                       {versions.map((_, i) => (
                         <td className={cell(i)} key={i}>
@@ -299,21 +329,15 @@ export function SpecVersions({ spec }: { spec: Spec }) {
 // phone all are closed, Filip 18 November, "keep top row open always (but not on mobile)".
 export function SpecEquipment({ spec }: { spec: Spec }) {
   const groups = spec.equipment;
-  const root = useRef<HTMLElement>(null);
-  useEffect(() => {
-    if (window.matchMedia('(max-aspect-ratio: 4/5)').matches) return;
-    root.current?.querySelectorAll('details').forEach((d, i) => {
-      if (i < 4) d.open = true;
-    });
-  }, [spec.slug]);
+  const [wide] = useState(() => !window.matchMedia('(max-aspect-ratio: 4/5)').matches);
   if (!groups.length) return null;
   return (
-    <section className="sp-frame sp-equip" aria-labelledby="sp-equip-h" ref={root}>
+    <section className="sp-frame sp-equip" aria-labelledby="sp-equip-h" key={spec.slug}>
       <Head id="sp-equip-h" label="Oprema" note="Šta je standardno, a šta dodatna oprema, piše u tehničkom listu." />
       {groups.map((g, gi) => (
         <Cell className="sp-eq" key={gi}>
           <Icon name={g.icon} />
-          <details className="sp-more-d">
+          <details className="sp-more-d" open={wide && gi < 4 ? true : undefined}>
             <summary>
               <span>{g.group}</span>
               <span className="sp-eq-n">{g.items.length}</span>

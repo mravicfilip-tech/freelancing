@@ -3,5 +3,10 @@
   "framework": "vite",
   "buildCommand": "npm run build",
   "outputDirectory": "dist",
+  "rewrites": [
+    { "source": "/prodavnica", "destination": "/index.html" },
+    { "source": "/prodavnica/(.*)", "destination": "/index.html" },
+    { "source": "/kontakt", "destination": "/index.html" }
+  ],
   "git": { "deploymentEnabled": { "claude/*": false } }
 }

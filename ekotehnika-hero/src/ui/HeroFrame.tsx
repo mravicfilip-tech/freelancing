@@ -21,14 +21,18 @@ export type FrameTone = 'ink' | 'white';
 
 // ch names the story chapter a link stands for. In the story the nav's bar sits under that link while its chapter is on
 // screen, and under Početna where the chapter has no link, see StoryShell.
-const links = [
+// local marks a page of this site, the shop and its form (Filip 18 November, "Novi and Kontakt in the menu point into it"). The others
+// stay on ekotehnika.rs. The shop's own frame reads the same list, see shop/ShopFrame.tsx.
+export type NavLink = { label: string; href: string; current?: boolean; ch?: string; local?: boolean };
+export const links: NavLink[] = [
   { label: 'Početna', href: '/', current: true, ch: 'home' },
-  { label: 'Novi', href: '/viljuskari/', ch: 'prodaja' },
+  { label: 'Novi', href: '/prodavnica', ch: 'prodaja', local: true },
   { label: 'Polovni', href: '/polovni-linde-viljuskari/' },
   { label: 'Najam', href: '/iznajmljivanje-viljuskara-cena/', ch: 'najam' },
   { label: 'Servis', href: '/servis/odrzavanje-i-popravka/', ch: 'servis' },
-  { label: 'Kontakt', href: '/kontakt/' },
+  { label: 'Kontakt', href: '/kontakt', local: true },
 ];
+export const hrefOf = (l: NavLink) => (l.local ? l.href : `${SITE}${l.href}`);
 
 // Past the pinned story, to the content that follows it. Falls back to the bottom of the page.
 function skip(e: MouseEvent<HTMLAnchorElement>) {
@@ -46,7 +50,7 @@ function skip(e: MouseEvent<HTMLAnchorElement>) {
 // The menu sheet of the tall layout, the phone version, briefs/mobile/plan.md. It stands over the whole stage with the six links of the nav
 // and both phone numbers. Escape and the close button shut it, focus goes to the close button on opening, stays inside the sheet while it is
 // open and returns to the menu button on closing. On a screen that is not tall the bar and the sheet are display none, see heroframe.css.
-function useMenu() {
+export function useMenu() {
   const [open, setOpen] = useState(false);
   const button = useRef<HTMLButtonElement>(null);
   const sheet = useRef<HTMLDivElement>(null);
@@ -128,7 +132,7 @@ export function HeroFrame({ tone, toneBottom, rootRef }: { tone: FrameTone; tone
           <ul>
             {links.map((l) => (
               <li key={l.label}>
-                <a href={`${SITE}${l.href}`} aria-current={l.current ? 'page' : undefined} data-ch={l.ch}>
+                <a href={hrefOf(l)} aria-current={l.current ? 'page' : undefined} data-ch={l.ch}>
                   {l.label}
                 </a>
               </li>
@@ -209,7 +213,7 @@ export function HeroFrame({ tone, toneBottom, rootRef }: { tone: FrameTone; tone
         <ul className="hf-menu-links">
           {links.map((l) => (
             <li key={l.label}>
-              <a href={`${SITE}${l.href}`} aria-current={l.current ? 'page' : undefined}>
+              <a href={hrefOf(l)} aria-current={l.current ? 'page' : undefined}>
                 {l.label}
               </a>
             </li>

@@ -4,8 +4,9 @@ Filip, 18 November 2026. "We need to start working on the shop, the shop will be
 categories from their google drive that they gave us and use those products, start working on styling everything." "The ekotehnika scroll
 through page is just the homepage which will lead to the shop."
 
-Status. Filip answered the kickoff on 18 November, "yes, go with defaults", to the hardened questions. The answers are below and bind
-the build. Nothing is built yet.
+Status. Filip answered the kickoff on 18 November, "yes, go with defaults", to the hardened questions, then "just continue here" and
+"build all today". Built the same day, the four pages, the form and its server function, the homepage's links. The catalogue is
+`ekotehnika-hero/src/shop/catalog.json`, rebuilt from the Drive by `ekotehnika-hero/scripts/shop-catalog.py`.
 
 ## The answers, binding
 

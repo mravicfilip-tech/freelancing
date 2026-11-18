@@ -1,0 +1,1958 @@
+{
+ "categories": [
+  {
+   "slug": "elektricni-ceoni-viljuskari",
+   "name": "Električni čeoni viljuškari",
+   "kind": "Električni viljuškar",
+   "drive": "E - ELEKTRO ČEONI VILJUŠKARI",
+   "count": 14
+  },
+  {
+   "slug": "dizel-i-plinski-ceoni-viljuskari",
+   "name": "Dizel i plinski čeoni viljuškari",
+   "kind": "Čeoni viljuškar",
+   "drive": "IC - DIZEL I PLINSKI ČEONI VILJUŠKARI",
+   "count": 4
+  },
+  {
+   "slug": "viljuskari-velike-nosivosti",
+   "name": "Viljuškari velike nosivosti",
+   "kind": "Čeoni viljuškar",
+   "drive": "HEAVY TRUCKS",
+   "count": 3
+  },
+  {
+   "slug": "regalni-viljuskari",
+   "name": "Regalni viljuškari",
+   "kind": "Regalni viljuškar",
+   "drive": "REACH TRUCKS",
+   "count": 5
+  },
+  {
+   "slug": "viljuskari-za-komisioniranje",
+   "name": "Viljuškari za komisioniranje",
+   "kind": "Viljuškar za komisioniranje",
+   "drive": "ORDER PICKER",
+   "count": 7
+  },
+  {
+   "slug": "slagaci-paleta",
+   "name": "Slagači paleta",
+   "kind": "Slagač paleta",
+   "drive": "PALLET STACKER",
+   "count": 17
+  },
+  {
+   "slug": "niskopodizna-vozila",
+   "name": "Niskopodizna vozila",
+   "kind": "Transporter",
+   "drive": "PALLET TRUCK",
+   "count": 13
+  },
+  {
+   "slug": "tegljaci",
+   "name": "Tegljači",
+   "kind": "Tegljač",
+   "drive": "TOW TRACTORS",
+   "count": 13
+  },
+  {
+   "slug": "viljuskari-za-uske-prolaze",
+   "name": "Viljuškari za uske prolaze",
+   "kind": "Uskohodnični viljuškar",
+   "drive": "VNA Very Narrow Aisle Trucks",
+   "count": 2
+  },
+  {
+   "slug": "automatizovana-vozila",
+   "name": "Automatizovana vozila",
+   "kind": "Autonomni viljuškar",
+   "drive": "AUTOMATED TRUCKS",
+   "count": 11
+  }
+ ],
+ "products": [
+  {
+   "slug": "e10",
+   "category": "elektricni-ceoni-viljuskari",
+   "code": "E10",
+   "kind": "Električni viljuškar",
+   "series": "8917",
+   "drive": "E10 - Series 8917",
+   "match": "exact",
+   "kg": 1000,
+   "mm": 5400,
+   "render": "/shop/e10.webp",
+   "look": "studio",
+   "thumb": "/shop/e10-s.webp",
+   "photos": [
+    "/shop/e10-f1.webp",
+    "/shop/e10-f2.webp"
+   ],
+   "datasheet": {
+    "name": "DS_E10_8917_en_A_1219_view.pdf",
+    "href": "https://drive.google.com/uc?export=download&id=1pnrA4zlRf_3V3hpNujaBulPP64Af5Jhk"
+   }
+  },
+  {
+   "slug": "e14-do-e20",
+   "category": "elektricni-ceoni-viljuskari",
+   "code": "E14 do E20",
+   "kind": "Električni viljuškar",
+   "series": "1251",
+   "drive": "E14 - E20 Series 1251",
+   "match": "exact",
+   "kg": 2000,
+   "mm": 8000,
+   "render": "/shop/e14-do-e20.webp",
+   "look": "render",
+   "thumb": "/shop/e14-do-e20-s.webp",
+   "photos": [
+    "/shop/e14-do-e20-f1.webp",
+    "/shop/e14-do-e20-f2.webp"
+   ],
+   "datasheet": {
+    "name": "DS_E14-E20_EX_1251-25_en_A_1025_view.pdf",
+    "href": "https://drive.google.com/uc?export=download&id=1bw8g6QNmRooYagaktHT_YTTPwLjA_hdp"
+   }
+  },
+  {
+   "slug": "e16-do-e20",
+   "category": "elektricni-ceoni-viljuskari",
+   "code": "E16 do E20",
+   "kind": "Električni viljuškar",
+   "series": "1275",
+   "drive": "E16 - E20 Series 1275",
+   "match": "none",
+   "kg": null,
+   "mm": null,
+   "render": "/shop/e16-do-e20.webp",
+   "look": "scene",
+   "thumb": "/shop/e16-do-e20-s.webp",
+   "photos": [],
+   "datasheet": {
+    "name": "DS_E16_E20_BR1275_en_A_0419_view.pdf",
+    "href": "https://drive.google.com/uc?export=download&id=11pU6qzxKJFvWMZzl5uYph9EKFjALxHdH"
+   }
+  },
+  {
+   "slug": "e16-do-e20-p",
+   "category": "elektricni-ceoni-viljuskari",
+   "code": "E16 do E20 P",
+   "kind": "Električni viljuškar",
+   "series": "1251",
+   "drive": "E16 P - E20 P Series 1251",
+   "match": "exact",
+   "kg": 2000,
+   "mm": 8000,
+   "render": "/shop/e16-do-e20-p.webp",
+   "look": "render",
+   "thumb": "/shop/e16-do-e20-p-s.webp",
+   "photos": [
+    "/shop/e16-do-e20-p-f1.webp"
+   ],
+   "datasheet": {
+    "name": "DS_E16-E20_P_EX_1251-25_en_A_1025_view.pdf",
+    "href": "https://drive.google.com/uc?export=download&id=176YMGe41Hy6L8iiPTcqiVHlTQ0SGTTA2"
+   }
+  },
+  {
+   "slug": "e20-do-e35",
+   "category": "elektricni-ceoni-viljuskari",
+   "code": "E20 do E35",
+   "kind": "Električni viljuškar",
+   "series": "1252",
+   "drive": "E20 - E35 Series 1252",
+   "match": "exact",
+   "kg": 3500,
+   "mm": 7780,
+   "render": "/shop/e20-do-e35.webp",
+   "look": "render",
+   "thumb": "/shop/e20-do-e35-s.webp",
+   "photos": [
+    "/shop/e20-do-e35-f1.webp",
+    "/shop/e20-do-e35-f2.webp"
+   ],
+   "datasheet": {
+    "name": "DS_E25_E35_EX_1252-25_en_C_0323_view.pdf",
+    "href": "https://drive.google.com/uc?export=download&id=1lWzduRkIUOo_WJalSNGiJPyE8ZDyQxle"
+   }
+  },
+  {
+   "slug": "e25s-do-e35s-sh",
+   "category": "elektricni-ceoni-viljuskari",
+   "code": "E25S do E35S SH",
+   "kind": "Električni viljuškar",
+   "series": "1276-00",
+   "drive": "E25S - E35S_SH Series 1276-00 EMEA",
+   "match": "none",
+   "kg": null,
+   "mm": null,
+   "render": null,
+   "look": null,
+   "thumb": null,
+   "photos": [],
+   "datasheet": {
+    "name": "DS_E25S-E35S_SH_1276-00_EMEA_en_A_view_0223.pdf",
+    "href": "https://drive.google.com/uc?export=download&id=1UzbFMWb7MuLSk8uotVhw38vWkia1I7c-"
+   }
+  },
+  {
+   "slug": "e35-do-e50",
+   "category": "elektricni-ceoni-viljuskari",
+   "code": "E35 do E50",
+   "kind": "Električni viljuškar",
+   "series": "1254",
+   "drive": "E35 - E50 Series 1254",
+   "match": "exact",
+   "kg": 5000,
+   "mm": 8665,
+   "render": "/shop/e35-do-e50.webp",
+   "look": "render",
+   "thumb": "/shop/e35-do-e50-s.webp",
+   "photos": [
+    "/shop/e35-do-e50-f1.webp",
+    "/shop/e35-do-e50-f2.webp"
+   ],
+   "datasheet": {
+    "name": "DS_E40–E50 EX_1254-25_en_A_1124_VIEW.pdf",
+    "href": "https://drive.google.com/uc?export=download&id=13g26uLGdvsUQBHVtukTxZelOj_yd3hPy"
+   }
+  },
+  {
+   "slug": "e60-do-e80",
+   "category": "elektricni-ceoni-viljuskari",
+   "code": "E60 do E80",
+   "kind": "Električni viljuškar",
+   "series": "1279",
+   "drive": "E60 - E80 Series 1279",
+   "match": "exact",
+   "kg": 8000,
+   "mm": 8670,
+   "render": "/shop/e60-do-e80.webp",
+   "look": "render",
+   "thumb": "/shop/e60-do-e80-s.webp",
+   "photos": [
+    "/shop/e60-do-e80-f1.webp",
+    "/shop/e60-do-e80-f2.webp"
+   ],
+   "datasheet": {
+    "name": "DS_E60-E80_1279_en_B_0224_VIEW.pdf",
+    "href": "https://drive.google.com/uc?export=download&id=1UZwthIrVb1dMqtOSUQqYfkQ4OqJEcnYz"
+   }
+  },
+  {
+   "slug": "eg16-do-eg20",
+   "category": "elektricni-ceoni-viljuskari",
+   "code": "EG16 do EG20",
+   "kind": "Električni viljuškar",
+   "series": "1275-02",
+   "drive": "EG16 - EG20 Series 1275-02",
+   "match": "none",
+   "kg": null,
+   "mm": null,
+   "render": "/shop/eg16-do-eg20.webp",
+   "look": "render",
+   "thumb": "/shop/eg16-do-eg20-s.webp",
+   "photos": [
+    "/shop/eg16-do-eg20-f1.webp",
+    "/shop/eg16-do-eg20-f2.webp"
+   ],
+   "datasheet": {
+    "name": "DS_EG16-EG20_1275-02_en_B_0623_view.pdf",
+    "href": "https://drive.google.com/uc?export=download&id=1xi0Ji9SBoRYNp8qUAkid9GmSV7tw7VVC"
+   }
+  },
+  {
+   "slug": "eg25-do-eg35",
+   "category": "elektricni-ceoni-viljuskari",
+   "code": "EG25 do EG35",
+   "kind": "Električni viljuškar",
+   "series": "1276",
+   "drive": "EG25 - EG35 Series 1276",
+   "match": "none",
+   "kg": null,
+   "mm": null,
+   "render": "/shop/eg25-do-eg35.webp",
+   "look": "render",
+   "thumb": "/shop/eg25-do-eg35-s.webp",
+   "photos": [
+    "/shop/eg25-do-eg35-f1.webp"
+   ],
+   "datasheet": {
+    "name": "DS_EG25_ EG35_1276-02_en_B_1223_VIEW.pdf",
+    "href": "https://drive.google.com/uc?export=download&id=1iM6qK2Bpw8bNNMWDRKbGWyVqpSjLLght"
+   }
+  },
+  {
+   "slug": "x20-do-x35",
+   "category": "elektricni-ceoni-viljuskari",
+   "code": "X20 do X35",
+   "kind": "Električni viljuškar",
+   "series": "1252",
+   "drive": "X20 - X35 Series 1252",
+   "match": "exact",
+   "kg": 3500,
+   "mm": 7780,
+   "render": "/shop/x20-do-x35.webp",
+   "look": "render",
+   "thumb": "/shop/x20-do-x35-s.webp",
+   "photos": [
+    "/shop/x20-do-x35-f1.webp",
+    "/shop/x20-do-x35-f2.webp"
+   ],
+   "datasheet": {
+    "name": "DS_X20_X35_1252_en_A_0621_view.pdf",
+    "href": "https://drive.google.com/uc?export=download&id=1NRKtoDjuEvn3lPKW70v4k3hG91gfw1eP"
+   }
+  },
+  {
+   "slug": "x35-do-x50",
+   "category": "elektricni-ceoni-viljuskari",
+   "code": "X35 do X50",
+   "kind": "Električni viljuškar",
+   "series": "1254",
+   "drive": "X35 - X50 Series 1254",
+   "match": "exact",
+   "kg": 5000,
+   "mm": 7665,
+   "render": "/shop/x35-do-x50.webp",
+   "look": "render",
+   "thumb": "/shop/x35-do-x50-s.webp",
+   "photos": [
+    "/shop/x35-do-x50-f1.webp",
+    "/shop/x35-do-x50-f2.webp"
+   ],
+   "datasheet": {
+    "name": "DS_X35_X50_1254_en_A_0323_view.pdf",
+    "href": "https://drive.google.com/uc?export=download&id=1s5ugHgjDKz1tvFNntXW3SN8rT2znJgKh"
+   }
+  },
+  {
+   "slug": "xi10-do-xi20",
+   "category": "elektricni-ceoni-viljuskari",
+   "code": "Xi10 do Xi20",
+   "kind": "Električni viljuškar sa tri točka",
+   "series": "1251",
+   "drive": "Xi10 - Xi20 Series 1251",
+   "match": "exact",
+   "kg": 2000,
+   "mm": 8000,
+   "render": "/shop/xi10-do-xi20.webp",
+   "look": "render",
+   "thumb": "/shop/xi10-do-xi20-s.webp",
+   "photos": [
+    "/shop/xi10-do-xi20-f1.webp",
+    "/shop/xi10-do-xi20-f2.webp"
+   ],
+   "datasheet": {
+    "name": "DS_Xi14–Xi20_R_Xi16–Xi20_RP_1251_en_B_0625_VIEW.pdf",
+    "href": "https://drive.google.com/uc?export=download&id=1FqubNBKsb_kDyk150ebTxpSVCb9A9SVj"
+   }
+  },
+  {
+   "slug": "xi16-do-xi20-p",
+   "category": "elektricni-ceoni-viljuskari",
+   "code": "Xi16 do Xi20 P",
+   "kind": "Električni viljuškar",
+   "series": "1251",
+   "drive": "Xi16 P - Xi20 P Series 1251",
+   "match": "exact",
+   "kg": 2000,
+   "mm": 8000,
+   "render": "/shop/xi16-do-xi20-p.webp",
+   "look": "render",
+   "thumb": "/shop/xi16-do-xi20-p-s.webp",
+   "photos": [
+    "/shop/xi16-do-xi20-p-f1.webp",
+    "/shop/xi16-do-xi20-p-f2.webp"
+   ],
+   "datasheet": {
+    "name": "DS_Xi16-Xi20_P_1251_en_B_0825_view.pdf",
+    "href": "https://drive.google.com/uc?export=download&id=1JPvjo70M-C_khDWeOSDc5KqYsUmGYHsL"
+   }
+  },
+  {
+   "slug": "h16-do-h20",
+   "category": "dizel-i-plinski-ceoni-viljuskari",
+   "code": "H16 do H20",
+   "kind": "Čeoni viljuškar",
+   "series": "391",
+   "drive": "H14  - H20 EVO Series 391",
+   "match": "guess",
+   "kg": null,
+   "mm": null,
+   "render": "/shop/h16-do-h20.webp",
+   "look": "render",
+   "thumb": "/shop/h16-do-h20-s.webp",
+   "photos": [
+    "/shop/h16-do-h20-f1.webp",
+    "/shop/h16-do-h20-f2.webp"
+   ],
+   "datasheet": {
+    "name": "DS_H16_H20_391_EN_J_1024_view.pdf",
+    "href": "https://drive.google.com/uc?export=download&id=1NAv3cMk5dps5AsNIHd9wVkvp0Al05BRL"
+   }
+  },
+  {
+   "slug": "h20-do-h35",
+   "category": "dizel-i-plinski-ceoni-viljuskari",
+   "code": "H20 do H35",
+   "kind": "Čeoni viljuškar",
+   "series": "1202",
+   "drive": "H20 - H35 Series 1202",
+   "match": "exact",
+   "kg": 3500,
+   "mm": 7780,
+   "render": "/shop/h20-do-h35.webp",
+   "look": "render",
+   "thumb": "/shop/h20-do-h35-s.webp",
+   "photos": [
+    "/shop/h20-do-h35-f1.webp",
+    "/shop/h20-do-h35-f2.webp"
+   ],
+   "datasheet": {
+    "name": "DS_H20_H35_1202_en_C_1020_view.pdf",
+    "href": "https://drive.google.com/uc?export=download&id=1A_n0xDMmSwAoVfPlCu92kECc1OTHKoB9"
+   }
+  },
+  {
+   "slug": "h35-do-h50",
+   "category": "dizel-i-plinski-ceoni-viljuskari",
+   "code": "H35 do H50",
+   "kind": "Čeoni viljuškar",
+   "series": "1204",
+   "drive": "H35 - H50 Series 1204",
+   "match": "exact",
+   "kg": 5000,
+   "mm": 7665,
+   "render": "/shop/h35-do-h50.webp",
+   "look": "render",
+   "thumb": "/shop/h35-do-h50-s.webp",
+   "photos": [
+    "/shop/h35-do-h50-f1.webp",
+    "/shop/h35-do-h50-f2.webp"
+   ],
+   "datasheet": {
+    "name": "DS_H35-H50_1204_en_B_0724_view.pdf",
+    "href": "https://drive.google.com/uc?export=download&id=12hUX19vMvd-I7bk20EIEbVEMCAhgQ7YS"
+   }
+  },
+  {
+   "slug": "h50-do-h80",
+   "category": "dizel-i-plinski-ceoni-viljuskari",
+   "code": "H50 do H80",
+   "kind": "Čeoni viljuškar",
+   "series": "396-04",
+   "drive": "H50 - H80 Series 396-04",
+   "match": "exact",
+   "kg": 8000,
+   "mm": 9655,
+   "render": "/shop/h50-do-h80.webp",
+   "look": "scene",
+   "thumb": "/shop/h50-do-h80-s.webp",
+   "photos": [
+    "/shop/h50-do-h80-f1.webp",
+    "/shop/h50-do-h80-f2.webp"
+   ],
+   "datasheet": {
+    "name": "DS_H50-H80_396-04_en_P_0924_VIEW.pdf",
+    "href": "https://drive.google.com/uc?export=download&id=1-5dpvwVq3pxiiKknKvhvQu59f8gRdHNg"
+   }
+  },
+  {
+   "slug": "e100-do-e180",
+   "category": "viljuskari-velike-nosivosti",
+   "code": "E100 do E180",
+   "kind": "Električni viljuškar",
+   "series": "1471",
+   "drive": "E100 - E180 Series 1471",
+   "match": "exact",
+   "kg": 18000,
+   "mm": 7000,
+   "render": "/shop/e100-do-e180.webp",
+   "look": "render",
+   "thumb": "/shop/e100-do-e180-s.webp",
+   "photos": [
+    "/shop/e100-do-e180-f1.webp",
+    "/shop/e100-do-e180-f2.webp"
+   ],
+   "datasheet": {
+    "name": "DS_E100-E180_1471_en_C_0225_view.pdf",
+    "href": "https://drive.google.com/uc?export=download&id=1I1xdSPUZtA358eEjIPHUk87fFeLwdFAF"
+   }
+  },
+  {
+   "slug": "h100-do-h180-d",
+   "category": "viljuskari-velike-nosivosti",
+   "code": "H100 do H180 D",
+   "kind": "Čeoni viljuškar",
+   "series": "1401",
+   "drive": "H100 - H180 Series 1401",
+   "match": "exact",
+   "kg": 18000,
+   "mm": 9500,
+   "render": "/shop/h100-do-h180-d.webp",
+   "look": "render",
+   "thumb": "/shop/h100-do-h180-d-s.webp",
+   "photos": [
+    "/shop/h100-do-h180-d-f1.webp",
+    "/shop/h100-do-h180-d-f2.webp"
+   ],
+   "datasheet": {
+    "name": "DS_Rotating_Cabin_BR1401_en_A_0414_view.pdf",
+    "href": "https://drive.google.com/uc?export=download&id=1KMAFBf7NYFjG0ovpiwaJtnW8VWRu4meW"
+   }
+  },
+  {
+   "slug": "ht100-do-ht180-ds",
+   "category": "viljuskari-velike-nosivosti",
+   "code": "HT100 do HT180 Ds",
+   "kind": "Čeoni viljuškar",
+   "series": "1411",
+   "drive": "HT100 - HT180 Series 1411",
+   "match": "exact",
+   "kg": 18000,
+   "mm": 9500,
+   "render": "/shop/ht100-do-ht180-ds.webp",
+   "look": "render",
+   "thumb": "/shop/ht100-do-ht180-ds-s.webp",
+   "photos": [
+    "/shop/ht100-do-ht180-ds-f1.webp",
+    "/shop/ht100-do-ht180-ds-f2.webp"
+   ],
+   "datasheet": {
+    "name": "DS_HT100_D-HT180_D_1411_en_I_0523_view.pdf",
+    "href": "https://drive.google.com/uc?export=download&id=1y1OcEwNWEuTw53sD0tdpklbYl72VIda8"
+   }
+  },
+  {
+   "slug": "r10-do-r16-b",
+   "category": "regalni-viljuskari",
+   "code": "R10 do R16 B",
+   "kind": "Regalni viljuškar",
+   "series": "1120",
+   "drive": "R10 - R16 B Series 1120",
+   "match": "exact",
+   "kg": 1600,
+   "mm": 7710,
+   "render": "/shop/r10-do-r16-b.webp",
+   "look": "render",
+   "thumb": "/shop/r10-do-r16-b-s.webp",
+   "photos": [
+    "/shop/r10-do-r16-b-f1.webp"
+   ],
+   "datasheet": {
+    "name": "DS_R10_R16B_1120_en_D_1020_view.pdf",
+    "href": "https://drive.google.com/uc?export=download&id=1uRgLqTbBaAMuNrd2VXcD8ayhDY5zZyUY"
+   }
+  },
+  {
+   "slug": "r14-do-r17-x",
+   "category": "regalni-viljuskari",
+   "code": "R14 do R17 X",
+   "kind": "Regalni viljuškar",
+   "series": "116",
+   "drive": "R14 - R17X Series 116",
+   "match": "exact",
+   "kg": 1700,
+   "mm": 12755,
+   "render": "/shop/r14-do-r17-x.webp",
+   "look": "render",
+   "thumb": "/shop/r14-do-r17-x-s.webp",
+   "photos": [
+    "/shop/r14-do-r17-x-f1.webp",
+    "/shop/r14-do-r17-x-f2.webp"
+   ],
+   "datasheet": {
+    "name": "DS_R14_17X_BR116_03_en_F_1216_view.pdf",
+    "href": "https://drive.google.com/uc?export=download&id=1MhAzqI7YjS6Zlmb2wFKQ5rCL6g2IKgI9"
+   }
+  },
+  {
+   "slug": "r14-do-r20-g",
+   "category": "regalni-viljuskari",
+   "code": "R14 do R20 G",
+   "kind": "Regalni viljuškar",
+   "series": "1120",
+   "drive": "R14 - R20 G Series 1120",
+   "match": "exact",
+   "kg": 2000,
+   "mm": 7710,
+   "render": "/shop/r14-do-r20-g.webp",
+   "look": "render",
+   "thumb": "/shop/r14-do-r20-g-s.webp",
+   "photos": [
+    "/shop/r14-do-r20-g-f1.webp",
+    "/shop/r14-do-r20-g-f2.webp"
+   ],
+   "datasheet": {
+    "name": "DS_R14_R20G_1120_en_E_1020_view.pdf",
+    "href": "https://drive.google.com/uc?export=download&id=1B96cGJJ8QuzsZq8pSatmrxn3gZjeZGbO"
+   }
+  },
+  {
+   "slug": "r14-do-r25",
+   "category": "regalni-viljuskari",
+   "code": "R14 do R25",
+   "kind": "Regalni viljuškar",
+   "series": "1120",
+   "drive": "R14 - R25 Series 1120",
+   "match": "exact",
+   "kg": 2500,
+   "mm": 14955,
+   "render": "/shop/r14-do-r25.webp",
+   "look": "render",
+   "thumb": "/shop/r14-do-r25-s.webp",
+   "photos": [
+    "/shop/r14-do-r25-f1.webp",
+    "/shop/r14-do-r25-f2.webp"
+   ],
+   "datasheet": {
+    "name": "DS_R14_R25_HD_W_N_1120_en_D_1224_view.PDF",
+    "href": "https://drive.google.com/uc?export=download&id=1imNgmDx3BLSucGyAP2PP5Ui9fZwWf2fy"
+   }
+  },
+  {
+   "slug": "r20-do-r25-f",
+   "category": "regalni-viljuskari",
+   "code": "R20 do R25 F",
+   "kind": "Regalni viljuškar",
+   "series": "8923",
+   "drive": "R20 - R25 F Series 8923",
+   "match": "exact",
+   "kg": 2500,
+   "mm": 9650,
+   "render": "/shop/r20-do-r25-f.webp",
+   "look": "render",
+   "thumb": "/shop/r20-do-r25-f-s.webp",
+   "photos": [
+    "/shop/r20-do-r25-f-f1.webp"
+   ],
+   "datasheet": {
+    "name": "DS_R20–R25_F_8923_en_B_0125_VIEW.pdf",
+    "href": "https://drive.google.com/uc?export=download&id=1sttjXbsHYPHX8yBwyusQhtNGrJYsXa5g"
+   }
+  },
+  {
+   "slug": "mv01",
+   "category": "viljuskari-za-komisioniranje",
+   "code": "MV01",
+   "kind": "Viljuškar za komisioniranje",
+   "series": "8905",
+   "drive": "MV01 Series 8905",
+   "match": "exact",
+   "kg": 100,
+   "mm": 3620,
+   "render": "/shop/mv01.webp",
+   "look": "render",
+   "thumb": "/shop/mv01-s.webp",
+   "photos": [
+    "/shop/mv01-f1.webp",
+    "/shop/mv01-f2.webp"
+   ],
+   "datasheet": {
+    "name": "DS_MV01_8905_en_C_0623_view.pdf",
+    "href": "https://drive.google.com/uc?export=download&id=1ZDJhPWMdexs-w9EJsENEKaTVJ-eKpRO2"
+   }
+  },
+  {
+   "slug": "n16-do-n25",
+   "category": "viljuskari-za-komisioniranje",
+   "code": "N16 do N25",
+   "kind": "Viljuškar za komisioniranje",
+   "series": "1115",
+   "drive": "N16 - N25 Series 1115",
+   "match": "exact",
+   "kg": 2500,
+   "mm": 115,
+   "render": "/shop/n16-do-n25.webp",
+   "look": "render",
+   "thumb": "/shop/n16-do-n25-s.webp",
+   "photos": [
+    "/shop/n16-do-n25-f1.webp",
+    "/shop/n16-do-n25-f2.webp"
+   ],
+   "datasheet": {
+    "name": "DS_N20_N25_SA_1115-4590_en_D_0323_view.pdf",
+    "href": "https://drive.google.com/uc?export=download&id=1Xs7_AI1OrBAemX8cHCgfb6TJfFyIs5ck"
+   }
+  },
+  {
+   "slug": "n20-do-n25-c",
+   "category": "viljuskari-za-komisioniranje",
+   "code": "N20 do N25 C",
+   "kind": "Viljuškar za komisioniranje",
+   "series": "4587",
+   "drive": "N20 - N25 C Series 4587_4589_4590",
+   "match": "exact",
+   "kg": 2000,
+   "mm": 100,
+   "render": "/shop/n20-do-n25-c.webp",
+   "look": "render",
+   "thumb": "/shop/n20-do-n25-c-s.webp",
+   "photos": [
+    "/shop/n20-do-n25-c-f1.webp",
+    "/shop/n20-do-n25-c-f2.webp"
+   ],
+   "datasheet": null
+  },
+  {
+   "slug": "n20-xl",
+   "category": "viljuskari-za-komisioniranje",
+   "code": "N20 XL",
+   "kind": "Viljuškar za komisioniranje",
+   "series": "1115",
+   "drive": "N20 XL Series 1115",
+   "match": "exact",
+   "kg": 600,
+   "mm": 750,
+   "render": "/shop/n20-xl.webp",
+   "look": "render",
+   "thumb": "/shop/n20-xl-s.webp",
+   "photos": [],
+   "datasheet": {
+    "name": "DS_N20_XL_1115_en_B_1020_view.pdf",
+    "href": "https://drive.google.com/uc?export=download&id=1bgi6B9LESliiwV-0DBRWdehXzd8IbNaO"
+   }
+  },
+  {
+   "slug": "v-modular",
+   "category": "viljuskari-za-komisioniranje",
+   "code": "V modular",
+   "kind": "Viljuškar za komisioniranje",
+   "series": "5214",
+   "drive": "V Modular Series 5214",
+   "match": "exact",
+   "kg": 1200,
+   "mm": 12660,
+   "render": "/shop/v-modular.webp",
+   "look": "render",
+   "thumb": "/shop/v-modular-s.webp",
+   "photos": [
+    "/shop/v-modular-f1.webp",
+    "/shop/v-modular-f2.webp"
+   ],
+   "datasheet": {
+    "name": "DS_V modular_5214_en_A_0123_view.pdf",
+    "href": "https://drive.google.com/uc?export=download&id=16g5dRiZw0AbvC9K1BREatxut28kCAgi-"
+   }
+  },
+  {
+   "slug": "v08",
+   "category": "viljuskari-za-komisioniranje",
+   "code": "V08",
+   "kind": "Viljuškar za komisioniranje",
+   "series": "4594",
+   "drive": "V08 Series 4594",
+   "match": "exact",
+   "kg": 1000,
+   "mm": 1877,
+   "render": "/shop/v08.webp",
+   "look": "render",
+   "thumb": "/shop/v08-s.webp",
+   "photos": [
+    "/shop/v08-f1.webp",
+    "/shop/v08-f2.webp"
+   ],
+   "datasheet": {
+    "name": "DS_V08 _4594_en_F_0622_view.pdf",
+    "href": "https://drive.google.com/uc?export=download&id=1Fc9R9qb4LUuIP3vSqEoQGHTCMx57KJp5"
+   }
+  },
+  {
+   "slug": "v10",
+   "category": "viljuskari-za-komisioniranje",
+   "code": "V10",
+   "kind": "Viljuškar za komisioniranje",
+   "series": "5021",
+   "drive": "V10 Series 5021",
+   "match": "exact",
+   "kg": 1000,
+   "mm": 5415,
+   "render": "/shop/v10.webp",
+   "look": "render",
+   "thumb": "/shop/v10-s.webp",
+   "photos": [
+    "/shop/v10-f1.webp",
+    "/shop/v10-f2.webp"
+   ],
+   "datasheet": {
+    "name": "DS_V10_BR5021_en_F_0119_view.pdf",
+    "href": "https://drive.google.com/uc?export=download&id=1oJHBbzuhK2YlR-YMqx0fGcD3skTBlPEI"
+   }
+  },
+  {
+   "slug": "d06-do-d10",
+   "category": "slagaci-paleta",
+   "code": "D06 do D10",
+   "kind": "Paletni viljuškar",
+   "series": "1162",
+   "drive": "D06-D10, D80 M Series 1162",
+   "match": "exact",
+   "kg": 2000,
+   "mm": 2024,
+   "render": "/shop/d06-do-d10.webp",
+   "look": "render",
+   "thumb": "/shop/d06-do-d10-s.webp",
+   "photos": [
+    "/shop/d06-do-d10-f1.webp"
+   ],
+   "datasheet": {
+    "name": "DS_D06-D10_D08M_1162_en_C_0725__view.pdf",
+    "href": "https://drive.google.com/uc?export=download&id=1gt6a3f_7YRI4zFcXgUq77hGusS-TOAsf"
+   }
+  },
+  {
+   "slug": "d10-ap",
+   "category": "slagaci-paleta",
+   "code": "D10 AP",
+   "kind": "Paletni viljuškar",
+   "series": "1163",
+   "drive": "D10 AP Series 1163",
+   "match": "exact",
+   "kg": 1200,
+   "mm": 2424,
+   "render": "/shop/d10-ap.webp",
+   "look": "render",
+   "thumb": "/shop/d10-ap-s.webp",
+   "photos": [
+    "/shop/d10-ap-f1.webp",
+    "/shop/d10-ap-f2.webp"
+   ],
+   "datasheet": {
+    "name": "DS_D10AP_1163_en_C_0524_view.pdf",
+    "href": "https://drive.google.com/uc?export=download&id=1ARUp_EjTo287W_3lPRBEZ__R9_AnJURE"
+   }
+  },
+  {
+   "slug": "d10",
+   "category": "slagaci-paleta",
+   "code": "D10",
+   "kind": "Slagač paleta",
+   "series": "1163",
+   "drive": "D10 Series 1163",
+   "match": "exact",
+   "kg": 1200,
+   "mm": 2424,
+   "render": "/shop/d10.webp",
+   "look": "render",
+   "thumb": "/shop/d10-s.webp",
+   "photos": [
+    "/shop/d10-f1.webp",
+    "/shop/d10-f2.webp"
+   ],
+   "datasheet": {
+    "name": "DS_D10_BR1163_en_A_1018_view.pdf",
+    "href": "https://drive.google.com/uc?export=download&id=1_C57m_VL2kCRPCfZ1i4CMqgKjZ-pUrbu"
+   }
+  },
+  {
+   "slug": "d12-r",
+   "category": "slagaci-paleta",
+   "code": "D12 R",
+   "kind": "Paletni viljuškar",
+   "series": "1164",
+   "drive": "D12 R Series 1164",
+   "match": "exact",
+   "kg": 1200,
+   "mm": 2344,
+   "render": "/shop/d12-r.webp",
+   "look": "render",
+   "thumb": "/shop/d12-r-s.webp",
+   "photos": [
+    "/shop/d12-r-f1.webp",
+    "/shop/d12-r-f2.webp"
+   ],
+   "datasheet": {
+    "name": "DS_D12R_BR1164_en_A_0517_view.pdf",
+    "href": "https://drive.google.com/uc?export=download&id=1D1YllS2PxdljyPW30EX6FIyCyWnwtz_c"
+   }
+  },
+  {
+   "slug": "d12-rw",
+   "category": "slagaci-paleta",
+   "code": "D12 RW",
+   "kind": "Slagač paleta",
+   "series": "1164",
+   "drive": "D12 RW Series 1164",
+   "match": "exact",
+   "kg": 1200,
+   "mm": 2844,
+   "render": "/shop/d12-rw.webp",
+   "look": "studio",
+   "thumb": "/shop/d12-rw-s.webp",
+   "photos": [
+    "/shop/d12-rw-f1.webp"
+   ],
+   "datasheet": {
+    "name": "DS_D12RW_BR_1164_en_A_0618_view.pdf",
+    "href": "https://drive.google.com/uc?export=download&id=1PJwq7CHjDS9B9HQHI9jzZDCyZj6r0lj4"
+   }
+  },
+  {
+   "slug": "d12-s-sf",
+   "category": "slagaci-paleta",
+   "code": "D12 S/SF",
+   "kind": "Paletni viljuškar",
+   "series": "1164",
+   "drive": "D12 S Series 1164",
+   "match": "exact",
+   "kg": 1800,
+   "mm": 1724,
+   "render": "/shop/d12-s-sf.webp",
+   "look": "render",
+   "thumb": "/shop/d12-s-sf-s.webp",
+   "photos": [
+    "/shop/d12-s-sf-f1.webp",
+    "/shop/d12-s-sf-f2.webp"
+   ],
+   "datasheet": {
+    "name": "DS_D12S_D12SF_BR1164_en_C_0517_view.pdf",
+    "href": "https://drive.google.com/uc?export=download&id=1P0ojdo5sNiCTiM-HVeRCueX7ZMEqhhyE"
+   }
+  },
+  {
+   "slug": "d12-do-d14-ap",
+   "category": "slagaci-paleta",
+   "code": "D12 do D14 AP",
+   "kind": "Paletni viljuškar",
+   "series": "1173",
+   "drive": "D12-D14 AP Series 1173",
+   "match": "exact",
+   "kg": 1400,
+   "mm": 4266,
+   "render": "/shop/d12-do-d14-ap.webp",
+   "look": "render",
+   "thumb": "/shop/d12-do-d14-ap-s.webp",
+   "photos": [],
+   "datasheet": {
+    "name": "DS_D12_D14_AP_1173_en_B_0524_view.PDF",
+    "href": "https://drive.google.com/uc?export=download&id=1k_YQWkZNZX_7tqWlj3zOZ6IRFHRuXTCb"
+   }
+  },
+  {
+   "slug": "l03-ex",
+   "category": "slagaci-paleta",
+   "code": "L03 EX",
+   "kind": "Slagač paleta",
+   "series": "1172",
+   "drive": "L03 EX Series 1172",
+   "match": "none",
+   "kg": null,
+   "mm": null,
+   "render": "/shop/l03-ex.webp",
+   "look": "render",
+   "thumb": "/shop/l03-ex-s.webp",
+   "photos": [
+    "/shop/l03-ex-f1.webp",
+    "/shop/l03-ex-f2.webp"
+   ],
+   "datasheet": null
+  },
+  {
+   "slug": "l06-do-l16-ac",
+   "category": "slagaci-paleta",
+   "code": "L06 do L16 AC",
+   "kind": "Slagač paleta",
+   "series": "1171",
+   "drive": "L06 - L16 AC Series 1171",
+   "match": "exact",
+   "kg": 1600,
+   "mm": 4266,
+   "render": "/shop/l06-do-l16-ac.webp",
+   "look": "render",
+   "thumb": "/shop/l06-do-l16-ac-s.webp",
+   "photos": [
+    "/shop/l06-do-l16-ac-f1.webp"
+   ],
+   "datasheet": {
+    "name": "DS_L06_L16_AC_EX_1171_25_en_A_1121_view.pdf",
+    "href": "https://drive.google.com/uc?export=download&id=13iyJ2axKFq-VmnaH4f3eaXrLqfaAmJJ3"
+   }
+  },
+  {
+   "slug": "l10-do-l12-b-as",
+   "category": "slagaci-paleta",
+   "code": "L10 do L12 B AS",
+   "kind": "Slagač paleta",
+   "series": "4596",
+   "drive": "L10-L12 B AS Series 4596",
+   "match": "exact",
+   "kg": 1200,
+   "mm": 4686,
+   "render": "/shop/l10-do-l12-b-as.webp",
+   "look": "render",
+   "thumb": "/shop/l10-do-l12-b-as-s.webp",
+   "photos": [],
+   "datasheet": {
+    "name": "DS_L10-L12B_AS_4596_en_A_0724_view.pdf",
+    "href": "https://drive.google.com/uc?export=download&id=1cI1tOWG7gOHOu_3hoEHa_GtNNoLmUXZ_"
+   }
+  },
+  {
+   "slug": "l10-do-l16-b",
+   "category": "slagaci-paleta",
+   "code": "L10 do L16 B",
+   "kind": "Slagač paleta",
+   "series": "4596",
+   "drive": "L10-L16 B Series 4596",
+   "match": "exact",
+   "kg": 1600,
+   "mm": 5466,
+   "render": "/shop/l10-do-l16-b.webp",
+   "look": "render",
+   "thumb": "/shop/l10-do-l16-b-s.webp",
+   "photos": [
+    "/shop/l10-do-l16-b-f1.webp",
+    "/shop/l10-do-l16-b-f2.webp"
+   ],
+   "datasheet": {
+    "name": "DS_L10-L16_B_EX_4596-25_en_A_0924_view.pdf",
+    "href": "https://drive.google.com/uc?export=download&id=1ITLCCfhFon1H_gKLk2_UMIvo80bnXe4A"
+   }
+  },
+  {
+   "slug": "l14-do-l16-sp",
+   "category": "slagaci-paleta",
+   "code": "L14 do L16 SP",
+   "kind": "Slagač paleta",
+   "series": "1177",
+   "drive": "L14 - 16 SP Series 1177",
+   "match": "exact",
+   "kg": 1600,
+   "mm": 5316,
+   "render": "/shop/l14-do-l16-sp.webp",
+   "look": "render",
+   "thumb": "/shop/l14-do-l16-sp-s.webp",
+   "photos": [],
+   "datasheet": {
+    "name": "DS_L14-L16_SP_1177-00_en_C_0524_view.PDF",
+    "href": "https://drive.google.com/uc?export=download&id=1z09SZvYE6s0vkPAJwl4eKmStJOnYwrxi"
+   }
+  },
+  {
+   "slug": "l14-do-l16-r-ri",
+   "category": "slagaci-paleta",
+   "code": "L14 do L16 R/Ri",
+   "kind": "Paletni viljuškar",
+   "series": "1174",
+   "drive": "L14 - L16 R Series 1174",
+   "match": "exact",
+   "kg": 1600,
+   "mm": 5314,
+   "render": "/shop/l14-do-l16-r-ri.webp",
+   "look": "render",
+   "thumb": "/shop/l14-do-l16-r-ri-s.webp",
+   "photos": [
+    "/shop/l14-do-l16-r-ri-f1.webp",
+    "/shop/l14-do-l16-r-ri-f2.webp"
+   ],
+   "datasheet": {
+    "name": "DS_L14_16R_BR1174_en_A_0617_view.pdf",
+    "href": "https://drive.google.com/uc?export=download&id=1QNOD_6GZ3PKk_lutc5TzB-SN4hU5Cwrl"
+   }
+  },
+  {
+   "slug": "l14-do-l16-rw",
+   "category": "slagaci-paleta",
+   "code": "L14 do L16 RW",
+   "kind": "Slagač paleta",
+   "series": "1174",
+   "drive": "L14 - L16 RW Series 1174",
+   "match": "exact",
+   "kg": 1600,
+   "mm": 6216,
+   "render": "/shop/l14-do-l16-rw.webp",
+   "look": "studio",
+   "thumb": "/shop/l14-do-l16-rw-s.webp",
+   "photos": [
+    "/shop/l14-do-l16-rw-f1.webp",
+    "/shop/l14-do-l16-rw-f2.webp"
+   ],
+   "datasheet": {
+    "name": "DS_L14RW_L16RW_BR1174_en_A_0618_view.pdf",
+    "href": "https://drive.google.com/uc?export=download&id=1553b5nBz36rqwTpT9AF5vqHvs35fOquX"
+   }
+  },
+  {
+   "slug": "l14-do-l20",
+   "category": "slagaci-paleta",
+   "code": "L14 do L20",
+   "kind": "Paletni viljuškar",
+   "series": "1173",
+   "drive": "L14-20 & D12-14 Series 1173",
+   "match": "exact",
+   "kg": 2000,
+   "mm": 6216,
+   "render": "/shop/l14-do-l20.webp",
+   "look": "render",
+   "thumb": "/shop/l14-do-l20-s.webp",
+   "photos": [
+    "/shop/l14-do-l20-f1.webp",
+    "/shop/l14-do-l20-f2.webp"
+   ],
+   "datasheet": {
+    "name": "DS_L14_20_BR1173_en_B_0315_view.pdf",
+    "href": "https://drive.google.com/uc?export=download&id=1RjlwmKiEKt67RcUFjs9O86L9Gxdrpgg2"
+   }
+  },
+  {
+   "slug": "l14-do-l16-as-as-ap",
+   "category": "slagaci-paleta",
+   "code": "L14 do L16 AS/AS AP",
+   "kind": "Paletni viljuškar",
+   "series": "1173",
+   "drive": "L14-L16 AS_L14-L16 AS AP Series 1173",
+   "match": "exact",
+   "kg": 1600,
+   "mm": 5314,
+   "render": "/shop/l14-do-l16-as-as-ap.webp",
+   "look": "render",
+   "thumb": "/shop/l14-do-l16-as-as-ap-s.webp",
+   "photos": [],
+   "datasheet": null
+  },
+  {
+   "slug": "l14-do-l20-ap",
+   "category": "slagaci-paleta",
+   "code": "L14 do L20 AP",
+   "kind": "Paletni viljuškar",
+   "series": "1173",
+   "drive": "L14-L20 AP Series 1173",
+   "match": "exact",
+   "kg": 2000,
+   "mm": 6216,
+   "render": "/shop/l14-do-l20-ap.webp",
+   "look": "render",
+   "thumb": "/shop/l14-do-l20-ap-s.webp",
+   "photos": [
+    "/shop/l14-do-l20-ap-f1.webp",
+    "/shop/l14-do-l20-ap-f2.webp"
+   ],
+   "datasheet": {
+    "name": "DS_L14_L20_AP_1173-01_en_C_1023_VIEW.pdf",
+    "href": "https://drive.google.com/uc?export=download&id=1wnzIzZit4CVEWJAxLE_pO5mrd9iawj--"
+   }
+  },
+  {
+   "slug": "m25",
+   "category": "niskopodizna-vozila",
+   "code": "M25",
+   "kind": "Transporter",
+   "series": "033",
+   "drive": "M25 Series 033",
+   "match": "exact",
+   "kg": 2500,
+   "mm": 115,
+   "render": "/shop/m25.webp",
+   "look": "render",
+   "thumb": "/shop/m25-s.webp",
+   "photos": [],
+   "datasheet": {
+    "name": "DS_M25_BR033_01_en_A_0318_view.pdf",
+    "href": "https://drive.google.com/uc?export=download&id=1LJ0FD2un5CyaOuzaQmWCMMKXM-2Mr405"
+   }
+  },
+  {
+   "slug": "mt15-c",
+   "category": "niskopodizna-vozila",
+   "code": "MT15 C",
+   "kind": "Transporter",
+   "series": "1133-02",
+   "drive": "MT15 C Series 1133-02",
+   "match": "exact",
+   "kg": 1500,
+   "mm": 115,
+   "render": "/shop/mt15-c.webp",
+   "look": "render",
+   "thumb": "/shop/mt15-c-s.webp",
+   "photos": [],
+   "datasheet": {
+    "name": "DS_MT15 C_1131-02_en_D_0325_view.pdf",
+    "href": "https://drive.google.com/uc?export=download&id=15FG7gRGj5G6aDK698LjYjTT5NOEa7kKm"
+   }
+  },
+  {
+   "slug": "t14-do-t20",
+   "category": "niskopodizna-vozila",
+   "code": "T14 do T20",
+   "kind": "Transporter",
+   "series": "1155",
+   "drive": "T14 - T20 Series 1155",
+   "match": "exact",
+   "kg": 2000,
+   "mm": 125,
+   "render": "/shop/t14-do-t20.webp",
+   "look": "render",
+   "thumb": "/shop/t14-do-t20-s.webp",
+   "photos": [
+    "/shop/t14-do-t20-f1.webp",
+    "/shop/t14-do-t20-f2.webp"
+   ],
+   "datasheet": {
+    "name": "DS_T16-T20_EX_1155-25_en_A_1223_view.pdf",
+    "href": "https://drive.google.com/uc?export=download&id=1cL2VwLfqHJlH5ZoSoyqg_vahZoLuPOlR"
+   }
+  },
+  {
+   "slug": "t14-s-t20-do-t25-s-sf",
+   "category": "niskopodizna-vozila",
+   "code": "T14 S, T20 do T25 S/SF",
+   "kind": "Transporter",
+   "series": "1154",
+   "drive": "T14 - T25 S Series 1154",
+   "match": "exact",
+   "kg": 2000,
+   "mm": 115,
+   "render": "/shop/t14-s-t20-do-t25-s-sf.webp",
+   "look": "render",
+   "thumb": "/shop/t14-s-t20-do-t25-s-sf-s.webp",
+   "photos": [
+    "/shop/t14-s-t20-do-t25-s-sf-f1.webp",
+    "/shop/t14-s-t20-do-t25-s-sf-f2.webp"
+   ],
+   "datasheet": {
+    "name": "DS_T14S_T20_25_S_SF_BR1154_en_F_0417_view.pdf",
+    "href": "https://drive.google.com/uc?export=download&id=1OeGAh6c15Yn1rsgvDkc7q5LFXgX9x-mO"
+   }
+  },
+  {
+   "slug": "t16-do-t20-p",
+   "category": "niskopodizna-vozila",
+   "code": "T16 do T20 P",
+   "kind": "Transporter",
+   "series": "1152",
+   "drive": "T16 - T20 Series 1152",
+   "match": "guess",
+   "kg": null,
+   "mm": null,
+   "render": "/shop/t16-do-t20-p.webp",
+   "look": "render",
+   "thumb": "/shop/t16-do-t20-p-s.webp",
+   "photos": [
+    "/shop/t16-do-t20-p-f1.webp",
+    "/shop/t16-do-t20-p-f2.webp"
+   ],
+   "datasheet": {
+    "name": "DS_T16_20_BR1152_en_D_0316_view.pdf",
+    "href": "https://drive.google.com/uc?export=download&id=1uBHfgfm2wiC0NFcZw7ALQW9cHmAxF5O7"
+   }
+  },
+  {
+   "slug": "t16-l",
+   "category": "niskopodizna-vozila",
+   "code": "T16 L",
+   "kind": "Transporter",
+   "series": "1155",
+   "drive": "T16 L Series 1155",
+   "match": "exact",
+   "kg": 1600,
+   "mm": 675,
+   "render": "/shop/t16-l.webp",
+   "look": "render",
+   "thumb": "/shop/t16-l-s.webp",
+   "photos": [
+    "/shop/t16-l-f1.webp"
+   ],
+   "datasheet": {
+    "name": "DS_T16_L_1155_en_A_0924_view.pdf",
+    "href": "https://drive.google.com/uc?export=download&id=1XYQNg6WOGQwpXB6o-q649Eqq3DYvWIsh"
+   }
+  },
+  {
+   "slug": "t20-do-t25-ap",
+   "category": "niskopodizna-vozila",
+   "code": "T20 do T25 AP",
+   "kind": "Transporter",
+   "series": "1156",
+   "drive": "T20 - T25 AP Series 1156",
+   "match": "guess",
+   "kg": null,
+   "mm": null,
+   "render": "/shop/t20-do-t25-ap.webp",
+   "look": "render",
+   "thumb": "/shop/t20-do-t25-ap-s.webp",
+   "photos": [],
+   "datasheet": {
+    "name": "DS_T20-25_AP_SP_1156_en_D_0625_view.pdf",
+    "href": "https://drive.google.com/uc?export=download&id=1NMMAMCm_klh4bxNPoJ6fARukXIGEet4u"
+   }
+  },
+  {
+   "slug": "t20-do-t25-rw",
+   "category": "niskopodizna-vozila",
+   "code": "T20 do T25 RW",
+   "kind": "Transporter",
+   "series": "1154",
+   "drive": "T20 - T25 RW Series 1154",
+   "match": "exact",
+   "kg": 2500,
+   "mm": 125,
+   "render": "/shop/t20-do-t25-rw.webp",
+   "look": "studio",
+   "thumb": "/shop/t20-do-t25-rw-s.webp",
+   "photos": [
+    "/shop/t20-do-t25-rw-f1.webp",
+    "/shop/t20-do-t25-rw-f2.webp"
+   ],
+   "datasheet": {
+    "name": "DS_T20RW_T25RW_BR1154_en_A_0618_view.pdf",
+    "href": "https://drive.google.com/uc?export=download&id=1sFkY1UUEhKUuPzocj1GdQj9gmFT1DCYm"
+   }
+  },
+  {
+   "slug": "t20-do-t25-r-sr",
+   "category": "niskopodizna-vozila",
+   "code": "T20 do T25 R/SR",
+   "kind": "Transporter",
+   "series": "1154",
+   "drive": "T20 - T25 R_SR Series 1154",
+   "match": "exact",
+   "kg": 2000,
+   "mm": 115,
+   "render": "/shop/t20-do-t25-r-sr.webp",
+   "look": "render",
+   "thumb": "/shop/t20-do-t25-r-sr-s.webp",
+   "photos": [
+    "/shop/t20-do-t25-r-sr-f1.webp",
+    "/shop/t20-do-t25-r-sr-f2.webp"
+   ],
+   "datasheet": {
+    "name": "DS_T20_25SR_BR1154_en_A_0517_view.pdf",
+    "href": "https://drive.google.com/uc?export=download&id=1uM5gPQSFfJgldG7wmOW5HtlJLxnei61G"
+   }
+  },
+  {
+   "slug": "t20-do-t25-sp",
+   "category": "niskopodizna-vozila",
+   "code": "T20 do T25 SP",
+   "kind": "Transporter",
+   "series": "1156",
+   "drive": "T20 - T25 SP Series 1156",
+   "match": "exact",
+   "kg": 2500,
+   "mm": 125,
+   "render": "/shop/t20-do-t25-sp.webp",
+   "look": "render",
+   "thumb": "/shop/t20-do-t25-sp-s.webp",
+   "photos": [
+    "/shop/t20-do-t25-sp-f1.webp"
+   ],
+   "datasheet": {
+    "name": "DS_T20-25_AP_SP_1156_en_D_0625_view.pdf",
+    "href": "https://drive.google.com/uc?export=download&id=1HP1ftTZgjFbxioQaBb4tkPlP9p9xKNQr"
+   }
+  },
+  {
+   "slug": "t20-do-t25-ap-n",
+   "category": "niskopodizna-vozila",
+   "code": "T20 do T25 AP N",
+   "kind": "Transporter",
+   "series": "1153",
+   "drive": "T20 -T25 AP Series 1153",
+   "match": "guess",
+   "kg": null,
+   "mm": null,
+   "render": "/shop/t20-do-t25-ap-n.webp",
+   "look": "render",
+   "thumb": "/shop/t20-do-t25-ap-n-s.webp",
+   "photos": [
+    "/shop/t20-do-t25-ap-n-f1.webp",
+    "/shop/t20-do-t25-ap-n-f2.webp"
+   ],
+   "datasheet": {
+    "name": "DS_T20-T25AP_N_1153_en_C_0524_view.PDF",
+    "href": "https://drive.google.com/uc?export=download&id=1MN_WZeWyqRYZBkx0Z01ey99aLUj4b77t"
+   }
+  },
+  {
+   "slug": "t25-do-t30",
+   "category": "niskopodizna-vozila",
+   "code": "T25 do T30",
+   "kind": "Transporter",
+   "series": "1153",
+   "drive": "T25 - T30 Series 1153",
+   "match": "exact",
+   "kg": 3000,
+   "mm": 125,
+   "render": "/shop/t25-do-t30.webp",
+   "look": "render",
+   "thumb": "/shop/t25-do-t30-s.webp",
+   "photos": [
+    "/shop/t25-do-t30-f1.webp",
+    "/shop/t25-do-t30-f2.webp"
+   ],
+   "datasheet": {
+    "name": "DS_T25_T30_1153_en_B_0522_view.pdf",
+    "href": "https://drive.google.com/uc?export=download&id=1j4zhYK527uE60LWplDEezF0DPGXNf6Ha"
+   }
+  },
+  {
+   "slug": "t33-r-hp",
+   "category": "niskopodizna-vozila",
+   "code": "T33 R HP",
+   "kind": "Transporter",
+   "series": "5131",
+   "drive": "T33 R HP Series 5131",
+   "match": "none",
+   "kg": null,
+   "mm": null,
+   "render": null,
+   "look": null,
+   "thumb": null,
+   "photos": [],
+   "datasheet": {
+    "name": "DS_T33_R_HP_5131_en_A_1021_view.pdf",
+    "href": "https://drive.google.com/uc?export=download&id=1CoqbwFElGaqSg7UDBflcKpLjM173VFmG"
+   }
+  },
+  {
+   "slug": "mp13",
+   "category": "tegljaci",
+   "code": "MP13",
+   "kind": "Tegljač",
+   "series": "8904",
+   "drive": "MP13 Series 8904",
+   "match": "none",
+   "kg": null,
+   "mm": null,
+   "render": "/shop/mp13.webp",
+   "look": "render",
+   "thumb": "/shop/mp13-s.webp",
+   "photos": [
+    "/shop/mp13-f1.webp",
+    "/shop/mp13-f2.webp"
+   ],
+   "datasheet": {
+    "name": "DS_MP13_BR8904_en_A_0818_view.pdf",
+    "href": "https://drive.google.com/uc?export=download&id=1-JKoQeidaSexjNaUUIgxr5mIjJioMkN1"
+   }
+  },
+  {
+   "slug": "p120",
+   "category": "tegljaci",
+   "code": "P120",
+   "kind": "Tegljač",
+   "series": "5007",
+   "drive": "P120 Series 5007",
+   "match": "shared",
+   "kg": null,
+   "mm": null,
+   "render": "/shop/p120.webp",
+   "look": "render",
+   "thumb": "/shop/p120-s.webp",
+   "photos": [
+    "/shop/p120-f1.webp",
+    "/shop/p120-f2.webp"
+   ],
+   "datasheet": {
+    "name": "DS_P120-P350_5007-10_en_C_0322_view.pdf",
+    "href": "https://drive.google.com/uc?export=download&id=1RciW2nhem990qxZPbBKn9CgtilVC37yQ"
+   }
+  },
+  {
+   "slug": "p180",
+   "category": "tegljaci",
+   "code": "P180",
+   "kind": "Tegljač",
+   "series": "5007",
+   "drive": "P180 Series 5007",
+   "match": "shared",
+   "kg": null,
+   "mm": null,
+   "render": null,
+   "look": null,
+   "thumb": null,
+   "photos": [],
+   "datasheet": {
+    "name": "DS_P120-P350_5007-10_en_C_0322_view.pdf",
+    "href": "https://drive.google.com/uc?export=download&id=1D5G7G_uJGV9qP_0R-AvbJ7_k4R0lIptv"
+   }
+  },
+  {
+   "slug": "p20",
+   "category": "tegljaci",
+   "code": "P20",
+   "kind": "Tegljač",
+   "series": "1193",
+   "drive": "P20 Series 1193",
+   "match": "exact",
+   "kg": 2000,
+   "mm": null,
+   "render": "/shop/p20.webp",
+   "look": "render",
+   "thumb": "/shop/p20-s.webp",
+   "photos": [
+    "/shop/p20-f1.webp",
+    "/shop/p20-f2.webp"
+   ],
+   "datasheet": {
+    "name": "DS_P20_1193_en_C_0425_view.pdf",
+    "href": "https://drive.google.com/uc?export=download&id=1qHQ5f7jHgCpjCjhQQVEjMPPqyY_60Afa"
+   }
+  },
+  {
+   "slug": "p250-lwb",
+   "category": "tegljaci",
+   "code": "P250 LWB",
+   "kind": "Tegljač",
+   "series": "5007",
+   "drive": "P250 LWB Series 5007",
+   "match": "shared",
+   "kg": null,
+   "mm": null,
+   "render": "/shop/p250-lwb.webp",
+   "look": "render",
+   "thumb": "/shop/p250-lwb-s.webp",
+   "photos": [
+    "/shop/p250-lwb-f1.webp",
+    "/shop/p250-lwb-f2.webp"
+   ],
+   "datasheet": {
+    "name": "DS_P120-P350_5007-10_en_C_0322_view.pdf",
+    "href": "https://drive.google.com/uc?export=download&id=1Od9TWi4uA7RHgdHsGDFTrV90hwiCY11W"
+   }
+  },
+  {
+   "slug": "p250-swb",
+   "category": "tegljaci",
+   "code": "P250 SWB",
+   "kind": "Tegljač",
+   "series": "5007",
+   "drive": "P250 SWB Series 5007",
+   "match": "shared",
+   "kg": null,
+   "mm": null,
+   "render": "/shop/p250-swb.webp",
+   "look": "render",
+   "thumb": "/shop/p250-swb-s.webp",
+   "photos": [
+    "/shop/p250-swb-f1.webp"
+   ],
+   "datasheet": {
+    "name": "DS_P120-P350_5007-10_en_C_0322_view.pdf",
+    "href": "https://drive.google.com/uc?export=download&id=1F3yMLg_QEvD_8OY6tT4LpYrs9gt_7Z4h"
+   }
+  },
+  {
+   "slug": "p350",
+   "category": "tegljaci",
+   "code": "P350",
+   "kind": "Tegljač",
+   "series": "5007",
+   "drive": "P350 Series 5007",
+   "match": "shared",
+   "kg": null,
+   "mm": null,
+   "render": "/shop/p350.webp",
+   "look": "render",
+   "thumb": "/shop/p350-s.webp",
+   "photos": [],
+   "datasheet": {
+    "name": "DS_P120-P350_5007-10_en_C_0322_view.pdf",
+    "href": "https://drive.google.com/uc?export=download&id=1Li3w266JM4ln7xTrp7bDd2F2otmaZ8C8"
+   }
+  },
+  {
+   "slug": "p40-do-p60-c",
+   "category": "tegljaci",
+   "code": "P40 do P60 C",
+   "kind": "Tegljač",
+   "series": "4595",
+   "drive": "P40C - P60 C Series 4595",
+   "match": "exact",
+   "kg": 6000,
+   "mm": null,
+   "render": "/shop/p40-do-p60-c.webp",
+   "look": "render",
+   "thumb": "/shop/p40-do-p60-c-s.webp",
+   "photos": [
+    "/shop/p40-do-p60-c-f1.webp",
+    "/shop/p40-do-p60-c-f2.webp"
+   ],
+   "datasheet": {
+    "name": "DS_P40-P60 C_P40 C B_4595_en_B_0625_view.pdf",
+    "href": "https://drive.google.com/uc?export=download&id=1OdFeJmpyxYc3Jr2PqWRMQ0-c0jk0G3oH"
+   }
+  },
+  {
+   "slug": "p60-do-p80",
+   "category": "tegljaci",
+   "code": "P60 do P80",
+   "kind": "Tegljač",
+   "series": "1191",
+   "drive": "P60 - P80 Series 1191",
+   "match": "exact",
+   "kg": 200,
+   "mm": null,
+   "render": "/shop/p60-do-p80.webp",
+   "look": "render",
+   "thumb": "/shop/p60-do-p80-s.webp",
+   "photos": [
+    "/shop/p60-do-p80-f1.webp",
+    "/shop/p60-do-p80-f2.webp"
+   ],
+   "datasheet": {
+    "name": "DS_P60-P80_1191-01_en_C_0523_view.pdf",
+    "href": "https://drive.google.com/uc?export=download&id=1vfQVIidZ6t7KyYW74N744nfaJg_vMcG5"
+   }
+  },
+  {
+   "slug": "w04",
+   "category": "tegljaci",
+   "code": "W04",
+   "kind": "Tegljač",
+   "series": "1193",
+   "drive": "W04 Series 1193",
+   "match": "none",
+   "kg": null,
+   "mm": null,
+   "render": "/shop/w04.webp",
+   "look": "render",
+   "thumb": "/shop/w04-s.webp",
+   "photos": [
+    "/shop/w04-f1.webp",
+    "/shop/w04-f2.webp"
+   ],
+   "datasheet": {
+    "name": "DS_P20_1193_en_C_0425_view.pdf",
+    "href": "https://drive.google.com/uc?export=download&id=1AfWrRQEPUG327ZuxzfN7GExroiPPA4yv"
+   }
+  },
+  {
+   "slug": "w08",
+   "category": "tegljaci",
+   "code": "W08",
+   "kind": "Tegljač",
+   "series": "1191",
+   "drive": "W08 Series 1191",
+   "match": "none",
+   "kg": null,
+   "mm": null,
+   "render": "/shop/w08.webp",
+   "look": "render",
+   "thumb": "/shop/w08-s.webp",
+   "photos": [],
+   "datasheet": null
+  },
+  {
+   "slug": "w20",
+   "category": "tegljaci",
+   "code": "W20",
+   "kind": "Tegljač",
+   "series": "5007",
+   "drive": "W20 Series 5007",
+   "match": "shared",
+   "kg": null,
+   "mm": null,
+   "render": "/shop/w20.webp",
+   "look": "render",
+   "thumb": "/shop/w20-s.webp",
+   "photos": [
+    "/shop/w20-f1.webp"
+   ],
+   "datasheet": {
+    "name": "DS_W20-W30_5007-10_en_B_0122_view.pdf",
+    "href": "https://drive.google.com/uc?export=download&id=1Tqahali5gIJlTMeeK6_HxVVgqzNqObGh"
+   }
+  },
+  {
+   "slug": "w30",
+   "category": "tegljaci",
+   "code": "W30",
+   "kind": "Tegljač",
+   "series": "5007",
+   "drive": "W30 Series 5007",
+   "match": "shared",
+   "kg": null,
+   "mm": null,
+   "render": "/shop/w30.webp",
+   "look": "render",
+   "thumb": "/shop/w30-s.webp",
+   "photos": [
+    "/shop/w30-f1.webp",
+    "/shop/w30-f2.webp"
+   ],
+   "datasheet": {
+    "name": "DS_W20-W30_5007-10_en_B_0122_view.pdf",
+    "href": "https://drive.google.com/uc?export=download&id=1J8fe0YDRKfM9KAJEhFqycO54Ol_fikfq"
+   }
+  },
+  {
+   "slug": "a-5224",
+   "category": "viljuskari-za-uske-prolaze",
+   "code": "A",
+   "kind": "Uskohodnični viljuškar",
+   "series": "5224",
+   "drive": "A Series 5224",
+   "match": "exact",
+   "kg": 1500,
+   "mm": 12850,
+   "render": "/shop/a-5224.webp",
+   "look": "render",
+   "thumb": "/shop/a-5224-s.webp",
+   "photos": [],
+   "datasheet": {
+    "name": "DS_A_5224_en_B_0821_view.pdf",
+    "href": "https://drive.google.com/uc?export=download&id=1TeEOIiRP6-ObTxZvDxQE5dOOsl2MJYAt"
+   }
+  },
+  {
+   "slug": "k-5231",
+   "category": "viljuskari-za-uske-prolaze",
+   "code": "K",
+   "kind": "Uskohodnični viljuškar",
+   "series": "5231",
+   "drive": "K Series 5231",
+   "match": "exact",
+   "kg": 1500,
+   "mm": 18110,
+   "render": "/shop/k-5231.webp",
+   "look": "render",
+   "thumb": "/shop/k-5231-s.webp",
+   "photos": [
+    "/shop/k-5231-f1.webp",
+    "/shop/k-5231-f2.webp"
+   ],
+   "datasheet": {
+    "name": "DS_K_5231_en_C_0821_view.pdf",
+    "href": "https://drive.google.com/uc?export=download&id=1fN7qrKH7PCBCqPi7fN3vjLSQDBYKdf-D"
+   }
+  },
+  {
+   "slug": "c-matic-i-c-matic-hp",
+   "category": "automatizovana-vozila",
+   "code": "C-MATIC i C-MATIC HP",
+   "kind": "Autonomni viljuškar",
+   "series": "8925",
+   "drive": "C-Matic (HP) Series 8925_8928",
+   "match": "exact",
+   "kg": 1500,
+   "mm": 60,
+   "render": "/shop/c-matic-i-c-matic-hp.webp",
+   "look": "render",
+   "thumb": "/shop/c-matic-i-c-matic-hp-s.webp",
+   "photos": [
+    "/shop/c-matic-i-c-matic-hp-f1.webp",
+    "/shop/c-matic-i-c-matic-hp-f2.webp"
+   ],
+   "datasheet": {
+    "name": "DS_C-MATIC_8925_en_E_1025_view.pdf",
+    "href": "https://drive.google.com/uc?export=download&id=1zv2AWdEASVFtcWL_mNv8w_JUPYZLmCTQ"
+   }
+  },
+  {
+   "slug": "k-matic",
+   "category": "automatizovana-vozila",
+   "code": "K-MATIC",
+   "kind": "Autonomni viljuškar",
+   "series": "5231",
+   "drive": "K-Matic Series 5231",
+   "match": "exact",
+   "kg": 1450,
+   "mm": 14000,
+   "render": "/shop/k-matic.webp",
+   "look": "render",
+   "thumb": "/shop/k-matic-s.webp",
+   "photos": [
+    "/shop/k-matic-f1.webp",
+    "/shop/k-matic-f2.webp"
+   ],
+   "datasheet": {
+    "name": "DS_K_MATIC_5231_en_A_0224_view.pdf",
+    "href": "https://drive.google.com/uc?export=download&id=1_x5_SA70ralDXtCoOsePpyfGf9ok8BLv"
+   }
+  },
+  {
+   "slug": "l-matic-ac",
+   "category": "automatizovana-vozila",
+   "code": "L-MATIC AC",
+   "kind": "Automatski viljuškar",
+   "series": "1171",
+   "drive": "L-Matic AC k Series 1171",
+   "match": "exact",
+   "kg": 1600,
+   "mm": 4144,
+   "render": "/shop/l-matic-ac.webp",
+   "look": "render",
+   "thumb": "/shop/l-matic-ac-s.webp",
+   "photos": [
+    "/shop/l-matic-ac-f1.webp"
+   ],
+   "datasheet": {
+    "name": "DS_L-MATIC AC k_1171_en_0725_view.pdf",
+    "href": "https://drive.google.com/uc?export=download&id=1fGDi8zR3DczXJSNW6H6VdNTk55AONuLi"
+   }
+  },
+  {
+   "slug": "l-matic-core",
+   "category": "automatizovana-vozila",
+   "code": "L-MATIC Core",
+   "kind": "Autonomni viljuškar",
+   "series": "1195",
+   "drive": "L-Matic Core Series 1195",
+   "match": "none",
+   "kg": null,
+   "mm": null,
+   "render": "/shop/l-matic-core.webp",
+   "look": "render",
+   "thumb": "/shop/l-matic-core-s.webp",
+   "photos": [
+    "/shop/l-matic-core-f1.webp",
+    "/shop/l-matic-core-f2.webp"
+   ],
+   "datasheet": {
+    "name": "DS_L-MATIC core_1195-01_en_B_0425_view.pdf",
+    "href": "https://drive.google.com/uc?export=download&id=1otyJl7EFwEdaBfR1kJdIZmv4XPq41D4F"
+   }
+  },
+  {
+   "slug": "l-matic-hd",
+   "category": "automatizovana-vozila",
+   "code": "L-MATIC HD",
+   "kind": "Autonomni viljuškar",
+   "series": "1173",
+   "drive": "L-Matic HD Series 1173",
+   "match": "exact",
+   "kg": 1600,
+   "mm": 3500,
+   "render": "/shop/l-matic-hd.webp",
+   "look": "render",
+   "thumb": "/shop/l-matic-hd-s.webp",
+   "photos": [
+    "/shop/l-matic-hd-f1.webp",
+    "/shop/l-matic-hd-f2.webp"
+   ],
+   "datasheet": {
+    "name": "DS_L-MATIC_HD_HDk_1173-01_en_C_0524_VIEW.PDF",
+    "href": "https://drive.google.com/uc?export=download&id=1jXm3VUIsvDhI5BXcXJ35R4DwYTE-ID5y"
+   }
+  },
+  {
+   "slug": "l-matic-hd-k",
+   "category": "automatizovana-vozila",
+   "code": "L-MATIC HD k",
+   "kind": "Autonomni viljuškar",
+   "series": "1173",
+   "drive": "L-Matic HD k Series 1173",
+   "match": "exact",
+   "kg": 1600,
+   "mm": 3500,
+   "render": "/shop/l-matic-hd-k.webp",
+   "look": "render",
+   "thumb": "/shop/l-matic-hd-k-s.webp",
+   "photos": [
+    "/shop/l-matic-hd-k-f1.webp",
+    "/shop/l-matic-hd-k-f2.webp"
+   ],
+   "datasheet": {
+    "name": "DS_L-MATIC_HD_HDk_1173-01_en_C_0524_VIEW.PDF",
+    "href": "https://drive.google.com/uc?export=download&id=1FrFiR96YuslTmCEOOfUEDOA6v1WeZJns"
+   }
+  },
+  {
+   "slug": "l-matic",
+   "category": "automatizovana-vozila",
+   "code": "L-MATIC",
+   "kind": "Autonomni viljuškar",
+   "series": "1170",
+   "drive": "L-Matic Series 1170",
+   "match": "guess",
+   "kg": null,
+   "mm": null,
+   "render": "/shop/l-matic.webp",
+   "look": "render",
+   "thumb": "/shop/l-matic-s.webp",
+   "photos": [
+    "/shop/l-matic-f1.webp",
+    "/shop/l-matic-f2.webp"
+   ],
+   "datasheet": {
+    "name": "DS_L-MATIC AC_1170_en_C_1024_view.PDF",
+    "href": "https://drive.google.com/uc?export=download&id=1o1N5hl4M5FlalkAH5kgwE-Pj7dE1dvNL"
+   }
+  },
+  {
+   "slug": "l-matic-133",
+   "category": "automatizovana-vozila",
+   "code": "L-MATIC",
+   "kind": "Autonomni viljuškar",
+   "series": "133",
+   "drive": "L-Matic Series 133",
+   "match": "none",
+   "kg": null,
+   "mm": null,
+   "render": "/shop/l-matic-133.webp",
+   "look": "render",
+   "thumb": "/shop/l-matic-133-s.webp",
+   "photos": [
+    "/shop/l-matic-133-f1.webp",
+    "/shop/l-matic-133-f2.webp"
+   ],
+   "datasheet": null
+  },
+  {
+   "slug": "p-matic",
+   "category": "automatizovana-vozila",
+   "code": "P-MATIC",
+   "kind": "Autonomni viljuškar",
+   "series": "1190",
+   "drive": "P-Matic Series 1190",
+   "match": "exact",
+   "kg": 5000,
+   "mm": null,
+   "render": "/shop/p-matic.webp",
+   "look": "render",
+   "thumb": "/shop/p-matic-s.webp",
+   "photos": [
+    "/shop/p-matic-f1.webp",
+    "/shop/p-matic-f2.webp"
+   ],
+   "datasheet": null
+  },
+  {
+   "slug": "r-matic",
+   "category": "automatizovana-vozila",
+   "code": "R-MATIC",
+   "kind": "Autonomni viljuškar",
+   "series": "1120",
+   "drive": "R-Matic Series 1120",
+   "match": "exact",
+   "kg": 1600,
+   "mm": 11455,
+   "render": "/shop/r-matic.webp",
+   "look": "render",
+   "thumb": "/shop/r-matic-s.webp",
+   "photos": [
+    "/shop/r-matic-f1.webp",
+    "/shop/r-matic-f2.webp"
+   ],
+   "datasheet": {
+    "name": "DS_R-MATIC_1120_en_B_0623_view.pdf",
+    "href": "https://drive.google.com/uc?export=download&id=1zW8lChDAS_ltnCUrP63Jdcu_A7wzdnnm"
+   }
+  },
+  {
+   "slug": "r-matic-k",
+   "category": "automatizovana-vozila",
+   "code": "R-MATIC k",
+   "kind": "Autonomni viljuškar",
+   "series": "5190",
+   "drive": "R-Matic k Series 5190",
+   "match": "none",
+   "kg": null,
+   "mm": null,
+   "render": "/shop/r-matic-k.webp",
+   "look": "render",
+   "thumb": "/shop/r-matic-k-s.webp",
+   "photos": [
+    "/shop/r-matic-k-f1.webp"
+   ],
+   "datasheet": {
+    "name": "DS_R-MATIC_k_5190_en_A_0425_VIEW.pdf",
+    "href": "https://drive.google.com/uc?export=download&id=1foCdOiluxCoRhWoklaT2FELkMQ-6NWEE"
+   }
+  }
+ ]
+}

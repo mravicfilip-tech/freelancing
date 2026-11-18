@@ -28,11 +28,13 @@ Task format
 - ekotehnika-21 The shop, the client's Drive categories and products, every product leads to the contact form, no cart. The homepage story leads to it. Brief in briefs/shop/brief.md
   - [x] Map the Drive, 89 series in 10 categories, renders, photos and data sheets per series
   - [x] Filip answers the kickoff questions, "yes, go with defaults", 18 November, written into the brief
-  - [ ] Match the 89 series to the ekotehnika.rs model pages and send Filip the list with no match
-  - [ ] One direction in words with one reference
-  - [ ] The model page first, the hardest screen
-  - [ ] Prodavnica, the category page and Kontakt
-  - [ ] The homepage's links into the shop
+  - [x] Match the 89 series to the old site's 96 cards, from the 8 October capture since ekotehnika.rs refuses this container, briefs/shop/match.md
+  - [x] Filip, "just continue here", "build all today", 18 November
+  - [x] The pictures, 80 cut out renders, 6 photos picked by hand, 74 galleries, from the Drive by share link
+  - [x] Prodavnica, the category page, the model page and Kontakt, at 1440 and 390, the form's server function
+  - [x] The homepage's links into the shop, Novi, Kontakt, Posetite prodavnicu, Pogledajte modele and the seven product cards
+  - [ ] Preview link on Filip's phone
+  - [ ] The Serbian model descriptions, ekotehnika.rs refuses this container, Filip to get them another way
   - [ ] The form sends through Resend once Filip gives the key, the privacy text and the deadline from Filip
 
 - ekotehnika-20 A back to top button, and the logo takes you to the first screen of this site and not ekotehnika.rs. Filip 5 November

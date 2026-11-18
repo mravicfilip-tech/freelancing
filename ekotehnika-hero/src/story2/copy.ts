@@ -64,7 +64,7 @@ export const kompanija = {
 export const prodaja = {
   title: ['Prodaja Linde', 'viljuškara'], // dummy
   text: '96 Linde modela, ponuda po vašoj meri.', // pillars, novi
-  cta: { label: 'Posetite prodavnicu', href: pillars[0].href } satisfies Cta, // the client's ticket of 3 November, to the models on ekotehnika.rs
+  cta: { label: 'Posetite prodavnicu', href: '/prodavnica' } satisfies Cta, // the client's ticket of 3 November, to the shop of this site since 18 November
   callouts: ['Raspon modela', 'Nosivost', 'Na slici'], // dummy
   tabs: [
     {
@@ -204,16 +204,16 @@ export const proizvodi = {
   total: 96, // pillars, novi
   title: ['Glavni', 'proizvodi'],
   lede: 'Od čeonih viljuškara do automatizacije.', // dummy
-  cta: { label: pillars[0].more, href: pillars[0].href } satisfies Cta,
+  cta: { label: pillars[0].more, href: '/prodavnica' } satisfies Cta,
   unit: 'modela', // dummy
   cells: [
-    { name: 'Čeoni dizel viljuškari', range: 'H20 do H35', cap: '2,0 do 3,5 t', img: '/products/ceoni-dizel-h30d.webp', alt: 'Linde H30 D čeoni viljuškar sa dizel motorom', href: `${SITE}/linde-dizel-viljuskari/`, lead: true }, // Linde series range and capacity
-    { name: 'Čeoni električni', range: 'E12 do E20', cap: '1,2 do 2,0 t', img: '/products/ceoni-elektro-e16p.webp', alt: 'Linde E16 P čeoni električni viljuškar', href: `${SITE}/linde-elektricni-viljuskari/` }, // Linde series range and capacity
-    { name: 'Retrak viljuškari', range: 'R14 do R25', cap: '1,4 do 2,5 t', img: '/products/retrak-r16.webp', alt: 'Linde R16 retrak viljuškar za uske hodnike', href: `${SITE}/linde-regalni-viljuskari/` }, // Linde series range and capacity
-    { name: 'Slagači', range: 'L10 do L16', cap: '1,0 do 1,6 t', img: '/products/slagac-l14r.webp', alt: 'Linde L14 R slagač', href: `${SITE}/viljuskari/` }, // Linde series range and capacity
-    { name: 'Paletari', range: 'T20 do T25', cap: '2,0 do 2,5 t', img: '/products/paletar-t20r.webp', alt: 'Linde T20 R električni paletar', href: `${SITE}/viljuskari/` }, // Linde series range and capacity
-    { name: 'Komisioneri', range: 'N20 do N25 C', cap: '2,0 do 2,5 t', img: '/products/komisioner-n20c.webp', alt: 'Linde N20 C komisioner', href: `${SITE}/viljuskari/` }, // Linde series range and capacity
-    { name: 'Automatizacija', range: 'C-Matic 10', cap: '1,0 t', img: '/products/automatizacija-cmatic10.webp', alt: 'Linde C-Matic 10 autonomno vozilo za palete', href: `${SITE}/resenja/automatizacija/` }, // Linde series range and capacity
+    { name: 'Čeoni dizel viljuškari', range: 'H20 do H35', cap: '2,0 do 3,5 t', img: '/products/ceoni-dizel-h30d.webp', alt: 'Linde H30 D čeoni viljuškar sa dizel motorom', href: '/prodavnica/dizel-i-plinski-ceoni-viljuskari', lead: true }, // Linde series range and capacity
+    { name: 'Čeoni električni', range: 'E12 do E20', cap: '1,2 do 2,0 t', img: '/products/ceoni-elektro-e16p.webp', alt: 'Linde E16 P čeoni električni viljuškar', href: '/prodavnica/elektricni-ceoni-viljuskari' }, // Linde series range and capacity
+    { name: 'Retrak viljuškari', range: 'R14 do R25', cap: '1,4 do 2,5 t', img: '/products/retrak-r16.webp', alt: 'Linde R16 retrak viljuškar za uske hodnike', href: '/prodavnica/regalni-viljuskari' }, // Linde series range and capacity
+    { name: 'Slagači', range: 'L10 do L16', cap: '1,0 do 1,6 t', img: '/products/slagac-l14r.webp', alt: 'Linde L14 R slagač', href: '/prodavnica/slagaci-paleta' }, // Linde series range and capacity
+    { name: 'Paletari', range: 'T20 do T25', cap: '2,0 do 2,5 t', img: '/products/paletar-t20r.webp', alt: 'Linde T20 R električni paletar', href: '/prodavnica/niskopodizna-vozila' }, // Linde series range and capacity
+    { name: 'Komisioneri', range: 'N20 do N25 C', cap: '2,0 do 2,5 t', img: '/products/komisioner-n20c.webp', alt: 'Linde N20 C komisioner', href: '/prodavnica/viljuskari-za-komisioniranje' }, // Linde series range and capacity
+    { name: 'Automatizacija', range: 'C-Matic 10', cap: '1,0 t', img: '/products/automatizacija-cmatic10.webp', alt: 'Linde C-Matic 10 autonomno vozilo za palete', href: '/prodavnica/automatizovana-vozila' }, // Linde series range and capacity
   ] satisfies ProductCell[],
   // Ekotehnika's own delivery photos from Filip's Drive, ground level, no drone footage. Shown only in the closing section, see closing.photos.
   photos: [
@@ -253,11 +253,11 @@ export const closing = {
 
 export const footer = {
   nav: [
-    { label: 'Novi', href: `${SITE}/viljuskari/` },
+    { label: 'Novi', href: '/prodavnica' },
     { label: 'Polovni', href: `${SITE}/polovni-linde-viljuskari/` },
     { label: 'Najam', href: `${SITE}/iznajmljivanje-viljuskara-cena/` },
     { label: 'Servis', href: `${SITE}/servis/odrzavanje-i-popravka/` },
-    { label: 'Kontakt', href: `${SITE}/kontakt/` },
+    { label: 'Kontakt', href: '/kontakt' },
   ],
   address: ['Moše Pijade 17b', '11224 Vrčin'],
   // Row one of the footer, the two numbers with the e-mail under each. The e-mail pairing follows the address names.

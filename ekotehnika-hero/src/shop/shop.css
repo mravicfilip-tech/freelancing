@@ -1,0 +1,1197 @@
+/* The shop, see Shop.tsx. The homepage's language without the scroll story. Tokens only (src/styles.css), Daxline with Geist digits,
+   nothing under 14px, red only on the one primary. The same 12 column grid as the homepage, 48px margins and 24px gutters, and its five
+   verticals at columns 1, 4, 7, 10 and 13, so a shop page has four frames between them. Every line is a pair of 1px lines, black at 18
+   percent beside white at 40 percent, and a plus mark of solid ink stands where a rule crosses a vertical. On a screen held upright the
+   two edge lines only, 16px in, and no marks (Filip 4 November, "remove the middle line and cross/x's"). */
+.sp {
+  --cw: calc((100cqw - 96px - 264px) / 12);
+  --gx: calc(var(--cw) + 24px);
+  --x1: 48px;
+  --x2: round(nearest, calc(48px + 3 * var(--gx)), 1px);
+  --x3: round(nearest, calc(48px + 6 * var(--gx)), 1px);
+  --x4: round(nearest, calc(48px + 9 * var(--gx)), 1px);
+  --x5: round(nearest, calc(100cqw - 48px), 1px);
+  --hd: rgb(0 0 0 / 0.18);
+  --hl: rgb(255 255 255 / 0.4);
+  --tint: #f6f6f6;
+  --out: cubic-bezier(0.2, 0.7, 0.2, 1);
+  container-type: inline-size;
+  min-height: 100vh;
+  background: var(--white);
+  color: var(--black);
+  font-family: var(--font);
+  font-variant-numeric: lining-nums tabular-nums;
+}
+
+/* ---- the top row, the homepage's own, in the flow of the page ---- */
+.hf.sp-hf {
+  position: relative;
+  inset: auto;
+  z-index: 30;
+  height: 136px;
+  pointer-events: auto;
+}
+
+.sp-hf .hf-skip:not(:focus) {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+}
+
+/* ---- the page body, its five verticals and the rules ---- */
+.sp-main {
+  position: relative;
+  padding-bottom: 96px;
+}
+
+.sp-main:focus {
+  outline: none;
+}
+
+.sp-lines {
+  position: absolute;
+  inset: 0;
+  z-index: 10;
+  pointer-events: none;
+}
+
+.sp-vl {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  background: linear-gradient(90deg, var(--hd) 0 1px, var(--hl) 1px 2px);
+}
+
+/* four frames between the five verticals */
+.sp-frame {
+  position: relative;
+  display: grid;
+  grid-template-columns:
+    calc(var(--x2) - var(--x1))
+    calc(var(--x3) - var(--x2))
+    calc(var(--x4) - var(--x3))
+    calc(var(--x5) - var(--x4));
+  padding-left: var(--x1);
+}
+
+/* a cell, its text 24px in from its line, under its own rule */
+.sp-cell {
+  position: relative;
+  min-width: 0;
+  padding: 32px 24px 48px;
+}
+
+.sp-rule {
+  position: absolute;
+  left: 0;
+  right: -1px;
+  top: 0;
+  height: 2px;
+  background: linear-gradient(180deg, var(--hd) 0 1px, var(--hl) 1px 2px);
+  pointer-events: none;
+}
+
+/* the rule under the last row, its marks from the caps of Shop.tsx */
+.sp-cap {
+  position: relative;
+  height: 2px;
+}
+
+.sp-p {
+  position: absolute;
+  z-index: 20;
+  top: -4px;
+  width: 9px;
+  height: 9px;
+  pointer-events: none;
+}
+
+.sp-p-l {
+  left: -4px;
+}
+
+.sp-p-r {
+  right: -5px;
+}
+
+.sp-p::before,
+.sp-p::after {
+  content: '';
+  position: absolute;
+  background: var(--black);
+}
+
+.sp-p::before {
+  left: 0;
+  right: 0;
+  top: 4px;
+  height: 1px;
+}
+
+.sp-p::after {
+  top: 0;
+  bottom: 0;
+  left: 4px;
+  width: 1px;
+}
+
+/* ---- type ---- */
+.sp-lab {
+  margin: 0;
+  font: 500 14px/20px var(--font);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--grey-dark);
+}
+
+.sp-h1 {
+  margin: 16px 0 0;
+  font-size: 74px;
+  font-weight: 350;
+  line-height: 80px;
+  letter-spacing: -0.02em;
+  text-wrap: balance;
+}
+
+.sp-lede {
+  margin: 0;
+  max-width: 34em;
+  font-size: 20px;
+  line-height: 28px;
+}
+
+.sp-lede a,
+.sp-note a {
+  color: inherit;
+  text-underline-offset: 3px;
+}
+
+.sp-crumbs ol {
+  display: flex;
+  flex-wrap: wrap;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  font-size: 14px;
+  line-height: 20px;
+  color: var(--grey-dark);
+}
+
+.sp-crumbs a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.sp-crumbs a:is(:hover, :focus-visible) {
+  color: var(--black);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.sp-crumbs [aria-current='page'] {
+  color: var(--black);
+}
+
+.sp-crumbs li > span[aria-hidden] {
+  padding: 0 8px;
+}
+
+/* ---- the intro row of a page, the title in the first two frames, the words or the count in the other two ---- */
+.sp-intro .sp-cell {
+  padding: 48px 24px;
+}
+
+.sp-intro .sp-crumbs + .sp-h1 {
+  margin-top: 24px;
+  font-size: 54px;
+  line-height: 60px;
+}
+
+.sp-intro-r {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  align-items: flex-start;
+  gap: 24px;
+}
+
+.sp-count {
+  margin: 0;
+  font-size: 20px;
+  line-height: 28px;
+}
+
+.sp-count span {
+  margin-right: 8px;
+  font-size: 74px;
+  font-weight: 350;
+  line-height: 80px;
+  letter-spacing: -0.02em;
+}
+
+/* ---- a picture, a cut out render on the white, or a photo where the Drive has no render ---- */
+.sp-pic {
+  position: relative;
+  display: block;
+  flex: none;
+  width: 100%;
+  aspect-ratio: 1;
+  overflow: hidden;
+}
+
+.sp-pic img {
+  position: absolute;
+  inset: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  transition: transform 400ms var(--out);
+}
+
+/* a model with no picture in the Drive, its name in light type on a pale field */
+.sp-pic.is-empty {
+  display: grid;
+  place-items: center;
+  background: var(--tint);
+}
+
+.sp-pic.is-empty span {
+  padding: 0 16px;
+  font-size: 32px;
+  font-weight: 350;
+  line-height: 40px;
+  color: var(--grey-mid);
+  text-align: center;
+}
+
+/* a picture across two frames and a form stand over the middle line, the line runs on beside them */
+.sp-model-pic .sp-pic,
+.sp-photo img,
+.sp-form,
+.sp-note {
+  position: relative;
+  z-index: 20;
+  background: var(--white);
+}
+
+.sp-note {
+  background: var(--grey-pale);
+}
+
+/* ---- a category on the first page, and a model in a list. The whole cell is the link, the tint of its hover stays under the
+   lines, and a black plus cell comes in at its corner. ---- */
+.sp-tile,
+.sp-card {
+  padding: 0;
+}
+
+.sp-tile-a,
+.sp-card-a {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  padding: 24px 24px 32px;
+  color: inherit;
+  text-decoration: none;
+  transition: background-color 200ms var(--out);
+}
+
+.sp-tile-a:is(:hover, :focus-visible),
+.sp-card-a:is(:hover, :focus-visible) {
+  background: var(--tint);
+}
+
+.sp-tile-a:is(:hover, :focus-visible) img,
+.sp-card-a:is(:hover, :focus-visible) img {
+  transform: scale(1.03);
+}
+
+.sp-tile-a:focus-visible,
+.sp-card-a:focus-visible {
+  outline: 2px solid var(--black);
+  outline-offset: -2px;
+}
+
+.sp-tile .sp-pic,
+.sp-card .sp-pic {
+  margin: 16px 0 24px;
+}
+
+.sp-tile-name {
+  font-size: 24px;
+  line-height: 32px;
+  letter-spacing: -0.01em;
+}
+
+.sp-card-code {
+  margin-top: 4px;
+  font-size: 28px;
+  font-weight: 350;
+  line-height: 36px;
+  letter-spacing: -0.01em;
+}
+
+.sp-go {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  width: 40px;
+  height: 40px;
+  background: var(--black);
+  opacity: 0;
+  transition: opacity 200ms var(--out);
+}
+
+.sp-go::before {
+  content: '';
+  position: absolute;
+  inset: 10px;
+  background: var(--white);
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3E%3Cpath d='M9 3h2v6h6v2h-6v6H9v-6H3V9h6z'/%3E%3C/svg%3E") center / contain no-repeat;
+  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3E%3Cpath d='M9 3h2v6h6v2h-6v6H9v-6H3V9h6z'/%3E%3C/svg%3E") center / contain no-repeat;
+}
+
+:is(.sp-tile-a, .sp-card-a):is(:hover, :focus-visible) .sp-go {
+  opacity: 1;
+}
+
+/* the two facts, nosivost and visina podizanja */
+.sp-facts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 24px;
+  margin: 12px 0 0;
+}
+
+.sp-facts div {
+  min-width: 0;
+}
+
+.sp-facts dt {
+  font-size: 14px;
+  line-height: 20px;
+  color: var(--grey-dark);
+}
+
+.sp-facts dd {
+  margin: 0;
+  font-size: 20px;
+  line-height: 28px;
+}
+
+.sp-facts dd span {
+  font-size: 16px;
+  color: var(--grey-dark);
+}
+
+/* the cells beside the categories, help with the choice and the used trucks */
+.sp-help {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 16px;
+  padding: 24px 24px 32px;
+}
+
+.sp-help-t {
+  margin: 16px 0 0;
+  font-size: 24px;
+  line-height: 32px;
+  letter-spacing: -0.01em;
+}
+
+.sp-help-num {
+  font-size: 32px;
+  font-weight: 350;
+  line-height: 40px;
+  color: inherit;
+  text-decoration: none;
+}
+
+.sp-help-num:is(:hover, :focus-visible) {
+  text-decoration: underline;
+  text-decoration-thickness: 2px;
+  text-underline-offset: 6px;
+}
+
+.sp-help .btn {
+  margin-top: auto;
+}
+
+/* ---- a category, the list of categories in the first frame, the models in the other three ---- */
+.sp-side {
+  position: relative;
+  grid-column: 1;
+  padding: 32px 24px 48px;
+}
+
+.sp-side ul {
+  position: sticky;
+  top: 24px;
+  margin: 16px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.sp-side a {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 8px 0;
+  color: var(--grey-dark);
+  font-size: 16px;
+  line-height: 24px;
+  text-decoration: none;
+}
+
+.sp-side a:is(:hover, :focus-visible) {
+  color: var(--black);
+}
+
+.sp-side a[aria-current='page'] {
+  color: var(--black);
+  font-weight: 500;
+}
+
+.sp-side a[aria-current='page'] > span:first-child {
+  text-decoration: underline;
+  text-decoration-thickness: 2px;
+  text-underline-offset: 6px;
+}
+
+.sp-side-n {
+  flex: none;
+}
+
+.sp-models {
+  display: grid;
+  grid-column: 2 / span 3;
+  grid-template-columns: subgrid;
+}
+
+/* ---- a model ---- */
+.sp-model-pic {
+  padding: 32px 24px 48px;
+}
+
+.sp-model-pic .sp-pic {
+  max-height: 640px;
+  margin: 24px auto 0;
+}
+
+.sp-model-info {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  padding: 64px 24px 48px;
+}
+
+.sp-model-info .sp-h1 {
+  margin-top: 8px;
+}
+
+.sp-series {
+  margin: 8px 0 0;
+  font-size: 16px;
+  line-height: 24px;
+  color: var(--grey-dark);
+}
+
+.sp-facts.is-big {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  align-self: stretch;
+  gap: 0 24px;
+  margin: 48px 0 0;
+}
+
+.sp-facts.is-big div {
+  padding-top: 16px;
+  border-top: 1px solid var(--grey-light);
+}
+
+.sp-facts.is-big dd {
+  margin-top: 4px;
+  font-size: 48px;
+  font-weight: 350;
+  line-height: 56px;
+  letter-spacing: -0.02em;
+}
+
+.sp-facts.is-big dd span {
+  font-size: 20px;
+  letter-spacing: 0;
+}
+
+.sp-acts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 48px;
+}
+
+.sp-pdf {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 24px;
+  color: inherit;
+  font-size: 16px;
+  line-height: 24px;
+  text-decoration: none;
+}
+
+.sp-pdf:is(:hover, :focus-visible) > span:last-child {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.sp-pdf-i {
+  flex: none;
+  width: 20px;
+  height: 20px;
+  background: var(--black);
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3E%3Cpath d='M9 2h2v9.2l3.3-3.3 1.4 1.4L10 15 4.3 9.3l1.4-1.4L9 11.2zM3 16h14v2H3z'/%3E%3C/svg%3E") center / contain no-repeat;
+  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3E%3Cpath d='M9 2h2v9.2l3.3-3.3 1.4 1.4L10 15 4.3 9.3l1.4-1.4L9 11.2zM3 16h14v2H3z'/%3E%3C/svg%3E") center / contain no-repeat;
+}
+
+.sp-pdf-s {
+  margin-left: 4px;
+  color: var(--grey-dark);
+}
+
+.sp-photo {
+  padding: 32px 24px 48px;
+}
+
+.sp-photo img {
+  display: block;
+  width: 100%;
+  aspect-ratio: 3 / 2;
+  margin-top: 16px;
+  object-fit: cover;
+  background: var(--tint);
+}
+
+.sp-related-h {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 24px;
+  padding-bottom: 24px;
+}
+
+.sp-more {
+  color: inherit;
+  font-size: 16px;
+  line-height: 24px;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+/* ---- Kontakt ---- */
+.sp-contact-l,
+.sp-contact-r {
+  padding: 48px 24px;
+}
+
+.sp-contact-l .sp-lede {
+  margin-top: 24px;
+}
+
+.sp-ways {
+  margin: 48px 0 0;
+}
+
+.sp-ways div {
+  padding: 16px 0 24px;
+  border-top: 1px solid var(--grey-light);
+}
+
+.sp-ways dt {
+  font: 500 14px/20px var(--font);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--grey-dark);
+}
+
+.sp-ways dd {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  margin: 4px 0 0;
+  font-size: 16px;
+  line-height: 24px;
+}
+
+.sp-ways dd a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.sp-ways dd a:first-child:not([href^='mailto']) {
+  font-size: 32px;
+  font-weight: 350;
+  line-height: 40px;
+}
+
+.sp-ways dd a:is(:hover, :focus-visible) {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.sp-form {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  max-width: 640px;
+}
+
+.sp-note {
+  max-width: 640px;
+  margin: 0 0 32px;
+  padding: 16px 24px;
+  background: var(--grey-pale);
+  font-size: 16px;
+  line-height: 24px;
+}
+
+.sp-note.is-bad {
+  margin: 0;
+  background: none;
+  border-left: 2px solid var(--black);
+  padding: 4px 0 4px 16px;
+}
+
+.sp-tema {
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+.sp-tema legend,
+.sp-f label {
+  display: block;
+  margin-bottom: 8px;
+  padding: 0;
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 24px;
+}
+
+.sp-f-opt {
+  font-weight: 400;
+  color: var(--grey-dark);
+}
+
+.sp-seg {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.sp-seg label {
+  position: relative;
+  display: grid;
+  place-items: center;
+  height: 48px;
+  border: 1px solid var(--grey-light);
+  font-size: 16px;
+  cursor: pointer;
+  transition:
+    background-color 160ms,
+    color 160ms;
+}
+
+.sp-seg label:hover {
+  border-color: var(--black);
+}
+
+.sp-seg label.is-on {
+  border-color: var(--black);
+  background: var(--black);
+  color: var(--white);
+}
+
+.sp-seg input {
+  position: absolute;
+  inset: 0;
+  margin: 0;
+  opacity: 0;
+  cursor: pointer;
+}
+
+.sp-seg label:has(input:focus-visible) {
+  outline: 2px solid var(--black);
+  outline-offset: 2px;
+}
+
+.sp-pair {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 24px;
+}
+
+.sp-f input,
+.sp-f textarea,
+.sp-f select {
+  display: block;
+  width: 100%;
+  min-height: 48px;
+  margin: 0;
+  padding: 0 16px;
+  border: 1px solid var(--grey-light);
+  border-radius: 0;
+  background: var(--white);
+  color: var(--black);
+  font: 400 18px/28px var(--font);
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+.sp-f textarea {
+  padding: 12px 16px;
+  resize: vertical;
+}
+
+.sp-f :is(input, textarea, select):hover {
+  border-color: var(--grey-mid);
+}
+
+.sp-f :is(input, textarea, select):focus {
+  outline: none;
+  border-color: var(--black);
+  box-shadow: inset 0 0 0 1px var(--black);
+}
+
+.sp-select {
+  position: relative;
+}
+
+.sp-select::after {
+  content: '';
+  position: absolute;
+  top: 12px;
+  right: 16px;
+  width: 24px;
+  height: 24px;
+  background: var(--black);
+  pointer-events: none;
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3E%3Cpath d='M4.4 6.6 10 12.2l5.6-5.6L17 8l-7 7-7-7z'/%3E%3C/svg%3E") center / contain no-repeat;
+  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3E%3Cpath d='M4.4 6.6 10 12.2l5.6-5.6L17 8l-7 7-7-7z'/%3E%3C/svg%3E") center / contain no-repeat;
+}
+
+.sp-select select {
+  padding-right: 48px;
+  cursor: pointer;
+}
+
+/* a field with an error, a heavier edge and the message under it in ink, red is the primary's only */
+.is-bad :is(input, textarea) {
+  border-color: var(--black);
+  box-shadow: inset 0 0 0 1px var(--black);
+}
+
+.sp-err {
+  margin: 8px 0 0;
+  padding-left: 12px;
+  border-left: 2px solid var(--black);
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 20px;
+}
+
+.sp-check {
+  display: grid;
+  grid-template-columns: 24px minmax(0, 1fr);
+  column-gap: 12px;
+  align-items: start;
+}
+
+.sp-check input {
+  width: 24px;
+  height: 24px;
+  margin: 0;
+  accent-color: var(--black);
+  cursor: pointer;
+}
+
+.sp-check label {
+  font-size: 16px;
+  line-height: 24px;
+  cursor: pointer;
+}
+
+.sp-check .sp-err {
+  grid-column: 2;
+}
+
+.sp-trap {
+  position: absolute;
+  left: -10000px;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+}
+
+.sp-submit {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 16px 24px;
+  margin-top: 8px;
+}
+
+.sp-submit .btn[disabled] {
+  cursor: progress;
+}
+
+.sp-to {
+  margin: 0;
+  font-size: 14px;
+  line-height: 20px;
+  color: var(--grey-dark);
+}
+
+.sp-done {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 24px;
+  max-width: 640px;
+}
+
+.sp-done-t {
+  margin: 0;
+  font-size: 32px;
+  font-weight: 350;
+  line-height: 40px;
+  letter-spacing: -0.01em;
+}
+
+/* ---- a screen held upright, the phone. One frame between the two edge lines, 16px in, no middle line and no marks. The top row is
+   the logos only and scrolls away, the bar at the foot carries the menu, the call and the quote. ---- */
+@media (max-aspect-ratio: 4/5) {
+  .sp {
+    --x1: 16px;
+    --x2: 16px;
+    --x3: round(nearest, 50cqw, 1px);
+    --x4: round(nearest, calc(100cqw - 16px), 1px);
+    --x5: var(--x4);
+  }
+
+  .hf.sp-hf {
+    height: 120px;
+  }
+
+  .sp-hf .hf-top {
+    position: absolute;
+  }
+
+  .sp-menu:not([hidden]) {
+    position: fixed;
+  }
+
+  .sp-vl:not([data-n='1']):not([data-n='5']),
+  .sp-p {
+    display: none;
+  }
+
+  .sp-main {
+    padding-bottom: 64px;
+  }
+
+  .sp-frame {
+    grid-template-columns: minmax(0, 1fr);
+    padding: 0 16px;
+  }
+
+  .sp-frame > .sp-cell {
+    grid-column: 1 / -1 !important;
+  }
+
+  .sp-cell,
+  .sp-intro .sp-cell {
+    padding: 24px 12px 32px;
+  }
+
+  .sp-h1 {
+    font-size: clamp(40px, calc((100cqw - 56px) / 6.5), 54px);
+    line-height: 1.1;
+  }
+
+  .sp-intro .sp-crumbs + .sp-h1 {
+    margin-top: 16px;
+    font-size: clamp(36px, calc((100cqw - 56px) / 8), 48px);
+    line-height: 1.1;
+  }
+
+  .sp-lede {
+    font-size: 18px;
+    line-height: 28px;
+  }
+
+  .sp-count span {
+    font-size: 48px;
+    line-height: 56px;
+  }
+
+  .sp-intro .sp-intro-r {
+    padding-top: 0;
+  }
+
+  .sp-intro .sp-intro-r > .sp-rule {
+    display: none;
+  }
+
+  /* the categories two to a row, the two help cells across the width */
+  .sp-cats {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .sp-cats > .sp-cell {
+    grid-column: auto !important;
+  }
+
+  .sp-cats > .sp-help {
+    grid-column: 1 / -1 !important;
+  }
+
+  .sp-tile-a,
+  .sp-card-a {
+    padding: 16px 12px 24px;
+  }
+
+  .sp-tile .sp-pic,
+  .sp-card .sp-pic {
+    margin: 8px 0 12px;
+  }
+
+  .sp-tile-name {
+    font-size: 18px;
+    line-height: 24px;
+  }
+
+  .sp-card-code {
+    font-size: 24px;
+    line-height: 28px;
+  }
+
+  .sp-facts {
+    gap: 4px 16px;
+  }
+
+  .sp-facts dd {
+    font-size: 16px;
+    line-height: 24px;
+  }
+
+  .sp-facts dd span {
+    font-size: 14px;
+  }
+
+  .sp-go {
+    display: none;
+  }
+
+  .sp-help {
+    padding: 24px 12px 32px;
+  }
+
+  /* a category, the other categories as a row of chips that scrolls sideways, the models two to a row */
+  .sp-side {
+    grid-column: 1 / -1;
+    padding: 0 0 16px;
+  }
+
+  .sp-side > .sp-rule,
+  .sp-side > .sp-lab,
+  .sp-side > .sp-p {
+    display: none;
+  }
+
+  .sp-side ul {
+    position: static;
+    display: flex;
+    gap: 8px;
+    margin: 0 -16px;
+    padding: 0 16px 4px;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+
+  .sp-side li {
+    flex: none;
+  }
+
+  .sp-side a {
+    align-items: center;
+    min-height: 44px;
+    padding: 0 16px;
+    border: 1px solid var(--grey-light);
+    color: var(--black);
+    font-size: 16px;
+  }
+
+  .sp-side a[aria-current='page'] {
+    border-color: var(--black);
+    background: var(--black);
+    color: var(--white);
+  }
+
+  .sp-side a[aria-current='page'] > span:first-child {
+    text-decoration: none;
+  }
+
+  .sp-models {
+    grid-column: 1 / -1;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .sp-models > .is-blank {
+    display: none;
+  }
+
+  /* a model, the picture, then the words, the facts side by side, the two buttons across the width */
+  .sp-model-pic {
+    padding: 16px 12px 8px;
+  }
+
+  .sp-model-pic .sp-pic {
+    margin-top: 8px;
+  }
+
+  .sp-model-info {
+    padding: 24px 12px 32px;
+  }
+
+  .sp-model-info > .sp-rule {
+    display: none;
+  }
+
+  .sp-facts.is-big {
+    margin-top: 24px;
+  }
+
+  .sp-facts.is-big dd {
+    font-size: 32px;
+    line-height: 40px;
+  }
+
+  .sp-facts.is-big dd span {
+    font-size: 16px;
+  }
+
+  .sp-acts {
+    align-self: stretch;
+    flex-direction: column;
+    margin-top: 32px;
+  }
+
+  .sp-acts .btn {
+    align-self: stretch;
+  }
+
+  /* a button across the width keeps its label block and its cell together, the label takes the rest */
+  :is(.sp-acts, .sp-submit) .btn .btn-t {
+    flex: 1;
+  }
+
+  .sp-photo {
+    padding: 16px 12px 8px;
+  }
+
+  .sp-photo.is-blank,
+  .sp-photo + .sp-photo > .sp-lab {
+    display: none;
+  }
+
+  .sp-related {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .sp-related > .sp-cell {
+    grid-column: auto !important;
+  }
+
+  .sp-related > .sp-related-h {
+    grid-column: 1 / -1 !important;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .sp-related > .is-blank {
+    display: none;
+  }
+
+  /* Kontakt, the ways to reach the firm under the title, then the form, the pairs of fields one under the other */
+  .sp-contact-l,
+  .sp-contact-r {
+    padding: 24px 12px 32px;
+  }
+
+  .sp-ways {
+    margin-top: 32px;
+  }
+
+  .sp-ways dd a:first-child:not([href^='mailto']) {
+    font-size: 28px;
+    line-height: 36px;
+  }
+
+  .sp-pair {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .sp-submit .btn {
+    align-self: stretch;
+    width: 100%;
+  }
+}
+
+/* the cap under a section's last row is a row of four empty cells, a rule and its marks */
+.sp-cell.sp-cap {
+  height: 2px;
+  padding: 0;
+}
+
+@media (max-aspect-ratio: 4/5) {
+  .sp-frame > .sp-cell.sp-cap:first-of-type,
+  .sp-frame > .sp-cap {
+    grid-column: 1 / -1 !important;
+  }
+
+  .sp-frame > .sp-cap ~ .sp-cap {
+    display: none;
+  }
+}
+
+/* a title or a lede that runs across a vertical stands on the white, so the line stops at the words and goes on past them */
+.sp-h1,
+.sp-lede {
+  position: relative;
+  z-index: 20;
+  width: fit-content;
+  background: var(--white);
+}
+
+/* the last frame is a gutter narrower than the other three, so the pictures of a row take the height of a full frame, and the names
+   under them stay on one line across the row */
+.sp-tile .sp-pic,
+.sp-card .sp-pic {
+  aspect-ratio: auto;
+  height: calc(var(--x2) - var(--x1) - 48px);
+}
+
+@media (max-aspect-ratio: 4/5) {
+  .sp-tile .sp-pic,
+  .sp-card .sp-pic {
+    aspect-ratio: 1;
+    height: auto;
+  }
+}

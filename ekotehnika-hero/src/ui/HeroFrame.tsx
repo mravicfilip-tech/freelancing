@@ -16,24 +16,34 @@ import { TALL_QUERY } from '../story2/tall';
 import { BtnInner, Fill } from '../story2/shell/ui';
 import { goHome } from '../scroll/useScrollStory';
 import { toChapter } from '../story2/chapters';
-import { ShopSheetItem, ShopSub, type LinkFn } from './ShopNav';
+import { ServicesMega, ShopMega, ShopSheetItem, type LinkFn } from './ShopNav';
 import './heroframe.css';
 
 export type FrameTone = 'ink' | 'white';
 
 // ch names the story chapter a link stands for. In the story the nav's bar sits under that link while its chapter is on
 // screen, and under Početna where the chapter has no link, see StoryShell.
-// local marks a page of this site. Filip 18 November, "remap it to new home page + shop with categories, contact page and so on". Početna
-// is the story, Prodavnica the shop with its categories under it (sub), Najam and Servis the story's own chapters, Kontakt the form. Only
-// Polovni stays on ekotehnika.rs, the used trucks are listed there alone. The shop's own frame reads the same list, see shop/ShopFrame.tsx.
-export type NavLink = { label: string; href: string; current?: boolean; ch?: string; local?: boolean; sub?: boolean };
+// local marks a page of this site. Filip 18 November, "remap it to new home page + shop with categories" and then "fix this menu, remap it,
+// add new links, show categories, create a mega menu". Početna is the story, Prodavnica the shop with its categories in a mega panel, Usluge
+// a panel of Najam, Servis, Hitan servis and Polovni, Kompanija the story's company chapter, Kontakt the form (ui/ShopNav.tsx). ch is the
+// story chapter or chapters a link stands for, by spaces. The shop's own frame reads the same lists, see shop/ShopFrame.tsx.
+export type NavLink = { label: string; href: string; current?: boolean; ch?: string; local?: boolean; mega?: 'shop' | 'services' };
 export const links: NavLink[] = [
   { label: 'Početna', href: '/', current: true, ch: 'home' },
-  { label: 'Prodavnica', href: '/prodavnica', ch: 'prodaja', local: true, sub: true },
-  { label: 'Najam', href: '/#najam', ch: 'najam', local: true },
-  { label: 'Servis', href: '/#servis', ch: 'servis', local: true },
-  { label: 'Polovni', href: '/polovni-linde-viljuskari/' },
+  { label: 'Prodavnica', href: '/prodavnica', ch: 'prodaja', local: true, mega: 'shop' },
+  { label: 'Usluge', href: '/#najam', ch: 'najam servis', local: true, mega: 'services' },
+  { label: 'Kompanija', href: '/#kompanija', ch: 'kompanija', local: true },
   { label: 'Kontakt', href: '/kontakt', local: true },
+];
+// the menu sheet of a phone has no panels, so it names every place on its own, Polovni the only one on ekotehnika.rs
+export const sheetLinks: NavLink[] = [
+  links[0],
+  links[1],
+  { label: 'Najam', href: '/#najam', local: true },
+  { label: 'Servis', href: '/#servis', local: true },
+  { label: 'Polovni', href: '/polovni-linde-viljuskari/' },
+  links[3],
+  links[4],
 ];
 export const hrefOf = (l: NavLink) => (l.local ? l.href : `${SITE}${l.href}`);
 
@@ -49,7 +59,7 @@ export const onChapter = (href: string, after?: () => void) => (e: MouseEvent<HT
 };
 
 const plain: LinkFn = (href, children, className, current) => (
-  <a href={href} className={className} aria-current={current ? 'page' : undefined}>
+  <a href={href} className={className} aria-current={current ? 'page' : undefined} onClick={onChapter(href)}>
     {children}
   </a>
 );
@@ -155,11 +165,11 @@ export function HeroFrame({ tone, toneBottom, rootRef }: { tone: FrameTone; tone
         <nav className="hf-nav" aria-label="Glavna navigacija">
           <ul>
             {links.map((l) => (
-              <li key={l.label} className={l.sub ? 'hf-has-sub' : undefined}>
+              <li key={l.label} className={l.mega ? 'hf-has-sub' : undefined}>
                 <a href={hrefOf(l)} aria-current={l.current ? 'page' : undefined} data-ch={l.ch} onClick={onChapter(l.href)}>
                   {l.label}
                 </a>
-                {l.sub ? <ShopSub link={plain} /> : null}
+                {l.mega === 'shop' ? <ShopMega link={plain} /> : l.mega === 'services' ? <ServicesMega link={plain} /> : null}
               </li>
             ))}
           </ul>
@@ -236,8 +246,8 @@ export function HeroFrame({ tone, toneBottom, rootRef }: { tone: FrameTone; tone
           </button>
         </div>
         <ul className="hf-menu-links">
-          {links.map((l) =>
-            l.sub ? (
+          {sheetLinks.map((l) =>
+            l.mega === 'shop' ? (
               <ShopSheetItem label={l.label} href={hrefOf(l)} current={l.current} link={plain} key={l.label} />
             ) : (
               <li key={l.label}>

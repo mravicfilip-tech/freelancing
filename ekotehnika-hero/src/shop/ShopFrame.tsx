@@ -5,21 +5,27 @@
 import { createPortal } from 'react-dom';
 import { hero } from '../content';
 import { BtnInner } from '../story2/shell/ui';
-import { hrefOf, links, useMenu } from '../ui/HeroFrame';
-import { ShopSheetItem, ShopSub, type LinkFn } from '../ui/ShopNav';
+import { hrefOf, links, sheetLinks, useMenu } from '../ui/HeroFrame';
+import { ServicesMega, ShopMega, ShopSheetItem, type LinkFn } from '../ui/ShopNav';
 import { Link } from './route';
 import '../ui/heroframe.css';
 
 // a link inside the shop, the shop's own Link, a page of the shop opens without a reload
-const shopLink: LinkFn = (href, children, className, current) => (
-  <Link href={href} className={className} aria-current={current ? 'page' : undefined}>
-    {children}
-  </Link>
-);
+const shopLink: LinkFn = (href, children, className, current) =>
+  href.startsWith('/') ? (
+    <Link href={href} className={className} aria-current={current ? 'page' : undefined}>
+      {children}
+    </Link>
+  ) : (
+    <a href={href} className={className}>
+      {children}
+    </a>
+  );
 
 export function ShopFrame({ page }: { page: 'Prodavnica' | 'Kontakt' }) {
   const menu = useMenu();
   const nav = links.map((l) => ({ ...l, current: l.label === page }));
+  const sheet = sheetLinks.map((l) => ({ ...l, current: l.label === page }));
   const anchor = (l: (typeof nav)[number], className?: string) =>
     l.local ? (
       <Link href={hrefOf(l)} aria-current={l.current ? 'page' : undefined} className={className}>
@@ -49,9 +55,9 @@ export function ShopFrame({ page }: { page: 'Prodavnica' | 'Kontakt' }) {
         <nav className="hf-nav" aria-label="Glavna navigacija">
           <ul>
             {nav.map((l) => (
-              <li key={l.label} className={l.sub ? 'hf-has-sub' : undefined}>
+              <li key={l.label} className={l.mega ? 'hf-has-sub' : undefined}>
                 {anchor(l)}
-                {l.sub ? <ShopSub link={shopLink} /> : null}
+                {l.mega === 'shop' ? <ShopMega link={shopLink} /> : l.mega === 'services' ? <ServicesMega link={shopLink} /> : null}
               </li>
             ))}
           </ul>
@@ -108,8 +114,8 @@ export function ShopFrame({ page }: { page: 'Prodavnica' | 'Kontakt' }) {
           </button>
         </div>
         <ul className="hf-menu-links" onClick={(e) => (e.target as HTMLElement).closest('a') && menu.setOpen(false)}>
-          {nav.map((l) =>
-            l.sub ? (
+          {sheet.map((l) =>
+            l.mega === 'shop' ? (
               <ShopSheetItem label={l.label} href={hrefOf(l)} current={l.current} link={shopLink} key={l.label} />
             ) : (
               <li key={l.label}>{anchor(l)}</li>

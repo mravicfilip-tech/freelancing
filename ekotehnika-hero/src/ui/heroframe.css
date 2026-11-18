@@ -491,6 +491,20 @@
   pointer-events: auto;
 }
 
+/* from 1640px the menu is centred in the top row, so its panels centre under it, below that it sits at the right and they align to its
+   right edge */
+@media (min-width: 1640px) {
+  .hf-sub {
+    right: auto;
+    left: 50%;
+    transform: translate(-50%, 8px);
+  }
+
+  .hf-has-sub:is(:hover, :focus-within) > .hf-sub {
+    transform: translate(-50%, 0);
+  }
+}
+
 /* while the panel is open the frame stands over the story's plus marks (z 25), which otherwise draw across the panel */
 .hf:has(.hf-has-sub:is(:hover, :focus-within)) {
   z-index: 30;
@@ -502,12 +516,6 @@
   box-shadow:
     inset 0 0 0 1px var(--grey-light),
     0 16px 48px rgb(0 0 0 / 0.12);
-}
-
-.hf-sub-gs {
-  display: grid;
-  grid-template-columns: repeat(4, max-content);
-  gap: 32px;
 }
 
 .hf-sub-h {
@@ -537,6 +545,182 @@
 
 .hf-nav .hf-sub a.hf-sub-all {
   font-weight: 500;
+}
+
+/* the mega panels, Filip 18 November, "show categories, create a mega menu". Prodavnica, three kinds of truck with each category's picture
+   and count, then the offer. Usluge, four cards. A row or a card shows its hover on its name, not with the nav's underline. */
+.hf-mega .hf-sub-in {
+  padding: 32px;
+}
+
+.hf-mega-cols {
+  display: grid;
+  grid-template-columns: repeat(3, max-content) 240px;
+  gap: 48px;
+}
+
+.hf-nav .hf-mega :is(.hf-mega-row, .hf-mega-promo-a, .hf-svc-a)::after {
+  display: none;
+}
+
+.hf-nav .hf-mega a.hf-mega-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 4px 0;
+}
+
+.hf-mega-pic {
+  flex: none;
+  width: 48px;
+  height: 48px;
+  padding: 4px;
+  object-fit: contain;
+  background: var(--tint, #f6f6f6);
+}
+
+.hf-mega-t {
+  display: flex;
+  flex-direction: column;
+}
+
+.hf-mega-n {
+  font-size: 16px;
+  line-height: 24px;
+}
+
+.hf-mega-c {
+  color: var(--grey-dark);
+  font-size: 14px;
+  line-height: 20px;
+}
+
+.hf-mega-row:hover .hf-mega-n,
+.hf-mega-promo-a:hover .hf-mega-promo-t,
+.hf-svc-a:hover .hf-svc-n {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.hf-nav .hf-mega a.hf-mega-promo-a {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  padding: 0;
+  white-space: normal;
+}
+
+.hf-mega-promo-pic {
+  display: block;
+  width: 240px;
+  height: 180px;
+  background: var(--tint, #f6f6f6);
+}
+
+.hf-mega-promo-pic img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  padding: 16px;
+  object-fit: contain;
+}
+
+.hf-mega-tag {
+  margin-top: 16px;
+  padding: 4px 8px;
+  background: var(--black);
+  color: var(--white);
+  font: 500 14px/20px var(--font);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.hf-mega-promo-t {
+  margin-top: 8px;
+  font-size: 20px;
+  line-height: 28px;
+}
+
+.hf-mega-promo-v {
+  font-size: 32px;
+  font-weight: 350;
+  line-height: 40px;
+}
+
+.hf-mega .hf-sub-foot {
+  display: flex;
+  gap: 32px;
+}
+
+.hf-nav .hf-sub ul.hf-svc {
+  display: grid;
+  grid-template-columns: repeat(4, 224px);
+  gap: 8px;
+}
+
+.hf-nav .hf-svc a.hf-svc-a {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 4px;
+  height: 100%;
+  padding: 16px;
+  white-space: normal;
+  transition: background-color 160ms;
+}
+
+.hf-svc-a:hover {
+  background: var(--tint, #f6f6f6);
+}
+
+.hf-ico {
+  display: block;
+  width: 24px;
+  height: 24px;
+  margin-bottom: 12px;
+  background: var(--black);
+}
+
+.hf-ico.is-calendar {
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 256 256'%3E%3Cpath d='M208,32H184V24a8,8,0,0,0-16,0v8H88V24a8,8,0,0,0-16,0v8H48A16,16,0,0,0,32,48V208a16,16,0,0,0,16,16H208a16,16,0,0,0,16-16V48A16,16,0,0,0,208,32ZM169.66,133.66l-48,48a8,8,0,0,1-11.32,0l-24-24a8,8,0,0,1,11.32-11.32L116,164.69l42.34-42.35a8,8,0,0,1,11.32,11.32ZM48,80V48H72v8a8,8,0,0,0,16,0V48h80v8a8,8,0,0,0,16,0V48h24V80Z'/%3E%3C/svg%3E") center / contain no-repeat;
+  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 256 256'%3E%3Cpath d='M208,32H184V24a8,8,0,0,0-16,0v8H88V24a8,8,0,0,0-16,0v8H48A16,16,0,0,0,32,48V208a16,16,0,0,0,16,16H208a16,16,0,0,0,16-16V48A16,16,0,0,0,208,32ZM169.66,133.66l-48,48a8,8,0,0,1-11.32,0l-24-24a8,8,0,0,1,11.32-11.32L116,164.69l42.34-42.35a8,8,0,0,1,11.32,11.32ZM48,80V48H72v8a8,8,0,0,0,16,0V48h80v8a8,8,0,0,0,16,0V48h24V80Z'/%3E%3C/svg%3E") center / contain no-repeat;
+}
+
+.hf-ico.is-wrench {
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 256 256'%3E%3Cpath d='M232,96a72,72,0,0,1-100.94,66L79,222.22c-.12.14-.26.29-.39.42a32,32,0,0,1-45.26-45.26c.14-.13.28-.27.43-.39L94,124.94a72.07,72.07,0,0,1,83.54-98.78,8,8,0,0,1,3.93,13.19L144,80l5.66,26.35L176,112l40.65-37.52a8,8,0,0,1,13.19,3.93A72.6,72.6,0,0,1,232,96Z'/%3E%3C/svg%3E") center / contain no-repeat;
+  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 256 256'%3E%3Cpath d='M232,96a72,72,0,0,1-100.94,66L79,222.22c-.12.14-.26.29-.39.42a32,32,0,0,1-45.26-45.26c.14-.13.28-.27.43-.39L94,124.94a72.07,72.07,0,0,1,83.54-98.78,8,8,0,0,1,3.93,13.19L144,80l5.66,26.35L176,112l40.65-37.52a8,8,0,0,1,13.19,3.93A72.6,72.6,0,0,1,232,96Z'/%3E%3C/svg%3E") center / contain no-repeat;
+}
+
+.hf-ico.is-phone {
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 256 256'%3E%3Cpath d='M144.27,45.93a8,8,0,0,1,9.8-5.66,86.22,86.22,0,0,1,61.66,61.66,8,8,0,0,1-5.66,9.8A8.23,8.23,0,0,1,208,112a8,8,0,0,1-7.73-5.93,70.35,70.35,0,0,0-50.33-50.34A8,8,0,0,1,144.27,45.93Zm-2.33,41.8c13.79,3.68,22.65,12.55,26.33,26.34A8,8,0,0,0,176,120a8.23,8.23,0,0,0,2.07-.27,8,8,0,0,0,5.66-9.8c-5.12-19.16-18.5-32.54-37.66-37.66a8,8,0,1,0-4.13,15.46Zm72.43,78.73-47.11-21.11-.13-.06a16,16,0,0,0-15.17,1.4,8.12,8.12,0,0,0-.75.56L126.87,168c-15.42-7.49-31.34-23.29-38.83-38.51l20.78-24.71c.2-.25.39-.5.57-.77a16,16,0,0,0,1.32-15.06l0-.12L89.54,41.64a16,16,0,0,0-16.62-9.52A56.26,56.26,0,0,0,24,88c0,79.4,64.6,144,144,144a56.26,56.26,0,0,0,55.88-48.92A16,16,0,0,0,214.37,166.46Z'/%3E%3C/svg%3E") center / contain no-repeat;
+  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 256 256'%3E%3Cpath d='M144.27,45.93a8,8,0,0,1,9.8-5.66,86.22,86.22,0,0,1,61.66,61.66,8,8,0,0,1-5.66,9.8A8.23,8.23,0,0,1,208,112a8,8,0,0,1-7.73-5.93,70.35,70.35,0,0,0-50.33-50.34A8,8,0,0,1,144.27,45.93Zm-2.33,41.8c13.79,3.68,22.65,12.55,26.33,26.34A8,8,0,0,0,176,120a8.23,8.23,0,0,0,2.07-.27,8,8,0,0,0,5.66-9.8c-5.12-19.16-18.5-32.54-37.66-37.66a8,8,0,1,0-4.13,15.46Zm72.43,78.73-47.11-21.11-.13-.06a16,16,0,0,0-15.17,1.4,8.12,8.12,0,0,0-.75.56L126.87,168c-15.42-7.49-31.34-23.29-38.83-38.51l20.78-24.71c.2-.25.39-.5.57-.77a16,16,0,0,0,1.32-15.06l0-.12L89.54,41.64a16,16,0,0,0-16.62-9.52A56.26,56.26,0,0,0,24,88c0,79.4,64.6,144,144,144a56.26,56.26,0,0,0,55.88-48.92A16,16,0,0,0,214.37,166.46Z'/%3E%3C/svg%3E") center / contain no-repeat;
+}
+
+.hf-ico.is-tag {
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 256 256'%3E%3Cpath d='M243.31,136,144,36.69A15.86,15.86,0,0,0,132.69,32H40a8,8,0,0,0-8,8v92.69A15.86,15.86,0,0,0,36.69,144L136,243.31a16,16,0,0,0,22.63,0l84.68-84.68a16,16,0,0,0,0-22.63ZM84,96A12,12,0,1,1,96,84,12,12,0,0,1,84,96Z'/%3E%3C/svg%3E") center / contain no-repeat;
+  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 256 256'%3E%3Cpath d='M243.31,136,144,36.69A15.86,15.86,0,0,0,132.69,32H40a8,8,0,0,0-8,8v92.69A15.86,15.86,0,0,0,36.69,144L136,243.31a16,16,0,0,0,22.63,0l84.68-84.68a16,16,0,0,0,0-22.63ZM84,96A12,12,0,1,1,96,84,12,12,0,0,1,84,96Z'/%3E%3C/svg%3E") center / contain no-repeat;
+}
+
+.hf-svc-n {
+  font-size: 20px;
+  font-weight: 500;
+  line-height: 28px;
+}
+
+.hf-svc-l {
+  color: var(--grey-dark);
+  font-size: 14px;
+  line-height: 20px;
+}
+
+.hf-svc-go {
+  margin-top: auto;
+  padding-top: 12px;
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 20px;
+  text-decoration: underline;
+  text-underline-offset: 3px;
 }
 
 .hf-actions {

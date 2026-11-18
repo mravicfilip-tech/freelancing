@@ -80,3 +80,9 @@ Round of 18 November, sent while the shop ran on his localhost. Planned and buil
     as an L, a pin and a blob. To be redrawn from a proper icon set in its solid style, per the taste ruling.
 33. "what is this menu here remove it". Screenshot marks the phone bar, Meni, Prodaja and Zatražite ponudu, under the footer on a wide
     screen. The phone's bar showing where it never should.
+34. The top menu, "we have deadlinks here, fix this menu, remap it, add new links, show categories, create a mega menu etc gogogo".
+    Screenshot marks the six links on a model page.
+    34 built as a mega menu, Početna, Prodavnica with the ten categories by kind, each with its picture and count, and the MT15 C offer,
+    Usluge with Najam, Servis, Hitan servis and Polovni, Kompanija the story's company chapter, Kontakt. The dead links were Najam and Servis
+    from a shop page, the story gave up waiting for its pin after 5 seconds, now 30. Najam and Servis on the homepage open the form.
+35. The filters, "make this better". Screenshot marks the count of a ticked option, its grey pill gone on the row's grey.

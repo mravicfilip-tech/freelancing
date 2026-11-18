@@ -93,7 +93,7 @@ const DARK_TOP: [number, number][] = [
 const HOLDS = TIMELINE.filter((b) => b.hold);
 
 // The story's sections that have a link in the top nav, by the data-ch of that link, see HeroFrame.
-const CHAPTER: Record<string, string> = { prodaja: 'prodaja', servis: 'servis', najam: 'najam' };
+const CHAPTER: Record<string, string> = { kompanija: 'kompanija', prodaja: 'prodaja', servis: 'servis', najam: 'najam' };
 
 const ink = (tone: Tone, dark: boolean) => (tone === 'dark' || dark ? 'dark' : 'light');
 
@@ -259,7 +259,8 @@ export function StoryShell({ Scene, tone, reduced, darkLayers, darkTop = DARK_TO
     let lastCh = '';
     const placeBar = () => {
       if (!nav || !bar) return;
-      const a = nav.querySelector<HTMLElement>(`a[data-ch="${lastCh}"]`) ?? nav.querySelector<HTMLElement>('a[data-ch="home"]');
+      // a link can stand for more than one chapter, Usluge for najam and servis, so the chapter is one word of its data-ch
+      const a = nav.querySelector<HTMLElement>(`a[data-ch~="${lastCh}"]`) ?? nav.querySelector<HTMLElement>('a[data-ch="home"]');
       if (!a) return;
       const n = nav.getBoundingClientRect();
       const r = a.getBoundingClientRect();

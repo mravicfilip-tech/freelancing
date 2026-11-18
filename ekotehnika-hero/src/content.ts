@@ -35,7 +35,7 @@ export const pillars: Pillar[] = [
     name: 'Novi viljuškari',
     line: '96 Linde modela, ponuda po vašoj meri.',
     cta: 'Zatražite ponudu',
-    href: `${SITE}/viljuskari/`,
+    href: '/prodavnica',
     more: 'Pogledajte modele',
   },
   {
@@ -43,7 +43,7 @@ export const pillars: Pillar[] = [
     name: 'Najam',
     line: 'Od nekoliko sati do godinu dana. Isporuka za 24 sata.',
     cta: 'Zatražite ponudu za najam',
-    href: `${SITE}/iznajmljivanje-viljuskara-cena/`,
+    href: '/kontakt?tema=najam',
     more: 'Uslovi najma',
   },
   {
@@ -51,7 +51,7 @@ export const pillars: Pillar[] = [
     name: 'Servis',
     line: 'Redovno održavanje, hitne intervencije, ugovori o punom servisu.',
     cta: 'Zakažite servis',
-    href: `${SITE}/servis/odrzavanje-i-popravka/`,
+    href: '/kontakt?tema=servis',
     more: 'Usluge servisa',
   },
   {

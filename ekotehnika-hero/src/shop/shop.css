@@ -2579,14 +2579,31 @@
   outline-offset: 2px;
 }
 
+/* the count of a value, 14px figures in a pill, white on a row under the pointer and black on a ticked row like its box, Filip 18 November,
+   "make this better", the grey pill had gone into the row's grey */
 .sp-opt-n {
-  min-width: 28px;
+  min-width: 32px;
   padding: 0 8px;
   background: var(--tint);
   color: var(--grey-dark);
-  font-size: 12px;
-  line-height: 24px;
+  font: 500 14px/24px var(--font);
+  font-variant-numeric: tabular-nums;
   text-align: center;
+  transition:
+    background-color 120ms,
+    color 120ms,
+    box-shadow 120ms;
+}
+
+.sp-opt:hover .sp-opt-n {
+  background: var(--white);
+  box-shadow: inset 0 0 0 1px var(--grey-light);
+}
+
+.sp-opt:has(input:checked) .sp-opt-n {
+  background: var(--black);
+  color: var(--white);
+  box-shadow: none;
 }
 
 .sp-facet-note {

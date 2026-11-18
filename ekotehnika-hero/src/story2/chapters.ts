@@ -4,7 +4,7 @@
 import { glideTo, storyStops } from '../scroll/useScrollStory';
 import { TIMELINE } from './timeline';
 
-const HOLD: Record<string, string> = { prodaja: 'P', servis: 'S', najam: 'N' };
+const HOLD: Record<string, string> = { kompanija: 'C1', prodaja: 'P', servis: 'S', najam: 'N' };
 
 /** Glides the story to the first stop of a chapter. False while the story is not pinned yet or the chapter is unknown. */
 export function toChapter(ch: string) {
@@ -29,7 +29,8 @@ export function followChapterHash() {
     if (!HOLD[ch]) return;
     let tries = 0;
     timer = window.setInterval(() => {
-      if (toChapter(ch) || ++tries > 50) window.clearInterval(timer);
+      // the story pins once its loader has gone, which takes longer than a few seconds on a slow phone, so it waits up to 30
+      if (toChapter(ch) || ++tries > 300) window.clearInterval(timer);
     }, 100);
   };
   go();

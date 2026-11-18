@@ -58,6 +58,10 @@ so the lesson outlives the context window.
   synced anyway, and a Vercel preview went out with the old build under a link said to hold new work. Copy with `cp -a`, end the
   copy step with a check that fails loudly (a file the change adds exists, `diff -rq` is empty), and list the deployment's files
   through the Vercel API before sending the link.
+- `deploy.mjs` printed "vercel deploy failed" on 18 November for an Ekotehnika preview that was READY and complete, the CLI had also
+  printed a two factor notice. Read the deployment's state and its files through the Vercel API before calling a deploy failed.
+- The session scratchpad does not survive a new container. The Ekotehnika deploy copy is rebuilt from a clone of
+  mravicfilip-tech/ekotehnika with the app folder's files over it, a `diff -rq` that comes back empty, and one `vercel link --project ekotehnika`.
 - Turn off git deploys for agent branches in each project's `vercel.json`.
 
 ```json

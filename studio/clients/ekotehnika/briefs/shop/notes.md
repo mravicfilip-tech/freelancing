@@ -54,3 +54,9 @@ Round of 18 November, sent while the shop ran on his localhost. Planned and buil
     highlight on the row under the pointer.
 23. Oprema, "where icons". Screenshot shows black squares and the top row closed, from before the icon fix was pushed. The top row now
     opens from the first render instead of after it.
+24. Kontakt, "style this page better". Screenshot marks the empty fourth frame right of the form. A layout ask, so a structure in words
+    goes to Filip first.
+25. "icon size reduced by 50% on all dropdowns". Screenshot marks the arrow of the model select on Kontakt. Every dropdown arrow in the
+    shop at half its size.
+26. Kontakt, "add some imagery here". Screenshot marks the empty space under the contact rows on the left. Goes into the same structure
+    proposal as 24.

@@ -1315,8 +1315,9 @@
   height: 24px;
   background: var(--black);
   pointer-events: none;
-  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3E%3Cpath d='M4.4 6.6 10 12.2l5.6-5.6L17 8l-7 7-7-7z'/%3E%3C/svg%3E") center / contain no-repeat;
-  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3E%3Cpath d='M4.4 6.6 10 12.2l5.6-5.6L17 8l-7 7-7-7z'/%3E%3C/svg%3E") center / contain no-repeat;
+  /* the arrow at half its box, Filip 18 November, "icon size reduced by 50% on all dropdowns" */
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3E%3Cpath d='M4.4 6.6 10 12.2l5.6-5.6L17 8l-7 7-7-7z'/%3E%3C/svg%3E") center / 50% no-repeat;
+  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3E%3Cpath d='M4.4 6.6 10 12.2l5.6-5.6L17 8l-7 7-7-7z'/%3E%3C/svg%3E") center / 50% no-repeat;
 }
 
 .sp-select select {
@@ -2867,8 +2868,9 @@
   height: 20px;
   background: var(--black);
   transition: transform 200ms var(--out);
-  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3E%3Cpath d='M4.4 6.6 10 12.2l5.6-5.6L17 8l-7 7-7-7z'/%3E%3C/svg%3E") center / contain no-repeat;
-  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3E%3Cpath d='M4.4 6.6 10 12.2l5.6-5.6L17 8l-7 7-7-7z'/%3E%3C/svg%3E") center / contain no-repeat;
+  /* the arrow at half its box, Filip 18 November, "icon size reduced by 50% on all dropdowns" */
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3E%3Cpath d='M4.4 6.6 10 12.2l5.6-5.6L17 8l-7 7-7-7z'/%3E%3C/svg%3E") center / 50% no-repeat;
+  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3E%3Cpath d='M4.4 6.6 10 12.2l5.6-5.6L17 8l-7 7-7-7z'/%3E%3C/svg%3E") center / 50% no-repeat;
 }
 
 .sp-drop-b:hover {

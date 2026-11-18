@@ -8,6 +8,7 @@ import { hero } from '../content';
 import { CATEGORIES, PRODUCTS, productBySlug } from './data';
 import { Link } from './route';
 import { Cap, Rule } from './parts';
+import { Facts, Picture } from './Card';
 
 type Tema = 'kupovina' | 'najam' | 'servis';
 const TEME: { id: Tema; label: string }[] = [
@@ -152,6 +153,30 @@ export function Contact({ tema, model }: { tema: string | null; model: string | 
             </dd>
           </div>
         </dl>
+        {/* what the inquiry is about, Filip 18 November, "add some imagery here". The model the select holds, its picture on a pale tile
+            with its name and two figures, changing with the select. With no model the shop's photo of the trucks side by side. */}
+        <figure className="sp-contact-pic">
+          {picked ? (
+            <>
+              <Picture p={picked} size="hero" />
+              <figcaption>
+                <span className="sp-lab">{picked.kind}</span>
+                <span className="sp-contact-pic-t">Linde {picked.code}</span>
+                <Facts p={picked} />
+              </figcaption>
+            </>
+          ) : (
+            <>
+              <div className="sp-pic is-photo">
+                <img src="/shop/hero/range.webp" alt="Linde viljuškari svih vrsta, jedan pored drugog u hali" decoding="async" />
+              </div>
+              <figcaption>
+                <span className="sp-lab">Prodavnica</span>
+                <span className="sp-contact-pic-t">{PRODUCTS.length} modela Linde viljuškara</span>
+              </figcaption>
+            </>
+          )}
+        </figure>
       </div>
 
       <div className="sp-cell sp-contact-r" style={{ gridColumn: 'span 2' }}>

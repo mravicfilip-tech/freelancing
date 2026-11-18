@@ -60,3 +60,5 @@ Round of 18 November, sent while the shop ran on his localhost. Planned and buil
     shop at half its size.
 26. Kontakt, "add some imagery here". Screenshot marks the empty space under the contact rows on the left. Goes into the same structure
     proposal as 24.
+    Filip's yes to the Kontakt structure for 24 and 26, 18 November, "yes, go". The picture of the inquiry's model under the contact rows,
+    following the select, the range photo with no model, and the form across both right frames.

@@ -1140,6 +1140,45 @@
   margin: 48px 0 0;
 }
 
+/* the picture of the inquiry's model under the contact rows, and the form across both right frames, Filip 18 November, "style this
+   page better", "add some imagery here" */
+.sp-contact-pic {
+  margin: 24px 0 0;
+}
+
+.sp-contact-pic .sp-pic {
+  aspect-ratio: 4 / 3;
+  max-height: 520px;
+  background: var(--tint);
+}
+
+.sp-contact-pic .sp-pic:is(.is-render, .is-studio) img {
+  padding: 24px;
+  mix-blend-mode: multiply;
+}
+
+.sp-contact-pic .sp-pic.is-photo img {
+  object-fit: cover;
+}
+
+.sp-contact-pic figcaption {
+  display: flex;
+  flex-direction: column;
+  margin-top: 16px;
+}
+
+.sp-contact-pic-t {
+  margin-top: 4px;
+  font-size: 32px;
+  font-weight: 350;
+  line-height: 40px;
+}
+
+.sp-contact-r .sp-form,
+.sp-contact-r .sp-note {
+  max-width: none;
+}
+
 .sp-ways div {
   padding: 16px 0 24px;
   border-top: 1px solid var(--grey-light);

@@ -44,6 +44,8 @@ Task format
   - [x] H16 to H20 built in full, Filip looks, his notes 12 to 18 built, icons, ticks, version groups, open equipment, the gallery
   - [x] Every other series filled, 83 of 89 with a sheet, 3.437 lines translated, the cards and filters on the data sheet numbers
   - [ ] The client proofreads the Serbian of the data sheets, scripts/specs-sr.json and scripts/sr
+  - [x] Filip's notes 19 to 26, bigger model pictures, icons that draw, a recommended group, the full table, half size dropdown arrows, Kontakt with the inquiry's model and a wide form
+  - [ ] The client names the version they recommend per series, src/shop/recommended.json
   - [ ] The Serbian model descriptions, ekotehnika.rs refuses this container, Filip to get them another way
   - [ ] The form sends through Resend once Filip gives the key, the privacy text and the deadline from Filip
 

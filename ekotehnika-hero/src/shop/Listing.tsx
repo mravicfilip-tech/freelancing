@@ -52,6 +52,7 @@ export function Listing({ items, current }: { items: Product[]; current: string 
   const [s, setS] = useState<State>(read);
   const [sheet, setSheet] = useState(false);
   const sheetRef = useRef<HTMLDivElement>(null);
+  const openRef = useRef<HTMLButtonElement>(null);
   useEffect(() => write(s), [s]);
 
   // the options of each filter, only those this list has
@@ -80,13 +81,18 @@ export function Listing({ items, current }: { items: Product[]; current: string 
     setS((x) => ({ ...x, on: { ...x.on, [f]: x.on[f].includes(id) ? x.on[f].filter((v) => v !== id) : [...x.on[f], id] } }));
   const clear = () => setS((x) => ({ ...x, q: '', on: Object.fromEntries(FACETS.map((f) => [f, []])) as unknown as Record<Facet, string[]> }));
 
-  // the sheet on a phone, Escape shuts it and the focus goes into it
+  // the sheet on a phone, Escape shuts it and the focus goes into it. Whichever way it shuts, Escape, its close button or Prikaži, the focus
+  // goes back to the Filteri button that opened it, it fell to the page before (Filip 18 November, "fix the filter focus bug").
   useEffect(() => {
     if (!sheet) return;
     sheetRef.current?.querySelector<HTMLElement>('button, input')?.focus();
     const key = (e: KeyboardEvent) => e.key === 'Escape' && setSheet(false);
     document.addEventListener('keydown', key);
-    return () => document.removeEventListener('keydown', key);
+    const back = openRef.current;
+    return () => {
+      document.removeEventListener('keydown', key);
+      back?.focus({ preventScroll: true });
+    };
   }, [sheet]);
 
   const filters = (
@@ -166,7 +172,7 @@ export function Listing({ items, current }: { items: Product[]; current: string 
             <input type="search" placeholder="Pretraga, npr. X20 ili slagač" value={s.q} onChange={(e) => setS((x) => ({ ...x, q: e.target.value }))} />
           </label>
           <Dropdown label="Redosled" value={s.sort} options={SORTS} onChange={(v) => setS((x) => ({ ...x, sort: v }))} className="sp-sort" />
-          <button type="button" className="btn btn-secondary sp-open" aria-expanded={sheet} onClick={() => setSheet(true)}>
+          <button type="button" className="btn btn-secondary sp-open" ref={openRef} aria-expanded={sheet} onClick={() => setSheet(true)}>
             <BtnInner>Filteri{active.length ? ` (${active.length})` : ''}</BtnInner>
           </button>
           {active.length || s.q.trim() ? (

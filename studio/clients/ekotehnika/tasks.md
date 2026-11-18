@@ -25,6 +25,14 @@ Task format
 
 ## In progress
 
+- ekotehnika-21 The shop, the client's Drive categories and products, every product leads to the contact form, no cart. The homepage story leads to it. Brief in briefs/shop/brief.md
+  - [x] Map the Drive, 89 series in 10 categories, renders, photos and data sheets per series
+  - [ ] Filip answers the kickoff questions
+  - [ ] One direction in words with one reference
+  - [ ] The model page first, the hardest screen
+  - [ ] Prodavnica, the category page and Kontakt
+  - [ ] The homepage's links into the shop
+
 - ekotehnika-20 A back to top button, and the logo takes you to the first screen of this site and not ekotehnika.rs. Filip 5 November
   - [x] The button, a black square with an arrow up at the bottom right, from Proizvodi to the footer, over the bar on a phone
   - [x] The logos at the top and in the footer go to the first screen at once, no reload, a new tab opens the home page

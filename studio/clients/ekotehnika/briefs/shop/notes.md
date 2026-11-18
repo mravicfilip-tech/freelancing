@@ -72,3 +72,5 @@ Round of 18 November, sent while the shop ran on his localhost. Planned and buil
     under the right column. Built as the main picture filling the height the right column sets, so both end together at any width.
     28 found, the closing rule under a section is a 2px row that drew its own bottom marks 2px under its top marks, doubled on every page.
     29 built as each open equipment group showing its first 4 lines and a Još N button for the rest.
+31. The top menu, "this menu doesn't make sense, remap it to new home page + shop with categories, contact page and so on". Screenshot
+    marks Početna, Novi, Polovni, Najam, Servis, Kontakt. Shared by the homepage and the shop.

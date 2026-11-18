@@ -46,6 +46,8 @@ def sr_number(n):
 
 
 def sr_value(v, unit):
+    if v is None:
+        return None
     v = v.strip()
     if v in ('', '-'):
         return None

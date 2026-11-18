@@ -1,0 +1,97 @@
+n	name	type	kg	mm
+1	Linde slagač paleta L14 C	Visokopodizna vozila		
+2	Linde električni viljuškar Xi16 – Xi20 P	E-viljuškar	2000	8000
+3	Linde električni viljuškar Xi10 – Xi20 (viljuškar sa tri točka)	E-viljuškar	2000	8000
+4	Linde električni viljuškar X35 – X50	E-viljuškar	5000	7665
+5	Linde električni viljuškar X20 – X35	E-viljuškar	3500	7780
+6	Linde tegljač W20 – W30	Tegljači i vozila sa platformom	3000	
+7	Linde viljuškar za komisioniranje V10	Viljuškar za komisioniranje	1000	5415
+8	Linde viljuškar za komisioniranje V08	Viljuškar za komisioniranje	1000	1877
+9	Linde viljuškar za komisioniranje V modular B	Viljuškar za komisioniranje	1000	6865
+10	Linde viljuškar za komisioniranje V modular	Viljuškar za komisioniranje	1200	12660
+11	Linde transporter T25 – T30	Niskopodizno vozilo	3000	125
+12	Linde transporter T20 – T25 SP	Niskopodizno vozilo	2500	125
+13	Linde transporter T20 – T25 RW	Niskopodizno vozilo	2500	125
+14	Linde transporter T20 – T25 AP N	Niskopodizno vozilo	2500	125
+15	Linde transporter T20 – T25 AP	Niskopodizno vozilo	2500	125
+16	Linde transporter T20 – T25 SR	Niskopodizno vozilo	2000	115
+17	Linde transporter T20 – T25 R	Niskopodizno vozilo	2000	115
+18	Linde transporter T20 – T25 FP	Niskopodizno vozilo	2500	125
+19	Linde transporter T16 L	Niskopodizno vozilo	1600	675
+20	Linde transporter T16 – T20 P	Niskopodizno vozilo	2000	125
+21	Linde transporter T14 S, T20 – T25 S/SF	Niskopodizno vozilo	2000	115
+22	Linde transporter T14 B	Niskopodizno vozilo	1400	115
+23	Linde transporter T14 – T20	Niskopodizno vozilo	2000	125
+24	Linde regalni viljuškar R20 – R25 F	Regalni viljuškar	2500	9650
+25	Linde regalni viljuškar R14 – R25	Regalni viljuškar	2500	14955
+26	Linde regalni viljuškar R14 – R20 G	Regalni viljuškar	2000	7710
+27	Linde regalni viljuškar R14 – R17 X	Regalni viljuškar	1700	12755
+28	Linde regalni viljuškar R10 – R16 B	Regalni viljuškar	1600	7710
+29	Linde autonomni viljuškar R-MATIC	Autonomni viljuškari	1600	11455
+30	Linde tegljač P60 – P80	Tegljači i vozila sa platformom	200	
+31	Linde tegljač P40 – P60 C	Tegljači i vozila sa platformom	6000	
+32	Linde tegljač P20	Tegljači i vozila sa platformom	2000	
+33	Linde Tegljači P120 – P350	Tegljači i vozila sa platformom	300	
+34	Linde autonomni viljuškar P-MATIC	Autonomni viljuškari	5000	
+35	Linde viljuškar za komisioniranje N20 XL	Viljuškar za komisioniranje	600	750
+36	Linde viljuškar za komisioniranje N20 LoL	Viljuškar za komisioniranje	2000	1612
+37	Linde viljuškar za komisioniranje N20 D	Viljuškar za komisioniranje	2000	1924
+38	Linde viljuškar za komisioniranje N20 C LX	Viljuškar za komisioniranje	2000	700
+39	Linde viljuškar za komisioniranje N20 C LoL	Viljuškar za komisioniranje	2000	800
+40	Linde viljuškar za komisioniranje N20 C L	Viljuškar za komisioniranje	1200	700
+41	Linde viljuškar za komisioniranje N20 C D	Viljuškar za komisioniranje	2000	1580
+42	Linde viljuškar za komisioniranje N20 B, N20-N25, N20-N25 HP	Viljuškar za komisioniranje	2500	115
+43	Linde viljuškar za komisioniranje N20 – N25 C	Viljuškar za komisioniranje	2000	100
+44	Linde viljuškar za komisioniranje N16 Li	Viljuškar za komisioniranje	1600	675
+45	Linde viljuškar za komisioniranje MV01	Viljuškar za komisioniranje	100	3620
+46	Linde transporter MT15 C	Niskopodizno vozilo	1500	115
+47	Linde viljuškar za komisioniranje ML10 / MM10 / MM10i	Visokopodizna vozila	1000	3227
+48	Linde transporter M25 Scale+	Niskopodizno vozilo	2500	115
+49	Linde Transporter M25	Niskopodizno vozilo	2500	115
+50	Linde transporter M10 X/XE	Niskopodizno vozilo	1000	715
+51	Linde rutirani vozovi LT16 Ch/BMh	Rutirani vozovi	1600	115
+52	Linde rutirani vozovi LT10 – LT20	Rutirani vozovi	1600	57
+53	Linde rutirani vozovi LT06 – LT10 M / LT10 W	Rutirani vozovi	1000	40
+54	Linde slagač paleta L14 – L16 SP	Visokopodizna vozila	1600	5316
+55	Linde slagač paleta L14 – L16 RW	Visokopodizna vozila	1600	6216
+56	Linde paletni viljuškar L14 – L16 R/Ri	Visokopodizna vozila	1600	5314
+57	Linde paletni viljuškar L14 – L20 AP	Visokopodizna vozila	2000	6216
+58	Linde paletni viljuškar L14 – L20	Visokopodizna vozila	2000	6216
+59	Linde paletni viljuškar L14 – L16 AS/AS AP	Visokopodizna vozila	1600	5314
+60	Linde slagač paleta L10 – L16 B	Visokopodizna vozila	1600	5466
+61	Linde slagač paleta L10 – L12 B AS	Visokopodizna vozila	1200	4686
+62	Linde slagač paleta L06 – L16 AC	Visokopodizna vozila	1600	4266
+63	Linde autonomni viljuškar L-MATIC HD/HD k	Autonomni viljuškari	1600	3500
+64	Linde automatski viljuškar L-MATIC AC	Autonomni viljuškari	1600	4144
+65	Linde autonomni viljuškar L-MATIC	Autonomni viljuškari	1200	1924
+66	Linde autonomni viljuškar K-MATIC	Autonomni viljuškari	1450	14000
+67	Linde uskohodnični viljuškar K	Uređaji za uske prolaze	1500	18110
+68	Linde čeoni viljuškar HT100 – HT180 Ds	Čeoni dizel/gasni viljuškari	18000	9500
+69	Linde čeoni viljuškar H50 – H80	Čeoni dizel/gasni viljuškari	8000	9655
+70	Linde čeoni viljuškar H35 – H50	Čeoni dizel/gasni viljuškari	5000	7665
+71	Linde čeoni viljuškar H20 – H35	Čeoni dizel/gasni viljuškari	3500	7780
+72	Linde čeoni viljuškar H16 – H20	Čeoni dizel/gasni viljuškari	2050	6475
+73	Linde čeoni viljuškar H100 – H180 D	Čeoni dizel/gasni viljuškari	18000	9500
+74	Linde električni viljuškar E60–E80	E-viljuškar	8000	8670
+75	Linde električni viljuškar E35 – E50	E-viljuškar	5000	8665
+76	Linde električni viljuškar E20–E35	E-viljuškar	3500	7780
+77	Linde električni viljuškar E16 – E20 P	E-viljuškar	2000	8000
+78	Linde električni viljuškar E14 – E20	E-viljuškar	2000	8000
+79	Linde električni viljuškar E100 – E180	E-viljuškar	18000	7000
+80	Linde električni viljuškar E10	E-viljuškar	1000	5400
+81	Linde paletni viljuškar D12 S/SF	Visokopodizna vozila	1800	1724
+82	Linde slagač paleta D12 RW	Visokopodizna vozila	1200	2844
+83	Linde paletni viljuškar D12 R	Visokopodizna vozila	1200	2344
+84	Linde slagač paleta D12 HP SP	Visokopodizna vozila	2000	2424
+85	Linde slagač paleta D12 HP AP	Visokopodizna vozila	2000	2424
+86	Linde paletni viljuškar D12 – D14 SP	Visokopodizna vozila	1400	4266
+87	Linde paletni viljuškar D12 – D14 AP	Visokopodizna vozila	1400	4266
+88	Linde paletni viljuškar D12 – D14	Visokopodizna vozila	1400	4266
+89	Linde paletni viljuškar D10 FP	Visokopodizna vozila	1200	2424
+90	Linde paletni viljuškar D10 AP	Visokopodizna vozila	1200	2424
+91	Linde slagač paleta D10	Visokopodizna vozila	1200	2424
+92	Linde paletni viljuškar D08 M	Visokopodizna vozila	1800	1590
+93	Linde paletni viljuškar D06 – D10	Visokopodizna vozila	2000	2024
+94	Linde autonomni viljuškar C-MATIC HP	Autonomni viljuškari	1000	40
+95	Linde autonomni viljuškar C-MATIC	Autonomni viljuškari	1500	60
+96	Linde uskohodnični viljuškar A	Uređaji za uske prolaze	1500	12850

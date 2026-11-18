@@ -1,0 +1,896 @@
+{
+ "slug": "l14-do-l20",
+ "source": {
+  "name": "DS_L14_20_BR1173_en_B_0315_view.pdf",
+  "href": "https://drive.google.com/uc?export=download&id=1RjlwmKiEKt67RcUFjs9O86L9Gxdrpgg2"
+ },
+ "versions": [
+  "L14",
+  "L16",
+  "L20"
+ ],
+ "tagline": null,
+ "benefits": [],
+ "masts": [],
+ "figures": [
+  {
+   "label": "Nosivost",
+   "value": "1.400 do 2.000",
+   "unit": "kg"
+  },
+  {
+   "label": "Visina podizanja",
+   "value": "do 2.844",
+   "unit": "mm"
+  },
+  {
+   "label": "Brzina vožnje",
+   "value": "do 6",
+   "unit": "km/h"
+  },
+  {
+   "label": "Snaga pogonskog motora",
+   "value": "2,3",
+   "unit": "kW"
+  }
+ ],
+ "lede": "Paletni viljuškar, nosivosti 1.400 do 2.000 kg, u 3 verzije.",
+ "characteristics": [],
+ "table": [
+  {
+   "section": "Osnovni podaci",
+   "rows": [
+    {
+     "no": "1.1",
+     "label": "Proizvođač",
+     "unit": "",
+     "values": [
+      "LINDE",
+      "LINDE",
+      "LINDE"
+     ],
+     "notes": [
+      "",
+      "",
+      ""
+     ]
+    },
+    {
+     "no": "1.2",
+     "label": "Oznaka modela",
+     "unit": "",
+     "values": [
+      "L14",
+      "L16",
+      "L20"
+     ],
+     "notes": [
+      "",
+      "",
+      ""
+     ]
+    },
+    {
+     "no": "1.2a",
+     "label": "Serija",
+     "unit": "",
+     "values": [
+      "1173-00",
+      "1173-00",
+      "1173-00"
+     ],
+     "notes": [
+      "",
+      "",
+      ""
+     ]
+    },
+    {
+     "no": "1.3",
+     "label": "Pogonska jedinica",
+     "unit": "",
+     "values": [
+      "Baterija",
+      "Baterija",
+      "Baterija"
+     ],
+     "notes": [
+      "",
+      "",
+      ""
+     ]
+    },
+    {
+     "no": "1.4",
+     "label": "Način upravljanja",
+     "unit": "",
+     "values": [
+      "Pešački",
+      "Pešački",
+      "Pešački"
+     ],
+     "notes": [
+      "",
+      "",
+      ""
+     ]
+    },
+    {
+     "no": "1.5",
+     "label": "Nosivost/teret",
+     "unit": "",
+     "values": [
+      "Q (t) 1.4",
+      "1.6",
+      "2.0"
+     ],
+     "notes": [
+      "",
+      "",
+      ""
+     ]
+    },
+    {
+     "no": "1.6",
+     "label": "Težište tereta",
+     "unit": "",
+     "values": [
+      "c (mm) 600",
+      "600",
+      "600"
+     ],
+     "notes": [
+      "",
+      "",
+      ""
+     ]
+    },
+    {
+     "no": "1.8",
+     "label": "Od sredine osovine do čela viljuške",
+     "unit": "",
+     "values": [
+      "x (mm) 724 (64",
+      "724 (64",
+      "724 (64"
+     ],
+     "notes": [
+      "6 1 2",
+      "6 1 2",
+      "6 1 2"
+     ]
+    },
+    {
+     "no": "1.9",
+     "label": "Međuosovinsko rastojanje",
+     "unit": "",
+     "values": [
+      "y (mm) 1311 (123",
+      "1311 (123",
+      "1425 (134"
+     ],
+     "notes": [
+      "3 3 1 4 2",
+      "3 3 1 4 2",
+      "7 3 1 4 2"
+     ]
+    }
+   ]
+  },
+  {
+   "section": "Masa",
+   "rows": [
+    {
+     "no": "2.1",
+     "label": "Radna masa",
+     "unit": "",
+     "values": [
+      "(kg) 1085",
+      "1085",
+      "1670"
+     ],
+     "notes": [
+      "4 5",
+      "4 5",
+      "4 5"
+     ]
+    },
+    {
+     "no": "2.2",
+     "label": "Opterećenje osovina s teretom, napred/nazad",
+     "unit": "",
+     "values": [
+      "(kg) 847 / 1638",
+      "866 / 1819",
+      "1296 / 2374"
+     ],
+     "notes": [
+      "4 5",
+      "4 5",
+      "4 5"
+     ]
+    },
+    {
+     "no": "2.3",
+     "label": "Opterećenje osovina bez tereta, napred/nazad",
+     "unit": "",
+     "values": [
+      "(kg) 715 / 370",
+      "715 / 370",
+      "1122 / 548"
+     ],
+     "notes": [
+      "4 5",
+      "4 5",
+      "4 5"
+     ]
+    }
+   ]
+  },
+  {
+   "section": "Točkovi i gume",
+   "rows": [
+    {
+     "no": "3.1",
+     "label": "Vrsta guma, puna guma, superelastične, pneumatske ili poliuretanske",
+     "unit": "",
+     "values": [
+      "V+P/P",
+      "V+P/P",
+      "V+P/P"
+     ],
+     "notes": [
+      "6",
+      "6",
+      "6"
+     ]
+    },
+    {
+     "no": "3.2",
+     "label": "Dimenzija guma, napred",
+     "unit": "",
+     "values": [
+      "Ø 230 x 90",
+      "Ø 230 x 90",
+      "Ø 230 x 90"
+     ],
+     "notes": [
+      "",
+      "",
+      ""
+     ]
+    },
+    {
+     "no": "3.3",
+     "label": "Dimenzija guma, nazad",
+     "unit": "",
+     "values": [
+      "Ø 85 x 85 (Ø 85 x",
+      "Ø 85 x 85 (Ø 85 x",
+      "Ø 85 x 105 (Ø 85 x"
+     ],
+     "notes": [
+      "60 7",
+      "60 7",
+      "60 7"
+     ]
+    },
+    {
+     "no": "3.4",
+     "label": "Pomoćni točkovi (dimenzije)",
+     "unit": "",
+     "values": [
+      "Ø 150 x 50",
+      "Ø 150 x 50",
+      "Ø 150 x 50"
+     ],
+     "notes": [
+      "",
+      "",
+      ""
+     ]
+    },
+    {
+     "no": "3.5",
+     "label": "Broj točkova napred/nazad (x = pogonski)",
+     "unit": "",
+     "values": [
+      "1x + 1 / 2 (1x + 1 /",
+      "1x + 1 / 2 (1x + 1 /",
+      "1x + 1 / 2 (1x + 1 /"
+     ],
+     "notes": [
+      "4 7",
+      "4 7",
+      "4 7"
+     ]
+    },
+    {
+     "no": "3.6",
+     "label": "Trag točkova, napred",
+     "unit": "b10 (mm)",
+     "values": [
+      "534",
+      "534",
+      "534"
+     ],
+     "notes": [
+      "2",
+      "2",
+      "2"
+     ]
+    },
+    {
+     "no": "3.7",
+     "label": "Trag točkova, nazad",
+     "unit": "b11 (mm)",
+     "values": [
+      "380",
+      "380",
+      "370"
+     ],
+     "notes": [
+      "2",
+      "2",
+      "2"
+     ]
+    }
+   ]
+  },
+  {
+   "section": "Dimenzije",
+   "rows": [
+    {
+     "no": "4.2",
+     "label": "Visina spuštenog stuba",
+     "unit": "h1 (mm)",
+     "values": [
+      "1.915",
+      "1.915",
+      "1.915"
+     ],
+     "notes": [
+      "2",
+      "2",
+      "2"
+     ]
+    },
+    {
+     "no": "4.3",
+     "label": "Slobodno podizanje",
+     "unit": "h2 (mm)",
+     "values": [
+      "150",
+      "150",
+      "150"
+     ],
+     "notes": [
+      "2",
+      "2",
+      "2"
+     ]
+    },
+    {
+     "no": "4.4",
+     "label": "Visina podizanja",
+     "unit": "h3 (mm)",
+     "values": [
+      "2.844",
+      "2.844",
+      "2.684"
+     ],
+     "notes": [
+      "2",
+      "2",
+      "2"
+     ]
+    },
+    {
+     "no": "4.5",
+     "label": "Visina izvučenog stuba",
+     "unit": "h4 (mm)",
+     "values": [
+      "3.364",
+      "3.364",
+      "3.284"
+     ],
+     "notes": [
+      "2",
+      "2",
+      "2"
+     ]
+    },
+    {
+     "no": "4.9",
+     "label": "Visina ručke za upravljanje u radnom položaju, min/maks.",
+     "unit": "h14 (mm)",
+     "values": [
+      "697,5 / 1.162,5",
+      "697,5 / 1.162,5",
+      "697,5 / 1.162,5"
+     ],
+     "notes": [
+      "",
+      "",
+      ""
+     ]
+    },
+    {
+     "no": "4.15",
+     "label": "Visina, spuštena",
+     "unit": "h13 (mm)",
+     "values": [
+      "86",
+      "86",
+      "86"
+     ],
+     "notes": [
+      "",
+      "",
+      ""
+     ]
+    },
+    {
+     "no": "4.19",
+     "label": "Ukupna dužina",
+     "unit": "",
+     "values": [
+      "l1 (mm) 1950",
+      "1950",
+      "2068"
+     ],
+     "notes": [
+      "3 2",
+      "3 2",
+      "3 2"
+     ]
+    },
+    {
+     "no": "4.20",
+     "label": "Dužina do čela viljuške",
+     "unit": "",
+     "values": [
+      "l2 (mm) 800",
+      "800",
+      "915"
+     ],
+     "notes": [
+      "3 2",
+      "3 2",
+      "3 2"
+     ]
+    },
+    {
+     "no": "4.21",
+     "label": "Ukupna širina b1/b2 (mm)",
+     "unit": "",
+     "values": [
+      "800",
+      "800",
+      "810"
+     ],
+     "notes": [
+      "2",
+      "2",
+      "2"
+     ]
+    },
+    {
+     "no": "4.22",
+     "label": "Dimenzije viljuške s/e/l (mm)",
+     "unit": "",
+     "values": [
+      "71 x 180 x 1150",
+      "71 x 180 x 1150",
+      "73 x 210 x 1150"
+     ],
+     "notes": [
+      "",
+      "",
+      ""
+     ]
+    },
+    {
+     "no": "4.24",
+     "label": "Širina nosača viljuške",
+     "unit": "b3 (mm)",
+     "values": [
+      "780",
+      "780",
+      "780"
+     ],
+     "notes": [
+      "2",
+      "2",
+      "2"
+     ]
+    },
+    {
+     "no": "4.25",
+     "label": "Razmak viljuški, min/maks.",
+     "unit": "b5 (mm)",
+     "values": [
+      "560 / 680",
+      "560 / 680",
+      "580 / 680"
+     ],
+     "notes": [
+      "2",
+      "2",
+      "2"
+     ]
+    },
+    {
+     "no": "4.26",
+     "label": "Širina između oslonskih krakova",
+     "unit": "b4 (mm)",
+     "values": [
+      "255 / 375",
+      "255 / 375",
+      "230 / 330"
+     ],
+     "notes": [
+      "",
+      "",
+      ""
+     ]
+    },
+    {
+     "no": "4.32",
+     "label": "Klirens, na sredini međuosovinskog rastojanja",
+     "unit": "m2 (mm)",
+     "values": [
+      "30 (20/14",
+      "30 (20/14",
+      "14 (20/11"
+     ],
+     "notes": [
+      "0 8 1 9",
+      "0 8 1 9",
+      "5 8 1 9"
+     ]
+    },
+    {
+     "no": "4.33",
+     "label": "Širina radnog prolaza, paleta 1000 × 1200 poprečno",
+     "unit": "Ast (mm)",
+     "values": [
+      "2463 (2576) [2385 (2422)]",
+      "2463 (2576) [2385 (2422)]",
+      "2578 (2691) [2500 (2537)]"
+     ],
+     "notes": [
+      "10 11 12 13 14",
+      "10 11 12 13 14",
+      "10 11 12 13 14"
+     ]
+    },
+    {
+     "no": "4.34",
+     "label": "Širina radnog prolaza, paleta 800 × 1200 uzdužno",
+     "unit": "Ast (mm)",
+     "values": [
+      "2349 (2462) [2271 (2384)]",
+      "2349 (2462) [2271 (2384)]",
+      "2464 (2577) [2386 (2499)]"
+     ],
+     "notes": [
+      "10 11 12 13 14",
+      "10 11 12 13 14",
+      "10 11 12 13 14"
+     ]
+    },
+    {
+     "no": "4.35",
+     "label": "Radijus okretanja",
+     "unit": "Wa (mm)",
+     "values": [
+      "1.527",
+      "1.527",
+      "1.642"
+     ],
+     "notes": [
+      "15 3",
+      "15 3",
+      "16 3"
+     ]
+    }
+   ]
+  },
+  {
+   "section": "Performanse",
+   "rows": [
+    {
+     "no": "5.1",
+     "label": "Brzina vožnje, s teretom/bez tereta",
+     "unit": "",
+     "values": [
+      "(km/h) 6/6",
+      "6/6",
+      "Mast 1.4 and 1.6 t (in mm) Lift"
+     ],
+     "notes": [
+      "17",
+      "17",
+      "17"
+     ]
+    },
+    {
+     "no": "5.2",
+     "label": "Brzina podizanja, s teretom/bez tereta",
+     "unit": "",
+     "values": [
+      "(m/s) 0.16 / 0.3 (0.",
+      "0.15 / 0.3 (0.",
+      "6/6 Lift + fork height"
+     ],
+     "notes": [
+      "4 18 5",
+      "4 18 5",
+      "18 5"
+     ]
+    },
+    {
+     "no": "5.3",
+     "label": "Brzina spuštanja, s teretom/bez tereta",
+     "unit": "",
+     "values": [
+      "(m/s) 0.4 / 0.35",
+      "0.4 / 0.35",
+      "0.12 / 0.25 (0.35) Height, mast lowered 0.35 / 0.25"
+     ],
+     "notes": [
+      "5",
+      "5",
+      "5"
+     ]
+    },
+    {
+     "no": "5.8",
+     "label": "Maks. savladivi uspon, s teretom/bez tereta",
+     "unit": "",
+     "values": [
+      "(%) 10.0 / 24.0",
+      "10.0 / 24.0",
+      "Closed height (with free lift at 150 mm) 8.0 / 24.0 Height, mast extended"
+     ],
+     "notes": [
+      "",
+      "",
+      ""
+     ]
+    },
+    {
+     "no": "5.10",
+     "label": "Radna kočnica",
+     "unit": "",
+     "values": [
+      "Električna/mehanička",
+      "Električna/mehanička",
+      "Električna/mehanička"
+     ],
+     "notes": [
+      "",
+      "",
+      ""
+     ]
+    }
+   ]
+  },
+  {
+   "section": "Elektromotor",
+   "rows": [
+    {
+     "no": "6.1",
+     "label": "Snaga pogonskog motora, 60 min",
+     "unit": "",
+     "values": [
+      "(kW) 2.3",
+      "2.3",
+      "2.3"
+     ],
+     "notes": [
+      "",
+      "",
+      ""
+     ]
+    },
+    {
+     "no": "6.2",
+     "label": "Snaga motora za podizanje S3 15 %",
+     "unit": "",
+     "values": [
+      "(kW) 3.2",
+      "3.2",
+      "Mast 1.4 and 1.6 t (in mm) 3.2"
+     ],
+     "notes": [
+      "",
+      "",
+      ""
+     ]
+    },
+    {
+     "no": "6.3",
+     "label": "Baterija prema DIN 43531/35/36 A, B, C, bez",
+     "unit": "",
+     "values": [
+      "43 535 / B / 2PzS",
+      "43 535 / B / 2PzS",
+      "Lift 43 535 / B / 3PzS"
+     ],
+     "notes": [
+      "",
+      "",
+      ""
+     ]
+    },
+    {
+     "no": "6.4",
+     "label": "Napon baterije/nominalni kapacitet (5 h)",
+     "unit": "",
+     "values": [
+      "(V/Ah) 24 / 250",
+      "24 / 250",
+      "Lift + fork height 24 / 270 Height, mast lowered"
+     ],
+     "notes": [
+      "",
+      "",
+      ""
+     ]
+    },
+    {
+     "no": "6.5",
+     "label": "Masa baterije (± 5 %)",
+     "unit": "",
+     "values": [
+      "(kg) 212",
+      "212",
+      "249 Closed height (with free lift at 150 mm)"
+     ],
+     "notes": [
+      "",
+      "",
+      ""
+     ]
+    },
+    {
+     "no": "6.6",
+     "label": "Potrošnja energije po VDI ciklusu",
+     "unit": "(kWh/h)",
+     "values": [
+      "1,47",
+      "1,47",
+      "1,52 Height, mast extended"
+     ],
+     "notes": [
+      "",
+      "",
+      ""
+     ]
+    }
+   ]
+  },
+  {
+   "section": "Pogon",
+   "rows": [
+    {
+     "no": "8.1",
+     "label": "Vrsta upravljanja pogonom",
+     "unit": "",
+     "values": [
+      "LAC sa mikroprocesorom",
+      "LAC sa mikroprocesorom",
+      "LAC sa mikroprocesorom"
+     ],
+     "notes": [
+      "",
+      "",
+      ""
+     ]
+    },
+    {
+     "no": "8.4",
+     "label": "Nivo buke na mestu vozača 1) Vrednosti u zagradama sa inicijalnim podizanjem 2) (± 5 mm) 3) ± 0 mm = 2 PzS vertikalno; + 75 mm = 3 PzS vertikalno; + 150 mm = 4 PzS vertikalno 4) Vrednosti sa baterijom, vidi red 6.4/6.5. 5) (± 10%) 6) Puna guma + poliuretan / poliuretan 7) Vrednosti u zagradama sa tandem točkovima za teret. 8) Bez/sa inicijalnim podizanjem 9) (± 2 mm) 10) Vrednosti u zagradama sa branikom 11) Sa puzajućom brzinom = ručka za upravljanje u vertikalnom položaju 12) [sa inicijalnim podizanjem] 13) Uključujući najmanje 200 mm sigurnosnog razmaka u prolazu. 14) (± 20 mm) 15) sa inicijalnim podizanjem Wa = 1.449 mm, sa branikom Wa = 1.640 mm, sa inicijalnim podizanjem i branikom 16) sa inicijalnim podizanjem Wa = 1.564 mm, sa branikom Wa = 1.755 mm, sa inicijalnim podizanjem i branikom 17) (± 5%) 18) vrednosti u zagradama za opciju „Lift Speed Booster”",
+     "unit": "",
+     "values": [
+      "(dB(A)) < 66",
+      "< 66",
+      "< 66 Mast 2 t (in mm) Lift Lift + fork height Height, mast lowered Closed height (with free lift at 150 mm) Height, mast extended Free lift Other masts on request S=Standard, D=Duplex, T=Triplex"
+     ],
+     "notes": [
+      "",
+      "",
+      ""
+     ]
+    }
+   ]
+  }
+ ],
+ "compare": [
+  {
+   "label": "Pogonska jedinica",
+   "unit": "",
+   "values": [
+    "Baterija",
+    "Baterija",
+    "Baterija"
+   ]
+  },
+  {
+   "label": "Nosivost/teret",
+   "unit": "",
+   "values": [
+    "Q (t) 1.4",
+    "1.6",
+    "2.0"
+   ]
+  },
+  {
+   "label": "Visina podizanja",
+   "unit": "mm",
+   "values": [
+    "2.844",
+    "2.844",
+    "2.684"
+   ]
+  },
+  {
+   "label": "Brzina vožnje, s teretom/bez tereta",
+   "unit": "",
+   "values": [
+    "(km/h) 6/6",
+    "6/6",
+    "Mast 1.4 and 1.6 t (in mm) Lift"
+   ]
+  },
+  {
+   "label": "Brzina podizanja, s teretom/bez tereta",
+   "unit": "",
+   "values": [
+    "(m/s) 0.16 / 0.3 (0.",
+    "0.15 / 0.3 (0.",
+    "6/6 Lift + fork height"
+   ]
+  },
+  {
+   "label": "Radijus okretanja",
+   "unit": "mm",
+   "values": [
+    "1.527",
+    "1.527",
+    "1.642"
+   ]
+  },
+  {
+   "label": "Radna masa",
+   "unit": "",
+   "values": [
+    "(kg) 1085",
+    "1085",
+    "1670"
+   ]
+  },
+  {
+   "label": "Snaga pogonskog motora, 60 min",
+   "unit": "",
+   "values": [
+    "(kW) 2.3",
+    "2.3",
+    "2.3"
+   ]
+  },
+  {
+   "label": "Napon baterije/nominalni kapacitet (5 h)",
+   "unit": "",
+   "values": [
+    "(V/Ah) 24 / 250",
+    "24 / 250",
+    "Lift + fork height 24 / 270 Height, mast lowered"
+   ]
+  }
+ ],
+ "footnotes": [],
+ "equipment": []
+}

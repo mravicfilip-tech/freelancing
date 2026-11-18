@@ -6,3 +6,6 @@ remittix-hero.html
 
 # helper worktrees, each its own checkout on its own branch, never committed
 .claude/worktrees/
+
+# python caches
+__pycache__/

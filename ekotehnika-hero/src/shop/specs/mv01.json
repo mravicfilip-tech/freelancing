@@ -1,0 +1,650 @@
+{
+ "slug": "mv01",
+ "source": {
+  "name": "DS_MV01_8905_en_C_0623_view.pdf",
+  "href": "https://drive.google.com/uc?export=download&id=1ZDJhPWMdexs-w9EJsENEKaTVJ-eKpRO2"
+ },
+ "versions": [
+  "MV01"
+ ],
+ "tagline": "Vozilo za raznovrsne poslove u skladištu",
+ "benefits": [
+  "Ukupna dužina od samo 1.440 milimetara omogućava lako manevrisanje",
+  "Podizanje platforme do 3 metra omogućava komisioniranje sa druge i treće police regala",
+  "Stabilna konstrukcija za nosivost do 100 kilograma",
+  "Li-ION baterija se može puniti u svakom trenutku i povećava raspoloživost vozila"
+ ],
+ "masts": [],
+ "figures": [
+  {
+   "label": "Nosivost",
+   "value": "90",
+   "unit": "kg"
+  },
+  {
+   "label": "Visina podizanja",
+   "value": "3.620",
+   "unit": "mm"
+  },
+  {
+   "label": "Snaga pogonskog motora",
+   "value": "0,65",
+   "unit": "kW"
+  }
+ ],
+ "lede": "Viljuškar za komisioniranje, nosivosti 90 kg.",
+ "characteristics": [
+  {
+   "group": "Bezbednost",
+   "icon": "shield",
+   "bullets": [
+    "Smanjenje brzine kada je kabina podignuta",
+    "Automatska blokada vrata štiti vozača pri podizanju platforme",
+    "Senzor na jednoj desnoj ručki smanjuje rizik od povreda",
+    "Jedna pedala za noge kao prekidač mrtvog čoveka",
+    "Svetlosna upozorenja i signalni tonovi povećavaju bezbednost oko vozila"
+   ]
+  },
+  {
+   "group": "Ergonomija",
+   "icon": "seat",
+   "bullets": [
+    "Prostran i udoban prostor za vozača",
+    "Ergonomski raspored komandi",
+    "Električno podesiva polica za odlaganje u standardnoj opremi",
+    "Odeljci za papire i malu bocu vode",
+    "Ugrađeni punjač omogućava međupunjenje Li-ION baterije i povećava raspoloživost viljuškara"
+   ]
+  },
+  {
+   "group": "Upravljanje",
+   "icon": "lever",
+   "bullets": [
+    "Platforma za podizanje do visine od 3 metra za lak pristup drugom i trećem nivou regala",
+    "Snažan DC motor omogućava maksimalnu brzinu do 6,5 km/h",
+    "Kompaktne mere povećavaju upravljivost u uskim prolazima i krivinama",
+    "Električno upravljanje za lako manevrisanje i bezbedno, vrlo efikasno rukovanje teretom",
+    "Ugrađena Li-ION baterija 24 V 135 Ah"
+   ]
+  },
+  {
+   "group": "Servisiranje",
+   "icon": "wrench",
+   "bullets": [
+    "Li-ION baterije koje ne traže održavanje doprinose visokoj energetskoj efikasnosti i raspoloživosti vozila",
+    "Sistem za upravljanje baterijom obezbeđuje visoke performanse i dug vek baterije",
+    "DC pogonski motor bez četkica, malog održavanja, smanjuje troškove servisa",
+    "CAN bus veza omogućava jednostavan servis",
+    "Ključni delovi viljuškara su lako dostupni"
+   ]
+  }
+ ],
+ "table": [
+  {
+   "section": "Osnovni podaci",
+   "rows": [
+    {
+     "no": "1.1",
+     "label": "Proizvođač",
+     "unit": "",
+     "values": [
+      "Linde MH"
+     ],
+     "notes": [
+      ""
+     ]
+    },
+    {
+     "no": "1.2",
+     "label": "Model",
+     "unit": "",
+     "values": [
+      "MV01"
+     ],
+     "notes": [
+      ""
+     ]
+    },
+    {
+     "no": "1.2.a",
+     "label": "Serija",
+     "unit": "",
+     "values": [
+      "8905"
+     ],
+     "notes": [
+      ""
+     ]
+    },
+    {
+     "no": "1.3",
+     "label": "Pogonska jedinica",
+     "unit": "",
+     "values": [
+      "Baterija"
+     ],
+     "notes": [
+      ""
+     ]
+    },
+    {
+     "no": "1.4",
+     "label": "Način upravljanja",
+     "unit": "",
+     "values": [
+      "Višenamensko vozilo"
+     ],
+     "notes": [
+      ""
+     ]
+    },
+    {
+     "no": "1.5",
+     "label": "Nosivost/teret",
+     "unit": "Q1 (t) Q2 (t)",
+     "values": [
+      "0,09 0,11"
+     ],
+     "notes": [
+      ""
+     ]
+    },
+    {
+     "no": "1.9",
+     "label": "Međuosovinsko rastojanje",
+     "unit": "Q3 (t) y (mm)",
+     "values": [
+      "0,136 1095"
+     ],
+     "notes": [
+      ""
+     ]
+    }
+   ]
+  },
+  {
+   "section": "Masa",
+   "rows": [
+    {
+     "no": "2.1",
+     "label": "Radna masa",
+     "unit": "(kg)",
+     "values": [
+      "770"
+     ],
+     "notes": [
+      ""
+     ]
+    },
+    {
+     "no": "2.2",
+     "label": "Opterećenje osovina s teretom, napred/nazad",
+     "unit": "(kg)",
+     "values": [
+      "550 / 560"
+     ],
+     "notes": [
+      ""
+     ]
+    },
+    {
+     "no": "2.3",
+     "label": "Opterećenje osovina bez tereta, napred/nazad",
+     "unit": "(kg)",
+     "values": [
+      "375 / 395"
+     ],
+     "notes": [
+      ""
+     ]
+    }
+   ]
+  },
+  {
+   "section": "Točkovi i gume",
+   "rows": [
+    {
+     "no": "3.1",
+     "label": "Vrsta guma, puna guma, superelastične, pneumatske ili poliuretanske",
+     "unit": "",
+     "values": [
+      "PU + PU/R"
+     ],
+     "notes": [
+      ""
+     ]
+    },
+    {
+     "no": "3.2",
+     "label": "Dimenzija guma, napred",
+     "unit": "",
+     "values": [
+      "Ф 210 × 70"
+     ],
+     "notes": [
+      ""
+     ]
+    },
+    {
+     "no": "3.3",
+     "label": "Dimenzija guma, nazad",
+     "unit": "",
+     "values": [
+      "Ф 250 × 100"
+     ],
+     "notes": [
+      ""
+     ]
+    },
+    {
+     "no": "3.4",
+     "label": "Pomoćni točkovi (dimenzije)",
+     "unit": "",
+     "values": [
+      "Ф 74 × 48"
+     ],
+     "notes": [
+      ""
+     ]
+    },
+    {
+     "no": "3.5",
+     "label": "Broj točkova napred/nazad (x = pogonski)",
+     "unit": "",
+     "values": [
+      "1x + 2/2"
+     ],
+     "notes": [
+      ""
+     ]
+    },
+    {
+     "no": "3.6",
+     "label": "Trag točkova, napred",
+     "unit": "b10 (mm)",
+     "values": [
+      "545"
+     ],
+     "notes": [
+      ""
+     ]
+    },
+    {
+     "no": "3.7",
+     "label": "Trag točkova, nazad",
+     "unit": "b11 (mm)",
+     "values": [
+      "640"
+     ],
+     "notes": [
+      ""
+     ]
+    }
+   ]
+  },
+  {
+   "section": "Dimenzije",
+   "rows": [
+    {
+     "no": "4.2",
+     "label": "Visina spuštenog stuba",
+     "unit": "h1 (mm)",
+     "values": [
+      "1.425"
+     ],
+     "notes": [
+      ""
+     ]
+    },
+    {
+     "no": "4.4",
+     "label": "Visina podizanja",
+     "unit": "h3 (mm)",
+     "values": [
+      "3.620"
+     ],
+     "notes": [
+      ""
+     ]
+    },
+    {
+     "no": "4.5",
+     "label": "Visina izvučenog stuba",
+     "unit": "h4 (mm)",
+     "values": [
+      "4.100"
+     ],
+     "notes": [
+      ""
+     ]
+    },
+    {
+     "no": "4.7",
+     "label": "Visina zaštitnog krova (kabine)",
+     "unit": "h6 (mm)",
+     "values": [
+      "1.375"
+     ],
+     "notes": [
+      ""
+     ]
+    },
+    {
+     "no": "4.8",
+     "label": "Visina sedišta ili platforme",
+     "unit": "h7 (mm)",
+     "values": [
+      "275"
+     ],
+     "notes": [
+      ""
+     ]
+    },
+    {
+     "no": "4.14",
+     "label": "Visina platforme, podignute",
+     "unit": "h12 (mm)",
+     "values": [
+      "3.000"
+     ],
+     "notes": [
+      ""
+     ]
+    },
+    {
+     "no": "4.19",
+     "label": "Ukupna dužina",
+     "unit": "l1 (mm)",
+     "values": [
+      "1.440"
+     ],
+     "notes": [
+      ""
+     ]
+    },
+    {
+     "no": "4.21",
+     "label": "Ukupna širina",
+     "unit": "b1/b2 (mm)",
+     "values": [
+      "750"
+     ],
+     "notes": [
+      ""
+     ]
+    },
+    {
+     "no": "4.32",
+     "label": "Klirens s teretom, na sredini međuosovinskog rastojanja",
+     "unit": "m2 (mm)",
+     "values": [
+      "35"
+     ],
+     "notes": [
+      ""
+     ]
+    },
+    {
+     "no": "4.35",
+     "label": "Radijus okretanja 5.1 5.2 5.3",
+     "unit": "Wa (mm)",
+     "values": [
+      "1.260"
+     ],
+     "notes": [
+      ""
+     ]
+    }
+   ]
+  },
+  {
+   "section": "Performanse",
+   "rows": [
+    {
+     "no": "5.8",
+     "label": "Brzina vožnje, s teretom/bez tereta (H 0 do 500 mm) Brzina vožnje, s teretom/bez tereta (H 500 do 1000 mm) Brzina vožnje, s teretom/bez tereta (H 1000 do 2000 mm) Brzina vožnje, s teretom/bez tereta (H 2000 do 3000 mm) Brzina podizanja, s teretom/bez tereta (Q3) Brzina podizanja, s teretom/bez tereta (Q1) Brzina spuštanja, s teretom/bez tereta (Q3) Brzina spuštanja, s teretom/bez tereta (Q1) Maks. savladivi uspon, s teretom/bez tereta",
+     "unit": "(km/h) (km/h) (km/h) (km/h) (m/s) (m/s) (m/s) (m/s) (%)",
+     "values": [
+      "6/6,5 3 2 1 0,213/0,225 0,023/0,028 0,230/0,233 0,030/0,029 5/8"
+     ],
+     "notes": [
+      ""
+     ]
+    },
+    {
+     "no": "5.10",
+     "label": "Radna kočnica",
+     "unit": "",
+     "values": [
+      "Elektromagnetna"
+     ],
+     "notes": [
+      ""
+     ]
+    }
+   ]
+  },
+  {
+   "section": "Elektromotor",
+   "rows": [
+    {
+     "no": "6.1",
+     "label": "Snaga pogonskog motora S2 60 min",
+     "unit": "(kW)",
+     "values": [
+      "0,65"
+     ],
+     "notes": [
+      ""
+     ]
+    },
+    {
+     "no": "6.2",
+     "label": "Snaga motora za podizanje",
+     "unit": "(kW)",
+     "values": [
+      "2,2"
+     ],
+     "notes": [
+      ""
+     ]
+    },
+    {
+     "no": "6.4",
+     "label": "Napon baterije/nominalni kapacitet K5",
+     "unit": "(V/Ah)",
+     "values": [
+      "24 / 135"
+     ],
+     "notes": [
+      ""
+     ]
+    },
+    {
+     "no": "6.5",
+     "label": "Masa baterije",
+     "unit": "(kg)",
+     "values": [
+      "35"
+     ],
+     "notes": [
+      ""
+     ]
+    },
+    {
+     "no": "6.6",
+     "label": "Potrošnja energije po VDI ciklusu",
+     "unit": "(kWh/h)",
+     "values": [
+      "0,387"
+     ],
+     "notes": [
+      ""
+     ]
+    }
+   ]
+  },
+  {
+   "section": "Pogon",
+   "rows": [
+    {
+     "no": "8.1",
+     "label": "Vrsta pogona",
+     "unit": "",
+     "values": [
+      "DC bez četkica"
+     ],
+     "notes": [
+      ""
+     ]
+    },
+    {
+     "no": "8.4",
+     "label": "Nivo buke",
+     "unit": "(dB(A))",
+     "values": [
+      "74"
+     ],
+     "notes": [
+      ""
+     ]
+    }
+   ]
+  }
+ ],
+ "compare": [
+  {
+   "label": "Pogonska jedinica",
+   "unit": "",
+   "values": [
+    "Baterija"
+   ]
+  },
+  {
+   "label": "Nosivost",
+   "unit": "kg",
+   "values": [
+    "0,09 0,11"
+   ]
+  },
+  {
+   "label": "Visina podizanja",
+   "unit": "mm",
+   "values": [
+    "3.620"
+   ]
+  },
+  {
+   "label": "Radijus okretanja 5.1 5.2 5.3",
+   "unit": "mm",
+   "values": [
+    "1.260"
+   ]
+  },
+  {
+   "label": "Radna masa",
+   "unit": "(kg)",
+   "values": [
+    "770"
+   ]
+  },
+  {
+   "label": "Snaga pogonskog motora S2 60 min",
+   "unit": "(kW)",
+   "values": [
+    "0,65"
+   ]
+  },
+  {
+   "label": "Napon baterije/nominalni kapacitet K5",
+   "unit": "(V/Ah)",
+   "values": [
+    "24 / 135"
+   ]
+  }
+ ],
+ "footnotes": [],
+ "equipment": [
+  {
+   "group": "Bezbednost",
+   "icon": "shield",
+   "items": [
+    {
+     "t": "Zadnje treptavo svetlo"
+    },
+    {
+     "t": "Prednji BlueSpot ®"
+    },
+    {
+     "t": "Vrata sa automatskim zaključavanjem"
+    },
+    {
+     "t": "Zvučni signal pri spuštanju platforme"
+    },
+    {
+     "t": "Zvučni signal (pri vožnji unazad ili napred/nazad)"
+    },
+    {
+     "t": "Automatsko smanjenje brzine u krivinama"
+    },
+    {
+     "t": "Automatsko smanjenje brzine pri podizanju platforme"
+    },
+    {
+     "t": "Senzor blokade na desnoj ručki za rukovanje"
+    },
+    {
+     "t": "Prekidač sa ključem"
+    },
+    {
+     "t": "CAN bus tehnologija"
+    },
+    {
+     "t": "Platforma za podizanje do 3 metra"
+    },
+    {
+     "t": "Višefunkcionalni ekran"
+    }
+   ]
+  },
+  {
+   "group": "Radno mesto",
+   "icon": "seat",
+   "items": [
+    {
+     "t": "Kompaktan volan integrisan u konzolu"
+    },
+    {
+     "t": "Električno podesiva polica za odlaganje do 90 kg"
+    },
+    {
+     "t": "Odlaganje, papiri, olovke, rukavice, dva odeljka za boce"
+    },
+    {
+     "t": "Pogonski točak od poliuretana"
+    },
+    {
+     "t": "Nosivi točak od gume"
+    },
+    {
+     "t": "DC motor bez četkica od 0,65 kW (ne traži održavanje)"
+    },
+    {
+     "t": "Elektromagnetni sistem kočenja"
+    }
+   ]
+  },
+  {
+   "group": "Pogon i kočnice",
+   "icon": "bolt",
+   "items": [
+    {
+     "t": "Li-ION baterija 24 V / 135 Ah"
+    },
+    {
+     "t": "Ugrađeni punjač od 30 Ah za Li-ION"
+    }
+   ]
+  }
+ ]
+}

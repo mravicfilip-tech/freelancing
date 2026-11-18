@@ -41,8 +41,9 @@ Task format
   - [ ] Note 11, the model page filled from the Drive, a description, why it works, every figure the data sheet gives
   - [x] Filip's yes to the four lines, 18 November
   - [x] Every data sheet on the Drive pulled into data, briefs/shop/ds, 83 of 89 series have one, 53 parse in full
-  - [ ] H16 to H20 built in full, Filip looks
-  - [ ] Every other series filled, the cards and filters on the data sheet numbers
+  - [x] H16 to H20 built in full, Filip looks, his notes 12 to 18 built, icons, ticks, version groups, open equipment, the gallery
+  - [x] Every other series filled, 83 of 89 with a sheet, 3.437 lines translated, the cards and filters on the data sheet numbers
+  - [ ] The client proofreads the Serbian of the data sheets, scripts/specs-sr.json and scripts/sr
   - [ ] The Serbian model descriptions, ekotehnika.rs refuses this container, Filip to get them another way
   - [ ] The form sends through Resend once Filip gives the key, the privacy text and the deadline from Filip
 

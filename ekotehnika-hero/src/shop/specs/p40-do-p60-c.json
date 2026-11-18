@@ -1,0 +1,1051 @@
+{
+ "slug": "p40-do-p60-c",
+ "source": {
+  "name": "DS_P40-P60 C_P40 C B_4595_en_B_0625_view.pdf",
+  "href": "https://drive.google.com/uc?export=download&id=1OdFeJmpyxYc3Jr2PqWRMQ0-c0jk0G3oH"
+ },
+ "versions": [
+  "P40 C B",
+  "P40 C",
+  "P60 C"
+ ],
+ "tagline": "Dinamičan toranj",
+ "benefits": [
+  "Velika upravljivost olakšava upotrebu u skučenim prostorima",
+  "Snažan motor obezbeđuje veliku vučnu silu i najveću brzinu",
+  "Veliki izbor spojnica za prikolice različitih tipova",
+  "Posebna konstrukcija vozila omogućava najbolju preglednost prikolice i tereta",
+  "Amortizovana platforma vozača štiti od udara i vibracija",
+  "Linde volan podesiv po visini za intuitivno i precizno upravljanje"
+ ],
+ "masts": [],
+ "figures": [
+  {
+   "label": "Vučna sila",
+   "value": "800 do 1.200",
+   "unit": "N"
+  },
+  {
+   "label": "Brzina vožnje",
+   "value": "do 13",
+   "unit": "km/h"
+  },
+  {
+   "label": "Snaga pogonskog motora",
+   "value": "2,3 do 3",
+   "unit": "kW"
+  }
+ ],
+ "lede": "Tegljač, u 3 verzije.",
+ "characteristics": [],
+ "table": [
+  {
+   "section": "Osnovni podaci",
+   "rows": [
+    {
+     "no": "1.1",
+     "label": "Proizvođač",
+     "unit": "",
+     "values": [
+      "Linde MH",
+      "Linde MH",
+      "Linde MH"
+     ],
+     "notes": [
+      "",
+      "",
+      ""
+     ]
+    },
+    {
+     "no": "1.2",
+     "label": "Oznaka modela",
+     "unit": "",
+     "values": [
+      "P40 C B",
+      "P40 C",
+      "P60 C"
+     ],
+     "notes": [
+      "",
+      "",
+      ""
+     ]
+    },
+    {
+     "no": "1.2a",
+     "label": "Serija",
+     "unit": "",
+     "values": [
+      "4595-00",
+      "4595-00",
+      "4595-00"
+     ],
+     "notes": [
+      "",
+      "",
+      ""
+     ]
+    },
+    {
+     "no": "1.3",
+     "label": "Pogon",
+     "unit": "",
+     "values": [
+      "Baterija",
+      "Baterija",
+      "Baterija"
+     ],
+     "notes": [
+      "",
+      "",
+      ""
+     ]
+    },
+    {
+     "no": "1.4",
+     "label": "Način upravljanja",
+     "unit": "",
+     "values": [
+      "Stojeći",
+      "Stojeći",
+      "Stojeći"
+     ],
+     "notes": [
+      "",
+      "",
+      ""
+     ]
+    },
+    {
+     "no": "1.5",
+     "label": "Nosivost",
+     "unit": "Q (t)",
+     "values": [
+      "4,0",
+      "4,0",
+      "6,0"
+     ],
+     "notes": [
+      "",
+      "",
+      ""
+     ]
+    },
+    {
+     "no": "1.7",
+     "label": "Nominalna vučna sila",
+     "unit": "F (N)",
+     "values": [
+      "800",
+      "800",
+      "1.200"
+     ],
+     "notes": [
+      "",
+      "",
+      ""
+     ]
+    },
+    {
+     "no": "1.9",
+     "label": "Međuosovinsko rastojanje",
+     "unit": "y (mm)",
+     "values": [
+      "1.032",
+      "1.032",
+      "1.032"
+     ],
+     "notes": [
+      "1 2",
+      "1 2",
+      "1 2"
+     ]
+    }
+   ]
+  },
+  {
+   "section": "Masa",
+   "rows": [
+    {
+     "no": "2.1",
+     "label": "Radna masa",
+     "unit": "kg",
+     "values": [
+      "1.009",
+      "1.014",
+      "1.014"
+     ],
+     "notes": [
+      "3",
+      "3",
+      "3"
+     ]
+    },
+    {
+     "no": "2.3",
+     "label": "Opterećenje osovina bez tereta, napred/nazad",
+     "unit": "kg",
+     "values": [
+      "566 / 443",
+      "571 / 443",
+      "571 / 443"
+     ],
+     "notes": [
+      "3",
+      "3",
+      "3"
+     ]
+    }
+   ]
+  },
+  {
+   "section": "Gume i šasija",
+   "rows": [
+    {
+     "no": "3.1",
+     "label": "Vrsta guma, puna guma, superelastične, pneumatske ili poliuretanske",
+     "unit": "",
+     "values": [
+      "Poliuretan",
+      "Poliuretan",
+      "Poliuretan"
+     ],
+     "notes": [
+      "",
+      "",
+      ""
+     ]
+    },
+    {
+     "no": "3.2",
+     "label": "Dimenzija guma, napred",
+     "unit": "",
+     "values": [
+      "Ø 230 × 90",
+      "Ø 254 × 102",
+      "Ø 254 × 102"
+     ],
+     "notes": [
+      "",
+      "",
+      ""
+     ]
+    },
+    {
+     "no": "3.3",
+     "label": "Dimenzija guma, nazad",
+     "unit": "",
+     "values": [
+      "Ø 250 × 80",
+      "Ø 250 × 80",
+      "Ø 250 × 80"
+     ],
+     "notes": [
+      "",
+      "",
+      ""
+     ]
+    },
+    {
+     "no": "3.4",
+     "label": "Pomoćni točkovi (dimenzije)",
+     "unit": "",
+     "values": [
+      "Ø 100 × 40",
+      "Ø 100 × 40",
+      "Ø 100 × 40"
+     ],
+     "notes": [
+      "",
+      "",
+      ""
+     ]
+    },
+    {
+     "no": "3.5",
+     "label": "Broj točkova napred/nazad (x = pogonski)",
+     "unit": "",
+     "values": [
+      "1x + 2/2",
+      "1x + 2/2",
+      "1x + 2/2"
+     ],
+     "notes": [
+      "",
+      "",
+      ""
+     ]
+    },
+    {
+     "no": "3.6",
+     "label": "Trag točkova, napred",
+     "unit": "b10 (mm)",
+     "values": [
+      "580",
+      "580",
+      "580"
+     ],
+     "notes": [
+      "2",
+      "2",
+      "2"
+     ]
+    },
+    {
+     "no": "3.7",
+     "label": "Trag točkova, nazad",
+     "unit": "b11 (mm)",
+     "values": [
+      "654",
+      "654",
+      "654"
+     ],
+     "notes": [
+      "2",
+      "2",
+      "2"
+     ]
+    }
+   ]
+  },
+  {
+   "section": "Dimenzije",
+   "rows": [
+    {
+     "no": "4.8",
+     "label": "Visina sedišta (SIP) ili platforme",
+     "unit": "h7 (mm)",
+     "values": [
+      "130 // 918/1058",
+      "130 // 918/1058",
+      "130 // 918/1058"
+     ],
+     "notes": [
+      "4 5",
+      "4 5",
+      "4 5"
+     ]
+    },
+    {
+     "no": "4.9",
+     "label": "Visina ručke za upravljanje u položaju vožnje, min/maks.",
+     "unit": "h14 (mm)",
+     "values": [
+      "1.258",
+      "1.258",
+      "1.258"
+     ],
+     "notes": [
+      "4 6",
+      "4 6",
+      "4 6"
+     ]
+    },
+    {
+     "no": "4.12",
+     "label": "Visina kuke za vuču",
+     "unit": "h10 (mm)",
+     "values": [
+      "210 / 265 / 320",
+      "210 / 265 / 320",
+      "210 / 265 / 320"
+     ],
+     "notes": [
+      "7",
+      "7",
+      "7"
+     ]
+    },
+    {
+     "no": "4.17",
+     "label": "Prepust",
+     "unit": "l5 (mm)",
+     "values": [
+      "200 / 260",
+      "200 / 260",
+      "200 / 260"
+     ],
+     "notes": [
+      "8",
+      "8",
+      "8"
+     ]
+    },
+    {
+     "no": "4.19",
+     "label": "Ukupna dužina",
+     "unit": "l1 (mm)",
+     "values": [
+      "1.416 / 1.476",
+      "1.416 / 1.476",
+      "1.416 / 1.476"
+     ],
+     "notes": [
+      "1 2 8",
+      "1 2 8",
+      "1 2 8"
+     ]
+    },
+    {
+     "no": "4.21",
+     "label": "Ukupna širina",
+     "unit": "b1/b2 (mm)",
+     "values": [
+      "800",
+      "800",
+      "8.002"
+     ],
+     "notes": [
+      "2",
+      "",
+      ""
+     ]
+    },
+    {
+     "no": "4.32",
+     "label": "Klirens, na sredini međuosovinskog rastojanja",
+     "unit": "m2 (mm)",
+     "values": [
+      "50",
+      "2",
+      "50"
+     ],
+     "notes": [
+      "4",
+      "4",
+      "4"
+     ]
+    },
+    {
+     "no": "4.35",
+     "label": "Radijus okretanja",
+     "unit": "Wa (mm)",
+     "values": [
+      "1.229",
+      "50 1229",
+      "1.229"
+     ],
+     "notes": [
+      "",
+      "",
+      ""
+     ]
+    }
+   ]
+  },
+  {
+   "section": "Podaci o performansama",
+   "rows": [
+    {
+     "no": "5.1",
+     "label": "Brzina vožnje, s teretom/bez tereta",
+     "unit": "km/h",
+     "values": [
+      "8 / 10",
+      "8 / 13",
+      "8 / 13"
+     ],
+     "notes": [
+      "9",
+      "9",
+      "9"
+     ]
+    },
+    {
+     "no": "5.1.1",
+     "label": "Brzina vožnje, s teretom/bez tereta, nazad",
+     "unit": "km/h",
+     "values": [
+      "6 / 6",
+      "6 / 6",
+      "6 / 7"
+     ],
+     "notes": [
+      "9",
+      "9",
+      "9"
+     ]
+    },
+    {
+     "no": "5.5",
+     "label": "Vučna sila, s teretom/bez tereta",
+     "unit": "N",
+     "values": [
+      "800",
+      "800",
+      "1.200"
+     ],
+     "notes": [
+      "",
+      "",
+      ""
+     ]
+    },
+    {
+     "no": "5.6",
+     "label": "Maks. vučna sila, s teretom/bez tereta",
+     "unit": "N",
+     "values": [
+      "3.040",
+      "3.400",
+      "3.400"
+     ],
+     "notes": [
+      "",
+      "",
+      ""
+     ]
+    },
+    {
+     "no": "5.8",
+     "label": "Maks. savladivi uspon, s teretom/bez tereta",
+     "unit": "%",
+     "values": [
+      "Vidi dijagram performansi",
+      "Vidi dijagram performansi",
+      "Vidi dijagram performansi"
+     ],
+     "notes": [
+      "",
+      "",
+      ""
+     ]
+    },
+    {
+     "no": "5.9",
+     "label": "Vreme ubrzanja, s teretom/bez tereta",
+     "unit": "s",
+     "values": [
+      "7,4 / 5,0",
+      "7,4 / 5,0",
+      "8,2 / 5,0"
+     ],
+     "notes": [
+      "",
+      "",
+      ""
+     ]
+    },
+    {
+     "no": "5.10",
+     "label": "Radna kočnica",
+     "unit": "",
+     "values": [
+      "Elektromagnetna",
+      "Elektromagnetna",
+      "Elektromagnetna"
+     ],
+     "notes": [
+      "",
+      "",
+      ""
+     ]
+    }
+   ]
+  },
+  {
+   "section": "Elektromotor",
+   "rows": [
+    {
+     "no": "6.1",
+     "label": "Snaga pogonskog motora S2 60 min",
+     "unit": "kW",
+     "values": [
+      "2,3",
+      "3",
+      "3"
+     ],
+     "notes": [
+      "",
+      "",
+      ""
+     ]
+    },
+    {
+     "no": "6.3",
+     "label": "Baterija prema DIN 43531/35/36 A, B, C, bez",
+     "unit": "",
+     "values": [
+      "no",
+      "no",
+      "no"
+     ],
+     "notes": [
+      "",
+      "",
+      ""
+     ]
+    },
+    {
+     "no": "6.4",
+     "label": "Napon baterije/nominalni kapacitet K5",
+     "unit": "(V)/(Ah) o. kWh",
+     "values": [
+      "24 / 360 / 465",
+      "24 / 360 / 465",
+      "24 / 360 / 465"
+     ],
+     "notes": [
+      "",
+      "",
+      ""
+     ]
+    },
+    {
+     "no": "6.5",
+     "label": "Masa baterije (± 5 %)",
+     "unit": "kg",
+     "values": [
+      "402",
+      "402",
+      "402"
+     ],
+     "notes": [
+      "",
+      "",
+      ""
+     ]
+    },
+    {
+     "no": "6.6",
+     "label": "Potrošnja energije po DIN EN 16796",
+     "unit": "kWh/h",
+     "values": [
+      "0,96",
+      "1,4",
+      "1,51"
+     ],
+     "notes": [
+      "",
+      "",
+      ""
+     ]
+    },
+    {
+     "no": "6.6.1",
+     "label": "CO2 ekvivalent po DIN EN 16796",
+     "unit": "kg/h",
+     "values": [
+      "0,52",
+      "0,76",
+      "0,82"
+     ],
+     "notes": [
+      "",
+      "",
+      ""
+     ]
+    },
+    {
+     "no": "6.7",
+     "label": "Učinak pretovara po VDI 2198",
+     "unit": "t/h",
+     "values": [
+      "312,0",
+      "380,0",
+      "540,0"
+     ],
+     "notes": [
+      "",
+      "",
+      ""
+     ]
+    },
+    {
+     "no": "6.8",
+     "label": "Efikasnost pretovara po VDI 2198",
+     "unit": "t/kWh",
+     "values": [
+      "95",
+      "162",
+      "145"
+     ],
+     "notes": [
+      "",
+      "",
+      ""
+     ]
+    }
+   ]
+  },
+  {
+   "section": "Pogon i mehanizam za podizanje",
+   "rows": [
+    {
+     "no": "8.1",
+     "label": "Vrsta pogona",
+     "unit": "",
+     "values": [
+      "AC upravljanje",
+      "AC upravljanje",
+      "AC upravljanje"
+     ],
+     "notes": [
+      "",
+      "",
+      ""
+     ]
+    }
+   ]
+  }
+ ],
+ "compare": [
+  {
+   "label": "Pogon",
+   "unit": "",
+   "values": [
+    "Baterija",
+    "Baterija",
+    "Baterija"
+   ]
+  },
+  {
+   "label": "Nosivost",
+   "unit": "t",
+   "values": [
+    "4,0",
+    "4,0",
+    "6,0"
+   ]
+  },
+  {
+   "label": "Nominalna vučna sila",
+   "unit": "N",
+   "values": [
+    "800",
+    "800",
+    "1.200"
+   ]
+  },
+  {
+   "label": "Brzina vožnje, s teretom/bez tereta",
+   "unit": "km/h",
+   "values": [
+    "8 / 10",
+    "8 / 13",
+    "8 / 13"
+   ]
+  },
+  {
+   "label": "Radijus okretanja",
+   "unit": "mm",
+   "values": [
+    "1.229",
+    "50 1229",
+    "1.229"
+   ]
+  },
+  {
+   "label": "Radna masa",
+   "unit": "kg",
+   "values": [
+    "1.009",
+    "1.014",
+    "1.014"
+   ]
+  },
+  {
+   "label": "Snaga pogonskog motora S2 60 min",
+   "unit": "kW",
+   "values": [
+    "2,3",
+    "3",
+    "3"
+   ]
+  },
+  {
+   "label": "Napon baterije/nominalni kapacitet K5",
+   "unit": "(V)/(Ah) o. kWh",
+   "values": [
+    "24 / 360 / 465",
+    "24 / 360 / 465",
+    "24 / 360 / 465"
+   ]
+  }
+ ],
+ "footnotes": [
+  {
+   "n": "1",
+   "text": "Sa kadom baterije 4 PzS + 114 mm"
+  },
+  {
+   "n": "2",
+   "text": "(±5 mm)"
+  },
+  {
+   "n": "3",
+   "text": "Vrednosti sa baterijom, vidi redove 6.4/6.5."
+  },
+  {
+   "n": "4",
+   "text": "Sa opcionim klirensom +50 mm → m2 = 100 mm"
+  },
+  {
+   "n": "5",
+   "text": "// sa opcionom opremom, samo za potpuno amortizovanu kabinu vozača"
+  },
+  {
+   "n": "6",
+   "text": "h14 podešavanje od -19 mm do +89 mm sa opcijom podesive ručke za upravljanje."
+  },
+  {
+   "n": "7",
+   "text": "Sa kukom za vuču na jednom nivou"
+  },
+  {
+   "n": "8",
+   "text": "Bez kuke za vuču / sa kukom za vuču na jednom nivou"
+  },
+  {
+   "n": "9",
+   "text": "(±5%)"
+  }
+ ],
+ "equipment": [
+  {
+   "group": "Bezbednost",
+   "icon": "shield",
+   "items": [
+    {
+     "t": "Prednja zaštita od sudara, nisko postavljen gumeni branik"
+    },
+    {
+     "t": "Zaštita od sudara napred, čelična ploča postavljena visoko"
+    },
+    {
+     "t": "Prednja zaštita od sudara, čelična ploča postavljena visoko, gumeni branik postavljen nisko"
+    },
+    {
+     "t": "Zaštita od sudara napred, čelična ploča preko prednjeg dela tegljača"
+    },
+    {
+     "t": "Prednja zaštita od sudara, čelični panel koji pokriva prednji deo tegljača sa priključkom za prikolicu u 3 položaja (maks. nosivost vuče 1 tona)"
+    },
+    {
+     "t": "Zadnja zaštita za stopala"
+    },
+    {
+     "t": "Prekidač sa ključem"
+    },
+    {
+     "t": "Pristup preko PIN koda (umesto ključa)"
+    },
+    {
+     "t": "Zvučno upozorenje"
+    },
+    {
+     "t": "Linde BlueSpot, prednje svetlo za upozorenje na putanju vožnje"
+    },
+    {
+     "t": "Radno svetlo, prednja i zadnja LED svetla"
+    },
+    {
+     "t": "Prednja i zadnja LED svetla",
+     "only": [
+      "P40 C",
+      "P60 C"
+     ]
+    },
+    {
+     "t": "Kompletan paket osvetljenja (prednja i zadnja LED svetla, pokazivači pravca, radna, kočiona i svetla za vožnju unazad)",
+     "only": [
+      "P40 C",
+      "P60 C"
+     ]
+    }
+   ]
+  },
+  {
+   "group": "Servisiranje",
+   "icon": "wrench",
+   "items": [
+    {
+     "t": "CAN bus arhitektura"
+    }
+   ]
+  },
+  {
+   "group": "Digitalizacija",
+   "icon": "chip",
+   "items": [
+    {
+     "t": "Prenos podataka preko interneta"
+    },
+    {
+     "t": "Prenos podataka preko WiFi mreže"
+    },
+    {
+     "t": "Linde connect desk, lokalno upravljanje voznim parkom sa različitim funkcionalnim modulima"
+    },
+    {
+     "t": "Linde connect cloud, upravljanje voznim parkom kao usluga (hostovana verzija)"
+    },
+    {
+     "t": "dt, kodovi grešaka"
+    },
+    {
+     "t": "Bluetooth USB stik"
+    }
+   ]
+  },
+  {
+   "group": "Upravljanje i rukovanje teretom",
+   "icon": "lever",
+   "items": [
+    {
+     "t": "Klirens od tla (h = 50 mm)"
+    },
+    {
+     "t": "Svetla visina 100 mm",
+     "only": [
+      "P40 C",
+      "P60 C"
+     ]
+    },
+    {
+     "t": "Lagano pomeranje (napred / nazad)"
+    }
+   ]
+  },
+  {
+   "group": "Radno mesto",
+   "icon": "seat",
+   "items": [
+    {
+     "t": "Kabina vozača (dostupna na upit)"
+    },
+    {
+     "t": "Platforma vozača sa amortizujućom podnom prostirkom"
+    },
+    {
+     "t": "Potpuno oslonjen prostor za vozača",
+     "only": [
+      "P40 C",
+      "P60 C"
+     ]
+    },
+    {
+     "t": "Zaštita za kolena"
+    },
+    {
+     "t": "Podesiv naslon za leđa"
+    },
+    {
+     "t": "Podesiv naslon sa preklopnim osloncem sedišta",
+     "only": [
+      "P40 C",
+      "P60 C"
+     ]
+    },
+    {
+     "t": "Linde volan podesiv po visini"
+    },
+    {
+     "t": "Instrument tabla sa pretincem za odlaganje (bez A4 table)"
+    },
+    {
+     "t": "Višenamenski ekran u boji, brojač radnih sati, prikaz održavanja, pokazivač pražnjenja baterije i prikaz unutrašnjih kodova grešaka",
+     "only": [
+      "P40 C",
+      "P60 C"
+     ]
+    },
+    {
+     "t": "Prednji nosač za dodatnu opremu"
+    },
+    {
+     "t": "Zadnji nosač dodatne opreme"
+    },
+    {
+     "t": "Prednje panoramsko i zadnja bočna ogledala"
+    },
+    {
+     "t": "Nosač radio-data terminala i napojni kabl od 24 V"
+    },
+    {
+     "t": "Držač za skener i tablu za papire"
+    },
+    {
+     "t": "Držač stezljive folije"
+    },
+    {
+     "t": "Električna utičnica od 12 V ili USB"
+    }
+   ]
+  },
+  {
+   "group": "Priključci i viljuške",
+   "icon": "fork",
+   "items": [
+    {
+     "t": "Kuka sa trnom za vuču u 3 položaja"
+    },
+    {
+     "t": "Vučna kuka na jednom položaju sa kablovskim otpuštanjem sa mesta vozača"
+    },
+    {
+     "t": "Rockinger 244D automatska kuka za vuču"
+    },
+    {
+     "t": "LKE ruka za vuču"
+    },
+    {
+     "t": "Izmena za logistički voz (uključuje daljinski upravljač, električnu pripremu od 36 V, utičnicu pozadi i kuglu sa kukom za kačenje)"
+    }
+   ]
+  },
+  {
+   "group": "Osovine i gume",
+   "icon": "tyre",
+   "items": [
+    {
+     "t": "Pogonski točak, za teške uslove"
+    },
+    {
+     "t": "Pogonski točak sa velikim prianjanjem"
+    },
+    {
+     "t": "Noseći točkovi od poliuretana"
+    },
+    {
+     "t": "Točkovi za teret od elastične gume, ne ostavljaju trag"
+    },
+    {
+     "t": "Tandem samokretni točkići"
+    }
+   ]
+  },
+  {
+   "group": "Pogon i kočnice",
+   "icon": "bolt",
+   "items": [
+    {
+     "t": "Prostor za bateriju, vertikalna zamena 3 PzS (300 Ah / 375 Ah) i 4 PzS (480 Ah / 620 Ah)"
+    },
+    {
+     "t": "Odeljak za bateriju, bočna zamena 3 PzS (300 Ah / 375 Ah) i 4 PzS (400 Ah / 500 Ah), sa ergonomskom polugom za zaključavanje i metalnim valjcima"
+    },
+    {
+     "t": "Prostor za bateriju, visoka bočna zamena 3 PzS (360 Ah / 465 Ah) i 4 PzS (480 Ah / 620 Ah)"
+    },
+    {
+     "t": "Litijum-jonska tehnologija, izbor kapaciteta baterije i opcioni bočni utikač za lako međupunjenje"
+    },
+    {
+     "t": "Komplet za kompatibilnost sa baterijama drugih proizvođača"
+    },
+    {
+     "t": "Ugrađeni punjač za olovno-kisele baterije od 60 A",
+     "only": [
+      "P40 C",
+      "P60 C"
+     ]
+    },
+    {
+     "t": "Litijum-jonski ugrađeni punjač 35 A"
+    }
+   ]
+  }
+ ]
+}

@@ -73,8 +73,8 @@ export function SpecWhy({ spec }: { spec: Spec }) {
     <div className="sp-why">
       <h2 className="sp-lab">Zašto ovaj model</h2>
       <ul className="sp-list">
-        {spec.benefits.map((b) => (
-          <li key={b}>{b}</li>
+        {spec.benefits.map((b, i) => (
+          <li key={i}>{b}</li>
         ))}
       </ul>
     </div>
@@ -100,13 +100,13 @@ export function SpecFeatures({ spec }: { spec: Spec }) {
   return (
     <section className="sp-frame sp-feats" aria-labelledby="sp-feats-h">
       <Head id="sp-feats-h" label="Karakteristike" />
-      {groups.map((g) => (
-        <Cell className="sp-feat" key={g.group}>
+      {groups.map((g, gi) => (
+        <Cell className="sp-feat" key={gi}>
           <Icon name={g.icon} />
           <h3 className="sp-feat-h">{g.group}</h3>
           <ul className="sp-list">
-            {g.bullets.map((b) => (
-              <li key={b}>{b}</li>
+            {g.bullets.map((b, i) => (
+              <li key={i}>{b}</li>
             ))}
           </ul>
         </Cell>
@@ -151,7 +151,7 @@ function TableHead({ versions, groups }: { versions: string[]; groups: Group[] |
         <tr className="is-grp">
           <td />
           {groups.map((g, i) => (
-            <th scope="colgroup" colSpan={g.n} className={i % 2 ? 'is-band' : undefined} key={g.name}>
+            <th scope="colgroup" colSpan={g.n} className={i % 2 ? 'is-band' : undefined} key={i}>
               {g.name}
             </th>
           ))}
@@ -162,7 +162,7 @@ function TableHead({ versions, groups }: { versions: string[]; groups: Group[] |
           <span className="sr-only">Podatak</span>
         </th>
         {versions.map((v, i) => (
-          <th scope="col" className={band[i] ? 'is-band' : undefined} key={v}>
+          <th scope="col" className={band[i] ? 'is-band' : undefined} key={i}>
             {groups ? v.split(' ').slice(1).join(' ') || v : v}
           </th>
         ))}
@@ -190,14 +190,14 @@ export function SpecVersions({ spec }: { spec: Spec }) {
           <table className="sp-tbl">
             <TableHead versions={versions} groups={groups} />
             <tbody>
-              {compare.map((r) => (
-                <tr key={r.label}>
+              {compare.map((r, ri) => (
+                <tr key={ri}>
                   <th scope="row">
                     {r.label}
                     {r.unit ? <span className="sp-tbl-u">{r.unit}</span> : null}
                   </th>
-                  {versions.map((v, i) => (
-                    <td className={cell(i)} key={v}>
+                  {versions.map((_, i) => (
+                    <td className={cell(i)} key={i}>
                       <Val v={r.values[i] ?? null} />
                     </td>
                   ))}
@@ -214,22 +214,22 @@ export function SpecVersions({ spec }: { spec: Spec }) {
           <div className="sp-tbl-wrap" role="region" aria-label="Sve tehničke karakteristike" tabIndex={0}>
             <table className="sp-tbl is-full">
               <TableHead versions={versions} groups={groups} />
-              {table.map((s) => (
-                <tbody key={s.section}>
+              {table.map((s, si) => (
+                <tbody key={si}>
                   <tr className="is-sec">
                     <th scope="rowgroup" colSpan={versions.length + 1}>
                       {s.section}
                     </th>
                   </tr>
-                  {s.rows.map((r) => (
-                    <tr key={r.no}>
+                  {s.rows.map((r, ri) => (
+                    <tr key={ri}>
                       <th scope="row">
                         <span className="sp-tbl-no">{r.no}</span>
                         {r.label}
                         {r.unit ? <span className="sp-tbl-u">{r.unit}</span> : null}
                       </th>
-                      {versions.map((v, i) => (
-                        <td className={cell(i)} key={v}>
+                      {versions.map((_, i) => (
+                        <td className={cell(i)} key={i}>
                           <Val v={r.values[i] ?? null} note={r.notes[i]} />
                         </td>
                       ))}
@@ -241,8 +241,8 @@ export function SpecVersions({ spec }: { spec: Spec }) {
           </div>
           {footnotes.length ? (
             <ol className="sp-notes">
-              {footnotes.map((f) => (
-                <li key={f.n}>
+              {footnotes.map((f, fi) => (
+                <li key={fi}>
                   <sup>{f.n}</sup> {f.text}
                 </li>
               ))}
@@ -276,7 +276,7 @@ export function SpecVersions({ spec }: { spec: Spec }) {
                 <tbody>
                   {masts.flatMap((m) =>
                     m.rows.map((r, i) => (
-                      <tr key={`${m.name}-${r.h3}`}>
+                      <tr key={`${m.name}-${i}`}>
                         <th scope="row">{i === 0 ? m.name : <span className="sr-only">{m.name}</span>}</th>
                         <td>{fmt(r.h3)}</td>
                         <td>{fmt(r.h1)}</td>
@@ -310,8 +310,8 @@ export function SpecEquipment({ spec }: { spec: Spec }) {
   return (
     <section className="sp-frame sp-equip" aria-labelledby="sp-equip-h" ref={root}>
       <Head id="sp-equip-h" label="Oprema" note="Šta je standardno, a šta dodatna oprema, piše u tehničkom listu." />
-      {groups.map((g) => (
-        <Cell className="sp-eq" key={g.group}>
+      {groups.map((g, gi) => (
+        <Cell className="sp-eq" key={gi}>
           <Icon name={g.icon} />
           <details className="sp-more-d">
             <summary>
@@ -319,8 +319,8 @@ export function SpecEquipment({ spec }: { spec: Spec }) {
               <span className="sp-eq-n">{g.items.length}</span>
             </summary>
             <ul className="sp-list">
-              {g.items.map((it) => (
-                <li key={it.t}>
+              {g.items.map((it, i) => (
+                <li key={i}>
                   {it.t}
                   {it.only ? <span className="sp-eq-only"> Samo {it.only.join(', ')}.</span> : null}
                 </li>

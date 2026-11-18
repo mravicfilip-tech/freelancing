@@ -1,0 +1,36 @@
+footnotes	(±10 %) aisle clearance available as option foot guard; due to manufacturing and / (±10 %) aisle clearance available as option foot guard; due to manufacturing and	n16-do-n25
+footnotes	Antistatic EX load carriers vehicle due to the Ex-version / Antistatic EX load carriers vehicle due to the Ex-version	e20-do-e35
+footnotes	F igures in parenthesis with tandem load wheels 12) (±5 %) forks / arms raised, if possible recommended to foresee a decrease in / F igures in parenthesis with tandem load wheels 12) (±5 %) forks / arms raised, if possible recommended to foresee a decrease in	n16-do-n25
+footnotes	Figures in parenthesis with tandem load clearance of a standard truck due to the EX-version wheels 9) With creep speed = tiller in vertical position / Figures in parenthesis with tandem load clearance of a standard truck due to the EX-version wheels 9) With creep speed = tiller in vertical position	t14-do-t20
+footnotes	Figures with battery, see lines 6.4/6.5. +123 mm with BlueSpot, buzzer, data transfer, camera vehicle due to the Ex-version	e16-do-e20-p
+footnotes	Figures with battery, see lines 6.4/6.5. +123 mm with BlueSpot, buzzer, data transfer, camera vehicle due to the Ex-version / Figures with battery, see lines 6.4/6.5. +123 mm with BlueSpot, buzzer, data transfer, camera vehicle due to the Ex-version	e14-do-e20
+footnotes	O	n16-do-n25
+footnotes	Unladen: mechanical crossing	t20-do-t25-ap
+footnotes	Unladen: mechanical crossing	t20-do-t25-sp
+footnotes	Values for 3 PzS batteries. 4 PzS battery = tabled values +100 mm 10) Including a 200 mm (min.) operating 18) T raction speed unladen until 14 km / h unrounded edge slope with or without / Values for 3 PzS batteries. 4 PzS battery = tabled values +100 mm 10) Including a 200 mm (min.) operating 18) T raction speed unladen until 14 km / h unrounded edge slope with or without	n16-do-n25
+footnotes	With / without initial lift lateral; +150 mm = 4 PzS vertical h14 setting range = +89 mm / -19 mm autonomous mode / With / without initial lift lateral; +150 mm = 4 PzS vertical h14 setting range = +89 mm / -19 mm autonomous mode	n16-do-n25
+footnotes	from butterfly rotation axis; in creep speed position +5 mm maximum over all width b2; (optional) with Australian load arms -4 / -10 / -57 mm.	l10-do-l12-b-as
+footnotes	with rubber bumper +21 mm; with active bumper +35 mm turned clockwise; in creep speed position -12 mm. The Ast	l10-do-l12-b-as
+footnotes	± 0 mm = 2 PzS vertical; + 75 mm = 3 PzS vertical or side change; 13) Including a 200 mm (min.) operating aisle clearance 21) W ith lowered Rider Plattform Wa = 2078 mm, + 150 mm = 4 PzS side change or Li-ION 205/410 Ah 14) (± 20 mm) with initial lift Wa = 1717 mm,	d12-do-d14-ap
+footnotes	±0 mm = 2 PzS vertical or 3 PzS side change; +75 mm 6) Figures in parenthesis with with auto adjustable castor = 3 PzS vertical or 4 PzS tandem load wheels. wheels, avoid full speed side change; +150 mm = 4 7) (-0/+5 mm) when driving downwards. PzS vertical; +225 mm = 5PzS 8) Including a 200 mm (min.) 12) 2 × pallets vertical. operating aisle clearance.	t20-do-t25-ap
+footnotes	±0 mm = 2 PzS vertical or 3 PzS side change; +75 mm 6) Figures in parenthesis with with auto adjustable castor = 3 PzS vertical or 4 PzS tandem load wheels. wheels, avoid full speed side change; +150 mm = 4 7) (-0/+5 mm) when driving downwards. PzS vertical; +225 mm = 5PzS 8) Including a 200 mm (min.) 12) 2 × pallets vertical. operating aisle clearance.	t20-do-t25-sp
+footnotes	±0 mm = 2 PzS vertical; + 75 mm = 3 PzS vertical or side change; + 150 mm = 4 PzS side change or 12) With creep speed = tiller in vertical position 19) CO2 equivalent 1,0 kg/h Li-ION 205/410 Ah 13) Including a 200 mm (min.) operating aisle clearance 20) CO2 equivalent 1,03 kg/h	l14-do-l20-ap
+labels		r14-do-r17-x 5.10
+text	1570 h3: 2344 h3: 2844 h3: 3244 h3: 3744 h1: 1915 h2: 150 h1: 2115 h2: 150 h1: 2365 h2: 150 h1: 1665 h2: 150 h4: 3364 h4: 3764/4997 1) h4: 4264 h4: 4021 1)	l-matic-hd
+text	1570 h3: 2344 h3: 2844 h3: 3244 h3: 3744 h1: 1915 h2: 150 h1: 2115 h2: 150 h1: 2365 h2: 150 h1: 1665 h2: 150 h4: 3364 h4: 3764/4997 1) h4: 4264 h4: 4021 1)	l-matic-hd-k
+text	Battery 4 PzS 7460 – 500 Ah	w20
+text	Battery 4 PzS 7460 – 500 Ah	w30
+text	Effortless fingertip control of all steering axle and low centre mast functions of gravity	e25s-do-e35s-sh
+text	H20-H35 CNG H20 - H35 D H20 - H35 T H20-H35 CNG	h20-do-h35
+text	Hitchless with screws	p20
+text	Hitchless with screws	w04
+text	L06 AC EX L10 AC EX L12 AC EX L16 AC EX Model / Equipment 3G / 3D 3G / 3D 3G / 3D 3G / 3D	l06-do-l16-ac
+text	Low speed supplementary lift low	v08
+text	Model / Equipment A	a-5224
+text	Model / Equipment HT100 D − HT180 D	ht100-do-ht180-ds
+text	Model / Equipment R10 B – R12 B R14 B – R16 B	r10-do-r16-b
+text	Model / equipment N20 B SA N20 SA N25 SA N20 C SA	n16-do-n25
+text	Model/Equipment MV01	mv01
+text	Project management and commissioning according to Linde MH standards with	k-matic
+text	V08-01 V08-01 V08-02 Model / Equipment (0.7 t) (1 t) (0.8 t)	v08
+text	Vehicle independently maintains distance from racking and stops at the end of the	n16-do-n25

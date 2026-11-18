@@ -49,8 +49,10 @@ def sr_value(v, unit):
     if v is None:
         return None
     v = v.strip()
-    if v in ('', '-'):
+    if v in ('', '-', '\u2013', '\u2014'):
         return None
+    v = re.sub(r'\s*[\u2013\u2014]\s*', ' do ', v)
+    v = re.sub(r':\s*', ' ', v)
     if not unit:
         return v
     if re.fullmatch(r'[\d.]+(\s*/\s*[\d.]+)*', v):
@@ -97,6 +99,16 @@ def icon_of(name):
     return next((icon for icon, words in ICONS if any(w in low for w in words)), 'grid')
 
 
+def kw(values):
+    """A power, a range of the versions, or two motors written 2x 11 kept as 2 × 11."""
+    for v in values:
+        m = re.search(r'(\d+)\s*[x\u00d7]\s*(\d+(?:\.\d+)?)', v or '')
+        if m:
+            return f'{m.group(1)} \u00d7 {sr_number(m.group(2))}'
+    # an engine's name in the cell, OM934 or QSB 6.7, is not a power
+    return span(nums([re.sub(r'\b[A-Z]{2,}\s?\d+(?:\.\d+)?', ' ', v or '') for v in values]))
+
+
 def build(d, sr, kind, missing, category=''):
     def tr(table, s, where):
         key = norm(s)
@@ -126,7 +138,8 @@ def build(d, sr, kind, missing, category=''):
         if pull and nums(pull['values']):
             figures.append({'label': 'Vučna sila', 'value': span(nums(pull['values'])), 'unit': 'N'})
     elif cap:
-        xs = nums(cap['values'])
+        # a stacker's pair, 1.2 / 2.0, is the mast's rating then the initial lift's with two pallets, the first is the rating
+        xs = [n[0] for n in (nums([v.split('/')[0]]) for v in cap['values'] if v) if n]
         if xs:
             if '(t)' in cap.get('unit', '') or max(xs) < 100:
                 xs = [x * 1000 for x in xs]
@@ -139,20 +152,28 @@ def build(d, sr, kind, missing, category=''):
             if title:
                 masts.append({'name': title, 'rows': [{k: h[k][i] for k in h} for i in range(len(h['h3']))]})
     out['masts'] = masts
-    lifts = [r['h3'] for m in masts for r in m['rows']] or nums((rows.get('4.4') or {}).get('values', []))
+    # the top lift is the highest h3 of every mast table and of row 4.4, whether or not a table parsed whole
+    lifts = [int(x) for raw in (d.get('masts') or {}).values() for x in re.findall(r'h3:\s*(\d+)', raw)]
+    lifts += [x for v in (rows.get('4.4') or {}).get('values', []) for x in nums([v.split('(')[0]])]
+    # a footnote mark glued to a lift in the PDF text reads as 40751, no Linde truck lifts past 20 m
+    lifts = [x for x in lifts if x <= 20000]
     if lifts:
         figures.append({'label': 'Visina podizanja', 'value': ('do ' if len(set(lifts)) > 1 else '') + fmt_num(max(lifts)), 'unit': 'mm'})
     speed = rows.get('5.1')
-    if speed and nums(speed['values']):
-        xs = nums(speed['values'])
-        figures.append({'label': 'Brzina vožnje', 'value': ('do ' if len(set(xs)) > 1 else '') + fmt_num(max(xs)), 'unit': 'km/h'})
+    if speed:
+        # the sheet's own unit, an automated truck gives m/s, and a footnote glued to a speed, 146, is dropped
+        u = speed.get('unit', '').replace(' ', '')
+        unit = 'm/s' if 'm/s' in u and 'km' not in u else 'km/h'
+        xs = [x for x in nums(speed['values']) if x <= 40]
+        if xs:
+            figures.append({'label': 'Brzina vožnje', 'value': ('do ' if len(set(xs)) > 1 else '') + fmt_num(max(xs)), 'unit': unit})
     power = rows.get('7.2')
     motor = rows.get('6.1')
     battery = rows.get('6.4')
     if power and nums(power['values']):
-        figures.append({'label': 'Snaga motora', 'value': span(nums(power['values'])), 'unit': 'kW'})
+        figures.append({'label': 'Snaga motora', 'value': kw(power['values']), 'unit': 'kW'})
     elif motor and nums(motor['values']):
-        figures.append({'label': 'Snaga pogonskog motora', 'value': span(nums(motor['values'])), 'unit': 'kW'})
+        figures.append({'label': 'Snaga pogonskog motora', 'value': kw(motor['values']), 'unit': 'kW'})
     elif battery:
         volts = [nums([v.split('/')[0]])[0] for v in battery['values'] if v and nums([v.split('/')[0]])]
         if volts:
@@ -192,7 +213,9 @@ def build(d, sr, kind, missing, category=''):
         unit = r.get('unit', '').replace(' ³', '³').replace('m3', 'm³')
         vals = []
         for v in r['values']:
-            word = sr.get('values', {}).get(norm(v)) if v and not re.search(r'\d', v) else None
+            word = None
+            if v and not re.search(r'\d', v):
+                word = sr.get('values_no', {}).get(norm(f"{r['no']}|{v}")) or sr.get('values', {}).get(norm(v))
             vals.append(word if word else sr_value(v, unit))
         notes = [' '.join(n) if isinstance(n, list) else (n or '') for n in r.get('notes', [[]] * len(vals))]
         if not table or table[-1]['section'] != section:
@@ -242,7 +265,14 @@ def build(d, sr, kind, missing, category=''):
             # a line some versions lack names the versions that have it
             only = [c for c in cols if c not in na] if na else []
             items.append({'t': t, 'only': only} if only else {'t': t})
-        if name and items:
+        if not (name and items):
+            continue
+        # a sheet that repeats its equipment table per model block gives each group once, each line once
+        same = next((e for e in equipment if e['group'] == name), None)
+        if same:
+            seen = {i['t'] for i in same['items']}
+            same['items'] += [i for i in items if i['t'] not in seen]
+        else:
             equipment.append({'group': name, 'icon': icon_of(g['group']), 'items': items})
     out['equipment'] = equipment
     return out

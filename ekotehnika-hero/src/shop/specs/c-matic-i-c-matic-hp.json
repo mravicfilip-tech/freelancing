@@ -1,0 +1,643 @@
+{
+ "slug": "c-matic-i-c-matic-hp",
+ "source": {
+  "name": "DS_C-MATIC_8925_en_E_1025_view.pdf",
+  "href": "https://drive.google.com/uc?export=download&id=1zv2AWdEASVFtcWL_mNv8w_JUPYZLmCTQ"
+ },
+ "versions": [
+  "C-MATIC 10",
+  "C-MATIC 15"
+ ],
+ "tagline": "Niski nosač tereta za kratke i srednje relacije",
+ "benefits": [
+  "Lak prevoz na stolovima za teret ili direktno na paletama između prekretnih stanica",
+  "Okretna ploča za promenu orijentacije tereta",
+  "Modeli nosivosti od 1.000 do 1.500 kg",
+  "Inteligentno softversko upravljanje sa efikasnom orijentacijom preko QR kodova",
+  "Bezbednosna tehnologija za rad bez opasnosti u namenskim zonama"
+ ],
+ "masts": [],
+ "figures": [
+  {
+   "label": "Nosivost",
+   "value": "1.000 do 1.500",
+   "unit": "kg"
+  },
+  {
+   "label": "Visina podizanja",
+   "value": "60",
+   "unit": "mm"
+  },
+  {
+   "label": "Brzina vožnje",
+   "value": "do 5,4",
+   "unit": "km/h"
+  },
+  {
+   "label": "Napon baterije",
+   "value": "51,2",
+   "unit": "V"
+  }
+ ],
+ "lede": "Autonomni viljuškar, nosivosti 1.000 do 1.500 kg, u 2 verzije.",
+ "characteristics": [],
+ "table": [
+  {
+   "section": "Osnovni podaci",
+   "rows": [
+    {
+     "no": "1.1",
+     "label": "Proizvođač",
+     "unit": "",
+     "values": [
+      "Linde MH",
+      "Linde MH"
+     ],
+     "notes": [
+      "",
+      ""
+     ]
+    },
+    {
+     "no": "1.2",
+     "label": "Oznaka modela",
+     "unit": "",
+     "values": [
+      "C-MATIC 10",
+      "C-MATIC 15"
+     ],
+     "notes": [
+      "",
+      ""
+     ]
+    },
+    {
+     "no": "1.2a",
+     "label": "Serija",
+     "unit": "",
+     "values": [
+      "8925-23",
+      "8925-23"
+     ],
+     "notes": [
+      "",
+      ""
+     ]
+    },
+    {
+     "no": "1.3",
+     "label": "Pogon",
+     "unit": "",
+     "values": [
+      "Baterija",
+      "Baterija"
+     ],
+     "notes": [
+      "",
+      ""
+     ]
+    },
+    {
+     "no": "1.4",
+     "label": "Način upravljanja",
+     "unit": "",
+     "values": [
+      "Automatski",
+      "Automatski"
+     ],
+     "notes": [
+      "",
+      ""
+     ]
+    },
+    {
+     "no": "1.5",
+     "label": "Nosivost",
+     "unit": "Q (t)",
+     "values": [
+      "1,0",
+      "1,5"
+     ],
+     "notes": [
+      "",
+      ""
+     ]
+    }
+   ]
+  },
+  {
+   "section": "Masa",
+   "rows": [
+    {
+     "no": "2.1",
+     "label": "Radna masa",
+     "unit": "kg",
+     "values": [
+      "230",
+      "235"
+     ],
+     "notes": [
+      "1",
+      "1"
+     ]
+    }
+   ]
+  },
+  {
+   "section": "Gume i šasija",
+   "rows": [
+    {
+     "no": "3.1",
+     "label": "Vrsta guma, puna guma, superelastične, pneumatske ili poliuretanske",
+     "unit": "",
+     "values": [
+      "Poliuretan",
+      "Poliuretan"
+     ],
+     "notes": [
+      "",
+      ""
+     ]
+    },
+    {
+     "no": "3.4",
+     "label": "Pomoćni točkovi (dimenzije)",
+     "unit": "",
+     "values": [
+      "Ø 200 × 40",
+      "Ø 200 × 40"
+     ],
+     "notes": [
+      "",
+      ""
+     ]
+    },
+    {
+     "no": "3.5",
+     "label": "Broj točkova napred/nazad (x = pogonski)",
+     "unit": "",
+     "values": [
+      "2x + 4",
+      "2x + 4"
+     ],
+     "notes": [
+      "",
+      ""
+     ]
+    },
+    {
+     "no": "3.6",
+     "label": "Trag točkova, napred",
+     "unit": "b10 (mm)",
+     "values": [
+      "758",
+      "758"
+     ],
+     "notes": [
+      "",
+      ""
+     ]
+    }
+   ]
+  },
+  {
+   "section": "Dimenzije",
+   "rows": [
+    {
+     "no": "4.4",
+     "label": "Visina podizanja",
+     "unit": "h3 (mm)",
+     "values": [
+      "60",
+      "60"
+     ],
+     "notes": [
+      "",
+      ""
+     ]
+    },
+    {
+     "no": "4.15",
+     "label": "Visina, spuštena",
+     "unit": "h13 (mm)",
+     "values": [
+      "260",
+      "260"
+     ],
+     "notes": [
+      "",
+      ""
+     ]
+    },
+    {
+     "no": "4.16",
+     "label": "Dužina utovarne površine",
+     "unit": "l3 (mm)",
+     "values": [
+      "950",
+      "950"
+     ],
+     "notes": [
+      "2",
+      "2"
+     ]
+    },
+    {
+     "no": "4.18",
+     "label": "Širina utovarne površine",
+     "unit": "b9 (mm)",
+     "values": [
+      "750",
+      "750"
+     ],
+     "notes": [
+      "2",
+      "2"
+     ]
+    },
+    {
+     "no": "4.19",
+     "label": "Ukupna dužina",
+     "unit": "l1 (mm)",
+     "values": [
+      "1.180",
+      "1.180"
+     ],
+     "notes": [
+      "",
+      ""
+     ]
+    },
+    {
+     "no": "4.21",
+     "label": "Ukupna širina",
+     "unit": "b1/b2 (mm)",
+     "values": [
+      "832",
+      "832"
+     ],
+     "notes": [
+      "",
+      ""
+     ]
+    },
+    {
+     "no": "4.33",
+     "label": "Dimenzije tereta",
+     "unit": "b12 × l6 (mm)",
+     "values": [
+      "1200 × 1200 // (1080 × 108",
+      "1200 × 1200 // (1080 × 108"
+     ],
+     "notes": [
+      "0 3",
+      "0 3"
+     ]
+    },
+    {
+     "no": "4.34",
+     "label": "Širina radnog prolaza, zadate dimenzije tereta",
+     "unit": "Ast (mm)",
+     "values": [
+      "1.897",
+      "1.897"
+     ],
+     "notes": [
+      "4",
+      "4"
+     ]
+    },
+    {
+     "no": "4.35",
+     "label": "Radijus okretanja",
+     "unit": "Wa (mm)",
+     "values": [
+      "618,5",
+      "618,5"
+     ],
+     "notes": [
+      "5",
+      "5"
+     ]
+    }
+   ]
+  },
+  {
+   "section": "Performanse",
+   "rows": [
+    {
+     "no": "5.1",
+     "label": "Brzina vožnje, s teretom/bez tereta",
+     "unit": "km/h",
+     "values": [
+      "4,3 / 5,4",
+      "4,3 / 5,4"
+     ],
+     "notes": [
+      "",
+      ""
+     ]
+    },
+    {
+     "no": "5.8",
+     "label": "Maks. savladivi uspon, s teretom/bez tereta",
+     "unit": "%",
+     "values": [
+      "< 5,0",
+      "< 5,0"
+     ],
+     "notes": [
+      "6",
+      "6"
+     ]
+    }
+   ]
+  },
+  {
+   "section": "Elektromotor",
+   "rows": [
+    {
+     "no": "6.3",
+     "label": "Baterija prema DIN 43531/35/36 A, B, C, bez",
+     "unit": "",
+     "values": [
+      "Li-ion",
+      "Li-ion"
+     ],
+     "notes": [
+      "",
+      ""
+     ]
+    },
+    {
+     "no": "6.4",
+     "label": "Napon baterije/nominalni kapacitet K5",
+     "unit": "(V)/(Ah) o. kWh",
+     "values": [
+      "51,2 / 42",
+      "51,2 / 42"
+     ],
+     "notes": [
+      "",
+      ""
+     ]
+    },
+    {
+     "no": "6.5",
+     "label": "Masa baterije (± 5 %)",
+     "unit": "kg",
+     "values": [
+      "22",
+      "22"
+     ],
+     "notes": [
+      "",
+      ""
+     ]
+    }
+   ]
+  }
+ ],
+ "compare": [
+  {
+   "label": "Pogon",
+   "unit": "",
+   "values": [
+    "Baterija",
+    "Baterija"
+   ]
+  },
+  {
+   "label": "Nosivost",
+   "unit": "kg",
+   "values": [
+    "1.000",
+    "1.500"
+   ]
+  },
+  {
+   "label": "Visina podizanja",
+   "unit": "mm",
+   "values": [
+    "60",
+    "60"
+   ]
+  },
+  {
+   "label": "Brzina vožnje, s teretom/bez tereta",
+   "unit": "km/h",
+   "values": [
+    "4,3 / 5,4",
+    "4,3 / 5,4"
+   ]
+  },
+  {
+   "label": "Radijus okretanja",
+   "unit": "mm",
+   "values": [
+    "618,5",
+    "618,5"
+   ]
+  },
+  {
+   "label": "Radna masa",
+   "unit": "kg",
+   "values": [
+    "230",
+    "235"
+   ]
+  },
+  {
+   "label": "Napon baterije/nominalni kapacitet K5",
+   "unit": "(V)/(Ah) o. kWh",
+   "values": [
+    "51,2 / 42",
+    "51,2 / 42"
+   ]
+  }
+ ],
+ "footnotes": [
+  {
+   "n": "1",
+   "text": "Bez adapter ploče"
+  },
+  {
+   "n": "2",
+   "text": "Prečnik okretanja utovarne platforme, C-MATIC 10/15 Ø 1.060 mm, 10/15 Ø 1.411 mm"
+  },
+  {
+   "n": "3",
+   "text": "Sa utovarnom platformom, kao nosači tereta potrebni su stolovi. Rukovanje paletama pomoću adapter ploče (l3 × b9 = 1200 × 887 mm) sa 3 položaja pričvršćivanja. Prelazni razmak pri nominalnoj brzini ≤ 5 mm, pri smanjenoj brzini ≤ 30 mm. Položaji l6 = 1016 mm (položaj 1), 1000 mm (položaj 2), 800 mm (položaj 3), b12 < 1219 mm // (unutrašnje dimenzije tereta l6.1 × b14)"
+  },
+  {
+   "n": "4",
+   "text": "Uključujući najmanje 200 mm sigurnosnog razmaka u prolazu. Sa adapter pločom i dimenzijama tereta (l6 × b12) za euro paletu (800 × 1200) = 1.642 mm, UK paletu (1000 × 1200) = 1.762 mm, US paletu (1016 × 1219) = 1.898 mm"
+  },
+  {
+   "n": "5",
+   "text": "Prečnik okretanja bez tereta, C-MATIC 10/15 Ø 1.237 mm sa adapter pločom, C-MATIC"
+  },
+  {
+   "n": "6",
+   "text": "Dozvoljena visina stepenika pri nominalnoj brzini ≤ 5 mm, pri smanjenoj brzini ≤ 10 mm,"
+  }
+ ],
+ "equipment": [
+  {
+   "group": "Softver van vozila",
+   "icon": "grid",
+   "items": [
+    {
+     "t": "Pametna logika punjenja"
+    },
+    {
+     "t": "Interfejsi ka postojećim WMS, ERP i sličnim sistemima"
+    },
+    {
+     "t": "Veze sa infrastrukturom, vrata, transporteri i slično"
+    },
+    {
+     "t": "Interfejsi ka Linde sistemima za upravljanje skladištem"
+    }
+   ]
+  },
+  {
+   "group": "Softver na vozilu",
+   "icon": "grid",
+   "items": [
+    {
+     "t": "Navigacija pomoću QR kodova"
+    },
+    {
+     "t": "Prepoznavanje tereta preko QR koda"
+    },
+    {
+     "t": "Jednostavna prijava na vozilo"
+    }
+   ]
+  },
+  {
+   "group": "Bezbednost",
+   "icon": "shield",
+   "items": [
+    {
+     "t": "Bezbednosni skener za prepoznavanje osoba u glavnom smeru vožnje"
+    },
+    {
+     "t": "Dvostruki lidar bezbednosni skeneri sa prednje i zadnje strane, za bolju pokrivenost"
+    },
+    {
+     "t": "Bezbednosno polje se menja između podignute i spuštene platforme"
+    },
+    {
+     "t": "Tasteri za nužno zaustavljanje sa svih strana (levi i desni ugao napred i pozadi)"
+    },
+    {
+     "t": "Bezbednosni branik oko vozila (napred, sa strane, pozadi)"
+    }
+   ]
+  },
+  {
+   "group": "Navigacija",
+   "icon": "grid",
+   "items": [
+    {
+     "t": "Tačnost pozicioniranja ±10 mm"
+    },
+    {
+     "t": "Tačnost zaustavljanja ±5 mm"
+    },
+    {
+     "t": "Ugaona tačnost ±1°"
+    },
+    {
+     "t": "QR kodovi za navigaciju sa razmakom od 1.400 × 1.400 mm"
+    }
+   ]
+  },
+  {
+   "group": "HMI interfejs",
+   "icon": "grid",
+   "items": [
+    {
+     "t": "Komandni tasteri"
+    },
+    {
+     "t": "LED indikatori"
+    },
+    {
+     "t": "Zavisno od situacije, emituje zvučna upozorenja i/ili glasovne poruke"
+    }
+   ]
+  },
+  {
+   "group": "Upravljanje i rukovanje teretom",
+   "icon": "lever",
+   "items": [
+    {
+     "t": "Identifikacija tablice tereta preko QR koda"
+    },
+    {
+     "t": "Okretanje, transport i spuštanje tereta kroz 90°, 180° i 270°"
+    },
+    {
+     "t": "Dimenzije stola za teret 1.200 × 1.200 mm"
+    },
+    {
+     "t": "Adapterska ploča u rasponu visine od 290 do 1.000 mm iznad poda, pogodna za razne zadatke predaje, kao što su mesta za preuzimanje i odlaganje, radna mesta, transporteri i slično"
+    },
+    {
+     "t": "Diferencijalni pogon sa dvostrukim točkovima"
+    },
+    {
+     "t": "Okretanje u mestu sa zaključanom platformom i bez nje"
+    }
+   ]
+  },
+  {
+   "group": "Životna sredina",
+   "icon": "grid",
+   "items": [
+    {
+     "t": "WiFi komunikacija"
+    },
+    {
+     "t": "Radna temperatura okoline od +0 do +40 °C"
+    }
+   ]
+  },
+  {
+   "group": "Energija",
+   "icon": "battery",
+   "items": [
+    {
+     "t": "Li-ION baterija"
+    },
+    {
+     "t": "Automatski priključak za dopunsko punjenje"
+    }
+   ]
+  },
+  {
+   "group": "Servisiranje",
+   "icon": "wrench",
+   "items": [
+    {
+     "t": "Prekidač za automatski režim ili režim održavanja"
+    },
+    {
+     "t": "Priključak za ručnu upravljačku jedinicu"
+    },
+    {
+     "t": "Ručna upravljačka jedinica"
+    },
+    {
+     "t": "Rampa za rad C-MATIC-a sa isporučene palete"
+    },
+    {
+     "t": "Posebna oprema"
+    }
+   ]
+  }
+ ]
+}

@@ -1,0 +1,2646 @@
+{
+ "slug": "h20-do-h35",
+ "source": {
+  "name": "DS_H20_H35_1202_en_C_1020_view.pdf",
+  "href": "https://drive.google.com/uc?export=download&id=1A_n0xDMmSwAoVfPlCu92kECc1OTHKoB9"
+ },
+ "versions": [
+  "H20 / 600 D",
+  "H25 D",
+  "H25 / 600 D",
+  "H30 D",
+  "H35 D",
+  "H20 / 600 T",
+  "H25 T",
+  "H25 / 600 T",
+  "H30 T",
+  "H35 T",
+  "H35 D Container",
+  "H35 D Beverage",
+  "H35 CNG"
+ ],
+ "tagline": "Robustan, sa preglednošću u svim pravcima",
+ "benefits": [
+  "Hidrostatički pogon, upravljanje sa dve pedale i Linde Load Control omogućavaju efikasno rukovanje teretom",
+  "Robusna konstrukcija i delovi koji ne traže održavanje obezbeđuju veliku raspoloživost viljuškara",
+  "Uski profili stuba, uski prednji stub kabine, spuštena prednja ploča i providan krov obezbeđuju izuzetnu preglednost",
+  "Bežični prenos podataka olakšava uklapanje u softverske sisteme, npr. za upravljanje voznim parkom",
+  "Nisko težište viljuškara i inteligentni pomoćni sistemi smanjuju rizik od prevrtanja i nezgoda pri utovaru"
+ ],
+ "masts": [
+  {
+   "name": "Standardni stub",
+   "rows": [
+    {
+     "h1": 2187,
+     "h2": 150,
+     "h3": 3030,
+     "h4": 3702
+    },
+    {
+     "h1": 2287,
+     "h2": 150,
+     "h3": 3230,
+     "h4": 3902
+    },
+    {
+     "h1": 2387,
+     "h2": 150,
+     "h3": 3430,
+     "h4": 4102
+    },
+    {
+     "h1": 2537,
+     "h2": 150,
+     "h3": 3730,
+     "h4": 4402
+    },
+    {
+     "h1": 2687,
+     "h2": 150,
+     "h3": 4030,
+     "h4": 4702
+    },
+    {
+     "h1": 2937,
+     "h2": 150,
+     "h3": 4530,
+     "h4": 5202
+    },
+    {
+     "h1": 3187,
+     "h2": 150,
+     "h3": 5030,
+     "h4": 5702
+    },
+    {
+     "h1": 2224,
+     "h2": 150,
+     "h3": 3095,
+     "h4": 3856
+    },
+    {
+     "h1": 2324,
+     "h2": 150,
+     "h3": 3295,
+     "h4": 4056
+    },
+    {
+     "h1": 2374,
+     "h2": 150,
+     "h3": 3395,
+     "h4": 4156
+    },
+    {
+     "h1": 2524,
+     "h2": 150,
+     "h3": 3695,
+     "h4": 4456
+    },
+    {
+     "h1": 2674,
+     "h2": 150,
+     "h3": 3995,
+     "h4": 4756
+    },
+    {
+     "h1": 2924,
+     "h2": 150,
+     "h3": 4495,
+     "h4": 5256
+    },
+    {
+     "h1": 3174,
+     "h2": 150,
+     "h3": 4995,
+     "h4": 5756
+    }
+   ]
+  },
+  {
+   "name": "Dupleks stub",
+   "rows": [
+    {
+     "h1": 2134,
+     "h2": 1444,
+     "h3": 3100,
+     "h4": 3791
+    },
+    {
+     "h1": 2234,
+     "h2": 1544,
+     "h3": 3300,
+     "h4": 3991
+    },
+    {
+     "h1": 2284,
+     "h2": 1594,
+     "h3": 3400,
+     "h4": 4091
+    },
+    {
+     "h1": 2484,
+     "h2": 1794,
+     "h3": 3800,
+     "h4": 4491
+    },
+    {
+     "h1": 2634,
+     "h2": 1944,
+     "h3": 4100,
+     "h4": 4791
+    },
+    {
+     "h1": 2179,
+     "h2": 1394,
+     "h3": 3165,
+     "h4": 3951
+    },
+    {
+     "h1": 2279,
+     "h2": 1494,
+     "h3": 3365,
+     "h4": 4151
+    },
+    {
+     "h1": 2479,
+     "h2": 1694,
+     "h3": 3765,
+     "h4": 4551
+    },
+    {
+     "h1": 2629,
+     "h2": 1844,
+     "h3": 4065,
+     "h4": 4851
+    }
+   ]
+  },
+  {
+   "name": "Tripleks stub",
+   "rows": [
+    {
+     "h1": 2134,
+     "h2": 1444,
+     "h3": 4610,
+     "h4": 5299
+    },
+    {
+     "h1": 2234,
+     "h2": 1544,
+     "h3": 4910,
+     "h4": 5599
+    },
+    {
+     "h1": 2284,
+     "h2": 1594,
+     "h3": 5060,
+     "h4": 5749
+    },
+    {
+     "h1": 2484,
+     "h2": 1794,
+     "h3": 5560,
+     "h4": 6249
+    },
+    {
+     "h1": 2634,
+     "h2": 1944,
+     "h3": 6010,
+     "h4": 6699
+    },
+    {
+     "h1": 2834,
+     "h2": 2144,
+     "h3": 6510,
+     "h4": 7199
+    },
+    {
+     "h1": 2179,
+     "h2": 1394,
+     "h3": 4680,
+     "h4": 5464
+    },
+    {
+     "h1": 2279,
+     "h2": 1494,
+     "h3": 4980,
+     "h4": 5764
+    },
+    {
+     "h1": 2429,
+     "h2": 1644,
+     "h3": 5330,
+     "h4": 6114
+    },
+    {
+     "h1": 2629,
+     "h2": 1844,
+     "h3": 5930,
+     "h4": 6714
+    },
+    {
+     "h1": 2829,
+     "h2": 2044,
+     "h3": 6430,
+     "h4": 7214
+    },
+    {
+     "h1": 2979,
+     "h2": 2194,
+     "h3": 6880,
+     "h4": 7664
+    }
+   ]
+  }
+ ],
+ "figures": [
+  {
+   "label": "Nosivost",
+   "value": "2.000 do 3.500",
+   "unit": "kg"
+  },
+  {
+   "label": "Visina podizanja",
+   "value": "do 6.880",
+   "unit": "mm"
+  },
+  {
+   "label": "Brzina vožnje",
+   "value": "22",
+   "unit": "km/h"
+  },
+  {
+   "label": "Snaga motora",
+   "value": "30 do 45",
+   "unit": "kW"
+  }
+ ],
+ "lede": "Čeoni viljuškar na dizel, TNG ili CNG, nosivosti 2.000 do 3.500 kg, u 13 verzija.",
+ "characteristics": [
+  {
+   "group": "Ergonomija",
+   "icon": "seat",
+   "bullets": [
+    "Ergonomski i intuitivan koncept rukovanja daje najveću udobnost vozaču",
+    "Delovi odvojeni od šasije (osovine, stub i cilindar za naginjanje) štite od udara i vibracija",
+    "Veliki izbor ergonomskih sedišta štiti od povreda zbog položaja tela",
+    "Ekran od 3,5 inča stalno prikazuje sve važne podatke"
+   ]
+  },
+  {
+   "group": "Upravljanje",
+   "icon": "lever",
+   "bullets": [
+    "Linde Load Control i upravljanje sa dve pedale obezbeđuju precizno upravljanje svim kretanjima vožnje i stuba",
+    "Slobodno programabilni tasteri u naslonu za ruku daju brz pristup često korišćenim funkcijama",
+    "Cilindri za naginjanje postavljeni gore obezbeđuju torzionu stabilnost i veliku preostalu nosivost na velikim visinama podizanja",
+    "Minimalna potrošnja goriva smanjuje troškove rada"
+   ]
+  },
+  {
+   "group": "Bezbednost",
+   "icon": "shield",
+   "bullets": [
+    "Optimizovan dizajn daje odličnu preglednost u svim smerovima",
+    "Krov sa uskim poprečnim nosačima ili od ojačanog stakla olakšava rad na velikim visinama podizanja",
+    "Nisko težište viljuškara i visoko postavljena upravljana osovina poboljšavaju stabilnost u krivinama",
+    "Linde Curve Assist i Linde Load Assist smanjuju rizik od prevrtanja i nezgoda pri utovaru"
+   ]
+  },
+  {
+   "group": "Servisiranje",
+   "icon": "wrench",
+   "bullets": [
+    "Robusna konstrukcija sa delovima koji se malo habaju i ne traže održavanje obezbeđuje veliku raspoloživost viljuškara",
+    "Truck Health Monitoring štiti motor na ekstremnim temperaturama napolju",
+    "Linde Engine Protection System (LEPS) daje dodatnu zaštitu od oštećenja motora",
+    "Veoma veliki servisni otvori olakšavaju održavanje"
+   ]
+  }
+ ],
+ "table": [
+  {
+   "section": "Osnovni podaci",
+   "rows": [
+    {
+     "no": "1.1",
+     "label": "Proizvođač",
+     "unit": "",
+     "values": [
+      "Linde",
+      "Linde",
+      "Linde",
+      "Linde",
+      "Linde",
+      "Linde",
+      "Linde",
+      "Linde",
+      "Linde",
+      "Linde",
+      "LINDE",
+      "LINDE",
+      "LINDE"
+     ],
+     "notes": [
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      ""
+     ]
+    },
+    {
+     "no": "1.2",
+     "label": "Model",
+     "unit": "",
+     "values": [
+      "H20 / 600 D",
+      "H25 D",
+      "H25 / 600 D",
+      "H30 D",
+      "H35 D",
+      "H20 / 600 T",
+      "H25 T",
+      "H25 / 600 T",
+      "H30 T",
+      "H35 T",
+      "H35 D Container",
+      "H35 D Beverage",
+      "H35 CNG"
+     ],
+     "notes": [
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      ""
+     ]
+    },
+    {
+     "no": "1.3",
+     "label": "Pogonska jedinica",
+     "unit": "",
+     "values": [
+      "Dizel",
+      "Dizel",
+      "Dizel",
+      "Dizel",
+      "Dizel",
+      "TNG",
+      "TNG",
+      "TNG",
+      "TNG",
+      "TNG",
+      "Dizel",
+      "Dizel",
+      "CNG"
+     ],
+     "notes": [
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      ""
+     ]
+    },
+    {
+     "no": "1.4",
+     "label": "Način upravljanja",
+     "unit": "",
+     "values": [
+      "Sedeći",
+      "Sedeći",
+      "Sedeći",
+      "Sedeći",
+      "Sedeći",
+      "Sedeći",
+      "Sedeći",
+      "Sedeći",
+      "Sedeći",
+      "Sedeći",
+      "Sedeći",
+      "Sedeći",
+      "Sedeći"
+     ],
+     "notes": [
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      ""
+     ]
+    },
+    {
+     "no": "1.5",
+     "label": "Nosivost/teret",
+     "unit": "Q (t)",
+     "values": [
+      "2",
+      "2,5",
+      "2,5",
+      "3",
+      "3,5",
+      "2",
+      "2,5",
+      "2,5",
+      "3",
+      "3,5",
+      "3,5",
+      "3,5",
+      "3,5"
+     ],
+     "notes": [
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      ""
+     ]
+    },
+    {
+     "no": "1.6",
+     "label": "Težište tereta",
+     "unit": "c (mm)",
+     "values": [
+      "600",
+      "500",
+      "600",
+      "500",
+      "500",
+      "600",
+      "500",
+      "600",
+      "500",
+      "500",
+      "500",
+      "500",
+      "500"
+     ],
+     "notes": [
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      ""
+     ]
+    },
+    {
+     "no": "1.8",
+     "label": "Od sredine osovine do čela viljuške",
+     "unit": "x (mm)",
+     "values": [
+      "416,50",
+      "416,50",
+      "455,50",
+      "448,50",
+      "453,50",
+      "416,50",
+      "416,50",
+      "455,50",
+      "448,50",
+      "453,50",
+      "453,5",
+      "453,5",
+      "453,5"
+     ],
+     "notes": [
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      ""
+     ]
+    },
+    {
+     "no": "1.9",
+     "label": "Međuosovinsko rastojanje",
+     "unit": "y (mm)",
+     "values": [
+      "1.865",
+      "1.905",
+      "1.905",
+      "1.930",
+      "1.965",
+      "1.865",
+      "1.905",
+      "1.905",
+      "1.930",
+      "1.965",
+      "1.965",
+      "1.965",
+      "1.965"
+     ],
+     "notes": [
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      ""
+     ]
+    }
+   ]
+  },
+  {
+   "section": "Masa",
+   "rows": [
+    {
+     "no": "2.1",
+     "label": "Radna masa",
+     "unit": "(kg)",
+     "values": [
+      "3.738",
+      "3.918",
+      "4.480",
+      "4.635",
+      "4.978",
+      "3.712",
+      "3.891",
+      "4.453",
+      "4.609",
+      "4.952",
+      "4.950",
+      "5.302",
+      "5.016"
+     ],
+     "notes": [
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      ""
+     ]
+    },
+    {
+     "no": "2.2",
+     "label": "Opterećenje osovina s teretom, napred/nazad",
+     "unit": "(kg)",
+     "values": [
+      "4.916 / 822",
+      "5.560 / 858",
+      "6.001 / 979",
+      "6.657 / 978",
+      "7.487 / 991",
+      "4.885 / 827",
+      "5.528 / 863",
+      "5.970 / 983",
+      "6.626 / 983",
+      "7.456 / 996",
+      "7.458 / 992",
+      "7.667 / 1.135",
+      "7.460 / 1.056"
+     ],
+     "notes": [
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      ""
+     ]
+    },
+    {
+     "no": "2.3",
+     "label": "Opterećenje osovina bez tereta, napred/nazad",
+     "unit": "(kg)",
+     "values": [
+      "1.826 / 1.912",
+      "1.857 / 2.061",
+      "2.116 / 2.364",
+      "2.183 / 2.452",
+      "2.289 / 2.689",
+      "1.795 / 1.917",
+      "1.825 / 2.066",
+      "2.085 / 2.368",
+      "2.152 / 2.457",
+      "2.258 / 2.694",
+      "2.260 / 2.690",
+      "2.469 / 2.833",
+      "2.262 / 2.754"
+     ],
+     "notes": [
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      ""
+     ]
+    }
+   ]
+  },
+  {
+   "section": "Točkovi i gume",
+   "rows": [
+    {
+     "no": "3.1",
+     "label": "Vrsta guma, puna guma, superelastične, pneumatske ili poliuretanske",
+     "unit": "",
+     "values": [
+      "SE",
+      "SE",
+      "SE",
+      "SE",
+      "SE",
+      "SE",
+      "SE",
+      "SE",
+      "SE",
+      "SE",
+      "SE",
+      "SE",
+      "SE"
+     ],
+     "notes": [
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      ""
+     ]
+    },
+    {
+     "no": "3.2",
+     "label": "Dimenzija guma, napred",
+     "unit": "",
+     "values": [
+      "225 / 75 - 10",
+      "225 / 75 - 10",
+      "250 / 75 - 12",
+      "250 / 75 - 12",
+      "250 / 75 - 12",
+      "225 / 75 - 10",
+      "225 / 75 - 10",
+      "250 / 75 - 12",
+      "250 / 75 - 12",
+      "250 / 75 - 12",
+      "250 / 75 - 12",
+      "250 / 75 - 12",
+      "250 / 75 - 12"
+     ],
+     "notes": [
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      ""
+     ]
+    },
+    {
+     "no": "3.3",
+     "label": "Dimenzija guma, nazad",
+     "unit": "",
+     "values": [
+      "(23 × 9 - 10) 6.50 - 10",
+      "(23 ×9 - 10) 6.50 - 10",
+      "225 / 75 - 10",
+      "225 / 75 - 10",
+      "225 / 75 - 10",
+      "(23 × 9 - 10) 6.50 - 10",
+      "(23 × 9 - 10) 6.50 - 10",
+      "225 / 75 - 10",
+      "225 / 75 - 10",
+      "225 / 75 - 10",
+      "(27 × 10 - 12) 225 / 75 - 10",
+      "(27 × 10 - 12) 225 / 75 - 10",
+      "(27 × 10 - 12) 225 / 75 - 10"
+     ],
+     "notes": [
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      ""
+     ]
+    },
+    {
+     "no": "3.5",
+     "label": "Broj točkova napred/nazad (x = pogonski)",
+     "unit": "",
+     "values": [
+      "2x / 2",
+      "2x / 2",
+      "(23 × 9 - 10) 2x / 2",
+      "(23 × 9 - 10) 2x / 2",
+      "(23 × 9 - 10) 2x / 2",
+      "2x / 2",
+      "2x / 2",
+      "(23 × 9 - 10) 2x / 2",
+      "(23 × 9 - 10) 2x / 2",
+      "(23 × 9 - 10) 2x / 2",
+      "(23 × 9 - 10) 2x / 2",
+      "(23 × 9 - 10) 2x / 2",
+      "(23 × 9 - 10) 2x / 2"
+     ],
+     "notes": [
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      ""
+     ]
+    },
+    {
+     "no": "3.6",
+     "label": "Trag točkova, napred",
+     "unit": "b10 (mm)",
+     "values": [
+      "972",
+      "972",
+      "1.008",
+      "1.008",
+      "1.008",
+      "972",
+      "972",
+      "1.008",
+      "1.008",
+      "1.008",
+      "1.008",
+      "1.008",
+      "1.008"
+     ],
+     "notes": [
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      ""
+     ]
+    },
+    {
+     "no": "3.7",
+     "label": "Trag točkova, nazad",
+     "unit": "b11 (mm)",
+     "values": [
+      "961",
+      "961",
+      "961",
+      "961",
+      "961",
+      "961",
+      "961",
+      "961",
+      "961",
+      "961",
+      "961",
+      "961",
+      "961"
+     ],
+     "notes": [
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      ""
+     ]
+    }
+   ]
+  },
+  {
+   "section": "Dimenzije",
+   "rows": [
+    {
+     "no": "4.1",
+     "label": "Nagib stuba, napred/nazad",
+     "unit": "a / b (°)",
+     "values": [
+      "5,0 / 8,0",
+      "5,0 / 8,0",
+      "5,0 / 8,0",
+      "5,0 / 8,0",
+      "5,0 / 8,0",
+      "5,0 / 8,0",
+      "5,0 / 8,0",
+      "5,0 / 8,0",
+      "5,0 / 8,0",
+      "5,0 / 8,0",
+      "5,0 / 8,0",
+      "5,0 / 5,0",
+      "5,0 / 8,0v"
+     ],
+     "notes": [
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      ""
+     ]
+    },
+    {
+     "no": "4.2",
+     "label": "Visina spuštenog stuba",
+     "unit": "h1 (mm)",
+     "values": [
+      "2.288",
+      "2.288",
+      "2.330",
+      "2.330",
+      "2.330",
+      "2.288",
+      "2.288",
+      "2.330",
+      "2.330",
+      "2.330",
+      "2.230",
+      "2.730",
+      "2.330"
+     ],
+     "notes": [
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      ""
+     ]
+    },
+    {
+     "no": "4.3",
+     "label": "Slobodno podizanje",
+     "unit": "h2 (mm)",
+     "values": [
+      "150",
+      "150",
+      "150",
+      "150",
+      "150",
+      "150",
+      "150",
+      "150",
+      "150",
+      "150",
+      "150",
+      "150",
+      "150"
+     ],
+     "notes": [
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      ""
+     ]
+    },
+    {
+     "no": "4.4",
+     "label": "Visina podizanja",
+     "unit": "h3 (mm)",
+     "values": [
+      "3.230",
+      "3.230",
+      "3.295",
+      "3.295",
+      "3.295",
+      "3.230",
+      "3.230",
+      "3.295",
+      "3.295",
+      "3.295",
+      "3.095",
+      "4.095",
+      "3.295"
+     ],
+     "notes": [
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      ""
+     ]
+    },
+    {
+     "no": "4.5",
+     "label": "Visina izvučenog stuba",
+     "unit": "h4 (mm)",
+     "values": [
+      "3.901",
+      "3.901",
+      "4.061",
+      "4.061",
+      "4.061",
+      "3.901",
+      "3.901",
+      "4.061",
+      "4.061",
+      "4.061",
+      "3.861",
+      "4.861",
+      "4.061"
+     ],
+     "notes": [
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      ""
+     ]
+    },
+    {
+     "no": "4.7",
+     "label": "Visina zaštitnog krova (kabine)",
+     "unit": "h6 (mm)",
+     "values": [
+      "2.275",
+      "2.275",
+      "2.322",
+      "2.322",
+      "2.322",
+      "2.275",
+      "2.275",
+      "2.322",
+      "2.322",
+      "2.322",
+      "2.222",
+      "2.722",
+      "2.322"
+     ],
+     "notes": [
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      ""
+     ]
+    },
+    {
+     "no": "4.8",
+     "label": "Visina sedišta ili platforme",
+     "unit": "h7 (mm)",
+     "values": [
+      "1.074",
+      "1.074",
+      "1.119",
+      "1.119",
+      "1.119",
+      "1.074",
+      "1.074",
+      "1.119",
+      "1.119",
+      "1.119",
+      "1.119",
+      "1.519",
+      "1.119"
+     ],
+     "notes": [
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      ""
+     ]
+    },
+    {
+     "no": "4.12",
+     "label": "Visina kuke za vuču",
+     "unit": "h10 (mm)",
+     "values": [
+      "621",
+      "621",
+      "668",
+      "643",
+      "643",
+      "621",
+      "621",
+      "668",
+      "643",
+      "643",
+      "643",
+      "643",
+      "643"
+     ],
+     "notes": [
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      ""
+     ]
+    },
+    {
+     "no": "4.19",
+     "label": "Ukupna dužina",
+     "unit": "l1 (mm)",
+     "values": [
+      "3.659",
+      "3.699",
+      "3.738",
+      "3.756",
+      "3.796",
+      "3.659",
+      "3.699",
+      "3.738",
+      "3.756",
+      "3.796",
+      "3.796",
+      "3.796",
+      "3.796"
+     ],
+     "notes": [
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      ""
+     ]
+    },
+    {
+     "no": "4.20",
+     "label": "Dužina do čela viljuške",
+     "unit": "l2 (mm)",
+     "values": [
+      "2.659",
+      "2.699",
+      "2.738",
+      "2.756",
+      "2.796",
+      "2.659",
+      "2.699",
+      "2.738",
+      "2.756",
+      "2.796",
+      "2.796",
+      "2.796",
+      "2.796"
+     ],
+     "notes": [
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      ""
+     ]
+    },
+    {
+     "no": "4.21",
+     "label": "Ukupna širina",
+     "unit": "b1 / b2 (mm)",
+     "values": [
+      "1.180 / 1.176",
+      "1.180 / 1.176",
+      "1.256 / 1.176",
+      "1.256 / 1.176",
+      "1.256 / 1.176",
+      "1.180 / 1.176",
+      "1.180 / 1.176",
+      "1.256 / 1.176",
+      "1.256 / 1.176",
+      "1.256 / 1.176",
+      "1.256 / 1.176",
+      "1.256 / 1.176",
+      "1.256 / 1.176"
+     ],
+     "notes": [
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      ""
+     ]
+    },
+    {
+     "no": "4.22",
+     "label": "Dimenzije viljuške, DIN ISO 2331",
+     "unit": "s / e / l (mm)",
+     "values": [
+      "45 × 100 × 1000",
+      "45 × 100 × 1000",
+      "45 × 100 × 1000",
+      "45 × 100 × 1000",
+      "50 × 120 × 1000",
+      "45 × 100 × 1000",
+      "45 × 100 × 1000",
+      "45 × 100 × 1000",
+      "45 × 100 × 1000",
+      "50 × 120 × 1000",
+      "50 × 120 × 1000",
+      "50 × 120 × 1000",
+      "50 × 120 × 1000"
+     ],
+     "notes": [
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      ""
+     ]
+    },
+    {
+     "no": "4.23",
+     "label": "Nosač viljuške po ISO 2328, klasa i tip A, B",
+     "unit": "",
+     "values": [
+      "2A",
+      "2A",
+      "2A",
+      "3A",
+      "3A",
+      "2A",
+      "2A",
+      "2A",
+      "3A",
+      "3A",
+      "3A",
+      "3A",
+      "3A"
+     ],
+     "notes": [
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      ""
+     ]
+    },
+    {
+     "no": "4.24",
+     "label": "Širina nosača viljuške",
+     "unit": "b3 (mm)",
+     "values": [
+      "1.150",
+      "1.150",
+      "1.150",
+      "1.150",
+      "1.150",
+      "1.150",
+      "1.150",
+      "1.150",
+      "1.150",
+      "1.150",
+      "1.150",
+      "1.150",
+      "1.150"
+     ],
+     "notes": [
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      ""
+     ]
+    },
+    {
+     "no": "4.31",
+     "label": "Klirens, ispod stuba",
+     "unit": "m1 (mm)",
+     "values": [
+      "121",
+      "121",
+      "124",
+      "123",
+      "121",
+      "121",
+      "121",
+      "124",
+      "123",
+      "121",
+      "121",
+      "120",
+      "121"
+     ],
+     "notes": [
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      ""
+     ]
+    },
+    {
+     "no": "4.32",
+     "label": "Klirens, na sredini međuosovinskog rastojanja",
+     "unit": "m2 (mm)",
+     "values": [
+      "130",
+      "130",
+      "177",
+      "176",
+      "175",
+      "130",
+      "130",
+      "177",
+      "176",
+      "175",
+      "175",
+      "174",
+      "175"
+     ],
+     "notes": [
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      ""
+     ]
+    },
+    {
+     "no": "4.34.1",
+     "label": "Širina radnog prolaza, paleta 1000 × 1200 poprečno",
+     "unit": "Ast (mm)",
+     "values": [
+      "3.990",
+      "4.032",
+      "4.071",
+      "4.090",
+      "4.132",
+      "3.990",
+      "4.032",
+      "4.071",
+      "4.090",
+      "4.132",
+      "4.132",
+      "4.132",
+      "4.132"
+     ],
+     "notes": [
+      "1",
+      "1",
+      "1",
+      "1",
+      "1",
+      "1",
+      "1",
+      "1",
+      "1",
+      "1",
+      "1",
+      "1",
+      "1"
+     ]
+    },
+    {
+     "no": "4.34.2",
+     "label": "Širina radnog prolaza, paleta 800 × 1200 uzdužno",
+     "unit": "Ast (mm)",
+     "values": [
+      "4.190",
+      "4.232",
+      "4.271",
+      "4.290",
+      "4.332",
+      "4.190",
+      "4.232",
+      "4.271",
+      "4.290",
+      "4.332",
+      "4.332",
+      "4.332",
+      "4.332"
+     ],
+     "notes": [
+      "1",
+      "1",
+      "1",
+      "1",
+      "1",
+      "1",
+      "1",
+      "1",
+      "1",
+      "1",
+      "1",
+      "1",
+      "1"
+     ]
+    },
+    {
+     "no": "4.35",
+     "label": "Radijus okretanja",
+     "unit": "Wa (mm)",
+     "values": [
+      "2.373",
+      "2.415",
+      "2.415",
+      "2.441",
+      "2.478",
+      "2.373",
+      "2.415",
+      "2.415",
+      "2.441",
+      "2.478",
+      "2.478",
+      "2.478",
+      "2.478"
+     ],
+     "notes": [
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      ""
+     ]
+    },
+    {
+     "no": "4.36",
+     "label": "Najmanje rastojanje okretanja",
+     "unit": "b13 (mm)",
+     "values": [
+      "645",
+      "659",
+      "659",
+      "668",
+      "680",
+      "645",
+      "659",
+      "659",
+      "668",
+      "680",
+      "680",
+      "680",
+      "680"
+     ],
+     "notes": [
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      ""
+     ]
+    }
+   ]
+  },
+  {
+   "section": "Performanse",
+   "rows": [
+    {
+     "no": "5.1",
+     "label": "Brzina vožnje, s teretom/bez tereta",
+     "unit": "(km / h)",
+     "values": [
+      "22 / 22",
+      "22 / 22",
+      "22 / 22",
+      "22 / 22",
+      "22 / 22",
+      "22 / 22",
+      "22 / 22",
+      "22 / 22",
+      "22 / 22",
+      "22 / 22",
+      "22 / 22",
+      "22 / 22",
+      "22 / 22"
+     ],
+     "notes": [
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      ""
+     ]
+    },
+    {
+     "no": "5.2",
+     "label": "Brzina podizanja, s teretom/bez tereta",
+     "unit": "(m / s)",
+     "values": [
+      "0,53 / 0,55",
+      "0,53 / 0,55",
+      "0,53 / 0,56",
+      "0,53 / 0,56",
+      "0,53 / 0,56",
+      "0,53 / 0,55",
+      "0,53 / 0,55",
+      "0,53 / 0,56",
+      "0,53 / 0,56",
+      "0,45 / 0,56",
+      "0,53 / 0,56",
+      "0,53 / 0,55",
+      "0,45 / 0,56"
+     ],
+     "notes": [
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      ""
+     ]
+    },
+    {
+     "no": "5.3",
+     "label": "Brzina spuštanja, s teretom/bez tereta",
+     "unit": "(m / s)",
+     "values": [
+      "0,56 / 0,56",
+      "0,56 / 0,56",
+      "0,56 / 0,56",
+      "0,56 / 0,56",
+      "0,56 / 0,56",
+      "0,56 / 0,56",
+      "0,56 / 0,56",
+      "0,56 / 0,56",
+      "0,56 / 0,56",
+      "0,56 / 0,56",
+      "0,56 / 0,56",
+      "0,56 / 0,52",
+      "0,56 / 0,56"
+     ],
+     "notes": [
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      ""
+     ]
+    },
+    {
+     "no": "5.5",
+     "label": "Vučna sila, s teretom/bez tereta",
+     "unit": "(N)",
+     "values": [
+      "14,553 / 14,330",
+      "14,420 / 14,575",
+      "19,722 / 16,611",
+      "19,593 / 17,132",
+      "19,428 / 17,973",
+      "14,558 / 14,089",
+      "14,425 / 14,331",
+      "19,727 / 16,364",
+      "19,598 / 16,886",
+      "19,433 / 17,721",
+      "19,350 / 19,900",
+      "19,430 / 17,770",
+      "19-420 / 17,760"
+     ],
+     "notes": [
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      ""
+     ]
+    },
+    {
+     "no": "5.7",
+     "label": "Savladivi uspon, s teretom/bez tereta",
+     "unit": "(%)",
+     "values": [
+      "28,0 / 34,0",
+      "24,0 / 31,0",
+      "32,0 / 33,0",
+      "27,0 / 30,0",
+      "27,0 / 30,0",
+      "28,0 / 34,0",
+      "24,0 / 31,0",
+      "32,0 / 33,0",
+      "27,0 / 30,0",
+      "27,0 / 30,0",
+      "22,9 / 28,4",
+      "24,1 / 28,4",
+      "23,9 / 27,8"
+     ],
+     "notes": [
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      ""
+     ]
+    },
+    {
+     "no": "5.9",
+     "label": "Vreme ubrzanja, s teretom/bez tereta",
+     "unit": "(s)",
+     "values": [
+      "5,6 / 5,1",
+      "5,8 / 5,1",
+      "5,4 / 4,6",
+      "5,6 / 4,7",
+      "5,8 / 4,9",
+      "5,4 / 4,7",
+      "5,6 / 4,7",
+      "5,8 / 5,0",
+      "5,8 / 5,0",
+      "5,9 / 5,0",
+      "5,8 / 4,9",
+      "5,8 / 4,9",
+      "6,0 / 5,0"
+     ],
+     "notes": [
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      ""
+     ]
+    },
+    {
+     "no": "5.10",
+     "label": "Radna kočnica",
+     "unit": "",
+     "values": [
+      "hidrostatička",
+      "hidrostatička",
+      "hidrostatička",
+      "hidrostatička",
+      "hidrostatička",
+      "hidrostatička",
+      "hidrostatička",
+      "hidrostatička",
+      "hidrostatička",
+      "hidrostatička",
+      "hidrostatička",
+      "hidrostatička",
+      "hidrostatička"
+     ],
+     "notes": [
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      ""
+     ]
+    }
+   ]
+  },
+  {
+   "section": "Motor sa unutrašnjim sagorevanjem",
+   "rows": [
+    {
+     "no": "7.1",
+     "label": "Proizvođač i tip motora",
+     "unit": "",
+     "values": [
+      "Deutz TCD 2.2 L3",
+      "Deutz TCD 2.2 L3",
+      "Deutz TCD 2.2 L3",
+      "Deutz TCD 2.2 L3",
+      "Deutz TCD 2.2 L3",
+      "Deutz G 2.2 L3",
+      "Deutz G 2.2 L3",
+      "Deutz G 2.2 L3",
+      "Deutz G 2.2 L3",
+      "Deutz G 2.2 L3",
+      "Deutz TCD 2.2 L3",
+      "Deutz TCD 2.2 L3",
+      "Deutz G 2.2 L3"
+     ],
+     "notes": [
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      ""
+     ]
+    },
+    {
+     "no": "7.2",
+     "label": "Snaga motora po DIN ISO 1585",
+     "unit": "(kW)",
+     "values": [
+      "30",
+      "30",
+      "45",
+      "45",
+      "45",
+      "36,4",
+      "36,4",
+      "40",
+      "40",
+      "40",
+      "45",
+      "45",
+      "36,2"
+     ],
+     "notes": [
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      ""
+     ]
+    },
+    {
+     "no": "7.3",
+     "label": "Nominalni broj obrtaja",
+     "unit": "(1 / min)",
+     "values": [
+      "2.300",
+      "2.300",
+      "2.100",
+      "2.100",
+      "2.100",
+      "2.300",
+      "2.300",
+      "2.600",
+      "2.600",
+      "2.600",
+      "2.100",
+      "2.100",
+      "2.600"
+     ],
+     "notes": [
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      ""
+     ]
+    },
+    {
+     "no": "7.4",
+     "label": "Broj cilindara/zapremina 7.5 c 7.5 d",
+     "unit": "(- / cm³)",
+     "values": [
+      "3 / 2.194",
+      "3 / 2.194",
+      "3 / 2.194",
+      "3 / 2.194",
+      "3 / 2.194",
+      "3 / 2.194",
+      "3 / 2.194",
+      "3 / 2.194",
+      "3 / 2.194",
+      "3 / 2.194",
+      "3,0 / 2.194",
+      "3,0 / 2.194",
+      "3,0 / 2.194"
+     ],
+     "notes": [
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      ""
+     ]
+    },
+    {
+     "no": "7.5.1",
+     "label": "Potrošnja goriva po EN 16796 Potrošnja goriva po EN 16796 CO2 ekvivalent po EN 16796",
+     "unit": "(l / h) (kg / h) (kg / h)",
+     "values": [
+      "2,5 7,9",
+      "2,7 8,6",
+      "2,9 9,2",
+      "3,0 9,5",
+      "3,1 9,9",
+      "2,3 7,8",
+      "2,5 8,5",
+      "2,7 9,2",
+      "2,8 9,5",
+      "2,9 9,8",
+      "3,1 9,9",
+      "3,1 9,9",
+      "3,2 4,38 (H); 3,89 (L) 10"
+     ],
+     "notes": [
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      ""
+     ]
+    }
+   ]
+  },
+  {
+   "section": "Pogon",
+   "rows": [
+    {
+     "no": "8.1",
+     "label": "Vrsta pogona",
+     "unit": "",
+     "values": [
+      "hidrostatički, kontinualno",
+      "hidrostatički, kontinualno",
+      "hidrostatički, kontinualno",
+      "hidrostatički, kontinualno",
+      "hidrostatički, kontinualno",
+      "hidrostatički, kontinualno",
+      "hidrostatički, kontinualno",
+      "hidrostatički, kontinualno",
+      "hidrostatički, kontinualno",
+      "hidrostatički, kontinualno",
+      "hidrostatički, kontinualno",
+      "hidrostatički, kontinualno",
+      "hidrostatički, kontinualno"
+     ],
+     "notes": [
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      ""
+     ]
+    }
+   ]
+  },
+  {
+   "section": "Ostali podaci",
+   "rows": [
+    {
+     "no": "10.1",
+     "label": "Radni pritisak za priključke",
+     "unit": "(bar)",
+     "values": [
+      "200",
+      "230",
+      "200",
+      "225",
+      "245",
+      "200",
+      "230",
+      "200",
+      "225",
+      "245",
+      "245",
+      "245",
+      "245"
+     ],
+     "notes": [
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      ""
+     ]
+    },
+    {
+     "no": "10.2",
+     "label": "Protok ulja za priključke",
+     "unit": "(l / min)",
+     "values": [
+      "50",
+      "50",
+      "50",
+      "50",
+      "50",
+      "50",
+      "50",
+      "50",
+      "50",
+      "50",
+      "50",
+      "50",
+      "50"
+     ],
+     "notes": [
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      ""
+     ]
+    },
+    {
+     "no": "10.7",
+     "label": "Nivo zvučnog pritiska LpAZ, na mestu vozača",
+     "unit": "(dB(A))",
+     "values": [
+      "79",
+      "79",
+      "79",
+      "79",
+      "79",
+      "79",
+      "79",
+      "79",
+      "79",
+      "79",
+      "79",
+      "79",
+      "79"
+     ],
+     "notes": [
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "2"
+     ]
+    },
+    {
+     "no": "10.8",
+     "label": "Kuka za vuču, izvedba/tip, DIN 15170",
+     "unit": "",
+     "values": [
+      "Slično obliku H",
+      "Slično obliku H",
+      "Slično obliku H",
+      "Slično obliku H",
+      "Slično obliku H",
+      "Slično obliku H",
+      "Slično obliku H",
+      "Slično obliku H",
+      "Slično obliku H",
+      "Slično obliku H",
+      "Slično obliku H",
+      "Slično obliku H",
+      "Slično obliku H"
+     ],
+     "notes": [
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      ""
+     ]
+    }
+   ]
+  }
+ ],
+ "compare": [
+  {
+   "label": "Pogonska jedinica",
+   "unit": "",
+   "values": [
+    "Dizel",
+    "Dizel",
+    "Dizel",
+    "Dizel",
+    "Dizel",
+    "TNG",
+    "TNG",
+    "TNG",
+    "TNG",
+    "TNG",
+    "Dizel",
+    "Dizel",
+    "CNG"
+   ]
+  },
+  {
+   "label": "Nosivost",
+   "unit": "kg",
+   "values": [
+    "2.000",
+    "2.500",
+    "2.500",
+    "3.000",
+    "3.500",
+    "2.000",
+    "2.500",
+    "2.500",
+    "3.000",
+    "3.500",
+    "3.500",
+    "3.500",
+    "3.500"
+   ]
+  },
+  {
+   "label": "Visina podizanja",
+   "unit": "mm",
+   "values": [
+    "3.230",
+    "3.230",
+    "3.295",
+    "3.295",
+    "3.295",
+    "3.230",
+    "3.230",
+    "3.295",
+    "3.295",
+    "3.295",
+    "3.095",
+    "4.095",
+    "3.295"
+   ]
+  },
+  {
+   "label": "Brzina vožnje, s teretom/bez tereta",
+   "unit": "(km / h)",
+   "values": [
+    "22 / 22",
+    "22 / 22",
+    "22 / 22",
+    "22 / 22",
+    "22 / 22",
+    "22 / 22",
+    "22 / 22",
+    "22 / 22",
+    "22 / 22",
+    "22 / 22",
+    "22 / 22",
+    "22 / 22",
+    "22 / 22"
+   ]
+  },
+  {
+   "label": "Brzina podizanja, s teretom/bez tereta",
+   "unit": "(m / s)",
+   "values": [
+    "0,53 / 0,55",
+    "0,53 / 0,55",
+    "0,53 / 0,56",
+    "0,53 / 0,56",
+    "0,53 / 0,56",
+    "0,53 / 0,55",
+    "0,53 / 0,55",
+    "0,53 / 0,56",
+    "0,53 / 0,56",
+    "0,45 / 0,56",
+    "0,53 / 0,56",
+    "0,53 / 0,55",
+    "0,45 / 0,56"
+   ]
+  },
+  {
+   "label": "Radijus okretanja",
+   "unit": "mm",
+   "values": [
+    "2.373",
+    "2.415",
+    "2.415",
+    "2.441",
+    "2.478",
+    "2.373",
+    "2.415",
+    "2.415",
+    "2.441",
+    "2.478",
+    "2.478",
+    "2.478",
+    "2.478"
+   ]
+  },
+  {
+   "label": "Širina radnog prolaza, paleta 1000 × 1200 poprečno",
+   "unit": "mm",
+   "values": [
+    "3.990",
+    "4.032",
+    "4.071",
+    "4.090",
+    "4.132",
+    "3.990",
+    "4.032",
+    "4.071",
+    "4.090",
+    "4.132",
+    "4.132",
+    "4.132",
+    "4.132"
+   ]
+  },
+  {
+   "label": "Radna masa",
+   "unit": "(kg)",
+   "values": [
+    "3.738",
+    "3.918",
+    "4.480",
+    "4.635",
+    "4.978",
+    "3.712",
+    "3.891",
+    "4.453",
+    "4.609",
+    "4.952",
+    "4.950",
+    "5.302",
+    "5.016"
+   ]
+  },
+  {
+   "label": "Snaga motora po DIN ISO 1585",
+   "unit": "(kW)",
+   "values": [
+    "30",
+    "30",
+    "45",
+    "45",
+    "45",
+    "36,4",
+    "36,4",
+    "40",
+    "40",
+    "40",
+    "45",
+    "45",
+    "36,2"
+   ]
+  }
+ ],
+ "footnotes": [
+  {
+   "n": "1",
+   "text": "Uključujući 200 mm sigurnosnog razmaka u prolazu"
+  },
+  {
+   "n": "2",
+   "text": "Sa potpuno zatvorenom kabinom"
+  }
+ ],
+ "equipment": [
+  {
+   "group": "Prostor za vozača",
+   "icon": "seat",
+   "items": [
+    {
+     "t": "Ergonomski i bezbedan ulazak, uz nizak stepenik i rukohvat na prednjem stubu kabine i poklopcu motora"
+    },
+    {
+     "t": "Inovativni koncept odvajanja za najmanje vibracije koje oseća čovek"
+    },
+    {
+     "t": "Stub volana sa podesivim nagibom"
+    },
+    {
+     "t": "Komforni zaštitni krov za najveću visinu iznad glave"
+    },
+    {
+     "t": "Sedište vozača sa brzim mehaničkim podešavanjem prema težini"
+    },
+    {
+     "t": "Više izvedbi sedišta, kao što su grejanje, vazdušno oslanjanje, aktivna ventilacija sedišta, uzdužno oslanjanje"
+    },
+    {
+     "t": "Sedište vozača, okretno sedište"
+    },
+    {
+     "t": "LED ekran u boji od 3,5 inča sa pokazivačem ugla upravljanja i pokazivačem ugla nagiba"
+    },
+    {
+     "t": "Višefunkcijski LED ekran u boji od 7 inča objedinjuje dodatne funkcije, na primer kamere i Linde Safety Pilot"
+    },
+    {
+     "t": "Krovni prozor od ojačanog stakla"
+    },
+    {
+     "t": "Vrata od legure sa prozorom koji se otvara"
+    },
+    {
+     "t": "Osvetljena tabla za papire formata A4"
+    },
+    {
+     "t": "Grejanje toplom vodom sa odmagljivanjem / klima uređaj"
+    },
+    {
+     "t": "Radio, DAB+, MP3 plejer sa bluetooth uređajem za razgovor bez ruku"
+    },
+    {
+     "t": "Linde hidrostatički pogon za visoku produktivnost i malu potrošnju goriva"
+    },
+    {
+     "t": "Deutz dizel motor, EU 2016/1628 Stage 5*"
+    },
+    {
+     "t": "Deutz CNG motor, EU 2016 / 1628 Stage 5*"
+    },
+    {
+     "t": "Filter čestica, oksidacioni katalizatori i recirkulacija izduvnih gasova"
+    },
+    {
+     "t": "Deutz TNG motor, EU 2016/1628 Stage 5*"
+    }
+   ]
+  },
+  {
+   "group": "Vožnja i podizanje",
+   "icon": "mast",
+   "items": [
+    {
+     "t": "Trokomponentni katalizator"
+    },
+    {
+     "t": "TNG rezervoar sa nivoom goriva prikazanim na ekranu"
+    },
+    {
+     "t": "Filter vazduha motora sa zaštitnim elementima"
+    },
+    {
+     "t": "Linde Engine Protection System (LEPS), upozorenje i manja brzina kada je motor u kritičnom stanju"
+    },
+    {
+     "t": "Hidraulična parkirna kočnica"
+    },
+    {
+     "t": "Pumpa većih dimenzija i promenljive zapremine za funkciju podizanja, za malu potrošnju goriva, nizak nivo buke i emisija"
+    },
+    {
+     "t": "Sistem hidrauličnih filtera, zamena hidrauličnog ulja posle 6.000 sati"
+    },
+    {
+     "t": "Režimi snage Efficiency, Economy i Performance"
+    }
+   ]
+  },
+  {
+   "group": "Stub",
+   "icon": "mast",
+   "items": [
+    {
+     "t": "Superelastične (SE) gume"
+    },
+    {
+     "t": "Gume Closed Shoulder CS 20"
+    },
+    {
+     "t": "Pneumatske gume"
+    },
+    {
+     "t": "Antistatičke gume koje ne ostavljaju trag"
+    },
+    {
+     "t": "Zaštita od prskanja, blatobrani napred i nazad"
+    },
+    {
+     "t": "Gore postavljeni cilindri za naginjanje, sa ležajevima koji ne traže održavanje"
+    },
+    {
+     "t": "Najbolja preglednost zahvaljujući asimetričnim, ugnežđenim profilima stuba na standardnim, dupleks i tripleks stubovima"
+    },
+    {
+     "t": "Elektronski prigušen graničnik nagiba"
+    },
+    {
+     "t": "Hidraulični akumulator za veću udobnost vožnje i manje habanje"
+    },
+    {
+     "t": "Ojačane Linde viljuške, lake za podešavanje i dugog veka"
+    },
+    {
+     "t": "Ugrađeni bočni pomerač na valjcima, bez gubitka nosivosti"
+    },
+    {
+     "t": "Ugrađeni pozicioner viljuški „View”, za visoku preostalu nosivost i bolju preglednost"
+    },
+    {
+     "t": "Priprema za čistač ulica"
+    }
+   ]
+  },
+  {
+   "group": "Bezbednost",
+   "icon": "shield",
+   "items": [
+    {
+     "t": "Linde Curve Assist, automatski manja brzina u krivinama"
+    },
+    {
+     "t": "Električni nadzor sigurnosnog pojasa, sa svetlosnim i zvučnim signalom"
+    },
+    {
+     "t": "Linde Load Assist, veća bezbednost na velikim visinama podizanja"
+    },
+    {
+     "t": "BlueSpot i TruckSpot, svetlosno upozorenje za pešake i vozače"
+    },
+    {
+     "t": "Pokazivač težine tereta"
+    },
+    {
+     "t": "Linde Safety Pilot, brzina vožnje i podizanja prema teretu, uz dodatne funkcije"
+    },
+    {
+     "t": "Linde Safety Guard, upozorenje između dva viljuškara i između viljuškara i pešaka"
+    },
+    {
+     "t": "Ograničenje brzine (prekidačem, za rad u hali ili napolju, prema teretu)"
+    },
+    {
+     "t": "Sistemi za zadržavanje vozača (različite opcije)"
+    },
+    {
+     "t": "Prenos podataka preko interneta"
+    },
+    {
+     "t": "Prenos podataka preko WiFi mreže"
+    },
+    {
+     "t": "Linde connect desk, lokalno upravljanje voznim parkom sa više modula"
+    },
+    {
+     "t": "Linde connect cloud, upravljanje voznim parkom kao usluga (hostovana verzija)"
+    },
+    {
+     "t": "Pre-Operation-Check, prilagodljiva dnevna kontrolna lista spremnosti za rad"
+    }
+   ]
+  },
+  {
+   "group": "Upravljanje i rukovanje teretom",
+   "icon": "lever",
+   "items": [
+    {
+     "t": "Truck Call App, koordinacija transportnih naloga"
+    },
+    {
+     "t": "Upravljanje sa dve pedale, mirno ubrzanje i brza promena smera"
+    },
+    {
+     "t": "Upravljanje jednom pedalom, mirno ubrzanje"
+    },
+    {
+     "t": "Linde Load Control, centralne ručice ugrađene u naslon za ruku, za precizno upravljanje svim hidrauličnim funkcijama"
+    },
+    {
+     "t": "Sistem pojedinačnih ručica"
+    }
+   ]
+  }
+ ]
+}

@@ -1,0 +1,323 @@
+{
+ "slug": "m25",
+ "source": {
+  "name": "DS_M25_BR033_01_en_A_0318_view.pdf",
+  "href": "https://drive.google.com/uc?export=download&id=1LJ0FD2un5CyaOuzaQmWCMMKXM-2Mr405"
+ },
+ "versions": [
+  "M25"
+ ],
+ "tagline": null,
+ "benefits": [],
+ "masts": [],
+ "figures": [
+  {
+   "label": "Nosivost",
+   "value": "2.500",
+   "unit": "kg"
+  },
+  {
+   "label": "Visina podizanja",
+   "value": "115",
+   "unit": "mm"
+  }
+ ],
+ "lede": "Transporter, nosivosti 2.500 kg.",
+ "characteristics": [],
+ "table": [
+  {
+   "section": "Osnovni podaci",
+   "rows": [
+    {
+     "no": "1.1",
+     "label": "Proizvođač",
+     "unit": "",
+     "values": [
+      "LINDE"
+     ],
+     "notes": [
+      ""
+     ]
+    },
+    {
+     "no": "1.2",
+     "label": "Oznaka modela",
+     "unit": "",
+     "values": [
+      "M25"
+     ],
+     "notes": [
+      ""
+     ]
+    },
+    {
+     "no": "1.5",
+     "label": "Nosivost",
+     "unit": "Q (kg)",
+     "values": [
+      "2500 kg"
+     ],
+     "notes": [
+      ""
+     ]
+    },
+    {
+     "no": "1.6",
+     "label": "Težište tereta",
+     "unit": "c (mm)",
+     "values": [
+      "600"
+     ],
+     "notes": [
+      ""
+     ]
+    },
+    {
+     "no": "1.8",
+     "label": "Rastojanje tereta, od sredine pogonske osovine do viljuške",
+     "unit": "x (mm)",
+     "values": [
+      "932"
+     ],
+     "notes": [
+      ""
+     ]
+    },
+    {
+     "no": "1.9",
+     "label": "Međuosovinsko rastojanje",
+     "unit": "y (mm)",
+     "values": [
+      "1.192"
+     ],
+     "notes": [
+      ""
+     ]
+    }
+   ]
+  },
+  {
+   "section": "Masa",
+   "rows": [
+    {
+     "no": "2.1",
+     "label": "Radna masa (sa baterijom, red 6.5)",
+     "unit": "kg",
+     "values": [
+      "63"
+     ],
+     "notes": [
+      ""
+     ]
+    }
+   ]
+  },
+  {
+   "section": "Gume i šasija",
+   "rows": [
+    {
+     "no": "3.1",
+     "label": "Gume",
+     "unit": "",
+     "values": [
+      "Poliuretan/najlon"
+     ],
+     "notes": [
+      ""
+     ]
+    },
+    {
+     "no": "3.2",
+     "label": "Dimenzija guma, napred",
+     "unit": "",
+     "values": [
+      "Ø 200 X 55"
+     ],
+     "notes": [
+      ""
+     ]
+    },
+    {
+     "no": "3.3",
+     "label": "Dimenzija guma, nazad",
+     "unit": "",
+     "values": [
+      "Ø 83 X Ø 82 - 60"
+     ],
+     "notes": [
+      ""
+     ]
+    },
+    {
+     "no": "3.5",
+     "label": "Broj točkova napred/nazad (x = pogonski)",
+     "unit": "",
+     "values": [
+      "2 / 2 -2 / 4"
+     ],
+     "notes": [
+      ""
+     ]
+    },
+    {
+     "no": "3.7",
+     "label": "Trag točkova, nazad",
+     "unit": "b11 (mm)",
+     "values": [
+      "375"
+     ],
+     "notes": [
+      ""
+     ]
+    }
+   ]
+  },
+  {
+   "section": "Dimenzije",
+   "rows": [
+    {
+     "no": "4.4",
+     "label": "Visina podizanja",
+     "unit": "h3 (mm)",
+     "values": [
+      "115"
+     ],
+     "notes": [
+      ""
+     ]
+    },
+    {
+     "no": "4.15",
+     "label": "Visina spuštenih viljuški",
+     "unit": "h13 (mm)",
+     "values": [
+      "85"
+     ],
+     "notes": [
+      ""
+     ]
+    },
+    {
+     "no": "4.19",
+     "label": "Ukupna dužina",
+     "unit": "l1 (mm)",
+     "values": [
+      "1.550"
+     ],
+     "notes": [
+      ""
+     ]
+    },
+    {
+     "no": "4.20",
+     "label": "Dužina do čela viljuške",
+     "unit": "l2 (mm)",
+     "values": [
+      "400"
+     ],
+     "notes": [
+      ""
+     ]
+    },
+    {
+     "no": "4.21",
+     "label": "Ukupna širina",
+     "unit": "B1 / b2 (mm)",
+     "values": [
+      "525"
+     ],
+     "notes": [
+      ""
+     ]
+    },
+    {
+     "no": "4.22",
+     "label": "Dimenzije viljuške",
+     "unit": "s / e / l (mm)",
+     "values": [
+      "55 / 150 / 1.150"
+     ],
+     "notes": [
+      ""
+     ]
+    },
+    {
+     "no": "4.25",
+     "label": "Razmak viljuški, min/maks.",
+     "unit": "b5 (mm)",
+     "values": [
+      "525"
+     ],
+     "notes": [
+      ""
+     ]
+    },
+    {
+     "no": "4.32",
+     "label": "Klirens, na sredini međuosovinskog rastojanja",
+     "unit": "m2 (mm)",
+     "values": [
+      "30"
+     ],
+     "notes": [
+      ""
+     ]
+    },
+    {
+     "no": "4.34",
+     "label": "Širina radnog prolaza, paleta 800 × 1200 uzdužno",
+     "unit": "Ast (mm)",
+     "values": [
+      "1.835"
+     ],
+     "notes": [
+      ""
+     ]
+    },
+    {
+     "no": "4.35",
+     "label": "Radijus okretanja *ograničen izbor točkova, ograničen izbor dužine viljuški",
+     "unit": "Wa (mm)",
+     "values": [
+      "1.367"
+     ],
+     "notes": [
+      ""
+     ]
+    }
+   ]
+  }
+ ],
+ "compare": [
+  {
+   "label": "Nosivost",
+   "unit": "kg",
+   "values": [
+    "2500 kg"
+   ]
+  },
+  {
+   "label": "Visina podizanja",
+   "unit": "mm",
+   "values": [
+    "115"
+   ]
+  },
+  {
+   "label": "Radijus okretanja *ograničen izbor točkova, ograničen izbor dužine viljuški",
+   "unit": "mm",
+   "values": [
+    "1.367"
+   ]
+  },
+  {
+   "label": "Radna masa (sa baterijom, red 6.5)",
+   "unit": "kg",
+   "values": [
+    "63"
+   ]
+  }
+ ],
+ "footnotes": [],
+ "equipment": []
+}

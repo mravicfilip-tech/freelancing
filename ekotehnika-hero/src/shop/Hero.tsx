@@ -10,7 +10,7 @@ import { useCallback, useEffect, useRef, useState, type PointerEvent } from 'rea
 import { BtnInner } from '../story2/shell/ui';
 import { CATEGORIES, PRODUCTS, fmt, productBySlug } from './data';
 import { Link } from './route';
-import { Cell } from './parts';
+import { Cell, Rule } from './parts';
 
 type Slide = {
   id: string;
@@ -201,9 +201,20 @@ export function Hero() {
     >
       <h1 className="sr-only">Prodavnica, novi Linde viljuškari</h1>
       <Cell span={2} className="sp-hero-text">
-        <p className="sp-hero-count" aria-hidden="true">
-          <span>{String(at + 1).padStart(2, '0')}</span> / {String(n).padStart(2, '0')}
-        </p>
+        {/* the counter and the two arrows over the words, Filip 18 November, "style this slider better" */}
+        <div className="sp-hero-top">
+          <p className="sp-hero-count" aria-hidden="true">
+            <span>{String(at + 1).padStart(2, '0')}</span> / {String(n).padStart(2, '0')}
+          </p>
+          <div className="sp-hero-arrows">
+            <button type="button" className="btn btn-secondary sp-arrow is-prev" aria-label="Prethodni slajd" onClick={() => go(at - 1)}>
+              <BtnInner>Prethodni</BtnInner>
+            </button>
+            <button type="button" className="btn btn-secondary sp-arrow is-next" aria-label="Sledeći slajd" onClick={() => go(at + 1)}>
+              <BtnInner>Sledeći</BtnInner>
+            </button>
+          </div>
+        </div>
         {/* the words of the slide on screen only, a new slide's words come in again with the site's one text animation, a fade */}
         <div className="sp-hero-slide" id={`slide-${s.id}`} role="tabpanel" aria-roledescription="slajd" aria-label={`${at + 1} od ${n}, ${s.tab}`} aria-live={playing ? 'off' : 'polite'} key={s.id}>
           <p className="sp-lab">{s.kicker}</p>
@@ -227,44 +238,38 @@ export function Hero() {
           <Collage s={s} state="in" key={`in-${s.id}`} />
         </div>
       </Cell>
-      <Cell span={4} className="sp-hero-nav">
-        <div className="sp-hero-tabs" role="tablist" aria-label="Slajdovi" onKeyDown={key}>
-          {SLIDES.map((x, i) => {
-            const m = x.model ? productBySlug(x.model) : undefined;
-            return (
-              <button
-                type="button"
-                role="tab"
-                aria-selected={i === at}
-                aria-controls={`slide-${x.id}`}
-                tabIndex={i === at ? 0 : -1}
-                ref={(el) => {
-                  tabs.current[i] = el;
-                }}
-                onClick={() => go(i)}
-                key={x.id}
-              >
-                <span className="sp-hero-thumb" aria-hidden="true">
-                  {m?.thumb ? <img src={m.thumb} alt="" /> : null}
-                </span>
-                <span className="sp-hero-tab-x">
-                  <span className="sp-hero-tab-n">{String(i + 1).padStart(2, '0')}</span>
-                  <span className="sp-hero-tab-t">{x.tab}</span>
-                </span>
-                <i className="sp-hero-bar" aria-hidden="true" style={{ animationDuration: `${EVERY}ms` }} />
-              </button>
-            );
-          })}
-        </div>
-        <div className="sp-hero-arrows">
-          <button type="button" className="btn btn-secondary sp-arrow is-prev" aria-label="Prethodni slajd" onClick={() => go(at - 1)}>
-            <BtnInner>Prethodni</BtnInner>
-          </button>
-          <button type="button" className="btn btn-secondary sp-arrow is-next" aria-label="Sledeći slajd" onClick={() => go(at + 1)}>
-            <BtnInner>Sledeći</BtnInner>
-          </button>
-        </div>
-      </Cell>
+      {/* the slides as four tabs, one in each frame of the grid, each tab a cell drawing its own lines. The line over the tab on screen
+          fills black while the slides run. */}
+      <div className="sp-hero-tabs" role="tablist" aria-label="Slajdovi" onKeyDown={key}>
+        {SLIDES.map((x, i) => {
+          const m = x.model ? productBySlug(x.model) : undefined;
+          return (
+            <button
+              type="button"
+              role="tab"
+              className="sp-cell sp-hero-tab"
+              aria-selected={i === at}
+              aria-controls={`slide-${x.id}`}
+              tabIndex={i === at ? 0 : -1}
+              ref={(el) => {
+                tabs.current[i] = el;
+              }}
+              onClick={() => go(i)}
+              key={x.id}
+            >
+              <Rule />
+              <i className="sp-hero-bar" aria-hidden="true" style={{ animationDuration: `${EVERY}ms` }} />
+              <span className="sp-hero-thumb" aria-hidden="true">
+                {m?.thumb ? <img src={m.thumb} alt="" /> : null}
+              </span>
+              <span className="sp-hero-tab-x">
+                <span className="sp-hero-tab-n">{String(i + 1).padStart(2, '0')}</span>
+                <span className="sp-hero-tab-t">{x.tab}</span>
+              </span>
+            </button>
+          );
+        })}
+      </div>
     </section>
   );
 }

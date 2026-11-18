@@ -16,3 +16,11 @@ Round of 18 November, sent while the shop ran on his localhost. Planned and buil
 7. The hero, "do better more attractive hero/slider, use inspiration we did for CTA banner and previous inspirations I gave you, make it
    look more the part". Screenshot marks the whole hero.
 8. The search, "make search bigger and when opening the search suggest top 5 models searched for and do suggested searching".
+9. The hero's slides, "style this slider better". Screenshot marks the row of tabs under the hero, "02 Linde transporter MT15 C" with its
+   bar, the thumbnails and the two arrows. Built as four tabs that fill the grid's four frames, each with its picture at full strength, the
+   frame's own top line filling black while a slide runs, and the counter and the two arrows moved up over the words.
+10. The search, "use better icon". Screenshot marks the magnifier in the search field over the categories. Icons are micro detail, so three
+   variants in the real app, picked by number.
+11. The model page, "the product page needs more work, needs description, bullet points why this works, extract data from google drive and
+   populize this page as much as we can". Link to /prodavnica/dizel-i-plinski-ceoni-viljuskari/h16-do-h20. Lifts the brief's "specs only
+   from an exact old-site match" for what the client's own Drive says about a series, his words "extract data from google drive".

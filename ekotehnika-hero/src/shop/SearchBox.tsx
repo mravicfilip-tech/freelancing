@@ -3,7 +3,7 @@
 // suggests the models and the categories that hold it, each with its picture, and a last row that opens every result. The site has no
 // record of what people search yet, so the five are a pick (SUGGESTED in data.ts), not a count, until search analytics run.
 // The combobox pattern, the arrows move through the suggestions, Enter opens one or all the results, Escape and a click outside shut it.
-import { useEffect, useId, useMemo, useRef, useState, type KeyboardEvent } from 'react';
+import { useEffect, useId, useLayoutEffect, useMemo, useRef, useState, type KeyboardEvent } from 'react';
 import { CATEGORIES, PRODUCTS, SUGGESTED, categoryOf, fmt, hrefCategory, hrefProduct, matches, modela, productBySlug, type Product } from './data';
 import { navigate } from './route';
 
@@ -26,6 +26,11 @@ const remember = (q: string) => {
 };
 
 type Item = { id: string; href: string; kind: 'model' | 'cat' | 'recent' | 'all'; label: string; p?: Product; note?: string };
+
+// The field's icon, Filip 18 November, "use better icon". Three variants to pick by number, ?sbi=1, 2 or 3 on localhost, see .sp-sb in
+// shop.css. 1 a thin line glyph in the field, 2 the site's own solid glyph weight in the field, 3 a grey cell at the field's end that
+// searches, like the phone cell of the site's secondary buttons. 3 shows until Filip picks, then the other two and this switch go.
+const ICON = (import.meta.env.DEV && new URLSearchParams(window.location.search).get('sbi')) || '3';
 
 export function SearchBox({ placeholder = 'Pretražite modele, npr. X20 ili slagač' }: { placeholder?: string }) {
   const [q, setQ] = useState('');
@@ -64,6 +69,14 @@ export function SearchBox({ placeholder = 'Pretražite modele, npr. X20 ili slag
   }, [open]);
   useEffect(() => setHot(-1), [term]);
 
+  // a panel that opens past the foot of a wide window brings the page up until all of it shows, a phone scrolls a focused field itself
+  useLayoutEffect(() => {
+    if (!open || window.matchMedia('(max-aspect-ratio: 4/5)').matches) return;
+    const panel = root.current?.querySelector<HTMLElement>('.sp-sb-panel');
+    const over = panel ? panel.getBoundingClientRect().bottom - (window.innerHeight - 16) : 0;
+    if (over > 0) window.scrollBy({ top: over, behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' });
+  }, [open, past]);
+
   const go = (it: Item) => {
     if (it.kind === 'all' || it.kind === 'recent') remember(it.kind === 'all' ? term : it.label);
     else if (term) remember(term);
@@ -72,7 +85,8 @@ export function SearchBox({ placeholder = 'Pretražite modele, npr. X20 ili slag
   };
   const submit = () => {
     if (hot >= 0 && items[hot]) return go(items[hot]);
-    if (!term) return;
+    // an empty field, the search button opens the suggestions
+    if (!term) return input.current?.focus();
     remember(term);
     setOpen(false);
     navigate(`/prodavnica/svi-modeli?q=${encodeURIComponent(term)}`);
@@ -139,7 +153,7 @@ export function SearchBox({ placeholder = 'Pretražite modele, npr. X20 ili slag
   const pastItems = items.filter((x) => x.kind === 'recent');
   const restItems = items.filter((x) => x.kind !== 'recent');
   return (
-    <div className="sp-sb" ref={root} data-open={open || undefined}>
+    <div className="sp-sb" ref={root} data-open={open || undefined} data-icon={ICON}>
       <form
         role="search"
         onSubmit={(e) => {
@@ -147,6 +161,7 @@ export function SearchBox({ placeholder = 'Pretražite modele, npr. X20 ili slag
           submit();
         }}
       >
+        <i className="sp-sb-i" aria-hidden="true" />
         <label className="sr-only" htmlFor={`${id}-q`}>
           Pretražite modele
         </label>
@@ -169,6 +184,9 @@ export function SearchBox({ placeholder = 'Pretražite modele, npr. X20 ili slag
           onFocus={() => setOpen(true)}
           onKeyDown={key}
         />
+        <button type="submit" className="sp-sb-go" aria-label="Pretraži" onPointerDown={(e) => e.preventDefault()}>
+          <i className="sp-sb-i" aria-hidden="true" />
+        </button>
       </form>
       {open ? (
         <div className="sp-sb-panel">

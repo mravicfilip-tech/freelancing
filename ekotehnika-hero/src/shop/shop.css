@@ -1545,66 +1545,68 @@
   animation: none;
 }
 
-/* the slides as tabs, a thumbnail, a number and a name, the bar over the tab on screen fills while the slides run */
-.sp-hero-nav {
-  display: flex;
-  align-items: stretch;
-  padding: 0;
-}
-
+/* the slides as tabs, Filip 18 November, "style this slider better". Four tabs, one in each frame of the grid, each a cell with its own
+   lines and corner marks. A picture at full strength, a number and a name. The line over the tab on screen fills black while the slides
+   run, and stays black while they hold. */
 .sp-hero-tabs {
-  display: flex;
-  flex: 1;
-  min-width: 0;
+  display: grid;
+  grid-column: 1 / -1;
+  grid-template-columns: subgrid;
 }
 
-.sp-hero-tabs button {
-  position: relative;
-  display: flex;
-  flex: 1;
+.sp-hero-tab {
+  display: grid;
+  grid-template-columns: 64px minmax(0, 1fr);
   align-items: center;
   gap: 16px;
-  min-width: 0;
-  padding: 16px 24px;
+  padding: 24px;
   border: 0;
   background: none;
   color: var(--grey-dark);
   font: 400 16px/24px var(--font);
   text-align: left;
   cursor: pointer;
-  transition: color 160ms;
+  transition:
+    color 160ms,
+    background-color 160ms;
 }
 
-.sp-hero-tabs button:hover,
-.sp-hero-tabs button[aria-selected='true'] {
+.sp-hero-tab[aria-selected='true'] {
   color: var(--black);
 }
 
-.sp-hero-thumb {
-  flex: none;
-  width: 56px;
-  height: 56px;
+.sp-hero-tab:not([aria-selected='true']):hover {
   background: var(--tint);
-  opacity: 0.6;
-  transition: opacity 160ms;
+  color: var(--black);
+}
+
+.sp-hero-tabs .sp-hero-tab:focus-visible {
+  outline-offset: -6px;
+}
+
+.sp-hero-thumb {
+  width: 64px;
+  height: 64px;
+  background: var(--tint);
+  transition: background-color 160ms;
+}
+
+.sp-hero-tab:hover .sp-hero-thumb {
+  background: var(--white);
 }
 
 .sp-hero-thumb img {
   display: block;
   width: 100%;
   height: 100%;
-  padding: 4px;
+  padding: 8px;
   object-fit: contain;
-}
-
-.sp-hero-tabs button:hover .sp-hero-thumb,
-.sp-hero-tabs button[aria-selected='true'] .sp-hero-thumb {
-  opacity: 1;
 }
 
 .sp-hero-tab-x {
   display: flex;
   flex-direction: column;
+  gap: 4px;
   min-width: 0;
 }
 
@@ -1614,28 +1616,31 @@
 }
 
 .sp-hero-tab-t {
+  display: -webkit-box;
   overflow: hidden;
-  max-width: 100%;
-  white-space: nowrap;
-  text-overflow: ellipsis;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
 }
 
 .sp-hero-bar {
   position: absolute;
-  left: 24px;
-  right: 24px;
+  left: 0;
+  right: -1px;
   top: 0;
+  z-index: 10;
   height: 2px;
   background: var(--black);
   transform: scaleX(0);
   transform-origin: left;
+  pointer-events: none;
 }
 
-.sp-hero-tabs [aria-selected='true'] .sp-hero-bar {
+.sp-hero-tab[aria-selected='true'] .sp-hero-bar {
   transform: scaleX(1);
 }
 
-.sp-hero[data-playing] .sp-hero-tabs [aria-selected='true'] .sp-hero-bar {
+.sp-hero[data-playing] .sp-hero-tab[aria-selected='true'] .sp-hero-bar {
   animation: sp-fill linear forwards;
 }
 
@@ -1648,11 +1653,17 @@
   }
 }
 
-.sp-hero-arrows {
+/* the counter and the two arrows in one row over the words */
+.sp-hero-top {
   display: flex;
   align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.sp-hero-arrows {
+  display: flex;
   gap: 8px;
-  padding: 0 24px;
 }
 
 .sp-arrow {
@@ -2124,8 +2135,7 @@
     padding: 24px 12px 32px;
   }
 
-  .sp-hero-text > .sp-rule,
-  .sp-hero-count {
+  .sp-hero-text > .sp-rule {
     display: none;
   }
 
@@ -2143,22 +2153,18 @@
     line-height: 48px;
   }
 
-  .sp-hero-tabs button {
+  .sp-hero-tabs {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+
+  .sp-hero-tab {
+    grid-template-columns: minmax(0, 1fr);
     padding: 16px 12px 24px;
   }
 
   .sp-hero-thumb,
   .sp-hero-tab-t {
     display: none;
-  }
-
-  .sp-hero-bar {
-    left: 12px;
-    right: 12px;
-  }
-
-  .sp-hero-arrows {
-    padding: 0 0 0 8px;
   }
 
   .sp-bar {
@@ -2468,7 +2474,7 @@
   padding: 0 20px 0 56px;
   border: 1px solid var(--grey-light);
   border-radius: 0;
-  background: var(--white) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3E%3Cpath d='M8.5 3a5.5 5.5 0 1 0 3.3 9.9l4 4 1.4-1.4-4-4A5.5 5.5 0 0 0 8.5 3zm0 2a3.5 3.5 0 1 1 0 7 3.5 3.5 0 0 1 0-7z'/%3E%3C/svg%3E") 20px center / 24px no-repeat;
+  background: var(--white);
   color: var(--black);
   font: 400 18px/28px var(--font);
   transition:
@@ -2487,6 +2493,82 @@
   outline: none;
   border-color: var(--grey-dark);
   box-shadow: 0 0 0 3px rgb(0 0 0 / 0.06);
+}
+
+/* The field's icon, Filip 18 November, "use better icon". Three variants to pick by number, ?sbi=1, 2 or 3 on localhost, ICON in
+   SearchBox.tsx. 1 a thin line glyph, 2 the site's solid glyph weight, 2px like the plus and the phone, 3 that glyph in a grey cell at
+   the field's end, the phone cell of the secondary buttons, a click searches. */
+.sp-sb form {
+  position: relative;
+}
+
+.sp-sb-i {
+  display: block;
+  width: 20px;
+  height: 20px;
+  background: currentColor;
+  -webkit-mask: var(--sb-glyph) center / contain no-repeat;
+  mask: var(--sb-glyph) center / contain no-repeat;
+}
+
+.sp-sb form > .sp-sb-i {
+  position: absolute;
+  top: 50%;
+  left: 20px;
+  transform: translateY(-50%);
+  color: var(--black);
+  pointer-events: none;
+}
+
+.sp-sb-go {
+  display: none;
+}
+
+.sp-sb[data-icon='1'] {
+  --sb-glyph: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.5'%3E%3Ccircle cx='10.5' cy='10.5' r='6.75'/%3E%3Cpath d='M15.3 15.3 20.75 20.75'/%3E%3C/svg%3E");
+}
+
+.sp-sb[data-icon='1'] form > .sp-sb-i {
+  width: 24px;
+  height: 24px;
+  color: var(--grey-dark);
+  transition: color 120ms;
+}
+
+.sp-sb[data-icon='1']:is([data-open], :focus-within) form > .sp-sb-i {
+  color: var(--black);
+}
+
+.sp-sb:is([data-icon='2'], [data-icon='3']) {
+  --sb-glyph: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20' fill='none' stroke='black' stroke-width='2'%3E%3Ccircle cx='8.5' cy='8.5' r='5.5'/%3E%3Cpath d='M12.5 12.5 17.5 17.5'/%3E%3C/svg%3E");
+}
+
+.sp-sb[data-icon='3'] form > .sp-sb-i {
+  display: none;
+}
+
+.sp-sb[data-icon='3'] input {
+  padding: 0 72px 0 20px;
+}
+
+.sp-sb[data-icon='3'] .sp-sb-go {
+  position: absolute;
+  top: 1px;
+  right: 1px;
+  bottom: 1px;
+  display: grid;
+  place-items: center;
+  aspect-ratio: 1;
+  padding: 0;
+  border: 0;
+  background: #f4f4f4;
+  color: var(--black);
+  cursor: pointer;
+  transition: background-color 120ms;
+}
+
+.sp-sb[data-icon='3'] .sp-sb-go:hover {
+  background: #e9e9e9;
 }
 
 .sp-sb-panel {

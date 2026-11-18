@@ -138,3 +138,7 @@ export const matches = (p: Product, q: string) => {
   const tight = hay.replace(/\s+/g, '');
   return words.every((w) => hay.includes(w) || tight.includes(w));
 };
+
+// The five models the search offers when it opens. The site keeps no record of searches yet, so this is a pick of the models buyers know
+// best, one from each of the big categories, not a count. Swap it for the real top five once search analytics run.
+export const SUGGESTED = ['x20-do-x35', 'h20-do-h35', 'mt15-c', 'r14-do-r25', 'n20-do-n25-c'];

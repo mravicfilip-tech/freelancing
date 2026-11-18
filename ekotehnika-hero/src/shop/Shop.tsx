@@ -8,13 +8,14 @@ import { BtnInner } from '../story2/shell/ui';
 import { Footer } from '../story2/shell/sections';
 import { SITE, hero, pillars } from '../content';
 import { CATEGORIES, GROUPS, categoryOf, faceOf, fmt, hrefAsk, hrefCategory, modela, productOf, productsOf, PRODUCTS, statsOf } from './data';
-import { Link, navigate, useRoute } from './route';
+import { Link, useRoute } from './route';
 import { ShopFrame } from './ShopFrame';
 import { Contact } from './Contact';
 import { Cap, Cell, Lines } from './parts';
 import { Card, Facts, Picture } from './Card';
 import { Hero } from './Hero';
 import { Listing } from './Listing';
+import { SearchBox } from './SearchBox';
 import './shop.css';
 
 function Crumbs({ items }: { items: { label: string; href?: string }[] }) {
@@ -61,7 +62,6 @@ function TileFacts({ cat }: { cat: string }) {
 function Home() {
   useTitle('Prodavnica, novi Linde viljuškari');
   const [vrsta, setVrsta] = useState(() => new URLSearchParams(window.location.search).get('vrsta') ?? '');
-  const [q, setQ] = useState('');
   useEffect(() => {
     window.history.replaceState(null, '', `${window.location.pathname}${vrsta ? `?vrsta=${vrsta}` : ''}`);
   }, [vrsta]);
@@ -84,19 +84,7 @@ function Home() {
               </button>
             ))}
           </div>
-          <form
-            className="sp-search"
-            role="search"
-            onSubmit={(e) => {
-              e.preventDefault();
-              navigate(`/prodavnica/svi-modeli${q.trim() ? `?q=${encodeURIComponent(q.trim())}` : ''}`);
-            }}
-          >
-            <label className="sr-only" htmlFor="sp-q">
-              Pretražite modele
-            </label>
-            <input id="sp-q" type="search" placeholder="Pretražite modele, npr. X20" value={q} onChange={(e) => setQ(e.target.value)} />
-          </form>
+          <SearchBox />
         </Cell>
         {cats.map((c) => (
           <Cell className="sp-tile" key={c.slug}>

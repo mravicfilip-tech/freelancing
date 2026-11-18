@@ -23,6 +23,7 @@ import {
 import { Card } from './Card';
 import { Link } from './route';
 import { Cap, Cell, Rule } from './parts';
+import { Dropdown } from './Dropdown';
 
 type Facet = 'kat' | 'nosivost' | 'visina' | 'vrsta' | 'list';
 type State = { q: string; sort: Sort; on: Record<Facet, string[]> };
@@ -132,6 +133,11 @@ export function Listing({ items, current }: { items: Product[]; current: string 
         <div className="sp-sheet" ref={sheetRef} data-open={sheet || undefined} role={sheet ? 'dialog' : undefined} aria-modal={sheet || undefined} aria-label="Filteri">
           <div className="sp-sheet-head">
             <p className="sp-lab">Filteri</p>
+            {active.length ? (
+              <button type="button" className="sp-clear sp-head-clear" onClick={clear}>
+                Poništi
+              </button>
+            ) : null}
             <button type="button" className="btn btn-secondary sp-sheet-x" aria-label="Zatvori filtere" onClick={() => setSheet(false)}>
               <BtnInner>Zatvori</BtnInner>
             </button>
@@ -159,18 +165,7 @@ export function Listing({ items, current }: { items: Product[]; current: string 
             <span className="sr-only">Pretražite modele</span>
             <input type="search" placeholder="Pretraga, npr. X20 ili slagač" value={s.q} onChange={(e) => setS((x) => ({ ...x, q: e.target.value }))} />
           </label>
-          <label className="sp-sort">
-            <span className="sp-sort-l">Redosled</span>
-            <span className="sp-select">
-              <select value={s.sort} onChange={(e) => setS((x) => ({ ...x, sort: e.target.value as Sort }))}>
-                {SORTS.map((o) => (
-                  <option value={o.id} key={o.id}>
-                    {o.label}
-                  </option>
-                ))}
-              </select>
-            </span>
-          </label>
+          <Dropdown label="Redosled" value={s.sort} options={SORTS} onChange={(v) => setS((x) => ({ ...x, sort: v }))} className="sp-sort" />
           <button type="button" className="btn btn-secondary sp-open" aria-expanded={sheet} onClick={() => setSheet(true)}>
             <BtnInner>Filteri{active.length ? ` (${active.length})` : ''}</BtnInner>
           </button>

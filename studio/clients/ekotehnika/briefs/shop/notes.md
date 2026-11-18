@@ -10,3 +10,9 @@ Round of 18 November, sent while the shop ran on his localhost. Planned and buil
 3. A category, "can we add more sorting/filter options, make it look like a shop please". Screenshot marks the list of categories on the
    left. Built as a shop listing, the categories, then filters with counts (capacity, lift height, kind, data sheet), a sort, a search,
    the count shown, the filters on as chips, and cards with an inquiry button. One listing for a category and for all models.
+4. The filters, "style all of this better with paddings etc". Screenshot marks the filter groups.
+5. The sort, "style this too and don't make the focus / active so aggressive". Screenshot of the browser's own dropdown, blue highlight.
+6. "make sure grid doesn't interfere with UI". Screenshot marks a vertical through a slide tab and through the Tegljači filter.
+7. The hero, "do better more attractive hero/slider, use inspiration we did for CTA banner and previous inspirations I gave you, make it
+   look more the part". Screenshot marks the whole hero.
+8. The search, "make search bigger and when opening the search suggest top 5 models searched for and do suggested searching".

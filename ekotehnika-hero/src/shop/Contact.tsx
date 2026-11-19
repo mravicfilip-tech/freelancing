@@ -36,32 +36,41 @@ const TOPIC: Record<Tema, { pic: string; ico: string; white?: boolean }> = {
 const MAX_MODELS = 6;
 const both = (xs: string[]) => xs.join(' i ');
 
-// The sliding grid on the left, Filip 19 November, "just do a random grid of sliding images like we did on a hero page here" (taste 16:03).
-// Each picked model gives its cut out with its name, woven in among the shop's own photos, so the grid is full from one pick up. The
-// models' gallery photos stay out, some show posed drivers (README, no posed stock people). Sizes follow a fixed pattern, so the grid
-// reads as random and holds steady while a visitor picks.
-const SHOP_REEL: ReelItem[] = [
+// The sliding grid on the left, Filip 19 November, "just do a random grid of sliding images like we did on a hero page here" (taste 16:03),
+// then "two same images - fix and make them a better variety". Each picture appears once in the grid, the shop's two near alike hall shots
+// are one, and the photos mix the hall, the deliveries, the parts and the headquarters. Each picked model gives its cut out with its name,
+// spread among the photos. With nothing picked, cut outs of five kinds of truck stand in among them. The models' gallery photos stay out,
+// some show posed drivers (README, no posed stock people). Sizes follow a fixed pattern, so the grid reads as random and holds still.
+const SHOP_PHOTOS: ReelItem[] = [
   { src: '/shop/hero/range.webp' },
   { src: '/photos/isporuka-3.webp' },
-  { src: '/shop/hero/ceoni.webp' },
-  { src: '/pages/najam-flota.webp', focus: '30% 50%' },
-  { src: '/photos/isporuka-4.webp' },
-  { src: '/shop/hero/range-2.webp' },
-  { src: '/pages/servis-centar.webp' },
+  { src: '/pages/delovi-gume.webp' },
+  { src: '/pages/kompanija-zgrada.webp', focus: '35% 50%' },
   { src: '/photos/isporuka-1.webp' },
+  { src: '/pages/delovi-viljuske.webp' },
+  { src: '/shop/hero/ceoni.webp', focus: '65% 50%' },
+  { src: '/photos/isporuka-4.webp' },
+  { src: '/pages/delovi-punjaci.webp' },
+  { src: '/pages/kompanija-isporuka.webp', focus: '70% 50%' },
 ];
+const SHOP_CUTS = ['e14-do-e20', 'mt15-c', 'r10-do-r16-b', 'd06-do-d10', 'mp13'];
 const RATIOS = ['4 / 5', '1', '3 / 4', '4 / 3', '5 / 6', '1'];
+const cutOf = (p: Product): ReelItem[] => {
+  const src = p.render ?? p.thumb;
+  return src ? [{ src, label: `Linde ${p.code}`, contain: p.look !== 'scene' }] : [];
+};
 function reelOf(picked: Product[]): [ReelItem[], ReelItem[]] {
-  const cuts: ReelItem[] = picked.flatMap((p) => {
-    const src = p.render ?? p.thumb;
-    return src ? [{ src, label: `Linde ${p.code}`, contain: p.look !== 'scene' }] : [];
-  });
+  const cuts = (picked.length ? picked : SHOP_CUTS.map((s) => productBySlug(s)).filter((p): p is Product => Boolean(p))).flatMap(cutOf);
+  // a cut out, a photo, a cut out, while both last, then the photos left, each picture once, at least ten so both columns run long
   const items: ReelItem[] = [];
-  for (let i = 0; items.length < Math.max(8, cuts.length * 2); i++) {
-    if (cuts.length) items.push(cuts[i % cuts.length]);
-    items.push(SHOP_REEL[i % SHOP_REEL.length]);
+  const photos = [...SHOP_PHOTOS];
+  for (let i = 0; i < Math.max(cuts.length, photos.length); i++) {
+    if (cuts[i]) items.push(cuts[i]);
+    if (photos[i]) items.push(photos[i]);
   }
-  const sized = items.map((x, i) => ({ ...x, ratio: RATIOS[i % RATIOS.length] }));
+  const seen = new Set<string>();
+  const once = items.filter((x) => (seen.has(x.src) ? false : (seen.add(x.src), true)));
+  const sized = once.map((x, i) => ({ ...x, ratio: RATIOS[i % RATIOS.length] }));
   // the cut outs and the photos fall to both columns, not one each
   const left = (i: number) => i % 4 === 0 || i % 4 === 3;
   return [sized.filter((_, i) => left(i)), sized.filter((_, i) => !left(i))];

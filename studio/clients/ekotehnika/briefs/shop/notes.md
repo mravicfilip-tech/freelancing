@@ -104,3 +104,7 @@ Round of 18 November, sent while the shop ran on his localhost. Planned and buil
 40. Kontakt, "do same search as on category page", read as the Model field. Built the same turn, the shop's own search (SearchBox.tsx)
     with a pick mode, models only, a pick goes to the list under the field and leaves it empty, the models already picked drop out, no
     search is remembered, and it is a field of the form, not a form of its own. The shop's search on Prodavnica is unchanged.
+41. Kontakt, "two same images - fix and make them a better variety". His screenshot marks the reel's two hall shots of the same trucks,
+    range and range-2, side by side. Fixed the same turn, each picture once in the grid, range-2 and the two roof heavy drone shots out,
+    the deliveries, the green tyres, the forks, the chargers, the headquarters and a client's yard in, and with nothing picked five cut
+    outs of different kinds of truck, each with its name. Checked, 15 pictures with nothing picked and 12 with two models, none twice.

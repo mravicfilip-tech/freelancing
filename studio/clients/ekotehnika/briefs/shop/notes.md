@@ -99,3 +99,5 @@ Round of 18 November, sent while the shop ran on his localhost. Planned and buil
     woven in among the shop's photos, mixed sizes, the cross to take a model out stays in the list beside the field.
 39. Servis, "rework this". His screenshot marks the Servis hero's Hitan servis call button and Zakažite servis under it, the number
     running under the phone cell on his screen, and the ring of the phone cell standing as a dark box round it. Queued, plan sent.
+    39 on Filip's go, three versions on one board, n39-call-board.png beside this file, live at /servis?poziv=1 to 3, each sized to its
+    own number and checked at 1920, 1440, 390 and 360. Waiting for his number, 1 shows until he picks.

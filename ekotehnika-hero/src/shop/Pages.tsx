@@ -543,7 +543,8 @@ export function Servis() {
 // The hero is the four groups the old site sold (competitive analysis, section 4) as photo tiles, each opening the form with its group
 // filled in. Reference the shop's own category tiles. The lines are plain, for the client to check and fill.
 const GROUPS = [
-  { icon: 'tyre', name: 'Gume', line: 'Gume za viljuškare.', ask: 'gume' },
+  // the client's own social post for GRI green tyres, cut below the cab and above its words (Filip 19 November, "can we get a tire img")
+  { icon: 'tyre', name: 'Gume', line: 'Gume za viljuškare.', ask: 'gume', pic: '/pages/delovi-gume.webp' },
   { icon: 'battery', name: 'Baterije i punjači', line: 'Baterije i punjači za električne viljuškare.', ask: 'baterije i punjače', pic: '/pages/delovi-punjaci.webp' },
   { icon: 'fork', name: 'Priključci', line: 'Push pull i drugi priključni uređaji.', ask: 'priključke', pic: '/pages/delovi-viljuske.webp' },
   { icon: 'gear', name: 'Potrošni delovi', line: 'Delovi koji se menjaju na redovnom servisu.', ask: 'potrošne delove', pic: '/pages/delovi-setovi.webp', contain: true },

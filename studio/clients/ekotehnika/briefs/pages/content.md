@@ -103,6 +103,9 @@ The old site has a Delovi item in its top menu (CONTENT, nav, and SHOT 12_contac
 - Playbook claim, "Ekotehnika Viljuškari doo Vrčin, ekskluzivni distributer Linde MH za Srbiju i Crnu Goru". studio/clients/ekotehnika/briefs/ui-pass/brand-rules.md, section 7. CONTENT says "Zvanični Linde partner" instead, so confirm wording.
 - Parts contact. Nothing dedicated. The old Kontakt page has Prodaja, Servis and Knjigovodstvo mail cards only (SHOT 12_contact.png). Form topics planned are Kupovina, Najam, Servis, no parts topic (shop/brief.md answer 5).
 - Pictures exist, see Pictures.
+- Found 19 November. The client's own social post of August 2026 (Drive, MEDIA CENTAR LMH/Socialne Mreze Final/2026/AVGUST/3/Gree gume.png)
+  advertises GRI tyres, "PERFORMANSE CRNIH GUMA. BEZ TRAGOVA KOČENJA." and "GRI ULTIMATE GREEN XT, Gume za viljuškare koje ne ostavljaju
+  tragove". So Gume sells at least GRI, with a non-marking line. Its picture, cut below the cab and above the words, is the Gume tile.
 
 ---
 

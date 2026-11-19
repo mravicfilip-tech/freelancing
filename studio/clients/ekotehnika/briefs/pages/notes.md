@@ -19,3 +19,6 @@ Filip, 19 November, after commit e25f7ab. Each note as he sent it, then what it 
 
 - "dont do these lines here". His screenshot marks the Najam rental card's 2px black top and the 1px black line over the term stepper.
   Both gone the same turn, taste 2026-11-19 entry on ink rules inside a cell. The stepper's four stops under the figure stay.
+- "fix jumps on switch". His screenshot marks the Najam rental card. Its height followed the panel on show, the short rental's two lines
+  or the stepper, so a switch moved the button and everything under the hero. Both panels now stand in one place, the card keeps the
+  taller one's height and a switch only fades. Measured at 1440, 390 and 360, nothing moves, the hidden panel is inert.

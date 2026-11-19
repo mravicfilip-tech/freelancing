@@ -135,9 +135,24 @@
   color: var(--white);
 }
 
-.pg-rent-short {
-  min-height: 136px;
-  animation: sp-rise 500ms var(--out) both;
+/* the two panels of the switch in one cell of a grid, the taller sets the height, the other waits hidden under it */
+.pg-rent-modes {
+  display: grid;
+}
+
+.pg-rent-mode {
+  grid-area: 1 / 1;
+  visibility: hidden;
+  opacity: 0;
+  transition:
+    opacity 240ms var(--out),
+    visibility 0s linear 240ms;
+}
+
+.pg-rent-mode.is-on {
+  visibility: visible;
+  opacity: 1;
+  transition: opacity 240ms var(--out);
 }
 
 .pg-rent-v {

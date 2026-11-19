@@ -330,17 +330,20 @@ function RentCard() {
           ))}
         </div>
       </fieldset>
-      {mode === 'kratko' ? (
-        <div className="pg-rent-short" key="kratko">
+      {/* both panels stand in one place, the card keeps the taller one's height, so a switch only fades, nothing below it moves
+          (Filip 19 November, "fix jumps on switch"). The hidden one is inert, out of the tab order and the reading. */}
+      <div className="pg-rent-modes">
+        <div className={`pg-rent-mode${mode === 'kratko' ? ' is-on' : ''}`} aria-hidden={mode !== 'kratko'} inert={mode !== 'kratko'}>
           <p className="pg-rent-v">Od nekoliko sati do godinu dana</p>
           <p className="pg-rent-t">{SHORT}</p>
         </div>
-      ) : (
-        <fieldset className="pg-rent-f" key="dugo">
-          <legend className="sp-lab">Period</legend>
-          <Terms term={term} setTerm={setTerm} />
-        </fieldset>
-      )}
+        <div className={`pg-rent-mode${mode === 'dugo' ? ' is-on' : ''}`} aria-hidden={mode !== 'dugo'} inert={mode !== 'dugo'}>
+          <fieldset className="pg-rent-f">
+            <legend className="sp-lab">Period</legend>
+            <Terms term={term} setTerm={setTerm} />
+          </fieldset>
+        </div>
+      </div>
       <div className="pg-rent-act">
         <Link className="btn btn-primary" href={ask('najam', msg)} data-cta="rent">
           <BtnInner>{pillar('najam').cta}</BtnInner>

@@ -1,12 +1,16 @@
 // The service pages and the company page, Filip 19 November, "Need to work on the service pages and about pages ... So it's interesting.
 // Also to the service pages add parts page (Delovi)". The plan is briefs/pages/plan.md, every fact and its source briefs/pages/content.md.
-// Najam, Servis, Delovi and Kompanija, each built of the shop's own parts, the hero of words and a collage, rows of cells between the five
-// verticals, and each ends on its own topic of the form. The words are the client's own where the live site or the old site has them,
-// the rest are short plain lines for the client to check. No worldwide Linde figures, no hours, no response times.
-import { lazy, Suspense, useEffect, type ReactNode } from 'react';
+// Then "Do different hero's, add more CTA's that are more prominent and more attractive, add wow effects" (taste 2026-11-19 13:10), so
+// each page has its own hero built round its own strongest asset. Najam a rental card beside a reel of the delivery photos, Servis the
+// map on black with Hitan servis as a big call button, Delovi the four groups as photo tiles, Kompanija the headquarters across the whole
+// width. Each page has a black call band in the middle and a full size one at the close. Red stays on the one primary per view, the black
+// bands turn their primary white. The motion is the site's own, the Fade with a 12px rise, layers that come in along the grid, figures
+// that count up, photos that drift a little slower than the page, and all of it off when less motion is asked for.
+// The words are the client's own where the live site or the old site has them, the rest are short plain lines for the client to check.
+import { lazy, Suspense, useEffect, useLayoutEffect, useRef, useState, type CSSProperties, type ReactNode, type RefObject } from 'react';
 import { BtnInner } from '../story2/shell/ui';
 import { hero, pillars } from '../content';
-import { najam as najamCopy, servis as servisCopy, statement } from '../story2/copy';
+import { najam as najamCopy, servis as servisCopy, servisMap, statement } from '../story2/copy';
 import { SERVICES as MENU } from '../ui/ShopNav';
 import { CATEGORIES, PRODUCTS } from './data';
 import { Link } from './route';
@@ -16,6 +20,7 @@ import './shop.css';
 import './pages.css';
 
 const Centres = lazy(() => import('./Centres'));
+const HeroMap = lazy(() => import('./Centres').then((m) => ({ default: m.HeroMap })));
 
 function useTitle(title: string) {
   useEffect(() => {
@@ -24,62 +29,108 @@ function useTitle(title: string) {
 }
 
 // a link to the form with its topic and a first line of the message filled in, which the visitor can change
-const ask = (tema: string, poruka?: string) => `/kontakt?tema=${tema}${poruka ? `&poruka=${encodeURIComponent(poruka)}` : ''}`;
+export const ask = (tema: string, poruka?: string) => `/kontakt?tema=${tema}${poruka ? `&poruka=${encodeURIComponent(poruka)}` : ''}`;
 const pillar = (id: string) => pillars.find((p) => p.id === id)!;
+const still = () => typeof window === 'undefined' || window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+const fmtN = (n: number, plain = false) => (plain ? String(Math.round(n)) : String(Math.round(n)).replace(/\B(?=(\d{3})+(?!\d))/g, '.'));
 
-type Pic = { src: string; alt?: string; focus?: string };
+// ---- the motion of a page ----
+// Cells of a section marked pg-rv come in with the Fade as they reach the window, one after another along the row. A figure with
+// data-count counts up from data-from when it comes in. A photo with data-par drifts against the scroll, 40px at most. A call band
+// marked pg-cta brings its photos in from their own sides. Nothing is hidden before the script has armed it, so with no script or with
+// less motion asked for, everything is simply there.
+function usePageMotion(root: RefObject<HTMLDivElement | null>) {
+  useLayoutEffect(() => {
+    const el = root.current;
+    if (!el || still() || !('IntersectionObserver' in window)) return;
+    const cells = Array.from(el.querySelectorAll<HTMLElement>('.pg-rv > .sp-cell:not(.sp-cap)'));
+    cells.forEach((c) => {
+      const sibs = Array.from(c.parentElement!.children).filter((x) => x.classList.contains('sp-cell') && !x.classList.contains('sp-cap'));
+      c.style.setProperty('--i', String(sibs.indexOf(c) % 4));
+    });
+    const counts = Array.from(el.querySelectorAll<HTMLElement>('[data-count]'));
+    const bands = Array.from(el.querySelectorAll<HTMLElement>('.pg-cta'));
+    el.dataset.rv = '';
+    const runs: number[] = [];
+    const count = (n: HTMLElement) => {
+      const to = Number(n.dataset.count);
+      const from = Number(n.dataset.from ?? 0);
+      const plain = n.dataset.plain !== undefined;
+      const t0 = performance.now();
+      const step = (t: number) => {
+        const x = Math.min(1, (t - t0) / 1400);
+        n.textContent = fmtN(from + (to - from) * (1 - Math.pow(1 - x, 3)), plain);
+        if (x < 1) runs.push(requestAnimationFrame(step));
+      };
+      n.textContent = fmtN(from, plain);
+      runs.push(requestAnimationFrame(step));
+    };
+    const io = new IntersectionObserver(
+      (es) =>
+        es.forEach((e) => {
+          if (!e.isIntersecting) return;
+          const t = e.target as HTMLElement;
+          io.unobserve(t);
+          t.dataset.in = '';
+          if (t.dataset.count !== undefined) count(t);
+        }),
+      { rootMargin: '0px 0px -8% 0px' },
+    );
+    [...cells, ...counts, ...bands].forEach((x) => io.observe(x));
 
-function PageHero({ id, kicker, title, line, extra, acts, main, second, tile }: {
-  id: string;
-  kicker: string;
-  title: string;
-  line: string;
-  extra?: ReactNode;
-  acts: ReactNode;
-  main: Pic;
-  second?: Pic;
-  tile?: Pic;
-}) {
+    const pars = Array.from(el.querySelectorAll<HTMLElement>('[data-par]'));
+    let raf = 0;
+    const drift = () => {
+      raf = 0;
+      const vh = window.innerHeight;
+      pars.forEach((img) => {
+        const r = img.parentElement!.getBoundingClientRect();
+        if (r.bottom < -100 || r.top > vh + 100) return;
+        const p = (r.top + r.height / 2 - vh / 2) / (vh / 2 + r.height / 2);
+        img.style.setProperty('--py', `${(Math.max(-1, Math.min(1, p)) * 40).toFixed(1)}px`);
+      });
+    };
+    const on = () => {
+      if (!raf) raf = requestAnimationFrame(drift);
+    };
+    drift();
+    window.addEventListener('scroll', on, { passive: true });
+    window.addEventListener('resize', on);
+    return () => {
+      io.disconnect();
+      window.removeEventListener('scroll', on);
+      window.removeEventListener('resize', on);
+      if (raf) cancelAnimationFrame(raf);
+      runs.forEach(cancelAnimationFrame);
+      delete el.dataset.rv;
+    };
+  }, [root]);
+}
+
+function Page({ children }: { children: ReactNode }) {
+  const root = useRef<HTMLDivElement>(null);
+  usePageMotion(root);
   return (
-    <section className="sp-frame sp-hero pg-hero" aria-labelledby={`pg-${id}-h`}>
-      <Cell span={2} className="sp-hero-text">
-        <div className="sp-hero-slide">
-          <p className="sp-lab">{kicker}</p>
-          <h1 className="sp-hero-t" id={`pg-${id}-h`}>
-            {title}
-          </h1>
-          <p className="sp-lede">{line}</p>
-          {extra}
-          <div className="sp-hero-acts">{acts}</div>
-        </div>
-      </Cell>
-      <Cell span={2} className="sp-hero-pic">
-        <div className="sp-hero-imgs">
-          <div className="sp-col is-in">
-            <div className="sp-col-main">
-              <img src={main.src} alt={main.alt ?? ''} style={main.focus ? { objectPosition: main.focus } : undefined} decoding="async" draggable={false} />
-            </div>
-            {second ? (
-              <div className="sp-col-second">
-                <img src={second.src} alt={second.alt ?? ''} style={second.focus ? { objectPosition: second.focus } : undefined} decoding="async" draggable={false} />
-              </div>
-            ) : null}
-            {tile ? (
-              <div className="sp-col-tile">
-                <img src={tile.src} alt={tile.alt ?? ''} decoding="async" draggable={false} />
-              </div>
-            ) : null}
-          </div>
-        </div>
-      </Cell>
-    </section>
+    <div className="pg" ref={root}>
+      {children}
+    </div>
   );
 }
 
-// four figures in the four frames, the homepage's facts
-function Figures({ label, items }: { label: string; items: { value: ReactNode; label: string }[] }) {
+// a photo in a box that clips it, so it can drift against the scroll
+function Par({ src, alt = '', focus, eager = false }: { src: string; alt?: string; focus?: string; eager?: boolean }) {
   return (
-    <section className="sp-frame pg-figs" aria-label={label}>
+    <span className="pg-par">
+      <img src={src} alt={alt} loading={eager ? 'eager' : 'lazy'} decoding="async" data-par="" style={focus ? { objectPosition: focus } : undefined} />
+    </span>
+  );
+}
+
+// four figures in the four frames, the homepage's facts, a number counts up as it comes in
+type Fig = { value: ReactNode; label: string };
+function Figures({ label, items, big = false }: { label: string; items: Fig[]; big?: boolean }) {
+  return (
+    <section className={`sp-frame pg-figs pg-rv${big ? ' is-big' : ''}`} aria-label={label}>
       {items.map((f) => (
         <Cell className="pg-fig" key={f.label}>
           <p className="pg-fig-v">{f.value}</p>
@@ -89,6 +140,12 @@ function Figures({ label, items }: { label: string; items: { value: ReactNode; l
     </section>
   );
 }
+
+const Num = ({ n, from, text, plain }: { n: number; from?: number; text: string; plain?: boolean }) => (
+  <span className="pg-n" data-count={n} data-from={from} data-plain={plain ? '' : undefined}>
+    {text}
+  </span>
+);
 
 function Head({ id, label, note }: { id: string; label: string; note?: string }) {
   return (
@@ -101,29 +158,61 @@ function Head({ id, label, note }: { id: string; label: string; note?: string })
   );
 }
 
-function CentresMap({ label }: { label: string }) {
+function CentresMap({ label, pic }: { label: string; pic?: { src: string; alt: string } }) {
   return (
     <Suspense fallback={<section className="sp-frame pg-centres" aria-busy="true" style={{ minHeight: 680 }} />}>
-      <Centres label={label} />
+      <Centres label={label} pic={pic} />
     </Suspense>
   );
 }
 
-// The close of a page, one row, its line and its own topic of the form. The footer under it carries both numbers, both e-mails and the
-// address, so the close does not repeat them.
+// ---- the call band, black across the four frames, a photo in each outer frame that comes in from its side, the words and the actions
+// in the middle two. The homepage's closing section on black (taste 2026-11-19 13:10). The page's last band is the full size one.
 // Only the last section of a page draws the closing cap. A cap under any other section lies 2px over the next row's own top rule and
 // draws a doubled line (Filip 19 November, "you have duplicate lines ... make sure you never do those again").
-function Close({ id, label, title, act, last = false }: { id: string; label: string; title: string; act: ReactNode; last?: boolean }) {
+type Act = { label: string; href: string; cta: string; phone?: boolean };
+function Band({ id, label, title, line, primary, secondary, photos, close = false, last = false }: {
+  id: string;
+  label: string;
+  title: string;
+  line?: string;
+  primary: Act;
+  secondary?: Act;
+  photos: [string, string];
+  close?: boolean;
+  last?: boolean;
+}) {
+  const act = (a: Act, kind: 'primary' | 'secondary') => {
+    const cls = `btn btn-${kind}${a.phone ? ' btn-phone' : ''}`;
+    const inner = <BtnInner>{a.label}</BtnInner>;
+    return a.href.startsWith('/') ? (
+      <Link className={cls} href={a.href} data-cta={a.cta}>
+        {inner}
+      </Link>
+    ) : (
+      <a className={cls} href={a.href} data-cta={a.cta}>
+        {inner}
+      </a>
+    );
+  };
   return (
-    <section className="sp-frame pg-close" aria-labelledby={`pg-${id}-close`}>
-      <Cell span={4} className="pg-close-c">
-        <div>
-          <h2 className="sp-lab" id={`pg-${id}-close`}>
-            {label}
-          </h2>
-          <p className="pg-h2">{title}</p>
+    <section className={`sp-frame pg-cta pg-dark${close ? ' is-close' : ''}`} data-ink="dark" aria-labelledby={`pg-${id}-h`}>
+      <Cell className="pg-cta-ph is-l">
+        <Par src={photos[0]} />
+      </Cell>
+      <Cell span={2} className="pg-cta-c">
+        <h2 className="sp-lab" id={`pg-${id}-h`}>
+          {label}
+        </h2>
+        <p className="pg-cta-t">{title}</p>
+        {line ? <p className="pg-cta-l">{line}</p> : null}
+        <div className="pg-cta-acts">
+          {act(primary, 'primary')}
+          {secondary ? act(secondary, 'secondary') : null}
         </div>
-        <div className="pg-act">{act}</div>
+      </Cell>
+      <Cell className="pg-cta-ph is-r">
+        <Par src={photos[1]} />
       </Cell>
       {last ? <Cap /> : null}
     </section>
@@ -142,7 +231,7 @@ const PLACES = [
 function Places({ current, label = 'Pogledajte i', note, last = false }: { current: string; label?: string; note?: string; last?: boolean }) {
   const items = PLACES.filter((p) => p.id !== current).slice(0, 4);
   return (
-    <section className="sp-frame pg-go-row" aria-labelledby="pg-go-h">
+    <section className="sp-frame pg-go-row pg-rv" aria-labelledby="pg-go-h">
       <Head id="pg-go-h" label={label} note={note} />
       {items.map((p) => (
         <Cell className="sp-tile pg-go" key={p.id}>
@@ -161,76 +250,135 @@ function Places({ current, label = 'Pogledajte i', note, last = false }: { curre
   );
 }
 
+const SALES_CALL: Act = { label: `${hero.sales.label} ${hero.sales.number}`, href: hero.sales.tel, cta: 'call-sales', phone: true };
+const SERVICE_CALL: Act = { label: `${hero.service.label} ${hero.service.number}`, href: hero.service.tel, cta: 'call-service', phone: true };
+
 // ---- Najam ----
+// The hero, the words and a rental card on the left, short or long rental, the long one with its four terms, and one primary that
+// carries the choice into the form. On the right two columns of the delivery photos rise slowly, each at its own pace, and hold under
+// the pointer. Reference Sixt's booking box over a photo.
 const TERMS = najamCopy.terms.cells.map((c) => c.figure);
+const SHORT = 'Za sezonski špic, veliki broj narudžbina ili događaj. I kao jednostavan način da viljuškar upoznate pre kupovine.';
+const REEL_A = [
+  { src: '/photos/isporuka-4.webp', focus: '50% 60%' },
+  { src: '/pages/najam-flota.webp', focus: '30% 50%' },
+  { src: '/photos/isporuka-2.webp', focus: '50% 50%' },
+];
+const REEL_B = [
+  { src: '/photos/isporuka-3.webp', focus: '50% 55%' },
+  { src: '/pages/kompanija-isporuka.webp', focus: '60% 50%' },
+  { src: '/photos/isporuka-1.webp', focus: '50% 40%' },
+];
+
+function Reel() {
+  const col = (list: typeof REEL_A, cls: string) => (
+    <div className={`pg-reel-col ${cls}`}>
+      {[...list, ...list].map((p, i) => (
+        <span className="pg-reel-ph" key={i}>
+          <img src={p.src} alt="" decoding="async" loading={i < 3 ? 'eager' : 'lazy'} style={{ objectPosition: p.focus }} />
+        </span>
+      ))}
+    </div>
+  );
+  return (
+    <Cell span={2} className="pg-reel">
+      <div className="pg-reel-in" aria-hidden="true">
+        {col(REEL_A, 'is-a')}
+        {col(REEL_B, 'is-b')}
+      </div>
+    </Cell>
+  );
+}
+
+function RentCard() {
+  const [mode, setMode] = useState<'kratko' | 'dugo'>('dugo');
+  const [term, setTerm] = useState(TERMS[1]);
+  const msg = mode === 'kratko' ? 'Zanima me kratkoročni najam.' : `Zanima me dugoročni najam na ${term} meseci.`;
+  return (
+    <div className="pg-rent">
+      <fieldset className="pg-rent-f">
+        <legend className="sp-lab">Vrsta najma</legend>
+        <div className="sp-seg pg-rent-seg">
+          {(
+            [
+              ['kratko', 'Kratkoročni'],
+              ['dugo', 'Dugoročni'],
+            ] as const
+          ).map(([id, label]) => (
+            <label key={id} className={mode === id ? 'is-on' : undefined}>
+              <input type="radio" name="pg-mode" value={id} checked={mode === id} onChange={() => setMode(id)} />
+              {label}
+            </label>
+          ))}
+        </div>
+      </fieldset>
+      {mode === 'kratko' ? (
+        <div className="pg-rent-short" key="kratko">
+          <p className="pg-rent-v">Od nekoliko sati do godinu dana</p>
+          <p className="pg-rent-t">{SHORT}</p>
+        </div>
+      ) : (
+        <fieldset className="pg-rent-f" key="dugo">
+          <legend className="sp-lab">Period</legend>
+          <div className="pg-months">
+            {TERMS.map((m) => (
+              <label className={`pg-month${term === m ? ' is-on' : ''}`} key={m}>
+                <input type="radio" name="pg-term" value={m} checked={term === m} onChange={() => setTerm(m)} />
+                <b>{m}</b>
+                <span>meseci</span>
+              </label>
+            ))}
+          </div>
+        </fieldset>
+      )}
+      <div className="pg-rent-act">
+        <Link className="btn btn-primary" href={ask('najam', msg)} data-cta="rent">
+          <BtnInner>{pillar('najam').cta}</BtnInner>
+        </Link>
+        <a className="pg-rent-call" href={hero.sales.tel} data-cta="call-sales">
+          ili pozovite <span>{hero.sales.number}</span>
+        </a>
+      </div>
+    </div>
+  );
+}
 
 export function Najam() {
   useTitle('Najam viljuškara');
   return (
-    <>
-      <PageHero
-        id="najam"
-        kicker="Najam"
-        title="Najam viljuškara"
-        line={pillar('najam').line}
-        acts={
-          <>
-            <Link className="btn btn-primary" href={ask('najam')} data-cta="rent">
-              <BtnInner>{pillar('najam').cta}</BtnInner>
-            </Link>
-            <a className="btn btn-secondary btn-phone" href={hero.sales.tel} data-cta="call-sales">
-              <BtnInner>
-                {hero.sales.label} <span className="num">{hero.sales.number}</span>
-              </BtnInner>
-            </a>
-          </>
-        }
-        main={{ src: '/photos/isporuka-4.webp', alt: 'Linde viljuškar u kamionu, pred isporuku', focus: '50% 60%' }}
-        second={{ src: '/photos/isporuka-2.webp', focus: '50% 50%' }}
-      />
+    <Page>
+      <section className="sp-frame pg-hn" aria-labelledby="pg-najam-h">
+        <Cell span={2} className="pg-hn-text">
+          <div className="pg-in">
+            <p className="sp-lab">Najam</p>
+            <h1 className="sp-hero-t" id="pg-najam-h">
+              Najam viljuškara
+            </h1>
+            <p className="sp-lede">{pillar('najam').line}</p>
+          </div>
+          <RentCard />
+        </Cell>
+        <Reel />
+      </section>
 
       <Figures
         label="Najam ukratko"
-        items={najamCopy.facts.map((f) => ({ value: f.suffix ? <>{f.figure} <span>{f.suffix.trim()}</span></> : f.figure, label: f.label }))}
+        items={najamCopy.facts.map((f) => ({ value: f.count ? <><Num n={f.count} text={f.figure} /> <span className="pg-u">{f.suffix!.trim()}</span></> : f.figure, label: f.label }))}
       />
 
-      <section className="sp-frame pg-terms" aria-labelledby="pg-terms-h">
-        <Head id="pg-terms-h" label="Kratkoročni i dugoročni najam" />
-        <Cell span={2} className="pg-term">
-          <i className="sp-ico is-calendar" aria-hidden="true" />
-          <h3 className="pg-h3">Kratkoročni najam</h3>
-          <p className="pg-term-v">Od nekoliko sati do godinu dana</p>
-          {/* the old Najam page, its words made short, for the client to check */}
-          <p className="pg-term-t">Za sezonski špic, veliki broj narudžbina ili događaj. I kao jednostavan način da viljuškar upoznate pre kupovine.</p>
-          <div className="pg-term-act">
-            <Link className="btn btn-secondary" href={ask('najam', 'Zanima me kratkoročni najam.')} data-cta="rent">
-              <BtnInner>{pillar('najam').cta}</BtnInner>
-            </Link>
-          </div>
-        </Cell>
-        <Cell span={2} className="pg-term">
-          <i className="sp-ico is-deal" aria-hidden="true" />
-          <h3 className="pg-h3">Dugoročni najam</h3>
-          <p className="pg-term-v">
-            Od {TERMS[0]} do {TERMS[TERMS.length - 1]} meseci
-          </p>
-          <p className="pg-term-t">Izaberite period i pošaljite upit.</p>
-          <div className="pg-term-act">
-            <div className="pg-months" role="group" aria-label="Period dugoročnog najma">
-              {TERMS.map((m) => (
-                <Link className="pg-month" href={ask('najam', `Zanima me dugoročni najam na ${m} meseci.`)} data-cta="rent" key={m}>
-                  <b>{m}</b>
-                  <span>meseci</span>
-                </Link>
-              ))}
-            </div>
-          </div>
-        </Cell>
-      </section>
+      <Band
+        id="najam-mid"
+        label="Isporuka"
+        title="Viljuškar kod vas za 24 sata."
+        line="Dostava i preuzimanje su besplatni, a održavanje je uključeno u najam."
+        primary={{ label: pillar('najam').cta, href: ask('najam'), cta: 'rent' }}
+        secondary={SALES_CALL}
+        photos={['/shop/hero/ceoni.webp', '/pages/kompanija-regali.webp']}
+      />
 
-      <section className="sp-frame pg-band" aria-labelledby="pg-which-h">
+      <section className="sp-frame pg-band pg-rv" aria-labelledby="pg-which-h">
         <Cell span={2} className="pg-pic">
-          <img src="/pages/najam-flota.webp" alt="Redovi Linde viljuškara, snimak iz vazduha" loading="lazy" decoding="async" />
+          <Par src="/shop/hero/range-2.webp" alt="Linde viljuškari u hali" />
         </Cell>
         <Cell span={2} className="pg-text">
           <h2 className="sp-lab" id="pg-which-h">
@@ -247,23 +395,23 @@ export function Najam() {
         </Cell>
       </section>
 
-      <Close
-        id="najam"
+      <Band
+        id="najam-close"
         label="Ponuda za najam"
         title="Recite nam šta vam treba i na koliko dugo."
-        act={
-          <Link className="btn btn-primary" href={ask('najam')} data-cta="rent">
-            <BtnInner>{pillar('najam').cta}</BtnInner>
-          </Link>
-        }
+        primary={{ label: pillar('najam').cta, href: ask('najam'), cta: 'rent' }}
+        secondary={SALES_CALL}
+        photos={['/pages/kompanija-tim.webp', '/pages/delovi-viljuske.webp']}
+        close
       />
       <Places current="najam" last />
-    </>
+    </Page>
   );
 }
 
 // ---- Servis ----
-// the four services in the live line's words, each line the old service page made short, for the client to check
+// The hero on black, the homepage's one dark screen. The words, Hitan servis as a big call button, and the map drawing on beside them,
+// both centres marked.
 const SERVICES = [
   { icon: 'calendar', name: 'Redovno održavanje', line: 'Servis u propisanim intervalima, pre nego što kvar zaustavi rad.' },
   { icon: 'siren', name: 'Hitne intervencije', line: 'Jedan poziv je dovoljan. Tehničar dolazi sa originalnim rezervnim delovima.', call: true },
@@ -273,31 +421,47 @@ const SERVICES = [
 // the old service page's tabs, "Ispitivanje pre početka rada"
 const CHECKS = ['Konstrukcija vozila i vozni mehanizam', 'Motor, baterija i punjači', 'Hidraulika i tečnosti', 'Elektrika', 'Sistem za prihvat tereta'];
 
+function CallButton() {
+  return (
+    <a className="pg-call" href={hero.service.tel} data-cta="call-service">
+      <span className="pg-call-x">
+        <span className="pg-call-l">{hero.service.label}</span>
+        <span className="pg-call-n">{hero.service.number}</span>
+      </span>
+      <i className="pg-call-i" aria-hidden="true" />
+    </a>
+  );
+}
+
 export function Servis() {
   useTitle('Servis viljuškara');
   return (
-    <>
-      <PageHero
-        id="servis"
-        kicker="Servis"
-        title="Servis viljuškara"
-        line={servisCopy.text}
-        extra={
-          <a className="pg-hot" href={hero.service.tel} data-cta="call-service">
-            <span className="sp-lab">{hero.service.label}</span>
-            <span className="pg-hot-n">{hero.service.number}</span>
-          </a>
-        }
-        acts={
-          <Link className="btn btn-primary" href={ask('servis')} data-cta="service">
-            <BtnInner>{pillar('servis').cta}</BtnInner>
-          </Link>
-        }
-        main={{ src: '/pages/servis-centar.webp', alt: 'Servisni centar Ekotehnike sa viljuškarima u dvorištu, snimak iz vazduha', focus: '62% 50%' }}
-        second={{ src: '/photos/isporuka-1.webp', focus: '50% 40%' }}
-      />
+    <Page>
+      <section className="sp-frame pg-hs pg-dark" data-ink="dark" aria-labelledby="pg-servis-h">
+        <Cell span={2} className="pg-hs-text">
+          <div className="pg-in">
+            <p className="sp-lab">Servis</p>
+            <h1 className="sp-hero-t" id="pg-servis-h">
+              Servis viljuškara
+            </h1>
+            <p className="sp-lede">{servisCopy.text}</p>
+          </div>
+          <div className="pg-in pg-hs-acts">
+            <CallButton />
+            <Link className="btn btn-primary" href={ask('servis')} data-cta="service">
+              <BtnInner>{pillar('servis').cta}</BtnInner>
+            </Link>
+          </div>
+        </Cell>
+        <Cell span={2} className="pg-map pg-hs-map">
+          <Suspense fallback={<div className="pg-map-fig" />}>
+            <HeroMap />
+          </Suspense>
+          <p className="pg-hs-cap">{servisMap.title.join(' ')}</p>
+        </Cell>
+      </section>
 
-      <section className="sp-frame pg-svc" aria-labelledby="pg-svc-h">
+      <section className="sp-frame pg-svc pg-rv" aria-labelledby="pg-svc-h">
         <Head id="pg-svc-h" label={pillar('servis').more} />
         {SERVICES.map((s) => (
           <Cell className="sp-feat pg-feat" key={s.name}>
@@ -313,7 +477,9 @@ export function Servis() {
         ))}
         <Cell span={2} className="pg-giant">
           <div className="pg-giant-x">
-            <p className="pg-giant-v">{servisCopy.giant}</p>
+            <p className="pg-giant-v">
+              <Num n={300} text="300" />+
+            </p>
             <p className="pg-giant-l">{servisCopy.giantLabel}</p>
           </div>
           <img src="/pages/servis-vozilo.webp" alt="Servisno vozilo Ekotehnike" loading="lazy" decoding="async" width={1400} height={661} />
@@ -328,136 +494,148 @@ export function Servis() {
         </Cell>
       </section>
 
-      <CentresMap label="Servisni centri" />
+      <Band
+        id="servis-mid"
+        label={hero.service.label}
+        title="Viljuškar stoji? Pozovite servis."
+        line={servisMap.text}
+        primary={{ label: `${hero.service.label} ${hero.service.number}`, href: hero.service.tel, cta: 'call-service', phone: true }}
+        secondary={{ label: pillar('servis').cta, href: ask('servis'), cta: 'service' }}
+        photos={['/photos/isporuka-1.webp', '/pages/najam-flota.webp']}
+      />
 
-      <Close
-        id="servis"
+      <CentresMap label="Servisni centri" pic={{ src: '/pages/servis-centar.webp', alt: 'Servisni centar Ekotehnike sa viljuškarima u dvorištu, snimak iz vazduha' }} />
+
+      <Band
+        id="servis-close"
         label="Zakazivanje"
         title="Zakažite servis ili pozovite za hitnu intervenciju."
-        act={
-          <Link className="btn btn-primary" href={ask('servis')} data-cta="service">
-            <BtnInner>{pillar('servis').cta}</BtnInner>
-          </Link>
-        }
+        primary={{ label: pillar('servis').cta, href: ask('servis'), cta: 'service' }}
+        secondary={SERVICE_CALL}
+        photos={['/photos/isporuka-4.webp', '/pages/kompanija-tim.webp']}
+        close
       />
       <Places current="servis" last />
-    </>
+    </Page>
   );
 }
 
 // ---- Delovi ----
-// the groups the old site sold (competitive analysis, section 4), the lines plain for the client to check and fill
+// The hero is the four groups the old site sold (competitive analysis, section 4) as photo tiles, each opening the form with its group
+// filled in. Reference the shop's own category tiles. The lines are plain, for the client to check and fill.
 const GROUPS = [
   { icon: 'tyre', name: 'Gume', line: 'Gume za viljuškare.', ask: 'gume' },
-  { icon: 'battery', name: 'Baterije i punjači', line: 'Baterije i punjači za električne viljuškare.', ask: 'baterije i punjače' },
-  { icon: 'fork', name: 'Priključci', line: 'Push pull i drugi priključni uređaji.', ask: 'priključke' },
-  { icon: 'gear', name: 'Potrošni delovi', line: 'Delovi koji se menjaju na redovnom servisu.', ask: 'potrošne delove' },
+  { icon: 'battery', name: 'Baterije i punjači', line: 'Baterije i punjači za električne viljuškare.', ask: 'baterije i punjače', pic: '/pages/delovi-punjaci.webp' },
+  { icon: 'fork', name: 'Priključci', line: 'Push pull i drugi priključni uređaji.', ask: 'priključke', pic: '/pages/delovi-viljuske.webp' },
+  { icon: 'gear', name: 'Potrošni delovi', line: 'Delovi koji se menjaju na redovnom servisu.', ask: 'potrošne delove', pic: '/pages/delovi-setovi.webp', contain: true },
 ];
 const PARTS_CTA = 'Zatražite ponudu za delove';
-// the menu's line for Hitan servis, ui/ShopNav.tsx
-const SERVICES_LINE = 'Za hitne intervencije pozovite servis.';
 
 export function Delovi() {
   useTitle('Delovi za viljuškare');
   return (
-    <>
-      <PageHero
-        id="delovi"
-        kicker="Delovi"
-        title="Originalni Linde delovi"
-        line="Gume, baterije i punjači, priključci i potrošni delovi za vaš viljuškar."
-        acts={
-          <Link className="btn btn-primary" href={ask('delovi')} data-cta="parts">
-            <BtnInner>{PARTS_CTA}</BtnInner>
-          </Link>
-        }
-        main={{ src: '/pages/delovi-viljuske.webp', alt: 'Linde viljuške poređane na paleti', focus: '50% 40%' }}
-        tile={{ src: '/pages/delovi-punjaci.webp', alt: 'Punjači sa oznakom Ekotehnike' }}
-      />
-
-      <section className="sp-frame pg-parts" aria-labelledby="pg-parts-h">
-        <Head id="pg-parts-h" label="Grupe delova" />
-        {GROUPS.map((g) => (
-          <Cell className="sp-feat pg-feat" key={g.name}>
-            <i className={`sp-ico is-${g.icon}`} aria-hidden="true" />
-            <h3 className="sp-feat-h">{g.name}</h3>
-            <p className="pg-feat-t">{g.line}</p>
-            <Link className="sp-more" href={ask('delovi', `Zanima me ponuda za ${g.ask}.`)} data-cta="parts">
-              {PARTS_CTA}
+    <Page>
+      <section className="sp-frame pg-hd" aria-labelledby="pg-delovi-h">
+        <Cell span={2} className="pg-hd-text">
+          <div className="pg-in">
+            <p className="sp-lab">Delovi</p>
+            <h1 className="sp-hero-t" id="pg-delovi-h">
+              Originalni Linde delovi
+            </h1>
+          </div>
+        </Cell>
+        <Cell span={2} className="pg-hd-r">
+          <div className="pg-in">
+            <p className="sp-lede">Gume, baterije i punjači, priključci i potrošni delovi za vaš viljuškar. Izaberite grupu ili nam pišite za bilo koji deo.</p>
+            <div className="sp-hero-acts">
+              <Link className="btn btn-primary" href={ask('delovi')} data-cta="parts">
+                <BtnInner>{PARTS_CTA}</BtnInner>
+              </Link>
+            </div>
+          </div>
+        </Cell>
+        {GROUPS.map((g, i) => (
+          <Cell className="sp-tile pg-part" key={g.name}>
+            <Link className="sp-tile-a" href={ask('delovi', `Zanima me ponuda za ${g.ask}.`)} data-cta="parts" style={{ '--i': i } as CSSProperties}>
+              <span className={`sp-pic pg-part-pic${g.pic ? '' : ' is-ico'}${g.contain ? ' is-contain' : ''}`}>
+                {g.pic ? <img src={g.pic} alt="" decoding="async" /> : <i className={`sp-ico is-${g.icon}`} aria-hidden="true" />}
+              </span>
+              <span className="pg-part-n">
+                <i className={`sp-ico is-${g.icon}`} aria-hidden="true" />
+                {g.name}
+              </span>
+              <span className="pg-go-l">{g.line}</span>
+              <span className="pg-part-go">Zatražite ponudu</span>
+              <i className="sp-go" aria-hidden="true" />
             </Link>
           </Cell>
         ))}
       </section>
 
-      <section className="sp-frame pg-band" aria-labelledby="pg-kit-h">
-        <Cell span={2} className="pg-pic">
-          <img src="/pages/delovi-setovi.webp" alt="Linde servisni set, filteri, kaiševi i potrošni delovi" loading="lazy" decoding="async" style={{ objectFit: 'contain', background: 'var(--white)' }} />
-        </Cell>
-        <Cell span={2} className="pg-text">
-          <h2 className="sp-lab" id="pg-kit-h">
-            Uz servis
-          </h2>
-          {/* the old service page, "jedan tehničar će krenuti na put sa potrebnim originalnim rezervnim delovima" */}
-          <p className="pg-h2">Tehničar dolazi sa originalnim rezervnim delovima.</p>
-          <p className="sp-lede">{SERVICES_LINE}</p>
-          <div className="pg-act">
-            <Link className="btn btn-secondary" href="/servis">
-              <BtnInner>{pillar('servis').more}</BtnInner>
-            </Link>
-          </div>
-        </Cell>
-      </section>
+      <Band
+        id="delovi-mid"
+        label="Uz servis"
+        title="Tehničar dolazi sa originalnim rezervnim delovima."
+        line="Za hitne intervencije pozovite servis."
+        primary={{ label: PARTS_CTA, href: ask('delovi'), cta: 'parts' }}
+        secondary={{ label: pillar('servis').more, href: '/servis', cta: 'service' }}
+        photos={['/pages/najam-flota.webp', '/photos/isporuka-1.webp']}
+      />
 
-      <Close
-        id="delovi"
+      <Band
+        id="delovi-close"
         label="Ponuda za delove"
         title="Navedite model viljuškara, serijski broj i deo koji vam treba."
-        act={
-          <Link className="btn btn-primary" href={ask('delovi')} data-cta="parts">
-            <BtnInner>{PARTS_CTA}</BtnInner>
-          </Link>
-        }
+        primary={{ label: PARTS_CTA, href: ask('delovi'), cta: 'parts' }}
+        secondary={SERVICE_CALL}
+        photos={['/photos/isporuka-4.webp', '/photos/isporuka-2.webp']}
+        close
       />
       <Places current="delovi" last />
-    </>
+    </Page>
   );
 }
 
 // ---- Kompanija ----
+// The hero, the headquarters from the drone across the whole width, drifting with the scroll, the tagline in a pure white block at its
+// foot, and the four figures along its bottom edge, counting up. Reference the homepage's statement band.
 export function Kompanija() {
   useTitle('Kompanija');
   return (
-    <>
-      <PageHero
-        id="kompanija"
-        kicker="Kompanija"
-        title={statement.rows[0]}
-        line={statement.rows[1]}
-        acts={
-          <>
-            <Link className="btn btn-primary" href={hero.quote.href} data-cta="quote">
-              <BtnInner>{hero.quote.label}</BtnInner>
-            </Link>
-            <Link className="btn btn-secondary" href="/prodavnica">
-              <BtnInner>Pogledajte modele</BtnInner>
-            </Link>
-          </>
-        }
-        main={{ src: '/pages/kompanija-zgrada.webp', alt: 'Sedište Ekotehnike sa znakovima Ekotehnika i Linde, snimak iz vazduha', focus: '40% 50%' }}
-        second={{ src: '/pages/kompanija-tim.webp', alt: 'Tim Ekotehnike između redova viljuškara, snimak iz vazduha', focus: '50% 60%' }}
-      />
+    <Page>
+      <section className="sp-frame pg-hk" aria-labelledby="pg-kompanija-h">
+        <Cell span={4} className="pg-hk-c">
+          <Par src="/pages/kompanija-zgrada.webp" alt="Sedište Ekotehnike sa znakovima Ekotehnika i Linde, snimak iz vazduha" focus="45% 50%" eager />
+          <div className="pg-hk-words pg-in">
+            <p className="sp-lab">Kompanija</p>
+            <h1 className="sp-hero-t" id="pg-kompanija-h">
+              {statement.rows[0]}
+            </h1>
+            <p className="sp-lede">{statement.rows[1]}</p>
+            <div className="sp-hero-acts">
+              <Link className="btn btn-primary" href={hero.quote.href} data-cta="quote">
+                <BtnInner>{hero.quote.label}</BtnInner>
+              </Link>
+              <Link className="btn btn-secondary" href="/prodavnica">
+                <BtnInner>Pogledajte modele</BtnInner>
+              </Link>
+            </div>
+          </div>
+        </Cell>
+      </section>
 
       <Figures
         label="Ekotehnika u brojevima"
+        big
         items={[
-          { value: '1997', label: 'Godina osnivanja' },
-          { value: '1.000+', label: 'Klijenata' },
-          { value: '2', label: 'Servisna centra' },
+          { value: <Num n={1997} from={1950} text="1997" plain />, label: 'Godina osnivanja' },
+          { value: <><Num n={1000} text="1.000" />+</>, label: 'Klijenata' },
+          { value: <Num n={2} text="2" />, label: 'Servisna centra' },
           { value: 'Linde', label: 'Zvanični partner' },
         ]}
       />
 
-      <section className="sp-frame pg-band" aria-labelledby="pg-heart-h">
+      <section className="sp-frame pg-band pg-rv" aria-labelledby="pg-heart-h">
         <Cell span={2} className="pg-text">
           <h2 className="sp-lab" id="pg-heart-h">
             O nama
@@ -471,35 +649,44 @@ export function Kompanija() {
           </ul>
         </Cell>
         <Cell span={2} className="pg-pic">
-          <img src="/pages/najam-flota.webp" alt="Redovi Linde viljuškara u dvorištu Ekotehnike, snimak iz vazduha" loading="lazy" decoding="async" />
+          <Par src="/pages/kompanija-tim.webp" alt="Tim Ekotehnike između redova viljuškara, snimak iz vazduha" focus="50% 60%" />
         </Cell>
       </section>
 
-      <Places current="kompanija" label="Logistička i intralogistička rešenja" note="Zvanični Linde partner za Srbiju i Crnu Goru, sa servisnim vozilima širom Srbije." />
+      <Band
+        id="kompanija-mid"
+        label="Šta radimo"
+        title="Novi viljuškari, najam, servis i delovi."
+        line="Zvanični Linde partner za Srbiju i Crnu Goru, sa servisnim vozilima širom Srbije."
+        primary={{ label: hero.quote.label, href: hero.quote.href, cta: 'quote' }}
+        secondary={{ label: 'Pogledajte modele', href: '/prodavnica', cta: 'shop' }}
+        photos={['/pages/najam-flota.webp', '/photos/isporuka-4.webp']}
+      />
+
+      <Places current="kompanija" label="Logistička i intralogistička rešenja" />
 
       <CentresMap label="Gde smo" />
 
-      <section className="sp-frame pg-field" aria-labelledby="pg-field-h">
+      <section className="sp-frame pg-field pg-rv" aria-labelledby="pg-field-h">
         <Head id="pg-field-h" label="Na terenu" note="Isporuke i rad kod klijenata" />
         <Cell span={2} className="pg-pic">
-          <img src="/pages/kompanija-isporuka.webp" alt="Linde viljuškari kod klijenta, posle isporuke" loading="lazy" decoding="async" />
+          <Par src="/pages/kompanija-isporuka.webp" alt="Linde viljuškari kod klijenta, posle isporuke" />
         </Cell>
         <Cell span={2} className="pg-pic">
-          <img src="/pages/kompanija-regali.webp" alt="Skladište klijenta sa regalima i ručnim viljuškarom" loading="lazy" decoding="async" />
+          <Par src="/pages/kompanija-regali.webp" alt="Skladište klijenta sa regalima i ručnim viljuškarom" />
         </Cell>
       </section>
 
-      <Close
-        id="kompanija"
+      <Band
+        id="kompanija-close"
         label="Ponuda"
         title="Zatražite ponudu za novi Linde viljuškar."
-        act={
-          <Link className="btn btn-primary" href={hero.quote.href} data-cta="quote">
-            <BtnInner>{hero.quote.label}</BtnInner>
-          </Link>
-        }
+        primary={{ label: hero.quote.label, href: hero.quote.href, cta: 'quote' }}
+        secondary={SALES_CALL}
+        photos={['/photos/isporuka-1.webp', '/photos/isporuka-2.webp']}
+        close
         last
       />
-    </>
+    </Page>
   );
 }

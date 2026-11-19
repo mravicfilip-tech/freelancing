@@ -8,6 +8,9 @@ so the lesson outlives the context window.
 
 - Never `pkill -f`. Its pattern matches the agent's own shell and kills it. Free a port with
   `fuser -k <port>/tcp`, or kill the one PID that `lsof -ti :<port>` prints.
+- In a cloud container a dev server started with `nohup ... &` dies when that turn's shell ends, and
+  the next shot fails on a refused connection. Start it detached, `setsid nohup npx vite --port <p>
+  --strictPort > <log> 2>&1 < /dev/null & disown`, and curl the port before shooting.
 - The cloud stop hook asks for a commit whenever the working tree is dirty. Builders work in their
   own git worktree, per build recipe step 2, so the main tree stays clean while they run.
 

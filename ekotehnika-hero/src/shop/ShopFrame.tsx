@@ -22,8 +22,10 @@ const shopLink: LinkFn = (href, children, className, current) =>
     </a>
   );
 
-// page is the label of the nav link the page stands under, sheet the row of the phone's menu sheet when it differs, Najam under Usluge
-export function ShopFrame({ page, sheet: row = page }: { page: string; sheet?: string }) {
+// page is the label of the nav link the page stands under, sheet the row of the phone's menu sheet when it differs, Najam under Usluge.
+// quote is the phone bar's primary on a page with a topic of its own, "Zatražite ponudu za najam" on Najam (Filip 19 November).
+const QUOTE = { label: hero.quote.label, href: '/kontakt?tema=kupovina' };
+export function ShopFrame({ page, sheet: row = page, quote = QUOTE }: { page: string; sheet?: string; quote?: { label: string; href: string } }) {
   const menu = useMenu();
   const nav = links.map((l) => ({ ...l, current: l.label === page }));
   const sheet = sheetLinks.map((l) => ({ ...l, current: l.label === row }));
@@ -100,8 +102,8 @@ export function ShopFrame({ page, sheet: row = page }: { page: string; sheet?: s
               <a className="btn btn-secondary btn-phone hf-bar-call" href={hero.sales.tel} data-cta="call-sales" aria-label={`${hero.sales.label}, ${hero.sales.number}`}>
                 <BtnInner>{hero.sales.label}</BtnInner>
               </a>
-              <Link className="btn btn-primary hf-bar-quote" href="/kontakt?tema=kupovina" data-cta="quote">
-                <BtnInner>{hero.quote.label}</BtnInner>
+              <Link className="btn btn-primary hf-bar-quote" href={quote.href} data-cta="quote">
+                <BtnInner>{quote.label}</BtnInner>
               </Link>
             </div>,
             document.body,

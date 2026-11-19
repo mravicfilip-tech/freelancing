@@ -291,6 +291,8 @@ Task format
   - [x] Gather every fact, line and picture we hold for the four pages, briefs/pages/content.md
   - [x] The structure of each page and the kickoff answers from Filip, "yes, go" to the hardened plan, briefs/pages/plan.md
   - [x] Build the four pages and point the menu at them, the Delovi form topic, shots at 1440 and 390
+  - [x] One line where two sections meet on every page, scripts/doubles.cjs clean at 1440, 390 and 360
+  - [x] Round 2, "Do different hero's", a hero of its own on each page, a black call band mid page and at the close, the phone bar's topic, the page motion
   - [ ] /uireview on the four pages
   - [ ] Filip looks on localhost
   - [ ] The client answers the Delovi questions and checks the new Serbian lines, plan.md

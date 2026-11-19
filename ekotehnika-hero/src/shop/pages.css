@@ -1,49 +1,437 @@
-/* The service pages and the company page, Pages.tsx, Filip 19 November, briefs/pages/plan.md. The shop's own parts, its hero of words and
-   a collage, its cells between the five verticals, its type and its one primary. These rules only add what the four pages need beyond
-   them. */
+/* The service pages and the company page, Pages.tsx, Filip 19 November, briefs/pages/plan.md, then "Do different hero's, add more
+   CTA's that are more prominent and more attractive, add wow effects" (taste 2026-11-19 13:10). The shop's own parts, its cells between
+   the five verticals, its type and its one primary. These rules add each page's own hero, the black call bands and the page's motion. */
 
-/* ---- the hero, the shop's collage with no slides, the words at the top of their cell ---- */
-.pg-hero .sp-hero-text {
-  justify-content: flex-start;
+/* ---- the motion of a page, armed by usePageMotion in Pages.tsx. Nothing hides before the script arms it. ---- */
+/* a section's cells come in with the site's Fade, a 12px rise, one after another along the row, the lines stay where they are */
+.pg[data-rv] .pg-rv > .sp-cell:not(.sp-cap) > :not(.sp-rule, .sp-edge, .sp-p) {
+  opacity: 0;
+  transform: translateY(12px);
+  transition:
+    opacity 700ms var(--out) calc(var(--i, 0) * 90ms),
+    transform 700ms var(--out) calc(var(--i, 0) * 90ms);
 }
 
-.pg-hero .sp-hero-t {
-  max-width: 9em;
+.pg[data-rv] .pg-rv > .sp-cell[data-in] > :not(.sp-rule, .sp-edge, .sp-p) {
+  opacity: 1;
+  transform: none;
 }
 
-/* Hitan servis at full size under the line, the number is the link */
-.pg-hot {
+/* a hero's words come in at load, line by line */
+.pg-in > * {
+  animation: sp-rise 700ms var(--out) both;
+}
+
+.pg-in > :nth-child(2) {
+  animation-delay: 80ms;
+}
+
+.pg-in > :nth-child(3) {
+  animation-delay: 160ms;
+}
+
+.pg-in > :nth-child(4) {
+  animation-delay: 240ms;
+}
+
+@keyframes pg-fade {
+  from {
+    opacity: 0;
+  }
+}
+
+/* a photo that drifts against the scroll, 40px at most each way, in a box that clips it */
+.pg-par {
+  position: relative;
+  display: block;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background: var(--tint);
+}
+
+.pg-par img {
+  position: absolute;
+  top: -40px;
+  left: 0;
+  display: block;
+  width: 100%;
+  height: calc(100% + 80px);
+  object-fit: cover;
+  transform: translate3d(0, var(--py, 0px), 0);
+}
+
+/* a dark section, the homepage's black. Its lines and marks turn white and faint, the shop's white plate under a lede is not needed. */
+.pg-dark {
+  --hd: rgb(255 255 255 / 0.06);
+  --hl: rgb(255 255 255 / 0.2);
+  background: #000;
+  color: var(--white);
+}
+
+.pg-dark .sp-lab {
+  color: var(--grey-light);
+}
+
+.pg-dark :is(.sp-lede, .sp-h1) {
+  background: transparent;
+}
+
+.pg-dark .sp-p::before,
+.pg-dark .sp-p::after {
+  background: var(--white);
+}
+
+/* ---- Najam, the words and the rental card beside a reel of the delivery photos ---- */
+.pg-hn-text,
+.pg-hs-text {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 48px;
+}
+
+.pg-in .sp-lede {
+  margin-top: 24px;
+}
+
+.pg-rent {
+  position: relative;
+  z-index: 20;
   display: grid;
-  gap: 4px;
-  margin-top: 32px;
+  gap: 24px;
+  padding: 24px 24px 32px;
+  border-top: 2px solid var(--black);
+  background: var(--tint);
+  animation: sp-from-bottom 800ms var(--out) 280ms both;
+}
+
+.pg-rent-f {
+  display: grid;
+  gap: 12px;
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+.pg-rent-f legend {
+  float: left;
+  width: 100%;
+  margin-bottom: 12px;
+  padding: 0;
+}
+
+.pg-rent-seg {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.pg-rent .sp-seg label {
+  background: var(--white);
+}
+
+.pg-rent .sp-seg label.is-on {
+  border-color: var(--black);
+  background: var(--black);
+  color: var(--white);
+}
+
+.pg-rent-short {
+  min-height: 136px;
+  animation: sp-rise 500ms var(--out) both;
+}
+
+.pg-rent-v {
+  margin: 0;
+  font-size: 32px;
+  font-weight: 350;
+  line-height: 40px;
+  letter-spacing: -0.01em;
+}
+
+.pg-rent-t {
+  margin: 8px 0 0;
+  max-width: 34em;
+  font-size: 16px;
+  line-height: 24px;
+}
+
+.pg-rent-act {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 16px 24px;
+}
+
+.pg-rent-call {
   color: inherit;
+  font-size: 16px;
+  line-height: 24px;
   text-decoration: none;
 }
 
-.pg-hot-n {
+.pg-rent-call span {
+  font-weight: 500;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+/* two columns of the delivery photos rise slowly, each at its own pace, and hold under the pointer */
+.pg-reel-in {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+  height: clamp(560px, 72vh, 720px);
+  overflow: hidden;
+  animation: sp-from-right 900ms var(--out) 120ms both;
+}
+
+.pg-reel-col {
+  display: flex;
+  flex-direction: column;
+  animation: pg-reel 56s linear infinite;
+}
+
+.pg-reel-col.is-b {
+  animation-duration: 44s;
+  animation-delay: -18s;
+}
+
+.pg-reel:hover .pg-reel-col {
+  animation-play-state: paused;
+}
+
+/* each photo carries its own gap under it, so half the doubled list is exactly one loop */
+.pg-reel-ph {
+  display: block;
+  flex: none;
+  aspect-ratio: 4 / 5;
+  margin-bottom: 8px;
+  overflow: hidden;
+  background: var(--tint);
+}
+
+.pg-reel-ph img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+@keyframes pg-reel {
+  to {
+    transform: translateY(-50%);
+  }
+}
+
+/* ---- Servis, on black, Hitan servis as a big call button beside the map ---- */
+.pg-hs-acts {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  justify-items: start;
+  gap: 16px;
+}
+
+.pg-call {
+  display: flex;
+  align-items: stretch;
+  width: min(100%, 560px);
+  border: 1px solid rgb(255 255 255 / 0.25);
+  background: #0b0b0b;
+  color: var(--white);
+  text-decoration: none;
+  transition:
+    border-color 200ms var(--out),
+    background-color 200ms var(--out);
+}
+
+.pg-call:is(:hover, :focus-visible) {
+  border-color: var(--white);
+  background: #141414;
+}
+
+.pg-call:focus-visible {
+  outline: 2px solid var(--white);
+  outline-offset: 2px;
+}
+
+.pg-call-x {
+  display: grid;
+  flex: 1;
+  min-width: 0;
+  gap: 4px;
+  padding: 16px 24px 24px;
+}
+
+.pg-call-l {
+  color: var(--grey-light);
+  font: 500 14px/20px var(--font);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.pg-call-n {
   font-size: 54px;
   font-weight: 350;
   line-height: 60px;
   letter-spacing: -0.02em;
+  white-space: nowrap;
 }
 
-.pg-hot:is(:hover, :focus-visible) .pg-hot-n {
-  text-decoration: underline;
-  text-decoration-thickness: 2px;
-  text-underline-offset: 8px;
+/* the phone cell, white, with a ring that keeps leaving it, the line of a call that is always answered */
+.pg-call-i {
+  position: relative;
+  flex: none;
+  width: 96px;
+  background: var(--white);
 }
 
-/* the collage a little lower than the shop's on a wide screen, the page has no tabs under it */
-@media not (max-aspect-ratio: 4/5) {
-  .pg-hero .sp-hero-imgs {
-    height: clamp(440px, 54vh, 560px);
+.pg-call-i::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  width: 32px;
+  height: 32px;
+  margin: auto;
+  background: var(--black);
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3E%3Cpath d='M5.2 2.5h2.6l1.3 3.8-1.8 1.2a9.5 9.5 0 0 0 4.2 4.2l1.2-1.8 3.8 1.3v2.6a1.9 1.9 0 0 1-2 1.9C8.600 15.400 4.600 11.400 3.300 4.500a1.900 1.900 0 0 1 1.900-2z'/%3E%3C/svg%3E") center / contain no-repeat;
+  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3E%3Cpath d='M5.2 2.5h2.6l1.3 3.8-1.8 1.2a9.5 9.5 0 0 0 4.2 4.2l1.2-1.8 3.8 1.3v2.6a1.9 1.9 0 0 1-2 1.9C8.600 15.400 4.600 11.400 3.300 4.500a1.900 1.900 0 0 1 1.900-2z'/%3E%3C/svg%3E") center / contain no-repeat;
+}
+
+.pg-call-i::after,
+.pg-hs-map .sm-base::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  animation: pg-ring 2.4s var(--out) infinite;
+  pointer-events: none;
+}
+
+.pg-hs-map .sm-base::before {
+  inset: auto;
+  top: 0;
+  left: 0;
+  width: 29px;
+  height: 29px;
+  margin: -14.5px 0 0 -14.5px;
+}
+
+@keyframes pg-ring {
+  from {
+    outline: 2px solid rgb(255 255 255 / 0.6);
+    outline-offset: 0;
+  }
+
+  to {
+    outline: 2px solid rgb(255 255 255 / 0);
+    outline-offset: 16px;
   }
 }
 
-/* the collage's tile holds a photo here, not a cut out model, so it fills the tile */
-.pg-hero .sp-col-tile img {
-  padding: 0;
+.pg-hs-map {
+  position: relative;
+}
+
+.pg-hs-cap {
+  position: absolute;
+  left: 24px;
+  bottom: 24px;
+  z-index: 20;
+  margin: 0;
+  color: var(--grey-light);
+  font: 500 14px/20px var(--font);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+/* ---- Delovi, the four groups as photo tiles in the hero ---- */
+.pg-hd-r {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+}
+
+.pg-hd-r .sp-lede {
+  max-width: 30em;
+}
+
+.pg-hd-r .sp-hero-acts {
+  margin-top: 32px;
+}
+
+.pg-part .sp-tile-a {
+  animation: sp-rise 800ms var(--out) both;
+  animation-delay: calc(240ms + var(--i, 0) * 90ms);
+}
+
+.pg-part .sp-pic {
+  aspect-ratio: auto;
+  height: calc((var(--x2) - var(--x1) - 48px) * 1.25);
+  margin: 0 0 24px;
+  background: var(--tint);
+}
+
+.pg-part .sp-pic img {
   object-fit: cover;
+}
+
+.pg-part .sp-pic.is-contain img {
+  padding: 8%;
+  object-fit: contain;
+  mix-blend-mode: multiply;
+}
+
+.pg-part .sp-pic.is-ico {
+  display: grid;
+  place-items: center;
+}
+
+.pg-part .sp-pic.is-ico .sp-ico {
+  width: 96px;
+  height: 96px;
+}
+
+.pg-part-n {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 24px;
+  line-height: 32px;
+  letter-spacing: -0.01em;
+}
+
+.pg-part-n .sp-ico {
+  flex: none;
+}
+
+.pg-part-go {
+  margin-top: auto;
+  padding-top: 24px;
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 24px;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+/* ---- Kompanija, the headquarters across the whole width, the tagline in a pure white block at its foot ---- */
+.pg-hk-c {
+  position: relative;
+}
+
+.pg-hk-c > .pg-par {
+  height: clamp(560px, 74vh, 780px);
+  animation: pg-fade 1200ms var(--out) both;
+}
+
+.pg-hk-words {
+  position: absolute;
+  bottom: 48px;
+  left: 24px;
+  z-index: 20;
+  width: calc(var(--x3) - var(--x1) - 24px);
+  padding: 32px 32px 48px;
+  background: var(--white);
 }
 
 /* ---- a row of four figures, the homepage's facts ---- */
@@ -55,9 +443,14 @@
   letter-spacing: -0.02em;
 }
 
-.pg-fig-v span {
+.pg-fig-v .pg-u {
   font-size: 20px;
   letter-spacing: 0;
+}
+
+.pg-figs.is-big .pg-fig-v {
+  font-size: 54px;
+  line-height: 60px;
 }
 
 .pg-fig-l {
@@ -101,34 +494,14 @@
   margin-top: 48px;
 }
 
-/* a photo across two frames, cut to its cell */
+/* a photo across two frames, cut to its cell, drifting against the scroll */
 .pg-pic {
   padding: 32px 24px 48px;
 }
 
-.pg-pic img {
-  position: relative;
+.pg-pic > .pg-par {
   z-index: 20;
-  display: block;
-  width: 100%;
-  height: 100%;
   min-height: 400px;
-  object-fit: cover;
-  background: var(--tint);
-}
-
-.pg-pic figure {
-  display: flex;
-  flex-direction: column;
-  height: 100%;
-  margin: 0;
-}
-
-.pg-pic figcaption {
-  margin-top: 12px;
-  color: var(--grey-dark);
-  font-size: 14px;
-  line-height: 20px;
 }
 
 /* ---- a cell with an icon, a name, a line and a link, the data sheet's feature cell ---- */
@@ -149,39 +522,7 @@
   padding-top: 24px;
 }
 
-/* ---- Najam, the short and the long rental side by side ---- */
-.pg-term {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-}
-
-.pg-term .sp-ico {
-  margin-bottom: 24px;
-}
-
-.pg-term-v {
-  margin: 8px 0 0;
-  font-size: 32px;
-  font-weight: 350;
-  line-height: 40px;
-  letter-spacing: -0.01em;
-}
-
-.pg-term-t {
-  margin: 16px 0 0;
-  max-width: 30em;
-  font-size: 16px;
-  line-height: 24px;
-}
-
-.pg-term-act {
-  align-self: stretch;
-  margin-top: auto;
-  padding-top: 48px;
-}
-
-/* the four terms as cards like the homepage's, a rule over each, the figure and meseci, the whole card a link to the form */
+/* the four terms as cards like the homepage's, a rule over each, the figure and meseci, the picked one in black */
 .pg-months {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
@@ -190,19 +531,37 @@
 
 .pg-month {
   position: relative;
-  z-index: 20;
   display: flex;
   flex-direction: column;
-  padding: 16px 16px 24px;
+  padding: 12px 16px 16px;
   border-top: 1px solid var(--black);
   background: var(--white);
-  color: inherit;
-  text-decoration: none;
-  transition: background-color 200ms var(--out);
+  cursor: pointer;
+  transition:
+    background-color 200ms var(--out),
+    color 200ms var(--out);
 }
 
-.pg-month:is(:hover, :focus-visible) {
-  background: var(--tint);
+.pg-month input {
+  position: absolute;
+  inset: 0;
+  margin: 0;
+  opacity: 0;
+  cursor: pointer;
+}
+
+.pg-month:hover {
+  background: var(--grey-pale);
+}
+
+.pg-month.is-on {
+  background: var(--black);
+  color: var(--white);
+}
+
+.pg-month:has(input:focus-visible) {
+  outline: 2px solid var(--grey-dark);
+  outline-offset: 2px;
 }
 
 .pg-month b {
@@ -216,6 +575,10 @@
   color: var(--grey-dark);
   font-size: 14px;
   line-height: 20px;
+}
+
+.pg-month.is-on span {
+  color: var(--grey-light);
 }
 
 /* ---- Servis, 300+ with the service van, and the checks ---- */
@@ -345,22 +708,89 @@
     var(--white);
 }
 
-/* ---- the close of a page, its line on the left and its button on the right, on one row ---- */
-.pg-close-c {
+/* ---- the call band, black across the four frames, a photo in each outer frame, the words and the actions in the middle two ---- */
+.pg-cta-ph {
+  padding: 0;
+}
+
+.pg-cta-ph > .pg-par {
+  min-height: 440px;
+  background: #111;
+  transition:
+    opacity 900ms var(--out),
+    transform 900ms var(--out);
+}
+
+.pg-cta-ph.is-r > .pg-par {
+  transition-delay: 120ms;
+}
+
+.pg-cta.is-close .pg-cta-ph > .pg-par {
+  min-height: 560px;
+}
+
+.pg-cta-c {
   display: flex;
-  justify-content: space-between;
-  align-items: flex-end;
-  gap: 48px;
-  padding: 48px 24px;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
+  padding: 64px 48px;
 }
 
-.pg-close-c .pg-h2 {
-  max-width: 16em;
+.pg-cta-t {
+  margin: 16px 0 0;
+  max-width: 13em;
+  font-size: 54px;
+  font-weight: 350;
+  line-height: 60px;
+  letter-spacing: -0.02em;
+  text-wrap: balance;
 }
 
-.pg-close-c .pg-act {
-  flex: none;
-  margin-top: 0;
+.pg-cta.is-close .pg-cta-t {
+  font-size: 64px;
+  line-height: 72px;
+}
+
+.pg-cta-l {
+  margin: 24px 0 0;
+  max-width: 32em;
+  color: var(--grey-light);
+  font-size: 20px;
+  line-height: 28px;
+}
+
+.pg-cta-acts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 48px;
+}
+
+/* the band comes in as it reaches the window, the photos from their own sides along the grid, then the words */
+.pg-cta-c > :not(.sp-rule, .sp-edge, .sp-p) {
+  transition:
+    opacity 700ms var(--out),
+    transform 700ms var(--out);
+}
+
+.pg-cta-c > :nth-child(n + 9) {
+  transition-delay: 120ms;
+}
+
+.pg[data-rv] .pg-cta:not([data-in]) .pg-cta-ph.is-l > .pg-par {
+  opacity: 0;
+  transform: translateX(-48px);
+}
+
+.pg[data-rv] .pg-cta:not([data-in]) .pg-cta-ph.is-r > .pg-par {
+  opacity: 0;
+  transform: translateX(48px);
+}
+
+.pg[data-rv] .pg-cta:not([data-in]) .pg-cta-c > :not(.sp-rule, .sp-edge, .sp-p) {
+  opacity: 0;
+  transform: translateY(12px);
 }
 
 /* ---- the other pages, a row of four tiles, a photo, the name and a line ---- */
@@ -381,40 +811,141 @@
   line-height: 24px;
 }
 
-/* less motion asked for, the collage simply there */
+/* less motion asked for, every part simply there and still */
 @media (prefers-reduced-motion: reduce) {
-  .pg-hero :is(.sp-col *, .sp-hero-slide > *) {
-    animation: none;
+  .pg *,
+  .pg *::before,
+  .pg *::after {
+    animation: none !important;
+    transition: none !important;
   }
 }
 
 /* ---- a screen held upright, one frame, every cell across the width ---- */
 @media (max-aspect-ratio: 4/5) {
-  /* the collage of a page has no tile or fact at its foot, so it is lower and its main photo takes the height */
-  .pg-hero .sp-hero-imgs {
-    aspect-ratio: 4 / 3;
+  /* the heroes, the pictures first like the shop's, the words and the actions across the width */
+  .pg-hn > .pg-reel {
+    order: -1;
+    padding: 16px 12px 0;
   }
 
-  .pg-hero .sp-col-main {
-    height: 100%;
+  .pg-reel-in {
+    height: 300px;
   }
 
-  .pg-hot-n {
-    font-size: 32px;
-    line-height: 40px;
+  .pg-hn-text,
+  .pg-hs-text {
+    gap: 32px;
   }
 
-  .pg-hero .sp-hero-acts {
+  .pg-rent {
+    padding: 24px 16px;
+  }
+
+  .pg-rent-act .btn,
+  .pg-hs-acts .btn,
+  .pg-in .sp-hero-acts .btn,
+  .pg-cta-acts .btn {
+    align-self: stretch;
+    width: 100%;
+  }
+
+  .pg-rent-act .btn .btn-t,
+  .pg-hs-acts .btn .btn-t,
+  .pg-in .sp-hero-acts .btn .btn-t,
+  .pg-cta-acts .btn .btn-t {
+    flex: 1;
+  }
+
+  .pg-in .sp-hero-acts,
+  .pg-cta-acts {
     align-self: stretch;
     flex-direction: column;
   }
 
-  .pg-hero .sp-hero-acts .btn {
-    align-self: stretch;
+  .pg-hs-acts {
+    justify-items: stretch;
   }
 
-  .pg-hero .sp-hero-acts .btn .btn-t {
-    flex: 1;
+  /* the number on one line from 360 up, about 10 of its own size wide, beside a 56px phone cell */
+  .pg-call-n {
+    font-size: min(30px, calc((100cqw - 140px) / 10));
+    line-height: 1.3;
+  }
+
+  .pg-call-x {
+    padding: 12px 12px 16px;
+  }
+
+  .pg-call-i {
+    width: 56px;
+  }
+
+  .pg-call-i::before {
+    width: 24px;
+    height: 24px;
+  }
+
+  .pg-hs > .pg-hs-map {
+    order: -1;
+  }
+
+  .pg-hd {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .pg-hd > .pg-part {
+    grid-column: auto !important;
+  }
+
+  .pg-hd > :is(.pg-hd-text, .pg-hd-r) {
+    grid-column: 1 / -1 !important;
+  }
+
+  .pg-hd-r {
+    padding-top: 0;
+  }
+
+  .pg-hd-r > .sp-rule {
+    display: none;
+  }
+
+  .pg-part .sp-tile-a {
+    padding: 16px 12px 24px;
+  }
+
+  .pg-part .sp-pic {
+    aspect-ratio: 4 / 5;
+    height: auto;
+  }
+
+  .pg-part-n {
+    font-size: 18px;
+    line-height: 24px;
+  }
+
+  .pg-part-n .sp-ico {
+    display: none;
+  }
+
+  .pg-part .sp-pic.is-ico .sp-ico {
+    width: 56px;
+    height: 56px;
+  }
+
+  .pg-part-go {
+    font-size: 14px;
+    line-height: 20px;
+  }
+
+  .pg-hk-c > .pg-par {
+    height: 420px;
+  }
+
+  .pg-hk-words {
+    position: static;
+    width: auto;
+    padding: 24px 0 0;
   }
 
   .pg-figs {
@@ -430,7 +961,8 @@
     padding: 24px 12px;
   }
 
-  .pg-fig-v {
+  .pg-fig-v,
+  .pg-figs.is-big .pg-fig-v {
     font-size: 28px;
     line-height: 36px;
   }
@@ -444,10 +976,10 @@
     padding: 16px 12px 8px;
   }
 
-  .pg-pic img {
+  .pg-pic > .pg-par {
     min-height: 0;
-    aspect-ratio: 4 / 3;
     height: auto;
+    aspect-ratio: 4 / 3;
   }
 
   /* on a phone the terms are rows, the figure and meseci on one line under a rule (taste 4 November) */
@@ -460,7 +992,7 @@
     flex-direction: row;
     align-items: baseline;
     gap: 12px;
-    padding: 12px 0 16px;
+    padding: 8px 12px 12px;
   }
 
   .pg-month b {
@@ -494,19 +1026,35 @@
     --mh: min(calc(100cqh - 48px), calc((100cqw - 48px) * 764 / 659));
   }
 
-  .pg-close-c {
-    flex-direction: column;
-    align-items: stretch;
-    gap: 32px;
-    padding: 24px 12px 32px;
+  /* the call band, the words first across the width, the two photos side by side under them */
+  .pg-cta {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
-  .pg-close-c .pg-act .btn {
-    width: 100%;
+  .pg-cta > .pg-cta-c {
+    order: -1;
+    padding: 32px 12px 48px;
   }
 
-  .pg-close-c .pg-act .btn .btn-t {
-    flex: 1;
+  .pg-cta > .pg-cta-ph {
+    grid-column: auto !important;
+  }
+
+  .pg-cta-ph > .pg-par,
+  .pg-cta.is-close .pg-cta-ph > .pg-par {
+    min-height: 0;
+    height: auto;
+    aspect-ratio: 1;
+  }
+
+  .pg-cta-t,
+  .pg-cta.is-close .pg-cta-t {
+    font-size: clamp(32px, calc((100cqw - 56px) / 9), 40px);
+    line-height: 1.15;
+  }
+
+  .pg-cta-l {
+    font-size: 18px;
   }
 
   .pg-go-row {

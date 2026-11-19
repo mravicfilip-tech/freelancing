@@ -44,7 +44,18 @@ function useDraw() {
   return ref;
 }
 
-export default function Centres({ label }: { label: string }) {
+// The map alone, for the Servis hero on black (Filip 19 November, "Do different hero's ... add wow effects"). It draws on as the page opens.
+export function HeroMap() {
+  const map = useDraw();
+  return (
+    <div className="pg-map-fig" ref={map} role="img" aria-label="Mapa Srbije sa servisnim centrima u Vrčinu i Čurugu">
+      <ServisMap />
+    </div>
+  );
+}
+
+// The two centres with their addresses, beside the map, or beside a photo where the page already shows the map in its hero
+export default function Centres({ label, pic }: { label: string; pic?: { src: string; alt: string } }) {
   const map = useDraw();
   return (
     <section className="sp-frame pg-centres" aria-labelledby="pg-centres-h">
@@ -71,11 +82,19 @@ export default function Centres({ label }: { label: string }) {
           ))}
         </ul>
       </Cell>
-      <Cell span={2} className="pg-map">
-        <div className="pg-map-fig" ref={map} role="img" aria-label="Mapa Srbije sa servisnim centrima u Vrčinu i Čurugu">
-          <ServisMap />
-        </div>
-      </Cell>
+      {pic ? (
+        <Cell span={2} className="pg-pic">
+          <span className="pg-par">
+            <img src={pic.src} alt={pic.alt} loading="lazy" decoding="async" data-par="" />
+          </span>
+        </Cell>
+      ) : (
+        <Cell span={2} className="pg-map">
+          <div className="pg-map-fig" ref={map} role="img" aria-label="Mapa Srbije sa servisnim centrima u Vrčinu i Čurugu">
+            <ServisMap />
+          </div>
+        </Cell>
+      )}
     </section>
   );
 }

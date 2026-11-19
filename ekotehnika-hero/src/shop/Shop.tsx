@@ -17,7 +17,7 @@ import { Hero } from './Hero';
 import { Listing } from './Listing';
 import { SearchBox } from './SearchBox';
 import { SpecEquipment, SpecFeatures, SpecFigures, SpecVersions, SpecWhy, useSpec } from './ModelSpec';
-import { Delovi, Kompanija, Najam, Servis } from './Pages';
+import { ask, Delovi, Kompanija, Najam, Servis } from './Pages';
 import './shop.css';
 
 function Crumbs({ items }: { items: { label: string; href?: string }[] }) {
@@ -306,11 +306,12 @@ function useTitle(title: string) {
 }
 
 // the menu link a page stands under, and on a phone's menu sheet its own row, the service pages under Usluge (Filip 19 November)
-const FRAME: Partial<Record<string, { page: string; sheet?: string }>> = {
+// and on a service page the phone bar's primary asks on that page's own topic
+const FRAME: Partial<Record<string, { page: string; sheet?: string; quote?: { label: string; href: string } }>> = {
   contact: { page: 'Kontakt' },
-  najam: { page: 'Usluge', sheet: 'Najam' },
-  servis: { page: 'Usluge', sheet: 'Servis' },
-  delovi: { page: 'Usluge', sheet: 'Delovi' },
+  najam: { page: 'Usluge', sheet: 'Najam', quote: { label: 'Zatražite ponudu za najam', href: ask('najam') } },
+  servis: { page: 'Usluge', sheet: 'Servis', quote: { label: 'Zakažite servis', href: ask('servis') } },
+  delovi: { page: 'Usluge', sheet: 'Delovi', quote: { label: 'Zatražite ponudu za delove', href: ask('delovi') } },
   kompanija: { page: 'Kompanija' },
 };
 
@@ -319,7 +320,7 @@ export function Shop() {
   const frame = FRAME[route.page] ?? { page: 'Prodavnica' };
   return (
     <div className="sp">
-      <ShopFrame page={frame.page} sheet={frame.sheet} />
+      <ShopFrame page={frame.page} sheet={frame.sheet} quote={frame.quote} />
       <main id="sp-main" className="sp-main" tabIndex={-1}>
         <Lines />
         {route.page === 'home' ? <Home /> : null}

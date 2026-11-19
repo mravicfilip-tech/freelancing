@@ -101,7 +101,6 @@
   display: grid;
   gap: 24px;
   padding: 24px 24px 32px;
-  border-top: 2px solid var(--black);
   background: var(--tint);
   animation: sp-from-bottom 800ms var(--out) 280ms both;
 }
@@ -483,7 +482,6 @@
 .pg-step-row {
   display: flex;
   align-items: stretch;
-  border-top: 1px solid var(--black);
   background: var(--white);
 }
 

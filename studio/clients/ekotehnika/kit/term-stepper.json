@@ -1,7 +1,7 @@
 {
   "name": "term-stepper",
   "client": "ekotehnika",
-  "url": "http://localhost:4890/najam?kartice=3",
+  "url": "http://localhost:4890/najam",
   "selector": ".pg-step",
   "date": "2026-11-19",
   "width": 1440,
@@ -9,7 +9,7 @@
     "repo": "/home/user/freelancing",
     "file": "ekotehnika-hero/src/shop/Pages.tsx"
   },
-  "note": "Filip 19 November, go with 3. A short ordered range as one large figure between minus and plus cells, stops under it.",
+  "note": "Filip 19 November, go with 3, then no ink line over it. A short ordered range as one large figure between minus and plus cells, stops under it.",
   "role": "div",
   "tag": "div",
   "text": "48 meseci, 4 godine 36 48 60 72",
@@ -25,7 +25,7 @@
     "border": "none",
     "radius": "0px",
     "padding": "0px 0px 0px 0px",
-    "height": "131px",
+    "height": "130px",
     "shadow": "none",
     "width": "588px"
   },

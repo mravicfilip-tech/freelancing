@@ -108,3 +108,6 @@ Round of 18 November, sent while the shop ran on his localhost. Planned and buil
     range and range-2, side by side. Fixed the same turn, each picture once in the grid, range-2 and the two roof heavy drone shots out,
     the deliveries, the green tyres, the forks, the chargers, the headquarters and a client's yard in, and with nothing picked five cut
     outs of different kinds of truck, each with its name. Checked, 15 pictures with nothing picked and 12 with two models, none twice.
+42. Kontakt, "kontakt shuffle still same reload it". Read as the grid coming up in the same order on every load. Fixed the same turn,
+    every load deals the grid anew, order and sizes from a seed drawn once per visit, a pick keeps the seed. Checked, three loads three
+    orders, each picture once.

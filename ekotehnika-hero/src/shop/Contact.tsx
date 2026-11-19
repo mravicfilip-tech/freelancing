@@ -40,7 +40,8 @@ const both = (xs: string[]) => xs.join(' i ');
 // then "two same images - fix and make them a better variety". Each picture appears once in the grid, the shop's two near alike hall shots
 // are one, and the photos mix the hall, the deliveries, the parts and the headquarters. Each picked model gives its cut out with its name,
 // spread among the photos. With nothing picked, cut outs of five kinds of truck stand in among them. The models' gallery photos stay out,
-// some show posed drivers (README, no posed stock people). Sizes follow a fixed pattern, so the grid reads as random and holds still.
+// some show posed drivers (README, no posed stock people). Then "kontakt shuffle still same reload it", so every load deals the grid
+// anew, its order and its sizes from a seed drawn once per visit. A pick keeps the seed, so the grid only takes the new model in.
 const SHOP_PHOTOS: ReelItem[] = [
   { src: '/shop/hero/range.webp' },
   { src: '/photos/isporuka-3.webp' },
@@ -59,18 +60,34 @@ const cutOf = (p: Product): ReelItem[] => {
   const src = p.render ?? p.thumb;
   return src ? [{ src, label: `Linde ${p.code}`, contain: p.look !== 'scene' }] : [];
 };
-function reelOf(picked: Product[]): [ReelItem[], ReelItem[]] {
-  const cuts = (picked.length ? picked : SHOP_CUTS.map((s) => productBySlug(s)).filter((p): p is Product => Boolean(p))).flatMap(cutOf);
+// a small seeded generator, so one visit keeps one order while a new load gets another
+const rng = (seed: number) => () => {
+  seed = (seed + 0x6d2b79f5) | 0;
+  let t = Math.imul(seed ^ (seed >>> 15), 1 | seed);
+  t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+  return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+};
+const shuffle = <T,>(xs: T[], r: () => number) => {
+  const out = [...xs];
+  for (let i = out.length - 1; i > 0; i--) {
+    const j = Math.floor(r() * (i + 1));
+    [out[i], out[j]] = [out[j], out[i]];
+  }
+  return out;
+};
+function reelOf(picked: Product[], seed: number): [ReelItem[], ReelItem[]] {
+  const r = rng(seed);
+  const cuts = shuffle((picked.length ? picked : SHOP_CUTS.map((s) => productBySlug(s)).filter((p): p is Product => Boolean(p))).flatMap(cutOf), r);
   // a cut out, a photo, a cut out, while both last, then the photos left, each picture once, at least ten so both columns run long
   const items: ReelItem[] = [];
-  const photos = [...SHOP_PHOTOS];
+  const photos = shuffle(SHOP_PHOTOS, r);
   for (let i = 0; i < Math.max(cuts.length, photos.length); i++) {
     if (cuts[i]) items.push(cuts[i]);
     if (photos[i]) items.push(photos[i]);
   }
   const seen = new Set<string>();
   const once = items.filter((x) => (seen.has(x.src) ? false : (seen.add(x.src), true)));
-  const sized = once.map((x, i) => ({ ...x, ratio: RATIOS[i % RATIOS.length] }));
+  const sized = once.map((x) => ({ ...x, ratio: RATIOS[Math.floor(r() * RATIOS.length)] }));
   // the cut outs and the photos fall to both columns, not one each
   const left = (i: number) => i % 4 === 0 || i % 4 === 3;
   return [sized.filter((_, i) => left(i)), sized.filter((_, i) => !left(i))];
@@ -121,7 +138,8 @@ export function Contact({ tema, model, poruka }: { tema: string | null; model: s
   const add = (slug: string) => setModels((xs) => (slug && !xs.includes(slug) && xs.length < MAX_MODELS ? [...xs, slug] : xs));
   const remove = (slug: string) => setModels((xs) => xs.filter((x) => x !== slug));
   const removeBtn = (p: Product) => <button type="button" className="sp-x" aria-label={`Uklonite Linde ${p.code}`} onClick={() => remove(p.slug)} />;
-  const [reelA, reelB] = useMemo(() => reelOf(picked), [models.join('|')]); // eslint-disable-line react-hooks/exhaustive-deps
+  const [seed] = useState(() => Math.floor(Math.random() * 2 ** 31));
+  const [reelA, reelB] = useMemo(() => reelOf(picked, seed), [models.join('|'), seed]); // eslint-disable-line react-hooks/exhaustive-deps
 
   // whether the server sends, asked once, a page with no server behind it (the dev server) is a test
   useEffect(() => {

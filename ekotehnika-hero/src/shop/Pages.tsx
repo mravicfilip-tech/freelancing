@@ -16,6 +16,7 @@ import { CATEGORIES, PRODUCTS } from './data';
 import { Link } from './route';
 import { Cap, Cell } from './parts';
 import { QuickAsk } from './QuickAsk';
+import { ReelCols } from './Reel';
 // the shop's styles first, so these come after them and win where a rule ties (Shop.tsx imports this file before shop.css)
 import './shop.css';
 import './pages.css';
@@ -271,21 +272,9 @@ const REEL_B = [
 ];
 
 function Reel() {
-  const col = (list: typeof REEL_A, cls: string) => (
-    <div className={`pg-reel-col ${cls}`}>
-      {[...list, ...list].map((p, i) => (
-        <span className="pg-reel-ph" key={i}>
-          <img src={p.src} alt="" decoding="async" loading={i < 3 ? 'eager' : 'lazy'} style={{ objectPosition: p.focus }} />
-        </span>
-      ))}
-    </div>
-  );
   return (
     <Cell span={2} className="pg-reel">
-      <div className="pg-reel-in" aria-hidden="true">
-        {col(REEL_A, 'is-a')}
-        {col(REEL_B, 'is-b')}
-      </div>
+      <ReelCols a={REEL_A} b={REEL_B} />
     </Cell>
   );
 }

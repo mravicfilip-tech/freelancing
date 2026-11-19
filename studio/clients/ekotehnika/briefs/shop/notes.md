@@ -94,3 +94,8 @@ Round of 18 November, sent while the shop ran on his localhost. Planned and buil
     36 and 37 built on Filip's go, 19 November. The topics are cards with a photo and an icon, one or more ticked, a request touching
     sales and service goes to both inboxes. The model field adds up to six models to a list under it, each with an ×, and the left column
     follows the list, one large, two or more in a grid of two, each with an ×. The server takes teme and several models.
+38. Kontakt, "just do a random grid of sliding images like we did on a hero page here". His screenshot marks the still grid of the picked
+    models on the left. Built the same turn as the Najam hero's reel, shared as Reel.tsx, the picked models' cut outs with their names
+    woven in among the shop's photos, mixed sizes, the cross to take a model out stays in the list beside the field.
+39. Servis, "rework this". His screenshot marks the Servis hero's Hitan servis call button and Zakažite servis under it, the number
+    running under the phone cell on his screen, and the ring of the phone cell standing as a dark box round it. Queued, plan sent.

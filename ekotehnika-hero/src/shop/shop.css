@@ -1228,51 +1228,6 @@
 
 /* the picture of the inquiry's model under the contact rows, and the form across both right frames, Filip 18 November, "style this
    page better", "add some imagery here" */
-.sp-contact-pic {
-  margin: 24px 0 0;
-}
-
-.sp-contact-pic .sp-pic {
-  aspect-ratio: 4 / 3;
-  max-height: 400px;
-  background: var(--tint);
-}
-
-.sp-contact-pic .sp-pic:is(.is-render, .is-studio) img {
-  padding: 24px;
-  mix-blend-mode: multiply;
-}
-
-.sp-contact-pic .sp-pic.is-photo img {
-  object-fit: cover;
-}
-
-/* the caption on one row, the kind and the name on the left, the two figures on the right, Filip 18 November, "even it out a bit" */
-.sp-contact-pic figcaption {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: flex-end;
-  justify-content: space-between;
-  gap: 8px 24px;
-  margin-top: 16px;
-}
-
-.sp-contact-pic-x {
-  display: flex;
-  flex-direction: column;
-}
-
-.sp-contact-pic .sp-facts {
-  margin: 0;
-}
-
-.sp-contact-pic-t {
-  margin-top: 4px;
-  font-size: 32px;
-  font-weight: 350;
-  line-height: 40px;
-}
-
 .sp-contact-r .sp-form,
 .sp-contact-r .sp-note {
   max-width: none;
@@ -1420,6 +1375,78 @@
 .sp-seg label:has(input:focus-visible) {
   outline: 2px solid var(--grey-dark);
   outline-offset: 2px;
+}
+
+/* ---- the sliding photo grid, Reel.tsx, the Najam hero's and Kontakt's. Two columns rise at their own pace and hold under the pointer,
+   each picture takes its own size so the grid reads as random, a cut out model sits whole on the tint with its name under it. ---- */
+.sp-reel {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+  height: clamp(560px, 72vh, 720px);
+  overflow: hidden;
+  animation: sp-from-right 900ms var(--out) 120ms both;
+}
+
+.sp-reel-col {
+  display: flex;
+  flex-direction: column;
+  animation: sp-reel 56s linear infinite;
+}
+
+.sp-reel-col.is-b {
+  animation-duration: 44s;
+  animation-delay: -18s;
+}
+
+.sp-reel:hover .sp-reel-col {
+  animation-play-state: paused;
+}
+
+/* each picture carries its own gap under it, so half the doubled list is exactly one loop */
+.sp-reel-ph {
+  position: relative;
+  display: block;
+  flex: none;
+  aspect-ratio: 4 / 5;
+  margin-bottom: 8px;
+  overflow: hidden;
+  background: var(--tint);
+}
+
+.sp-reel-ph img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.sp-reel-ph.is-contain img {
+  padding: 10% 10% 48px;
+  object-fit: contain;
+  mix-blend-mode: multiply;
+}
+
+.sp-reel-l {
+  position: absolute;
+  bottom: 12px;
+  left: 12px;
+  padding: 2px 8px;
+  background: var(--white);
+  font: 500 14px/20px var(--font);
+}
+
+@keyframes sp-reel {
+  to {
+    transform: translateY(-50%);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sp-reel,
+  .sp-reel-col {
+    animation: none;
+  }
 }
 
 /* ---- Kontakt, the topics as cards and several models, Filip 19 November, briefs/shop/notes.md 36 and 37 ---- */
@@ -1617,45 +1644,10 @@
   background: var(--white);
 }
 
-.sp-x.is-on-pic {
-  position: absolute;
-  top: 8px;
-  right: 8px;
-  z-index: 2;
-}
-
-/* the left column follows the list, one model large, two or more in a grid of two */
-.sp-contact-one {
-  position: relative;
-}
-
-.sp-contact-pics {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 24px 16px;
-  margin: 24px 0 0;
-  padding: 0;
-  list-style: none;
-}
-
-.sp-contact-pic.is-small {
-  margin: 0;
-}
-
-.sp-contact-pic.is-small .sp-pic {
-  aspect-ratio: 1;
-}
-
-.sp-contact-pic.is-small figcaption {
-  flex-direction: column;
-  align-items: flex-start;
-  gap: 8px;
-  margin-top: 12px;
-}
-
-.sp-contact-pic.is-small .sp-contact-pic-t {
-  font-size: 24px;
-  line-height: 32px;
+/* the left column's sliding grid of what is picked, under the ways to reach the firm */
+.sp-reel.sp-contact-reel {
+  height: clamp(480px, 66vh, 680px);
+  margin-top: 32px;
 }
 
 .sp-pair {

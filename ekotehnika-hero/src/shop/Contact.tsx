@@ -9,7 +9,7 @@ import { hero } from '../content';
 import { CATEGORIES, PRODUCTS, productBySlug, type Product } from './data';
 import { Link } from './route';
 import { Cap, Rule } from './parts';
-import { Facts, Picture } from './Card';
+import { ReelCols, type ReelItem } from './Reel';
 
 // Delovi, the parts, Filip 19 November, briefs/pages/plan.md. Its requests go to the service inbox until the client names one for parts.
 export type Tema = 'kupovina' | 'najam' | 'servis' | 'delovi';
@@ -34,6 +34,37 @@ const TOPIC: Record<Tema, { pic: string; ico: string; white?: boolean }> = {
 };
 const MAX_MODELS = 6;
 const both = (xs: string[]) => xs.join(' i ');
+
+// The sliding grid on the left, Filip 19 November, "just do a random grid of sliding images like we did on a hero page here" (taste 16:03).
+// Each picked model gives its cut out with its name, woven in among the shop's own photos, so the grid is full from one pick up. The
+// models' gallery photos stay out, some show posed drivers (README, no posed stock people). Sizes follow a fixed pattern, so the grid
+// reads as random and holds steady while a visitor picks.
+const SHOP_REEL: ReelItem[] = [
+  { src: '/shop/hero/range.webp' },
+  { src: '/photos/isporuka-3.webp' },
+  { src: '/shop/hero/ceoni.webp' },
+  { src: '/pages/najam-flota.webp', focus: '30% 50%' },
+  { src: '/photos/isporuka-4.webp' },
+  { src: '/shop/hero/range-2.webp' },
+  { src: '/pages/servis-centar.webp' },
+  { src: '/photos/isporuka-1.webp' },
+];
+const RATIOS = ['4 / 5', '1', '3 / 4', '4 / 3', '5 / 6', '1'];
+function reelOf(picked: Product[]): [ReelItem[], ReelItem[]] {
+  const cuts: ReelItem[] = picked.flatMap((p) => {
+    const src = p.render ?? p.thumb;
+    return src ? [{ src, label: `Linde ${p.code}`, contain: p.look !== 'scene' }] : [];
+  });
+  const items: ReelItem[] = [];
+  for (let i = 0; items.length < Math.max(8, cuts.length * 2); i++) {
+    if (cuts.length) items.push(cuts[i % cuts.length]);
+    items.push(SHOP_REEL[i % SHOP_REEL.length]);
+  }
+  const sized = items.map((x, i) => ({ ...x, ratio: RATIOS[i % RATIOS.length] }));
+  // the cut outs and the photos fall to both columns, not one each
+  const left = (i: number) => i % 4 === 0 || i % 4 === 3;
+  return [sized.filter((_, i) => left(i)), sized.filter((_, i) => !left(i))];
+}
 
 export type Fields = { ime: string; prezime: string; firma: string; telefon: string; email: string; model: string; poruka: string; saglasnost: boolean; website: string };
 export type Errors = Partial<Record<keyof Fields, string>>;
@@ -79,9 +110,8 @@ export function Contact({ tema, model, poruka }: { tema: string | null; model: s
     setTeme((xs) => (xs.includes(id) ? (xs.length > 1 ? xs.filter((x) => x !== id) : xs) : TEME.map((x) => x.id).filter((x) => x === id || xs.includes(x))));
   const add = (slug: string) => setModels((xs) => (slug && !xs.includes(slug) && xs.length < MAX_MODELS ? [...xs, slug] : xs));
   const remove = (slug: string) => setModels((xs) => xs.filter((x) => x !== slug));
-  const removeBtn = (p: Product, cls = '') => (
-    <button type="button" className={`sp-x${cls}`} aria-label={`Uklonite Linde ${p.code}`} onClick={() => remove(p.slug)} />
-  );
+  const removeBtn = (p: Product) => <button type="button" className="sp-x" aria-label={`Uklonite Linde ${p.code}`} onClick={() => remove(p.slug)} />;
+  const [reelA, reelB] = useMemo(() => reelOf(picked), [models.join('|')]); // eslint-disable-line react-hooks/exhaustive-deps
 
   // whether the server sends, asked once, a page with no server behind it (the dev server) is a test
   useEffect(() => {
@@ -188,53 +218,8 @@ export function Contact({ tema, model, poruka }: { tema: string | null; model: s
         </dl>
         {/* what the inquiry is about, Filip 18 November, "add some imagery here". The model the select holds, its picture on a pale tile
             with its name and two figures, changing with the select. With no model the shop's photo of the trucks side by side. */}
-        {picked.length === 0 ? (
-          <figure className="sp-contact-pic">
-            <div className="sp-pic is-photo">
-              <img src="/shop/hero/range.webp" alt="Linde viljuškari svih vrsta, jedan pored drugog u hali" decoding="async" />
-            </div>
-            <figcaption>
-              <span className="sp-contact-pic-x">
-                <span className="sp-lab">Prodavnica</span>
-                <span className="sp-contact-pic-t">{PRODUCTS.length} modela Linde viljuškara</span>
-              </span>
-            </figcaption>
-          </figure>
-        ) : picked.length === 1 ? (
-          <figure className="sp-contact-pic">
-            <div className="sp-contact-one">
-              <Picture p={picked[0]} size="hero" />
-              {removeBtn(picked[0], ' is-on-pic')}
-            </div>
-            <figcaption>
-              <span className="sp-contact-pic-x">
-                <span className="sp-lab">{picked[0].kind}</span>
-                <span className="sp-contact-pic-t">Linde {picked[0].code}</span>
-              </span>
-              <Facts p={picked[0]} />
-            </figcaption>
-          </figure>
-        ) : (
-          <ul className="sp-contact-pics" aria-label="Izabrani modeli">
-            {picked.map((p) => (
-              <li key={p.slug}>
-                <figure className="sp-contact-pic is-small">
-                  <div className="sp-contact-one">
-                    <Picture p={p} size="card" />
-                    {removeBtn(p, ' is-on-pic')}
-                  </div>
-                  <figcaption>
-                    <span className="sp-contact-pic-x">
-                      <span className="sp-lab">{p.kind}</span>
-                      <span className="sp-contact-pic-t">Linde {p.code}</span>
-                    </span>
-                    <Facts p={p} />
-                  </figcaption>
-                </figure>
-              </li>
-            ))}
-          </ul>
-        )}
+        {/* the pictures of what is picked, sliding, a new pick starts the grid again with it in */}
+        <ReelCols a={reelA} b={reelB} className="sp-contact-reel" key={models.join('|') || 'shop'} />
       </div>
 
       <div className="sp-cell sp-contact-r" style={{ gridColumn: 'span 2' }}>

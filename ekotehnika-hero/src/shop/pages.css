@@ -176,54 +176,6 @@
   text-underline-offset: 3px;
 }
 
-/* two columns of the delivery photos rise slowly, each at its own pace, and hold under the pointer */
-.pg-reel-in {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 8px;
-  height: clamp(560px, 72vh, 720px);
-  overflow: hidden;
-  animation: sp-from-right 900ms var(--out) 120ms both;
-}
-
-.pg-reel-col {
-  display: flex;
-  flex-direction: column;
-  animation: pg-reel 56s linear infinite;
-}
-
-.pg-reel-col.is-b {
-  animation-duration: 44s;
-  animation-delay: -18s;
-}
-
-.pg-reel:hover .pg-reel-col {
-  animation-play-state: paused;
-}
-
-/* each photo carries its own gap under it, so half the doubled list is exactly one loop */
-.pg-reel-ph {
-  display: block;
-  flex: none;
-  aspect-ratio: 4 / 5;
-  margin-bottom: 8px;
-  overflow: hidden;
-  background: var(--tint);
-}
-
-.pg-reel-ph img {
-  display: block;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-
-@keyframes pg-reel {
-  to {
-    transform: translateY(-50%);
-  }
-}
-
 /* ---- Servis, on black, Hitan servis as a big call button beside the map ---- */
 .pg-hs-acts {
   display: grid;
@@ -923,7 +875,7 @@
     padding: 16px 12px 0;
   }
 
-  .pg-reel-in {
+  .pg-hn .sp-reel {
     height: 300px;
   }
 

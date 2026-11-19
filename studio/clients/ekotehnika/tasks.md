@@ -298,7 +298,7 @@ Task format
   - [ ] /uireview on the four pages
   - [ ] Filip looks on localhost
   - [ ] The client answers the Delovi questions and checks the new Serbian lines, plan.md
-  - [x] Production after Filip's ship line, "push vercel" for 432dc56, live at https://ekotehnika.vercel.app/najam as de25212 on the ekotehnika repo
+  - [x] Production after Filip's ship line, "push vercel" for 432dc56, live at https://ekotehnika.vercel.app/najam as de25212 on the ekotehnika repo, and the Gume tile's tyre photo, "push vercel" for d0d6c80, as 30ff66f
 
 - ekotehnika-6 Version 5 in light mode, servis stays dark. Link https://ekotehnika-hero.vercel.app/?v=5
   - [x] Let the shell set dark beats per version

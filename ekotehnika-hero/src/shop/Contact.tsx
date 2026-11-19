@@ -6,10 +6,11 @@
 import { useEffect, useMemo, useState, type FormEvent } from 'react';
 import { BtnInner } from '../story2/shell/ui';
 import { hero } from '../content';
-import { CATEGORIES, PRODUCTS, productBySlug, type Product } from './data';
+import { productBySlug, type Product } from './data';
 import { Link } from './route';
 import { Cap, Rule } from './parts';
 import { ReelCols, type ReelItem } from './Reel';
+import { SearchBox } from './SearchBox';
 
 // Delovi, the parts, Filip 19 November, briefs/pages/plan.md. Its requests go to the service inbox until the client names one for parts.
 export type Tema = 'kupovina' | 'najam' | 'servis' | 'delovi';
@@ -125,7 +126,6 @@ export function Contact({ tema, model, poruka }: { tema: string | null; model: s
     };
   }, []);
 
-  const groups = useMemo(() => CATEGORIES.map((c) => ({ c, items: PRODUCTS.filter((p) => p.category === c.slug) })), []);
   const set = <K extends keyof Fields>(k: K, v: Fields[K]) => {
     setF((x) => ({ ...x, [k]: v }));
     if (errors[k]) setErrors((e) => ({ ...e, [k]: undefined }));
@@ -275,20 +275,14 @@ export function Contact({ tema, model, poruka }: { tema: string | null; model: s
               <label htmlFor="f-model">
                 Model<span className="sp-f-opt"> nije obavezno, do {MAX_MODELS} modela</span>
               </label>
-              <div className="sp-select">
-                <select id="f-model" name="model" value="" onChange={(e) => add(e.target.value)} disabled={models.length >= MAX_MODELS}>
-                  <option value="">{models.length >= MAX_MODELS ? `Izabrano je ${MAX_MODELS} modela` : models.length ? 'Dodajte još jedan model' : 'Bez modela, opšti upit'}</option>
-                  {groups.map(({ c, items }) => (
-                    <optgroup label={c.name} key={c.slug}>
-                      {items.map((p) => (
-                        <option value={p.slug} key={p.slug} disabled={models.includes(p.slug)}>
-                          Linde {p.code}
-                        </option>
-                      ))}
-                    </optgroup>
-                  ))}
-                </select>
-              </div>
+              {/* the shop's own search, models only, a pick goes to the list under it (Filip 19 November, "do same search as on category page") */}
+              <SearchBox
+                onPick={(p) => add(p.slug)}
+                exclude={models}
+                inputId="f-model"
+                disabled={models.length >= MAX_MODELS}
+                placeholder={models.length >= MAX_MODELS ? `Izabrano je ${MAX_MODELS} modela` : models.length ? 'Dodajte još jedan model, npr. X20 ili slagač' : 'Pretražite modele, npr. X20 ili slagač'}
+              />
               {picked.length ? (
                 <ul className="sp-picked" aria-label="Izabrani modeli">
                   {picked.map((p) => (

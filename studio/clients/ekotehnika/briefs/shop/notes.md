@@ -101,3 +101,6 @@ Round of 18 November, sent while the shop ran on his localhost. Planned and buil
     running under the phone cell on his screen, and the ring of the phone cell standing as a dark box round it. Queued, plan sent.
     39 on Filip's go, three versions on one board, n39-call-board.png beside this file, live at /servis?poziv=1 to 3, each sized to its
     own number and checked at 1920, 1440, 390 and 360. Filip, "go with 3", the number as type. The other two and the ?poziv switch are gone, kit hero-call-type (taste 16:42).
+40. Kontakt, "do same search as on category page", read as the Model field. Built the same turn, the shop's own search (SearchBox.tsx)
+    with a pick mode, models only, a pick goes to the list under the field and leaves it empty, the models already picked drop out, no
+    search is remembered, and it is a field of the form, not a form of its own. The shop's search on Prodavnica is unchanged.

@@ -3419,8 +3419,27 @@
 
 /* The field ends in a grey cell with the magnifier, the phone cell of the site's secondary buttons, a click searches. Filip's pick of
    18 November, "go with 3", of three icons on one board (briefs/shop/n10-search-icon-board.png). */
-.sp-sb form {
+.sp-sb :is(form, .sp-sb-f) {
   position: relative;
+}
+
+/* the same search as a field of Kontakt's form, the form's field height, across the width, its panel over the fields under it */
+.sp-sb.is-field {
+  flex: none;
+  max-width: none;
+  margin: 0;
+}
+
+.sp-sb.is-field input {
+  height: 48px;
+  padding-right: 64px;
+  font-size: 18px;
+}
+
+.sp-sb.is-field input:disabled,
+.sp-sb.is-field .sp-sb-go:disabled {
+  cursor: not-allowed;
+  opacity: 0.6;
 }
 
 .sp-sb-go {

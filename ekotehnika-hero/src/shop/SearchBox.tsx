@@ -3,6 +3,9 @@
 // suggests the models and the categories that hold it, each with its picture, and a last row that opens every result. The site has no
 // record of what people search yet, so the five are a pick (SUGGESTED in data.ts), not a count, until search analytics run.
 // The combobox pattern, the arrows move through the suggestions, Enter opens one or all the results, Escape and a click outside shut it.
+// On Kontakt the same search picks models for the inquiry (Filip 19 November, "do same search as on category page"), onPick. Then it
+// suggests models only, a pick goes to the form's list and leaves the field empty for the next, the models already picked drop out,
+// no search is remembered, and it sits in the form as a field, not a form of its own.
 import { useEffect, useId, useLayoutEffect, useMemo, useRef, useState, type KeyboardEvent } from 'react';
 import { CATEGORIES, PRODUCTS, SUGGESTED, categoryOf, fmt, hrefCategory, hrefProduct, matches, modela, productBySlug, type Product } from './data';
 import { navigate } from './route';
@@ -27,7 +30,21 @@ const remember = (q: string) => {
 
 type Item = { id: string; href: string; kind: 'model' | 'cat' | 'recent' | 'all'; label: string; p?: Product; note?: string };
 
-export function SearchBox({ placeholder = 'Pretražite modele, npr. X20 ili slagač' }: { placeholder?: string }) {
+export function SearchBox({
+  placeholder = 'Pretražite modele, npr. X20 ili slagač',
+  onPick,
+  exclude = [],
+  inputId,
+  disabled = false,
+}: {
+  placeholder?: string;
+  onPick?: (p: Product) => void;
+  exclude?: string[];
+  inputId?: string;
+  disabled?: boolean;
+}) {
+  const pick = Boolean(onPick);
+  const ex = exclude.join('|');
   const [q, setQ] = useState('');
   const [open, setOpen] = useState(false);
   const [hot, setHot] = useState(-1);
@@ -37,8 +54,14 @@ export function SearchBox({ placeholder = 'Pretražite modele, npr. X20 ili slag
   const id = useId();
   const term = q.trim();
 
-  const found = useMemo(() => (term ? PRODUCTS.filter((p) => matches(p, term)) : []), [term]);
+  const found = useMemo(() => (term ? PRODUCTS.filter((p) => matches(p, term) && !ex.split('|').includes(p.slug)) : []), [term, ex]);
   const items: Item[] = useMemo(() => {
+    if (pick) {
+      const list = term
+        ? found.slice(0, 8)
+        : SUGGESTED.map((s) => productBySlug(s)).filter((p): p is Product => Boolean(p) && !ex.split('|').includes(p!.slug));
+      return list.map((p) => ({ id: `m-${p.slug}`, href: hrefProduct(p), kind: 'model' as const, label: `Linde ${p.code}`, p }));
+    }
     if (!term) {
       return [
         ...past.map((r) => ({ id: `r-${r}`, href: `/prodavnica/svi-modeli?q=${encodeURIComponent(r)}`, kind: 'recent' as const, label: r })),
@@ -53,11 +76,11 @@ export function SearchBox({ placeholder = 'Pretražite modele, npr. X20 ili slag
       ...cats.slice(0, 3).map((c) => ({ id: `c-${c.slug}`, href: hrefCategory(c.slug), kind: 'cat' as const, label: c.name, note: modela(c.count) })),
       { id: 'all', href: `/prodavnica/svi-modeli?q=${encodeURIComponent(term)}`, kind: 'all' as const, label: `Svi rezultati za „${term}”`, note: modela(found.length) },
     ];
-  }, [term, found, past]);
+  }, [term, found, past, pick, ex]);
 
   useEffect(() => {
     if (!open) return;
-    setPast(recent());
+    if (!pick) setPast(recent());
     const away = (e: PointerEvent) => !root.current?.contains(e.target as Node) && setOpen(false);
     document.addEventListener('pointerdown', away);
     return () => document.removeEventListener('pointerdown', away);
@@ -73,6 +96,13 @@ export function SearchBox({ placeholder = 'Pretražite modele, npr. X20 ili slag
   }, [open, past]);
 
   const go = (it: Item) => {
+    if (pick) {
+      if (it.p) onPick!(it.p);
+      setQ('');
+      setOpen(false);
+      input.current?.focus();
+      return;
+    }
     if (it.kind === 'all' || it.kind === 'recent') remember(it.kind === 'all' ? term : it.label);
     else if (term) remember(term);
     setOpen(false);
@@ -80,6 +110,8 @@ export function SearchBox({ placeholder = 'Pretražite modele, npr. X20 ili slag
   };
   const submit = () => {
     if (hot >= 0 && items[hot]) return go(items[hot]);
+    // in the form, Enter or the cell takes the first model found
+    if (pick) return term && items[0] ? go(items[0]) : input.current?.focus();
     // an empty field, the search button opens the suggestions
     if (!term) return input.current?.focus();
     remember(term);
@@ -145,43 +177,63 @@ export function SearchBox({ placeholder = 'Pretražite modele, npr. X20 ili slag
     </li>
   );
 
-  const pastItems = items.filter((x) => x.kind === 'recent');
-  const restItems = items.filter((x) => x.kind !== 'recent');
-  return (
-    <div className="sp-sb" ref={root} data-open={open || undefined}>
-      <form
-        role="search"
-        onSubmit={(e) => {
-          e.preventDefault();
-          submit();
-        }}
-      >
+  const field = (
+    <>
+      {inputId ? null : (
         <label className="sr-only" htmlFor={`${id}-q`}>
           Pretražite modele
         </label>
-        <input
-          id={`${id}-q`}
-          ref={input}
-          type="search"
-          role="combobox"
-          aria-expanded={open}
-          aria-controls={`${id}-list`}
-          aria-autocomplete="list"
-          aria-activedescendant={hot >= 0 ? `${id}-${hot}` : undefined}
-          autoComplete="off"
-          placeholder={placeholder}
-          value={q}
-          onChange={(e) => {
-            setQ(e.target.value);
-            setOpen(true);
+      )}
+      <input
+        id={inputId ?? `${id}-q`}
+        ref={input}
+        type="search"
+        role="combobox"
+        aria-expanded={open}
+        aria-controls={`${id}-list`}
+        aria-autocomplete="list"
+        aria-activedescendant={hot >= 0 ? `${id}-${hot}` : undefined}
+        autoComplete="off"
+        placeholder={placeholder}
+        value={q}
+        disabled={disabled}
+        onChange={(e) => {
+          setQ(e.target.value);
+          setOpen(true);
+        }}
+        onFocus={() => setOpen(true)}
+        onKeyDown={key}
+      />
+      <button
+        type={pick ? 'button' : 'submit'}
+        className="sp-sb-go"
+        aria-label={pick ? 'Dodajte model' : 'Pretraži'}
+        disabled={disabled}
+        onPointerDown={(e) => e.preventDefault()}
+        onClick={pick ? submit : undefined}
+      >
+        <i className="sp-sb-i" aria-hidden="true" />
+      </button>
+    </>
+  );
+
+  const pastItems = items.filter((x) => x.kind === 'recent');
+  const restItems = items.filter((x) => x.kind !== 'recent');
+  return (
+    <div className={`sp-sb${pick ? ' is-field' : ''}`} ref={root} data-open={open || undefined}>
+      {pick ? (
+        <div className="sp-sb-f">{field}</div>
+      ) : (
+        <form
+          role="search"
+          onSubmit={(e) => {
+            e.preventDefault();
+            submit();
           }}
-          onFocus={() => setOpen(true)}
-          onKeyDown={key}
-        />
-        <button type="submit" className="sp-sb-go" aria-label="Pretraži" onPointerDown={(e) => e.preventDefault()}>
-          <i className="sp-sb-i" aria-hidden="true" />
-        </button>
-      </form>
+        >
+          {field}
+        </form>
+      )}
       {open ? (
         <div className="sp-sb-panel">
           {!term && pastItems.length ? (

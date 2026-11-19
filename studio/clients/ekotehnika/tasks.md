@@ -25,6 +25,11 @@ Task format
 
 ## In progress
 
+- ekotehnika-22 The service pages, Najam, Servis and Delovi, and the Kompanija page, interesting, with the content gathered. Filip 19 November
+  - [ ] Gather every fact, line and picture we hold for the four pages, briefs/pages/content.md
+  - [ ] The structure of each page and the kickoff answers from Filip
+  - [ ] Build the four pages and point the menu at them
+
 - ekotehnika-21 The shop, the client's Drive categories and products, every product leads to the contact form, no cart. The homepage story leads to it. Brief in briefs/shop/brief.md
   - [x] Map the Drive, 89 series in 10 categories, renders, photos and data sheets per series
   - [x] Filip answers the kickoff questions, "yes, go with defaults", 18 November, written into the brief

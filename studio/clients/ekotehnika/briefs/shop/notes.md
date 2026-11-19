@@ -111,3 +111,7 @@ Round of 18 November, sent while the shop ran on his localhost. Planned and buil
 42. Kontakt, "kontakt shuffle still same reload it". Read as the grid coming up in the same order on every load. Fixed the same turn,
     every load deals the grid anew, order and sizes from a seed drawn once per visit, a pick keeps the seed. Checked, three loads three
     orders, each picture once.
+43. The footer, "put actual logo here". His screenshot marks the plain EKOTEHNIKA letters on the building in the footer still. The
+    street set has carried the real wordmark, extruded from public/brand/ekotehnika.svg, since round 6 (401d158), the still was rendered
+    before that. Rendered again the same turn with scripts/render-footer-scene.mjs, the logo with its tagline and red mark on the wall,
+    the rest of the set and its ground line unchanged.

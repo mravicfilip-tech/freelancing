@@ -7,3 +7,10 @@ Filip, 19 November, after commit e25f7ab. Each note as he sent it, then what it 
    page and at the close.
 2. "work on these cards more". His screenshot marks the four term cards 36, 48, 60 and 72 meseci in the Najam hero's rental card
    (.pg-month in Pages.tsx RentCard).
+
+## Filip's go, and what was built
+
+- Note 1. One black band per page, mid page. The close is QuickAsk.tsx, a short inquiry on white with the page's topic set, the fields
+  the form's server needs, the message filled in and the page's number large beside it. Built, on the branch.
+- Note 2. Four versions of the term picker on one board, n2-term-cards-board.png beside this file, live at /najam?kartice=1 to 4. Waiting
+  for Filip's number. 2 shows until he picks.

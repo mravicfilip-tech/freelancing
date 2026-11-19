@@ -3,8 +3,8 @@
 // Then "Do different hero's, add more CTA's that are more prominent and more attractive, add wow effects" (taste 2026-11-19 13:10), so
 // each page has its own hero built round its own strongest asset. Najam a rental card beside a reel of the delivery photos, Servis the
 // map on black with Hitan servis as a big call button, Delovi the four groups as photo tiles, Kompanija the headquarters across the whole
-// width. Each page has a black call band in the middle and a full size one at the close. Red stays on the one primary per view, the black
-// bands turn their primary white. The motion is the site's own, the Fade with a 12px rise, layers that come in along the grid, figures
+// width. Each page has one black call band mid page and closes on a short inquiry in place, QuickAsk.tsx (round 3, taste 2026-11-19
+// 14:00). Red stays on the one primary per view, the black band turns its primary white. The motion is the site's own, the Fade with a 12px rise, layers that come in along the grid, figures
 // that count up, photos that drift a little slower than the page, and all of it off when less motion is asked for.
 // The words are the client's own where the live site or the old site has them, the rest are short plain lines for the client to check.
 import { lazy, Suspense, useEffect, useLayoutEffect, useRef, useState, type CSSProperties, type ReactNode, type RefObject } from 'react';
@@ -15,6 +15,7 @@ import { SERVICES as MENU } from '../ui/ShopNav';
 import { CATEGORIES, PRODUCTS } from './data';
 import { Link } from './route';
 import { Cap, Cell } from './parts';
+import { QuickAsk } from './QuickAsk';
 // the shop's styles first, so these come after them and win where a rule ties (Shop.tsx imports this file before shop.css)
 import './shop.css';
 import './pages.css';
@@ -167,11 +168,12 @@ function CentresMap({ label, pic }: { label: string; pic?: { src: string; alt: s
 }
 
 // ---- the call band, black across the four frames, a photo in each outer frame that comes in from its side, the words and the actions
-// in the middle two. The homepage's closing section on black (taste 2026-11-19 13:10). The page's last band is the full size one.
+// in the middle two. The homepage's closing section on black (taste 2026-11-19 13:10). Once per page, mid page, never the close and never
+// beside another dark section (taste 2026-11-19 14:00, "repeatable section which is really bad rework it"). The close is QuickAsk.
 // Only the last section of a page draws the closing cap. A cap under any other section lies 2px over the next row's own top rule and
 // draws a doubled line (Filip 19 November, "you have duplicate lines ... make sure you never do those again").
 type Act = { label: string; href: string; cta: string; phone?: boolean };
-function Band({ id, label, title, line, primary, secondary, photos, close = false, last = false }: {
+function Band({ id, label, title, line, primary, secondary, photos, last = false }: {
   id: string;
   label: string;
   title: string;
@@ -179,7 +181,6 @@ function Band({ id, label, title, line, primary, secondary, photos, close = fals
   primary: Act;
   secondary?: Act;
   photos: [string, string];
-  close?: boolean;
   last?: boolean;
 }) {
   const act = (a: Act, kind: 'primary' | 'secondary') => {
@@ -196,7 +197,7 @@ function Band({ id, label, title, line, primary, secondary, photos, close = fals
     );
   };
   return (
-    <section className={`sp-frame pg-cta pg-dark${close ? ' is-close' : ''}`} data-ink="dark" aria-labelledby={`pg-${id}-h`}>
+    <section className="sp-frame pg-cta pg-dark" data-ink="dark" aria-labelledby={`pg-${id}-h`}>
       <Cell className="pg-cta-ph is-l">
         <Par src={photos[0]} />
       </Cell>
@@ -251,7 +252,6 @@ function Places({ current, label = 'Pogledajte i', note, last = false }: { curre
 }
 
 const SALES_CALL: Act = { label: `${hero.sales.label} ${hero.sales.number}`, href: hero.sales.tel, cta: 'call-sales', phone: true };
-const SERVICE_CALL: Act = { label: `${hero.service.label} ${hero.service.number}`, href: hero.service.tel, cta: 'call-service', phone: true };
 
 // ---- Najam ----
 // The hero, the words and a rental card on the left, short or long rental, the long one with its four terms, and one primary that
@@ -290,6 +290,81 @@ function Reel() {
   );
 }
 
+// The term picker of the long rental, round 3 note 2, "work on these cards more" (briefs/pages/notes.md). Four versions for Filip's pick
+// on one board, ?kartice=1 to 4. 1 a ruler, one track in four with a black block that slides to the term. 2 tiles, the figure, meseci,
+// a hairline and the years, the picked one black with a check cell in its corner like the buttons' plus cell. 3 a stepper, one large
+// figure between a minus and a plus cell, four stops under it. 4 segments, the control of Kratkoročni and Dugoročni above it. Until he
+// picks, 2 shows.
+const YEARS: Record<string, string> = { '36': '3 godine', '48': '4 godine', '60': '5 godina', '72': '6 godina' };
+const cardsVariant = () => {
+  const v = typeof window === 'undefined' ? null : new URLSearchParams(window.location.search).get('kartice');
+  return v === '1' || v === '3' || v === '4' ? Number(v) : 2;
+};
+
+function Terms({ term, setTerm }: { term: string; setTerm: (t: string) => void }) {
+  const [v] = useState(cardsVariant);
+  const at = TERMS.indexOf(term);
+  const radio = (m: string) => <input type="radio" name="pg-term" value={m} checked={term === m} onChange={() => setTerm(m)} />;
+  if (v === 1)
+    return (
+      <div className="pg-ruler" style={{ '--at': at } as CSSProperties}>
+        <i className="pg-ruler-thumb" aria-hidden="true" />
+        {TERMS.map((m) => (
+          <label className={`pg-ruler-stop${term === m ? ' is-on' : ''}`} key={m}>
+            {radio(m)}
+            <b>{m}</b>
+            <span>{YEARS[m]}</span>
+          </label>
+        ))}
+      </div>
+    );
+  if (v === 3)
+    return (
+      <div className="pg-step">
+        <div className="pg-step-row">
+          <button type="button" className="pg-step-b is-minus" aria-label="Kraći period" disabled={at === 0} onClick={() => setTerm(TERMS[at - 1])} />
+          <output className="pg-step-v" aria-live="polite">
+            <b key={term}>{term}</b>
+            <span>meseci, {YEARS[term]}</span>
+          </output>
+          <button type="button" className="pg-step-b is-plus" aria-label="Duži period" disabled={at === TERMS.length - 1} onClick={() => setTerm(TERMS[at + 1])} />
+        </div>
+        <div className="pg-step-stops">
+          {TERMS.map((m) => (
+            <label className={`pg-step-stop${term === m ? ' is-on' : ''}`} key={m}>
+              {radio(m)}
+              <span>{m}</span>
+            </label>
+          ))}
+        </div>
+      </div>
+    );
+  if (v === 4)
+    return (
+      <div className="sp-seg pg-seg4">
+        {TERMS.map((m) => (
+          <label className={term === m ? 'is-on' : undefined} key={m}>
+            {radio(m)}
+            {m} meseci
+          </label>
+        ))}
+      </div>
+    );
+  return (
+    <div className="pg-tiles">
+      {TERMS.map((m) => (
+        <label className={`pg-tile${term === m ? ' is-on' : ''}`} key={m}>
+          {radio(m)}
+          <b>{m}</b>
+          <span>meseci</span>
+          <em>{YEARS[m]}</em>
+          <i className="pg-tile-x" aria-hidden="true" />
+        </label>
+      ))}
+    </div>
+  );
+}
+
 function RentCard() {
   const [mode, setMode] = useState<'kratko' | 'dugo'>('dugo');
   const [term, setTerm] = useState(TERMS[1]);
@@ -320,15 +395,7 @@ function RentCard() {
       ) : (
         <fieldset className="pg-rent-f" key="dugo">
           <legend className="sp-lab">Period</legend>
-          <div className="pg-months">
-            {TERMS.map((m) => (
-              <label className={`pg-month${term === m ? ' is-on' : ''}`} key={m}>
-                <input type="radio" name="pg-term" value={m} checked={term === m} onChange={() => setTerm(m)} />
-                <b>{m}</b>
-                <span>meseci</span>
-              </label>
-            ))}
-          </div>
+          <Terms term={term} setTerm={setTerm} />
         </fieldset>
       )}
       <div className="pg-rent-act">
@@ -395,14 +462,13 @@ export function Najam() {
         </Cell>
       </section>
 
-      <Band
-        id="najam-close"
+      <QuickAsk
+        id="najam-ask"
+        tema="najam"
         label="Ponuda za najam"
         title="Recite nam šta vam treba i na koliko dugo."
-        primary={{ label: pillar('najam').cta, href: ask('najam'), cta: 'rent' }}
-        secondary={SALES_CALL}
-        photos={['/pages/kompanija-tim.webp', '/pages/delovi-viljuske.webp']}
-        close
+        poruka="Zanima me najam viljuškara."
+        cta={pillar('najam').cta}
       />
       <Places current="najam" last />
     </Page>
@@ -506,14 +572,13 @@ export function Servis() {
 
       <CentresMap label="Servisni centri" pic={{ src: '/pages/servis-centar.webp', alt: 'Servisni centar Ekotehnike sa viljuškarima u dvorištu, snimak iz vazduha' }} />
 
-      <Band
-        id="servis-close"
+      <QuickAsk
+        id="servis-ask"
+        tema="servis"
         label="Zakazivanje"
         title="Zakažite servis ili pozovite za hitnu intervenciju."
-        primary={{ label: pillar('servis').cta, href: ask('servis'), cta: 'service' }}
-        secondary={SERVICE_CALL}
-        photos={['/photos/isporuka-4.webp', '/pages/kompanija-tim.webp']}
-        close
+        poruka="Potreban mi je servis viljuškara."
+        cta={pillar('servis').cta}
       />
       <Places current="servis" last />
     </Page>
@@ -582,14 +647,13 @@ export function Delovi() {
         photos={['/pages/najam-flota.webp', '/photos/isporuka-1.webp']}
       />
 
-      <Band
-        id="delovi-close"
+      <QuickAsk
+        id="delovi-ask"
+        tema="delovi"
         label="Ponuda za delove"
         title="Navedite model viljuškara, serijski broj i deo koji vam treba."
-        primary={{ label: PARTS_CTA, href: ask('delovi'), cta: 'parts' }}
-        secondary={SERVICE_CALL}
-        photos={['/photos/isporuka-4.webp', '/photos/isporuka-2.webp']}
-        close
+        poruka="Zanima me ponuda za delove."
+        cta={PARTS_CTA}
       />
       <Places current="delovi" last />
     </Page>
@@ -677,14 +741,13 @@ export function Kompanija() {
         </Cell>
       </section>
 
-      <Band
-        id="kompanija-close"
+      <QuickAsk
+        id="kompanija-ask"
+        tema="kupovina"
         label="Ponuda"
         title="Zatražite ponudu za novi Linde viljuškar."
-        primary={{ label: hero.quote.label, href: hero.quote.href, cta: 'quote' }}
-        secondary={SALES_CALL}
-        photos={['/photos/isporuka-1.webp', '/photos/isporuka-2.webp']}
-        close
+        poruka=""
+        cta={hero.quote.label}
         last
       />
     </Page>

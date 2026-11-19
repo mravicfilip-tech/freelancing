@@ -11,8 +11,8 @@ import { Cap, Rule } from './parts';
 import { Facts, Picture } from './Card';
 
 // Delovi, the parts, Filip 19 November, briefs/pages/plan.md. Its requests go to the service inbox until the client names one for parts.
-type Tema = 'kupovina' | 'najam' | 'servis' | 'delovi';
-const TEME: { id: Tema; label: string }[] = [
+export type Tema = 'kupovina' | 'najam' | 'servis' | 'delovi';
+export const TEME: { id: Tema; label: string }[] = [
   { id: 'kupovina', label: 'Kupovina' },
   { id: 'najam', label: 'Najam' },
   { id: 'servis', label: 'Servis' },
@@ -21,17 +21,18 @@ const TEME: { id: Tema; label: string }[] = [
 const SALES_MAIL = 'info@ekotehnika.rs';
 const SERVICE_MAIL = 'servis@ekotehnika.rs';
 const toService = (t: Tema) => t === 'servis' || t === 'delovi';
-const inbox = (t: Tema) => (toService(t) ? SERVICE_MAIL : SALES_MAIL);
+export const inbox = (t: Tema) => (toService(t) ? SERVICE_MAIL : SALES_MAIL);
 const phone = (t: Tema) => (toService(t) ? hero.service.number : hero.sales.number);
 
-type Fields = { ime: string; prezime: string; firma: string; telefon: string; email: string; model: string; poruka: string; saglasnost: boolean; website: string };
-type Errors = Partial<Record<keyof Fields, string>>;
+export type Fields = { ime: string; prezime: string; firma: string; telefon: string; email: string; model: string; poruka: string; saglasnost: boolean; website: string };
+export type Errors = Partial<Record<keyof Fields, string>>;
 type Mode = 'checking' | 'live' | 'test';
 type Sent = { state: 'idle' } | { state: 'sending' } | { state: 'sent'; test: boolean } | { state: 'failed' };
 
 const EMAIL = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
 
-function check(f: Fields): Errors {
+// shared with the quick inquiry at the foot of the service pages, QuickAsk.tsx
+export function check(f: Fields): Errors {
   const e: Errors = {};
   if (!f.ime.trim()) e.ime = 'Upišite ime.';
   if (!f.prezime.trim()) e.prezime = 'Upišite prezime.';

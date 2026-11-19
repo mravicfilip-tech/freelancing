@@ -86,3 +86,8 @@ Round of 18 November, sent while the shop ran on his localhost. Planned and buil
     Usluge with Najam, Servis, Hitan servis and Polovni, Kompanija the story's company chapter, Kontakt. The dead links were Najam and Servis
     from a shop page, the story gave up waiting for its pin after 5 seconds, now 30. Najam and Servis on the homepage open the form.
 35. The filters, "make this better". Screenshot marks the count of a ticked option, its grey pill gone on the row's grey.
+36. Kontakt, "can we add images, icons here and multi select maybe?". His second screenshot marks the topic row, Kupovina, Najam, Servis
+    and Delovi, together with the Model field under it. Asked which part, he answered the topic row.
+37. Kontakt, "1st image can we add multiple images if multiple selected products and to remove too". His first screenshot marks the
+    picture of the chosen model in the left column, Linde E16 do E20 with its two figures. Several models picked, several pictures, each
+    one removable.

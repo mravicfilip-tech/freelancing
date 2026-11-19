@@ -26,7 +26,7 @@ Task format
 ## In progress
 
 - ekotehnika-22 The service pages, Najam, Servis and Delovi, and the Kompanija page, interesting, with the content gathered. Filip 19 November
-  - [ ] Gather every fact, line and picture we hold for the four pages, briefs/pages/content.md
+  - [x] Gather every fact, line and picture we hold for the four pages, briefs/pages/content.md
   - [ ] The structure of each page and the kickoff answers from Filip
   - [ ] Build the four pages and point the menu at them
 

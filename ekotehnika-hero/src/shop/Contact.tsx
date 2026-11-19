@@ -1,11 +1,12 @@
-// Kontakt, the form every model leads to (briefs/shop/brief.md, answer 5). What the visitor wants, Kupovina, Najam or Servis, the model
-// filled in from the address, the name, the firm, the phone, the e-mail, a message and the consent. A Servis request goes to
-// servis@ekotehnika.rs and the others to info@ekotehnika.rs, through /api/upit and Resend. Until the key is set on Vercel the server says
+// Kontakt, the form every model leads to (briefs/shop/brief.md, answer 5). What the visitor wants, one topic or more of Kupovina, Najam,
+// Servis and Delovi, as cards with a photo and an icon, the models, up to six, each shown on the left and each removable (Filip 19 November,
+// briefs/shop/notes.md 36 and 37), the name, the firm, the phone, the e-mail, a message and the consent. Servis and Delovi go to
+// servis@ekotehnika.rs and the others to info@ekotehnika.rs, a request touching both to both, through /api/upit and Resend. Until the key is set on Vercel the server says
 // so, and the form says plainly that it is a test and gives the address to write to instead. Nothing is ever shown as sent that was not.
 import { useEffect, useMemo, useState, type FormEvent } from 'react';
 import { BtnInner } from '../story2/shell/ui';
 import { hero } from '../content';
-import { CATEGORIES, PRODUCTS, productBySlug } from './data';
+import { CATEGORIES, PRODUCTS, productBySlug, type Product } from './data';
 import { Link } from './route';
 import { Cap, Rule } from './parts';
 import { Facts, Picture } from './Card';
@@ -23,6 +24,16 @@ const SERVICE_MAIL = 'servis@ekotehnika.rs';
 const toService = (t: Tema) => t === 'servis' || t === 'delovi';
 export const inbox = (t: Tema) => (toService(t) ? SERVICE_MAIL : SALES_MAIL);
 const phone = (t: Tema) => (toService(t) ? hero.service.number : hero.sales.number);
+
+// each topic's card, a photo without people and the site's icon. The parts kit is shot on white, so it sits on the tint by multiply.
+const TOPIC: Record<Tema, { pic: string; ico: string; white?: boolean }> = {
+  kupovina: { pic: '/shop/hero/range.webp', ico: 'store' },
+  najam: { pic: '/photos/isporuka-3.webp', ico: 'calendar' },
+  servis: { pic: '/pages/servis-centar.webp', ico: 'wrench' },
+  delovi: { pic: '/pages/delovi-setovi.webp', ico: 'gear', white: true },
+};
+const MAX_MODELS = 6;
+const both = (xs: string[]) => xs.join(' i ');
 
 export type Fields = { ime: string; prezime: string; firma: string; telefon: string; email: string; model: string; poruka: string; saglasnost: boolean; website: string };
 export type Errors = Partial<Record<keyof Fields, string>>;
@@ -48,12 +59,29 @@ export function Contact({ tema, model, poruka }: { tema: string | null; model: s
     document.title = 'Kontakt, pošaljite upit | Ekotehnika';
   }, []);
   const first: Tema = TEME.find((x) => x.id === tema)?.id ?? 'kupovina';
-  const [t, setT] = useState<Tema>(first);
-  const [f, setF] = useState<Fields>({ ime: '', prezime: '', firma: '', telefon: '', email: '', model: productBySlug(model ?? '') ? model! : '', poruka: (poruka ?? '').slice(0, 400), saglasnost: false, website: '' });
+  const [teme, setTeme] = useState<Tema[]>([first]);
+  const [models, setModels] = useState<string[]>(() => (productBySlug(model ?? '') ? [model!] : []));
+  const [f, setF] = useState<Fields>({ ime: '', prezime: '', firma: '', telefon: '', email: '', model: '', poruka: (poruka ?? '').slice(0, 400), saglasnost: false, website: '' });
   const [errors, setErrors] = useState<Errors>({});
   const [mode, setMode] = useState<Mode>('checking');
   const [sent, setSent] = useState<Sent>({ state: 'idle' });
-  const picked = productBySlug(f.model);
+  const picked = models.map((m) => productBySlug(m)).filter((p): p is Product => Boolean(p));
+  const tos = [...new Set(teme.map(inbox))];
+  const calls = [...new Set(teme.map(phone))];
+  const mails = tos.map((m, i) => (
+    <span key={m}>
+      {i ? ' i ' : null}
+      <a href={`mailto:${m}`}>{m}</a>
+    </span>
+  ));
+  // a topic is ticked or not, one always stays, the order is the row's
+  const toggle = (id: Tema) =>
+    setTeme((xs) => (xs.includes(id) ? (xs.length > 1 ? xs.filter((x) => x !== id) : xs) : TEME.map((x) => x.id).filter((x) => x === id || xs.includes(x))));
+  const add = (slug: string) => setModels((xs) => (slug && !xs.includes(slug) && xs.length < MAX_MODELS ? [...xs, slug] : xs));
+  const remove = (slug: string) => setModels((xs) => xs.filter((x) => x !== slug));
+  const removeBtn = (p: Product, cls = '') => (
+    <button type="button" className={`sp-x${cls}`} aria-label={`Uklonite Linde ${p.code}`} onClick={() => remove(p.slug)} />
+  );
 
   // whether the server sends, asked once, a page with no server behind it (the dev server) is a test
   useEffect(() => {
@@ -87,7 +115,7 @@ export function Contact({ tema, model, poruka }: { tema: string | null; model: s
       const r = await fetch('/api/upit', {
         method: 'POST',
         headers: { 'content-type': 'application/json', accept: 'application/json' },
-        body: JSON.stringify({ ...f, tema: t, modelName: picked ? `Linde ${picked.code}, ${picked.kind}` : '' }),
+        body: JSON.stringify({ ...f, tema: teme[0], teme, modelName: picked.map((p) => `Linde ${p.code}, ${p.kind}`).join('; ') }),
       });
       const j = (await r.json().catch(() => null)) as { ok?: boolean; test?: boolean } | null;
       if (r.ok && j?.ok) setSent({ state: 'sent', test: Boolean(j.test) });
@@ -160,49 +188,71 @@ export function Contact({ tema, model, poruka }: { tema: string | null; model: s
         </dl>
         {/* what the inquiry is about, Filip 18 November, "add some imagery here". The model the select holds, its picture on a pale tile
             with its name and two figures, changing with the select. With no model the shop's photo of the trucks side by side. */}
-        <figure className="sp-contact-pic">
-          {picked ? (
-            <>
-              <Picture p={picked} size="hero" />
-              <figcaption>
-                <span className="sp-contact-pic-x">
-                  <span className="sp-lab">{picked.kind}</span>
-                  <span className="sp-contact-pic-t">Linde {picked.code}</span>
-                </span>
-                <Facts p={picked} />
-              </figcaption>
-            </>
-          ) : (
-            <>
-              <div className="sp-pic is-photo">
-                <img src="/shop/hero/range.webp" alt="Linde viljuškari svih vrsta, jedan pored drugog u hali" decoding="async" />
-              </div>
-              <figcaption>
-                <span className="sp-contact-pic-x">
-                  <span className="sp-lab">Prodavnica</span>
-                  <span className="sp-contact-pic-t">{PRODUCTS.length} modela Linde viljuškara</span>
-                </span>
-              </figcaption>
-            </>
-          )}
-        </figure>
+        {picked.length === 0 ? (
+          <figure className="sp-contact-pic">
+            <div className="sp-pic is-photo">
+              <img src="/shop/hero/range.webp" alt="Linde viljuškari svih vrsta, jedan pored drugog u hali" decoding="async" />
+            </div>
+            <figcaption>
+              <span className="sp-contact-pic-x">
+                <span className="sp-lab">Prodavnica</span>
+                <span className="sp-contact-pic-t">{PRODUCTS.length} modela Linde viljuškara</span>
+              </span>
+            </figcaption>
+          </figure>
+        ) : picked.length === 1 ? (
+          <figure className="sp-contact-pic">
+            <div className="sp-contact-one">
+              <Picture p={picked[0]} size="hero" />
+              {removeBtn(picked[0], ' is-on-pic')}
+            </div>
+            <figcaption>
+              <span className="sp-contact-pic-x">
+                <span className="sp-lab">{picked[0].kind}</span>
+                <span className="sp-contact-pic-t">Linde {picked[0].code}</span>
+              </span>
+              <Facts p={picked[0]} />
+            </figcaption>
+          </figure>
+        ) : (
+          <ul className="sp-contact-pics" aria-label="Izabrani modeli">
+            {picked.map((p) => (
+              <li key={p.slug}>
+                <figure className="sp-contact-pic is-small">
+                  <div className="sp-contact-one">
+                    <Picture p={p} size="card" />
+                    {removeBtn(p, ' is-on-pic')}
+                  </div>
+                  <figcaption>
+                    <span className="sp-contact-pic-x">
+                      <span className="sp-lab">{p.kind}</span>
+                      <span className="sp-contact-pic-t">Linde {p.code}</span>
+                    </span>
+                    <Facts p={p} />
+                  </figcaption>
+                </figure>
+              </li>
+            ))}
+          </ul>
+        )}
       </div>
 
       <div className="sp-cell sp-contact-r" style={{ gridColumn: 'span 2' }}>
         <Rule />
         {mode === 'test' && sent.state !== 'sent' ? (
           <p className="sp-note" role="note">
-            <strong>Probni obrazac.</strong> Upit se još ne šalje. Pišite nam na <a href={`mailto:${inbox(t)}`}>{inbox(t)}</a> ili pozovite {phone(t)}.
+            <strong>Probni obrazac.</strong> Upit se još ne šalje. Pišite nam na {mails} ili pozovite {both(calls)}.
           </p>
         ) : null}
 
         {sent.state === 'sent' ? (
           <div className="sp-done" role="status" aria-live="polite">
             <p className="sp-lab">{sent.test ? 'Probni obrazac' : 'Upit je poslat'}</p>
-            <p className="sp-done-t">{sent.test ? 'Upit je ispravno popunjen, ali nije poslat.' : `Hvala, ${f.ime.trim()}. Upit je stigao na ${inbox(t)}.`}</p>
+            <p className="sp-done-t">{sent.test ? 'Upit je ispravno popunjen, ali nije poslat.' : `Hvala, ${f.ime.trim()}. Upit je stigao na ${both(tos)}.`}</p>
             {sent.test ? (
               <p className="sp-lede">
-                Obrazac je još u probnom radu. Pošaljite isti upit na <a href={`mailto:${inbox(t)}?subject=${encodeURIComponent(`Upit, ${TEME.find((x) => x.id === t)!.label}${picked ? `, Linde ${picked.code}` : ''}`)}`}>{inbox(t)}</a> ili pozovite {phone(t)}.
+                Obrazac je još u probnom radu. Pošaljite isti upit na{' '}
+                <a href={`mailto:${tos.join(',')}?subject=${encodeURIComponent(`Upit, ${teme.map((x) => TEME.find((y) => y.id === x)!.label).join(', ')}${picked.length ? `, ${picked.map((p) => `Linde ${p.code}`).join(', ')}` : ''}`)}`}>{both(tos)}</a> ili pozovite {both(calls)}.
               </p>
             ) : null}
             <Link className="btn btn-secondary" href="/prodavnica">
@@ -212,28 +262,41 @@ export function Contact({ tema, model, poruka }: { tema: string | null; model: s
         ) : (
           <form className="sp-form" onSubmit={submit} noValidate aria-busy={sent.state === 'sending'}>
             <fieldset className="sp-tema">
-              <legend>Šta vas zanima</legend>
-              <div className="sp-seg" role="radiogroup">
-                {TEME.map((x) => (
-                  <label key={x.id} className={t === x.id ? 'is-on' : undefined}>
-                    <input type="radio" name="tema" value={x.id} checked={t === x.id} onChange={() => setT(x.id)} />
-                    <span>{x.label}</span>
-                  </label>
-                ))}
+              <legend>
+                Šta vas zanima<span className="sp-f-opt"> jedno ili više</span>
+              </legend>
+              <div className="sp-topics">
+                {TEME.map((x) => {
+                  const on = teme.includes(x.id);
+                  const tp = TOPIC[x.id];
+                  return (
+                    <label key={x.id} className={`sp-topic${on ? ' is-on' : ''}`}>
+                      <input type="checkbox" name="teme" value={x.id} checked={on} onChange={() => toggle(x.id)} />
+                      <span className={`sp-topic-pic${tp.white ? ' is-white' : ''}`}>
+                        <img src={tp.pic} alt="" loading="lazy" decoding="async" />
+                      </span>
+                      <span className="sp-topic-n">
+                        <i className={`sp-ico is-${tp.ico}`} aria-hidden="true" />
+                        {x.label}
+                      </span>
+                      <i className="sp-topic-x" aria-hidden="true" />
+                    </label>
+                  );
+                })}
               </div>
             </fieldset>
 
             <div className="sp-f">
               <label htmlFor="f-model">
-                Model<span className="sp-f-opt"> nije obavezno</span>
+                Model<span className="sp-f-opt"> nije obavezno, do {MAX_MODELS} modela</span>
               </label>
               <div className="sp-select">
-                <select id="f-model" name="model" value={f.model} onChange={(e) => set('model', e.target.value)}>
-                  <option value="">Bez modela, opšti upit</option>
+                <select id="f-model" name="model" value="" onChange={(e) => add(e.target.value)} disabled={models.length >= MAX_MODELS}>
+                  <option value="">{models.length >= MAX_MODELS ? `Izabrano je ${MAX_MODELS} modela` : models.length ? 'Dodajte još jedan model' : 'Bez modela, opšti upit'}</option>
                   {groups.map(({ c, items }) => (
                     <optgroup label={c.name} key={c.slug}>
                       {items.map((p) => (
-                        <option value={p.slug} key={p.slug}>
+                        <option value={p.slug} key={p.slug} disabled={models.includes(p.slug)}>
                           Linde {p.code}
                         </option>
                       ))}
@@ -241,6 +304,20 @@ export function Contact({ tema, model, poruka }: { tema: string | null; model: s
                   ))}
                 </select>
               </div>
+              {picked.length ? (
+                <ul className="sp-picked" aria-label="Izabrani modeli">
+                  {picked.map((p) => (
+                    <li key={p.slug}>
+                      <span className="sp-picked-pic">{p.thumb ? <img src={p.thumb} alt="" loading="lazy" decoding="async" /> : null}</span>
+                      <span className="sp-picked-n">
+                        Linde {p.code}
+                        <span>{p.kind}</span>
+                      </span>
+                      {removeBtn(p)}
+                    </li>
+                  ))}
+                </ul>
+              ) : null}
             </div>
 
             <div className="sp-pair">
@@ -285,7 +362,7 @@ export function Contact({ tema, model, poruka }: { tema: string | null; model: s
 
             {sent.state === 'failed' ? (
               <p className="sp-note is-bad" role="alert">
-                <strong>Upit nije poslat.</strong> Proverite vezu i pokušajte ponovo, ili pišite na <a href={`mailto:${inbox(t)}`}>{inbox(t)}</a>.
+                <strong>Upit nije poslat.</strong> Proverite vezu i pokušajte ponovo, ili pišite na {mails}.
               </p>
             ) : null}
 
@@ -293,9 +370,7 @@ export function Contact({ tema, model, poruka }: { tema: string | null; model: s
               <button type="submit" className="btn btn-primary" disabled={sent.state === 'sending' || mode === 'checking'}>
                 <BtnInner>{sent.state === 'sending' ? 'Šaljemo' : 'Pošaljite upit'}</BtnInner>
               </button>
-              <p className="sp-to">
-                Stiže na {inbox(t)}
-              </p>
+              <p className="sp-to">Stiže na {both(tos)}</p>
             </div>
           </form>
         )}

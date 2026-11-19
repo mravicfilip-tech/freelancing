@@ -1,5 +1,6 @@
 // The shop's form, POST /api/upit, sent on as an e-mail through Resend. A Servis or a Delovi request goes to servis@ekotehnika.rs, every
-// other to info@ekotehnika.rs. GET answers whether the form sends at all, so the page can say plainly that it is a test until the key is set.
+// other to info@ekotehnika.rs. Kontakt sends one topic or more in teme and several models in modelName (Filip 19 November, briefs/shop/
+// notes.md 36 and 37), and a request whose topics touch both inboxes goes to both. The forms that send one topic send it in tema. GET answers whether the form sends at all, so the page can say plainly that it is a test until the key is set.
 // Settings on the Vercel project, none of them in the repo.
 //   RESEND_API_KEY     the key, without it nothing is sent and every request answers { ok: true, test: true }
 //   FORM_FROM          the sender, a verified domain on Resend, by default the Resend test sender
@@ -27,14 +28,15 @@ export default async function handler(req, res) {
   // a bot fills the field people never see, it gets the answer a person would and nothing is sent
   if (clip(b.website, 200)) return res.status(200).json({ ok: true, test: !key });
 
+  const pick = Array.isArray(b.teme) ? b.teme.filter((t) => typeof t === 'string' && TEME[t]) : [];
+  const teme = [...new Set(pick.length ? pick : [TEME[b.tema] ? b.tema : 'kupovina'])];
   const f = {
-    tema: TEME[b.tema] ? b.tema : 'kupovina',
     ime: clip(b.ime, 80),
     prezime: clip(b.prezime, 80),
     firma: clip(b.firma, 120),
     telefon: clip(b.telefon, 40),
     email: clip(b.email, 120),
-    model: clip(b.modelName, 160),
+    model: clip(b.modelName, 1000),
     poruka: clip(b.poruka, 4000),
   };
   const bad = !f.ime || !f.prezime || f.telefon.replace(/[^\d]/g, '').length < 6 || !EMAIL.test(f.email) || b.saglasnost !== true;
@@ -42,11 +44,13 @@ export default async function handler(req, res) {
   if (!key) return res.status(200).json({ ok: true, test: true });
 
   const service = process.env.FORM_TO_SERVICE || 'servis@ekotehnika.rs';
-  const to = f.tema === 'servis' ? service : f.tema === 'delovi' ? process.env.FORM_TO_PARTS || service : process.env.FORM_TO_SALES || 'info@ekotehnika.rs';
+  const inboxOf = (t) => (t === 'servis' ? service : t === 'delovi' ? process.env.FORM_TO_PARTS || service : process.env.FORM_TO_SALES || 'info@ekotehnika.rs');
+  const to = [...new Set(teme.map(inboxOf))];
   const from = process.env.FORM_FROM || 'Ekotehnika sajt <onboarding@resend.dev>';
-  const subject = `Upit sa sajta, ${TEME[f.tema]}${f.model ? `, ${f.model}` : ''}`;
+  const labels = teme.map((t) => TEME[t]).join(', ');
+  const subject = `Upit sa sajta, ${labels}${f.model ? `, ${f.model}` : ''}`.slice(0, 200);
   const text = [
-    `Tema: ${TEME[f.tema]}`,
+    `Tema: ${labels}`,
     `Model: ${f.model || 'bez modela'}`,
     `Ime i prezime: ${f.ime} ${f.prezime}`,
     `Firma: ${f.firma || '-'}`,
@@ -60,7 +64,7 @@ export default async function handler(req, res) {
     const r = await fetch('https://api.resend.com/emails', {
       method: 'POST',
       headers: { authorization: `Bearer ${key}`, 'content-type': 'application/json' },
-      body: JSON.stringify({ from, to: [to], reply_to: f.email, subject, text }),
+      body: JSON.stringify({ from, to, reply_to: f.email, subject, text }),
     });
     if (!r.ok) return res.status(502).json({ ok: false });
     return res.status(200).json({ ok: true, test: false });

@@ -91,3 +91,6 @@ Round of 18 November, sent while the shop ran on his localhost. Planned and buil
 37. Kontakt, "1st image can we add multiple images if multiple selected products and to remove too". His first screenshot marks the
     picture of the chosen model in the left column, Linde E16 do E20 with its two figures. Several models picked, several pictures, each
     one removable.
+    36 and 37 built on Filip's go, 19 November. The topics are cards with a photo and an icon, one or more ticked, a request touching
+    sales and service goes to both inboxes. The model field adds up to six models to a list under it, each with an ×, and the left column
+    follows the list, one large, two or more in a grid of two, each with an ×. The server takes teme and several models.

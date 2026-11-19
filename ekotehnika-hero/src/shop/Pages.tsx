@@ -72,7 +72,6 @@ function PageHero({ id, kicker, title, line, extra, acts, main, second, tile }: 
           </div>
         </div>
       </Cell>
-      <Cap />
     </section>
   );
 }
@@ -87,7 +86,6 @@ function Figures({ label, items }: { label: string; items: { value: ReactNode; l
           <p className="pg-fig-l">{f.label}</p>
         </Cell>
       ))}
-      <Cap />
     </section>
   );
 }
@@ -113,7 +111,9 @@ function CentresMap({ label }: { label: string }) {
 
 // The close of a page, one row, its line and its own topic of the form. The footer under it carries both numbers, both e-mails and the
 // address, so the close does not repeat them.
-function Close({ id, label, title, act }: { id: string; label: string; title: string; act: ReactNode }) {
+// Only the last section of a page draws the closing cap. A cap under any other section lies 2px over the next row's own top rule and
+// draws a doubled line (Filip 19 November, "you have duplicate lines ... make sure you never do those again").
+function Close({ id, label, title, act, last = false }: { id: string; label: string; title: string; act: ReactNode; last?: boolean }) {
   return (
     <section className="sp-frame pg-close" aria-labelledby={`pg-${id}-close`}>
       <Cell span={4} className="pg-close-c">
@@ -125,7 +125,7 @@ function Close({ id, label, title, act }: { id: string; label: string; title: st
         </div>
         <div className="pg-act">{act}</div>
       </Cell>
-      <Cap />
+      {last ? <Cap /> : null}
     </section>
   );
 }
@@ -139,7 +139,7 @@ const PLACES = [
   { id: 'kompanija', name: 'Kompanija', line: statement.rows[1], href: '/kompanija', pic: '/pages/kompanija-zgrada.webp' },
 ];
 
-function Places({ current, label = 'Pogledajte i', note }: { current: string; label?: string; note?: string }) {
+function Places({ current, label = 'Pogledajte i', note, last = false }: { current: string; label?: string; note?: string; last?: boolean }) {
   const items = PLACES.filter((p) => p.id !== current).slice(0, 4);
   return (
     <section className="sp-frame pg-go-row" aria-labelledby="pg-go-h">
@@ -156,7 +156,7 @@ function Places({ current, label = 'Pogledajte i', note }: { current: string; la
           </Link>
         </Cell>
       ))}
-      <Cap />
+      {last ? <Cap /> : null}
     </section>
   );
 }
@@ -226,7 +226,6 @@ export function Najam() {
             </div>
           </div>
         </Cell>
-        <Cap />
       </section>
 
       <section className="sp-frame pg-band" aria-labelledby="pg-which-h">
@@ -246,7 +245,6 @@ export function Najam() {
             </Link>
           </div>
         </Cell>
-        <Cap />
       </section>
 
       <Close
@@ -259,7 +257,7 @@ export function Najam() {
           </Link>
         }
       />
-      <Places current="najam" />
+      <Places current="najam" last />
     </>
   );
 }
@@ -328,7 +326,6 @@ export function Servis() {
             ))}
           </ul>
         </Cell>
-        <Cap />
       </section>
 
       <CentresMap label="Servisni centri" />
@@ -343,7 +340,7 @@ export function Servis() {
           </Link>
         }
       />
-      <Places current="servis" />
+      <Places current="servis" last />
     </>
   );
 }
@@ -390,7 +387,6 @@ export function Delovi() {
             </Link>
           </Cell>
         ))}
-        <Cap />
       </section>
 
       <section className="sp-frame pg-band" aria-labelledby="pg-kit-h">
@@ -410,7 +406,6 @@ export function Delovi() {
             </Link>
           </div>
         </Cell>
-        <Cap />
       </section>
 
       <Close
@@ -423,7 +418,7 @@ export function Delovi() {
           </Link>
         }
       />
-      <Places current="delovi" />
+      <Places current="delovi" last />
     </>
   );
 }
@@ -478,7 +473,6 @@ export function Kompanija() {
         <Cell span={2} className="pg-pic">
           <img src="/pages/najam-flota.webp" alt="Redovi Linde viljuškara u dvorištu Ekotehnike, snimak iz vazduha" loading="lazy" decoding="async" />
         </Cell>
-        <Cap />
       </section>
 
       <Places current="kompanija" label="Logistička i intralogistička rešenja" note="Zvanični Linde partner za Srbiju i Crnu Goru, sa servisnim vozilima širom Srbije." />
@@ -493,7 +487,6 @@ export function Kompanija() {
         <Cell span={2} className="pg-pic">
           <img src="/pages/kompanija-regali.webp" alt="Skladište klijenta sa regalima i ručnim viljuškarom" loading="lazy" decoding="async" />
         </Cell>
-        <Cap />
       </section>
 
       <Close
@@ -505,6 +498,7 @@ export function Kompanija() {
             <BtnInner>{hero.quote.label}</BtnInner>
           </Link>
         }
+        last
       />
     </>
   );

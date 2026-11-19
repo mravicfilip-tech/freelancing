@@ -32,6 +32,9 @@ written by `/taste`.
 - Brand drift. Reading source for structure and inventing the rendered look instead of capturing
   the live reference first.
 - Weak states. Hover, focus or active identical to default.
+- Doubled lines. Two parallel rules or borders a few pixels apart where one line belongs, most often a
+  section's closing rule over the next section's own top rule. Where two rows meet there is one line.
+  Measure it on the rendered page, never by reading the code.
 - Low contrast and invisible text. Under 4.5 to 1 on body text is a finding. Under 1.5 to 1 is a
   separate, worse class.
 - Demo scaffolding on a product surface, such as walkthrough cards and "start here" prompts.

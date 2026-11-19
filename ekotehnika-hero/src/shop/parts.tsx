@@ -34,7 +34,8 @@ export function Cell({ span = 1, className = '', children }: { span?: number; cl
   );
 }
 
-// four empty cells of no height, so the rule under the last row has a mark at each of the five verticals
+// four empty cells of no height, so the rule under the last row has a mark at each of the five verticals. Only under the last section of a
+// page. Under any other section it lies 2px over the next section's top rule and doubles the line (Filip 19 November).
 export const Cap = () => (
   <>
     {[0, 1, 2, 3].map((i) => (

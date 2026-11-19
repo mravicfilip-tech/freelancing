@@ -74,4 +74,5 @@ The phone widths are Filip's yes of 4 November to the phone plan, briefs/mobile/
 - Version 5 Sistem is the only version, at `/` and any `/?v=` value. 1, 2, 3 and 4 were dropped, 2 and 4 on 13 October 2026. `/?gate=1` shows the forklift model gate.
 - Freeze a beat with `/?v=5&at=<beat>&k=<0 to 1>`, beat ids in `src/story2/timeline.ts`. Routes to shoot `v5=/?v=5`. WebGL renders in software in the cloud container, wait about 10000ms per shot. `studio/scripts/shoot.mjs` times out on its network idle wait here, so shoot with Playwright and the swiftshader flags from `scripts/scrollpass.mjs`.
 - Preview hosted on Vercel, project `ekotehnika-hero`, https://ekotehnika-hero.vercel.app.
+- Doubled lines. Before a push that touches a page, run `scripts/doubles.cjs` on every changed route at 1440, 390 and 360. It prints clean or names each pair of lines drawn 0.5 to 8px apart.
 - Reduced motion in the browser freezes all motion and drops the scroll pin.

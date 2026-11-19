@@ -5,7 +5,7 @@
 import { useEffect, useRef } from 'react';
 import { servisMap } from '../story2/copy';
 import { ServisMap } from '../story2/shell/map/ServisMap';
-import { Cap, Cell } from './parts';
+import { Cell } from './parts';
 
 // the roads arrive by k 0.44 (K in ServisMap.tsx), so k runs to 0.46 over the draw and then rests at 1
 const DRAW = 2600;
@@ -76,7 +76,6 @@ export default function Centres({ label }: { label: string }) {
           <ServisMap />
         </div>
       </Cell>
-      <Cap />
     </section>
   );
 }

@@ -1864,6 +1864,13 @@
   display: none;
 }
 
+/* One rule where two rows meet. A section followed by another draws no cap, the next section's own top rule is the line, and a cap there
+   lies 2px over it as a doubled line (Filip 19 November, "you have duplicate lines ... make sure you never do those again"). The pages
+   cap only their last section, this keeps a stray cap from drawing. */
+.sp-frame:has(+ .sp-frame) > .sp-cap {
+  display: none;
+}
+
 @media (max-aspect-ratio: 4/5) {
   .sp-frame > .sp-cell.sp-cap:first-of-type,
   .sp-frame > .sp-cap {

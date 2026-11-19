@@ -1,0 +1,33 @@
+{
+  "name": "hero-call-type",
+  "client": "ekotehnika",
+  "url": "http://localhost:4890/servis?poziv=3",
+  "selector": ".pg-call3",
+  "date": "2026-11-19",
+  "width": 1440,
+  "source": {
+    "repo": "/home/user/freelancing",
+    "file": "ekotehnika-hero/src/shop/Pages.tsx"
+  },
+  "note": "Filip 19 November, go with 3. The emergency number as white type on a dark hero, a blinking mark, the call and the secondary under it.",
+  "role": "div",
+  "tag": "div",
+  "text": "HITAN SERVIS +381 60 300 20 50 Pozovite ",
+  "fingerprint": {
+    "fontFamily": "daxline pro",
+    "fontSize": "18px",
+    "fontWeight": "400",
+    "lineHeight": "27px",
+    "letterSpacing": "0px",
+    "textTransform": "none",
+    "color": "#ffffff",
+    "background": "transparent",
+    "border": "none",
+    "radius": "0px",
+    "padding": "0px 0px 0px 0px",
+    "height": "212.64px",
+    "shadow": "none",
+    "width": "636px"
+  },
+  "hover": null
+}

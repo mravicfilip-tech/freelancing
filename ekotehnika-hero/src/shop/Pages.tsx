@@ -430,70 +430,27 @@ const SERVICES = [
 // the old service page's tabs, "Ispitivanje pre početka rada"
 const CHECKS = ['Konstrukcija vozila i vozni mehanizam', 'Motor, baterija i punjači', 'Hidraulika i tečnosti', 'Elektrika', 'Sistem za prihvat tereta'];
 
-// The Hitan servis call and Zakažite servis in the Servis hero, round 4 note 39, "rework this" (briefs/shop/notes.md). The old box was
-// capped at 560px and its number ran under the phone cell on a screen whose digits set wider, and the phone cell's ring stood as a dark box.
-// Three versions for Filip's pick on one board, ?poziv=1 to 3, each sized to its own number. 1 one row, the call as an outlined button
-// beside Zakažite servis. 2 an action bar, the call the white primary and Zakažite servis the secondary, two equal halves. 3 the number as
-// type with a pulsing mark, the two buttons under it. Until he picks, 1 shows.
-const callVariant = () => {
-  const v = typeof window === 'undefined' ? null : new URLSearchParams(window.location.search).get('poziv');
-  return v === '2' || v === '3' ? Number(v) : 1;
-};
-
+// The Hitan servis call and Zakažite servis in the Servis hero, the number set as type, Filip's pick of 19 November (taste 16:42, "go with
+// 3", board in briefs/shop/n39-call-board.png, kit hero-call-type). The number in white up to 64px, sized to its cell and never capped, a
+// square mark beside its label that blinks, and the site's own buttons under it, the call and Zakažite servis.
 function CallBlock() {
-  const [v] = useState(callVariant);
-  const book = (cls: string) => (
-    <Link className={cls} href={ask('servis')} data-cta="service">
-      <BtnInner>{pillar('servis').cta}</BtnInner>
-    </Link>
-  );
-  if (v === 2)
-    return (
-      <div className="pg-in pg-call2">
-        <a className="pg-c2 is-call" href={hero.service.tel} data-cta="call-service">
-          <span className="pg-c2-t">
-            <span className="pg-c2-l">{hero.service.label}</span>
-            <span className="pg-c2-n">{hero.service.number}</span>
-          </span>
-          <i className="pg-c2-i is-phone" aria-hidden="true" />
+  return (
+    <div className="pg-in pg-call3">
+      <a className="pg-c3" href={hero.service.tel} data-cta="call-service">
+        <span className="pg-c3-l">
+          <i className="pg-c3-dot" aria-hidden="true" />
+          {hero.service.label}
+        </span>
+        <span className="pg-c3-n">{hero.service.number}</span>
+      </a>
+      <div className="sp-hero-acts">
+        <a className="btn btn-primary btn-phone" href={hero.service.tel} data-cta="call-service">
+          <BtnInner>Pozovite servis</BtnInner>
         </a>
-        <Link className="pg-c2 is-book" href={ask('servis')} data-cta="service">
-          <span className="pg-c2-t">
-            <span className="pg-c2-l">Servis po dogovoru</span>
-            <span className="pg-c2-n">{pillar('servis').cta}</span>
-          </span>
-          <i className="pg-c2-i is-plus" aria-hidden="true" />
+        <Link className="btn btn-secondary" href={ask('servis')} data-cta="service">
+          <BtnInner>{pillar('servis').cta}</BtnInner>
         </Link>
       </div>
-    );
-  if (v === 3)
-    return (
-      <div className="pg-in pg-call3">
-        <a className="pg-c3" href={hero.service.tel} data-cta="call-service">
-          <span className="pg-c3-l">
-            <i className="pg-c3-dot" aria-hidden="true" />
-            {hero.service.label}
-          </span>
-          <span className="pg-c3-n">{hero.service.number}</span>
-        </a>
-        <div className="sp-hero-acts">
-          <a className="btn btn-primary btn-phone" href={hero.service.tel} data-cta="call-service">
-            <BtnInner>Pozovite servis</BtnInner>
-          </a>
-          {book('btn btn-secondary')}
-        </div>
-      </div>
-    );
-  return (
-    <div className="pg-in pg-call1">
-      <a className="pg-c1" href={hero.service.tel} data-cta="call-service">
-        <span className="pg-c1-t">
-          <span className="pg-c1-l">{hero.service.label}</span>
-          <span className="pg-c1-n">{hero.service.number}</span>
-        </span>
-        <i className="pg-c1-i" aria-hidden="true" />
-      </a>
-      {book('btn btn-primary')}
     </div>
   );
 }

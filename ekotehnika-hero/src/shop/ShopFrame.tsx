@@ -22,10 +22,11 @@ const shopLink: LinkFn = (href, children, className, current) =>
     </a>
   );
 
-export function ShopFrame({ page }: { page: 'Prodavnica' | 'Kontakt' }) {
+// page is the label of the nav link the page stands under, sheet the row of the phone's menu sheet when it differs, Najam under Usluge
+export function ShopFrame({ page, sheet: row = page }: { page: string; sheet?: string }) {
   const menu = useMenu();
   const nav = links.map((l) => ({ ...l, current: l.label === page }));
-  const sheet = sheetLinks.map((l) => ({ ...l, current: l.label === page }));
+  const sheet = sheetLinks.map((l) => ({ ...l, current: l.label === row }));
   const anchor = (l: (typeof nav)[number], className?: string) =>
     l.local ? (
       <Link href={hrefOf(l)} aria-current={l.current ? 'page' : undefined} className={className}>

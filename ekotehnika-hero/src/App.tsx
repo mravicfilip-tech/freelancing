@@ -6,7 +6,8 @@ const Gate = lazy(() => import('./r3f/Gate').then((m) => ({ default: m.Gate })))
 const Board = lazy(() => import('./board/Board').then((m) => ({ default: m.Board })));
 const StoryHarness = lazy(() => import('./story/Harness').then((m) => ({ default: m.Harness })));
 const StoryHarness2 = lazy(() => import('./story2/Harness').then((m) => ({ default: m.Harness2 })));
-// the shop, /prodavnica and /kontakt, its own chunk with no scene in it, Filip 18 November
+// the shop, /prodavnica and /kontakt, its own chunk with no scene in it, Filip 18 November, and the pages of the services and the company,
+// /najam, /servis, /delovi and /kompanija, Filip 19 November
 const Shop = lazy(() => import('./shop/Shop').then((m) => ({ default: m.Shop })));
 // the servis map design options for Filip's pick, ?servismap=1 to 3, round 5
 const ServisMapOptions = lazy(() => import('./story2/shell/map/ServisMapOptions').then((m) => ({ default: m.ServisMapOptions })));
@@ -19,7 +20,7 @@ const readVariant = () => {
 };
 
 export function App() {
-  if (/^\/(prodavnica|kontakt)(\/|$)/.test(window.location.pathname))
+  if (/^\/(prodavnica|kontakt|najam|servis|delovi|kompanija)(\/|$)/.test(window.location.pathname))
     return (
       <Suspense fallback={null}>
         <Shop />

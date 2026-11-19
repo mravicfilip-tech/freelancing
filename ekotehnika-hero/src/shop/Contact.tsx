@@ -10,16 +10,19 @@ import { Link } from './route';
 import { Cap, Rule } from './parts';
 import { Facts, Picture } from './Card';
 
-type Tema = 'kupovina' | 'najam' | 'servis';
+// Delovi, the parts, Filip 19 November, briefs/pages/plan.md. Its requests go to the service inbox until the client names one for parts.
+type Tema = 'kupovina' | 'najam' | 'servis' | 'delovi';
 const TEME: { id: Tema; label: string }[] = [
   { id: 'kupovina', label: 'Kupovina' },
   { id: 'najam', label: 'Najam' },
   { id: 'servis', label: 'Servis' },
+  { id: 'delovi', label: 'Delovi' },
 ];
 const SALES_MAIL = 'info@ekotehnika.rs';
 const SERVICE_MAIL = 'servis@ekotehnika.rs';
-const inbox = (t: Tema) => (t === 'servis' ? SERVICE_MAIL : SALES_MAIL);
-const phone = (t: Tema) => (t === 'servis' ? hero.service.number : hero.sales.number);
+const toService = (t: Tema) => t === 'servis' || t === 'delovi';
+const inbox = (t: Tema) => (toService(t) ? SERVICE_MAIL : SALES_MAIL);
+const phone = (t: Tema) => (toService(t) ? hero.service.number : hero.sales.number);
 
 type Fields = { ime: string; prezime: string; firma: string; telefon: string; email: string; model: string; poruka: string; saglasnost: boolean; website: string };
 type Errors = Partial<Record<keyof Fields, string>>;
@@ -38,13 +41,14 @@ function check(f: Fields): Errors {
   return e;
 }
 
-export function Contact({ tema, model }: { tema: string | null; model: string | null }) {
+// poruka fills the message from the link that opened the form, a rental term or a group of parts, a person can change it
+export function Contact({ tema, model, poruka }: { tema: string | null; model: string | null; poruka?: string | null }) {
   useEffect(() => {
     document.title = 'Kontakt, pošaljite upit | Ekotehnika';
   }, []);
-  const first: Tema = tema === 'najam' || tema === 'servis' ? tema : 'kupovina';
+  const first: Tema = TEME.find((x) => x.id === tema)?.id ?? 'kupovina';
   const [t, setT] = useState<Tema>(first);
-  const [f, setF] = useState<Fields>({ ime: '', prezime: '', firma: '', telefon: '', email: '', model: productBySlug(model ?? '') ? model! : '', poruka: '', saglasnost: false, website: '' });
+  const [f, setF] = useState<Fields>({ ime: '', prezime: '', firma: '', telefon: '', email: '', model: productBySlug(model ?? '') ? model! : '', poruka: (poruka ?? '').slice(0, 400), saglasnost: false, website: '' });
   const [errors, setErrors] = useState<Errors>({});
   const [mode, setMode] = useState<Mode>('checking');
   const [sent, setSent] = useState<Sent>({ state: 'idle' });

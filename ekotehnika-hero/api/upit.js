@@ -1,11 +1,12 @@
-// The shop's form, POST /api/upit, sent on as an e-mail through Resend. A Servis request goes to servis@ekotehnika.rs, every other to
-// info@ekotehnika.rs. GET answers whether the form sends at all, so the page can say plainly that it is a test until the key is set.
+// The shop's form, POST /api/upit, sent on as an e-mail through Resend. A Servis or a Delovi request goes to servis@ekotehnika.rs, every
+// other to info@ekotehnika.rs. GET answers whether the form sends at all, so the page can say plainly that it is a test until the key is set.
 // Settings on the Vercel project, none of them in the repo.
 //   RESEND_API_KEY     the key, without it nothing is sent and every request answers { ok: true, test: true }
 //   FORM_FROM          the sender, a verified domain on Resend, by default the Resend test sender
 //   FORM_TO_SALES      by default info@ekotehnika.rs
 //   FORM_TO_SERVICE    by default servis@ekotehnika.rs
-const TEME = { kupovina: 'Kupovina', najam: 'Najam', servis: 'Servis' };
+//   FORM_TO_PARTS      Delovi, by default FORM_TO_SERVICE, until the client names an inbox for parts
+const TEME = { kupovina: 'Kupovina', najam: 'Najam', servis: 'Servis', delovi: 'Delovi' };
 const EMAIL = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
 const clip = (v, n) => String(v ?? '').trim().slice(0, n);
 
@@ -40,7 +41,8 @@ export default async function handler(req, res) {
   if (bad) return res.status(400).json({ ok: false });
   if (!key) return res.status(200).json({ ok: true, test: true });
 
-  const to = f.tema === 'servis' ? process.env.FORM_TO_SERVICE || 'servis@ekotehnika.rs' : process.env.FORM_TO_SALES || 'info@ekotehnika.rs';
+  const service = process.env.FORM_TO_SERVICE || 'servis@ekotehnika.rs';
+  const to = f.tema === 'servis' ? service : f.tema === 'delovi' ? process.env.FORM_TO_PARTS || service : process.env.FORM_TO_SALES || 'info@ekotehnika.rs';
   const from = process.env.FORM_FROM || 'Ekotehnika sajt <onboarding@resend.dev>';
   const subject = `Upit sa sajta, ${TEME[f.tema]}${f.model ? `, ${f.model}` : ''}`;
   const text = [

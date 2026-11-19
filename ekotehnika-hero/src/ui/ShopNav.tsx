@@ -1,7 +1,7 @@
 // The site's mega menu, Filip 18 November, "fix this menu, remap it, add new links, show categories, create a mega menu etc". Two panels
 // open from the top row on a wide screen. Prodavnica shows the shop's ten categories by the four kinds of truck, each with its picture and
-// how many models it holds, and the one offer the old site ran. Usluge shows Najam, Servis, Hitan servis and Polovni, each with its own line
-// from content.ts. The categories are as GROUPS in shop/data.ts with the names, counts and faces of shop/catalog.json, kept here so the
+// how many models it holds, and the one offer the old site ran. Usluge shows Najam, Servis, Delovi and Hitan servis, each with its own
+// line from content.ts, and Polovni under them as a link to ekotehnika.rs. The categories are as GROUPS in shop/data.ts with the names, counts and faces of shop/catalog.json, kept here so the
 // homepage does not load the shop's catalogue, so a category renamed or recounted there is changed here too.
 import { useState, type ReactNode } from 'react';
 import { hero, pillars, SITE } from '../content';
@@ -94,15 +94,17 @@ export function ShopMega({ link }: { link: LinkFn }) {
   );
 }
 
-// What Ekotehnika does besides selling new trucks. Najam and Servis are chapters of the homepage story, Hitan servis calls, Polovni is
-// the one page that stays on ekotehnika.rs, the used trucks are listed there alone.
+// What Ekotehnika does besides selling new trucks. Najam, Servis and Delovi are pages of their own (Filip 19 November, briefs/pages/plan.md),
+// Hitan servis calls. Polovni is the one page that stays on ekotehnika.rs, the used trucks are listed there alone, and with Delovi in the
+// panel it moves to a line under the four cards, so the panel keeps its width under the menu.
 const pillar = (id: string) => pillars.find((p) => p.id === id)!;
 export const SERVICES = [
-  { id: 'najam', icon: 'calendar', name: pillar('najam').name, line: pillar('najam').line, href: '/#najam', go: pillar('najam').more },
-  { id: 'servis', icon: 'wrench', name: pillar('servis').name, line: pillar('servis').line, href: '/#servis', go: pillar('servis').more },
+  { id: 'najam', icon: 'calendar', name: pillar('najam').name, line: pillar('najam').line, href: '/najam', go: pillar('najam').more },
+  { id: 'servis', icon: 'wrench', name: pillar('servis').name, line: pillar('servis').line, href: '/servis', go: pillar('servis').more },
+  { id: 'delovi', icon: 'gear', name: 'Delovi', line: 'Originalni Linde delovi za vaš viljuškar.', href: '/delovi', go: 'Grupe delova' },
   { id: 'hitan', icon: 'phone', name: hero.service.label, line: 'Za hitne intervencije pozovite servis.', href: hero.service.tel, go: hero.service.number },
-  { id: 'polovni', icon: 'tag', name: pillar('polovni').name, line: pillar('polovni').line, href: `${SITE}/polovni-linde-viljuskari/`, go: pillar('polovni').more },
 ];
+const POLOVNI = { line: pillar('polovni').line, href: `${SITE}/polovni-linde-viljuskari/`, label: 'Polovni na ekotehnika.rs' };
 
 export function ServicesMega({ link }: { link: LinkFn }) {
   return (
@@ -124,6 +126,10 @@ export function ServicesMega({ link }: { link: LinkFn }) {
             </li>
           ))}
         </ul>
+        <div className="hf-sub-foot hf-svc-foot">
+          <span className="hf-svc-l">{POLOVNI.line}</span>
+          {link(POLOVNI.href, POLOVNI.label, 'hf-sub-all')}
+        </div>
       </div>
     </div>
   );

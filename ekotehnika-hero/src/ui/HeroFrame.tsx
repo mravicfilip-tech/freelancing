@@ -31,16 +31,18 @@ export type NavLink = { label: string; href: string; current?: boolean; ch?: str
 export const links: NavLink[] = [
   { label: 'Početna', href: '/', current: true, ch: 'home' },
   { label: 'Prodavnica', href: '/prodavnica', ch: 'prodaja', local: true, mega: 'shop' },
-  { label: 'Usluge', href: '/#najam', ch: 'najam servis', local: true, mega: 'services' },
-  { label: 'Kompanija', href: '/#kompanija', ch: 'kompanija', local: true },
+  // Usluge and Kompanija open their own pages, Filip 19 November, briefs/pages/plan.md. ch still marks their chapters in the story.
+  { label: 'Usluge', href: '/najam', ch: 'najam servis', local: true, mega: 'services' },
+  { label: 'Kompanija', href: '/kompanija', ch: 'kompanija', local: true },
   { label: 'Kontakt', href: '/kontakt', local: true },
 ];
 // the menu sheet of a phone has no panels, so it names every place on its own, Polovni the only one on ekotehnika.rs
 export const sheetLinks: NavLink[] = [
   links[0],
   links[1],
-  { label: 'Najam', href: '/#najam', local: true },
-  { label: 'Servis', href: '/#servis', local: true },
+  { label: 'Najam', href: '/najam', local: true },
+  { label: 'Servis', href: '/servis', local: true },
+  { label: 'Delovi', href: '/delovi', local: true },
   { label: 'Polovni', href: '/polovni-linde-viljuskari/' },
   links[3],
   links[4],

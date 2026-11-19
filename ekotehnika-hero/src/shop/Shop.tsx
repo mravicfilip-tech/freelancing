@@ -17,6 +17,7 @@ import { Hero } from './Hero';
 import { Listing } from './Listing';
 import { SearchBox } from './SearchBox';
 import { SpecEquipment, SpecFeatures, SpecFigures, SpecVersions, SpecWhy, useSpec } from './ModelSpec';
+import { Delovi, Kompanija, Najam, Servis } from './Pages';
 import './shop.css';
 
 function Crumbs({ items }: { items: { label: string; href?: string }[] }) {
@@ -304,18 +305,32 @@ function useTitle(title: string) {
   }, [title]);
 }
 
+// the menu link a page stands under, and on a phone's menu sheet its own row, the service pages under Usluge (Filip 19 November)
+const FRAME: Partial<Record<string, { page: string; sheet?: string }>> = {
+  contact: { page: 'Kontakt' },
+  najam: { page: 'Usluge', sheet: 'Najam' },
+  servis: { page: 'Usluge', sheet: 'Servis' },
+  delovi: { page: 'Usluge', sheet: 'Delovi' },
+  kompanija: { page: 'Kompanija' },
+};
+
 export function Shop() {
   const route = useRoute();
+  const frame = FRAME[route.page] ?? { page: 'Prodavnica' };
   return (
     <div className="sp">
-      <ShopFrame page={route.page === 'contact' ? 'Kontakt' : 'Prodavnica'} />
+      <ShopFrame page={frame.page} sheet={frame.sheet} />
       <main id="sp-main" className="sp-main" tabIndex={-1}>
         <Lines />
         {route.page === 'home' ? <Home /> : null}
         {route.page === 'all' ? <AllPage /> : null}
         {route.page === 'category' ? <CategoryPage cat={route.cat} key={route.cat} /> : null}
         {route.page === 'model' ? <ModelPage cat={route.cat} model={route.model} key={route.model} /> : null}
-        {route.page === 'contact' ? <Contact tema={route.tema} model={route.model} /> : null}
+        {route.page === 'contact' ? <Contact tema={route.tema} model={route.model} poruka={route.poruka} key={`${route.tema}|${route.model}|${route.poruka}`} /> : null}
+        {route.page === 'najam' ? <Najam /> : null}
+        {route.page === 'servis' ? <Servis /> : null}
+        {route.page === 'delovi' ? <Delovi /> : null}
+        {route.page === 'kompanija' ? <Kompanija /> : null}
         {route.page === 'missing' ? <Missing /> : null}
       </main>
       <Footer />

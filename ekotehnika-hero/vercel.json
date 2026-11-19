@@ -4,9 +4,38 @@
   "buildCommand": "npm run build",
   "outputDirectory": "dist",
   "rewrites": [
-    { "source": "/prodavnica", "destination": "/index.html" },
-    { "source": "/prodavnica/(.*)", "destination": "/index.html" },
-    { "source": "/kontakt", "destination": "/index.html" }
+    {
+      "source": "/prodavnica",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/prodavnica/(.*)",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/kontakt",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/najam",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/servis",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/delovi",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/kompanija",
+      "destination": "/index.html"
+    }
   ],
-  "git": { "deploymentEnabled": { "claude/*": false } }
+  "git": {
+    "deploymentEnabled": {
+      "claude/*": false
+    }
+  }
 }

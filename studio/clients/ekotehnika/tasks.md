@@ -25,11 +25,6 @@ Task format
 
 ## In progress
 
-- ekotehnika-22 The service pages, Najam, Servis and Delovi, and the Kompanija page, interesting, with the content gathered. Filip 19 November
-  - [x] Gather every fact, line and picture we hold for the four pages, briefs/pages/content.md
-  - [ ] The structure of each page and the kickoff answers from Filip
-  - [ ] Build the four pages and point the menu at them
-
 - ekotehnika-21 The shop, the client's Drive categories and products, every product leads to the contact form, no cart. The homepage story leads to it. Brief in briefs/shop/brief.md
   - [x] Map the Drive, 89 series in 10 categories, renders, photos and data sheets per series
   - [x] Filip answers the kickoff questions, "yes, go with defaults", 18 November, written into the brief
@@ -291,6 +286,15 @@ Task format
   - [ ] Filip picks one by number
 
 ## Review
+
+- ekotehnika-22 The service pages, Najam, Servis and Delovi, and the Kompanija page, interesting, with the content gathered. Filip 19 November. On the branch claude/awesome-faraday-lkhnn2, /najam, /servis, /delovi and /kompanija on localhost
+  - [x] Gather every fact, line and picture we hold for the four pages, briefs/pages/content.md
+  - [x] The structure of each page and the kickoff answers from Filip, "yes, go" to the hardened plan, briefs/pages/plan.md
+  - [x] Build the four pages and point the menu at them, the Delovi form topic, shots at 1440 and 390
+  - [ ] /uireview on the four pages
+  - [ ] Filip looks on localhost
+  - [ ] The client answers the Delovi questions and checks the new Serbian lines, plan.md
+  - [ ] Production after Filip's ship line
 
 - ekotehnika-6 Version 5 in light mode, servis stays dark. Link https://ekotehnika-hero.vercel.app/?v=5
   - [x] Let the shell set dark beats per version

@@ -7,17 +7,26 @@ export type Route =
   | { page: 'all' }
   | { page: 'category'; cat: string }
   | { page: 'model'; cat: string; model: string }
-  | { page: 'contact'; tema: string | null; model: string | null }
+  | { page: 'contact'; tema: string | null; model: string | null; poruka: string | null }
+  | { page: 'najam' }
+  | { page: 'servis' }
+  | { page: 'delovi' }
+  | { page: 'kompanija' }
   | { page: 'missing' };
 
-export const isShopPath = (path: string) => /^\/(prodavnica|kontakt)(\/|$)/.test(path);
+// the pages of the services and the company, Filip 19 November, briefs/pages/plan.md
+const PAGES = ['najam', 'servis', 'delovi', 'kompanija'] as const;
+
+export const isShopPath = (path: string) => /^\/(prodavnica|kontakt|najam|servis|delovi|kompanija)(\/|$)/.test(path);
 
 export function parse(path: string, search: string): Route {
   const parts = path.replace(/\/+$/, '').split('/').filter(Boolean);
   if (parts[0] === 'kontakt' && parts.length === 1) {
     const q = new URLSearchParams(search);
-    return { page: 'contact', tema: q.get('tema'), model: q.get('model') };
+    return { page: 'contact', tema: q.get('tema'), model: q.get('model'), poruka: q.get('poruka') };
   }
+  const page = PAGES.find((x) => x === parts[0]);
+  if (page && parts.length === 1) return { page };
   if (parts[0] !== 'prodavnica') return { page: 'missing' };
   if (parts.length === 1) return { page: 'home' };
   if (parts.length === 2) return parts[1] === 'svi-modeli' ? { page: 'all' } : { page: 'category', cat: parts[1] };

@@ -255,9 +255,11 @@ export const footer = {
   // the footer's menu follows the top menu, Filip 18 November, only Polovni stays on ekotehnika.rs
   nav: [
     { label: 'Prodavnica', href: '/prodavnica' },
-    { label: 'Najam', href: '/#najam' },
-    { label: 'Servis', href: '/#servis' },
+    { label: 'Najam', href: '/najam' },
+    { label: 'Servis', href: '/servis' },
+    { label: 'Delovi', href: '/delovi' },
     { label: 'Polovni', href: `${SITE}/polovni-linde-viljuskari/` },
+    { label: 'Kompanija', href: '/kompanija' },
     { label: 'Kontakt', href: '/kontakt' },
   ],
   address: ['Moše Pijade 17b', '11224 Vrčin'],

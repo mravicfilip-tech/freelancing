@@ -13,6 +13,7 @@ checks copy against this file. Add a term the first time the UI needs a new one.
 | Servis | Maintenance and repair by Ekotehnika, as a section name | Popravka | Nav, S beat, footer |
 | Održavanje | Maintenance included in a rental, as a fact, never a section name | | N spec row |
 | Hitan servis | The emergency service line | Hitna pomoć, Dežurni servis | Top row, S beat, footer |
+| Delovi | Spare parts, tyres, batteries and chargers, attachments, the page and the form topic, Filip 19 November | Rezervni delovi as a page name | Usluge panel, /delovi, Kontakt |
 | Automatizacija | C-Matic robots and warehouse automation | Robotika | AT beat, Proizvodi |
 
 ## Verbs
@@ -24,6 +25,7 @@ Buttons name what happens. One verb per action across the app.
 | Ask for an offer | Zatražite ponudu | Pošaljite upit, Kontakt |
 | Ask for a rental offer | Zatražite ponudu za najam | Iznajmite |
 | Book a service visit | Zakažite servis | Rezervišite |
+| Ask for a parts offer | Zatražite ponudu za delove | Naručite, Kupite |
 | See the product range | Pogledajte modele | Saznajte više |
 
 ## Errors

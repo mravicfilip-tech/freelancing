@@ -1,0 +1,539 @@
+/* The service pages and the company page, Pages.tsx, Filip 19 November, briefs/pages/plan.md. The shop's own parts, its hero of words and
+   a collage, its cells between the five verticals, its type and its one primary. These rules only add what the four pages need beyond
+   them. */
+
+/* ---- the hero, the shop's collage with no slides, the words at the top of their cell ---- */
+.pg-hero .sp-hero-text {
+  justify-content: flex-start;
+}
+
+.pg-hero .sp-hero-t {
+  max-width: 9em;
+}
+
+/* Hitan servis at full size under the line, the number is the link */
+.pg-hot {
+  display: grid;
+  gap: 4px;
+  margin-top: 32px;
+  color: inherit;
+  text-decoration: none;
+}
+
+.pg-hot-n {
+  font-size: 54px;
+  font-weight: 350;
+  line-height: 60px;
+  letter-spacing: -0.02em;
+}
+
+.pg-hot:is(:hover, :focus-visible) .pg-hot-n {
+  text-decoration: underline;
+  text-decoration-thickness: 2px;
+  text-underline-offset: 8px;
+}
+
+/* the collage a little lower than the shop's on a wide screen, the page has no tabs under it */
+@media not (max-aspect-ratio: 4/5) {
+  .pg-hero .sp-hero-imgs {
+    height: clamp(440px, 54vh, 560px);
+  }
+}
+
+/* the collage's tile holds a photo here, not a cut out model, so it fills the tile */
+.pg-hero .sp-col-tile img {
+  padding: 0;
+  object-fit: cover;
+}
+
+/* ---- a row of four figures, the homepage's facts ---- */
+.pg-fig-v {
+  margin: 0;
+  font-size: 40px;
+  font-weight: 350;
+  line-height: 48px;
+  letter-spacing: -0.02em;
+}
+
+.pg-fig-v span {
+  font-size: 20px;
+  letter-spacing: 0;
+}
+
+.pg-fig-l {
+  margin: 8px 0 0;
+  color: var(--grey-dark);
+  font-size: 16px;
+  line-height: 24px;
+}
+
+/* ---- words in a cell, a label, a 54px line, a lede and an action ---- */
+.pg-text {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.pg-h2 {
+  position: relative;
+  z-index: 20;
+  margin: 16px 0 0;
+  max-width: 12em;
+  font-size: 54px;
+  font-weight: 350;
+  line-height: 60px;
+  letter-spacing: -0.02em;
+  text-wrap: balance;
+}
+
+.pg-text .sp-lede {
+  margin-top: 24px;
+}
+
+.pg-text .sp-list {
+  margin-top: 32px;
+}
+
+.pg-act {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 48px;
+}
+
+/* a photo across two frames, cut to its cell */
+.pg-pic {
+  padding: 32px 24px 48px;
+}
+
+.pg-pic img {
+  position: relative;
+  z-index: 20;
+  display: block;
+  width: 100%;
+  height: 100%;
+  min-height: 400px;
+  object-fit: cover;
+  background: var(--tint);
+}
+
+.pg-pic figure {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  margin: 0;
+}
+
+.pg-pic figcaption {
+  margin-top: 12px;
+  color: var(--grey-dark);
+  font-size: 14px;
+  line-height: 20px;
+}
+
+/* ---- a cell with an icon, a name, a line and a link, the data sheet's feature cell ---- */
+.pg-feat {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.pg-feat-t {
+  margin: 12px 0 0;
+  font-size: 16px;
+  line-height: 24px;
+}
+
+.pg-feat .sp-more {
+  margin-top: auto;
+  padding-top: 24px;
+}
+
+/* ---- Najam, the short and the long rental side by side ---- */
+.pg-term {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.pg-term .sp-ico {
+  margin-bottom: 24px;
+}
+
+.pg-term-v {
+  margin: 8px 0 0;
+  font-size: 32px;
+  font-weight: 350;
+  line-height: 40px;
+  letter-spacing: -0.01em;
+}
+
+.pg-term-t {
+  margin: 16px 0 0;
+  max-width: 30em;
+  font-size: 16px;
+  line-height: 24px;
+}
+
+.pg-term-act {
+  align-self: stretch;
+  margin-top: auto;
+  padding-top: 48px;
+}
+
+/* the four terms as cards like the homepage's, a rule over each, the figure and meseci, the whole card a link to the form */
+.pg-months {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.pg-month {
+  position: relative;
+  z-index: 20;
+  display: flex;
+  flex-direction: column;
+  padding: 16px 16px 24px;
+  border-top: 1px solid var(--black);
+  background: var(--white);
+  color: inherit;
+  text-decoration: none;
+  transition: background-color 200ms var(--out);
+}
+
+.pg-month:is(:hover, :focus-visible) {
+  background: var(--tint);
+}
+
+.pg-month b {
+  font-size: 40px;
+  font-weight: 350;
+  line-height: 48px;
+  letter-spacing: -0.02em;
+}
+
+.pg-month span {
+  color: var(--grey-dark);
+  font-size: 14px;
+  line-height: 20px;
+}
+
+/* ---- Servis, 300+ with the service van, and the checks ---- */
+.pg-giant {
+  display: flex;
+  align-items: flex-end;
+  gap: 24px;
+}
+
+.pg-giant-x {
+  flex: none;
+}
+
+.pg-giant-v {
+  margin: 0;
+  font-size: 120px;
+  font-weight: 300;
+  line-height: 1;
+  letter-spacing: -0.04em;
+}
+
+.pg-giant-l {
+  margin: 8px 0 0;
+  max-width: 12em;
+  font-size: 20px;
+  line-height: 28px;
+}
+
+.pg-giant img {
+  position: relative;
+  z-index: 20;
+  display: block;
+  flex: 1;
+  min-width: 0;
+  height: auto;
+  background: var(--white);
+}
+
+.pg-h3 {
+  margin: 0;
+  font-size: 24px;
+  font-weight: 400;
+  line-height: 32px;
+}
+
+/* ---- the two service centres and the map, the map on the black of the homepage's Servis ---- */
+.pg-bases {
+  display: grid;
+  align-self: stretch;
+  gap: 0;
+  margin: 48px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.pg-bases li {
+  display: grid;
+  gap: 4px;
+  padding: 24px 0;
+  border-top: 1px solid var(--grey-light);
+}
+
+.pg-base-n {
+  font-size: 40px;
+  font-weight: 350;
+  line-height: 48px;
+  letter-spacing: -0.02em;
+}
+
+.pg-base-l {
+  color: var(--grey-dark);
+  font-size: 16px;
+  line-height: 24px;
+}
+
+.pg-bases address {
+  display: grid;
+  justify-items: start;
+  gap: 4px;
+  margin-top: 8px;
+  font-size: 18px;
+  font-style: normal;
+  line-height: 24px;
+}
+
+.pg-bases a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.pg-bases a:is(:hover, :focus-visible) {
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+
+.pg-map {
+  padding: 0;
+  background: #000;
+}
+
+.pg-map-fig {
+  position: relative;
+  height: 100%;
+  min-height: 680px;
+  margin: 0;
+  overflow: hidden;
+  container-type: size;
+  display: grid;
+  place-items: center;
+}
+
+.pg-map .sm-live {
+  --mh: min(calc(100cqh - 96px), calc((100cqw - 96px) * 764 / 659));
+}
+
+/* the point of a centre, the homepage's, a white square with an ink edge and an ink plus (story2/shell/shell.css, not in this chunk) */
+.pg-map .p-dot {
+  position: absolute;
+  width: 29px;
+  height: 29px;
+  box-sizing: border-box;
+  margin: -14.5px 0 0 -14.5px;
+  border: 1px solid var(--black);
+  background:
+    linear-gradient(var(--black), var(--black)) 6px 12px / 14px 2px no-repeat,
+    linear-gradient(var(--black), var(--black)) 12px 6px / 2px 14px no-repeat,
+    var(--white);
+}
+
+/* ---- the close of a page, its line on the left and its button on the right, on one row ---- */
+.pg-close-c {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  gap: 48px;
+  padding: 48px 24px;
+}
+
+.pg-close-c .pg-h2 {
+  max-width: 16em;
+}
+
+.pg-close-c .pg-act {
+  flex: none;
+  margin-top: 0;
+}
+
+/* ---- the other pages, a row of four tiles, a photo, the name and a line ---- */
+.pg-go .sp-pic {
+  aspect-ratio: 4 / 3;
+  margin: 16px 0 24px;
+  background: var(--tint);
+}
+
+.pg-go .sp-pic img {
+  object-fit: cover;
+}
+
+.pg-go-l {
+  margin-top: 4px;
+  color: var(--grey-dark);
+  font-size: 16px;
+  line-height: 24px;
+}
+
+/* less motion asked for, the collage simply there */
+@media (prefers-reduced-motion: reduce) {
+  .pg-hero :is(.sp-col *, .sp-hero-slide > *) {
+    animation: none;
+  }
+}
+
+/* ---- a screen held upright, one frame, every cell across the width ---- */
+@media (max-aspect-ratio: 4/5) {
+  /* the collage of a page has no tile or fact at its foot, so it is lower and its main photo takes the height */
+  .pg-hero .sp-hero-imgs {
+    aspect-ratio: 4 / 3;
+  }
+
+  .pg-hero .sp-col-main {
+    height: 100%;
+  }
+
+  .pg-hot-n {
+    font-size: 32px;
+    line-height: 40px;
+  }
+
+  .pg-hero .sp-hero-acts {
+    align-self: stretch;
+    flex-direction: column;
+  }
+
+  .pg-hero .sp-hero-acts .btn {
+    align-self: stretch;
+  }
+
+  .pg-hero .sp-hero-acts .btn .btn-t {
+    flex: 1;
+  }
+
+  .pg-figs {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  /* the cap under the row keeps the full width, shop.css */
+  .pg-figs > .sp-cell:not(.sp-cap) {
+    grid-column: auto !important;
+  }
+
+  .pg-fig {
+    padding: 24px 12px;
+  }
+
+  .pg-fig-v {
+    font-size: 28px;
+    line-height: 36px;
+  }
+
+  .pg-h2 {
+    font-size: clamp(32px, calc((100cqw - 56px) / 9), 40px);
+    line-height: 1.15;
+  }
+
+  .pg-pic {
+    padding: 16px 12px 8px;
+  }
+
+  .pg-pic img {
+    min-height: 0;
+    aspect-ratio: 4 / 3;
+    height: auto;
+  }
+
+  /* on a phone the terms are rows, the figure and meseci on one line under a rule (taste 4 November) */
+  .pg-months {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 0;
+  }
+
+  .pg-month {
+    flex-direction: row;
+    align-items: baseline;
+    gap: 12px;
+    padding: 12px 0 16px;
+  }
+
+  .pg-month b {
+    font-size: 32px;
+    line-height: 40px;
+  }
+
+  .pg-giant {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .pg-giant-v {
+    font-size: 88px;
+  }
+
+  /* the van's width attribute would hold it at 1400px in a column, so its width is set */
+  .pg-giant img {
+    flex: none;
+    align-self: stretch;
+    width: 100%;
+  }
+
+  .pg-map-fig {
+    min-height: 0;
+    height: auto;
+    aspect-ratio: 659 / 764;
+  }
+
+  .pg-map .sm-live {
+    --mh: min(calc(100cqh - 48px), calc((100cqw - 48px) * 764 / 659));
+  }
+
+  .pg-close-c {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 32px;
+    padding: 24px 12px 32px;
+  }
+
+  .pg-close-c .pg-act .btn {
+    width: 100%;
+  }
+
+  .pg-close-c .pg-act .btn .btn-t {
+    flex: 1;
+  }
+
+  .pg-go-row {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .pg-go-row > .sp-cell:not(.sp-cap, .sp-sec-h) {
+    grid-column: auto !important;
+  }
+
+  .pg-go-row > .sp-sec-h {
+    grid-column: 1 / -1 !important;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .pg-go .sp-tile-a {
+    padding: 16px 12px 24px;
+  }
+
+  .pg-go .sp-tile-name {
+    font-size: 18px;
+    line-height: 24px;
+  }
+
+  .pg-go-l {
+    font-size: 14px;
+    line-height: 20px;
+  }
+}

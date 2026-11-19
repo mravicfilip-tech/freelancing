@@ -42,7 +42,7 @@
   <body>
     <div id="boot" aria-hidden="true"></div>
     <script>
-      if (/[?&](at|gate|servismap|story|story2|board)(=|&|$)/.test(location.search) || /^\/(prodavnica|kontakt)(\/|$)/.test(location.pathname)) document.getElementById('boot').remove();
+      if (/[?&](at|gate|servismap|story|story2|board)(=|&|$)/.test(location.search) || /^\/(prodavnica|kontakt|najam|servis|delovi|kompanija)(\/|$)/.test(location.pathname)) document.getElementById('boot').remove();
     </script>
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>

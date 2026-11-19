@@ -294,7 +294,7 @@ Task format
   - [x] One line where two sections meet on every page, scripts/doubles.cjs clean at 1440, 390 and 360
   - [x] Round 2, "Do different hero's", a hero of its own on each page, a black call band mid page and at the close, the phone bar's topic, the page motion
   - [x] Round 3, one call band per page and the close as a short inquiry in place, briefs/pages/notes.md
-  - [ ] Round 3, Filip picks a term picker from the board, briefs/pages/n2-term-cards-board.png
+  - [x] Round 3, Filip picks a term picker from the board, 3 the stepper, briefs/pages/n2-term-cards-board.png
   - [ ] /uireview on the four pages
   - [ ] Filip looks on localhost
   - [ ] The client answers the Delovi questions and checks the new Serbian lines, plan.md

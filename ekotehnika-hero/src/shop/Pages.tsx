@@ -290,77 +290,31 @@ function Reel() {
   );
 }
 
-// The term picker of the long rental, round 3 note 2, "work on these cards more" (briefs/pages/notes.md). Four versions for Filip's pick
-// on one board, ?kartice=1 to 4. 1 a ruler, one track in four with a black block that slides to the term. 2 tiles, the figure, meseci,
-// a hairline and the years, the picked one black with a check cell in its corner like the buttons' plus cell. 3 a stepper, one large
-// figure between a minus and a plus cell, four stops under it. 4 segments, the control of Kratkoročni and Dugoročni above it. Until he
-// picks, 2 shows.
+// The term picker of the long rental, a stepper, Filip's pick of 19 November (taste 14:32, "go with 3", board in
+// briefs/pages/n2-term-cards-board.png, kit term-stepper). One large figure with its years between a minus and a plus cell, and the
+// four terms as stops under it.
 const YEARS: Record<string, string> = { '36': '3 godine', '48': '4 godine', '60': '5 godina', '72': '6 godina' };
-const cardsVariant = () => {
-  const v = typeof window === 'undefined' ? null : new URLSearchParams(window.location.search).get('kartice');
-  return v === '1' || v === '3' || v === '4' ? Number(v) : 2;
-};
 
 function Terms({ term, setTerm }: { term: string; setTerm: (t: string) => void }) {
-  const [v] = useState(cardsVariant);
   const at = TERMS.indexOf(term);
-  const radio = (m: string) => <input type="radio" name="pg-term" value={m} checked={term === m} onChange={() => setTerm(m)} />;
-  if (v === 1)
-    return (
-      <div className="pg-ruler" style={{ '--at': at } as CSSProperties}>
-        <i className="pg-ruler-thumb" aria-hidden="true" />
-        {TERMS.map((m) => (
-          <label className={`pg-ruler-stop${term === m ? ' is-on' : ''}`} key={m}>
-            {radio(m)}
-            <b>{m}</b>
-            <span>{YEARS[m]}</span>
-          </label>
-        ))}
-      </div>
-    );
-  if (v === 3)
-    return (
-      <div className="pg-step">
-        <div className="pg-step-row">
-          <button type="button" className="pg-step-b is-minus" aria-label="Kraći period" disabled={at === 0} onClick={() => setTerm(TERMS[at - 1])} />
-          <output className="pg-step-v" aria-live="polite">
-            <b key={term}>{term}</b>
-            <span>meseci, {YEARS[term]}</span>
-          </output>
-          <button type="button" className="pg-step-b is-plus" aria-label="Duži period" disabled={at === TERMS.length - 1} onClick={() => setTerm(TERMS[at + 1])} />
-        </div>
-        <div className="pg-step-stops">
-          {TERMS.map((m) => (
-            <label className={`pg-step-stop${term === m ? ' is-on' : ''}`} key={m}>
-              {radio(m)}
-              <span>{m}</span>
-            </label>
-          ))}
-        </div>
-      </div>
-    );
-  if (v === 4)
-    return (
-      <div className="sp-seg pg-seg4">
-        {TERMS.map((m) => (
-          <label className={term === m ? 'is-on' : undefined} key={m}>
-            {radio(m)}
-            {m} meseci
-          </label>
-        ))}
-      </div>
-    );
   return (
-    <div className="pg-tiles">
-      {TERMS.map((m) => (
-        <label className={`pg-tile${term === m ? ' is-on' : ''}`} key={m}>
-          {radio(m)}
-          <b>{m}</b>
-          <span>meseci</span>
-          <em>{YEARS[m]}</em>
-          <i className="pg-tile-x" aria-hidden="true" />
-        </label>
-      ))}
+    <div className="pg-step">
+      <div className="pg-step-row">
+        <button type="button" className="pg-step-b is-minus" aria-label="Kraći period" disabled={at === 0} onClick={() => setTerm(TERMS[at - 1])} />
+        <output className="pg-step-v" aria-live="polite">
+          <b key={term}>{term}</b>
+          <span>meseci, {YEARS[term]}</span>
+        </output>
+        <button type="button" className="pg-step-b is-plus" aria-label="Duži period" disabled={at === TERMS.length - 1} onClick={() => setTerm(TERMS[at + 1])} />
+      </div>
+      <div className="pg-step-stops">
+        {TERMS.map((m) => (
+          <label className={`pg-step-stop${term === m ? ' is-on' : ''}`} key={m}>
+            <input type="radio" name="pg-term" value={m} checked={term === m} onChange={() => setTerm(m)} />
+            <span>{m}</span>
+          </label>
+        ))}
+      </div>
     </div>
   );
 }

@@ -12,5 +12,5 @@ Filip, 19 November, after commit e25f7ab. Each note as he sent it, then what it 
 
 - Note 1. One black band per page, mid page. The close is QuickAsk.tsx, a short inquiry on white with the page's topic set, the fields
   the form's server needs, the message filled in and the page's number large beside it. Built, on the branch.
-- Note 2. Four versions of the term picker on one board, n2-term-cards-board.png beside this file, live at /najam?kartice=1 to 4. Waiting
-  for Filip's number. 2 shows until he picks.
+- Note 2. Four versions of the term picker on one board, n2-term-cards-board.png beside this file. Filip, "go with 3", the stepper. The
+  other three and the ?kartice switch are gone, the stepper is in the kit as term-stepper (taste 2026-11-19 14:32).

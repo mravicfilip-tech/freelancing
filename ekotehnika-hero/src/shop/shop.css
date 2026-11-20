@@ -1464,9 +1464,7 @@
   border: 1px solid var(--grey-light);
   background: var(--white);
   cursor: pointer;
-  transition:
-    border-color 160ms,
-    box-shadow 160ms;
+  transition: border-color 160ms;
 }
 
 .sp-topic input {
@@ -1479,12 +1477,13 @@
 }
 
 .sp-topic:hover {
-  border-color: var(--black);
+  border-color: var(--grey-mid);
 }
 
+/* one 1px stroke like the field under it, black when ticked, the check cell carries the rest (Filip 20 November, "fix stroke here to
+   be the bottom one not like this", the inset second line read as a heavy double stroke) */
 .sp-topic.is-on {
   border-color: var(--black);
-  box-shadow: inset 0 0 0 1px var(--black);
 }
 
 .sp-topic:has(input:focus-visible) {

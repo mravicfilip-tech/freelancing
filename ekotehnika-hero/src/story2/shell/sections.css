@@ -765,7 +765,19 @@
     font-size: clamp(28px, 8cqw, 40px);
   }
 
+  /* one under the other on a phone, the two lines of the address and the two of the copyright read as one block each, their paragraph
+     margins had set them 44px and 80px apart (mobile audit 20 November) */
+  .sx-adr p {
+    margin: 0;
+  }
+
+  .sx-base {
+    padding-top: 24px;
+    padding-bottom: 16px;
+  }
+
   .sx-base p {
-    padding: 16px 0 16px 12px;
+    margin: 0;
+    padding: 0 0 0 12px;
   }
 }

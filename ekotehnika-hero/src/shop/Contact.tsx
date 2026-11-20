@@ -308,7 +308,7 @@ export function Contact({ tema, model, poruka }: { tema: string | null; model: s
                 exclude={models}
                 inputId="f-model"
                 disabled={models.length >= MAX_MODELS}
-                placeholder={models.length >= MAX_MODELS ? `Izabrano je ${MAX_MODELS} modela` : models.length ? 'Dodajte još jedan model, npr. X20 ili slagač' : 'Pretražite modele, npr. X20 ili slagač'}
+                placeholder={models.length >= MAX_MODELS ? `Izabrano je ${MAX_MODELS} modela` : models.length ? 'Dodajte još jedan model' : 'Pretraga, npr. X20 ili slagač'}
               />
               {picked.length ? (
                 <ul className="sp-picked" aria-label="Izabrani modeli">

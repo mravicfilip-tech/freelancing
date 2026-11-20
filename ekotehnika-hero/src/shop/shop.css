@@ -1173,6 +1173,18 @@
     padding-bottom: 16px;
   }
 
+  /* the equipment rows and their "more" button answer a 44px thumb, the padding and the equal negative margin keep every line where it
+     was, only the tap area grows (it was 24px, mobile audit 20 November) */
+  .sp-eq .sp-more-d > summary {
+    margin: -12px 0;
+    padding: 12px 0;
+  }
+
+  .sp-eq-more {
+    margin: 0 0 -12px;
+    padding: 12px 0;
+  }
+
   .sp-gal-row {
     margin-top: 16px;
   }
@@ -1874,6 +1886,12 @@
     display: none;
   }
 
+  /* a list's count stood twice on a phone, large under the title and again over the search, the one over the search stays since it
+     follows the filters (mobile audit 20 November) */
+  .sp-intro-list .sp-intro-r {
+    display: none;
+  }
+
   /* the categories two to a row, the two help cells across the width */
   .sp-cats {
     grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -2068,6 +2086,12 @@
 
   .sp-ways {
     margin-top: 32px;
+  }
+
+  /* on a phone the sliding pictures came between the numbers and the form and pushed the form 560px down, the form is the page's job,
+     so the pictures stay on the larger screens (mobile audit 20 November) */
+  .sp-reel.sp-contact-reel {
+    display: none;
   }
 
   .sp-ways dd a:first-child:not([href^='mailto']) {
@@ -3092,16 +3116,19 @@
     gap: 12px;
   }
 
+  /* the row runs out to the screen's edge and no further, the cell's 12px and the frame's 16px, it went 4px past the screen (mobile
+     audit 20 November). The chips take the 44px of a phone control. */
   .sp-cats-bar .sp-pills {
     flex-wrap: nowrap;
-    margin: 0 -32px 0 -12px;
-    padding: 0 32px 0 12px;
+    margin: 0 -28px 0 -12px;
+    padding: 0 28px 0 12px;
     overflow-x: auto;
     scrollbar-width: none;
   }
 
   .sp-pill {
     flex: none;
+    height: 44px;
   }
 
   .sp-search {
@@ -3188,9 +3215,19 @@
     padding: 16px 12px 24px;
   }
 
+  /* a two line name breaks in even halves, "E16 do / E20 P" and not a lone "P" on the second line */
   .sp-card-code {
     font-size: 24px;
     line-height: 32px;
+    text-wrap: balance;
+  }
+
+  /* a model with no picture keeps its name inside the narrow phone tile, at 32px it ran out of the pale field */
+  .sp-card .sp-pic.is-empty span {
+    padding: 0 8px;
+    font-size: 18px;
+    line-height: 24px;
+    text-wrap: balance;
   }
 
   .sp-card-acts .btn {
@@ -3416,6 +3453,19 @@
   box-shadow: 0 0 0 3px rgb(0 0 0 / 0.06);
 }
 
+/* the browser's own clear cross of a search field drew in system blue, which the brand does not have, it takes the site's black cross
+   of the picked models (.sp-x) instead (mobile audit 20 November) */
+.sp-sb input::-webkit-search-cancel-button,
+.sp-search input::-webkit-search-cancel-button {
+  width: 24px;
+  height: 24px;
+  margin-left: 8px;
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3E%3Cpath d='M5.3 4 10 8.7 14.7 4 16 5.3 11.3 10 16 14.7 14.7 16 10 11.3 5.3 16 4 14.7 8.7 10 4 5.3z'/%3E%3C/svg%3E") center / 16px no-repeat;
+  cursor: pointer;
+  -webkit-appearance: none;
+  appearance: none;
+}
+
 /* The field ends in a grey cell with the magnifier, the phone cell of the site's secondary buttons, a click searches. Filip's pick of
    18 November, "go with 3", of three icons on one board (briefs/shop/n10-search-icon-board.png). */
 .sp-sb :is(form, .sp-sb-f) {
@@ -3615,6 +3665,11 @@
   .sp-sb input {
     height: 52px;
     font-size: 16px;
+  }
+
+  /* Kontakt's field starts its text 16px in like the fields under it, which also lets the placeholder fit a 360px phone */
+  .sp-sb.is-field input {
+    padding-left: 16px;
   }
 
   .sp-sb-panel {

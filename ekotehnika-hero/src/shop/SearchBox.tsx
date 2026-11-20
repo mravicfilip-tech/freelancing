@@ -31,7 +31,8 @@ const remember = (q: string) => {
 type Item = { id: string; href: string; kind: 'model' | 'cat' | 'recent' | 'all'; label: string; p?: Product; note?: string };
 
 export function SearchBox({
-  placeholder = 'Pretražite modele, npr. X20 ili slagač',
+  // the list page's own wording, the longer one was cut on a phone (mobile audit 20 November)
+  placeholder = 'Pretraga, npr. X20 ili slagač',
   onPick,
   exclude = [],
   inputId,

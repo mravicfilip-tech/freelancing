@@ -932,6 +932,12 @@
     grid-column: 1 / -1 !important;
   }
 
+  /* the title and its line stand 24px apart like every other hero, the title's cell kept its 32px foot and the gap was 56px (mobile
+     audit 20 November) */
+  .pg-hd-text {
+    padding-bottom: 0;
+  }
+
   .pg-hd-r {
     padding-top: 0;
   }

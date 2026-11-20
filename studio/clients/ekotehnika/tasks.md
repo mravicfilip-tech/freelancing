@@ -287,6 +287,13 @@ Task format
 
 ## Review
 
+- ekotehnika-23 App wide check on mobile, padding, spacing, inconsistencies and poor UX, fix what is found. Filip 20 November. On the branch claude/awesome-faraday-lkhnn2, findings in briefs/mobile/audit.md
+  - [x] Measure every shop and service route as a touch phone at 390 and 360, menus and sheets open
+  - [x] Fix the measured issues, phone rules only, desktop unchanged apart from the shorter search placeholder
+  - [x] Before and after shots at 1440 and 390, scripts/doubles.cjs clean at 1440, 390 and 360
+  - [ ] Filip looks on localhost
+  - [ ] Production after Filip's ship line
+
 - ekotehnika-22 The service pages, Najam, Servis and Delovi, and the Kompanija page, interesting, with the content gathered. Filip 19 November. On the branch claude/awesome-faraday-lkhnn2, /najam, /servis, /delovi and /kompanija on localhost
   - [x] Gather every fact, line and picture we hold for the four pages, briefs/pages/content.md
   - [x] The structure of each page and the kickoff answers from Filip, "yes, go" to the hardened plan, briefs/pages/plan.md

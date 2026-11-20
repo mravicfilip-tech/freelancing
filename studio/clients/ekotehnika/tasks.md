@@ -292,7 +292,7 @@ Task format
   - [x] Fix the measured issues, phone rules only, desktop unchanged apart from the shorter search placeholder
   - [x] Before and after shots at 1440 and 390, scripts/doubles.cjs clean at 1440, 390 and 360
   - [ ] Filip looks on localhost
-  - [ ] Production after Filip's ship line
+  - [x] Production after Filip's ship line, "push vercel" for 948579d, live at https://ekotehnika.vercel.app as 49c157e on the ekotehnika repo
 
 - ekotehnika-22 The service pages, Najam, Servis and Delovi, and the Kompanija page, interesting, with the content gathered. Filip 19 November. On the branch claude/awesome-faraday-lkhnn2, /najam, /servis, /delovi and /kompanija on localhost
   - [x] Gather every fact, line and picture we hold for the four pages, briefs/pages/content.md
@@ -305,7 +305,7 @@ Task format
   - [ ] /uireview on the four pages
   - [ ] Filip looks on localhost
   - [ ] The client answers the Delovi questions and checks the new Serbian lines, plan.md
-  - [x] Production after Filip's ship line, "push vercel" for 432dc56, live at https://ekotehnika.vercel.app/najam as de25212 on the ekotehnika repo, and the Gume tile's tyre photo, "push vercel" for d0d6c80, as 30ff66f, and Kontakt's several topics and models, its sliding grid and the Servis call as type, "push vercel" for 0391935, as de70cb0, and Kontakt's model search, "push vercel" for fb813a7, as d6d4326, and the Kontakt grid each picture once and shuffled per load, "push vercel" for c29c1e7, as a0b8e38, and the rental card without its black rules, "push vercel" for 60fdf3c, as 3e94302, and the real logo on the footer building, "push vercel" for 4bcc6c3, as 3ad821b, and the rental card without the jump, "push vercel" for e91ecd9, as d0e304e
+  - [x] Production after Filip's ship line, "push vercel" for 432dc56, live at https://ekotehnika.vercel.app/najam as de25212 on the ekotehnika repo, and the Gume tile's tyre photo, "push vercel" for d0d6c80, as 30ff66f, and Kontakt's several topics and models, its sliding grid and the Servis call as type, "push vercel" for 0391935, as de70cb0, and Kontakt's model search, "push vercel" for fb813a7, as d6d4326, and the Kontakt grid each picture once and shuffled per load, "push vercel" for c29c1e7, as a0b8e38, and the rental card without its black rules, "push vercel" for 60fdf3c, as 3e94302, and the real logo on the footer building, "push vercel" for 4bcc6c3, as 3ad821b, and the rental card without the jump, "push vercel" for e91ecd9, as d0e304e, and Kontakt's ticked topic with one stroke, edf3cc0, with the phone fixes, "push vercel" for 948579d, as 49c157e
 
 - ekotehnika-6 Version 5 in light mode, servis stays dark. Link https://ekotehnika-hero.vercel.app/?v=5
   - [x] Let the shell set dark beats per version

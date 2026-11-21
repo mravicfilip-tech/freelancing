@@ -1355,7 +1355,7 @@ html[data-dash-theme='light'] body { background: #edeff1; }
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   gap: 8px;
-  margin: 20px 0 0;
+  margin: 16px 0 0;
   padding: 0;
   list-style: none;
 }
@@ -1390,21 +1390,39 @@ html[data-dash-theme='light'] body { background: #edeff1; }
 .gold__stage[data-state='next'] .gold__stage-value { opacity: 0.75; }
 .gold__stage[data-state='done'] { opacity: 0.45; }
 
-/* The stub: the flash sale's code row, ringed and washed in gold. */
+/* The ticket: the landing page's own, at its tilt, on a field ringed and washed in
+   gold, with the bonus and the claim beside it. Room is left round the ticket for
+   its electric border and glow. */
 .gold__ticket {
-  background: linear-gradient(90deg, var(--gold-wash), transparent 65%), var(--d-field);
+  display: flex;
+  align-items: center;
+  gap: clamp(16px, 2.4vw, 28px);
+  margin-top: 22px;
+  padding: 22px 20px 22px 14px;
+  border-radius: var(--r-card);
+  background: radial-gradient(60% 90% at 25% 50%, var(--gold-wash), transparent 75%), var(--d-field);
   box-shadow: inset 0 0 0 1px var(--gold-ring);
 }
 .gold__art {
-  flex: none;
-  width: 64px;
-  height: 30px;
-  filter: drop-shadow(0 4px 10px rgba(233, 168, 62, 0.35));
+  flex: 0 0 54%;
+  max-width: 300px;
+  padding: 4px 10px;
 }
-.gold__sheen { animation: gold-sheen 3.6s ease-in-out infinite; }
-@keyframes gold-sheen {
-  0%, 55% { transform: skewX(-18deg) translateX(0); }
-  100% { transform: skewX(-18deg) translateX(110px); }
+.gold__tilt {
+  transform: perspective(1200px) rotateY(-8deg) rotateX(4deg) rotate(-6deg);
+  animation: gold-float 5.6s ease-in-out infinite;
+}
+@keyframes gold-float {
+  0%, 100% { translate: 0 0; }
+  50% { translate: 0 -4px; }
+}
+.gold__ticket-side {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 14px;
 }
 .gold__ticket-text {
   flex: 1;
@@ -1421,8 +1439,14 @@ html[data-dash-theme='light'] body { background: #edeff1; }
   color: var(--gold-ink);
 }
 .gold__claim { text-decoration: none; white-space: nowrap; }
+.gold__stages + * { margin-top: 0; }
+@media (max-width: 560px) {
+  .gold__ticket { flex-direction: column; align-items: stretch; padding: 24px 16px 16px; }
+  .gold__art { flex: none; max-width: none; padding: 6px 14px 4px; }
+  .gold__claim { width: 100%; justify-content: center; }
+}
 @media (prefers-reduced-motion: reduce) {
-  .gold__sheen { animation: none; }
+  .gold__tilt { animation: none; }
 }
 
 /* ---------- Referrals ---------- */

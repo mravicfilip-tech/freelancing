@@ -177,21 +177,15 @@ export function GoldenTicket() {
         <ul className="gold__ticks">
           <li>
             <Tick />
-            <span>
-              <strong>The biggest bonus there is.</strong> +{bonus}X in Stage {live + 1}, stepping down to {stages[stages.length - 1]}X by the last stage.
-            </span>
+            <span>+{bonus}X, the biggest bonus of any stage</span>
           </li>
           <li>
             <Tick />
-            <span>
-              <strong>Limited token allocation.</strong> Reserved for the earliest participants.
-            </span>
+            <span>Limited allocation, earliest buyers only</span>
           </li>
           <li>
             <Tick />
-            <span>
-              <strong>Yours the moment you buy.</strong> Buy in Stage {live + 1} and the +{bonus}X is locked in.
-            </span>
+            <span>Locked in the moment you buy</span>
           </li>
         </ul>
 

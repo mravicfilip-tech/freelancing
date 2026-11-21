@@ -1378,7 +1378,7 @@ html[data-dash-theme='light'] body { background: #edeff1; }
 .gold__clock {
   margin: 22px 0;
 }
-/* Why the ticket is worth having: three ticked points under the countdown. */
+/* Why the ticket is worth having: three ticked points under the countdown, one line each. */
 .gold__ticks {
   display: flex;
   flex-direction: column;
@@ -1393,11 +1393,7 @@ html[data-dash-theme='light'] body { background: #edeff1; }
   gap: 12px;
   font-size: 15px;
   line-height: 1.45;
-  color: var(--d-text-2);
-}
-.gold__ticks strong {
   color: var(--d-text);
-  font-weight: 600;
 }
 .gold__tick {
   flex: none;

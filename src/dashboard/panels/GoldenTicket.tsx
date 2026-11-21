@@ -1,10 +1,8 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef } from 'react';
 import { GOLDEN_TICKET } from '../data';
 import { BonusChips, GoldenTicket as Ticket } from '../goldenTicket/GoldenTicket';
 import type { Electric } from '../goldenTicket/electric';
 import { mint, settle } from '../goldenTicket/goldenMotion';
-
-const pad = (n: number) => String(n).padStart(2, '0');
 
 /** A tick on a gold disc. */
 function Tick() {
@@ -16,20 +14,10 @@ function Tick() {
   );
 }
 
-function Unit({ value, label }: { value: number; label: string }) {
-  return (
-    <div className="clock__unit">
-      <span className="clock__value">{pad(value)}</span>
-      <span className="clock__label">{label}</span>
-    </div>
-  );
-}
-
 /**
  * The Golden Ticket bonus: a card across the page, in the flash sale's language, with the
- * landing page's ticket and its slide's motion (goldenTicket/). On the left, what it is, a
- * countdown to the end of the live stage, and the wallet's bonus with the way to claim it; on
- * the right, the ticket on a stage of its own with the four stage chips (+60X down to 30X).
+ * landing page's ticket and its slide's motion (goldenTicket/). On the left, what it is, three
+ * reasons to want it, and the wallet's bonus with the way to claim it; on the right, the ticket on a stage of its own with the four stage chips (+60X down to 30X).
  *
  * When the card comes into view the ticket is minted, as on the landing page: it charges in
  * the dark while electricity traces its edge, flips round in gold with a shockwave, the
@@ -38,15 +26,9 @@ function Unit({ value, label }: { value: number; label: string }) {
  * live chip flares. With reduced motion it is simply there.
  */
 export function GoldenTicket() {
-  const { stages, live, secondsLeft, ticket } = GOLDEN_TICKET;
-  const [left, setLeft] = useState<number>(secondsLeft);
+  const { stages, live, ticket } = GOLDEN_TICKET;
   const root = useRef<HTMLElement>(null);
   const ctl = useRef<Electric | null>(null);
-
-  useEffect(() => {
-    const id = window.setInterval(() => setLeft((s) => (s > 0 ? s - 1 : 0)), 1000);
-    return () => window.clearInterval(id);
-  }, []);
 
   useEffect(() => {
     const el = root.current;
@@ -138,9 +120,6 @@ export function GoldenTicket() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const hours = Math.floor(left / 3600);
-  const minutes = Math.floor((left % 3600) / 60);
-  const seconds = left % 60;
   const bonus = stages[live];
   const next = stages[live + 1];
 
@@ -152,26 +131,13 @@ export function GoldenTicket() {
           Golden Ticket · Stage {live + 1} live
         </p>
         <h2 className="flash__title" id="gold-title">
-          Your bonus drops in
+          Claim your Golden Ticket
         </h2>
         <p className="flash__copy">
           The earlier you enter, the bigger your bonus. Buy in Stage {live + 1} to lock in{' '}
           <strong>+{bonus}X</strong>
           {next !== undefined ? ` before it steps down to ${next}X.` : '.'}
         </p>
-
-        <div
-          className="clock gold__clock"
-          role="timer"
-          aria-live="off"
-          aria-label={`${hours} hours ${minutes} minutes ${seconds} seconds left in stage ${live + 1}`}
-        >
-          <Unit value={hours} label="Hours" />
-          <span className="clock__colon" aria-hidden="true">:</span>
-          <Unit value={minutes} label="Minutes" />
-          <span className="clock__colon" aria-hidden="true">:</span>
-          <Unit value={seconds} label="Seconds" />
-        </div>
 
         {/* why the ticket is worth having now: three points, each ticked */}
         <ul className="gold__ticks">

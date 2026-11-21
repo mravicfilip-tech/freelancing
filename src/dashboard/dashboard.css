@@ -1375,15 +1375,12 @@ html[data-dash-theme='light'] body { background: #edeff1; }
   flex-direction: column;
   min-width: 0;
 }
-.gold__clock {
-  margin: 22px 0;
-}
-/* Why the ticket is worth having: three ticked points under the countdown, one line each. */
+/* Why the ticket is worth having: three ticked points under the copy, one line each. */
 .gold__ticks {
   display: flex;
   flex-direction: column;
   gap: 12px;
-  margin: 0 0 22px;
+  margin: 22px 0 24px;
   padding: 0;
   list-style: none;
 }
@@ -1419,28 +1416,24 @@ html[data-dash-theme='light'] body { background: #edeff1; }
 }
 
 /* The ticket's stage: a field of its own, a dot grid and a halo ring behind, the
-   landing page's ticket at its tilt with the four stage chips round it. Everything
-   inside is sized off the field's width (a container), and the field keeps a ratio
-   that fits the ticket and its chips, so nothing is cut at any width. */
+   landing page's ticket at its tilt with the four stage chips round it.
+   Beside the copy the field takes the copy's height (a size container adds none of its
+   own), so neither side has room to spare, and the ticket is as big as that box allows:
+   `--tw`, its width, is the smaller of a share of the field's width and of its height.
+   Stacked, the field keeps a ratio instead. The chips are sized off the ticket. */
 .gold__field {
   position: relative;
   overflow: hidden;
-  container-type: inline-size;
+  container-type: size;
+  min-height: 260px;
+  --tw: min(56cqw, 112cqh);
   border-radius: var(--r-card);
   background:
     radial-gradient(55% 60% at 50% 55%, rgba(242, 184, 75, 0.2), transparent 70%),
     var(--d-field);
   box-shadow: inset 0 0 0 1px var(--gold-ring);
   /* chips sized to the ticket: the live one about a tenth of its width tall */
-  --s: 0.068cqw;
-}
-/* At least half as tall as it is wide, so the ticket always fits; taller when the text
-   beside it is. (A padding sizer rather than aspect-ratio: an aspect-ratio box stretched
-   taller than its ratio grows wider too, and pushed the ticket out of the card.) */
-.gold__field::before {
-  content: '';
-  display: block;
-  padding-top: 50%;
+  --s: calc(var(--tw) * 0.001214);
 }
 .gold__grid {
   position: absolute;
@@ -1454,7 +1447,7 @@ html[data-dash-theme='light'] body { background: #edeff1; }
   position: absolute;
   left: 50%;
   top: 52%;
-  width: 78cqw;
+  width: min(78cqw, 156cqh);
   aspect-ratio: 1;
   translate: -50% -50%;
   border-radius: 50%;
@@ -1465,7 +1458,7 @@ html[data-dash-theme='light'] body { background: #edeff1; }
   position: absolute;
   left: 50%;
   top: 52%;
-  width: 56%;
+  width: var(--tw);
   aspect-ratio: 1000 / 410;
   translate: -50% -50%;
 }
@@ -1522,16 +1515,12 @@ html[data-dash-theme='light'] body { background: #edeff1; }
   .gold__kicker { order: 1; }
   .gold .flash__title { order: 2; }
   .gold .flash__copy { order: 3; }
-  .gold__field { order: 4; margin-top: 20px; }
-  .gold__field::before { padding-top: 56%; }
-  .gold__clock { order: 5; }
-  .gold__ticks { order: 6; }
-  .gold__info .gold__stub { order: 7; margin-top: 0; }
+  .gold__field { order: 4; margin-top: 20px; min-height: 0; aspect-ratio: 100 / 56; }
+  .gold__ticks { order: 5; }
+  .gold__info .gold__stub { order: 6; margin-top: 0; }
 }
 @media (max-width: 560px) {
-  .gold__field { --s: 0.088cqw; }
-  .gold__field::before { padding-top: 72%; }
-  .gold__spot { width: 72%; }
+  .gold__field { aspect-ratio: 100 / 72; --tw: min(72cqw, 100cqh); }
   .gold__stub { flex-direction: column; align-items: stretch; }
   .gold__claim { justify-content: center; }
 }

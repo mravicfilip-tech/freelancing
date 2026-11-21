@@ -1380,7 +1380,7 @@ html[data-dash-theme='light'] body { background: #edeff1; }
   display: flex;
   flex-direction: column;
   gap: 12px;
-  margin: 22px 0 24px;
+  margin: 22px 0 32px;
   padding: 0;
   list-style: none;
 }

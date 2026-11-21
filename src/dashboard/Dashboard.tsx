@@ -47,12 +47,15 @@ export function Dashboard() {
             <StatRow holdings={data.holdings} referrals={data.referrals} presale={data.presale} />
             <StageLadder />
 
+            {/* The Golden Ticket bonus: its own card across the page, so the ticket gets the
+                room it needs and the buy panel and side card keep the heights they balance at. */}
+            <GoldenTicket />
+
             <div className="dash__split">
               <BuyPanel presale={data.presale} flashSale={data.flashSale} />
               {/* One card, two parts: two separate boxes beside the buy panel
                   read as clutter and each was half empty. */}
               <div className="card side">
-                <GoldenTicket />
                 <FlashSale sale={data.flashSale} />
                 <Referrals referrals={data.referrals} rows={data.referralRows} />
               </div>

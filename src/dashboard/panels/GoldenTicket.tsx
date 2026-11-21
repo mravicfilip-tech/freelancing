@@ -16,10 +16,10 @@ function Unit({ value, label }: { value: number; label: string }) {
 }
 
 /**
- * The Golden Ticket bonus, in the flash sale's shape, with the landing page's ticket and
- * its slide's motion (goldenTicket/): a countdown to the end of the live stage, then the
- * ticket on a stage of its own with the four stage chips (+60X down to 30X) around it, then
- * the wallet's bonus and the way to claim it.
+ * The Golden Ticket bonus: a card across the page, in the flash sale's language, with the
+ * landing page's ticket and its slide's motion (goldenTicket/). On the left, what it is, a
+ * countdown to the end of the live stage, and the wallet's bonus with the way to claim it; on
+ * the right, the ticket on a stage of its own with the four stage chips (+60X down to 30X).
  *
  * When the card comes into view the ticket is minted, as on the landing page: it charges in
  * the dark while electricity traces its edge, flips round in gold with a shockwave, the
@@ -66,7 +66,7 @@ export function GoldenTicket() {
             // the bonus counts up as the ticket lights, and the claim arrives
             const n = { v: 0 };
             tl.to(n, { v: stages[live], duration: 0.9, ease: 'power2.out', onUpdate: () => void (value.textContent = `+${Math.round(n.v)}X`) }, 1.55);
-            tl.from('.gold__stub', { y: 12, opacity: 0, duration: 0.6, ease: 'power3.out' }, 1.45);
+            tl.from('.gold__info > *', { y: 12, opacity: 0, duration: 0.6, ease: 'power3.out', stagger: 0.07 }, 0);
             tl.from('.gold__claim', { scale: 0.9, opacity: 0, duration: 0.5, ease: 'back.out(2)' }, 1.8);
             unhold();
 
@@ -133,25 +133,23 @@ export function GoldenTicket() {
   const next = stages[live + 1];
 
   return (
-    <section ref={root} className="side__part gold" aria-labelledby="gold-title">
-      <div className="flash__head">
-        <div className="flash__lede">
-          <p className="gold__kicker">
-            <i aria-hidden="true" />
-            Golden Ticket · Stage {live + 1} live
-          </p>
-          <h2 className="flash__title" id="gold-title">
-            Your bonus drops in
-          </h2>
-          <p className="flash__copy">
-            The earlier you enter, the bigger your bonus. Buy in Stage {live + 1} to lock in{' '}
-            <strong>+{bonus}X</strong>
-            {next !== undefined ? ` before it steps down to ${next}X.` : '.'}
-          </p>
-        </div>
+    <section ref={root} className="card gold" aria-labelledby="gold-title">
+      <div className="gold__info">
+        <p className="gold__kicker">
+          <i aria-hidden="true" />
+          Golden Ticket · Stage {live + 1} live
+        </p>
+        <h2 className="flash__title" id="gold-title">
+          Your bonus drops in
+        </h2>
+        <p className="flash__copy">
+          The earlier you enter, the bigger your bonus. Buy in Stage {live + 1} to lock in{' '}
+          <strong>+{bonus}X</strong>
+          {next !== undefined ? ` before it steps down to ${next}X.` : '.'}
+        </p>
 
         <div
-          className="clock"
+          className="clock gold__clock"
           role="timer"
           aria-live="off"
           aria-label={`${hours} hours ${minutes} minutes ${seconds} seconds left in stage ${live + 1}`}
@@ -161,6 +159,20 @@ export function GoldenTicket() {
           <Unit value={minutes} label="Minutes" />
           <span className="clock__colon" aria-hidden="true">:</span>
           <Unit value={seconds} label="Seconds" />
+        </div>
+
+        <div className="flash__code gold__stub">
+          <span className="gold__stub-text">
+            <span className="flash__code-label">Your bonus · Nº {ticket}</span>
+            <span className="gold__value">+{bonus}X</span>
+          </span>
+          <a className="copy gold__claim" href="#buy">
+            <span className="gold__glint" aria-hidden="true" />
+            Claim allocation
+            <svg viewBox="0 0 16 16" className="icon-16" aria-hidden="true">
+              <path d="M3 8h9M8.5 4 12.5 8 8.5 12" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
+            </svg>
+          </a>
         </div>
       </div>
 
@@ -184,20 +196,6 @@ export function GoldenTicket() {
             </li>
           ))}
         </ol>
-      </div>
-
-      <div className="flash__code gold__stub">
-        <span className="gold__stub-text">
-          <span className="flash__code-label">Your bonus · Nº {ticket}</span>
-          <span className="gold__value">+{bonus}X</span>
-        </span>
-        <a className="copy gold__claim" href="#buy">
-          <span className="gold__glint" aria-hidden="true" />
-          Claim allocation
-          <svg viewBox="0 0 16 16" className="icon-16" aria-hidden="true">
-            <path d="M3 8h9M8.5 4 12.5 8 8.5 12" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
-          </svg>
-        </a>
       </div>
     </section>
   );

@@ -6,6 +6,16 @@ import { mint, settle } from '../goldenTicket/goldenMotion';
 
 const pad = (n: number) => String(n).padStart(2, '0');
 
+/** A tick on a gold disc. */
+function Tick() {
+  return (
+    <svg className="gold__tick" viewBox="0 0 20 20" aria-hidden="true">
+      <circle cx="10" cy="10" r="10" />
+      <path d="M5.8 10.3 8.6 13 14.2 7.2" />
+    </svg>
+  );
+}
+
 function Unit({ value, label }: { value: number; label: string }) {
   return (
     <div className="clock__unit">
@@ -66,7 +76,10 @@ export function GoldenTicket() {
             // the bonus counts up as the ticket lights, and the claim arrives
             const n = { v: 0 };
             tl.to(n, { v: stages[live], duration: 0.9, ease: 'power2.out', onUpdate: () => void (value.textContent = `+${Math.round(n.v)}X`) }, 1.55);
-            tl.from('.gold__info > *', { y: 12, opacity: 0, duration: 0.6, ease: 'power3.out', stagger: 0.07 }, 0);
+            tl.from('.gold__info > :not(.gold__ticks)', { y: 12, opacity: 0, duration: 0.6, ease: 'power3.out', stagger: 0.07 }, 0);
+            // the ticks land one by one as the ticket lights
+            tl.from('.gold__ticks li', { x: -10, opacity: 0, duration: 0.5, ease: 'power3.out', stagger: 0.12 }, 1.5);
+            tl.from('.gold__tick', { scale: 0.4, duration: 0.5, ease: 'back.out(2.4)', stagger: 0.12, transformOrigin: '50% 50%' }, 1.5);
             tl.from('.gold__claim', { scale: 0.9, opacity: 0, duration: 0.5, ease: 'back.out(2)' }, 1.8);
             unhold();
 
@@ -159,6 +172,28 @@ export function GoldenTicket() {
           <span className="clock__colon" aria-hidden="true">:</span>
           <Unit value={seconds} label="Seconds" />
         </div>
+
+        {/* why the ticket is worth having now: three points, each ticked */}
+        <ul className="gold__ticks">
+          <li>
+            <Tick />
+            <span>
+              <strong>The biggest bonus there is.</strong> +{bonus}X in Stage {live + 1}, stepping down to {stages[stages.length - 1]}X by the last stage.
+            </span>
+          </li>
+          <li>
+            <Tick />
+            <span>
+              <strong>Limited token allocation.</strong> Reserved for the earliest participants.
+            </span>
+          </li>
+          <li>
+            <Tick />
+            <span>
+              <strong>Yours the moment you buy.</strong> Buy in Stage {live + 1} and the +{bonus}X is locked in.
+            </span>
+          </li>
+        </ul>
 
         <div className="flash__code gold__stub">
           <span className="gold__stub-text">

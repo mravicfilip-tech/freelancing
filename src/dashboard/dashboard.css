@@ -1378,6 +1378,45 @@ html[data-dash-theme='light'] body { background: #edeff1; }
 .gold__clock {
   margin: 22px 0;
 }
+/* Why the ticket is worth having: three ticked points under the countdown. */
+.gold__ticks {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin: 0 0 22px;
+  padding: 0;
+  list-style: none;
+}
+.gold__ticks li {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  font-size: 15px;
+  line-height: 1.45;
+  color: var(--d-text-2);
+}
+.gold__ticks strong {
+  color: var(--d-text);
+  font-weight: 600;
+}
+.gold__tick {
+  flex: none;
+  width: 20px;
+  height: 20px;
+  margin-top: 1px;
+}
+.gold__tick circle {
+  /* the dashboard's confirming green (the settings' Saved pill), white check on it */
+  fill: #1f9d55;
+}
+.gold__tick path {
+  fill: none;
+  stroke: #fff;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
 /* the stub sits at the foot of the column, level with the bottom of the ticket's stage */
 .gold__info .gold__stub {
   margin-top: auto;
@@ -1391,8 +1430,6 @@ html[data-dash-theme='light'] body { background: #edeff1; }
   position: relative;
   overflow: hidden;
   container-type: inline-size;
-  aspect-ratio: 2 / 1;
-  min-height: 100%;
   border-radius: var(--r-card);
   background:
     radial-gradient(55% 60% at 50% 55%, rgba(242, 184, 75, 0.2), transparent 70%),
@@ -1400,6 +1437,14 @@ html[data-dash-theme='light'] body { background: #edeff1; }
   box-shadow: inset 0 0 0 1px var(--gold-ring);
   /* chips sized to the ticket: the live one about a tenth of its width tall */
   --s: 0.068cqw;
+}
+/* At least half as tall as it is wide, so the ticket always fits; taller when the text
+   beside it is. (A padding sizer rather than aspect-ratio: an aspect-ratio box stretched
+   taller than its ratio grows wider too, and pushed the ticket out of the card.) */
+.gold__field::before {
+  content: '';
+  display: block;
+  padding-top: 50%;
 }
 .gold__grid {
   position: absolute;
@@ -1481,18 +1526,19 @@ html[data-dash-theme='light'] body { background: #edeff1; }
   .gold__kicker { order: 1; }
   .gold .flash__title { order: 2; }
   .gold .flash__copy { order: 3; }
-  .gold__field { order: 4; margin-top: 20px; min-height: 0; aspect-ratio: 16 / 9; }
+  .gold__field { order: 4; margin-top: 20px; }
+  .gold__field::before { padding-top: 56%; }
   .gold__clock { order: 5; }
-  .gold__info .gold__stub { order: 6; margin-top: 0; }
+  .gold__ticks { order: 6; }
+  .gold__info .gold__stub { order: 7; margin-top: 0; }
 }
 @media (max-width: 560px) {
-  .gold__field { aspect-ratio: 4 / 3; --s: 0.088cqw; }
+  .gold__field { --s: 0.088cqw; }
+  .gold__field::before { padding-top: 72%; }
   .gold__spot { width: 72%; }
   .gold__stub { flex-direction: column; align-items: stretch; }
   .gold__claim { justify-content: center; }
 }
-@media (prefers-reduced-motion: reduce) {
-  
 /* ---------- Referrals ---------- */
 .link-quiet {
   display: inline-flex;

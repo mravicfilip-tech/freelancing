@@ -241,3 +241,33 @@ export function GoldenTicket({ ctl, running, drawn = true, className = '' }: { c
     </div>
   );
 }
+
+/** Where each stage's chip floats around the ticket, as a share of the ticket's own box: the live
+    stage over its top-left, then clockwise round it, each one smaller and dimmer. */
+const CHIPS = [
+  { b: 60, x: 12, y: -10 },
+  { b: 50, x: 70, y: -22 },
+  { b: 40, x: 104, y: 100 },
+  { b: 30, x: 22, y: 126 },
+];
+
+/** The creative's stage pills, set around the ticket. Placed inside the ticket's box so they travel
+    with it; `.gchip` is for the load-in, the pill inside it for the float. */
+export function BonusChips() {
+  return (
+    <div className="gchips" aria-hidden="true">
+      {CHIPS.map(({ b, x, y }, i) => (
+        <span key={b} className="gchip" style={{ left: `${x}%`, top: `${y}%` }}>
+          <span className="gpill" data-step={i}>
+            {i === 0 && (
+              <svg viewBox="0 0 16 16" aria-hidden="true">
+                <path d="M8 1 9.3 6.7 15 8 9.3 9.3 8 15 6.7 9.3 1 8 6.7 6.7Z" />
+              </svg>
+            )}
+            {b}X
+          </span>
+        </span>
+      ))}
+    </div>
+  );
+}

@@ -1,5 +1,6 @@
-/* The Golden Ticket (GoldenTicket.tsx), ported from the landing page. Sized by its width
-   (1000 × 410 units). */
+/* The Golden Ticket (GoldenTicket.tsx), its load-in pieces and the stage chips, ported from the
+   landing page (remittix-website: src/components/FigmaHero/GoldenTicket.css). The ticket is sized
+   by its width (1000 × 410 units); the chips by `--s`, set by whoever places them. */
 .gtk2 {
   position: relative;
   width: 100%;
@@ -46,4 +47,88 @@
 .gtk2__fx {
   position: absolute;
   pointer-events: none;
+}
+
+/* the pose the load-in swings, and the gold shockwave the crack sends out */
+.gt-pose {
+  transform-origin: 50% 50%;
+}
+.gwave {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  z-index: 0;
+  width: 70%;
+  aspect-ratio: 1;
+  translate: -50% -50%;
+  border-radius: 50%;
+  box-shadow: 0 0 0 2px rgb(255 205 110 / 70%), 0 0 40px 6px rgb(255 178 58 / 35%), inset 0 0 40px 6px rgb(255 178 58 / 25%);
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* ------------------------------------------------------------- the stage chips */
+.gchips {
+  /* around the ticket the chips are set larger than the creative's row, to hold their own beside it */
+  --chip: 1.5;
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  font-family: var(--d-sans, 'Onest Variable', sans-serif);
+  font-weight: 800;
+}
+.gchip {
+  position: absolute;
+  z-index: 3;
+  translate: -50% -50%;
+}
+.gpill {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: calc(var(--s) * var(--chip, 1) * 8);
+  border-radius: 999px;
+  white-space: nowrap;
+  letter-spacing: -0.01em;
+}
+.gpill svg {
+  width: 0.62em;
+  height: 0.62em;
+  fill: currentColor;
+}
+.gpill[data-step='0'] {
+  height: calc(var(--s) * var(--chip, 1) * 57);
+  padding: 0 calc(var(--s) * var(--chip, 1) * 26);
+  font-size: calc(var(--s) * var(--chip, 1) * 26);
+  color: #1d1406;
+  background: linear-gradient(180deg, #ffe58f 0%, #f9c650 45%, #e9a42c 100%);
+  box-shadow:
+    inset 0 calc(var(--s) * var(--chip, 1) * 2) 0 rgb(255 250 225 / 85%),
+    inset 0 calc(var(--s) * var(--chip, 1) * -3) calc(var(--s) * var(--chip, 1) * 6) rgb(170 100 10 / 35%),
+    0 0 calc(var(--s) * var(--chip, 1) * 28) rgb(255 184 60 / 55%);
+}
+.gpill[data-step='1'] {
+  height: calc(var(--s) * var(--chip, 1) * 47);
+  padding: 0 calc(var(--s) * var(--chip, 1) * 20);
+  font-size: calc(var(--s) * var(--chip, 1) * 22);
+  color: #f1c463;
+  background: radial-gradient(120% 140% at 50% 0%, #3a2808 0%, #160f04 70%);
+  box-shadow: inset 0 0 0 calc(var(--s) * var(--chip, 1) * 2) #c38a2b, 0 0 calc(var(--s) * var(--chip, 1) * 16) rgb(233 168 62 / 22%);
+}
+.gpill[data-step='2'] {
+  height: calc(var(--s) * var(--chip, 1) * 40);
+  padding: 0 calc(var(--s) * var(--chip, 1) * 17);
+  font-size: calc(var(--s) * var(--chip, 1) * 19);
+  color: #eceff6;
+  background: rgb(255 255 255 / 8%);
+  box-shadow: inset 0 0 0 calc(var(--s) * var(--chip, 1) * 1.6) rgb(214 220 236 / 48%);
+}
+.gpill[data-step='3'] {
+  height: calc(var(--s) * var(--chip, 1) * 35);
+  padding: 0 calc(var(--s) * var(--chip, 1) * 14);
+  font-size: calc(var(--s) * var(--chip, 1) * 15.5);
+  font-weight: 650;
+  color: rgb(222 226 236 / 55%);
+  background: rgb(255 255 255 / 3%);
+  box-shadow: inset 0 0 0 calc(var(--s) * var(--chip, 1) * 1.2) rgb(214 220 236 / 24%);
 }

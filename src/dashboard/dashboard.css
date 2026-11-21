@@ -1327,11 +1327,15 @@ html[data-dash-theme='light'] body { background: #edeff1; }
   --gold-on: #2a1a03;
   --gold-ring: rgba(233, 168, 62, 0.55);
   --gold-wash: rgba(233, 168, 62, 0.1);
+  --gold-dot: rgba(255, 220, 150, 0.09);
+  --gold-halo: rgba(255, 214, 140, 0.13);
 }
 .dash[data-theme='light'] .gold {
   --gold-ink: #a9680f;
   --gold-ring: rgba(201, 134, 26, 0.55);
   --gold-wash: rgba(233, 168, 62, 0.12);
+  --gold-dot: rgba(18, 36, 51, 0.08);
+  --gold-halo: rgba(201, 134, 26, 0.18);
 }
 .gold__kicker {
   display: inline-flex;
@@ -1351,102 +1355,126 @@ html[data-dash-theme='light'] body { background: #edeff1; }
   background: var(--gold);
   box-shadow: 0 0 0 3px rgba(242, 184, 75, 0.22);
 }
-.gold__stages {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 8px;
-  margin: 16px 0 0;
-  padding: 0;
-  list-style: none;
-}
-.gold__stage {
+.gold__stub-text {
+  flex: 1;
+  min-width: 0;
   display: flex;
   flex-direction: column;
   gap: 6px;
-  padding: 10px 12px;
-  border-radius: var(--r-card);
-  background: var(--d-inset);
 }
-.gold__stage-label {
-  font-family: var(--d-pixel);
-  font-size: 9px;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-  color: var(--d-text-3);
-}
-.gold__stage-value {
-  font-family: var(--d-digits);
-  font-size: 22px;
-  font-weight: 700;
-  line-height: 1;
-  color: var(--d-text-2);
-}
-.gold__stage[data-state='live'] {
-  background: linear-gradient(180deg, #ffe08f 0%, #f2b84b 55%, #dc9a2a 100%);
-  box-shadow: inset 0 1px 0 rgba(255, 250, 225, 0.8), 0 6px 18px -8px rgba(233, 168, 62, 0.7);
-}
-.gold__stage[data-state='live'] .gold__stage-label { color: rgba(42, 26, 3, 0.7); }
-.gold__stage[data-state='live'] .gold__stage-value { color: var(--gold-on); }
-.gold__stage[data-state='next'] .gold__stage-value { opacity: 0.75; }
-.gold__stage[data-state='done'] { opacity: 0.45; }
 
-/* The ticket: the landing page's own, at its tilt, on a field ringed and washed in
-   gold, with the bonus and the claim beside it. Room is left round the ticket for
-   its electric border and glow. */
-.gold__ticket {
-  display: flex;
-  align-items: center;
-  gap: clamp(16px, 2.4vw, 28px);
+/* The ticket's stage: a field of its own on the card, a dot grid and a halo ring
+   behind, the landing page's ticket in the middle at its tilt with the four stage
+   chips round it. Sized off its own width (a container), so the ticket and its
+   chips keep their proportions from the widest card down to a phone. */
+.gold__field {
+  position: relative;
   margin-top: 22px;
-  padding: 22px 20px 22px 14px;
+  overflow: hidden;
+  container-type: inline-size;
+  aspect-ratio: 16 / 9;
+  max-height: 360px;
+  width: 100%;
   border-radius: var(--r-card);
-  background: radial-gradient(60% 90% at 25% 50%, var(--gold-wash), transparent 75%), var(--d-field);
+  background:
+    radial-gradient(55% 60% at 50% 55%, rgba(242, 184, 75, 0.2), transparent 70%),
+    var(--d-field);
   box-shadow: inset 0 0 0 1px var(--gold-ring);
+  /* chips sized to the ticket: the live one about a tenth of its width tall */
+  --s: 0.073cqw;
 }
-.gold__art {
-  flex: 0 0 54%;
-  max-width: 300px;
-  padding: 4px 10px;
+.gold__grid {
+  position: absolute;
+  inset: 0;
+  background-image: radial-gradient(circle at center, var(--gold-dot) 1px, transparent 1.4px);
+  background-size: 16px 16px;
+  mask-image: radial-gradient(70% 70% at 50% 52%, #000, transparent);
+  -webkit-mask-image: radial-gradient(70% 70% at 50% 52%, #000, transparent);
+}
+.gold__halo {
+  position: absolute;
+  left: 50%;
+  top: 52%;
+  width: 82cqw;
+  aspect-ratio: 1;
+  translate: -50% -50%;
+  border-radius: 50%;
+  box-shadow: inset 0 0 0 1px var(--gold-halo);
+}
+.gold__spot {
+  position: absolute;
+  left: 20%;
+  top: 30%;
+  width: 60%;
+  aspect-ratio: 1000 / 410;
 }
 .gold__tilt {
-  transform: perspective(1200px) rotateY(-8deg) rotateX(4deg) rotate(-6deg);
-  animation: gold-float 5.6s ease-in-out infinite;
+  transform: perspective(1200px) rotateY(-9deg) rotateX(5deg) rotate(-7deg);
 }
-@keyframes gold-float {
-  0%, 100% { translate: 0 0; }
-  50% { translate: 0 -4px; }
+/* until the mint takes over, only the stage shows */
+.gold__field[data-phase='mint'] .gtk2__art,
+.gold__field[data-phase='mint'] .gtk2__aura,
+.gold__field[data-phase='mint'] .gtk2__fx,
+.gold__field[data-phase='mint'] .gchip {
+  opacity: 0;
 }
-.gold__ticket-side {
-  flex: 1;
-  min-width: 0;
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: 14px;
+
+/* The stub: the wallet's bonus and the claim, in the flash sale's code row. */
+.gold__stub {
+  margin-top: 12px;
+  background: linear-gradient(90deg, var(--gold-wash), transparent 65%), var(--d-field);
+  box-shadow: inset 0 0 0 1px var(--gold-ring);
 }
-.gold__ticket-text {
-  flex: 1;
-  min-width: 0;
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-}
-.gold__ticket-value {
+.gold__value {
   font-family: var(--d-digits);
-  font-size: 26px;
+  font-size: 28px;
   font-weight: 800;
   line-height: 1;
   color: var(--gold-ink);
 }
-.gold__claim { text-decoration: none; white-space: nowrap; }
-.gold__stages + * { margin-top: 0; }
+.gold__claim {
+  position: relative;
+  overflow: hidden;
+  text-decoration: none;
+  white-space: nowrap;
+}
+.gold__glint {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  width: 30%;
+  background: linear-gradient(90deg, transparent, rgba(242, 184, 75, 0.45), transparent);
+  transform: translateX(-120%);
+  pointer-events: none;
+}
+
+/* the chips on the light card: ink and light plates behind the glossy live one */
+.dash[data-theme='light'] .gold .gpill[data-step='1'] {
+  color: #9a6110;
+  background: #fff6e2;
+  box-shadow: inset 0 0 0 calc(var(--s) * var(--chip, 1) * 2) #d7a142;
+}
+.dash[data-theme='light'] .gold .gpill[data-step='2'] {
+  color: #122433;
+  background: #fff;
+  box-shadow: inset 0 0 0 calc(var(--s) * var(--chip, 1) * 1.6) #d5dae2;
+}
+.dash[data-theme='light'] .gold .gpill[data-step='3'] {
+  color: #8a929a;
+  background: #fff;
+  box-shadow: inset 0 0 0 calc(var(--s) * var(--chip, 1) * 1.2) #e1e5ea;
+}
+
 @media (max-width: 560px) {
-  .gold__ticket { flex-direction: column; align-items: stretch; padding: 24px 16px 16px; }
-  .gold__art { flex: none; max-width: none; padding: 6px 14px 4px; }
-  .gold__claim { width: 100%; justify-content: center; }
+  .gold__field { aspect-ratio: 4 / 3; }
+  .gold__spot { left: 12%; width: 76%; top: 32%; }
+  .gold__field { --s: 0.092cqw; }
+  .gold__stub { flex-direction: column; align-items: stretch; }
+  .gold__claim { justify-content: center; }
 }
 @media (prefers-reduced-motion: reduce) {
-  .gold__tilt { animation: none; }
+  .gold__glint { display: none; }
 }
 
 /* ---------- Referrals ---------- */

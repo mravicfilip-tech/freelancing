@@ -1453,20 +1453,8 @@ html[data-dash-theme='light'] body { background: #edeff1; }
   color: var(--gold-ink);
 }
 .gold__claim {
-  position: relative;
-  overflow: hidden;
   text-decoration: none;
   white-space: nowrap;
-}
-.gold__glint {
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  left: 0;
-  width: 30%;
-  background: linear-gradient(90deg, transparent, rgba(242, 184, 75, 0.45), transparent);
-  transform: translateX(-120%);
-  pointer-events: none;
 }
 
 /* the chips on the light card: ink and light plates behind the glossy live one */
@@ -1504,9 +1492,7 @@ html[data-dash-theme='light'] body { background: #edeff1; }
   .gold__claim { justify-content: center; }
 }
 @media (prefers-reduced-motion: reduce) {
-  .gold__glint { display: none; }
-}
-
+  
 /* ---------- Referrals ---------- */
 .link-quiet {
   display: inline-flex;

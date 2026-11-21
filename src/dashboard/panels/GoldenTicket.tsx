@@ -76,7 +76,6 @@ export function GoldenTicket() {
             pulse.add(() => ctl.current?.surge(2.2), 0);
             pulse.fromTo('.gpill[data-step="0"]', { scale: 1 }, { scale: 1.08, duration: 0.18, ease: 'power2.out', yoyo: true, repeat: 1 }, 0);
             pulse.fromTo('.gold__value', { scale: 1 }, { scale: 1.06, duration: 0.18, ease: 'power2.out', yoyo: true, repeat: 1, transformOrigin: '0% 50%' }, 0.05);
-            pulse.fromTo('.gold__glint', { xPercent: -120 }, { xPercent: 360, duration: 0.9, ease: 'power2.inOut' }, 0.1);
 
             // it leans toward the pointer over its stage
             if (window.matchMedia('(pointer: fine)').matches) {
@@ -167,7 +166,6 @@ export function GoldenTicket() {
             <span className="gold__value">+{bonus}X</span>
           </span>
           <a className="copy gold__claim" href="#buy">
-            <span className="gold__glint" aria-hidden="true" />
             Claim allocation
             <svg viewBox="0 0 16 16" className="icon-16" aria-hidden="true">
               <path d="M3 8h9M8.5 4 12.5 8 8.5 12" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />

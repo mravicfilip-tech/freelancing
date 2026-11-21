@@ -6,6 +6,7 @@ import { StatRow } from './panels/StatRow';
 import { BuyPanel } from './panels/BuyPanel';
 import { StageLadder } from './panels/StageLadder';
 import { FlashSale } from './panels/FlashSale';
+import { GoldenTicket } from './panels/GoldenTicket';
 import { Referrals } from './panels/Referrals';
 import { LiveOrders } from './panels/LiveOrders';
 import { DashboardSkeleton } from './Skeleton';
@@ -51,6 +52,7 @@ export function Dashboard() {
               {/* One card, two parts: two separate boxes beside the buy panel
                   read as clutter and each was half empty. */}
               <div className="card side">
+                <GoldenTicket />
                 <FlashSale sale={data.flashSale} />
                 <Referrals referrals={data.referrals} rows={data.referralRows} />
               </div>

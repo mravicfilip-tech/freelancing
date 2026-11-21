@@ -1316,6 +1316,115 @@ html[data-dash-theme='light'] body { background: #edeff1; }
   color: var(--d-text);
 }
 
+/* ---------- Golden Ticket bonus ----------
+   The flash sale's shape, in the campaign's gold: a countdown to the end of the
+   live stage, the four stages with the live one lit, and the bonus the wallet
+   gets now as a ticket stub with the way to claim it. Gold is spent on the live
+   stage, the stub and its figure only; everything else is the card's own ink. */
+.gold {
+  --gold: #f2b84b;
+  --gold-ink: #f6c768;
+  --gold-on: #2a1a03;
+  --gold-ring: rgba(233, 168, 62, 0.55);
+  --gold-wash: rgba(233, 168, 62, 0.1);
+}
+.dash[data-theme='light'] .gold {
+  --gold-ink: #a9680f;
+  --gold-ring: rgba(201, 134, 26, 0.55);
+  --gold-wash: rgba(233, 168, 62, 0.12);
+}
+.gold__kicker {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0 0 10px;
+  font-family: var(--d-pixel);
+  font-size: 10px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--gold-ink);
+}
+.gold__kicker i {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--gold);
+  box-shadow: 0 0 0 3px rgba(242, 184, 75, 0.22);
+}
+.gold__stages {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 8px;
+  margin: 20px 0 0;
+  padding: 0;
+  list-style: none;
+}
+.gold__stage {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 10px 12px;
+  border-radius: var(--r-card);
+  background: var(--d-inset);
+}
+.gold__stage-label {
+  font-family: var(--d-pixel);
+  font-size: 9px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--d-text-3);
+}
+.gold__stage-value {
+  font-family: var(--d-digits);
+  font-size: 22px;
+  font-weight: 700;
+  line-height: 1;
+  color: var(--d-text-2);
+}
+.gold__stage[data-state='live'] {
+  background: linear-gradient(180deg, #ffe08f 0%, #f2b84b 55%, #dc9a2a 100%);
+  box-shadow: inset 0 1px 0 rgba(255, 250, 225, 0.8), 0 6px 18px -8px rgba(233, 168, 62, 0.7);
+}
+.gold__stage[data-state='live'] .gold__stage-label { color: rgba(42, 26, 3, 0.7); }
+.gold__stage[data-state='live'] .gold__stage-value { color: var(--gold-on); }
+.gold__stage[data-state='next'] .gold__stage-value { opacity: 0.75; }
+.gold__stage[data-state='done'] { opacity: 0.45; }
+
+/* The stub: the flash sale's code row, ringed and washed in gold. */
+.gold__ticket {
+  background: linear-gradient(90deg, var(--gold-wash), transparent 65%), var(--d-field);
+  box-shadow: inset 0 0 0 1px var(--gold-ring);
+}
+.gold__art {
+  flex: none;
+  width: 64px;
+  height: 30px;
+  filter: drop-shadow(0 4px 10px rgba(233, 168, 62, 0.35));
+}
+.gold__sheen { animation: gold-sheen 3.6s ease-in-out infinite; }
+@keyframes gold-sheen {
+  0%, 55% { transform: skewX(-18deg) translateX(0); }
+  100% { transform: skewX(-18deg) translateX(110px); }
+}
+.gold__ticket-text {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.gold__ticket-value {
+  font-family: var(--d-digits);
+  font-size: 26px;
+  font-weight: 800;
+  line-height: 1;
+  color: var(--gold-ink);
+}
+.gold__claim { text-decoration: none; white-space: nowrap; }
+@media (prefers-reduced-motion: reduce) {
+  .gold__sheen { animation: none; }
+}
+
 /* ---------- Referrals ---------- */
 .link-quiet {
   display: inline-flex;

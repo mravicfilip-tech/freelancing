@@ -100,6 +100,19 @@ export const FLASH_SALE = {
   secondsLeft: 23 * 3600 + 11 * 60 + 29,
 } as const;
 
+/** The Golden Ticket bonus: four stages, the bonus stepping down as they go,
+ *  so the earlier you buy the bigger the bonus on what you get. */
+export const GOLDEN_TICKET = {
+  /** Each stage's bonus multiple, first stage first. */
+  stages: [60, 50, 40, 30],
+  /** Index of the stage that is live. */
+  live: 0,
+  /** Seconds left in the live stage when the page loads: 47h 52m 10s. */
+  secondsLeft: 47 * 3600 + 52 * 60 + 10,
+  /** The ticket's number, as printed on the campaign's ticket. */
+  ticket: '0001',
+} as const;
+
 export type TokenId = 'USDT' | 'ETH' | 'BTC' | 'SOL' | 'USDC' | 'BNB';
 
 /** Indicative USD rates, used by the calculator to price a contribution. */

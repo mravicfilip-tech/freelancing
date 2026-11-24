@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, type ReactNode } from 'react';
 import { LAUNCH } from '../tokenLaunch/content';
 import type { Electric } from '../tokenLaunch/electric';
 import { OnAirArt, airDirection } from '../tokenLaunch/OnAir';
@@ -25,7 +25,7 @@ function Tick() {
  * arrive. After that the playhead runs on, launch words rise out of the recording, and the queue
  * moves up as each question is answered. With reduced motion it is simply there.
  */
-export function TokenLaunch() {
+export function TokenLaunch({ active = true, nav }: { active?: boolean; nav?: ReactNode }) {
   const root = useRef<HTMLElement>(null);
   const ctl = useRef<Electric | null>(null);
 
@@ -89,10 +89,14 @@ export function TokenLaunch() {
   return (
     <section ref={root} className="card launch" aria-labelledby="launch-title">
       <div className="launch__info">
-        <p className="launch__kicker">
-          <i aria-hidden="true" />
-          {LAUNCH.badge} · {LAUNCH.day} {LAUNCH.dateShort} · {LAUNCH.time}
-        </p>
+        <div className="promo__top">
+          <p className="launch__kicker">
+            <i aria-hidden="true" />
+            {LAUNCH.badge} · {LAUNCH.day} {LAUNCH.dateShort}
+            <span className="launch__kickerTime"> · {LAUNCH.time}</span>
+          </p>
+          {nav}
+        </div>
         <h2 className="flash__title" id="launch-title">
           {LAUNCH.title}
         </h2>
@@ -136,7 +140,7 @@ export function TokenLaunch() {
         <span className="launch__grid" />
         <span className="launch__halo" />
         <div className="launch__spot">
-          <OnAirArt ctl={ctl} running drawn={false} />
+          <OnAirArt ctl={ctl} running={active} drawn={false} />
         </div>
       </div>
     </section>

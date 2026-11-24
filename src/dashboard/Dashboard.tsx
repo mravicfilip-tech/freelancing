@@ -6,8 +6,7 @@ import { StatRow } from './panels/StatRow';
 import { BuyPanel } from './panels/BuyPanel';
 import { StageLadder } from './panels/StageLadder';
 import { FlashSale } from './panels/FlashSale';
-import { GoldenTicket } from './panels/GoldenTicket';
-import { TokenLaunch } from './panels/TokenLaunch';
+import { PromoSlider } from './panels/PromoSlider';
 import { Referrals } from './panels/Referrals';
 import { LiveOrders } from './panels/LiveOrders';
 import { DashboardSkeleton } from './Skeleton';
@@ -48,13 +47,9 @@ export function Dashboard() {
             <StatRow holdings={data.holdings} referrals={data.referrals} presale={data.presale} />
             <StageLadder />
 
-            {/* The two campaigns, a pair: the founders' live AMA on Thursday (the landing page's On
-                Air) and the Golden Ticket bonus. Side by side where there is room, each its stage
-                over its words; otherwise each its own card across the page. */}
-            <div className="dash__promos">
-              <TokenLaunch />
-              <GoldenTicket />
-            </div>
+            {/* The two campaigns as one slider across the page: the founders' live AMA on Thursday
+                (the landing page's On Air) first, the Golden Ticket bonus second. */}
+            <PromoSlider />
 
             <div className="dash__split">
               <BuyPanel presale={data.presale} flashSale={data.flashSale} />

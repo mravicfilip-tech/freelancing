@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, type ReactNode } from 'react';
 import { GOLDEN_TICKET } from '../data';
 import { BonusChips, GoldenTicket as Ticket } from '../goldenTicket/GoldenTicket';
 import type { Electric } from '../goldenTicket/electric';
@@ -25,7 +25,7 @@ function Tick() {
  * that it sways, leans toward the pointer, and every few seconds the wire surges and the
  * live chip flares. With reduced motion it is simply there.
  */
-export function GoldenTicket() {
+export function GoldenTicket({ active = true, nav }: { active?: boolean; nav?: ReactNode }) {
   const { stages, live, ticket } = GOLDEN_TICKET;
   const root = useRef<HTMLElement>(null);
   const ctl = useRef<Electric | null>(null);
@@ -126,10 +126,13 @@ export function GoldenTicket() {
   return (
     <section ref={root} className="card gold" aria-labelledby="gold-title">
       <div className="gold__info">
-        <p className="gold__kicker">
-          <i aria-hidden="true" />
-          Golden Ticket · Stage {live + 1} live
-        </p>
+        <div className="promo__top">
+          <p className="gold__kicker">
+            <i aria-hidden="true" />
+            <span className="gold__kickerLead">Golden Ticket · </span>Stage {live + 1} live
+          </p>
+          {nav}
+        </div>
         <h2 className="flash__title" id="gold-title">
           Claim your Golden Ticket
         </h2>
@@ -177,7 +180,7 @@ export function GoldenTicket() {
           <span className="gwave" aria-hidden="true" />
           <div className="gold__tilt">
             <div className="gt-pose">
-              <Ticket ctl={ctl} running drawn={false} />
+              <Ticket ctl={ctl} running={active} drawn={false} />
             </div>
           </div>
           <BonusChips />

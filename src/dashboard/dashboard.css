@@ -1512,7 +1512,7 @@ html[data-dash-theme='light'] body { background: #edeff1; }
 @media (max-width: 1180px) {
   .gold { grid-template-columns: minmax(0, 1fr); row-gap: 0; }
   .gold__info { display: contents; }
-  .gold__kicker { order: 1; }
+  .gold .promo__top { order: 1; }
   .gold .flash__title { order: 2; }
   .gold .flash__copy { order: 3; }
   .gold__field { order: 4; margin-top: 20px; min-height: 0; aspect-ratio: 100 / 56; }
@@ -1654,7 +1654,7 @@ html[data-dash-theme='light'] body { background: #edeff1; }
 @media (max-width: 1180px) {
   .launch { grid-template-columns: minmax(0, 1fr); row-gap: 0; }
   .launch__info { display: contents; }
-  .launch__kicker { order: 1; }
+  .launch .promo__top { order: 1; }
   .launch .flash__title { order: 2; }
   .launch .flash__copy { order: 3; }
   .launch__field { order: 4; margin-top: 20px; min-height: 0; aspect-ratio: 100 / 58; }
@@ -1662,47 +1662,133 @@ html[data-dash-theme='light'] body { background: #edeff1; }
   .launch__info .launch__stub { order: 6; margin-top: 0; }
 }
 @media (max-width: 560px) {
+  /* beside the slider's controls the kicker keeps to one line; the time is in the stub below */
+  .launch__kickerTime { display: none; }
   /* the player stacks over the question here (tokenLaunch/OnAir.css): a tall stage */
   .launch__field { aspect-ratio: 100 / 124; --lw: min(90cqw, 80cqh); }
   .launch__stub { flex-direction: column; align-items: stretch; }
   .launch__reserve { justify-content: center; }
 }
 
-/* ---------- The two campaigns as a pair ----------
-   The Token Launch card and the Golden Ticket card. Where there is room they sit side by side with
-   one anatomy: the stage on top at one ratio, then the kicker, the title, the copy, three ticks
-   and the stub at the foot, so every row lines up across the pair and the stubs share a baseline.
-   Below that each is its own card across the page, the same split in both. */
-.dash__promos {
-  display: grid;
-  gap: var(--gap);
+/* ---------- The two campaigns as a slider ----------
+   The Token Launch card and the Golden Ticket card, one at a time across the page. The track holds
+   both side by side, a gap apart, and moves one card's width plus the gap per slide; the two are
+   the height of the taller so nothing below jumps as they change. The controls sit at the right
+   of each card's kicker row, the dashboard's round buttons and its pick for the live dot. */
+.promos {
+  min-width: 0;
 }
-@media (min-width: 1360px) {
-  .dash__promos {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    align-items: stretch;
+.promos__viewport {
+  overflow: hidden;
+  border-radius: var(--r-card);
+  touch-action: pan-y;
+  transition: height 520ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+.promos__track {
+  display: flex;
+  gap: var(--gap);
+  align-items: stretch;
+  transform: translateX(calc(var(--i, 0) * -1 * (100% + var(--gap))));
+  transition: transform 640ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+.promos__slide {
+  flex: 0 0 100%;
+  min-width: 0;
+  display: flex;
+}
+.promos__slide > .card {
+  flex: 1;
+  min-width: 0;
+}
+/* the kicker and the controls on one row */
+.promo__top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin: 0 0 10px;
+}
+.promo__top > p {
+  margin: 0;
+  min-width: 0;
+}
+.promos__nav {
+  flex: none;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.promos__arrow {
+  display: grid;
+  place-items: center;
+  width: 30px;
+  height: 30px;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: var(--d-inset);
+  color: var(--d-text-2);
+  cursor: pointer;
+  transition: background-color 160ms ease, color 160ms ease;
+}
+.promos__arrow:hover {
+  background: var(--d-pick);
+  color: var(--d-on-pick);
+}
+.promos__arrow svg {
+  width: 14px;
+  height: 14px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.promos__dots {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.promos__dot {
+  width: 7px;
+  height: 7px;
+  padding: 0;
+  border: 0;
+  border-radius: 999px;
+  background: var(--d-field-ring);
+  opacity: 0.6;
+  cursor: pointer;
+  transition: width 240ms ease, background-color 240ms ease, opacity 240ms ease;
+}
+.promos__dot[aria-current='true'] {
+  width: 20px;
+  background: var(--d-pick);
+  opacity: 1;
+}
+.promos__arrow:focus-visible,
+.promos__dot:focus-visible {
+  outline: 2px solid var(--d-pick);
+  outline-offset: 2px;
+}
+@media (prefers-reduced-motion: reduce) {
+  .promos__track,
+  .promos__viewport { transition: none; }
+}
+/* One column: each card its own height (the slider eases between them), and a column rather than
+   a grid, so every part keeps its own size. */
+@media (max-width: 1180px) {
+  .promos__track {
+    align-items: flex-start;
   }
-  .dash__promos > .card {
+  .promos .gold,
+  .promos .launch {
     display: flex;
     flex-direction: column;
-    gap: 22px;
   }
-  .dash__promos .launch__field,
-  .dash__promos .gold__field {
-    order: -1;
-    min-height: 0;
-    aspect-ratio: 100 / 54;
-  }
-  .dash__promos .launch__info,
-  .dash__promos .gold__info {
-    flex: 1;
-  }
-  /* each stage as large as its field allows: On Air across it, the ticket a little larger than
-     beside the copy */
-  .dash__promos .launch__field { --lw: min(98cqw, 176cqh); }
-  .dash__promos .gold__field { --tw: min(66cqw, 150cqh); }
-  /* the same space under both copies, whatever their lengths */
-  .dash__promos .gold__ticks { margin: 18px 0 26px; }
+}
+@media (max-width: 560px) {
+  /* beside the slider's controls the kicker keeps to one line; the title says Golden Ticket */
+  .gold__kickerLead { display: none; }
 }
 
 /* ---------- Referrals ---------- */
@@ -1915,8 +2001,7 @@ html[data-dash-theme='light'] body { background: #edeff1; }
   .stat-row, .stat-empty { order: 2; }
   .buy { order: 3; }
   /* the Golden Ticket bonus sits just above the buy form it feeds (same slot, earlier in the page) */
-  .dash__promos { display: contents; }
-  .launch, .gold { order: 3; }
+  .promos { order: 3; }
   .ladder { order: 4; }
   .side { order: 5; }
   .orders { order: 6; }

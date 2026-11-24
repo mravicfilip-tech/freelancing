@@ -7,6 +7,7 @@ import { BuyPanel } from './panels/BuyPanel';
 import { StageLadder } from './panels/StageLadder';
 import { FlashSale } from './panels/FlashSale';
 import { GoldenTicket } from './panels/GoldenTicket';
+import { TokenLaunch } from './panels/TokenLaunch';
 import { Referrals } from './panels/Referrals';
 import { LiveOrders } from './panels/LiveOrders';
 import { DashboardSkeleton } from './Skeleton';
@@ -46,6 +47,10 @@ export function Dashboard() {
           <>
             <StatRow holdings={data.holdings} referrals={data.referrals} presale={data.presale} />
             <StageLadder />
+
+            {/* The founders' live AMA on Thursday: the landing page's On Air on a card of its own,
+                in the Golden Ticket card's shape. */}
+            <TokenLaunch />
 
             {/* The Golden Ticket bonus: its own card across the page, so the ticket gets the
                 room it needs and the buy panel and side card keep the heights they balance at. */}

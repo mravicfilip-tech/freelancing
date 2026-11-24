@@ -1,0 +1,482 @@
+/* Direction 3, On Air (OnAir.tsx). The stage is 1000 × 560 of its own units (`--a`): the player
+   0–560 across, the feed 590–1000, both 40–520 down. Kept to the site's own UI: cards, pills, one
+   lime for what is live; the glow is the wire's alone. */
+.lo {
+  --a: calc(100cqw / 1000);
+  position: relative;
+  width: 100%;
+  aspect-ratio: 1000 / 560;
+  container-type: inline-size;
+  font-family: var(--fh-sans, 'Onest Variable', sans-serif);
+}
+.lo > * {
+  position: absolute;
+}
+
+/* ------------------------------------------------------------------ the player */
+.lo__pose {
+  left: 0;
+  top: calc(var(--a) * 40);
+  width: calc(var(--a) * 560);
+  height: calc(var(--a) * 480);
+  transform-origin: 50% 50%;
+}
+.lo__player {
+  position: absolute;
+  inset: 0;
+}
+.lo__art {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  padding: calc(var(--a) * 26) calc(var(--a) * 28) calc(var(--a) * 28);
+  border-radius: calc(var(--a) * 30);
+  /* `--lit` 0–1: the load-in warms the plate from near black to its navy */
+  background: color-mix(in srgb, #12143a calc(var(--lit, 1) * 100%), #05061a);
+  box-shadow: inset 0 0 0 calc(var(--a) * 1.6) rgb(170 172 255 / 20%);
+}
+.lo__fx {
+  position: absolute;
+  pointer-events: none;
+}
+.lo__bar {
+  display: flex;
+  align-items: center;
+  gap: calc(var(--a) * 12);
+  padding-bottom: calc(var(--a) * 20);
+  border-bottom: calc(var(--a) * 1.6) solid rgb(170 172 255 / 14%);
+  white-space: nowrap;
+}
+.lo__live {
+  display: inline-flex;
+  align-items: center;
+  height: calc(var(--a) * 32);
+  padding: 0 calc(var(--a) * 13);
+  border-radius: 999px;
+  background: #d9f24e;
+  color: #111214;
+  font-size: calc(var(--a) * 17);
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+.lo__title {
+  font-size: calc(var(--a) * 22);
+  font-weight: 650;
+  letter-spacing: -0.01em;
+  color: #fff;
+}
+
+/* the founders: one dot each in their colour, the one with the floor ringed */
+.lo__voices {
+  display: flex;
+  gap: calc(var(--a) * 8);
+  margin-left: calc(var(--a) * 4);
+}
+.lo__voices i {
+  width: calc(var(--a) * 14);
+  height: calc(var(--a) * 14);
+  border-radius: 50%;
+  background: var(--c);
+}
+/* the launch words that rise out of the recording: a solid pill in the player's navy, outlined in
+   the speaking founder's colour */
+.lo__words {
+  position: absolute;
+  inset: 0;
+  z-index: 4;
+  pointer-events: none;
+}
+.lo__word {
+  position: absolute;
+  translate: -100% -50%;
+  padding: calc(var(--a) * 5) calc(var(--a) * 12);
+  border-radius: 999px;
+  background: #12143a;
+  box-shadow: inset 0 0 0 calc(var(--a) * 2) var(--c, #aeb0ff);
+  font-style: normal;
+  font-size: calc(var(--a) * 17);
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  color: #fff;
+  white-space: nowrap;
+  opacity: 0;
+}
+
+/* the playhead's wire: a band centred on the playhead, wide enough for its glow and arcs; the
+   canvas inside is drawn by electric.ts */
+.lo__bolt {
+  position: absolute;
+  z-index: 2;
+  top: calc(var(--a) * -4);
+  bottom: calc(var(--a) * -4);
+  left: calc(var(--p) * 100%);
+  width: calc(var(--a) * 90);
+  translate: -50% 0;
+  pointer-events: none;
+}
+.lo__zap {
+  position: absolute;
+  pointer-events: none;
+}
+.lo__clock {
+  margin-left: auto;
+  font-size: calc(var(--a) * 21);
+  font-weight: 650;
+  color: #fff;
+  font-variant-numeric: tabular-nums;
+}
+
+/* the recording: two copies of the bars, the dim one whole and the bright one up to the playhead */
+.lo__rec {
+  --p: 0.34;
+  position: relative;
+  flex: 1;
+  margin: calc(var(--a) * 26) 0 calc(var(--a) * 18);
+}
+/* `--buffer` 1 while the recording loads in: the bars are one pale lavender, a little brighter */
+.lo__bars {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  gap: calc(var(--a) * 5);
+  opacity: calc(0.26 + var(--buffer, 0) * 0.34);
+}
+.lo__bars i {
+  flex: 1;
+  height: calc(var(--h) * var(--k, 1) * 92%);
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--c) calc((1 - var(--buffer, 0)) * 100%), #c9caff);
+}
+.lo__played {
+  opacity: 1;
+  clip-path: inset(0 calc((1 - var(--p)) * 100%) 0 0);
+}
+/* a sheen that runs across the bars now and then: the same bars in white, seen through a soft
+   band that travels from left to right */
+.lo__shine {
+  opacity: 0.6;
+  -webkit-mask-image: linear-gradient(90deg, transparent, #000 50%, transparent);
+  mask-image: linear-gradient(90deg, transparent, #000 50%, transparent);
+  -webkit-mask-size: 22% 100%;
+  mask-size: 22% 100%;
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+  animation: lo-shine 4.2s cubic-bezier(0.45, 0, 0.25, 1) infinite;
+}
+.lo__shine i {
+  background: #fff;
+}
+@keyframes lo-shine {
+  0% {
+    -webkit-mask-position: -30% 0;
+    mask-position: -30% 0;
+  }
+  55%,
+  100% {
+    -webkit-mask-position: 130% 0;
+    mask-position: 130% 0;
+  }
+}
+.lo__head {
+  position: absolute;
+  z-index: 3;
+  top: calc(var(--a) * -8);
+  bottom: calc(var(--a) * -8);
+  left: calc(var(--p) * 100%);
+  width: calc(var(--a) * 3);
+  translate: -50% 0;
+  border-radius: 999px;
+}
+.lo__head::before {
+  content: '';
+  position: absolute;
+  left: 50%;
+  top: 0;
+  width: calc(var(--a) * 13);
+  height: calc(var(--a) * 13);
+  translate: -50% -50%;
+  border-radius: 50%;
+  background: #fff;
+}
+
+/* the controls: back, pause, forward */
+.lo__controls {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: calc(var(--a) * 34);
+}
+.lo__skip {
+  width: calc(var(--a) * 30);
+  height: calc(var(--a) * 30);
+  fill: rgb(220 222 255 / 55%);
+}
+.lo__play {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: calc(var(--a) * 7);
+  width: calc(var(--a) * 66);
+  height: calc(var(--a) * 66);
+  border-radius: 50%;
+  background: #4547d6;
+}
+.lo__play i {
+  width: calc(var(--a) * 6);
+  height: calc(var(--a) * 22);
+  border-radius: calc(var(--a) * 2);
+  background: #fff;
+}
+
+/* ------------------------------------------------------------------ the feed */
+.lo__feed {
+  left: calc(var(--a) * 590);
+  top: calc(var(--a) * 40);
+  width: calc(var(--a) * 410);
+  height: calc(var(--a) * 480);
+}
+.lo__feedHead {
+  position: absolute;
+  left: calc(var(--a) * 4);
+  right: calc(var(--a) * 4);
+  top: 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: calc(var(--a) * 40);
+  font-size: calc(var(--a) * 19);
+  font-weight: 750;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--lo-muted, rgb(220 222 255 / 60%));
+  white-space: nowrap;
+}
+.lo__card {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  transform: translateY(calc(var(--a) * (56 + var(--slot) * 140)));
+}
+.lo__card[data-slot='3'] {
+  opacity: 0;
+}
+.lo__trace {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  fill: none;
+  stroke: #8f91ff;
+  stroke-width: 1.6;
+  opacity: 0;
+  pointer-events: none;
+}
+.lo__trace rect {
+  vector-effect: non-scaling-stroke;
+}
+/* the card's skeleton while connecting: an avatar and two lines, a sheen running across them */
+.lo__skel {
+  position: absolute;
+  left: calc(var(--a) * 20);
+  right: calc(var(--a) * 20);
+  top: calc(var(--a) * 17);
+  display: grid;
+  grid-template-columns: calc(var(--a) * 36) 1fr;
+  grid-template-rows: calc(var(--a) * 36) auto;
+  gap: calc(var(--a) * 12) calc(var(--a) * 12);
+  opacity: 0;
+  pointer-events: none;
+}
+.lo__skel > * {
+  border-radius: 999px;
+  background: #2b2f78;
+  animation: lo-skel 0.9s ease-in-out infinite alternate;
+}
+.lo__skel > :nth-child(2) {
+  animation-delay: 0.15s;
+}
+.lo__skel > :nth-child(3) {
+  animation-delay: 0.3s;
+}
+.lo__skel i {
+  grid-row: 1;
+  grid-column: 1;
+}
+.lo__skel b {
+  height: calc(var(--a) * 16);
+  align-self: center;
+}
+.lo__skel b:nth-of-type(1) {
+  grid-row: 1;
+  grid-column: 2;
+  width: 46%;
+}
+.lo__skel b:nth-of-type(2) {
+  grid-row: 2;
+  grid-column: 1 / -1;
+  width: 88%;
+  height: calc(var(--a) * 22);
+}
+@keyframes lo-skel {
+  to {
+    opacity: 0.45;
+  }
+}
+.lo__cardIn {
+  display: flex;
+  flex-direction: column;
+  height: calc(var(--a) * 128);
+  box-sizing: border-box;
+  padding: calc(var(--a) * 15) calc(var(--a) * 20);
+  border-radius: calc(var(--a) * 20);
+  background: var(--lo-card, rgb(16 18 44 / 94%));
+  box-shadow: inset 0 0 0 calc(var(--a) * 1.6) var(--lo-line, rgb(170 172 255 / 20%));
+  transition: box-shadow 300ms ease, background-color 300ms ease;
+}
+.lo__card[data-now] .lo__cardIn {
+  background: var(--lo-cardNow, #1d2066);
+  box-shadow: inset 0 0 0 calc(var(--a) * 2) #8f91ff;
+}
+.lo__cardTop {
+  display: flex;
+  align-items: center;
+  gap: calc(var(--a) * 10);
+  height: calc(var(--a) * 32);
+  white-space: nowrap;
+}
+.lo__who {
+  flex: none;
+  width: calc(var(--a) * 36);
+  height: calc(var(--a) * 36);
+  border-radius: 50%;
+  object-fit: cover;
+  background: #2a2e6e;
+  box-shadow: 0 0 0 calc(var(--a) * 1.6) rgb(255 255 255 / 14%);
+}
+.lo__handle {
+  font-size: calc(var(--a) * 19);
+  font-weight: 650;
+  color: var(--lo-muted, rgb(220 222 255 / 60%));
+}
+.lo__nowTag {
+  display: none;
+  padding: calc(var(--a) * 4) calc(var(--a) * 8);
+  border-radius: 999px;
+  background: #d9f24e;
+  color: #111214;
+  font-size: calc(var(--a) * 12.4);
+  font-weight: 800;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+.lo__card[data-now] .lo__nowTag {
+  display: inline-block;
+}
+.lo__card[data-now] .lo__handle {
+  display: none;
+}
+.lo__votes {
+  margin-left: auto;
+  display: inline-flex;
+  align-items: center;
+  gap: calc(var(--a) * 5);
+  padding: calc(var(--a) * 4) calc(var(--a) * 10);
+  border-radius: 999px;
+  font-size: calc(var(--a) * 18);
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+.lo__votes svg {
+  width: calc(var(--a) * 11);
+  height: calc(var(--a) * 11);
+  fill: currentColor;
+}
+.lo__votes[data-dir='up'] {
+  background: rgb(52 199 120 / 16%);
+  color: #4ade80;
+}
+.lo__votes[data-dir='down'] {
+  background: rgb(229 72 77 / 16%);
+  color: #ff6b70;
+}
+.lo__qBox {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  min-height: 0;
+  /* the same 6 above the question as below it, measured to the card's edge, not its padding */
+  margin-top: calc(var(--a) * 6);
+  margin-bottom: calc(var(--a) * -9);
+}
+.lo__q {
+  margin: 0;
+  font-size: calc(var(--a) * 23);
+  font-weight: 600;
+  line-height: 1.25;
+  letter-spacing: -0.015em;
+  color: var(--lo-ink, #fff);
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.lo__wave {
+  left: calc(var(--a) * 280);
+  top: 50%;
+  width: calc(var(--a) * 420);
+  aspect-ratio: 1;
+  translate: -50% -50%;
+  border-radius: 50%;
+  box-shadow: 0 0 0 2px rgb(170 172 255 / 70%), 0 0 40px 6px rgb(75 75 247 / 35%), inset 0 0 40px 6px rgb(75 75 247 / 25%);
+  opacity: 0;
+  pointer-events: none;
+}
+@keyframes lo-blink {
+  50% {
+    opacity: 0.25;
+  }
+}
+
+/* on the light dashboard: the feed on white cards; the player keeps its own dark */
+.dash[data-theme='light'] .lo {
+  --lo-card: #fff;
+  --lo-cardNow: #f3f3ff;
+  --lo-line: #e1e5ea;
+  --lo-ink: #122433;
+  --lo-muted: #8a929a;
+  --lo-pill: #f2f4f7;
+  --lo-live: #55620f;
+}
+.dash[data-theme='light'] .lo__votes[data-dir='up'] {
+  background: #e3f7ea;
+  color: #16803d;
+}
+.dash[data-theme='light'] .lo__votes[data-dir='down'] {
+  background: #fde8e8;
+  color: #c4282d;
+}
+/* flat on the dashboard, as its own cards are: a ring, no drop shadow */
+.dash[data-theme='light'] .lo__card[data-now] .lo__cardIn {
+  box-shadow: inset 0 0 0 calc(var(--a) * 2) #6f71ff;
+}
+
+/* until the load-in takes over, only the dark shows */
+.launch__field[data-phase='mint'] .lo__player,
+.launch__field[data-phase='mint'] .lo__feed {
+  opacity: 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .lo__skel > * {
+    animation: none;
+  }
+  .lo__shine {
+    display: none;
+  }
+}

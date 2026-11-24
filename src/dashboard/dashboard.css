@@ -1524,6 +1524,144 @@ html[data-dash-theme='light'] body { background: #edeff1; }
   .gold__stub { flex-direction: column; align-items: stretch; }
   .gold__claim { justify-content: center; }
 }
+/* ---------- Token Launch Strategy Call ----------
+   The Golden Ticket card's shape for the founders' live AMA: what it is, three ticked reasons and
+   the date with the way to reserve a seat on the left; on the right the landing page's On Air
+   player and question feed on a stage of their own. Its accent is the campaign's indigo, with the
+   lime kept for what is live. */
+.launch {
+  --launch-ink: #d9f24e;
+  --launch-ring: rgba(143, 145, 255, 0.42);
+  --launch-wash: rgba(75, 75, 247, 0.14);
+  --launch-dot: rgba(200, 202, 255, 0.09);
+  --launch-halo: rgba(143, 145, 255, 0.16);
+  display: grid;
+  grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr);
+  gap: clamp(18px, 2.4vw, 32px);
+  align-items: stretch;
+}
+.dash[data-theme='light'] .launch {
+  --launch-ink: #4042d2;
+  --launch-ring: rgba(75, 75, 247, 0.32);
+  --launch-wash: rgba(75, 75, 247, 0.08);
+  --launch-dot: rgba(18, 36, 51, 0.08);
+  --launch-halo: rgba(75, 75, 247, 0.16);
+}
+.launch__info {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+.launch__kicker {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0 0 10px;
+  font-family: var(--d-pixel);
+  font-size: 10px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--launch-ink);
+}
+.launch__kicker i {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #d9f24e;
+  box-shadow: 0 0 0 3px rgba(217, 242, 78, 0.22);
+  animation: launch-blink 1.6s ease-in-out infinite;
+}
+.dash[data-theme='light'] .launch__kicker i {
+  background: #4b4bf7;
+  box-shadow: 0 0 0 3px rgba(75, 75, 247, 0.18);
+}
+@keyframes launch-blink {
+  50% { opacity: 0.3; }
+}
+/* the stub sits at the foot of the column, level with the bottom of the player's stage */
+.launch__info .launch__stub {
+  margin-top: auto;
+}
+.launch__stub {
+  background: linear-gradient(90deg, var(--launch-wash), transparent 65%), var(--d-field);
+  box-shadow: inset 0 0 0 1px var(--launch-ring);
+}
+.launch__when {
+  white-space: nowrap;
+  font-size: 20px;
+  font-weight: 750;
+  line-height: 1.1;
+  letter-spacing: -0.01em;
+  color: var(--d-text);
+}
+.launch__reserve {
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+/* The player's stage: a dot grid and a halo ring behind, On Air as large as the box allows.
+   Beside the copy the field takes the copy's height; `--lw`, the stage's width, is the smaller
+   of a share of the field's width and of its height (the stage is 1000 × 560, its picture
+   40–520 of that). Stacked, the field keeps a ratio instead. */
+.launch__field {
+  position: relative;
+  overflow: hidden;
+  container-type: size;
+  min-height: 300px;
+  --lw: min(94cqw, 168cqh);
+  border-radius: var(--r-card);
+  background:
+    radial-gradient(55% 60% at 50% 55%, rgba(75, 75, 247, 0.22), transparent 70%),
+    var(--d-field);
+  box-shadow: inset 0 0 0 1px var(--launch-ring);
+}
+.launch__grid {
+  position: absolute;
+  inset: 0;
+  background-image: radial-gradient(circle at center, var(--launch-dot) 1px, transparent 1.4px);
+  background-size: 16px 16px;
+  mask-image: radial-gradient(70% 70% at 50% 52%, #000, transparent);
+  -webkit-mask-image: radial-gradient(70% 70% at 50% 52%, #000, transparent);
+}
+.launch__halo {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: min(70cqw, 140cqh);
+  aspect-ratio: 1;
+  translate: -50% -50%;
+  border-radius: 50%;
+  box-shadow: inset 0 0 0 1px var(--launch-halo);
+}
+.launch__spot {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: var(--lw);
+  aspect-ratio: 1000 / 560;
+  translate: -50% -50%;
+}
+@media (prefers-reduced-motion: reduce) {
+  .launch__kicker i { animation: none; }
+}
+
+/* One column: the player comes in after the copy, then the ticks, then the seat. */
+@media (max-width: 1180px) {
+  .launch { grid-template-columns: minmax(0, 1fr); row-gap: 0; }
+  .launch__info { display: contents; }
+  .launch__kicker { order: 1; }
+  .launch .flash__title { order: 2; }
+  .launch .flash__copy { order: 3; }
+  .launch__field { order: 4; margin-top: 20px; min-height: 0; aspect-ratio: 100 / 58; }
+  .launch .gold__ticks { order: 5; }
+  .launch__info .launch__stub { order: 6; margin-top: 0; }
+}
+@media (max-width: 560px) {
+  .launch__field { aspect-ratio: 100 / 62; --lw: 98cqw; }
+  .launch__stub { flex-direction: column; align-items: stretch; }
+  .launch__reserve { justify-content: center; }
+}
+
 /* ---------- Referrals ---------- */
 .link-quiet {
   display: inline-flex;

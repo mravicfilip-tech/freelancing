@@ -116,10 +116,11 @@ export function TokenLaunch() {
 
         <div className="flash__code launch__stub">
           <span className="gold__stub-text">
-            <span className="flash__code-label">Thursday · {LAUNCH.badge}</span>
-            <span className="launch__when">
-              {LAUNCH.dateShort} · {LAUNCH.time}
+            {/* the Golden Ticket stub's "Your bonus · Nº 0001", for the seat */}
+            <span className="flash__code-label">
+              Your seat · {LAUNCH.dateShort}
             </span>
+            <span className="launch__when">{LAUNCH.time}</span>
           </span>
           <a className="copy launch__reserve" href="#launch">
             {LAUNCH.cta}

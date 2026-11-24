@@ -48,13 +48,13 @@ export function Dashboard() {
             <StatRow holdings={data.holdings} referrals={data.referrals} presale={data.presale} />
             <StageLadder />
 
-            {/* The founders' live AMA on Thursday: the landing page's On Air on a card of its own,
-                in the Golden Ticket card's shape. */}
-            <TokenLaunch />
-
-            {/* The Golden Ticket bonus: its own card across the page, so the ticket gets the
-                room it needs and the buy panel and side card keep the heights they balance at. */}
-            <GoldenTicket />
+            {/* The two campaigns, a pair: the founders' live AMA on Thursday (the landing page's On
+                Air) and the Golden Ticket bonus. Side by side where there is room, each its stage
+                over its words; otherwise each its own card across the page. */}
+            <div className="dash__promos">
+              <TokenLaunch />
+              <GoldenTicket />
+            </div>
 
             <div className="dash__split">
               <BuyPanel presale={data.presale} flashSale={data.flashSale} />

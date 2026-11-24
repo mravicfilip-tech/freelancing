@@ -466,6 +466,39 @@
   box-shadow: inset 0 0 0 calc(var(--a) * 2) #6f71ff;
 }
 
+/* On a phone the card's stage is narrow and side by side the feed's words would be a few pixels
+   high, so the two stack, as in the landing page's popup: the player full width without its
+   transport, the question being answered full width under it. 1000 wide: the player 0–707, the
+   feed from 743 (184 of its own 410-wide units). The motion reads --stack to show one card. */
+@media (max-width: 560px) {
+  .launch .lo {
+    --stack: 1;
+    aspect-ratio: 1000 / 1192;
+  }
+  .launch .lo__pose {
+    --a: calc(100cqw / 560);
+    top: 0;
+    height: calc(var(--a) * 396);
+  }
+  .launch .lo__controls {
+    display: none;
+  }
+  .launch .lo__feed {
+    --a: calc(100cqw / 410);
+    left: 0;
+    top: calc(100cqw * 0.743);
+    width: 100cqw;
+    height: calc(var(--a) * 184);
+  }
+  .launch .lo__card:not([data-slot='0']) {
+    opacity: 0;
+  }
+  .launch .lo__wave {
+    left: 50%;
+    top: 30%;
+  }
+}
+
 /* until the load-in takes over, only the dark shows */
 .launch__field[data-phase='mint'] .lo__player,
 .launch__field[data-phase='mint'] .lo__feed {

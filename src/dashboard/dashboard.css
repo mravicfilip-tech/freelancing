@@ -1657,7 +1657,8 @@ html[data-dash-theme='light'] body { background: #edeff1; }
   .launch__info .launch__stub { order: 6; margin-top: 0; }
 }
 @media (max-width: 560px) {
-  .launch__field { aspect-ratio: 100 / 62; --lw: 98cqw; }
+  /* the player stacks over the question here (tokenLaunch/OnAir.css): a tall stage */
+  .launch__field { aspect-ratio: 100 / 124; --lw: min(90cqw, 80cqh); }
   .launch__stub { flex-direction: column; align-items: stretch; }
   .launch__reserve { justify-content: center; }
 }

@@ -359,11 +359,16 @@ export const airDirection: Direction = {
     });
 
     // the feed: the top question is answered and leaves, the queue moves up, a new one arrives
+    // Stacked on a phone (--stack, set by the CSS) the feed is the full width and shows only the
+    // question being answered.
+    const lo = scope.querySelector('.lo');
+    const stacked = !!lo && getComputedStyle(lo).getPropertyValue('--stack').trim() === '1';
+    const shown = stacked ? 1 : 3;
     const cards = Array.from(scope.querySelectorAll<HTMLElement>('.lo__card'));
-    const px = () => (scope.offsetWidth || 1000) / 1000;
+    const px = () => (scope.offsetWidth || 1000) / (stacked ? 410 : 1000);
     const Y = (slot: number) => (SLOT0 + slot * SLOT) * px();
     let order = cards.map((_, i) => i);
-    cards.forEach((c, i) => gsap.set(c, { y: Y(i), opacity: i < 3 ? 1 : 0 }));
+    cards.forEach((c, i) => gsap.set(c, { y: Y(i), opacity: i < shown ? 1 : 0 }));
     const feed = gsap.timeline({ repeat: -1, repeatDelay: 3.6, delay: delay + 2.6 });
     feed.call(() => {
       const [top, ...queue] = order;
@@ -371,7 +376,7 @@ export const airDirection: Direction = {
       delete leaving.dataset.now;
       gsap.to(leaving, { y: Y(0) - 26 * px(), opacity: 0, duration: 0.45, ease: 'power2.in', onComplete: () => void gsap.set(leaving, { y: Y(3) + 20 * px() }) });
       queue.forEach((ci, slot) => {
-        gsap.to(cards[ci], { y: Y(slot), opacity: slot < 3 ? 1 : 0, duration: 0.65, ease: 'power3.inOut', delay: 0.18 });
+        gsap.to(cards[ci], { y: Y(slot), opacity: slot < shown ? 1 : 0, duration: 0.65, ease: 'power3.inOut', delay: 0.18 });
       });
       gsap.delayedCall(0.5, () => {
         cards[queue[0]].dataset.now = '';

@@ -9,7 +9,7 @@
     "repo": "ekotehnika-hero",
     "file": "src/shop/Blog.tsx"
   },
-  "note": "pinned contents of a post with 3 or more sections, numbered 01 to 0n, a closed Sadržaj row on a phone",
+  "note": "a post's contents on 3 or more sections, a short numbered list at the top of the text, not pinned, a closed Sadržaj row on a phone",
   "role": "nav",
   "tag": "nav",
   "text": "SADRŽAJ Zone upozorenja oko viljuškara I",
@@ -25,9 +25,9 @@
     "border": "none",
     "radius": "0px",
     "padding": "0px 0px 0px 0px",
-    "height": "220px",
+    "height": "192px",
     "shadow": "none",
-    "width": "294px"
+    "width": "636px"
   },
   "hover": null
 }

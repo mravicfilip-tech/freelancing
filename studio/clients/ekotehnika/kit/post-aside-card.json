@@ -9,7 +9,7 @@
     "repo": "ekotehnika-hero",
     "file": "src/shop/Blog.tsx"
   },
-  "note": "frame 4 card of a post, the shop category or service it leads to, one red button, secondary on a phone",
+  "note": "the post's card, the last block of the text on the tint, secondary button, the red stays on the inquiry under it",
   "role": "aside",
   "tag": "aside",
   "text": "BEZBEDNOST Safety Guard za vaše viljuška",
@@ -21,13 +21,13 @@
     "letterSpacing": "0px",
     "textTransform": "none",
     "color": "#000000",
-    "background": "transparent",
+    "background": "#f6f6f6",
     "border": "none",
     "radius": "0px",
-    "padding": "0px 0px 0px 0px",
-    "height": "228px",
+    "padding": "24px 24px 24px 24px",
+    "height": "220px",
     "shadow": "none",
-    "width": "270px"
+    "width": "636px"
   },
   "hover": null
 }

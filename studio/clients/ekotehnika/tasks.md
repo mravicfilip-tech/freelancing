@@ -25,15 +25,6 @@ Task format
 
 ## In progress
 
-- ekotehnika-24 The blog, the list page and the single post pages, with draft pictures from the Drive. Filip 26 November
-  - [x] Filip answers the kickoff questions and picks the direction, "go with defaults", briefs/blog/plan.md
-  - [x] Pick draft pictures per post from the Drive
-  - [x] Build the single post page in the real app, every state, four draft posts at their root addresses
-  - [x] Filip accepts or corrects the post page, "go, build the list page", golden blog-post
-  - [x] Build the list page from the same parts, /blog/, with the Blog link in the menu, the phone sheet and the footer
-  - [ ] Shots at 1440, 390 and 360, scripts/doubles.cjs clean
-  - [ ] Filip looks on localhost
-  - [ ] Production after Filip's ship line
 
 - ekotehnika-21 The shop, the client's Drive categories and products, every product leads to the contact form, no cart. The homepage story leads to it. Brief in briefs/shop/brief.md
   - [x] Map the Drive, 89 series in 10 categories, renders, photos and data sheets per series
@@ -296,6 +287,18 @@ Task format
   - [ ] Filip picks one by number
 
 ## Review
+
+- ekotehnika-24 The blog, the list page and the single post pages, with draft pictures from the Drive. Filip 26 November
+  - [x] Filip answers the kickoff questions and picks the direction, "go with defaults", briefs/blog/plan.md
+  - [x] Pick draft pictures per post from the Drive
+  - [x] Build the single post page in the real app, every state, four draft posts at their root addresses
+  - [x] Filip accepts or corrects the post page, "go, build the list page", golden blog-post
+  - [x] Build the list page from the same parts, /blog/, with the Blog link in the menu, the phone sheet and the footer
+  - [x] Shots at 1440, 390 and 360, scripts/doubles.cjs clean
+  - [ ] Filip looks on localhost
+  - [x] Production after Filip's ship line, "push vercel" for 7573891, live at https://ekotehnika.vercel.app/blog/ as fb9912b on the ekotehnika repo
+  - [ ] Ekotehnika adds the facts each draft's note asks for, and Vemax's OK for its post
+  - [ ] The old posts come over at their old addresses, from a WordPress export or the texts
 
 - ekotehnika-23 App wide check on mobile, padding, spacing, inconsistencies and poor UX, fix what is found. Filip 20 November. On the branch claude/awesome-faraday-lkhnn2, findings in briefs/mobile/audit.md
   - [x] Measure every shop and service route as a touch phone at 390 and 360, menus and sheets open

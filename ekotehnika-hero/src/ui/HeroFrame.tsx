@@ -34,6 +34,8 @@ export const links: NavLink[] = [
   // Usluge and Kompanija open their own pages, Filip 19 November, briefs/pages/plan.md. ch still marks their chapters in the story.
   { label: 'Usluge', href: '/najam', ch: 'najam servis', local: true, mega: 'services' },
   { label: 'Kompanija', href: '/kompanija', ch: 'kompanija', local: true },
+  // the blog's list, Filip 26 November, briefs/blog/plan.md
+  { label: 'Blog', href: '/blog', local: true },
   { label: 'Kontakt', href: '/kontakt', local: true },
 ];
 // the menu sheet of a phone has no panels, so it names every place on its own, Polovni the only one on ekotehnika.rs
@@ -46,6 +48,7 @@ export const sheetLinks: NavLink[] = [
   { label: 'Polovni', href: '/polovni-linde-viljuskari/' },
   links[3],
   links[4],
+  links[5],
 ];
 export const hrefOf = (l: NavLink) => (l.local ? l.href : `${SITE}${l.href}`);
 

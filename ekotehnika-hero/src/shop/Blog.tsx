@@ -4,14 +4,14 @@
 // holds one card for the shop category or the service the post leads to, with the page's one red button. A photo in the text widens over
 // frames 2 to 4 under that card. The close is the short inquiry on the post's topic, then three other posts. On a phone it is one column,
 // the contents a closed row over the text, the card after the text with a secondary button since the phone bar holds the red one.
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { BtnInner } from '../story2/shell/ui';
 import { categoryOf, fmt, hrefCategory, modela, statsOf } from './data';
 import { Link } from './route';
 import { Cap, Cell } from './parts';
 import { QuickAsk } from './QuickAsk';
 import { Page, Par } from './Pages';
-import { type Block, type Post, type PostCard, minutes, postOf, relatedOf } from './blog';
+import { type Block, type Post, type PostCard, minutes, postOf, POSTS, relatedOf } from './blog';
 
 function useTitle(title: string) {
   useEffect(() => {
@@ -208,6 +208,103 @@ export function PostPage({ slug }: { slug: string }) {
         ))}
         <Cap />
       </section>
+    </Page>
+  );
+}
+
+// The blog's list at /blog/, built from the post page's parts once Filip accepted it ("go, build the list page", 26 November). The newest
+// post as a wide card across the four frames, its photo in frames 1 and 2 and its words in 3 and 4, then the other posts in the shop's
+// card grid. The chips of the shop's category bar come once a category holds two posts or more, until then they would each filter to one.
+// A list with no posts says the first ones are on their way.
+export function BlogPage() {
+  useTitle('Blog');
+  const cats = [...new Set(POSTS.map((p) => p.cat))];
+  const chips = cats.filter((c) => POSTS.filter((p) => p.cat === c).length >= 2);
+  const [cat, setCat] = useState('');
+  const shown = cat ? POSTS.filter((p) => p.cat === cat) : POSTS;
+  const [lead, ...rest] = shown;
+  const blanks = (4 - (rest.length % 4)) % 4;
+  return (
+    <Page>
+      <section className="sp-frame pg-post-hd" aria-labelledby="pg-blog-h">
+        <Cell span={2} className="pg-post-hl">
+          <div className="pg-in">
+            <p className="sp-lab">Ekotehnika</p>
+            <h1 className="pg-post-t" id="pg-blog-h">
+              Blog
+            </h1>
+          </div>
+        </Cell>
+        <Cell span={2} className="pg-post-hr">
+          <div className="pg-in">
+            <p className="sp-lede">Bezbednost, servis i delovi, događaji i poslovi sa terena.</p>
+          </div>
+        </Cell>
+      </section>
+
+      {chips.length ? (
+        <section className="sp-frame" aria-labelledby="pg-blog-cats">
+          <Cell span={4} className="sp-bar sp-cats-bar">
+            <h2 className="sp-lab" id="pg-blog-cats">
+              Teme
+            </h2>
+            <div className="sp-pills" role="group" aria-label="Teme bloga">
+              {['', ...chips].map((c) => (
+                <button type="button" className="sp-pill" aria-pressed={cat === c} onClick={() => setCat(c)} key={c || 'sve'}>
+                  {c || 'Sve'} <span>{c ? POSTS.filter((p) => p.cat === c).length : POSTS.length}</span>
+                </button>
+              ))}
+            </div>
+          </Cell>
+        </section>
+      ) : null}
+
+      {lead ? (
+        <section className={`sp-frame pg-bl-lead${rest.length ? '' : ' is-last'}`} aria-labelledby="pg-bl-lead-h">
+          <Cell span={2} className="pg-bl-lead-pic">
+            {lead.lead ? (
+              <Link href={`/${lead.slug}`} tabIndex={-1} aria-hidden="true">
+                <Par src={lead.lead.src} focus={lead.lead.focus} eager />
+              </Link>
+            ) : null}
+          </Cell>
+          <Cell span={2} className="pg-bl-lead-t">
+            <p className="sp-lab">{lead.cat}</p>
+            <h2 className="pg-bl-lead-h" id="pg-bl-lead-h">
+              <Link className="sp-card-a" href={`/${lead.slug}`}>
+                {lead.title}
+              </Link>
+            </h2>
+            <p className="sp-lede">{lead.lede}</p>
+            <Meta p={lead} />
+          </Cell>
+          {rest.length ? null : <Cap />}
+        </section>
+      ) : (
+        <section className="sp-frame" aria-label="Blog">
+          <Cell span={4}>
+            <p className="sp-lede">Prvi tekstovi stižu uskoro.</p>
+          </Cell>
+          <Cap />
+        </section>
+      )}
+
+      {rest.length ? (
+        <section className="sp-frame pg-post-rel pg-rv" aria-labelledby="pg-bl-all">
+          <Cell span={4} className="sp-sec-h">
+            <h2 className="sp-lab" id="pg-bl-all">
+              Svi tekstovi
+            </h2>
+          </Cell>
+          {rest.map((p) => (
+            <PostTile p={p} key={p.slug} />
+          ))}
+          {Array.from({ length: blanks }, (_, i) => (
+            <Cell className="is-blank" key={`b${i}`} />
+          ))}
+          <Cap />
+        </section>
+      ) : null}
     </Page>
   );
 }

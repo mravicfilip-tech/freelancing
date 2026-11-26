@@ -63,6 +63,14 @@
     {
       "source": "/linde-servisni-setovi/",
       "destination": "/index.html"
+    },
+    {
+      "source": "/blog",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/blog/",
+      "destination": "/index.html"
     }
   ],
   "git": {

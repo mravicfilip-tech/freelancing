@@ -260,6 +260,7 @@ export const footer = {
     { label: 'Delovi', href: '/delovi' },
     { label: 'Polovni', href: `${SITE}/polovni-linde-viljuskari/` },
     { label: 'Kompanija', href: '/kompanija' },
+    { label: 'Blog', href: '/blog' },
     { label: 'Kontakt', href: '/kontakt' },
   ],
   address: ['Moše Pijade 17b', '11224 Vrčin'],

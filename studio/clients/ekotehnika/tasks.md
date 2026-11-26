@@ -29,8 +29,8 @@ Task format
   - [x] Filip answers the kickoff questions and picks the direction, "go with defaults", briefs/blog/plan.md
   - [x] Pick draft pictures per post from the Drive
   - [x] Build the single post page in the real app, every state, four draft posts at their root addresses
-  - [ ] Filip accepts or corrects the post page
-  - [ ] Build the list page from the same parts
+  - [x] Filip accepts or corrects the post page, "go, build the list page", golden blog-post
+  - [x] Build the list page from the same parts, /blog/, with the Blog link in the menu, the phone sheet and the footer
   - [ ] Shots at 1440, 390 and 360, scripts/doubles.cjs clean
   - [ ] Filip looks on localhost
   - [ ] Production after Filip's ship line

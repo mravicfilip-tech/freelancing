@@ -1,0 +1,72 @@
+{
+  "name": "blog-post",
+  "client": "ekotehnika",
+  "url": "http://localhost:4890/linde-safety-guard/",
+  "date": "2026-11-26",
+  "width": 1440,
+  "fingerprint": {
+    "elements": 393,
+    "scrollHeight": 6839,
+    "maps": {
+      "fontSizes": {
+        "14px": 32,
+        "15px": 5,
+        "48px": 3,
+        "20px": 4,
+        "16px": 40,
+        "32px": 4,
+        "18px": 17,
+        "24px": 1,
+        "54px": 1
+      },
+      "fontFamilies": {
+        "daxline pro": 107
+      },
+      "colors": {
+        "#ffffff": 19,
+        "#000000": 80,
+        "#fcfcfc": 2,
+        "#f4f4f4": 2,
+        "#a00020": 3,
+        "#6b6b6b": 28,
+        "#e9e9e9": 6,
+        "#f6f6f6": 6,
+        "#d2d2d2": 17,
+        "#767676": 1
+      },
+      "radii": {
+        "4px": 1
+      },
+      "spacing": {
+        "20px": 2,
+        "8px": 27,
+        "24px": 68,
+        "30px": 4,
+        "152px": 1,
+        "6px": 10,
+        "40px": 10,
+        "10px": 6,
+        "49px": 5,
+        "18px": 8,
+        "2px": 29,
+        "96px": 1,
+        "48px": 35,
+        "16px": 32,
+        "32px": 8,
+        "64px": 3,
+        "12px": 58,
+        "22px": 4,
+        "1px": 2,
+        "36px": 2,
+        "14px": 10,
+        "4px": 2
+      },
+      "controlHeights": {
+        "48px": 5,
+        "110px": 1,
+        "21px": 1
+      },
+      "shadows": {}
+    }
+  }
+}

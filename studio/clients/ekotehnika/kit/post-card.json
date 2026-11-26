@@ -1,0 +1,33 @@
+{
+  "name": "post-card",
+  "client": "ekotehnika",
+  "url": "http://localhost:4890/linde-safety-guard/",
+  "selector": ".pg-pc",
+  "date": "2026-11-26",
+  "width": 1440,
+  "source": {
+    "repo": "ekotehnika-hero",
+    "file": "src/shop/Blog.tsx"
+  },
+  "note": "a post as a card, 4:3 photo, category, title as its one link, Nacrt or date and reading time",
+  "role": "div",
+  "tag": "div",
+  "text": "SA TERENA Postavka regala u firmi Vemax ",
+  "fingerprint": {
+    "fontFamily": "daxline pro",
+    "fontSize": "18px",
+    "fontWeight": "400",
+    "lineHeight": "27px",
+    "letterSpacing": "0px",
+    "textTransform": "none",
+    "color": "#000000",
+    "background": "transparent",
+    "border": "none",
+    "radius": "0px",
+    "padding": "0px 0px 0px 0px",
+    "height": "448.5px",
+    "shadow": "none",
+    "width": "342px"
+  },
+  "hover": null
+}

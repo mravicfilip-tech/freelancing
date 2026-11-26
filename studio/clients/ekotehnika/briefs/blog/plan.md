@@ -74,3 +74,16 @@ The post page at /linde-safety-guard/, /postavka-regala-vemax/, /staplercup-2025
 - The card in frame 4 reads a shop category's name, count and capacities from the shop's data, or names a service with its form link.
 - The shop's html and body clip their sides instead of hiding them (pages.css), which lets the contents pin. Every other shop page shot
   the same before and after at 1440 and 390.
+
+## Built, the list page
+
+Filip 26 November, "go, build the list page". /blog/ from the post page's parts.
+- Head, Blog and one line of the topics. The newest post across the four frames, photo in 1 and 2, words at the foot of 3 and 4, the
+  title its link. Then "Svi tekstovi" in the post card grid, a blank cell to fill the row, the Cap.
+- Chips of the shop's category bar once a category holds two posts, "Teme", tested with a faked second post, filter and lead swap.
+  None show today, each draft has its own category.
+- A list with no posts says "Prvi tekstovi stižu uskoro."
+- The Blog link sits between Kompanija and Kontakt in the top menu and the phone sheet, and between Kompanija and Kontakt in the footer,
+  whose four rows stay four. Only those rows changed on the other pages, shot before and after at 1440 and 390.
+- The header at 1280 lays the buttons over the wordmark, on production too, outside the client's widths, left as is.
+

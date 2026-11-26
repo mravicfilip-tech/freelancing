@@ -13,6 +13,7 @@ export type Route =
   | { page: 'servis' }
   | { page: 'delovi' }
   | { page: 'kompanija' }
+  | { page: 'blog' }
   | { page: 'post'; slug: string }
   | { page: 'missing' };
 
@@ -21,7 +22,7 @@ const PAGES = ['najam', 'servis', 'delovi', 'kompanija'] as const;
 
 // a blog post sits at the root like on the old site, /linde-safety-guard/, so its address is told apart by the list of posts (blogSlugs.ts)
 export const isShopPath = (path: string) =>
-  /^\/(prodavnica|kontakt|najam|servis|delovi|kompanija)(\/|$)/.test(path) || isPostSlug(path.replace(/^\/+|\/+$/g, ''));
+  /^\/(prodavnica|kontakt|najam|servis|delovi|kompanija|blog)(\/|$)/.test(path) || isPostSlug(path.replace(/^\/+|\/+$/g, ''));
 
 export function parse(path: string, search: string): Route {
   const parts = path.replace(/\/+$/, '').split('/').filter(Boolean);
@@ -31,6 +32,7 @@ export function parse(path: string, search: string): Route {
   }
   const page = PAGES.find((x) => x === parts[0]);
   if (page && parts.length === 1) return { page };
+  if (parts[0] === 'blog' && parts.length === 1) return { page: 'blog' };
   if (parts.length === 1 && isPostSlug(parts[0])) return { page: 'post', slug: parts[0] };
   if (parts[0] !== 'prodavnica') return { page: 'missing' };
   if (parts.length === 1) return { page: 'home' };

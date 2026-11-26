@@ -18,7 +18,7 @@ import { Listing } from './Listing';
 import { SearchBox } from './SearchBox';
 import { SpecEquipment, SpecFeatures, SpecFigures, SpecVersions, SpecWhy, useSpec } from './ModelSpec';
 import { ask, Delovi, Kompanija, Najam, Servis } from './Pages';
-import { PostPage } from './Blog';
+import { BlogPage, PostPage } from './Blog';
 import { postOf } from './blog';
 import './shop.css';
 
@@ -315,6 +315,7 @@ const FRAME: Partial<Record<string, { page: string; sheet?: string; quote?: { la
   servis: { page: 'Usluge', sheet: 'Servis', quote: { label: 'Zakažite servis', href: ask('servis') } },
   delovi: { page: 'Usluge', sheet: 'Delovi', quote: { label: 'Zatražite ponudu za delove', href: ask('delovi') } },
   kompanija: { page: 'Kompanija' },
+  blog: { page: 'Blog' },
 };
 
 export function Shop() {
@@ -341,6 +342,7 @@ export function Shop() {
         {route.page === 'servis' ? <Servis /> : null}
         {route.page === 'delovi' ? <Delovi /> : null}
         {route.page === 'kompanija' ? <Kompanija /> : null}
+        {route.page === 'blog' ? <BlogPage /> : null}
         {route.page === 'post' ? <PostPage slug={route.slug} key={route.slug} /> : null}
         {route.page === 'missing' ? <Missing /> : null}
       </main>

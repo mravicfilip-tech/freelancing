@@ -19,6 +19,8 @@ checks copy against this file. Add a term the first time the UI needs a new one.
 | Nacrt | A post not yet checked by the client, in place of its date | Draft, Skica | Post head, post cards |
 | Sadržaj | A long post's list of its sections | Pregled, Meni | Post page |
 | Još iz bloga | The three other posts at a post's foot | Slični članci, Pročitajte još | Post page |
+| Svi tekstovi | The grid of posts under the newest one on the blog's list | Svi članci, Arhiva | Blog list |
+| Teme | The blog's category chips, shown once a category holds two posts | Kategorije bloga, Tagovi | Blog list |
 | min čitanja | A post's reading time, "2 min čitanja" | minuta za čitanje | Post head, post cards |
 
 ## Verbs

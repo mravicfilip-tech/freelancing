@@ -1371,6 +1371,42 @@ body {
   margin-top: 12px;
 }
 
+/* ---- the blog's list (Blog.tsx, BlogPage), the newest post across the four frames, its photo in 1 and 2, its words at the foot of 3 and 4 ---- */
+.pg-bl-lead-pic > a {
+  display: block;
+}
+
+.pg-bl-lead-pic .pg-par {
+  z-index: 20;
+  height: clamp(360px, 44vh, 480px);
+}
+
+.pg-bl-lead-t {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+}
+
+.pg-bl-lead-h {
+  margin: 16px 0 0;
+  font-size: 40px;
+  font-weight: 350;
+  line-height: 48px;
+  letter-spacing: -0.01em;
+  text-wrap: balance;
+}
+
+.pg-bl-lead-t .sp-lede {
+  max-width: 30em;
+  margin: 24px 0 0;
+}
+
+.pg-bl-lead-t:hover .pg-bl-lead-h {
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 8px;
+}
+
 @media (max-aspect-ratio: 4/5) {
   .pg-post-hd > .sp-cell {
     padding-top: 24px;
@@ -1437,6 +1473,24 @@ body {
   .pg-pc-t {
     font-size: 18px;
     line-height: 24px;
+  }
+
+  .pg-bl-lead-pic {
+    padding-bottom: 0;
+  }
+
+  .pg-bl-lead-pic .pg-par {
+    height: auto;
+    aspect-ratio: 4 / 3;
+  }
+
+  .pg-bl-lead-t {
+    padding-top: 24px;
+  }
+
+  .pg-bl-lead-h {
+    font-size: 28px;
+    line-height: 36px;
   }
 
   /* the empty cell that fills the row of three related posts on a screen is an empty row on a phone */

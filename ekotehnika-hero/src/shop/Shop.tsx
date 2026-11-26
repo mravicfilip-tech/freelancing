@@ -18,6 +18,8 @@ import { Listing } from './Listing';
 import { SearchBox } from './SearchBox';
 import { SpecEquipment, SpecFeatures, SpecFigures, SpecVersions, SpecWhy, useSpec } from './ModelSpec';
 import { ask, Delovi, Kompanija, Najam, Servis } from './Pages';
+import { PostPage } from './Blog';
+import { postOf } from './blog';
 import './shop.css';
 
 function Crumbs({ items }: { items: { label: string; href?: string }[] }) {
@@ -317,7 +319,14 @@ const FRAME: Partial<Record<string, { page: string; sheet?: string; quote?: { la
 
 export function Shop() {
   const route = useRoute();
-  const frame = FRAME[route.page] ?? { page: 'Prodavnica' };
+  // the homepage's white boot sheet (index.html) lifts at once on the shop addresses the page knows by heart, and here on any other,
+  // a blog post at the site's root
+  useEffect(() => document.getElementById('boot')?.remove(), []);
+  // a blog post's phone bar asks on the post's own topic, a parts post for parts, the rest for an offer
+  const post = route.page === 'post' ? postOf(route.slug) : undefined;
+  const frame: { page: string; sheet?: string; quote?: { label: string; href: string } } = post
+    ? { page: 'Blog', quote: post.tema === 'delovi' ? { label: 'Zatražite ponudu za delove', href: ask('delovi') } : undefined }
+    : (FRAME[route.page] ?? { page: 'Prodavnica' });
   return (
     <div className="sp">
       <ShopFrame page={frame.page} sheet={frame.sheet} quote={frame.quote} />
@@ -332,6 +341,7 @@ export function Shop() {
         {route.page === 'servis' ? <Servis /> : null}
         {route.page === 'delovi' ? <Delovi /> : null}
         {route.page === 'kompanija' ? <Kompanija /> : null}
+        {route.page === 'post' ? <PostPage slug={route.slug} key={route.slug} /> : null}
         {route.page === 'missing' ? <Missing /> : null}
       </main>
       <Footer />

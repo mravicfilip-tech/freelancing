@@ -109,7 +109,7 @@ function usePageMotion(root: RefObject<HTMLDivElement | null>) {
   }, [root]);
 }
 
-function Page({ children }: { children: ReactNode }) {
+export function Page({ children }: { children: ReactNode }) {
   const root = useRef<HTMLDivElement>(null);
   usePageMotion(root);
   return (
@@ -120,7 +120,7 @@ function Page({ children }: { children: ReactNode }) {
 }
 
 // a photo in a box that clips it, so it can drift against the scroll
-function Par({ src, alt = '', focus, eager = false }: { src: string; alt?: string; focus?: string; eager?: boolean }) {
+export function Par({ src, alt = '', focus, eager = false }: { src: string; alt?: string; focus?: string; eager?: boolean }) {
   return (
     <span className="pg-par">
       <img src={src} alt={alt} loading={eager ? 'eager' : 'lazy'} decoding="async" data-par="" style={focus ? { objectPosition: focus } : undefined} />

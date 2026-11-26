@@ -15,6 +15,11 @@ checks copy against this file. Add a term the first time the UI needs a new one.
 | Hitan servis | The emergency service line | Hitna pomoć, Dežurni servis | Top row, S beat, footer |
 | Delovi | Spare parts, tyres, batteries and chargers, attachments, the page and the form topic, Filip 19 November | Rezervni delovi as a page name | Usluge panel, /delovi, Kontakt |
 | Automatizacija | C-Matic robots and warehouse automation | Robotika | AT beat, Proizvodi |
+| Blog | The posts page and a post's way back, the old site's own word, Filip 26 November | Vesti, Novosti | Post pages, later the list and the menu |
+| Nacrt | A post not yet checked by the client, in place of its date | Draft, Skica | Post head, post cards |
+| Sadržaj | A long post's list of its sections | Pregled, Meni | Post page |
+| Još iz bloga | The three other posts at a post's foot | Slični članci, Pročitajte još | Post page |
+| min čitanja | A post's reading time, "2 min čitanja" | minuta za čitanje | Post head, post cards |
 
 ## Verbs
 

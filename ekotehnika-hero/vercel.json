@@ -31,6 +31,38 @@
     {
       "source": "/kompanija",
       "destination": "/index.html"
+    },
+    {
+      "source": "/linde-safety-guard",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/linde-safety-guard/",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/postavka-regala-vemax",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/postavka-regala-vemax/",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/staplercup-2025",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/staplercup-2025/",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/linde-servisni-setovi",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/linde-servisni-setovi/",
+      "destination": "/index.html"
     }
   ],
   "git": {

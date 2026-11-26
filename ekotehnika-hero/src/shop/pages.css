@@ -1111,3 +1111,336 @@
     line-height: 20px;
   }
 }
+
+/* ---- the blog, a post (Blog.tsx, taste 2026-11-26 13:06, briefs/blog/plan.md) ---- */
+/* the shop clips its sides instead of hiding them, so a post's contents can stay pinned to the window. styles.css gives html and body
+   overflow-x hidden, which makes the body a scroll box of its own that never scrolls, and position sticky never catches. This file loads
+   with the shop only, and a move between the shop and the homepage is a full load, so the story keeps its own rule. */
+html,
+body {
+  overflow-x: clip;
+}
+
+/* the head, the category and the title in frames 1 and 2, the lede and the reading time at the foot of 3 and 4 */
+.pg-post-hd > .sp-cell {
+  padding-top: 48px;
+  padding-bottom: 48px;
+}
+
+.pg-post-t {
+  margin: 16px 0 0;
+  font-size: 48px;
+  font-weight: 350;
+  line-height: 56px;
+  letter-spacing: -0.02em;
+  text-wrap: balance;
+}
+
+.pg-post-hr {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+}
+
+.pg-post-hr .sp-lede {
+  max-width: 30em;
+  margin: 0;
+}
+
+.pg-post-meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 16px;
+  margin: 24px 0 0;
+  color: var(--grey-dark);
+  font-size: 14px;
+  line-height: 20px;
+}
+
+/* a draft has no date yet, a small mark stands in its place */
+.pg-post-draft {
+  padding: 2px 8px;
+  background: var(--grey-pale);
+  color: var(--black);
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+/* the lead photo across the four frames, drifting like Kompanija's */
+.pg-post-lead-c > .pg-par {
+  z-index: 20;
+  height: clamp(400px, 56vh, 620px);
+}
+
+/* the body, the contents in frame 1, the text in 2 and 3, the card in 4 */
+.pg-post-b > .sp-cell {
+  padding-top: 48px;
+  padding-bottom: 64px;
+}
+
+.pg-toc {
+  position: sticky;
+  top: 24px;
+}
+
+.pg-toc ol {
+  margin: 16px 0 0;
+  padding: 0;
+  list-style: none;
+  counter-reset: toc;
+}
+
+.pg-toc li {
+  counter-increment: toc;
+}
+
+.pg-toc a {
+  display: grid;
+  grid-template-columns: 32px minmax(0, 1fr);
+  padding: 8px 0;
+  color: var(--grey-dark);
+  font-size: 16px;
+  line-height: 24px;
+  text-decoration: none;
+}
+
+.pg-toc a::before {
+  content: counter(toc, decimal-leading-zero);
+  color: var(--grey-mid);
+}
+
+.pg-toc a:is(:hover, :focus-visible) {
+  color: var(--black);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.pg-toc-m,
+.pg-post-card .pg-on-phone {
+  display: none;
+}
+
+.pg-post-note {
+  margin: 0 0 48px;
+}
+
+.pg-post-text {
+  font-size: 18px;
+  line-height: 28px;
+}
+
+.pg-post-text > p {
+  margin: 0 0 24px;
+}
+
+.pg-post-h2 {
+  margin: 48px 0 16px;
+  font-size: 32px;
+  font-weight: 350;
+  line-height: 40px;
+  letter-spacing: -0.01em;
+  scroll-margin-top: 24px;
+}
+
+.pg-post-text > :first-child {
+  margin-top: 0;
+}
+
+.pg-post-list {
+  margin: 0 0 24px;
+  font-size: 18px;
+  line-height: 28px;
+}
+
+.pg-post-list li::before {
+  top: 6px;
+}
+
+/* a photo in the text widens over frame 4, the cell's 24px and one frame, under the card that stands at the top of that frame */
+.pg-post-fig {
+  position: relative;
+  z-index: 20;
+  margin: 48px calc(var(--x4) - var(--x5)) 48px 0;
+}
+
+.pg-post-ph {
+  display: block;
+  aspect-ratio: 3 / 2;
+  overflow: hidden;
+  background: var(--tint);
+}
+
+.pg-post-ph img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* a cut out on white stays in the text's two frames, widened its white box broke the line between frames 3 and 4 */
+.pg-post-fig.is-contain {
+  margin-right: 0;
+}
+
+.pg-post-fig.is-contain .pg-post-ph {
+  background: var(--white);
+}
+
+.pg-post-fig.is-contain img {
+  object-fit: contain;
+}
+
+.pg-post-fig figcaption,
+.pg-post-tbl figcaption {
+  margin-top: 12px;
+  color: var(--grey-dark);
+  font-size: 14px;
+  line-height: 20px;
+}
+
+.pg-post-tbl {
+  margin: 32px 0;
+}
+
+.pg-post-tbl .sp-tbl {
+  font-size: 16px;
+  line-height: 24px;
+}
+
+/* a post's table of two columns wraps its words, the model sheet's tables hold each value on one line and scroll instead */
+.pg-post-tbl .sp-tbl :is(th, td) {
+  min-width: 0;
+  white-space: normal;
+}
+
+.pg-post-tbl .sp-tbl th {
+  width: 40%;
+  color: var(--grey-dark);
+  font-weight: 400;
+}
+
+.pg-post-card-t {
+  margin: 16px 0 0;
+  font-size: 24px;
+  line-height: 32px;
+}
+
+.pg-post-card-l {
+  margin: 8px 0 24px;
+  color: var(--grey-dark);
+  font-size: 16px;
+  line-height: 24px;
+}
+
+/* a post as a card, its photo cut to 4 by 3, the title its one link */
+.pg-pc-pic {
+  position: relative;
+  display: block;
+  aspect-ratio: 4 / 3;
+  margin: 0 0 24px;
+  overflow: hidden;
+  background: var(--tint);
+}
+
+.pg-pc-pic img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 400ms var(--out);
+}
+
+.pg-pc-t {
+  margin: 8px 0 0;
+  font-size: 20px;
+  font-weight: 400;
+  line-height: 28px;
+  text-wrap: balance;
+}
+
+.pg-pc .sp-card-in:hover .pg-pc-t {
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 6px;
+}
+
+.pg-pc .pg-post-meta {
+  margin-top: 12px;
+}
+
+@media (max-aspect-ratio: 4/5) {
+  .pg-post-hd > .sp-cell {
+    padding-top: 24px;
+    padding-bottom: 24px;
+  }
+
+  .pg-post-hd > .pg-post-hl {
+    padding-bottom: 0;
+  }
+
+  .pg-post-t {
+    font-size: clamp(32px, calc((100cqw - 56px) / 9), 40px);
+    line-height: 1.15;
+  }
+
+  .pg-post-lead-c > .pg-par {
+    height: auto;
+    aspect-ratio: 4 / 3;
+  }
+
+  /* one column, the contents a closed row over the text, the card after it with a secondary button, the phone bar holds the red */
+  .pg-post-side,
+  .pg-post-card .pg-on-wide {
+    display: none;
+  }
+
+  .pg-post-card .pg-on-phone {
+    display: inline-flex;
+  }
+
+  .pg-toc-m {
+    display: block;
+    margin: 0 0 24px;
+  }
+
+  .pg-toc-m ol {
+    margin: 0 0 16px;
+    padding: 0 0 0 24px;
+  }
+
+  .pg-toc-m li {
+    padding: 8px 0;
+  }
+
+  .pg-post-b > .sp-cell {
+    padding-top: 24px;
+    padding-bottom: 32px;
+  }
+
+  .pg-post-b > .pg-post-art {
+    padding-bottom: 8px;
+  }
+
+  .pg-post-h2 {
+    margin-top: 48px;
+    font-size: 28px;
+    line-height: 36px;
+  }
+
+  .pg-post-fig {
+    margin: 32px 0;
+  }
+
+  .pg-pc-t {
+    font-size: 18px;
+    line-height: 24px;
+  }
+
+  /* the empty cell that fills the row of three related posts on a screen is an empty row on a phone */
+  .pg-post-rel > .is-blank {
+    display: none;
+  }
+}

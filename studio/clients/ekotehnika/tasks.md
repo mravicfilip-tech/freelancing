@@ -26,9 +26,10 @@ Task format
 ## In progress
 
 - ekotehnika-24 The blog, the list page and the single post pages, with draft pictures from the Drive. Filip 26 November
-  - [ ] Filip answers the kickoff questions and picks the direction
-  - [ ] Pick draft pictures per post from the Drive
-  - [ ] Build the single post page in the real app, every state
+  - [x] Filip answers the kickoff questions and picks the direction, "go with defaults", briefs/blog/plan.md
+  - [x] Pick draft pictures per post from the Drive
+  - [x] Build the single post page in the real app, every state, four draft posts at their root addresses
+  - [ ] Filip accepts or corrects the post page
   - [ ] Build the list page from the same parts
   - [ ] Shots at 1440, 390 and 360, scripts/doubles.cjs clean
   - [ ] Filip looks on localhost

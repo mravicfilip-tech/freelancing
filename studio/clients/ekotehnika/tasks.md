@@ -23,6 +23,13 @@ Task format
 
 ## Backlog
 
+- ekotehnika-26 A Polovni filter in the shop, a standalone used shop reached by filtering, Novi shows today's products, and a template so the client pastes a mojauto.rs or polovniautomobili.com link and Claude fills what it can and asks for the rest. Filip 26 November
+  - [ ] Filip answers the kickoff questions
+  - [ ] The used product's fields, the list and the product page, every state
+  - [ ] The link to product template as a Claude skill in the demo repo, with its questions
+  - [ ] Shots at 1440, 390 and 360, scripts/doubles.cjs clean
+  - [ ] Filip looks, then the demo repo and production
+
 ## In progress
 
 
@@ -287,6 +294,12 @@ Task format
   - [ ] Filip picks one by number
 
 ## Review
+
+- ekotehnika-25 A demo repo for the client, the shop, the blog and the pages, so he can connect his Claude and edit them himself. Filip 26 November. https://github.com/mravicfilip-tech/ekotehnika-demo
+  - [x] The site as it is live on production (fdc24a0), without the studio files, two rough comments reworded
+  - [x] CLAUDE.md, where every page's content lives and how to add a post or a product, README.md the same in Serbian
+  - [x] Builds on its own with npm ci and npm run build, pushed to main as 83fd821, the repo is private
+  - [ ] Filip invites the client to the repo
 
 - ekotehnika-24 The blog, the list page and the single post pages, with draft pictures from the Drive. Filip 26 November
   - [x] Filip answers the kickoff questions and picks the direction, "go with defaults", briefs/blog/plan.md

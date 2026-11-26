@@ -3,6 +3,7 @@
 // of tabs or a block of words (Filip 18 November, "make sure grid doesn't interfere with UI"). A cell across two frames has no line in its
 // middle. On a phone the cells draw no verticals and the page has its two edge lines only, Lines.
 import type { ReactNode } from 'react';
+import { Link } from './route';
 
 export const Rule = () => (
   <>
@@ -45,3 +46,20 @@ export const Cap = () => (
     ))}
   </>
 );
+
+// the way back over a page's title, Prodavnica / a category / a model, shared by the shop and the Polovni pages
+export function Crumbs({ items }: { items: { label: string; href?: string }[] }) {
+  return (
+    <nav className="sp-crumbs" aria-label="Putanja">
+      <ol>
+        {items.map((it, i) => (
+          <li key={it.label}>
+            {it.href ? <Link href={it.href}>{it.label}</Link> : <span aria-current="page">{it.label}</span>}
+            {i < items.length - 1 ? <span aria-hidden="true"> / </span> : null}
+          </li>
+        ))}
+      </ol>
+    </nav>
+  );
+}
+

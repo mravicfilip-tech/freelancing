@@ -8,6 +8,8 @@ export type Route =
   | { page: 'all' }
   | { page: 'category'; cat: string }
   | { page: 'model'; cat: string; model: string }
+  | { page: 'used' }
+  | { page: 'usedItem'; slug: string }
   | { page: 'contact'; tema: string | null; model: string | null; poruka: string | null }
   | { page: 'najam' }
   | { page: 'servis' }
@@ -36,6 +38,8 @@ export function parse(path: string, search: string): Route {
   if (parts.length === 1 && isPostSlug(parts[0])) return { page: 'post', slug: parts[0] };
   if (parts[0] !== 'prodavnica') return { page: 'missing' };
   if (parts.length === 1) return { page: 'home' };
+  // the Polovni shop, Filip 26 November, its list and a page per machine (Used.tsx)
+  if (parts[1] === 'polovni') return parts.length === 2 ? { page: 'used' } : parts.length === 3 ? { page: 'usedItem', slug: parts[2] } : { page: 'missing' };
   if (parts.length === 2) return parts[1] === 'svi-modeli' ? { page: 'all' } : { page: 'category', cat: parts[1] };
   if (parts.length === 3) return { page: 'model', cat: parts[1], model: parts[2] };
   return { page: 'missing' };

@@ -5,6 +5,7 @@
 // homepage does not load the shop's catalogue, so a category renamed or recounted there is changed here too.
 import { useState, type ReactNode } from 'react';
 import { hero, pillars, SITE } from '../content';
+import { OLD_USED_PATH, USED_HREF, USED_LIVE } from '../shop/usedLive';
 
 type Cat = { slug: string; name: string; count: number; face: string };
 export const SHOP_NAV: { label: string; cats: Cat[] }[] = [
@@ -104,7 +105,10 @@ export const SERVICES = [
   { id: 'delovi', icon: 'gear', name: 'Delovi', line: 'Originalni Linde delovi za vaš viljuškar.', href: '/delovi', go: 'Grupe delova' },
   { id: 'hitan', icon: 'phone', name: hero.service.label, line: 'Za hitne intervencije pozovite servis.', href: hero.service.tel, go: hero.service.number },
 ];
-const POLOVNI = { line: pillar('polovni').line, href: `${SITE}/polovni-linde-viljuskari/`, label: 'Polovni na ekotehnika.rs' };
+// the Polovni shop once it holds a confirmed machine, the old used page on ekotehnika.rs until then (shop/usedLive.ts)
+const POLOVNI = USED_LIVE
+  ? { line: pillar('polovni').line, href: USED_HREF, label: 'Polovni viljuškari i mašine' }
+  : { line: pillar('polovni').line, href: `${SITE}${OLD_USED_PATH}`, label: 'Polovni na ekotehnika.rs' };
 
 export function ServicesMega({ link }: { link: LinkFn }) {
   return (

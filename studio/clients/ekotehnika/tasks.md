@@ -23,14 +23,14 @@ Task format
 
 ## Backlog
 
-- ekotehnika-26 A Polovni filter in the shop, a standalone used shop reached by filtering, Novi shows today's products, and a template so the client pastes a mojauto.rs or polovniautomobili.com link and Claude fills what it can and asks for the rest. Filip 26 November
-  - [ ] Filip answers the kickoff questions
-  - [ ] The used product's fields, the list and the product page, every state
-  - [ ] The link to product template as a Claude skill in the demo repo, with its questions
-  - [ ] Shots at 1440, 390 and 360, scripts/doubles.cjs clean
-  - [ ] Filip looks, then the demo repo and production
-
 ## In progress
+
+- ekotehnika-26 A Polovni filter in the shop, a standalone used shop reached by filtering, Novi shows today's products, and a template so the client pastes a mojauto.rs or polovniautomobili.com link and Claude fills what it can and asks for the rest. Filip 26 November
+  - [x] Filip answers the kickoff questions, "go" to the hardened defaults, briefs/polovni/plan.md
+  - [x] The used product's fields, the list and the product page, every state
+  - [x] The link to product template as a Claude skill, .claude/skills/polovni-oglas, with the reader scripts/polovni-oglas.mjs
+  - [x] Shots at 1440, 390 and 360, scripts/doubles.cjs clean
+  - [ ] Filip looks, then the demo repo and production
 
 
 - ekotehnika-21 The shop, the client's Drive categories and products, every product leads to the contact form, no cart. The homepage story leads to it. Brief in briefs/shop/brief.md

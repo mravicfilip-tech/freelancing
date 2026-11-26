@@ -1520,6 +1520,151 @@
   text-underline-offset: 8px;
 }
 
+/* ---- the Polovni shop (Used.tsx), Filip 26 November, built from the shop's own parts ---- */
+/* Novi or Polovni, two cells of the site's segmented control (.sp-seg) at the top of every list of the shop, over frames 1 and 2 */
+.sp-kind-c {
+  padding-top: 16px;
+  padding-bottom: 16px;
+}
+
+.sp-kind-seg {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+  max-width: calc(var(--x3) - var(--x1) - 48px);
+}
+
+.sp-kind-seg a {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  height: 48px;
+  border: 1px solid var(--grey-light);
+  color: var(--black);
+  font-size: 16px;
+  text-decoration: none;
+  transition:
+    background-color 160ms,
+    border-color 160ms;
+}
+
+.sp-kind-seg a:hover {
+  border-color: var(--black);
+}
+
+.sp-kind-seg a.is-on {
+  border-color: var(--grey-pale);
+  background: var(--grey-pale);
+  font-weight: 500;
+}
+
+.sp-kind-seg a span {
+  color: var(--grey-dark);
+  font-size: 14px;
+}
+
+.sp-kind-seg a.is-on span {
+  color: var(--black);
+}
+
+/* a sample or a sold machine says so beside its kind */
+.sp-used-mark {
+  margin-left: 8px;
+  padding: 2px 8px;
+  background: var(--grey-pale);
+  color: var(--black);
+}
+
+.sp-used-mark.is-sold {
+  background: var(--black);
+  color: var(--white);
+}
+
+.sp-used-price {
+  margin: 16px 0 0;
+  font-size: 20px;
+  line-height: 28px;
+}
+
+.sp-used-price span,
+.sp-used-cost-v span {
+  color: var(--grey-dark);
+  font-size: 14px;
+  line-height: 20px;
+}
+
+.sp-used-cost {
+  margin-top: 32px;
+}
+
+.sp-used-cost .sp-lab {
+  margin: 0;
+}
+
+.sp-used-cost-v {
+  margin: 8px 0 0;
+  font-size: 40px;
+  font-weight: 350;
+  line-height: 48px;
+}
+
+.sp-used-note {
+  max-width: 30em;
+  margin: 16px 0 0;
+  color: var(--grey-dark);
+  font-size: 14px;
+  line-height: 20px;
+}
+
+.sp-used-data > .sp-cell {
+  padding-top: 48px;
+  padding-bottom: 64px;
+}
+
+.sp-used-text p {
+  margin: 0 0 16px;
+  font-size: 18px;
+  line-height: 28px;
+}
+
+.sp-used-text + .sp-lab {
+  margin-top: 32px;
+}
+
+.sp-used-tbl {
+  margin-top: 16px;
+  font-size: 16px;
+  line-height: 24px;
+}
+
+.sp-used-tbl :is(th, td) {
+  min-width: 0;
+  white-space: normal;
+}
+
+.sp-used-tbl tbody th {
+  width: 40%;
+  min-width: 0;
+  color: var(--grey-dark);
+  font-weight: 400;
+}
+
+.sp-used-eq {
+  margin-top: 16px;
+}
+
+.sp-used-empty {
+  display: flex;
+  flex-wrap: wrap;
+  align-content: flex-start;
+  gap: 8px;
+}
+
+.sp-pic.is-none {
+  background: var(--tint);
+}
+
 @media (max-aspect-ratio: 4/5) {
   .pg-post-hd > .sp-cell {
     padding-top: 24px;
@@ -1619,6 +1764,20 @@
   .pg-bl-lead-h {
     font-size: 28px;
     line-height: 36px;
+  }
+
+  .sp-kind-seg {
+    max-width: none;
+  }
+
+  .sp-used-cost-v {
+    font-size: 32px;
+    line-height: 40px;
+  }
+
+  .sp-used-data > .sp-cell {
+    padding-top: 24px;
+    padding-bottom: 32px;
   }
 
   /* the empty cell that fills the row of three related posts on a screen is an empty row on a phone */

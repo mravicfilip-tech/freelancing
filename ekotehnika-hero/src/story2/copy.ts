@@ -5,6 +5,7 @@
 // Every link stays on ekotehnika.rs or is a tel or mailto link, except the servis centres' addresses, which open Google
 // Maps at the client's ask. The country wording is Srbija i Crna Gora.
 import { SITE, hero, pillars, trust } from '../content';
+import { OLD_USED_PATH, USED_HREF, USED_LIVE } from '../shop/usedLive';
 
 export type Cta = { label: string; href: string };
 // One cell of a spec row. count runs the figure up from 0, prefix and suffix stay as they are.
@@ -258,7 +259,7 @@ export const footer = {
     { label: 'Najam', href: '/najam' },
     { label: 'Servis', href: '/servis' },
     { label: 'Delovi', href: '/delovi' },
-    { label: 'Polovni', href: `${SITE}/polovni-linde-viljuskari/` },
+    { label: 'Polovni', href: USED_LIVE ? USED_HREF : `${SITE}${OLD_USED_PATH}` },
     { label: 'Kompanija', href: '/kompanija' },
     { label: 'Blog', href: '/blog' },
     { label: 'Kontakt', href: '/kontakt' },

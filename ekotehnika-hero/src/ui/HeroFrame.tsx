@@ -18,6 +18,7 @@ import { goHome } from '../scroll/useScrollStory';
 import { toChapter } from '../story2/chapters';
 import { ServicesMega, ShopMega, ShopSheetItem, type LinkFn } from './ShopNav';
 import './heroframe.css';
+import { OLD_USED_PATH, USED_HREF, USED_LIVE } from '../shop/usedLive';
 
 export type FrameTone = 'ink' | 'white';
 
@@ -45,7 +46,8 @@ export const sheetLinks: NavLink[] = [
   { label: 'Najam', href: '/najam', local: true },
   { label: 'Servis', href: '/servis', local: true },
   { label: 'Delovi', href: '/delovi', local: true },
-  { label: 'Polovni', href: '/polovni-linde-viljuskari/' },
+  // the Polovni shop once it holds a confirmed machine, the old used page on ekotehnika.rs until then (shop/usedLive.ts)
+  USED_LIVE ? { label: 'Polovni', href: USED_HREF, local: true } : { label: 'Polovni', href: OLD_USED_PATH },
   links[3],
   links[4],
   links[5],

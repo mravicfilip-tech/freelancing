@@ -1,0 +1,114 @@
+{
+ "_": "The Polovni shop's machines, written by the polovni-oglas skill from an ad and the client's answers. See src/shop/used.ts for each field.",
+ "groups": [
+  {
+   "slug": "ostale-masine",
+   "name": "Ostale mašine"
+  }
+ ],
+ "items": [
+  {
+   "slug": "john-deere-6120-m-4x4-2020",
+   "status": "primer",
+   "confirmed": false,
+   "title": "John Deere 6120 M 4x4",
+   "brand": "John Deere",
+   "kind": "Traktor",
+   "group": "ostale-masine",
+   "year": 2020,
+   "hours": 2942,
+   "kg": null,
+   "mm": null,
+   "power": "120 KS (88 kW)",
+   "location": null,
+   "price": null,
+   "pdv": null,
+   "photos": [
+    "/polovni/john-deere-6120-m-4x4-2020/1.jpg",
+    "/polovni/john-deere-6120-m-4x4-2020/2.jpg",
+    "/polovni/john-deere-6120-m-4x4-2020/3.jpg",
+    "/polovni/john-deere-6120-m-4x4-2020/4.jpg",
+    "/polovni/john-deere-6120-m-4x4-2020/5.jpg",
+    "/polovni/john-deere-6120-m-4x4-2020/6.jpg"
+   ],
+   "text": [],
+   "specs": [
+    [
+     "Radni sati",
+     "2.942"
+    ],
+    [
+     "Godište",
+     "2020"
+    ],
+    [
+     "Snaga",
+     "120 KS (88 kW)"
+    ],
+    [
+     "Motor",
+     "4,5 l"
+    ],
+    [
+     "Menjač",
+     "AutoQuad Plus 24F/24R (40)"
+    ],
+    [
+     "Hidraulična pumpa",
+     "114 l/min"
+    ],
+    [
+     "Zadnje vratilo PTO",
+     "540/540E/1000 o/min"
+    ],
+    [
+     "Prednje felne",
+     "380/85R24"
+    ],
+    [
+     "Zadnje felne",
+     "460/85R38"
+    ],
+    [
+     "Alternator",
+     "14 V/170 A"
+    ]
+   ],
+   "equipment": [
+    "Blokada diferencijala",
+    "2 mehanička SKV-a",
+    "Vučni linkovi sa kukama na kraju",
+    "Središnji link sa kugličnim krajem",
+    "Podesive stabilizatorne šipke",
+    "Zadnja osovina sa prirubnicom",
+    "4WD prednja osovina, TLS",
+    "Prednji blatobrani 4WD, okretni",
+    "Produženi zadnji blatobrani, podesivi",
+    "Brisač zadnjeg stakla",
+    "Imobilajzer",
+    "Sistem za identifikaciju oznaka sa podacima",
+    "Daljinske komande za PTO vratilo",
+    "Kuka, kategorija 3",
+    "Kuka za prikolicu",
+    "Hidraulični kočni sistem za prikolice",
+    "Pojačane kočnice na zadnjim točkovima",
+    "Powerifill kočnice",
+    "M-SCV 2F + 1",
+    "Standardno sedište za vozača",
+    "Dodatni prostor za odlaganje",
+    "Panoramski krov",
+    "Paket Select",
+    "Kabina sa klimom",
+    "Kabina 6M sa desnostranim konzolnim mehanizmom",
+    "Retrovizori, ručni teleskopski",
+    "Standardni radio"
+   ],
+   "source": {
+    "site": "mojauto.rs",
+    "href": "https://www.mojauto.rs/polovni-poljoprivredna/3545870_John_Deere_3242_6120-m-4x4_2020_god/",
+    "id": "3545870",
+    "read": "2026-11-26"
+   }
+  }
+ ]
+}

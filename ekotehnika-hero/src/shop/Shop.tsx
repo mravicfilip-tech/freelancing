@@ -11,7 +11,7 @@ import { type Product, CATEGORIES, GROUPS, categoryOf, faceOf, fmt, hrefAsk, hre
 import { Link, useRoute } from './route';
 import { ShopFrame } from './ShopFrame';
 import { Contact } from './Contact';
-import { Cap, Cell, Lines } from './parts';
+import { Cap, Cell, Crumbs, Lines } from './parts';
 import { Card, Facts, Picture } from './Card';
 import { Hero } from './Hero';
 import { Listing } from './Listing';
@@ -19,23 +19,9 @@ import { SearchBox } from './SearchBox';
 import { SpecEquipment, SpecFeatures, SpecFigures, SpecVersions, SpecWhy, useSpec } from './ModelSpec';
 import { ask, Delovi, Kompanija, Najam, Servis } from './Pages';
 import { BlogPage, PostPage } from './Blog';
+import { KindSwitch, UsedItemPage, UsedPage } from './Used';
 import { postOf } from './blog';
 import './shop.css';
-
-function Crumbs({ items }: { items: { label: string; href?: string }[] }) {
-  return (
-    <nav className="sp-crumbs" aria-label="Putanja">
-      <ol>
-        {items.map((it, i) => (
-          <li key={it.label}>
-            {it.href ? <Link href={it.href}>{it.label}</Link> : <span aria-current="page">{it.label}</span>}
-            {i < items.length - 1 ? <span aria-hidden="true"> / </span> : null}
-          </li>
-        ))}
-      </ol>
-    </nav>
-  );
-}
 
 // the facts of a category on its tile, from its models where the old site gives them
 function TileFacts({ cat }: { cat: string }) {
@@ -75,6 +61,7 @@ function Home() {
   const blanks = (4 - ((cats.length + 2) % 4)) % 4;
   return (
     <>
+      <KindSwitch current="novi" />
       <Hero />
       <section className="sp-frame sp-cats" aria-labelledby="sp-cats-h">
         <Cell span={4} className="sp-bar sp-cats-bar">
@@ -151,6 +138,7 @@ function CategoryPage({ cat }: { cat: string }) {
   const items = productsOf(cat);
   return (
     <>
+      <KindSwitch current="novi" />
       <ListHead title={c.name} crumbs={[{ label: 'Prodavnica', href: '/prodavnica' }, { label: c.name }]} count={items.length} />
       <Listing items={items} current={cat} />
     </>
@@ -161,6 +149,7 @@ function AllPage() {
   useTitle('Svi modeli, Linde');
   return (
     <>
+      <KindSwitch current="novi" />
       <ListHead title="Svi modeli" crumbs={[{ label: 'Prodavnica', href: '/prodavnica' }, { label: 'Svi modeli' }]} count={PRODUCTS.length} />
       <Listing items={PRODUCTS} current={null} />
     </>
@@ -342,6 +331,8 @@ export function Shop() {
         {route.page === 'servis' ? <Servis /> : null}
         {route.page === 'delovi' ? <Delovi /> : null}
         {route.page === 'kompanija' ? <Kompanija /> : null}
+        {route.page === 'used' ? <UsedPage /> : null}
+        {route.page === 'usedItem' ? <UsedItemPage slug={route.slug} key={route.slug} /> : null}
         {route.page === 'blog' ? <BlogPage /> : null}
         {route.page === 'post' ? <PostPage slug={route.slug} key={route.slug} /> : null}
         {route.page === 'missing' ? <Missing /> : null}

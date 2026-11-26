@@ -32,7 +32,7 @@ Task format
   - [x] Shots at 1440, 390 and 360, scripts/doubles.cjs clean
   - [x] The demo repo, "push to demo repo", branch polovni as 17f0cf0, with CLAUDE.md and README.md for Polovni, merged into the demo's main on Filip's "merge polovni into main"
   - [ ] Ekotehnika says whether the sample's ad is theirs, the name of the non forklift group
-  - [ ] Production after Filip's ship line
+  - [x] Production after Filip's ship line, "push vercel" for dd73119, live at https://ekotehnika.vercel.app/prodavnica/polovni as 3abd495 on the ekotehnika repo
 
 
 - ekotehnika-21 The shop, the client's Drive categories and products, every product leads to the contact form, no cart. The homepage story leads to it. Brief in briefs/shop/brief.md

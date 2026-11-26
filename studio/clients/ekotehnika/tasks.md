@@ -297,6 +297,8 @@ Task format
   - [x] Shots at 1440, 390 and 360, scripts/doubles.cjs clean
   - [ ] Filip looks on localhost
   - [x] Production after Filip's ship line, "push vercel" for 7573891, live at https://ekotehnika.vercel.app/blog/ as fb9912b on the ekotehnika repo
+  - [x] A fifth post so the grid's row is full, "add 4th blog", GRI Ultimate Green XT, briefs/blog/notes.md
+  - [ ] Filip answers the post page restructure, "a bit confusing to look at", briefs/blog/notes.md
   - [ ] Ekotehnika adds the facts each draft's note asks for, and Vemax's OK for its post
   - [ ] The old posts come over at their old addresses, from a WordPress export or the texts
 

@@ -71,6 +71,14 @@
     {
       "source": "/blog/",
       "destination": "/index.html"
+    },
+    {
+      "source": "/gri-ultimate-green-xt",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/gri-ultimate-green-xt/",
+      "destination": "/index.html"
     }
   ],
   "git": {

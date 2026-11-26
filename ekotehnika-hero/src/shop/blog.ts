@@ -155,6 +155,38 @@ export const POSTS: Post[] = [
       { t: 'p', text: 'Dok tehničar radi, viljuškar mora da stoji sigurno. Linde podmetači za točkove drže vozilo u mestu.' },
     ],
   },
+  {
+    // the fifth post, Filip 26 November, "add 4th blog", the grid under the newest post was one card short of its row
+    slug: 'gri-ultimate-green-xt',
+    cat: 'Servis i delovi',
+    title: 'GRI Ultimate Green XT, puna guma od 93,5% održivih materijala',
+    lede: 'Guma za viljuškare od održivih materijala i materijala biološkog porekla, za rad 24 sata u tri smene.',
+    date: null,
+    draft: 'Nacrt. Tekst je napisan iz GRI letka za Ultimate Green XT iz Ekotehnikinog foldera. Ekotehnika proverava podatke i dopisuje koje dimenzije nudi.',
+    lead: { src: '/blog/gri-1.webp', alt: 'Dve zelene gume GRI Ultimate Green XT u praznoj hali' },
+    card: { label: 'Delovi', title: 'Gume', line: 'Gume za viljuškare, po modelu i dimenziji.', href: askHref('delovi', 'Zanima me ponuda za gume GRI Ultimate Green XT.'), cta: 'Zatražite ponudu za delove' },
+    tema: 'delovi',
+    ask: { title: 'Navedite model viljuškara i dimenziju gume.', poruka: 'Zanima me ponuda za gume GRI Ultimate Green XT.', cta: 'Zatražite ponudu za delove' },
+    body: [
+      { t: 'h', id: 'materijal', text: 'Od čega je napravljena' },
+      { t: 'p', text: 'GRI Ultimate Green XT je guma za viljuškare izrađena od 93,5% održivih materijala i materijala biološkog porekla. Prema GRI-ju, emisija ugljenika je zato 55,8% manja nego kod uporedivih guma drugih proizvođača.' },
+      { t: 'p', text: 'Za ovu gumu GRI je dobio nagradu MHI za najbolju inovaciju u održivosti, na sajmu ProMat 2025.' },
+      { t: 'pic', src: '/blog/gri-2.webp', alt: 'Zelena guma Ultimate Green XT na točku viljuškara', cap: 'Ultimate Green XT na točku viljuškara.' },
+      { t: 'h', id: 'rad', text: 'U radu' },
+      {
+        t: 'list',
+        items: [
+          'Rad 24 sata, u tri smene',
+          'Najmanji otpor kotrljanja u GRI-jevoj ponudi, pa baterija električnog viljuškara traje duže',
+          'Manja potrošnja goriva kod viljuškara sa motorom, u neprekidnom radu',
+          'Velika otpornost na habanje, guma traje duže i ređe se menja',
+          'Stabilnost u krivinama i dobro prianjanje pri manevrisanju',
+        ],
+      },
+      { t: 'h', id: 'izvedbe', text: 'Izvedbe' },
+      { t: 'p', text: 'Guma se izrađuje u izvedbi koja ne ostavlja tragove na podu, u izvedbi otpornoj na ulje i u antistatičkoj izvedbi. Dimenziju za vaš viljuškar potvrđuje Ekotehnika.' },
+    ],
+  },
 ];
 
 export const postOf = (slug: string) => POSTS.find((p) => p.slug === slug);

@@ -1112,16 +1112,9 @@
   }
 }
 
-/* ---- the blog, a post (Blog.tsx, taste 2026-11-26 13:06, briefs/blog/plan.md) ---- */
-/* the shop clips its sides instead of hiding them, so a post's contents can stay pinned to the window. styles.css gives html and body
-   overflow-x hidden, which makes the body a scroll box of its own that never scrolls, and position sticky never catches. This file loads
-   with the shop only, and a move between the shop and the homepage is a full load, so the story keeps its own rule. */
-html,
-body {
-  overflow-x: clip;
-}
-
-/* the head, the category and the title in frames 1 and 2, the lede and the reading time at the foot of 3 and 4 */
+/* ---- the blog, a post as one reading column (Blog.tsx, taste 2026-11-26 14:34, briefs/blog/plan.md) ---- */
+/* the head of a post and of the list. A post stacks its category, title, lede, reading time and draft line in frames 1 to 3. The list keeps
+   its title in frames 1 and 2 and its line at the foot of 3 and 4 (pg-post-hr). */
 .pg-post-hd > .sp-cell {
   padding-top: 48px;
   padding-bottom: 48px;
@@ -1145,6 +1138,24 @@ body {
 .pg-post-hr .sp-lede {
   max-width: 30em;
   margin: 0;
+}
+
+/* a post's head reads top to bottom within frames 1 to 3, the cell's 24px off each side */
+.pg-post-hc .pg-in {
+  max-width: calc(var(--x4) - var(--x1) - 48px);
+}
+
+.pg-post-hc .sp-lede {
+  max-width: 36em;
+  margin: 24px 0 0;
+}
+
+.pg-post-dnote {
+  max-width: 44em;
+  margin: 12px 0 0;
+  color: var(--grey-dark);
+  font-size: 14px;
+  line-height: 20px;
 }
 
 .pg-post-meta {
@@ -1174,19 +1185,25 @@ body {
   height: clamp(400px, 56vh, 620px);
 }
 
-/* the body, the contents in frame 1, the text in 2 and 3, the card in 4 */
+/* the body, one cell across the four frames with no line inside it, the column of text and photos in frames 2 and 3, the same place the
+   text stood before (the cell's 24px in from each side of those frames) */
 .pg-post-b > .sp-cell {
   padding-top: 48px;
   padding-bottom: 64px;
 }
 
+.pg-post-col {
+  width: calc(var(--x4) - var(--x2) - 48px);
+  margin-left: calc(var(--x2) - var(--x1));
+}
+
+/* a long post's contents, a short numbered list at the top of the text, not pinned */
 .pg-toc {
-  position: sticky;
-  top: 24px;
+  margin: 0 0 48px;
 }
 
 .pg-toc ol {
-  margin: 16px 0 0;
+  margin: 12px 0 0;
   padding: 0;
   list-style: none;
   counter-reset: toc;
@@ -1217,13 +1234,8 @@ body {
   text-underline-offset: 3px;
 }
 
-.pg-toc-m,
-.pg-post-card .pg-on-phone {
+.pg-toc-m {
   display: none;
-}
-
-.pg-post-note {
-  margin: 0 0 48px;
 }
 
 .pg-post-text {
@@ -1258,11 +1270,11 @@ body {
   top: 6px;
 }
 
-/* a photo in the text widens over frame 4, the cell's 24px and one frame, under the card that stands at the top of that frame */
+/* a photo in the text takes the text's own width, both edges of the column hold from the top of the body to its foot */
 .pg-post-fig {
   position: relative;
   z-index: 20;
-  margin: 48px calc(var(--x4) - var(--x5)) 48px 0;
+  margin: 48px 0;
 }
 
 .pg-post-ph {
@@ -1277,11 +1289,6 @@ body {
   width: 100%;
   height: 100%;
   object-fit: cover;
-}
-
-/* a cut out on white stays in the text's two frames, widened its white box broke the line between frames 3 and 4 */
-.pg-post-fig.is-contain {
-  margin-right: 0;
 }
 
 .pg-post-fig.is-contain .pg-post-ph {
@@ -1319,6 +1326,13 @@ body {
   width: 40%;
   color: var(--grey-dark);
   font-weight: 400;
+}
+
+/* the post's card, the last block of the text, on the pale tint with a secondary button, the red stays on the inquiry under it */
+.pg-post-card {
+  margin-top: 48px;
+  padding: 24px;
+  background: var(--tint);
 }
 
 .pg-post-card-t {
@@ -1427,14 +1441,14 @@ body {
     aspect-ratio: 4 / 3;
   }
 
-  /* one column, the contents a closed row over the text, the card after it with a secondary button, the phone bar holds the red */
-  .pg-post-side,
-  .pg-post-card .pg-on-wide {
-    display: none;
+  /* the column takes the phone's width, the contents a closed row over the text */
+  .pg-post-col {
+    width: auto;
+    margin-left: 0;
   }
 
-  .pg-post-card .pg-on-phone {
-    display: inline-flex;
+  .pg-toc {
+    display: none;
   }
 
   .pg-toc-m {
@@ -1454,10 +1468,6 @@ body {
   .pg-post-b > .sp-cell {
     padding-top: 24px;
     padding-bottom: 32px;
-  }
-
-  .pg-post-b > .pg-post-art {
-    padding-bottom: 8px;
   }
 
   .pg-post-h2 {

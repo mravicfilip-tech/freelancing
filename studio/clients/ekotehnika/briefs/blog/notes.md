@@ -12,3 +12,10 @@
    - photos widen to the right under the card, the text stays in frames 2 and 3, so the left edge holds and the right edge jumps
    - the vertical lines run beside the text, stop at each photo and start again
    - the head splits the title left and the lede low right, the eye crosses the page twice before the photo
+3. "yes, go" to the restructure. Built, the post as one reading column after Stripe's blog post page (taste 2026-11-26 14:34). The head
+   stacked in frames 1 to 3 with the draft line under the reading time, the body one cell with no line inside it, the text and every
+   photo in frames 2 and 3, the contents a short list at the top of the text, the card the last block of the text with a grey button,
+   the red on the inquiry under it. The pin is gone, so the shop's html and body clip rule went with it. The list page and Najam shoot
+   the same before and after at 1440 and 390. The golden blog-post and the kit's post-aside-card and post-contents show the old page
+   until Filip accepts this one.
+

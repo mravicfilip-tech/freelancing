@@ -1,9 +1,9 @@
-// A blog post, the hardest of the blog's screens and the first one built (/newui, taste 2026-11-26 13:06, briefs/blog/plan.md). On the
-// site's four frames. The head has the category and the title in frames 1 and 2, the lede and the reading time in 3 and 4. The lead photo
-// runs across all four with the site's drift. The text runs in frames 2 and 3, a long post's contents stand pinned in frame 1, and frame 4
-// holds one card for the shop category or the service the post leads to, with the page's one red button. A photo in the text widens over
-// frames 2 to 4 under that card. The close is the short inquiry on the post's topic, then three other posts. On a phone it is one column,
-// the contents a closed row over the text, the card after the text with a secondary button since the phone bar holds the red one.
+// A blog post, one reading column (taste 2026-11-26 14:34, after Stripe's blog post page). Filip found the first build "a bit confusing to
+// look at", four things side by side after the lead photo, pinned contents, a draft box, the text and a red card, and photos that widened
+// under the card. Now the head stacks the category, the title, the lede, the reading time and the draft line in frames 1 to 3. The lead
+// photo runs across all four frames with the site's drift. The body is one cell with no line inside it, the text and every photo in frames
+// 2 and 3, a long post's contents a short list at the top of the text, and the post's card its last block with a secondary button. The red
+// stays on the short inquiry under it, then three other posts. On a phone the contents are a closed row over the text.
 import { useEffect, useState } from 'react';
 import { BtnInner } from '../story2/shell/ui';
 import { categoryOf, fmt, hrefCategory, modela, statsOf } from './data';
@@ -140,18 +140,16 @@ export function PostPage({ slug }: { slug: string }) {
   return (
     <Page>
       <section className="sp-frame pg-post-hd" aria-labelledby="pg-post-h">
-        <Cell span={2} className="pg-post-hl">
+        <Cell span={4} className="pg-post-hc">
           <div className="pg-in">
             <p className="sp-lab">{p.cat}</p>
             <h1 className="pg-post-t" id="pg-post-h">
               {p.title}
             </h1>
-          </div>
-        </Cell>
-        <Cell span={2} className="pg-post-hr">
-          <div className="pg-in">
             <p className="sp-lede">{p.lede}</p>
             <Meta p={p} />
+            {/* the draft's note is one grey line under the reading time, the mark beside it already says Nacrt */}
+            {p.draft ? <p className="pg-post-dnote">{p.draft.replace(/^Nacrt\.\s*/, '')}</p> : null}
           </div>
         </Cell>
       </section>
@@ -165,30 +163,22 @@ export function PostPage({ slug }: { slug: string }) {
       ) : null}
 
       <section className="sp-frame pg-post-b">
-        <Cell className="pg-post-side">{toc ? <Contents heads={heads} /> : null}</Cell>
-        <Cell span={2} className="pg-post-art">
-          {p.draft ? (
-            <p className="sp-note pg-post-note" role="note">
-              {p.draft}
-            </p>
-          ) : null}
-          {toc ? <Contents heads={heads} phone /> : null}
-          <article className="pg-post-text">
-            <Blocks blocks={p.body} />
-          </article>
-        </Cell>
-        <Cell className="pg-post-aside">
-          <aside className="pg-post-card" aria-label={card.title}>
-            <p className="sp-lab">{card.label}</p>
-            <p className="pg-post-card-t">{card.title}</p>
-            <p className="pg-post-card-l">{card.line}</p>
-            <Link className="btn btn-primary pg-on-wide" href={card.href} data-cta="post-card">
-              <BtnInner>{card.cta}</BtnInner>
-            </Link>
-            <Link className="btn btn-secondary pg-on-phone" href={card.href} data-cta="post-card">
-              <BtnInner>{card.cta}</BtnInner>
-            </Link>
-          </aside>
+        <Cell span={4} className="pg-post-bc">
+          <div className="pg-post-col">
+            {toc ? <Contents heads={heads} /> : null}
+            {toc ? <Contents heads={heads} phone /> : null}
+            <article className="pg-post-text">
+              <Blocks blocks={p.body} />
+            </article>
+            <aside className="pg-post-card" aria-label={card.title}>
+              <p className="sp-lab">{card.label}</p>
+              <p className="pg-post-card-t">{card.title}</p>
+              <p className="pg-post-card-l">{card.line}</p>
+              <Link className="btn btn-secondary" href={card.href} data-cta="post-card">
+                <BtnInner>{card.cta}</BtnInner>
+              </Link>
+            </aside>
+          </div>
         </Cell>
       </section>
 

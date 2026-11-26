@@ -25,6 +25,15 @@ Task format
 
 ## In progress
 
+- ekotehnika-24 The blog, the list page and the single post pages, with draft pictures from the Drive. Filip 26 November
+  - [ ] Filip answers the kickoff questions and picks the direction
+  - [ ] Pick draft pictures per post from the Drive
+  - [ ] Build the single post page in the real app, every state
+  - [ ] Build the list page from the same parts
+  - [ ] Shots at 1440, 390 and 360, scripts/doubles.cjs clean
+  - [ ] Filip looks on localhost
+  - [ ] Production after Filip's ship line
+
 - ekotehnika-21 The shop, the client's Drive categories and products, every product leads to the contact form, no cart. The homepage story leads to it. Brief in briefs/shop/brief.md
   - [x] Map the Drive, 89 series in 10 categories, renders, photos and data sheets per series
   - [x] Filip answers the kickoff questions, "yes, go with defaults", 18 November, written into the brief

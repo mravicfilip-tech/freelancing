@@ -18,4 +18,10 @@
    the red on the inquiry under it. The pin is gone, so the shop's html and body clip rule went with it. The list page and Najam shoot
    the same before and after at 1440 and 390. The golden blog-post and the kit's post-aside-card and post-contents show the old page
    until Filip accepts this one.
+4. "add more text, like 600 words https://ekotehnika.vercel.app/postavka-regala-vemax per blog". Done, every post at 593 to 599 words
+   of lede and text, captions and tables not counted, 4 minutes of reading. Facts about the job, the event or the product stay as before,
+   from the photos, the Linde and GRI files in the Drive and the site's own pages (servis checks, two service centres, 300+ types,
+   rental from hours to a year, delivery in 24 hours, the full service contract, the Hitan servis number). The rest is general advice
+   on safety, racking, driving, service and tyres, written for Ekotehnika to check, and each draft note now says so. No new figure was
+   added that is not in a file or on the site.
 

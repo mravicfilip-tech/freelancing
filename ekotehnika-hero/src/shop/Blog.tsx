@@ -1,6 +1,7 @@
 // A blog post, one reading column (taste 2026-11-26 14:34, after Stripe's blog post page). Filip found the first build "a bit confusing to
 // look at", four things side by side after the lead photo, pinned contents, a draft box, the text and a red card, and photos that widened
-// under the card. Now the head stacks the category, the title, the lede, the reading time and the draft line in frames 1 to 3. The lead
+// under the card. Now the head stacks the category, the title, the lede, the reading time, the share row and the draft line, centred over
+// the column ("center this", taste 2026-11-26 15:20). The lead
 // photo runs across all four frames with the site's drift. The body is one cell with no line inside it, the text and every photo in frames
 // 2 and 3, a long post's contents a short list at the top of the text, and the post's card its last block with a secondary button. The red
 // stays on the short inquiry under it, then three other posts. On a phone the contents are a closed row over the text.
@@ -112,6 +113,62 @@ function Contents({ heads, phone = false }: { heads: { id: string; text: string 
   );
 }
 
+// the post's share row, Filip 26 November, "center this and add sharing options", which overturns the share bar both blog directions
+// refused (taste 2026-11-26 15:20). One quiet row in the head, LinkedIn, Facebook, WhatsApp, e-mail and the copied link. On a phone that
+// offers it, the system's own share sheet comes first, where Viber and the rest of the phone's apps are.
+const SOCIAL = [
+  { id: 'linkedin', label: 'Podelite na LinkedInu', href: (url: string) => `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(url)}` },
+  { id: 'facebook', label: 'Podelite na Facebooku', href: (url: string) => `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}` },
+  { id: 'whatsapp', label: 'Pošaljite preko WhatsAppa', href: (url: string, title: string) => `https://wa.me/?text=${encodeURIComponent(`${title} ${url}`)}` },
+];
+
+function Share({ p }: { p: Post }) {
+  const url = `${window.location.origin}/${p.slug}/`;
+  const [copied, setCopied] = useState(false);
+  const native = typeof navigator.share === 'function';
+  const copy = async () => {
+    try {
+      await navigator.clipboard.writeText(url);
+      setCopied(true);
+      window.setTimeout(() => setCopied(false), 2000);
+    } catch {
+      window.prompt('Kopirajte link', url);
+    }
+  };
+  return (
+    <div className="pg-share" role="group" aria-label="Podelite tekst">
+      <span className="sp-lab">Podelite</span>
+      <ul>
+        {native ? (
+          <li>
+            <button type="button" className="pg-share-b" aria-label="Podelite preko aplikacija na telefonu" onClick={() => navigator.share({ title: p.title, text: p.lede, url }).catch(() => undefined)}>
+              <i className="pg-share-i is-share" aria-hidden="true" />
+            </button>
+          </li>
+        ) : null}
+        {SOCIAL.map((x) => (
+          <li key={x.id}>
+            <a className="pg-share-b" href={x.href(url, p.title)} target="_blank" rel="noopener noreferrer" aria-label={x.label} data-cta={`share-${x.id}`}>
+              <i className={`pg-share-i is-${x.id}`} aria-hidden="true" />
+            </a>
+          </li>
+        ))}
+        <li>
+          <a className="pg-share-b" href={`mailto:?subject=${encodeURIComponent(p.title)}&body=${encodeURIComponent(`${p.lede}\n\n${url}`)}`} aria-label="Pošaljite e-mailom" data-cta="share-mail">
+            <i className="pg-share-i is-mail" aria-hidden="true" />
+          </a>
+        </li>
+        <li>
+          <button type="button" className="pg-share-b is-copy" onClick={copy} data-cta="share-copy">
+            <i className={`pg-share-i ${copied ? 'is-check' : 'is-link'}`} aria-hidden="true" />
+            <span aria-live="polite">{copied ? 'Link je kopiran' : 'Kopirajte link'}</span>
+          </button>
+        </li>
+      </ul>
+    </div>
+  );
+}
+
 // a post as a card, its photo, its category, its title as the card's one link and its reading time, for the related posts and the list
 export function PostTile({ p }: { p: Post }) {
   return (
@@ -148,7 +205,8 @@ export function PostPage({ slug }: { slug: string }) {
             </h1>
             <p className="sp-lede">{p.lede}</p>
             <Meta p={p} />
-            {/* the draft's note is one grey line under the reading time, the mark beside it already says Nacrt */}
+            <Share p={p} />
+            {/* the draft's note is one grey line under the share row, the mark beside the reading time already says Nacrt */}
             {p.draft ? <p className="pg-post-dnote">{p.draft.replace(/^Nacrt\.\s*/, '')}</p> : null}
           </div>
         </Cell>

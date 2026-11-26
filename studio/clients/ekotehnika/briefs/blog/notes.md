@@ -24,4 +24,8 @@
    rental from hours to a year, delivery in 24 hours, the full service contract, the Hitan servis number). The rest is general advice
    on safety, racking, driving, service and tyres, written for Ekotehnika to check, and each draft note now says so. No new figure was
    added that is not in a file or on the site.
+5. "center this and add sharing options", on the Vemax post's head. Done (taste 2026-11-26 15:20). The head is centred over the column,
+   at most 864px wide. A share row under the reading time, LinkedIn, Facebook, WhatsApp, e-mail and Kopirajte link, and on a phone with
+   the Web Share API the system sheet first, where Viber is. This overturns the share bars both blog directions refused, kept as one quiet
+   row with no counts. The list page and Najam shoot the same before and after, the posts grow by the row.
 

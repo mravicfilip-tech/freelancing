@@ -301,6 +301,7 @@ Task format
   - [x] Filip answers the post page restructure, "a bit confusing to look at", "yes, go", built as one reading column
   - [x] Filip looks at the one column post page, "push vercel" for 917ca51, live as 75d50b1 on the ekotehnika repo, with the fifth post
   - [x] About 600 words per post, "add more text, like 600 words per blog", briefs/blog/notes.md, "push vercel" for 6c33b13, live as 9ddf8ae on the ekotehnika repo
+  - [x] The post head centred with a share row, "center this and add sharing options", briefs/blog/notes.md
   - [ ] Ekotehnika adds the facts each draft's note asks for, and Vemax's OK for its post
   - [ ] The old posts come over at their old addresses, from a WordPress export or the texts
 

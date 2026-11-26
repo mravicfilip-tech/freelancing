@@ -30,7 +30,7 @@ Task format
   - [x] The used product's fields, the list and the product page, every state
   - [x] The link to product template as a Claude skill, .claude/skills/polovni-oglas, with the reader scripts/polovni-oglas.mjs
   - [x] Shots at 1440, 390 and 360, scripts/doubles.cjs clean
-  - [x] The demo repo, "push to demo repo", branch polovni as 17f0cf0, with CLAUDE.md and README.md for Polovni, the client or Filip merges it into main
+  - [x] The demo repo, "push to demo repo", branch polovni as 17f0cf0, with CLAUDE.md and README.md for Polovni, merged into the demo's main on Filip's "merge polovni into main"
   - [ ] Ekotehnika says whether the sample's ad is theirs, the name of the non forklift group
   - [ ] Production after Filip's ship line
 
